@@ -11,7 +11,9 @@ class App extends Component {
         <p>
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        <Button raised>Click me</Button>
+        <Button raised color="primary">
+          Click me
+        </Button>
       </div>
     );
   }
