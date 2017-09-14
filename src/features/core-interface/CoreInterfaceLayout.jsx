@@ -2,9 +2,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
+import { Route, Switch } from "react-router-dom";
 import CustomAppBar from "./components/CustomAppBar";
 import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
+import People from "../people/PeopleView";
 
 const drawerWidth = 240;
 
@@ -79,15 +81,27 @@ class CoreInterfaceLayout extends Component {
     if (pathname.includes("dashboard")) {
       updateAppBarTitle("Dashboard");
       updateBottomNavValue("dashboard");
-    } else if (pathname.includes("products")) {
-      updateAppBarTitle("Products");
-      updateBottomNavValue("products");
-    } else if (pathname.includes("business-info")) {
-      updateAppBarTitle("Business Info");
-      updateBottomNavValue("business-info");
-    } else if (pathname.includes("contact-info")) {
-      updateAppBarTitle("Contact Info");
-      updateBottomNavValue("contact-info");
+    } else if (pathname.includes("schedule")) {
+      updateAppBarTitle("Schedule");
+      updateBottomNavValue("schedule");
+    } else if (pathname.includes("hours")) {
+      updateAppBarTitle("Hours");
+      updateBottomNavValue("hours");
+    } else if (pathname.includes("people")) {
+      updateAppBarTitle("People");
+      updateBottomNavValue("people");
+    } else if (pathname.includes("teams")) {
+      updateAppBarTitle("Teams");
+      updateBottomNavValue("teams");
+    } else if (pathname.includes("reports")) {
+      updateAppBarTitle("Reports");
+      updateBottomNavValue("reports");
+    } else if (pathname.includes("wages")) {
+      updateAppBarTitle("Wages");
+      updateBottomNavValue("wages");
+    } else if (pathname.includes("settings")) {
+      updateAppBarTitle("Settings");
+      updateBottomNavValue("settings");
     }
   }
 
@@ -134,7 +148,13 @@ class CoreInterfaceLayout extends Component {
             isMobile={isMobile}
           />
           <div className={classes.content}>
-            <div className={classes.main} />
+            <div className={classes.main}>
+              <Switch>
+                <Route path={`/${accountType}/people`}>
+                  <People accountType={accountType} />
+                </Route>
+              </Switch>
+            </div>
             {isMobile && (
               <BottomNav
                 value={uiConfig.bottomNavValue}
