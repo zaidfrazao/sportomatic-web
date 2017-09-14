@@ -3,10 +3,17 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import PeopleList from "./components/PeopleList";
+import LeaderboardAd from "../../components/LeaderboardAd";
 
 const styles = theme => ({
   root: {
     width: "100%"
+  },
+  adWrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    margin: "24px 0"
   }
 });
 
@@ -16,6 +23,9 @@ class PeopleLayout extends Component {
 
     return (
       <div className={classes.root}>
+        <div className={classes.adWrapper}>
+          <LeaderboardAd />
+        </div>
         <PeopleList
           accountType={accountType}
           people={[

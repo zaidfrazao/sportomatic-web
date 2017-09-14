@@ -61,7 +61,6 @@ const styles = theme => ({
     }
   },
   main: {
-    padding: 24,
     height: "100%",
     overflow: "auto"
   }
