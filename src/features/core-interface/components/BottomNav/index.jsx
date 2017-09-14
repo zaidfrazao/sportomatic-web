@@ -1,5 +1,4 @@
-/* eslint-disable flowtype/require-valid-file-annotation */
-
+// @flow
 import React from "react";
 import { withStyles } from "material-ui/styles";
 import { Route } from "react-router-dom";

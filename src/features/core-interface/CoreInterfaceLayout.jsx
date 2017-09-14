@@ -125,7 +125,11 @@ class CoreInterfaceLayout extends Component {
           />
           <SideMenu
             isOpen={uiConfig.isSideMenuOpen}
-            actions={{ toggleSideMenu, updateAppBarTitle }}
+            actions={{
+              toggleSideMenu,
+              updateAppBarTitle,
+              updateBottomNavValue
+            }}
             accountType={accountType}
             isMobile={isMobile}
           />

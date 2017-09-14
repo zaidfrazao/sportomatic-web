@@ -61,7 +61,11 @@ const styles = theme => ({
 class SideMenu extends Component {
   renderMenu() {
     const { accountType } = this.props;
-    const { updateAppBarTitle } = this.props.actions;
+    const {
+      updateAppBarTitle,
+      updateBottomNavValue,
+      toggleSideMenu
+    } = this.props.actions;
     switch (accountType) {
       case "coach":
         return [
@@ -73,6 +77,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/coach/dashboard");
                   updateAppBarTitle("Dashboard");
+                  updateBottomNavValue("dashboard");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -90,6 +96,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/coach/schedule");
                   updateAppBarTitle("Schedule");
+                  updateBottomNavValue("schedule");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -107,6 +115,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/coach/hours");
                   updateAppBarTitle("Hours");
+                  updateBottomNavValue("hours");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -124,6 +134,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/coach/wages");
                   updateAppBarTitle("Wages");
+                  updateBottomNavValue("wages");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -141,6 +153,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/coach/people");
                   updateAppBarTitle("People");
+                  updateBottomNavValue("people");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -158,6 +172,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/coach/teams");
                   updateAppBarTitle("Teams");
+                  updateBottomNavValue("teams");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -178,6 +194,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/manager/dashboard");
                   updateAppBarTitle("Dashboard");
+                  updateBottomNavValue("dashboard");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -195,6 +213,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/manager/schedule");
                   updateAppBarTitle("Schedule");
+                  updateBottomNavValue("schedule");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -212,6 +232,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/manager/hours");
                   updateAppBarTitle("Hours");
+                  updateBottomNavValue("hours");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -229,6 +251,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/manager/people");
                   updateAppBarTitle("People");
+                  updateBottomNavValue("people");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -246,6 +270,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/manager/teams");
                   updateAppBarTitle("Teams");
+                  updateBottomNavValue("teams");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -266,6 +292,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/institution/dashboard");
                   updateAppBarTitle("Dashboard");
+                  updateBottomNavValue("dashboard");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -283,6 +311,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/institution/schedule");
                   updateAppBarTitle("Schedule");
+                  updateBottomNavValue("schedule");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -300,6 +330,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/institution/hours");
                   updateAppBarTitle("Hours");
+                  updateBottomNavValue("hours");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -317,6 +349,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/institution/wages");
                   updateAppBarTitle("Wages");
+                  updateBottomNavValue("wages");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -334,6 +368,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/institution/people");
                   updateAppBarTitle("People");
+                  updateBottomNavValue("people");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -351,6 +387,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/institution/teams");
                   updateAppBarTitle("Teams");
+                  updateBottomNavValue("teams");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -368,6 +406,8 @@ class SideMenu extends Component {
                 onClick={() => {
                   history.push("/institution/reports");
                   updateAppBarTitle("Reports");
+                  updateBottomNavValue("reports");
+                  toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
