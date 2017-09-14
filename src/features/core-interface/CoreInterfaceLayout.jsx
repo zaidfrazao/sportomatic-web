@@ -134,6 +134,7 @@ class CoreInterfaceLayout extends Component {
             {isMobile && (
               <BottomNav
                 value={uiConfig.bottomNavValue}
+                accountType={accountType}
                 actions={{ updateAppBarTitle, updateBottomNavValue }}
               />
             )}

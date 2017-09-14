@@ -7,9 +7,8 @@ import BottomNavigation, {
   BottomNavigationButton
 } from "material-ui/BottomNavigation";
 import DashboardIcon from "material-ui-icons/Dashboard";
-import ProductsIcon from "material-ui-icons/ShoppingBasket";
-import BusinessInfoIcon from "material-ui-icons/BusinessCenter";
-import ContactInfoIcon from "material-ui-icons/Person";
+import ScheduleIcon from "material-ui-icons/Event";
+import HoursIcon from "material-ui-icons/Alarm";
 
 const styles = {
   root: {
@@ -20,7 +19,7 @@ const styles = {
 
 class BottomNav extends React.Component {
   render() {
-    const { classes, value } = this.props;
+    const { classes, value, accountType } = this.props;
     const { updateAppBarTitle, updateBottomNavValue } = this.props.actions;
 
     return (
@@ -33,22 +32,17 @@ class BottomNav extends React.Component {
                 case "dashboard":
                   updateAppBarTitle("Dashboard");
                   updateBottomNavValue("dashboard");
-                  history.push("/customer/dashboard");
+                  history.push(`/${accountType}/dashboard`);
                   break;
-                case "products":
-                  updateAppBarTitle("Products");
-                  updateBottomNavValue("products");
-                  history.push("/customer/products");
+                case "schedule":
+                  updateAppBarTitle("Schedule");
+                  updateBottomNavValue("schedule");
+                  history.push(`/${accountType}/schedule`);
                   break;
-                case "business-info":
-                  updateAppBarTitle("Business Info");
-                  updateBottomNavValue("business-info");
-                  history.push("/customer/business-info");
-                  break;
-                case "contact-info":
-                  updateAppBarTitle("Contact Info");
-                  updateBottomNavValue("contact-info");
-                  history.push("/customer/contact-info");
+                case "hours":
+                  updateAppBarTitle("Hours");
+                  updateBottomNavValue("hours");
+                  history.push(`/${accountType}/hours`);
                   break;
                 default:
                   updateAppBarTitle("Dashboard");
@@ -62,15 +56,8 @@ class BottomNav extends React.Component {
               value="dashboard"
               icon={<DashboardIcon />}
             />
-            <BottomNavigationButton value="products" icon={<ProductsIcon />} />
-            <BottomNavigationButton
-              value="business-info"
-              icon={<BusinessInfoIcon />}
-            />
-            <BottomNavigationButton
-              value="contact-info"
-              icon={<ContactInfoIcon />}
-            />
+            <BottomNavigationButton value="schedule" icon={<ScheduleIcon />} />
+            <BottomNavigationButton value="hours" icon={<HoursIcon />} />
           </BottomNavigation>
         )}
       />
