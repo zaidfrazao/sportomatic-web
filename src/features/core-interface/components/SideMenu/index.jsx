@@ -60,7 +60,7 @@ const styles = theme => ({
 
 class SideMenu extends Component {
   renderMenu() {
-    const { accountType } = this.props;
+    const { accountType, isMobile } = this.props;
     const {
       updateAppBarTitle,
       updateBottomNavValue,
@@ -78,7 +78,7 @@ class SideMenu extends Component {
                   history.push("/coach/dashboard");
                   updateAppBarTitle("Dashboard");
                   updateBottomNavValue("dashboard");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -97,7 +97,7 @@ class SideMenu extends Component {
                   history.push("/coach/schedule");
                   updateAppBarTitle("Schedule");
                   updateBottomNavValue("schedule");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -116,7 +116,7 @@ class SideMenu extends Component {
                   history.push("/coach/hours");
                   updateAppBarTitle("Hours");
                   updateBottomNavValue("hours");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -135,7 +135,7 @@ class SideMenu extends Component {
                   history.push("/coach/wages");
                   updateAppBarTitle("Wages");
                   updateBottomNavValue("wages");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -154,7 +154,7 @@ class SideMenu extends Component {
                   history.push("/coach/people");
                   updateAppBarTitle("People");
                   updateBottomNavValue("people");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -173,7 +173,7 @@ class SideMenu extends Component {
                   history.push("/coach/teams");
                   updateAppBarTitle("Teams");
                   updateBottomNavValue("teams");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -195,7 +195,7 @@ class SideMenu extends Component {
                   history.push("/manager/dashboard");
                   updateAppBarTitle("Dashboard");
                   updateBottomNavValue("dashboard");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -214,7 +214,7 @@ class SideMenu extends Component {
                   history.push("/manager/schedule");
                   updateAppBarTitle("Schedule");
                   updateBottomNavValue("schedule");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -233,7 +233,7 @@ class SideMenu extends Component {
                   history.push("/manager/hours");
                   updateAppBarTitle("Hours");
                   updateBottomNavValue("hours");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -252,7 +252,7 @@ class SideMenu extends Component {
                   history.push("/manager/people");
                   updateAppBarTitle("People");
                   updateBottomNavValue("people");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -271,7 +271,7 @@ class SideMenu extends Component {
                   history.push("/manager/teams");
                   updateAppBarTitle("Teams");
                   updateBottomNavValue("teams");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -293,7 +293,7 @@ class SideMenu extends Component {
                   history.push("/institution/dashboard");
                   updateAppBarTitle("Dashboard");
                   updateBottomNavValue("dashboard");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -312,7 +312,7 @@ class SideMenu extends Component {
                   history.push("/institution/schedule");
                   updateAppBarTitle("Schedule");
                   updateBottomNavValue("schedule");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -331,7 +331,7 @@ class SideMenu extends Component {
                   history.push("/institution/hours");
                   updateAppBarTitle("Hours");
                   updateBottomNavValue("hours");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -350,7 +350,7 @@ class SideMenu extends Component {
                   history.push("/institution/wages");
                   updateAppBarTitle("Wages");
                   updateBottomNavValue("wages");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -369,7 +369,7 @@ class SideMenu extends Component {
                   history.push("/institution/people");
                   updateAppBarTitle("People");
                   updateBottomNavValue("people");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -388,7 +388,7 @@ class SideMenu extends Component {
                   history.push("/institution/teams");
                   updateAppBarTitle("Teams");
                   updateBottomNavValue("teams");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
@@ -407,7 +407,7 @@ class SideMenu extends Component {
                   history.push("/institution/reports");
                   updateAppBarTitle("Reports");
                   updateBottomNavValue("reports");
-                  toggleSideMenu();
+                  isMobile && toggleSideMenu();
                 }}
               >
                 <ListItemIcon>
