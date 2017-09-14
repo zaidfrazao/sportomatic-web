@@ -7,13 +7,13 @@ class App extends Component {
     return (
       <Switch>
         <Route path="/institution">
-          <CoreInterface />
+          <CoreInterface accountType="institution" />
         </Route>
         <Route path="/manager">
-          <CoreInterface />
+          <CoreInterface accountType="manager" />
         </Route>
         <Route path="/coach">
-          <CoreInterface />
+          <CoreInterface accountType="coach" />
         </Route>
       </Switch>
     );

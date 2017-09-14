@@ -105,7 +105,7 @@ class CoreInterfaceLayout extends Component {
   }
 
   render() {
-    const { classes, uiConfig } = this.props;
+    const { classes, uiConfig, accountType } = this.props;
     const {
       toggleSideMenu,
       updateAppBarTitle,
@@ -126,6 +126,7 @@ class CoreInterfaceLayout extends Component {
           <SideMenu
             isOpen={uiConfig.isSideMenuOpen}
             actions={{ toggleSideMenu, updateAppBarTitle }}
+            accountType={accountType}
             isMobile={isMobile}
           />
           <div className={classes.content}>

@@ -12,7 +12,7 @@ import Menu, { MenuItem } from "material-ui/Menu";
 import MenuIcon from "material-ui-icons/Menu";
 import NotificationsIcon from "material-ui-icons/Notifications";
 import { ListItemText } from "material-ui/List";
-import LogOutIcon from "material-ui-icons/ExitToApp";
+import AppBarMenuIcon from "material-ui-icons/MoreVert";
 import Toolbar from "material-ui/Toolbar";
 import Typography from "material-ui/Typography";
 
@@ -47,9 +47,6 @@ const styles = theme => ({
   },
   badgeColor: {
     backgroundColor: grey[50]
-  },
-  mobileTitle: {
-    marginLeft: 36
   }
 });
 
@@ -88,8 +85,7 @@ class CustomAppBar extends Component {
                   onClick={() => toggleSideMenu()}
                   className={classNames(
                     classes.menuButton,
-                    isSideMenuOpen && classes.hide,
-                    isMobile && classes.hide
+                    isSideMenuOpen && classes.hide
                   )}
                 >
                   <MenuIcon />
@@ -114,7 +110,7 @@ class CustomAppBar extends Component {
                   <Badge
                     classes={{ colorPrimary: classes.badgeColor }}
                     badgeContent={4}
-                    color="primary"
+                    color="accent"
                   >
                     <NotificationsIcon />
                   </Badge>
@@ -170,8 +166,8 @@ class CustomAppBar extends Component {
                   </MenuItem>
                 </Menu>
                 {isMobile ? (
-                  <IconButton color="contrast" aria-label="log out">
-                    <LogOutIcon />
+                  <IconButton color="contrast" aria-label="app bar menu">
+                    <AppBarMenuIcon />
                   </IconButton>
                 ) : (
                   <Button>Log out</Button>
