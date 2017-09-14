@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import App from "./app/App";
 import defineMUITheme from "./utils/mui-theme";
 import registerServiceWorker from "./utils/register-service-worker";
+import "./index.css";
 
 const theme = defineMUITheme();
 const store = getStore();
