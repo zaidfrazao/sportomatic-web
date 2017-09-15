@@ -2,8 +2,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
+import { grey } from "material-ui/colors";
+import AddIcon from "material-ui-icons/Add";
+import EditIcon from "material-ui-icons/Edit";
+import Button from "material-ui/Button";
 import PeopleList from "./components/PeopleList";
+import PersonInfo from "./components/PersonInfo";
 import LeaderboardAd from "../../components/LeaderboardAd";
+import { getPeopleList } from "./js/people";
 
 const styles = theme => ({
   root: {
@@ -14,37 +20,61 @@ const styles = theme => ({
     display: "flex",
     justifyContent: "center",
     margin: "24px 0"
+  },
+  button: {
+    margin: theme.spacing.unit,
+    position: "fixed",
+    bottom: 72,
+    right: 24,
+    "@media (min-width: 600px)": {
+      bottom: 24
+    }
+  },
+  toolbar: {
+    backgroundColor: grey[300],
+    zIndex: 1
   }
 });
 
 class PeopleLayout extends Component {
   render() {
     const { classes, accountType } = this.props;
-
+    const { id } = this.props.match.params;
+    const people = getPeopleList();
     return (
       <div className={classes.root}>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
-        <PeopleList
-          accountType={accountType}
-          people={[
-            {
-              name: "Brett",
-              surname: "Cook",
-              type: "Manager",
-              profilePictureURL:
-                "https://firebasestorage.googleapis.com/v0/b/sportomatic-5e646.appspot.com/o/images%2Fprofile-picture%2F8427160905878?alt=media&token=60b9eaea-0466-4552-8c46-cd8530708cc4"
-            },
-            {
-              name: "Rowan",
-              surname: "Walker-Campbell",
-              type: "Coach",
-              profilePictureURL:
-                "https://firebasestorage.googleapis.com/v0/b/sportomatic-5e646.appspot.com/o/images%2Fprofile-picture%2F6608339627275?alt=media&token=af8b1ebd-210d-4f98-baed-4f87dee882b4"
-            }
-          ]}
-        />
+        {id ? (
+          <div>
+            <PersonInfo info={people[id]} accountType={accountType} />
+            {accountType === "institution" && (
+              <Button
+                fab
+                color="accent"
+                aria-label="edit person"
+                className={classes.button}
+              >
+                <EditIcon />
+              </Button>
+            )}
+          </div>
+        ) : (
+          <div>
+            <div className={classes.adWrapper}>
+              <LeaderboardAd />
+            </div>
+            <PeopleList accountType={accountType} people={people} />
+            {accountType === "institution" && (
+              <Button
+                fab
+                color="accent"
+                aria-label="add person"
+                className={classes.button}
+              >
+                <AddIcon />
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     );
   }

@@ -149,7 +149,10 @@ class CoreInterfaceLayout extends Component {
           <div className={classes.content}>
             <div className={classes.main}>
               <Switch>
-                <Route path={`/${accountType}/people`}>
+                <Route exact path={`/${accountType}/people/`}>
+                  <People accountType={accountType} />
+                </Route>
+                <Route path={`/${accountType}/people/:id`}>
                   <People accountType={accountType} />
                 </Route>
               </Switch>

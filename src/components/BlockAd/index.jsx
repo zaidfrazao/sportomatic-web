@@ -3,14 +3,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
-import largeAdImage from "./images/large-ad.jpg";
+import largeAdImage from "./images/large-ad.gif";
 import mediumAdImage from "./images/medium-ad.jpg";
 import smallAdImage from "./images/small-ad.gif";
 
 const styles = {
   largeDisplay: {
-    width: 728,
-    height: 90,
+    width: 300,
+    height: 250,
     backgroundImage: `url(${largeAdImage})`,
     backgroundColor: grey[300]
   },
@@ -28,7 +28,7 @@ const styles = {
   }
 };
 
-class LeaderboardAd extends Component {
+class BlockAd extends Component {
   constructor(props) {
     super(props);
     this.state = { windowWidth: "0" };
@@ -62,8 +62,8 @@ class LeaderboardAd extends Component {
   }
 }
 
-LeaderboardAd.propTypes = {
+BlockAd.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(LeaderboardAd);
+export default withStyles(styles)(BlockAd);

@@ -48,7 +48,7 @@ class PersonCard extends Component {
                 <Button
                   dense
                   color="primary"
-                  onClick={() => history.push(`${accountType}/people/${id}`)}
+                  onClick={() => history.push(`/${accountType}/people/${id}`)}
                 >
                   View
                 </Button>
