@@ -2,8 +2,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
-import { Route } from "react-router-dom";
-import Card, { CardActions, CardContent, CardMedia } from "material-ui/Card";
+import { grey } from "material-ui/colors";
+import Card, { CardActions, CardContent } from "material-ui/Card";
 import Button from "material-ui/Button";
 import Typography from "material-ui/Typography";
 import EditIcon from "material-ui-icons/Edit";
@@ -11,65 +11,62 @@ import DeleteIcon from "material-ui-icons/Delete";
 import IconButton from "material-ui/IconButton";
 import Tooltip from "material-ui/Tooltip";
 
-const styles = {
+const styles = theme => ({
   card: {
-    maxWidth: 345,
-    margin: "0 auto"
+    minWidth: 275
   },
-  media: {
-    height: 200
+  bullet: {
+    display: "inline-block",
+    margin: "0 2px",
+    transform: "scale(0.8)"
+  },
+  title: {
+    marginBottom: 16,
+    fontSize: 14,
+    color: theme.palette.text.secondary
+  },
+  subheading: {
+    margin: 12,
+    color: theme.palette.text.secondary
+  },
+  avatar: {
+    backgroundColor: grey[500],
+    width: 72,
+    height: 72
   },
   buttons: {
     display: "flex",
     justifyContent: "space-between"
   }
-};
+});
 
-class PersonCard extends Component {
+class TeamCard extends Component {
   render() {
-    const {
-      classes,
-      name,
-      surname,
-      profilePictureURL,
-      type,
-      id,
-      accountType
-    } = this.props;
+    const { classes, sport, name, accountType } = this.props;
+
     return (
       <div>
         <Card className={classes.card}>
-          <CardMedia
-            className={classes.media}
-            image={profilePictureURL}
-            title={name}
-          />
           <CardContent>
-            <Typography type="headline" component="h2">
-              {`${name} ${surname}`}
+            <Typography type="body1" className={classes.title}>
+              {sport}
             </Typography>
-            <Typography component="p">{type}</Typography>
+            <Typography type="headline" component="h2">
+              {name}
+            </Typography>
           </CardContent>
           <CardActions className={classes.buttons}>
-            <Route
-              render={({ history }) => (
-                <Button
-                  dense
-                  color="primary"
-                  onClick={() => history.push(`/${accountType}/people/${id}`)}
-                >
-                  View
-                </Button>
-              )}
-            />
+            <Button dense color="primary">
+              View
+            </Button>
             {accountType === "institution" && (
               <div>
-                <Tooltip label="Edit person's info" position="bottom">
+                <Tooltip label="Edit team" position="bottom">
                   <IconButton aria-label="Edit team">
                     <EditIcon />
                   </IconButton>
                 </Tooltip>
-                <Tooltip label="Remove person" position="bottom">
+                <Tooltip label="Delete team" position="bottom">
                   <IconButton aria-label="Delete team">
                     <DeleteIcon />
                   </IconButton>
@@ -83,8 +80,8 @@ class PersonCard extends Component {
   }
 }
 
-PersonCard.propTypes = {
+TeamCard.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(PersonCard);
+export default withStyles(styles)(TeamCard);

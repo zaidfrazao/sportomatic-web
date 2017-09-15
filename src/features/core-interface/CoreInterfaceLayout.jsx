@@ -7,6 +7,7 @@ import CustomAppBar from "./components/CustomAppBar";
 import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
 import People from "../people/PeopleView";
+import Teams from "../teams/TeamsView";
 
 const drawerWidth = 240;
 
@@ -155,6 +156,12 @@ class CoreInterfaceLayout extends Component {
                 </Route>
                 <Route path={`/${accountType}/people/:id`}>
                   <People accountType={accountType} />
+                </Route>
+                <Route exact path={`/${accountType}/teams/`}>
+                  <Teams accountType={accountType} />
+                </Route>
+                <Route path={`/${accountType}/teams/:id`}>
+                  <Teams accountType={accountType} />
                 </Route>
               </Switch>
             </div>
