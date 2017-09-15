@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
+import { Route } from "react-router-dom";
 import { grey } from "material-ui/colors";
 import Card, { CardActions, CardContent } from "material-ui/Card";
 import Button from "material-ui/Button";
@@ -42,8 +43,7 @@ const styles = theme => ({
 
 class TeamCard extends Component {
   render() {
-    const { classes, sport, name, accountType } = this.props;
-
+    const { classes, sport, name, accountType, id } = this.props;
     return (
       <div>
         <Card>
@@ -56,9 +56,17 @@ class TeamCard extends Component {
             </Typography>
           </CardContent>
           <CardActions className={classes.buttons}>
-            <Button dense className={classes.viewButton}>
-              View
-            </Button>
+            <Route
+              render={({ history }) => (
+                <Button
+                  dense
+                  className={classes.viewButton}
+                  onClick={() => history.push(`/${accountType}/teams/${id}`)}
+                >
+                  View
+                </Button>
+              )}
+            />
             {accountType === "institution" && (
               <div>
                 <Tooltip label="Edit team" position="bottom">

@@ -8,7 +8,7 @@ import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Typography from "material-ui/Typography";
-import BlockAd from "../../../../components/BlockAd";
+import LeaderboardAd from "../../../../components/LeaderboardAd";
 
 const styles = {
   wrapper: {
@@ -17,11 +17,10 @@ const styles = {
   adWrapper: {
     width: "100%",
     height: "100%",
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[200]}`,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    margin: "24px 0"
   },
   section: {
     backgroundColor: grey[50],
@@ -62,22 +61,23 @@ const styles = {
     "@media (max-width: 960px)": {
       width: "100%"
     }
+  },
+  noItems: {
+    textAlign: "center"
   }
 };
 
 class TeamInfo extends Component {
   render() {
-    const { classes, accountType } = this.props;
+    const { classes } = this.props;
     const {
       name,
-      surname,
-      email,
-      phoneNumber,
-      paymentDetails,
-      sports,
-      type,
-      profilePictureURL,
-      teams
+      sport,
+      division,
+      ageGroup,
+      gender,
+      coaches,
+      managers
     } = this.props.info;
     return (
       <div className={classes.wrapper}>
@@ -93,19 +93,12 @@ class TeamInfo extends Component {
           )}
         />
         <Typography className={classes.name} type="display2" component="h2">
-          {`${name} ${surname}`}
+          {name}
         </Typography>
         <Grid container direction="row" align="stretch">
-          <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-            <div className={classes.pictureWrapper}>
-              <Avatar src={profilePictureURL} className={classes.picture} />
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-            <div className={classes.adWrapper}>
-              <BlockAd />
-            </div>
-          </Grid>
+          <div className={classes.adWrapper}>
+            <LeaderboardAd />
+          </div>
           <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
             <div className={classes.section}>
               <Typography
@@ -117,49 +110,20 @@ class TeamInfo extends Component {
               </Typography>
               <List>
                 <ListItem>
-                  <ListItemText primary="Email" secondary={email} />
+                  <ListItemText primary="Sport" secondary={sport} />
                 </ListItem>
                 <ListItem>
-                  <ListItemText
-                    primary="Phone number"
-                    secondary={phoneNumber}
-                  />
+                  <ListItemText primary="Division" secondary={division} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Age Group" secondary={ageGroup} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Gender" secondary={gender} />
                 </ListItem>
               </List>
             </div>
           </Grid>
-          {type === "Coach" &&
-          accountType === "institution" && (
-            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <div className={classes.section}>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Payment Details
-                </Typography>
-                <List>
-                  <ListItem>
-                    <ListItemText
-                      primary="Standard hourly rate"
-                      secondary={`R${paymentDetails.standardHourlyRate.toLocaleString(
-                        "en"
-                      )}`}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary="Overtime hourly rate"
-                      secondary={`R${paymentDetails.overtimeHourlyRate.toLocaleString(
-                        "en"
-                      )}`}
-                    />
-                  </ListItem>
-                </List>
-              </div>
-            </Grid>
-          )}
           <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
             <div className={classes.section}>
               <Typography
@@ -167,15 +131,23 @@ class TeamInfo extends Component {
                 type="title"
                 component="h3"
               >
-                Sports
+                Managers
               </Typography>
               <List>
-                {sports &&
-                  sports.map(sport => (
-                    <ListItem key={sport}>
-                      <ListItemText primary={sport} />
+                {managers.length > 0 ? (
+                  managers.map(managerInfo => (
+                    <ListItem key={managerInfo.name} button>
+                      <Avatar src={managerInfo.profilePictureURL} />
+                      <ListItemText
+                        primary={`${managerInfo.name} ${managerInfo.surname}`}
+                      />
                     </ListItem>
-                  ))}
+                  ))
+                ) : (
+                  <ListItem className={classes.noItems}>
+                    <ListItemText primary="No managers" />
+                  </ListItem>
+                )}
               </List>
             </div>
           </Grid>
@@ -186,18 +158,23 @@ class TeamInfo extends Component {
                 type="title"
                 component="h3"
               >
-                Teams
+                Coaches
               </Typography>
               <List>
-                {teams &&
-                  teams.map(teamInfo => (
-                    <ListItem key={teamInfo.name}>
+                {coaches.length > 0 ? (
+                  coaches.map(coachInfo => (
+                    <ListItem key={coachInfo.name} button>
+                      <Avatar src={coachInfo.profilePictureURL} />
                       <ListItemText
-                        primary={teamInfo.name}
-                        secondary={teamInfo.sport}
+                        primary={`${coachInfo.name} ${coachInfo.surname}`}
                       />
                     </ListItem>
-                  ))}
+                  ))
+                ) : (
+                  <ListItem className={classes.noItems}>
+                    <ListItemText primary="No coaches" />
+                  </ListItem>
+                )}
               </List>
             </div>
           </Grid>
