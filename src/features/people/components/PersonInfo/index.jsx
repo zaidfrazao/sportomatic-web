@@ -191,7 +191,7 @@ class PersonInfo extends Component {
               <List>
                 {teams &&
                   teams.map(teamInfo => (
-                    <ListItem key={teamInfo.name}>
+                    <ListItem key={teamInfo.name} button>
                       <ListItemText
                         primary={teamInfo.name}
                         secondary={teamInfo.sport}

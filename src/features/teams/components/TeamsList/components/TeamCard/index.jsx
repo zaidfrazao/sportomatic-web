@@ -12,14 +12,6 @@ import IconButton from "material-ui/IconButton";
 import Tooltip from "material-ui/Tooltip";
 
 const styles = theme => ({
-  card: {
-    minWidth: 275
-  },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)"
-  },
   title: {
     marginBottom: 16,
     fontSize: 14,
@@ -37,6 +29,14 @@ const styles = theme => ({
   buttons: {
     display: "flex",
     justifyContent: "space-between"
+  },
+  viewButton: {
+    flexGrow: 1
+  },
+  name: {
+    textAlign: "center",
+    backgroundColor: grey[100],
+    padding: "24px 0"
   }
 });
 
@@ -46,17 +46,17 @@ class TeamCard extends Component {
 
     return (
       <div>
-        <Card className={classes.card}>
+        <Card>
           <CardContent>
             <Typography type="body1" className={classes.title}>
               {sport}
             </Typography>
-            <Typography type="headline" component="h2">
+            <Typography type="headline" component="h2" className={classes.name}>
               {name}
             </Typography>
           </CardContent>
           <CardActions className={classes.buttons}>
-            <Button dense color="primary">
+            <Button dense className={classes.viewButton}>
               View
             </Button>
             {accountType === "institution" && (

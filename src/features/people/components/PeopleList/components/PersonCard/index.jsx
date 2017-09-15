@@ -13,15 +13,18 @@ import Tooltip from "material-ui/Tooltip";
 
 const styles = {
   card: {
-    maxWidth: 345,
+    maxWidth: 400,
     margin: "0 auto"
   },
   media: {
-    height: 200
+    height: 300
   },
   buttons: {
     display: "flex",
     justifyContent: "space-between"
+  },
+  viewButton: {
+    flexGrow: 1
   }
 };
 
@@ -55,7 +58,7 @@ class PersonCard extends Component {
               render={({ history }) => (
                 <Button
                   dense
-                  color="primary"
+                  className={classes.viewButton}
                   onClick={() => history.push(`/${accountType}/people/${id}`)}
                 >
                   View
