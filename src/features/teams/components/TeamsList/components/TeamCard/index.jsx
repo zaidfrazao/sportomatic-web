@@ -69,12 +69,12 @@ class TeamCard extends Component {
             />
             {accountType === "institution" && (
               <div>
-                <Tooltip label="Edit team" position="bottom">
+                <Tooltip label="Edit team" placement="bottom">
                   <IconButton aria-label="Edit team">
                     <EditIcon />
                   </IconButton>
                 </Tooltip>
-                <Tooltip label="Delete team" position="bottom">
+                <Tooltip label="Delete team" placement="bottom">
                   <IconButton aria-label="Delete team">
                     <DeleteIcon />
                   </IconButton>

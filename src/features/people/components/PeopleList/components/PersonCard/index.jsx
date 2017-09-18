@@ -67,12 +67,12 @@ class PersonCard extends Component {
             />
             {accountType === "institution" && (
               <div>
-                <Tooltip label="Edit person's info" position="bottom">
+                <Tooltip label="Edit person's info" placement="bottom">
                   <IconButton aria-label="Edit team">
                     <EditIcon />
                   </IconButton>
                 </Tooltip>
-                <Tooltip label="Remove person" position="bottom">
+                <Tooltip label="Remove person" placement="bottom">
                   <IconButton aria-label="Delete team">
                     <DeleteIcon />
                   </IconButton>
