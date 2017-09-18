@@ -6,6 +6,7 @@ import { Route, Switch } from "react-router-dom";
 import CustomAppBar from "./components/CustomAppBar";
 import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
+import Dashboard from "../dashboard/DashboardView";
 import People from "../people/PeopleView";
 import Teams from "../teams/TeamsView";
 import backgroundImage from "./images/background-image.jpeg";
@@ -155,6 +156,12 @@ class CoreInterfaceLayout extends Component {
           <div className={classes.content}>
             <div className={classes.main}>
               <Switch>
+                <Route exact path={`/${accountType}/`}>
+                  <Dashboard accountType={accountType} />
+                </Route>
+                <Route exact path={`/${accountType}/dashboard/`}>
+                  <Dashboard accountType={accountType} />
+                </Route>
                 <Route exact path={`/${accountType}/people/`}>
                   <People accountType={accountType} />
                 </Route>
