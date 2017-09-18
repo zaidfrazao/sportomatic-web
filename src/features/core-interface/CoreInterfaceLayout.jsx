@@ -8,6 +8,7 @@ import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
 import Dashboard from "../dashboard/DashboardView";
 import People from "../people/PeopleView";
+import Settings from "../settings/SettingsView";
 import Teams from "../teams/TeamsView";
 import backgroundImage from "./images/background-image.jpeg";
 
@@ -107,6 +108,45 @@ class CoreInterfaceLayout extends Component {
     } else if (pathname.includes("settings")) {
       updateAppBarTitle("Settings");
       updateBottomNavValue("settings");
+    } else {
+      updateAppBarTitle("Dashboard");
+      updateBottomNavValue("dashboard");
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { pathname } = nextProps.location;
+    const { updateAppBarTitle, updateBottomNavValue } = this.props.actions;
+
+    if (pathname !== this.props.location.pathname) {
+      if (pathname.includes("dashboard")) {
+        updateAppBarTitle("Dashboard");
+        updateBottomNavValue("dashboard");
+      } else if (pathname.includes("schedule")) {
+        updateAppBarTitle("Schedule");
+        updateBottomNavValue("schedule");
+      } else if (pathname.includes("hours")) {
+        updateAppBarTitle("Hours");
+        updateBottomNavValue("hours");
+      } else if (pathname.includes("people")) {
+        updateAppBarTitle("People");
+        updateBottomNavValue("people");
+      } else if (pathname.includes("teams")) {
+        updateAppBarTitle("Teams");
+        updateBottomNavValue("teams");
+      } else if (pathname.includes("reports")) {
+        updateAppBarTitle("Reports");
+        updateBottomNavValue("reports");
+      } else if (pathname.includes("wages")) {
+        updateAppBarTitle("Wages");
+        updateBottomNavValue("wages");
+      } else if (pathname.includes("settings")) {
+        updateAppBarTitle("Settings");
+        updateBottomNavValue("settings");
+      } else {
+        updateAppBarTitle("Dashboard");
+        updateBottomNavValue("dashboard");
+      }
     }
   }
 
@@ -146,9 +186,7 @@ class CoreInterfaceLayout extends Component {
           <SideMenu
             isOpen={uiConfig.isSideMenuOpen}
             actions={{
-              toggleSideMenu,
-              updateAppBarTitle,
-              updateBottomNavValue
+              toggleSideMenu
             }}
             accountType={accountType}
             isMobile={isMobile}
@@ -168,6 +206,9 @@ class CoreInterfaceLayout extends Component {
                 <Route path={`/${accountType}/people/:id`}>
                   <People accountType={accountType} />
                 </Route>
+                <Route exact path={`/${accountType}/settings/`}>
+                  <Settings accountType={accountType} />
+                </Route>
                 <Route exact path={`/${accountType}/teams/`}>
                   <Teams accountType={accountType} />
                 </Route>
@@ -180,7 +221,6 @@ class CoreInterfaceLayout extends Component {
               <BottomNav
                 value={uiConfig.bottomNavValue}
                 accountType={accountType}
-                actions={{ updateAppBarTitle, updateBottomNavValue }}
               />
             )}
           </div>

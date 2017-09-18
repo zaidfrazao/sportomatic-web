@@ -61,11 +61,7 @@ const styles = theme => ({
 class SideMenu extends Component {
   renderMenu() {
     const { accountType, isMobile } = this.props;
-    const {
-      updateAppBarTitle,
-      updateBottomNavValue,
-      toggleSideMenu
-    } = this.props.actions;
+    const { toggleSideMenu } = this.props.actions;
     switch (accountType) {
       case "coach":
         return [
@@ -76,8 +72,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/coach/dashboard");
-                  updateAppBarTitle("Dashboard");
-                  updateBottomNavValue("dashboard");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -95,8 +89,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/coach/schedule");
-                  updateAppBarTitle("Schedule");
-                  updateBottomNavValue("schedule");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -114,8 +106,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/coach/hours");
-                  updateAppBarTitle("Hours");
-                  updateBottomNavValue("hours");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -133,8 +123,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/coach/wages");
-                  updateAppBarTitle("Wages");
-                  updateBottomNavValue("wages");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -152,8 +140,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/coach/people");
-                  updateAppBarTitle("People");
-                  updateBottomNavValue("people");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -171,8 +157,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/coach/teams");
-                  updateAppBarTitle("Teams");
-                  updateBottomNavValue("teams");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -193,8 +177,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/manager/dashboard");
-                  updateAppBarTitle("Dashboard");
-                  updateBottomNavValue("dashboard");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -212,8 +194,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/manager/schedule");
-                  updateAppBarTitle("Schedule");
-                  updateBottomNavValue("schedule");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -231,8 +211,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/manager/hours");
-                  updateAppBarTitle("Hours");
-                  updateBottomNavValue("hours");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -250,8 +228,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/manager/people");
-                  updateAppBarTitle("People");
-                  updateBottomNavValue("people");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -269,8 +245,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/manager/teams");
-                  updateAppBarTitle("Teams");
-                  updateBottomNavValue("teams");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -291,8 +265,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/institution/dashboard");
-                  updateAppBarTitle("Dashboard");
-                  updateBottomNavValue("dashboard");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -310,8 +282,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/institution/schedule");
-                  updateAppBarTitle("Schedule");
-                  updateBottomNavValue("schedule");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -329,8 +299,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/institution/hours");
-                  updateAppBarTitle("Hours");
-                  updateBottomNavValue("hours");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -348,8 +316,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/institution/wages");
-                  updateAppBarTitle("Wages");
-                  updateBottomNavValue("wages");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -367,8 +333,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/institution/people");
-                  updateAppBarTitle("People");
-                  updateBottomNavValue("people");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -386,8 +350,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/institution/teams");
-                  updateAppBarTitle("Teams");
-                  updateBottomNavValue("teams");
                   isMobile && toggleSideMenu();
                 }}
               >
@@ -405,8 +367,6 @@ class SideMenu extends Component {
                 button
                 onClick={() => {
                   history.push("/institution/reports");
-                  updateAppBarTitle("Reports");
-                  updateBottomNavValue("reports");
                   isMobile && toggleSideMenu();
                 }}
               >

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
+import { Route } from "react-router-dom";
 import classNames from "classnames";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
@@ -117,15 +118,21 @@ class CustomAppBar extends Component {
             </Grid>
             <Grid item className={classes.rightButtons}>
               <Grid container justify="space-around" align="center">
-                <Tooltip label="Settings" placement="bottom">
-                  <IconButton
-                    color="contrast"
-                    aria-label="view notifications"
-                    onClick={this.handleClick}
-                  >
-                    <SettingsIcon />
-                  </IconButton>
-                </Tooltip>
+                <Route
+                  render={({ history }) => (
+                    <Tooltip label="Settings" placement="bottom">
+                      <IconButton
+                        color="contrast"
+                        aria-label="view notifications"
+                        onClick={() =>
+                          history.push(`/${accountType}/settings/`)}
+                      >
+                        <SettingsIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                />
+
                 {isMobile ? (
                   <Tooltip label="Options" placement="bottom">
                     <IconButton color="contrast" aria-label="app bar menu">

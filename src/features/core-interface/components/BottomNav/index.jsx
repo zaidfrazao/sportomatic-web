@@ -19,7 +19,6 @@ const styles = {
 class BottomNav extends React.Component {
   render() {
     const { classes, value, accountType } = this.props;
-    const { updateAppBarTitle, updateBottomNavValue } = this.props.actions;
 
     return (
       <Route
@@ -29,23 +28,15 @@ class BottomNav extends React.Component {
             onChange={(event, value) => {
               switch (value) {
                 case "dashboard":
-                  updateAppBarTitle("Dashboard");
-                  updateBottomNavValue("dashboard");
                   history.push(`/${accountType}/dashboard`);
                   break;
                 case "schedule":
-                  updateAppBarTitle("Schedule");
-                  updateBottomNavValue("schedule");
                   history.push(`/${accountType}/schedule`);
                   break;
                 case "hours":
-                  updateAppBarTitle("Hours");
-                  updateBottomNavValue("hours");
                   history.push(`/${accountType}/hours`);
                   break;
                 default:
-                  updateAppBarTitle("Dashboard");
-                  updateBottomNavValue("dashboard");
                   break;
               }
             }}
