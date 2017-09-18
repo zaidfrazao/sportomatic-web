@@ -125,23 +125,15 @@ class AccountInfo extends Component {
               <Avatar src={imageURL} className={classes.picture} />
               <div className={classes.pictureButtons}>
                 {accountType === "institution" ? (
-                  <Button
-                    raised
-                    color="accent"
-                    className={classes.pictureButton}
-                  >
+                  <Button raised className={classes.pictureButton}>
                     Change emblem
                   </Button>
                 ) : (
-                  <Button
-                    raised
-                    color="accent"
-                    className={classes.pictureButton}
-                  >
+                  <Button raised className={classes.pictureButton}>
                     Change profile picture
                   </Button>
                 )}
-                <Button raised color="accent" className={classes.pictureButton}>
+                <Button raised className={classes.pictureButton}>
                   Change password
                 </Button>
               </div>
