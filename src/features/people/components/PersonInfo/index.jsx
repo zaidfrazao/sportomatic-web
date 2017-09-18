@@ -56,7 +56,8 @@ const styles = {
   picture: {
     backgroundColor: grey[300],
     width: 300,
-    height: "auto"
+    height: "auto",
+    margin: 24
   },
   button: {
     "@media (max-width: 960px)": {
