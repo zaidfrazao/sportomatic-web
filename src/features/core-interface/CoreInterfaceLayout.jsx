@@ -8,6 +8,7 @@ import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
 import People from "../people/PeopleView";
 import Teams from "../teams/TeamsView";
+import backgroundImage from "./images/background-image.jpeg";
 
 const drawerWidth = 240;
 
@@ -56,6 +57,9 @@ const styles = theme => ({
     padding: 0,
     height: "calc(100% - 56px)",
     marginTop: 56,
+    backgroundImage: `url(${backgroundImage})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
     [theme.breakpoints.up("sm")]: {
       height: "calc(100% - 64px)",
       marginTop: 64
