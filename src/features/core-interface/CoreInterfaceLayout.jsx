@@ -8,6 +8,7 @@ import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
 import Dashboard from "../dashboard/DashboardView";
 import People from "../people/PeopleView";
+import Schedule from "../schedule/ScheduleView";
 import Settings from "../settings/SettingsView";
 import Teams from "../teams/TeamsView";
 import backgroundImage from "./images/background-image.jpeg";
@@ -82,6 +83,27 @@ class CoreInterfaceLayout extends Component {
 
   componentWillMount() {
     const { pathname } = this.props.location;
+    this.updateCoreUI(pathname);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { pathname } = nextProps.location;
+
+    if (pathname !== this.props.location.pathname) {
+      this.updateCoreUI(pathname);
+    }
+  }
+
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener("resize", this.updateWindowDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateWindowDimensions);
+  }
+
+  updateCoreUI(pathname) {
     const { updateAppBarTitle, updateBottomNavValue } = this.props.actions;
 
     if (pathname.includes("dashboard")) {
@@ -114,64 +136,16 @@ class CoreInterfaceLayout extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { pathname } = nextProps.location;
-    const { updateAppBarTitle, updateBottomNavValue } = this.props.actions;
-
-    if (pathname !== this.props.location.pathname) {
-      if (pathname.includes("dashboard")) {
-        updateAppBarTitle("Dashboard");
-        updateBottomNavValue("dashboard");
-      } else if (pathname.includes("schedule")) {
-        updateAppBarTitle("Schedule");
-        updateBottomNavValue("schedule");
-      } else if (pathname.includes("hours")) {
-        updateAppBarTitle("Hours");
-        updateBottomNavValue("hours");
-      } else if (pathname.includes("people")) {
-        updateAppBarTitle("People");
-        updateBottomNavValue("people");
-      } else if (pathname.includes("teams")) {
-        updateAppBarTitle("Teams");
-        updateBottomNavValue("teams");
-      } else if (pathname.includes("reports")) {
-        updateAppBarTitle("Reports");
-        updateBottomNavValue("reports");
-      } else if (pathname.includes("wages")) {
-        updateAppBarTitle("Wages");
-        updateBottomNavValue("wages");
-      } else if (pathname.includes("settings")) {
-        updateAppBarTitle("Settings");
-        updateBottomNavValue("settings");
-      } else {
-        updateAppBarTitle("Dashboard");
-        updateBottomNavValue("dashboard");
-      }
-    }
-  }
-
-  componentDidMount() {
-    this.updateWindowDimensions();
-    window.addEventListener("resize", this.updateWindowDimensions);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.updateWindowDimensions);
-  }
-
   updateWindowDimensions() {
     this.setState({ windowWidth: window.innerWidth });
   }
 
   render() {
     const { classes, uiConfig, accountType } = this.props;
-    const {
-      toggleSideMenu,
-      updateAppBarTitle,
-      updateBottomNavValue
-    } = this.props.actions;
+    const { toggleSideMenu } = this.props.actions;
     const { windowWidth } = this.state;
     const isMobile = windowWidth < 600;
+    const isTablet = windowWidth < 960;
 
     return (
       <div className={classes.root}>
@@ -203,8 +177,17 @@ class CoreInterfaceLayout extends Component {
                 <Route exact path={`/${accountType}/people/`}>
                   <People accountType={accountType} />
                 </Route>
-                <Route path={`/${accountType}/people/:id`}>
+                <Route path={`/${accountType}/people/:personID`}>
                   <People accountType={accountType} />
+                </Route>
+                <Route exact path={`/${accountType}/schedule/`}>
+                  <Schedule accountType={accountType} isTablet={isTablet} />
+                </Route>
+                <Route path={`/${accountType}/schedule/:dateSelected`}>
+                  <Schedule accountType={accountType} isTablet={isTablet} />
+                </Route>
+                <Route path={`/${accountType}/schedule/:date/:eventID`}>
+                  <Schedule accountType={accountType} isTablet={isTablet} />
                 </Route>
                 <Route exact path={`/${accountType}/settings/`}>
                   <Settings accountType={accountType} />
@@ -212,7 +195,7 @@ class CoreInterfaceLayout extends Component {
                 <Route exact path={`/${accountType}/teams/`}>
                   <Teams accountType={accountType} />
                 </Route>
-                <Route path={`/${accountType}/teams/:id`}>
+                <Route path={`/${accountType}/teams/:teamID`}>
                   <Teams accountType={accountType} />
                 </Route>
               </Switch>

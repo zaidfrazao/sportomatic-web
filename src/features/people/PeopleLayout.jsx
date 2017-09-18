@@ -39,13 +39,13 @@ const styles = theme => ({
 class PeopleLayout extends Component {
   render() {
     const { classes, accountType } = this.props;
-    const { id } = this.props.match.params;
+    const { personID } = this.props.match.params;
     const people = getPeopleList();
     return (
       <div className={classes.root}>
-        {id ? (
+        {personID ? (
           <div>
-            <PersonInfo info={people[id]} accountType={accountType} />
+            <PersonInfo info={people[personID]} accountType={accountType} />
             {accountType === "institution" && (
               <Button
                 fab

@@ -39,13 +39,13 @@ const styles = theme => ({
 class TeamsLayout extends Component {
   render() {
     const { classes, accountType } = this.props;
-    const { id } = this.props.match.params;
+    const { teamID } = this.props.match.params;
     const teams = getTeamsList();
     return (
       <div className={classes.root}>
-        {id ? (
+        {teamID ? (
           <div>
-            <TeamInfo info={teams[id]} accountType={accountType} />
+            <TeamInfo info={teams[teamID]} accountType={accountType} />
             <div className={classes.adWrapper}>
               <LeaderboardAd />
             </div>
