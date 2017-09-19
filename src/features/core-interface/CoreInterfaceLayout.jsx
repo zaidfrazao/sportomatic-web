@@ -105,34 +105,45 @@ class CoreInterfaceLayout extends Component {
 
   updateCoreUI(pathname) {
     const { updateAppBarTitle, updateBottomNavValue } = this.props.actions;
+    const featureName = pathname.split("/")[2];
 
-    if (pathname.includes("dashboard")) {
-      updateAppBarTitle("Dashboard");
-      updateBottomNavValue("dashboard");
-    } else if (pathname.includes("schedule")) {
-      updateAppBarTitle("Schedule");
-      updateBottomNavValue("schedule");
-    } else if (pathname.includes("hours")) {
-      updateAppBarTitle("Hours");
-      updateBottomNavValue("hours");
-    } else if (pathname.includes("people")) {
-      updateAppBarTitle("People");
-      updateBottomNavValue("people");
-    } else if (pathname.includes("teams")) {
-      updateAppBarTitle("Teams");
-      updateBottomNavValue("teams");
-    } else if (pathname.includes("reports")) {
-      updateAppBarTitle("Reports");
-      updateBottomNavValue("reports");
-    } else if (pathname.includes("wages")) {
-      updateAppBarTitle("Wages");
-      updateBottomNavValue("wages");
-    } else if (pathname.includes("settings")) {
-      updateAppBarTitle("Settings");
-      updateBottomNavValue("settings");
-    } else {
-      updateAppBarTitle("Dashboard");
-      updateBottomNavValue("dashboard");
+    switch (featureName) {
+      case "dashboard":
+        updateAppBarTitle("Dashboard");
+        updateBottomNavValue("dashboard");
+        break;
+      case "schedule":
+        updateAppBarTitle("Schedule");
+        updateBottomNavValue("schedule");
+        break;
+      case "hours":
+        updateAppBarTitle("Hours");
+        updateBottomNavValue("hours");
+        break;
+      case "people":
+        updateAppBarTitle("People");
+        updateBottomNavValue("people");
+        break;
+      case "teams":
+        updateAppBarTitle("Teams");
+        updateBottomNavValue("teams");
+        break;
+      case "wages":
+        updateAppBarTitle("Wages");
+        updateBottomNavValue("wages");
+        break;
+      case "reports":
+        updateAppBarTitle("Reports");
+        updateBottomNavValue("reports");
+        break;
+      case "settings":
+        updateAppBarTitle("Settings");
+        updateBottomNavValue("settings");
+        break;
+      default:
+        updateAppBarTitle("Dashboard");
+        updateBottomNavValue("dashboard");
+        break;
     }
   }
 
