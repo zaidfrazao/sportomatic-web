@@ -1,8 +1,11 @@
 // @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
+import InfiniteCalendar from "react-infinite-calendar";
+import "react-infinite-calendar/styles.css";
 
 const styles = theme => ({
   root: {
@@ -12,11 +15,70 @@ const styles = theme => ({
 });
 
 class Calendar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { windowHeight: "0" };
+    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+  }
+
+  componentWillMount() {
+    this.updateWindowDimensions();
+    window.addEventListener("resize", this.updateWindowDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateWindowDimensions);
+  }
+
+  updateWindowDimensions() {
+    this.setState({ windowHeight: window.innerHeight });
+  }
+
   render() {
-    const { classes } = this.props;
+    const {
+      classes,
+      dateSelected,
+      isMobile,
+      isTablet,
+      accountType
+    } = this.props;
+    const { windowHeight } = this.state;
+    let calendarHeight = isTablet ? windowHeight - 310 : windowHeight - 405;
+    if (isMobile) {
+      calendarHeight = windowHeight - 340;
+    }
     return (
       <div className={classes.root}>
-        <h2>Calendar</h2>
+        <Route
+          render={({ history }) => (
+            <InfiniteCalendar
+              locale={{
+                weekStartsOn: 1
+              }}
+              selected={dateSelected}
+              width="100%"
+              height={calendarHeight}
+              theme={{
+                selectionColor: "#2196F3",
+                textColor: {
+                  default: "#333",
+                  active: "#FFF"
+                },
+                weekdayColor: "#0277BD",
+                headerColor: "rgb(2, 136, 209)",
+                floatingNav: {
+                  background: "#2196F3",
+                  color: "#FFF",
+                  chevron: "#FFF"
+                }
+              }}
+              onSelect={date =>
+                history.push(
+                  `/${accountType}/schedule/${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+                )}
+            />
+          )}
+        />
       </div>
     );
   }

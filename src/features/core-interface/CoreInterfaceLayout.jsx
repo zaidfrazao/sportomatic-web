@@ -181,13 +181,25 @@ class CoreInterfaceLayout extends Component {
                   <People accountType={accountType} />
                 </Route>
                 <Route exact path={`/${accountType}/schedule/`}>
-                  <Schedule accountType={accountType} isTablet={isTablet} />
+                  <Schedule
+                    accountType={accountType}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                  />
                 </Route>
                 <Route path={`/${accountType}/schedule/:dateSelected`}>
-                  <Schedule accountType={accountType} isTablet={isTablet} />
+                  <Schedule
+                    accountType={accountType}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                  />
                 </Route>
                 <Route path={`/${accountType}/schedule/:date/:eventID`}>
-                  <Schedule accountType={accountType} isTablet={isTablet} />
+                  <Schedule
+                    accountType={accountType}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                  />
                 </Route>
                 <Route exact path={`/${accountType}/settings/`}>
                   <Settings accountType={accountType} />
