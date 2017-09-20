@@ -226,10 +226,28 @@ class CoreInterfaceLayout extends Component {
                   <Teams accountType={accountType} />
                 </Route>
                 <Route exact path={`/${accountType}/wages`}>
-                  <Wages accountType={accountType} />
+                  <Wages
+                    accountType={accountType}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                  />
+                </Route>
+                <Route
+                  exact
+                  path={`/${accountType}/wages/:coachID/:dateSelected`}
+                >
+                  <Wages
+                    accountType={accountType}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                  />
                 </Route>
                 <Route path={`/${accountType}/wages/:dateSelected`}>
-                  <Wages accountType={accountType} />
+                  <Wages
+                    accountType={accountType}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                  />
                 </Route>
               </Switch>
             </div>

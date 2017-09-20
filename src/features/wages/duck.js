@@ -26,16 +26,79 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   }
 }
 
+export const wageInfoInitialState = {
+  total: 1500,
+  records: [
+    {
+      id: "0",
+      date: 1508328000000,
+      event: "U/16 A Rugby Boys Match",
+      paymentType: "Hourly Rate",
+      wage: 250
+    },
+    {
+      id: "1",
+      date: 1508328000000,
+      event: "U/16 A Rugby Boys Match",
+      paymentType: "Hourly Rate",
+      wage: 250
+    },
+    {
+      id: "2",
+      date: 1508328000000,
+      event: "U/16 A Rugby Boys Match",
+      paymentType: "Hourly Rate",
+      wage: 250
+    },
+    {
+      id: "3",
+      date: 1508328000000,
+      event: "U/16 A Rugby Boys Match",
+      paymentType: "Hourly Rate",
+      wage: 250
+    },
+    {
+      id: "4",
+      date: 1508328000000,
+      event: "U/16 A Rugby Boys Match",
+      paymentType: "Hourly Rate",
+      wage: 250
+    },
+    {
+      id: "5",
+      date: 1508328000000,
+      event: "U/16 A Rugby Boys Match",
+      paymentType: "Hourly Rate",
+      wage: 250
+    }
+  ]
+};
+
+function wageInfoReducer(state = wageInfoInitialState, action = {}) {
+  switch (action.type) {
+    case TOGGLE_SIDE_MENU:
+      return {
+        ...state,
+        isSideMenuOpen: !state.isSideMenuOpen
+      };
+    default:
+      return state;
+  }
+}
+
 export const wagesReducer = combineReducers({
-  uiConfig: uiConfigReducer
+  uiConfig: uiConfigReducer,
+  wageInfo: wageInfoReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.wages.uiConfig;
+const wageInfo = state => state.wages.wageInfo;
 
 export const selector = createStructuredSelector({
-  uiConfig
+  uiConfig,
+  wageInfo
 });
 
 // Action Creators

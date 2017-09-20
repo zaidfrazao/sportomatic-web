@@ -2,12 +2,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
-import Typography from "material-ui/Typography";
+import WagesTable from "./components/WagesTable";
+import LeaderboardAd from "../../components/LeaderboardAd";
 
 const styles = theme => ({
   root: {
-    width: "100%"
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
   },
   adWrapper: {
     width: "100%",
@@ -15,29 +18,38 @@ const styles = theme => ({
     justifyContent: "center",
     margin: "24px 0"
   },
-  button: {
-    margin: theme.spacing.unit,
-    position: "fixed",
-    bottom: 72,
-    right: 24,
-    "@media (min-width: 600px)": {
-      bottom: 24
-    }
-  },
-  toolbar: {
-    backgroundColor: grey[300],
-    zIndex: 1
+  wagesTableWrapper: {
+    flexGrow: 1,
+    display: "flex"
   }
 });
 
 class WagesLayout extends Component {
   render() {
-    const { classes, accountType } = this.props;
+    const { classes, accountType, isMobile, isTablet, wageInfo } = this.props;
     return (
       <div className={classes.root}>
-        <Typography type="title" component="h2">
-          Wages
-        </Typography>
+        <div className={classes.adWrapper}>
+          <LeaderboardAd />
+        </div>
+        {accountType === "coach" && (
+          <div className={classes.wagesTableWrapper}>
+            <WagesTable
+              isMobile={isMobile}
+              isTablet={isTablet}
+              wageInfo={wageInfo}
+            />
+          </div>
+        )}
+        {accountType === "institution" && (
+          <div className={classes.wagesTableWrapper}>
+            <WagesTable
+              isMobile={isMobile}
+              isTablet={isTablet}
+              wageInfo={wageInfo}
+            />
+          </div>
+        )}
       </div>
     );
   }
