@@ -14,12 +14,20 @@ import CancelIcon from "material-ui-icons/Cancel";
 import IconButton from "material-ui/IconButton";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
+import LeaderboardAd from "../../../../components/LeaderboardAd";
 
 const styles = theme => ({
   root: {
     height: "100%",
     display: "flex",
     flexDirection: "column"
+  },
+  adWrapper: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "24px 0"
   },
   header: {
     height: 98,
@@ -44,7 +52,7 @@ const styles = theme => ({
     color: grey[50]
   },
   backButton: {
-    height: 47
+    margin: 24
   }
 });
 
@@ -113,19 +121,30 @@ class EventsList extends Component {
           dateOptions
         );
         return (
-          <ListItem button key={eventInfo.id}>
-            <ListItemText
-              primary={eventInfo.title}
-              secondary={`${eventStartTime} - ${eventEndTime}`}
-            />
-            <ListItemSecondaryAction>
-              <Tooltip label="Cancel event" placement="left">
-                <IconButton aria-label="cancel event">
-                  <CancelIcon />
-                </IconButton>
-              </Tooltip>
-            </ListItemSecondaryAction>
-          </ListItem>
+          <Route
+            key={eventInfo.id}
+            render={({ history }) => (
+              <ListItem
+                button
+                onClick={() =>
+                  history.push(
+                    `/${accountType}/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
+                  )}
+              >
+                <ListItemText
+                  primary={eventInfo.title}
+                  secondary={`${eventStartTime} - ${eventEndTime}`}
+                />
+                <ListItemSecondaryAction>
+                  <Tooltip label="Cancel event" placement="left">
+                    <IconButton aria-label="cancel event">
+                      <CancelIcon />
+                    </IconButton>
+                  </Tooltip>
+                </ListItemSecondaryAction>
+              </ListItem>
+            )}
+          />
         );
       });
 
@@ -163,6 +182,24 @@ class EventsList extends Component {
 
     return (
       <div className={classes.root}>
+        {isTablet && (
+          <Route
+            render={({ history }) => (
+              <Button
+                raised
+                className={classes.backButton}
+                onClick={() => history.push(`/${accountType}/schedule`)}
+              >
+                Back to calendar
+              </Button>
+            )}
+          />
+        )}
+        {isTablet && (
+          <div className={classes.adWrapper}>
+            <LeaderboardAd />
+          </div>
+        )}
         <div className={classes.header}>
           {isTablet && (
             <div className="Cal__Header__root">
@@ -178,19 +215,6 @@ class EventsList extends Component {
             </div>
           )}
         </div>
-        {isTablet && (
-          <Route
-            render={({ history }) => (
-              <Button
-                raised
-                className={classes.backButton}
-                onClick={() => history.push(`/${accountType}/schedule`)}
-              >
-                Back to calendar
-              </Button>
-            )}
-          />
-        )}
         <div className={events.length > 0 ? classes.events : classes.noEvents}>
           {events.length === 0 && (
             <Typography component="p" type="body1">

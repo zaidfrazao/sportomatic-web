@@ -198,14 +198,17 @@ class CoreInterfaceLayout extends Component {
                     isTablet={isTablet}
                   />
                 </Route>
-                <Route path={`/${accountType}/schedule/:dateSelected`}>
+                <Route exact path={`/${accountType}/schedule/:dateSelected`}>
                   <Schedule
                     accountType={accountType}
                     isMobile={isMobile}
                     isTablet={isTablet}
                   />
                 </Route>
-                <Route path={`/${accountType}/schedule/:date/:eventID`}>
+                <Route
+                  exact
+                  path={`/${accountType}/schedule/:dateSelected/:eventID`}
+                >
                   <Schedule
                     accountType={accountType}
                     isMobile={isMobile}

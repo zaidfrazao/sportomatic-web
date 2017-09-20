@@ -43,9 +43,9 @@ class Calendar extends Component {
       accountType
     } = this.props;
     const { windowHeight } = this.state;
-    let calendarHeight = isTablet ? windowHeight - 310 : windowHeight - 405;
+    let calendarHeight = isTablet ? windowHeight - 320 : windowHeight - 405;
     if (isMobile) {
-      calendarHeight = windowHeight - 340;
+      calendarHeight = windowHeight - 352;
     }
     return (
       <div className={classes.root}>

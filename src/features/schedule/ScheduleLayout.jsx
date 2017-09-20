@@ -6,6 +6,7 @@ import { lightBlue } from "material-ui/colors";
 import Paper from "material-ui/Paper";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import Calendar from "./components/Calendar";
+import EventInfo from "./components/EventInfo";
 import EventsList from "./components/EventsList";
 import { getEvents } from "./js/events";
 
@@ -32,13 +33,16 @@ const styles = theme => ({
   },
   desktopEventsList: {
     flexGrow: 1
+  },
+  eventsListWrapper: {
+    height: "calc(100% - 98px)"
   }
 });
 
 class ScheduleLayout extends Component {
   renderView() {
     const { accountType, isTablet, isMobile, classes } = this.props;
-    const { dateSelected } = this.props.match.params;
+    const { dateSelected, eventID } = this.props.match.params;
     const currentDate = new Date(Date.now());
     const dateSelectedComponents = dateSelected
       ? dateSelected.split("-")
@@ -48,6 +52,11 @@ class ScheduleLayout extends Component {
           currentDate.getFullYear()
         ];
     const events = getEvents();
+
+    if (eventID) {
+      return <EventInfo info={events[dateSelected][0]} />;
+    }
+
     if (isTablet) {
       if (dateSelected) {
         return (
@@ -60,46 +69,49 @@ class ScheduleLayout extends Component {
         );
       } else {
         return (
-          <Calendar
-            accountType={accountType}
-            isMobile={isMobile}
-            isTablet={isTablet}
-          />
-        );
-      }
-    } else {
-      return (
-        <Paper className={classes.calendarWrapper}>
-          <div className={classes.desktopCalendar}>
+          <div>
+            <div className={classes.adWrapper}>
+              <LeaderboardAd />
+            </div>
             <Calendar
               accountType={accountType}
               isMobile={isMobile}
               isTablet={isTablet}
             />
           </div>
-          <div className={classes.desktopEventsList}>
-            <EventsList
-              isTablet={isTablet}
-              dateSelected={new Date(...dateSelectedComponents)}
-              events={events[dateSelected] || []}
-              accountType={accountType}
-            />
+        );
+      }
+    } else {
+      return (
+        <div>
+          <div className={classes.adWrapper}>
+            <LeaderboardAd />
           </div>
-        </Paper>
+          <Paper className={classes.calendarWrapper}>
+            <div className={classes.desktopCalendar}>
+              <Calendar
+                accountType={accountType}
+                isMobile={isMobile}
+                isTablet={isTablet}
+              />
+            </div>
+            <div className={classes.desktopEventsList}>
+              <EventsList
+                isTablet={isTablet}
+                dateSelected={new Date(...dateSelectedComponents)}
+                events={events[dateSelected] || []}
+                accountType={accountType}
+              />
+            </div>
+          </Paper>
+        </div>
       );
     }
   }
 
   render() {
     const { classes } = this.props;
-    return (
-      <div className={classes.root}>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
-        {this.renderView()}
-      </div>
-    );
+    return <div className={classes.root}>{this.renderView()}</div>;
   }
 }
 
