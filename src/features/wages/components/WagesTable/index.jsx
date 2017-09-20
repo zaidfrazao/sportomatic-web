@@ -29,7 +29,7 @@ const styles = theme => ({
     flexDirection: "column"
   },
   header: {
-    backgroundColor: lightBlue[900],
+    backgroundColor: lightBlue[700],
     width: "100%",
     minHeight: 80,
     display: "flex",
@@ -37,7 +37,7 @@ const styles = theme => ({
     justifyContent: "space-between"
   },
   footer: {
-    backgroundColor: lightBlue[900],
+    backgroundColor: lightBlue[700],
     width: "100%",
     minHeight: 80,
     display: "flex",
