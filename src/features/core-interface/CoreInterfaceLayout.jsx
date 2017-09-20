@@ -11,6 +11,7 @@ import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
 import Settings from "../settings/SettingsView";
 import Teams from "../teams/TeamsView";
+import Wages from "../wages/WagesView";
 import backgroundImage from "./images/background-image.jpeg";
 
 const drawerWidth = 240;
@@ -223,6 +224,12 @@ class CoreInterfaceLayout extends Component {
                 </Route>
                 <Route path={`/${accountType}/teams/:teamID`}>
                   <Teams accountType={accountType} />
+                </Route>
+                <Route exact path={`/${accountType}/wages`}>
+                  <Wages accountType={accountType} />
+                </Route>
+                <Route path={`/${accountType}/wages/:dateSelected`}>
+                  <Wages accountType={accountType} />
                 </Route>
               </Switch>
             </div>

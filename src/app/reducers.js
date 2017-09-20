@@ -6,6 +6,7 @@ import { peopleReducer } from "../features/people/duck";
 import { scheduleReducer } from "../features/schedule/duck";
 import { settingsReducer } from "../features/settings/duck";
 import { teamsReducer } from "../features/teams/duck";
+import { wagesReducer } from "../features/wages/duck";
 
 export default combineReducers({
   coreInterface: coreInterfaceReducer,
@@ -13,5 +14,6 @@ export default combineReducers({
   people: peopleReducer,
   schedule: scheduleReducer,
   settings: settingsReducer,
-  teams: teamsReducer
+  teams: teamsReducer,
+  wages: wagesReducer
 });
