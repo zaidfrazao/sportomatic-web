@@ -53,8 +53,8 @@ const styles = theme => ({
     backgroundImage: `url(${logo})`,
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
-    width: 175,
-    height: 34
+    width: 160,
+    height: 30
   }
 });
 
