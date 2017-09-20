@@ -8,6 +8,7 @@ import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Typography from "material-ui/Typography";
+import LeaderboardAd from "../../../../components/LeaderboardAd";
 
 const styles = {
   wrapper: {
@@ -15,7 +16,6 @@ const styles = {
   },
   adWrapper: {
     width: "100%",
-    height: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -94,6 +94,9 @@ class TeamInfo extends Component {
         <Typography className={classes.name} type="display2" component="h2">
           {name}
         </Typography>
+        <div className={classes.adWrapper}>
+          <LeaderboardAd />
+        </div>
         <Grid container direction="row" align="stretch">
           <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
             <div className={classes.section}>

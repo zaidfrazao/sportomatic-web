@@ -46,9 +46,6 @@ class TeamsLayout extends Component {
         {teamID ? (
           <div>
             <TeamInfo info={teams[teamID]} accountType={accountType} />
-            <div className={classes.adWrapper}>
-              <LeaderboardAd />
-            </div>
             {accountType === "institution" && (
               <Button
                 fab
