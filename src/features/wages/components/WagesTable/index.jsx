@@ -50,7 +50,7 @@ const styles = theme => ({
     textAlign: "center"
   },
   headerButton: {
-    color: grey[500],
+    color: grey[300],
     "&:hover": {
       color: grey[200]
     }
