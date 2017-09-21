@@ -59,36 +59,16 @@ const styles = theme => ({
   tableBody: {
     flexGrow: 1,
     overflow: "auto"
+  },
+  noData: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   }
 });
 
 class WagesTable extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      year: new Date(Date.now()).getFullYear(),
-      month: new Date(Date.now()).getMonth() + 1
-    };
-  }
-
-  goToPrevMonth() {
-    if (this.state.month > 1) {
-      this.setState({ month: this.state.month - 1 });
-    } else {
-      this.setState({ year: this.state.year - 1 });
-      this.setState({ month: 12 });
-    }
-  }
-
-  goToNextMonth() {
-    if (this.state.month < 12) {
-      this.setState({ month: this.state.month + 1 });
-    } else {
-      this.setState({ year: this.state.year + 1 });
-      this.setState({ month: 1 });
-    }
-  }
-
   renderTableBody() {
     const { isMobile, isTablet, wageInfo } = this.props;
     const dateOptions = {
@@ -96,6 +76,14 @@ class WagesTable extends Component {
       day: "numeric",
       year: "numeric"
     };
+
+    if (!wageInfo) {
+      return (
+        <Typography type="body2" component="p">
+          No wage data
+        </Typography>
+      );
+    }
 
     if (isMobile) {
       return (
@@ -184,10 +172,47 @@ class WagesTable extends Component {
     }
   }
 
-  render() {
-    const { classes, wageInfo, isMobile } = this.props;
-    const { year, month } = this.state;
+  renderTableFooter() {
+    const { classes, isMobile, wageInfo } = this.props;
 
+    if (wageInfo) {
+      if (!isMobile) {
+        return (
+          <div className={classes.footer}>
+            <Typography
+              component="h2"
+              type="title"
+              className={classes.headerTitle}
+            >
+              Total
+            </Typography>
+            <Typography
+              component="h2"
+              type="title"
+              className={classes.headerTitle}
+            >
+              R{wageInfo.total.toLocaleString("en")}
+            </Typography>
+          </div>
+        );
+      } else {
+        return (
+          <div className={classes.footer}>
+            <Typography
+              component="h2"
+              type="title"
+              className={classes.headerTitle}
+            >
+              R{wageInfo.total.toLocaleString("en")}
+            </Typography>
+          </div>
+        );
+      }
+    }
+  }
+
+  render() {
+    const { classes, isMobile, year, month, wageInfo } = this.props;
     return (
       <div className={isMobile ? classes.mobileRoot : classes.root}>
         <Paper className={classes.tableWrapper}>
@@ -197,7 +222,7 @@ class WagesTable extends Component {
                 <Button
                   className={
                     year !== new Date(Date.now()).getFullYear() ||
-                    month !== new Date(Date.now()).getMonth() + 1 ? (
+                    month !== new Date(Date.now()).getMonth() ? (
                       classes.headerButton
                     ) : (
                       ""
@@ -205,13 +230,14 @@ class WagesTable extends Component {
                   }
                   disabled={
                     year === new Date(Date.now()).getFullYear() &&
-                    month === new Date(Date.now()).getMonth() + 1
+                    month === new Date(Date.now()).getMonth()
                   }
                   onClick={() => {
-                    this.goToNextMonth();
-                    history.push(
-                      `/coach/wages/${this.state.year}-${this.state.month}`
-                    );
+                    if (month < 11) {
+                      history.push(`/coach/wages/${year}-${month + 1}`);
+                    } else {
+                      history.push(`/coach/wages/${year + 1}-0`);
+                    }
                   }}
                 >
                   Next
@@ -230,10 +256,11 @@ class WagesTable extends Component {
                 <Button
                   className={classes.headerButton}
                   onClick={() => {
-                    this.goToPrevMonth();
-                    history.push(
-                      `/coach/wages/${this.state.year}-${this.state.month}`
-                    );
+                    if (month > 0) {
+                      history.push(`/coach/wages/${year}-${month - 1}`);
+                    } else {
+                      history.push(`/coach/wages/${year - 1}-11`);
+                    }
                   }}
                 >
                   Prev
@@ -241,25 +268,10 @@ class WagesTable extends Component {
               )}
             />
           </div>
-          <div className={classes.tableBody}>{this.renderTableBody()}</div>
-          <div className={classes.footer}>
-            {!isMobile && (
-              <Typography
-                component="h2"
-                type="title"
-                className={classes.headerTitle}
-              >
-                Total
-              </Typography>
-            )}
-            <Typography
-              component="h2"
-              type="title"
-              className={classes.headerTitle}
-            >
-              R{wageInfo.total.toLocaleString("en")}
-            </Typography>
+          <div className={wageInfo ? classes.tableBody : classes.noData}>
+            {this.renderTableBody()}
           </div>
+          <div>{this.renderTableFooter()}</div>
         </Paper>
       </div>
     );

@@ -31,6 +31,9 @@ class WagesLayout extends Component {
     const { dateSelected } = this.props.match.params;
 
     if (dateSelected) {
+      const dateComponents = dateSelected.split("-");
+      const year = parseInt(dateComponents[0], 10);
+      const month = parseInt(dateComponents[1], 10);
       return (
         <div className={classes.root}>
           <div className={classes.adWrapper}>
@@ -40,7 +43,9 @@ class WagesLayout extends Component {
             <WagesTable
               isMobile={isMobile}
               isTablet={isTablet}
-              wageInfo={wageInfo}
+              wageInfo={wageInfo[year][month]}
+              year={year}
+              month={month}
             />
           </div>
         </div>

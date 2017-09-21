@@ -29,7 +29,7 @@ export function getMonthName(monthNumber: number, format: string = "long") {
     "Dec"
   ];
   if (format === "short") {
-    return shortNames[monthNumber - 1];
+    return shortNames[monthNumber];
   }
-  return longNames[monthNumber - 1];
+  return longNames[monthNumber];
 }
