@@ -8,6 +8,7 @@ import InProgressIcon from "material-ui-icons/Autorenew";
 import AwaitingApprovalIcon from "material-ui-icons/MoreHoriz";
 import HistoryIcon from "material-ui-icons/History";
 import HoursHistory from "./components/HoursHistory";
+import HoursCard from "./components/HoursCard";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 
 const styles = theme => ({
@@ -31,10 +32,29 @@ const styles = theme => ({
   historyTableWrapper: {
     flexGrow: 1,
     display: "flex"
+  },
+  awaitingApprovalWrapper: {
+    flexGrow: 1,
+    overflow: "auto"
   }
 });
 
 class HoursLayout extends Component {
+  renderAwaitingApprovalTab() {
+    const { classes, awaitingApproval } = this.props;
+
+    return (
+      <div className={classes.awaitingApprovalWrapper}>
+        <div className={classes.adWrapper}>
+          <LeaderboardAd />
+        </div>
+        {awaitingApproval.map(hoursInfo => (
+          <HoursCard key={hoursInfo.id} info={hoursInfo} />
+        ))}
+      </div>
+    );
+  }
+
   renderHistoryTab() {
     const { classes, isMobile, isTablet, hoursHistory } = this.props;
     return (
@@ -95,6 +115,7 @@ class HoursLayout extends Component {
             </Tabs>
           )}
         </AppBar>
+        {currentTab === "AWAITING_APPROVAL" && this.renderAwaitingApprovalTab()}
         {currentTab === "HISTORY" && this.renderHistoryTab()}
       </div>
     );

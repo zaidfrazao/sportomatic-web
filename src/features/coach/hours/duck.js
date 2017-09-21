@@ -10,7 +10,7 @@ export const UPDATE_TAB = "sportomatic-web/coach/hours/UPDATE_TAB";
 
 export const uiConfigInitialState = {
   isLoading: false,
-  currentTab: "HISTORY"
+  currentTab: "AWAITING_APPROVAL"
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -74,19 +74,49 @@ function hoursHistoryReducer(state = HoursHistoryInitialState, action = {}) {
   }
 }
 
+export const awaitingApprovalInitialState = [
+  {
+    id: "0",
+    eventTitle: "U/16 Boys A Rugby Practice",
+    date: 1508328000000,
+    stage: "AWAITING_APPROVAL",
+    signInTime: "2:04 pm",
+    signOutTime: "3:43 pm"
+  },
+  {
+    id: "1",
+    eventTitle: "U/16 Boys A Rugby Match",
+    date: 1508328000000,
+    stage: "AWAITING_SIGN_IN"
+  }
+];
+
+function awaitingApprovalReducer(
+  state = awaitingApprovalInitialState,
+  action = {}
+) {
+  switch (action.type) {
+    default:
+      return state;
+  }
+}
+
 export const hoursReducer = combineReducers({
   uiConfig: uiConfigReducer,
-  hoursHistory: hoursHistoryReducer
+  hoursHistory: hoursHistoryReducer,
+  awaitingApproval: awaitingApprovalReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.coach.hours.uiConfig;
 const hoursHistory = state => state.coach.hours.hoursHistory;
+const awaitingApproval = state => state.coach.hours.awaitingApproval;
 
 export const selector = createStructuredSelector({
   uiConfig,
-  hoursHistory
+  hoursHistory,
+  awaitingApproval
 });
 
 // Action Creators
