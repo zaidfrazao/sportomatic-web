@@ -9,6 +9,8 @@ import { settingsReducer } from "../features/settings/duck";
 import { teamsReducer } from "../features/teams/duck";
 import { wagesReducer } from "../features/wages/duck";
 
+import { signInReducer } from "../features/sign-in/duck";
+
 import { coreInterfaceReducer as coachCoreInterface } from "../features/coach/core-interface/duck";
 import { dashboardReducer as coachDashboard } from "../features/coach/dashboard/duck";
 import { hoursReducer as coachHours } from "../features/coach/hours/duck";
@@ -37,5 +39,6 @@ export default combineReducers({
   settings: settingsReducer,
   teams: teamsReducer,
   wages: wagesReducer,
+  signIn: signInReducer,
   coach
 });
