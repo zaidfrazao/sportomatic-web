@@ -12,7 +12,6 @@ import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
 import Settings from "../settings/SettingsView";
 import Teams from "../teams/TeamsView";
-import Wages from "../wages/WagesView";
 import backgroundImage from "./images/background-image.jpeg";
 
 const drawerWidth = 240;
@@ -130,10 +129,6 @@ class CoreInterfaceLayout extends Component {
         updateAppBarTitle("Teams");
         updateBottomNavValue("teams");
         break;
-      case "wages":
-        updateAppBarTitle("Wages");
-        updateBottomNavValue("wages");
-        break;
       case "settings":
         updateAppBarTitle("Settings");
         updateBottomNavValue("settings");
@@ -175,44 +170,38 @@ class CoreInterfaceLayout extends Component {
           <div className={classes.content}>
             <div className={classes.main}>
               <Switch>
-                <Route exact path={"/coach/"}>
+                <Route exact path={"/manager/"}>
                   <Dashboard />
                 </Route>
-                <Route exact path={`/coach/dashboard/`}>
+                <Route exact path={`/manager/dashboard/`}>
                   <Dashboard />
                 </Route>
-                <Route exact path={`/coach/hours/`}>
+                <Route exact path={`/manager/hours/`}>
                   <Hours isMobile={isMobile} isTablet={isTablet} />
                 </Route>
-                <Route exact path={`/coach/people/`}>
+                <Route exact path={`/manager/people/`}>
                   <People />
                 </Route>
-                <Route path={`/coach/people/:personID`}>
+                <Route path={`/manager/people/:personID`}>
                   <People />
                 </Route>
-                <Route exact path={`/coach/teams/`}>
+                <Route exact path={`/manager/teams/`}>
                   <Teams />
                 </Route>
-                <Route path={`/coach/teams/:teamID`}>
+                <Route path={`/manager/teams/:teamID`}>
                   <Teams />
                 </Route>
-                <Route exact path={`/coach/schedule/`}>
+                <Route exact path={`/manager/schedule/`}>
                   <Schedule isMobile={isMobile} isTablet={isTablet} />
                 </Route>
-                <Route exact path={`/coach/schedule/:dateSelected`}>
+                <Route exact path={`/manager/schedule/:dateSelected`}>
                   <Schedule isMobile={isMobile} isTablet={isTablet} />
                 </Route>
-                <Route exact path={`/coach/schedule/:dateSelected/:eventID`}>
+                <Route exact path={`/manager/schedule/:dateSelected/:eventID`}>
                   <Schedule isMobile={isMobile} isTablet={isTablet} />
                 </Route>
-                <Route exact path={`/coach/settings/`}>
+                <Route exact path={`/manager/settings/`}>
                   <Settings />
-                </Route>
-                <Route exact path={`/coach/wages`}>
-                  <Wages isMobile={isMobile} isTablet={isTablet} />
-                </Route>
-                <Route path={`/coach/wages/:dateSelected`}>
-                  <Wages isMobile={isMobile} isTablet={isTablet} />
                 </Route>
               </Switch>
             </div>

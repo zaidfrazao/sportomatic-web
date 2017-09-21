@@ -7,7 +7,6 @@ import ChevronLeftIcon from "material-ui-icons/ChevronLeft";
 import DashboardIcon from "material-ui-icons/Dashboard";
 import ScheduleIcon from "material-ui-icons/Event";
 import HoursIcon from "material-ui-icons/Alarm";
-import WagesIcon from "material-ui-icons/AttachMoney";
 import PeopleIcon from "material-ui-icons/Person";
 import TeamsIcon from "material-ui-icons/People";
 import Drawer from "material-ui/Drawer";
@@ -89,7 +88,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/coach/dashboard");
+                    history.push("/manager/dashboard");
                     isMobile && toggleSideMenu();
                   }}
                 >
@@ -106,7 +105,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/coach/schedule");
+                    history.push("/manager/schedule");
                     isMobile && toggleSideMenu();
                   }}
                 >
@@ -123,7 +122,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/coach/hours");
+                    history.push("/manager/hours");
                     isMobile && toggleSideMenu();
                   }}
                 >
@@ -140,24 +139,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/coach/wages");
-                    isMobile && toggleSideMenu();
-                  }}
-                >
-                  <ListItemIcon>
-                    <WagesIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Wages" />
-                </ListItem>
-              )}
-            />
-            <Route
-              key={5}
-              render={({ history }) => (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push("/coach/people");
+                    history.push("/manager/people");
                     isMobile && toggleSideMenu();
                   }}
                 >
@@ -169,12 +151,12 @@ class SideMenu extends Component {
               )}
             />
             <Route
-              key={6}
+              key={5}
               render={({ history }) => (
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/coach/teams");
+                    history.push("/manager/teams");
                     isMobile && toggleSideMenu();
                   }}
                 >

@@ -5,11 +5,11 @@ import { createStructuredSelector } from "reselect";
 // Actions
 
 export const TOGGLE_SIDE_MENU =
-  "sportomatic-web/coach/core-interface/TOGGLE_SIDE_MENU";
+  "sportomatic-web/manager/core-interface/TOGGLE_SIDE_MENU";
 export const UPDATE_APP_BAR_TITLE =
-  "sportomatic-web/coach/core-interface/UPDATE_APP_BAR_TITLE";
+  "sportomatic-web/manager/core-interface/UPDATE_APP_BAR_TITLE";
 export const UPDATE_BOTTOM_NAV_VALUE =
-  "sportomatic-web/coach/core-interface/UPDATE_BOTTOM_NAV_VALUE";
+  "sportomatic-web/manager/core-interface/UPDATE_BOTTOM_NAV_VALUE";
 
 // Reducers
 
@@ -47,7 +47,7 @@ export const coreInterfaceReducer = combineReducers({
 
 // Selectors
 
-const uiConfig = state => state.coach.coreInterface.uiConfig;
+const uiConfig = state => state.manager.coreInterface.uiConfig;
 
 export const selector = createStructuredSelector({
   uiConfig
