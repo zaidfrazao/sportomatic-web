@@ -9,7 +9,6 @@ import LeaderboardAd from "../../../components/LeaderboardAd";
 import Calendar from "./components/Calendar";
 import EventInfo from "./components/EventInfo";
 import EventsList from "./components/EventsList";
-import { getEvents } from "./js/events";
 
 const styles = theme => ({
   root: {
@@ -41,7 +40,7 @@ const styles = theme => ({
 
 class ScheduleLayout extends Component {
   renderView() {
-    const { isTablet, isMobile, classes } = this.props;
+    const { isTablet, isMobile, classes, events } = this.props;
     const { dateSelected } = this.props.match.params;
     const { currentView } = this.props.uiConfig;
     const { updateView } = this.props.actions;
@@ -54,7 +53,6 @@ class ScheduleLayout extends Component {
           currentDate.getMonth(),
           currentDate.getFullYear()
         ];
-    const events = getEvents();
 
     if (!dateSelected) {
       return (

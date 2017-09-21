@@ -1,6 +1,9 @@
 // @flow
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
+import garyPicture from "./images/gary.jpg";
+import rowanPicture from "./images/rowan.jpg";
+import brettPicture from "./images/brett.jpg";
 
 // Actions
 
@@ -26,16 +29,132 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   }
 }
 
+export const teamsListInitialState = [
+  {
+    name: "Open 1st Team Swimming Girls",
+    sport: "Swimming",
+    ageGroup: "Open",
+    division: "1st Team",
+    gender: "Girls",
+    coaches: [],
+    managers: [
+      {
+        name: "Brett",
+        surname: "Cook",
+        type: "Manager",
+        profilePictureURL: brettPicture
+      }
+    ]
+  },
+  {
+    name: "U/16 A Rugby Boys",
+    sport: "Rugby",
+    ageGroup: "U/16",
+    division: "A",
+    gender: "Boys",
+    coaches: [
+      {
+        name: "Rowan",
+        surname: "Walker-Campbell",
+        type: "Coach",
+        profilePictureURL: rowanPicture
+      }
+    ],
+    managers: [
+      {
+        name: "Brett",
+        surname: "Cook",
+        type: "Manager",
+        profilePictureURL: brettPicture
+      }
+    ]
+  },
+  {
+    name: "U/12 A Cricket Boys",
+    sport: "Cricket",
+    ageGroup: "U/12",
+    division: "A",
+    gender: "Boys",
+    coaches: [],
+    managers: [
+      {
+        name: "Gary",
+        surname: "Kirstin",
+        type: "Manager",
+        profilePictureURL: garyPicture
+      }
+    ]
+  },
+  {
+    name: "U/12 B Cricket Boys",
+    sport: "Cricket",
+    ageGroup: "U/12",
+    division: "B",
+    gender: "Boys",
+    coaches: [],
+    managers: [
+      {
+        name: "Gary",
+        surname: "Kirstin",
+        type: "Manager",
+        profilePictureURL: garyPicture
+      }
+    ]
+  },
+  {
+    name: "U/13 A Cricket Boys",
+    sport: "Cricket",
+    ageGroup: "U/13",
+    division: "A",
+    gender: "Boys",
+    coaches: [],
+    managers: [
+      {
+        name: "Gary",
+        surname: "Kirstin",
+        type: "Manager",
+        profilePictureURL: garyPicture
+      }
+    ]
+  },
+  {
+    name: "U/13 B Cricket Boys",
+    sport: "Cricket",
+    ageGroup: "U/13",
+    division: "B",
+    gender: "Boys",
+    coaches: [],
+    managers: [
+      {
+        name: "Gary",
+        surname: "Kirstin",
+        type: "Manager",
+        profilePictureURL: garyPicture
+      }
+    ]
+  }
+];
+
+function teamsListReducer(state = teamsListInitialState, action = {}) {
+  switch (action.type) {
+    default:
+      return state;
+  }
+}
+
 export const teamsReducer = combineReducers({
-  uiConfig: uiConfigReducer
+  uiConfig: uiConfigReducer,
+  teamsList: teamsListReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.coach.teams.uiConfig;
+const teams = state => state.coach.teams.teamsList;
 
 export const selector = createStructuredSelector({
-  uiConfig
+  uiConfig,
+  teams
 });
 
 // Action Creators

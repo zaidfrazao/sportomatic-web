@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import AccountInfo from "./components/AccountInfo";
-import { getAccountInfo } from "./js/accountInfo.js";
 
 const styles = theme => ({
   root: {
@@ -13,10 +12,10 @@ const styles = theme => ({
 
 class SettingsLayout extends Component {
   render() {
-    const { classes } = this.props;
+    const { classes, accountInfo } = this.props;
     return (
       <div className={classes.root}>
-        <AccountInfo info={getAccountInfo("coach")} />
+        <AccountInfo info={accountInfo} />
       </div>
     );
   }

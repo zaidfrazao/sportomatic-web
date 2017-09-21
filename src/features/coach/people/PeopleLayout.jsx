@@ -9,7 +9,6 @@ import Button from "material-ui/Button";
 import PeopleList from "./components/PeopleList";
 import PersonInfo from "./components/PersonInfo";
 import LeaderboardAd from "../../../components/LeaderboardAd";
-import { getPeopleList } from "./js/people";
 
 const styles = theme => ({
   root: {
@@ -37,9 +36,8 @@ const styles = theme => ({
 
 class PeopleLayout extends Component {
   render() {
-    const { classes, accountType } = this.props;
+    const { classes, accountType, people } = this.props;
     const { personID } = this.props.match.params;
-    const people = getPeopleList();
     return (
       <div className={classes.root}>
         {personID ? (

@@ -6,7 +6,6 @@ import { grey } from "material-ui/colors";
 import TeamsList from "./components/TeamsList";
 import TeamInfo from "./components/TeamInfo";
 import LeaderboardAd from "../../../components/LeaderboardAd";
-import { getTeamsList } from "./js/teams";
 
 const styles = theme => ({
   root: {
@@ -34,9 +33,9 @@ const styles = theme => ({
 
 class TeamsLayout extends Component {
   render() {
-    const { classes } = this.props;
+    const { classes, teams } = this.props;
     const { teamID } = this.props.match.params;
-    const teams = getTeamsList();
+
     return (
       <div className={classes.root}>
         {teamID ? (
