@@ -9,6 +9,7 @@ import AwaitingApprovalIcon from "material-ui-icons/MoreHoriz";
 import HistoryIcon from "material-ui-icons/History";
 import HoursHistory from "./components/HoursHistory";
 import HoursCard from "./components/HoursCard";
+import TimeLogger from "./components/TimeLogger";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 
 const styles = theme => ({
@@ -29,6 +30,11 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column"
   },
+  inProgressWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column"
+  },
   historyTableWrapper: {
     flexGrow: 1,
     display: "flex"
@@ -40,8 +46,21 @@ const styles = theme => ({
 });
 
 class HoursLayout extends Component {
+  renderInProgressTab() {
+    const { classes, inProgress, isMobile } = this.props;
+
+    return (
+      <div className={classes.inProgressWrapper}>
+        <div className={classes.adWrapper}>
+          <LeaderboardAd />
+        </div>
+        <TimeLogger info={inProgress} isMobile={isMobile} />
+      </div>
+    );
+  }
+
   renderAwaitingApprovalTab() {
-    const { classes, awaitingApproval } = this.props;
+    const { classes, awaitingApproval, isTablet } = this.props;
 
     return (
       <div className={classes.awaitingApprovalWrapper}>
@@ -49,7 +68,7 @@ class HoursLayout extends Component {
           <LeaderboardAd />
         </div>
         {awaitingApproval.map(hoursInfo => (
-          <HoursCard key={hoursInfo.id} info={hoursInfo} />
+          <HoursCard key={hoursInfo.id} info={hoursInfo} isTablet={isTablet} />
         ))}
       </div>
     );
@@ -115,6 +134,7 @@ class HoursLayout extends Component {
             </Tabs>
           )}
         </AppBar>
+        {currentTab === "IN_PROGRESS" && this.renderInProgressTab()}
         {currentTab === "AWAITING_APPROVAL" && this.renderAwaitingApprovalTab()}
         {currentTab === "HISTORY" && this.renderHistoryTab()}
       </div>

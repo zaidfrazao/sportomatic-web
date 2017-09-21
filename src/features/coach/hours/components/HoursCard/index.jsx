@@ -8,6 +8,10 @@ import Typography from "material-ui/Typography";
 
 const styles = {
   root: {
+    maxWidth: 970,
+    margin: "24px auto"
+  },
+  tabletRoot: {
     margin: 24
   },
   timesWrapper: {
@@ -108,7 +112,7 @@ class HoursCard extends Component {
   }
 
   render() {
-    const { classes, info } = this.props;
+    const { classes, info, isTablet } = this.props;
     const dateOptions = {
       month: "short",
       day: "numeric",
@@ -116,7 +120,7 @@ class HoursCard extends Component {
     };
 
     return (
-      <div className={classes.root}>
+      <div className={isTablet ? classes.tabletRoot : classes.root}>
         <Card>
           <CardHeader
             title={info.eventTitle}
