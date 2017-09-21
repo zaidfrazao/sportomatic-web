@@ -11,7 +11,7 @@ import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
 import Settings from "../settings/SettingsView";
 import Teams from "../teams/TeamsView";
-/*import Wages from "../wages/WagesView";*/
+import Wages from "../wages/WagesView";
 import backgroundImage from "./images/background-image.jpeg";
 
 const drawerWidth = 240;
@@ -204,17 +204,12 @@ class CoreInterfaceLayout extends Component {
                 <Route exact path={`/coach/settings/`}>
                   <Settings />
                 </Route>
-                {/*
-                  <Route exact path={`/coach/wages`}>
-                    <Wages isMobile={isMobile} isTablet={isTablet} />
-                  </Route>
-                  <Route exact path={`/coach/wages/:coachID/:dateSelected`}>
-                    <Wages isMobile={isMobile} isTablet={isTablet} />
-                  </Route>
-                  <Route path={`/coach/wages/:dateSelected`}>
-                    <Wages isMobile={isMobile} isTablet={isTablet} />
-                  </Route>
-                  */}
+                <Route exact path={`/coach/wages`}>
+                  <Wages isMobile={isMobile} isTablet={isTablet} />
+                </Route>
+                <Route path={`/coach/wages/:dateSelected`}>
+                  <Wages isMobile={isMobile} isTablet={isTablet} />
+                </Route>
               </Switch>
             </div>
             {isMobile && <BottomNav value={uiConfig.bottomNavValue} />}
