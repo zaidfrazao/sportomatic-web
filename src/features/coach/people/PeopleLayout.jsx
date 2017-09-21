@@ -3,9 +3,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
-import AddIcon from "material-ui-icons/Add";
-import EditIcon from "material-ui-icons/Edit";
-import Button from "material-ui/Button";
 import PeopleList from "./components/PeopleList";
 import PersonInfo from "./components/PersonInfo";
 import LeaderboardAd from "../../../components/LeaderboardAd";
@@ -36,40 +33,20 @@ const styles = theme => ({
 
 class PeopleLayout extends Component {
   render() {
-    const { classes, accountType, people } = this.props;
+    const { classes, people } = this.props;
     const { personID } = this.props.match.params;
     return (
       <div className={classes.root}>
         {personID ? (
           <div>
-            <PersonInfo info={people[personID]} accountType={accountType} />
-            {accountType === "institution" && (
-              <Button
-                fab
-                color="accent"
-                aria-label="edit person"
-                className={classes.button}
-              >
-                <EditIcon />
-              </Button>
-            )}
+            <PersonInfo info={people[personID]} />
           </div>
         ) : (
           <div>
             <div className={classes.adWrapper}>
               <LeaderboardAd />
             </div>
-            <PeopleList accountType={accountType} people={people} />
-            {accountType === "institution" && (
-              <Button
-                fab
-                color="accent"
-                aria-label="add person"
-                className={classes.button}
-              >
-                <AddIcon />
-              </Button>
-            )}
+            <PeopleList people={people} />
           </div>
         )}
       </div>
