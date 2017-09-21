@@ -9,7 +9,7 @@ import SideMenu from "./components/SideMenu";
 import Dashboard from "../dashboard/DashboardView";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
-/*import Settings from "../settings/SettingsView";*/
+import Settings from "../settings/SettingsView";
 import Teams from "../teams/TeamsView";
 /*import Wages from "../wages/WagesView";*/
 import backgroundImage from "./images/background-image.jpeg";
@@ -201,10 +201,10 @@ class CoreInterfaceLayout extends Component {
                 <Route exact path={`/coach/schedule/:dateSelected/:eventID`}>
                   <Schedule isMobile={isMobile} isTablet={isTablet} />
                 </Route>
+                <Route exact path={`/coach/settings/`}>
+                  <Settings />
+                </Route>
                 {/*
-                  <Route exact path={`/coach/settings/`}>
-                    <Settings />
-                  </Route>
                   <Route exact path={`/coach/wages`}>
                     <Wages isMobile={isMobile} isTablet={isTablet} />
                   </Route>
