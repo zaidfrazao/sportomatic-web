@@ -7,6 +7,8 @@ import Tabs, { Tab } from "material-ui/Tabs";
 import InProgressIcon from "material-ui-icons/Autorenew";
 import AwaitingApprovalIcon from "material-ui-icons/MoreHoriz";
 import HistoryIcon from "material-ui-icons/History";
+import HoursHistory from "./components/HoursHistory";
+import LeaderboardAd from "../../../components/LeaderboardAd";
 
 const styles = theme => ({
   root: {
@@ -14,10 +16,43 @@ const styles = theme => ({
     height: "100%",
     display: "flex",
     flexDirection: "column"
+  },
+  adWrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    margin: "24px 0"
+  },
+  historyWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column"
+  },
+  historyTableWrapper: {
+    flexGrow: 1,
+    display: "flex"
   }
 });
 
 class HoursLayout extends Component {
+  renderHistoryTab() {
+    const { classes, isMobile, isTablet, hoursHistory } = this.props;
+    return (
+      <div className={classes.historyWrapper}>
+        <div className={classes.adWrapper}>
+          <LeaderboardAd />
+        </div>
+        <div className={classes.historyTableWrapper}>
+          <HoursHistory
+            isMobile={isMobile}
+            isTablet={isTablet}
+            hoursData={hoursHistory}
+          />
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { classes, isMobile } = this.props;
     const { currentTab } = this.props.uiConfig;
@@ -60,6 +95,7 @@ class HoursLayout extends Component {
             </Tabs>
           )}
         </AppBar>
+        {currentTab === "HISTORY" && this.renderHistoryTab()}
       </div>
     );
   }

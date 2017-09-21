@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { grey, lightBlue } from "material-ui/colors";
 import Button from "material-ui/Button";
@@ -68,19 +67,46 @@ const styles = theme => ({
   }
 });
 
-class WagesTable extends Component {
+class HoursHistory extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      year: new Date(Date.now()).getFullYear(),
+      month: new Date(Date.now()).getMonth()
+    };
+  }
+
+  goToPrevMonth() {
+    if (this.state.month > 0) {
+      this.setState({ month: this.state.month - 1 });
+    } else {
+      this.setState({ year: this.state.year - 1 });
+      this.setState({ month: 11 });
+    }
+  }
+
+  goToNextMonth() {
+    if (this.state.month < 11) {
+      this.setState({ month: this.state.month + 1 });
+    } else {
+      this.setState({ year: this.state.year + 1 });
+      this.setState({ month: 0 });
+    }
+  }
+
   renderTableBody() {
-    const { isMobile, isTablet, wageInfo } = this.props;
+    const { isMobile, isTablet, hoursData } = this.props;
+    const { year, month } = this.state;
     const dateOptions = {
       month: "short",
       day: "numeric",
       year: "numeric"
     };
 
-    if (!wageInfo) {
+    if (!hoursData[year] || !hoursData[year][month]) {
       return (
         <Typography type="body2" component="p">
-          No wage data
+          No hours logged
         </Typography>
       );
     }
@@ -91,11 +117,11 @@ class WagesTable extends Component {
           <TableHead>
             <TableRow>
               <TableCell>Date</TableCell>
-              <TableCell numeric>Wage (R)</TableCell>
+              <TableCell numeric>Hours</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {wageInfo.records.map(record => {
+            {hoursData[year][month].records.map(record => {
               return (
                 <TableRow key={record.id}>
                   <TableCell>
@@ -104,7 +130,7 @@ class WagesTable extends Component {
                       dateOptions
                     )}
                   </TableCell>
-                  <TableCell numeric>{record.wage}</TableCell>
+                  <TableCell numeric>{record.hours}</TableCell>
                 </TableRow>
               );
             })}
@@ -117,12 +143,13 @@ class WagesTable extends Component {
           <TableHead>
             <TableRow>
               <TableCell>Date</TableCell>
-              <TableCell>Event</TableCell>
-              <TableCell numeric>Wage (R)</TableCell>
+              <TableCell>Sign In Time</TableCell>
+              <TableCell>Sign Out Time</TableCell>
+              <TableCell numeric>Hours</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {wageInfo.records.map(record => {
+            {hoursData[year][month].records.map(record => {
               return (
                 <TableRow key={record.id}>
                   <TableCell>
@@ -131,8 +158,9 @@ class WagesTable extends Component {
                       dateOptions
                     )}
                   </TableCell>
-                  <TableCell>{record.event}</TableCell>
-                  <TableCell numeric>{record.wage}</TableCell>
+                  <TableCell>{record.signInTime}</TableCell>
+                  <TableCell>{record.signOutTime}</TableCell>
+                  <TableCell numeric>{record.hours}</TableCell>
                 </TableRow>
               );
             })}
@@ -146,12 +174,13 @@ class WagesTable extends Component {
             <TableRow>
               <TableCell>Date</TableCell>
               <TableCell>Event</TableCell>
-              <TableCell>Payment Type</TableCell>
-              <TableCell numeric>Wage (R)</TableCell>
+              <TableCell>Sign In Time</TableCell>
+              <TableCell>Sign Out Time</TableCell>
+              <TableCell numeric>Hours</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {wageInfo.records.map(record => {
+            {hoursData[year][month].records.map(record => {
               return (
                 <TableRow key={record.id}>
                   <TableCell>
@@ -161,8 +190,9 @@ class WagesTable extends Component {
                     )}
                   </TableCell>
                   <TableCell>{record.event}</TableCell>
-                  <TableCell>{record.paymentType}</TableCell>
-                  <TableCell numeric>{record.wage}</TableCell>
+                  <TableCell>{record.signInTime}</TableCell>
+                  <TableCell>{record.signOutTime}</TableCell>
+                  <TableCell numeric>{record.hours}</TableCell>
                 </TableRow>
               );
             })}
@@ -173,9 +203,10 @@ class WagesTable extends Component {
   }
 
   renderTableFooter() {
-    const { classes, isMobile, wageInfo } = this.props;
+    const { classes, isMobile, hoursData } = this.props;
+    const { year, month } = this.state;
 
-    if (wageInfo) {
+    if (hoursData[year] && hoursData[year][month]) {
       if (!isMobile) {
         return (
           <div className={classes.footer}>
@@ -184,14 +215,14 @@ class WagesTable extends Component {
               type="title"
               className={classes.headerTitle}
             >
-              Total
+              Total Hours
             </Typography>
             <Typography
               component="h2"
               type="title"
               className={classes.headerTitle}
             >
-              R{wageInfo.total.toLocaleString("en")}
+              {hoursData[year][month].total.toLocaleString("en")}
             </Typography>
           </div>
         );
@@ -203,7 +234,7 @@ class WagesTable extends Component {
               type="title"
               className={classes.headerTitle}
             >
-              R{wageInfo.total.toLocaleString("en")}
+              {hoursData[year][month].total.toLocaleString("en")} Hours
             </Typography>
           </div>
         );
@@ -212,38 +243,29 @@ class WagesTable extends Component {
   }
 
   render() {
-    const { classes, isMobile, year, month, wageInfo } = this.props;
+    const { classes, isMobile, hoursData } = this.props;
+    const { year, month } = this.state;
     return (
       <div className={isMobile ? classes.mobileRoot : classes.root}>
         <Paper className={classes.tableWrapper}>
           <div className={classes.header}>
-            <Route
-              render={({ history }) => (
-                <Button
-                  className={
-                    year !== new Date(Date.now()).getFullYear() ||
-                    month !== new Date(Date.now()).getMonth() ? (
-                      classes.headerButton
-                    ) : (
-                      ""
-                    )
-                  }
-                  disabled={
-                    year === new Date(Date.now()).getFullYear() &&
-                    month === new Date(Date.now()).getMonth()
-                  }
-                  onClick={() => {
-                    if (month < 11) {
-                      history.push(`/coach/wages/${year}-${month + 1}`);
-                    } else {
-                      history.push(`/coach/wages/${year + 1}-0`);
-                    }
-                  }}
-                >
-                  Next
-                </Button>
-              )}
-            />
+            <Button
+              className={
+                year !== new Date(Date.now()).getFullYear() ||
+                month !== new Date(Date.now()).getMonth() ? (
+                  classes.headerButton
+                ) : (
+                  ""
+                )
+              }
+              disabled={
+                year === new Date(Date.now()).getFullYear() &&
+                month === new Date(Date.now()).getMonth()
+              }
+              onClick={() => this.goToNextMonth()}
+            >
+              Next
+            </Button>
             <Typography
               component="h2"
               type="title"
@@ -251,24 +273,22 @@ class WagesTable extends Component {
             >
               {getMonthName(month)} {year}
             </Typography>
-            <Route
-              render={({ history }) => (
-                <Button
-                  className={classes.headerButton}
-                  onClick={() => {
-                    if (month > 0) {
-                      history.push(`/coach/wages/${year}-${month - 1}`);
-                    } else {
-                      history.push(`/coach/wages/${year - 1}-11`);
-                    }
-                  }}
-                >
-                  Prev
-                </Button>
-              )}
-            />
+            <Button
+              className={classes.headerButton}
+              onClick={() => this.goToPrevMonth()}
+            >
+              Prev
+            </Button>
           </div>
-          <div className={wageInfo ? classes.tableBody : classes.noData}>
+          <div
+            className={
+              hoursData[year] && hoursData[year][month] ? (
+                classes.tableBody
+              ) : (
+                classes.noData
+              )
+            }
+          >
             {this.renderTableBody()}
           </div>
           <div>{this.renderTableFooter()}</div>
@@ -278,8 +298,8 @@ class WagesTable extends Component {
   }
 }
 
-WagesTable.propTypes = {
+HoursHistory.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(WagesTable);
+export default withStyles(styles)(HoursHistory);
