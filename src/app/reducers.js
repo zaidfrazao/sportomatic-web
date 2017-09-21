@@ -12,12 +12,14 @@ import { wagesReducer } from "../features/wages/duck";
 import { coreInterfaceReducer as coachCoreInterface } from "../features/coach/core-interface/duck";
 import { dashboardReducer as coachDashboard } from "../features/coach/dashboard/duck";
 import { peopleReducer as coachPeople } from "../features/coach/people/duck";
+import { scheduleReducer as coachSchedule } from "../features/coach/schedule/duck";
 import { teamsReducer as coachTeams } from "../features/coach/teams/duck";
 
 const coach = combineReducers({
   coreInterface: coachCoreInterface,
   dashboard: coachDashboard,
   people: coachPeople,
+  schedule: coachSchedule,
   teams: coachTeams
 });
 
