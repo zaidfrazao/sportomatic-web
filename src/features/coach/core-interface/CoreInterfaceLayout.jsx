@@ -182,7 +182,7 @@ class CoreInterfaceLayout extends Component {
                   <Dashboard />
                 </Route>
                 <Route exact path={`/coach/hours/`}>
-                  <Hours />
+                  <Hours isMobile={isMobile} />
                 </Route>
                 <Route exact path={`/coach/people/`}>
                   <People />

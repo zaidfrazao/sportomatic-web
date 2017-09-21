@@ -4,20 +4,21 @@ import { createStructuredSelector } from "reselect";
 
 // Actions
 
-export const TOGGLE_SIDE_MENU = "sportomatic-web/coach/hours/TOGGLE_SIDE_MENU";
+export const UPDATE_TAB = "sportomatic-web/coach/hours/UPDATE_TAB";
 
 // Reducers
 
 export const uiConfigInitialState = {
-  isLoading: false
+  isLoading: false,
+  currentTab: "IN_PROGRESS"
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
-    case TOGGLE_SIDE_MENU:
+    case UPDATE_TAB:
       return {
         ...state,
-        isSideMenuOpen: !state.isSideMenuOpen
+        currentTab: action.payload.newTab
       };
     default:
       return state;
@@ -38,8 +39,11 @@ export const selector = createStructuredSelector({
 
 // Action Creators
 
-export function toggleSideMenu() {
+export function updateTab(newTab) {
   return {
-    type: TOGGLE_SIDE_MENU
+    type: UPDATE_TAB,
+    payload: {
+      newTab
+    }
   };
 }
