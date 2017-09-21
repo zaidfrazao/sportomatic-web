@@ -36,10 +36,11 @@ class Calendar extends Component {
 
   render() {
     const { classes, dateSelected, isMobile, isTablet } = this.props;
+    const { updateView } = this.props.actions;
     const { windowHeight } = this.state;
     let calendarHeight = isTablet ? windowHeight - 320 : windowHeight - 405;
     if (isMobile) {
-      calendarHeight = windowHeight - 352;
+      calendarHeight = windowHeight - 353;
     }
     return (
       <div className={classes.root}>
@@ -66,10 +67,12 @@ class Calendar extends Component {
                   chevron: "#FFF"
                 }
               }}
-              onSelect={date =>
+              onSelect={date => {
                 history.push(
                   `/coach/schedule/${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
-                )}
+                );
+                updateView("EVENTS_LIST");
+              }}
             />
           )}
         />

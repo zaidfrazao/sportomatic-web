@@ -59,6 +59,8 @@ class EventsList extends Component {
 
   render() {
     const { classes, dateSelected, isTablet, events } = this.props;
+    const { updateView } = this.props.actions;
+
     const dateOptions = { hour: "2-digit", minute: "2-digit" };
     const headingDateOptions = {
       weekday: "short",
@@ -87,10 +89,12 @@ class EventsList extends Component {
             render={({ history }) => (
               <ListItem
                 button
-                onClick={() =>
+                onClick={() => {
                   history.push(
                     `/coach/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
-                  )}
+                  );
+                  updateView("EVENT_INFO");
+                }}
               >
                 <ListItemText
                   primary={eventInfo.title}
@@ -123,10 +127,12 @@ class EventsList extends Component {
             render={({ history }) => (
               <ListItem
                 button
-                onClick={() =>
+                onClick={() => {
                   history.push(
                     `/coach/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
-                  )}
+                  );
+                  updateView("EVENT_INFO");
+                }}
               >
                 <ListItemText
                   primary={eventInfo.title}
@@ -159,10 +165,12 @@ class EventsList extends Component {
             render={({ history }) => (
               <ListItem
                 button
-                onClick={() =>
+                onClick={() => {
                   history.push(
                     `/coach/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
-                  )}
+                  );
+                  updateView("EVENT_INFO");
+                }}
               >
                 <ListItemText
                   primary={eventInfo.title}
@@ -182,7 +190,7 @@ class EventsList extends Component {
               <Button
                 raised
                 className={classes.backButton}
-                onClick={() => history.push(`/coach/schedule`)}
+                onClick={() => updateView("SCHEDULE")}
               >
                 Back to calendar
               </Button>

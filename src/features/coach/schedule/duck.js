@@ -4,23 +4,22 @@ import { createStructuredSelector } from "reselect";
 
 // Actions
 
-export const TOGGLE_SIDE_MENU =
-  "sportomatic-web/coach/schedule/TOGGLE_SIDE_MENU";
+export const UPDATE_CURRENT_VIEW =
+  "sportomatic-web/coach/schedule/UPDATE_CURRENT_VIEW";
 
 // Reducers
 
 export const uiConfigInitialState = {
-  appBarTitle: "Dashboard",
-  bottomNavValue: "dashboard",
-  isSideMenuOpen: false
+  isLoading: false,
+  currentView: "SCHEDULE"
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
-    case TOGGLE_SIDE_MENU:
+    case UPDATE_CURRENT_VIEW:
       return {
         ...state,
-        isSideMenuOpen: !state.isSideMenuOpen
+        currentView: action.payload.newView
       };
     default:
       return state;
@@ -41,8 +40,11 @@ export const selector = createStructuredSelector({
 
 // Action Creators
 
-export function toggleSideMenu() {
+export function updateView(newView) {
   return {
-    type: TOGGLE_SIDE_MENU
+    type: UPDATE_CURRENT_VIEW,
+    payload: {
+      newView
+    }
   };
 }

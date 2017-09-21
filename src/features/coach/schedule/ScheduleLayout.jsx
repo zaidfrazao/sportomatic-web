@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { Redirect } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { lightBlue } from "material-ui/colors";
 import Paper from "material-ui/Paper";
@@ -41,8 +42,11 @@ const styles = theme => ({
 
 class ScheduleLayout extends Component {
   renderView() {
-    const { accountType, isTablet, isMobile, classes } = this.props;
-    const { dateSelected, eventID } = this.props.match.params;
+    const { isTablet, isMobile, classes } = this.props;
+    const { dateSelected } = this.props.match.params;
+    const { currentView } = this.props.uiConfig;
+    const { updateView } = this.props.actions;
+
     const currentDate = new Date(Date.now());
     const dateSelectedComponents = dateSelected
       ? dateSelected.split("-")
@@ -53,18 +57,28 @@ class ScheduleLayout extends Component {
         ];
     const events = getEvents();
 
-    if (eventID) {
-      return <EventInfo info={events[dateSelected][0]} />;
+    if (!dateSelected) {
+      return (
+        <Redirect
+          to={`/coach/schedule/${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`}
+        />
+      );
+    }
+
+    if (currentView === "EVENT_INFO") {
+      return (
+        <EventInfo info={events["2017-8-18"][0]} actions={{ updateView }} />
+      );
     }
 
     if (isTablet) {
-      if (dateSelected) {
+      if (currentView === "EVENTS_LIST") {
         return (
           <EventsList
             isTablet={isTablet}
             dateSelected={new Date(...dateSelectedComponents)}
             events={events[dateSelected] || []}
-            accountType={accountType}
+            actions={{ updateView }}
           />
         );
       } else {
@@ -74,9 +88,10 @@ class ScheduleLayout extends Component {
               <LeaderboardAd />
             </div>
             <Calendar
-              accountType={accountType}
+              dateSelected={new Date(...dateSelectedComponents)}
               isMobile={isMobile}
               isTablet={isTablet}
+              actions={{ updateView }}
             />
           </div>
         );
@@ -90,9 +105,10 @@ class ScheduleLayout extends Component {
           <Paper className={classes.calendarWrapper}>
             <div className={classes.desktopCalendar}>
               <Calendar
-                accountType={accountType}
+                dateSelected={new Date(...dateSelectedComponents)}
                 isMobile={isMobile}
                 isTablet={isTablet}
+                actions={{ updateView }}
               />
             </div>
             <div className={classes.desktopEventsList}>
@@ -100,7 +116,7 @@ class ScheduleLayout extends Component {
                 isTablet={isTablet}
                 dateSelected={new Date(...dateSelectedComponents)}
                 events={events[dateSelected] || []}
-                accountType={accountType}
+                actions={{ updateView }}
               />
             </div>
           </Paper>

@@ -92,12 +92,15 @@ class EventInfo extends Component {
       managers,
       matchInfo
     } = this.props.info;
+    const { updateView } = this.props.actions;
+
     const timeOptions = { hour: "2-digit", minute: "2-digit" };
     const dateOptions = {
       weekday: "long",
       month: "long",
       day: "numeric"
     };
+
     return (
       <div className={classes.wrapper}>
         <Route
@@ -105,7 +108,7 @@ class EventInfo extends Component {
             <Button
               raised
               className={classes.button}
-              onClick={() => history.goBack()}
+              onClick={() => updateView("EVENTS_LIST")}
             >
               Back
             </Button>
