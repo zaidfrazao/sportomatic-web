@@ -20,6 +20,14 @@ import { settingsReducer as coachSettings } from "../features/coach/settings/duc
 import { teamsReducer as coachTeams } from "../features/coach/teams/duck";
 import { wagesReducer as coachWages } from "../features/coach/wages/duck";
 
+import { coreInterfaceReducer as managerCoreInterface } from "../features/manager/core-interface/duck";
+import { dashboardReducer as managerDashboard } from "../features/manager/dashboard/duck";
+import { hoursReducer as managerHours } from "../features/manager/hours/duck";
+import { peopleReducer as managerPeople } from "../features/manager/people/duck";
+import { scheduleReducer as managerSchedule } from "../features/manager/schedule/duck";
+import { settingsReducer as managerSettings } from "../features/manager/settings/duck";
+import { teamsReducer as managerTeams } from "../features/manager/teams/duck";
+
 const coach = combineReducers({
   coreInterface: coachCoreInterface,
   dashboard: coachDashboard,
@@ -31,6 +39,16 @@ const coach = combineReducers({
   wages: coachWages
 });
 
+const manager = combineReducers({
+  coreInterface: managerCoreInterface,
+  dashboard: managerDashboard,
+  hours: managerHours,
+  people: managerPeople,
+  schedule: managerSchedule,
+  settings: managerSettings,
+  teams: managerTeams
+});
+
 export default combineReducers({
   coreInterface: coreInterfaceReducer,
   dashboard: dashboardReducer,
@@ -40,5 +58,6 @@ export default combineReducers({
   teams: teamsReducer,
   wages: wagesReducer,
   signIn: signInReducer,
-  coach
+  coach,
+  manager
 });
