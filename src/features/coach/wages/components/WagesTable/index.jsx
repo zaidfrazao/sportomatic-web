@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { grey, lightBlue } from "material-ui/colors";
 import Button from "material-ui/Button";
@@ -191,23 +192,32 @@ class WagesTable extends Component {
       <div className={isMobile ? classes.mobileRoot : classes.root}>
         <Paper className={classes.tableWrapper}>
           <div className={classes.header}>
-            <Button
-              className={
-                year !== new Date(Date.now()).getFullYear() ||
-                month !== new Date(Date.now()).getMonth() + 1 ? (
-                  classes.headerButton
-                ) : (
-                  ""
-                )
-              }
-              disabled={
-                year === new Date(Date.now()).getFullYear() &&
-                month === new Date(Date.now()).getMonth() + 1
-              }
-              onClick={() => this.goToNextMonth()}
-            >
-              Next
-            </Button>
+            <Route
+              render={({ history }) => (
+                <Button
+                  className={
+                    year !== new Date(Date.now()).getFullYear() ||
+                    month !== new Date(Date.now()).getMonth() + 1 ? (
+                      classes.headerButton
+                    ) : (
+                      ""
+                    )
+                  }
+                  disabled={
+                    year === new Date(Date.now()).getFullYear() &&
+                    month === new Date(Date.now()).getMonth() + 1
+                  }
+                  onClick={() => {
+                    this.goToNextMonth();
+                    history.push(
+                      `/coach/wages/${this.state.year}-${this.state.month}`
+                    );
+                  }}
+                >
+                  Next
+                </Button>
+              )}
+            />
             <Typography
               component="h2"
               type="title"
@@ -215,12 +225,21 @@ class WagesTable extends Component {
             >
               {getMonthName(month)} {year}
             </Typography>
-            <Button
-              className={classes.headerButton}
-              onClick={() => this.goToPrevMonth()}
-            >
-              Prev
-            </Button>
+            <Route
+              render={({ history }) => (
+                <Button
+                  className={classes.headerButton}
+                  onClick={() => {
+                    this.goToPrevMonth();
+                    history.push(
+                      `/coach/wages/${this.state.year}-${this.state.month}`
+                    );
+                  }}
+                >
+                  Prev
+                </Button>
+              )}
+            />
           </div>
           <div className={classes.tableBody}>{this.renderTableBody()}</div>
           <div className={classes.footer}>

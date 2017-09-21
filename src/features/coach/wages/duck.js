@@ -9,9 +9,7 @@ export const TOGGLE_SIDE_MENU = "sportomatic-web/coach/wages/TOGGLE_SIDE_MENU";
 // Reducers
 
 export const uiConfigInitialState = {
-  appBarTitle: "Dashboard",
-  bottomNavValue: "dashboard",
-  isSideMenuOpen: false
+  isLoading: false
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
