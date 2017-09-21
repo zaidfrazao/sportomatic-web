@@ -54,7 +54,11 @@ class HoursLayout extends Component {
         <div className={classes.adWrapper}>
           <LeaderboardAd />
         </div>
-        <TimeLogger info={inProgress} isMobile={isMobile} />
+        <TimeLogger
+          info={inProgress}
+          isMobile={isMobile}
+          currentTime={new Date(Date.now())}
+        />
       </div>
     );
   }

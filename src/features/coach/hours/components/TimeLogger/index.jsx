@@ -42,11 +42,13 @@ const styles = {
     flexGrow: 1,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    textAlign: "center"
   },
   eventInfoWrapper: {
     width: "40%",
-    backgroundColor: grey[100]
+    backgroundColor: grey[100],
+    overflow: "auto"
   },
   moreInfoButton: {
     width: "100%"
@@ -54,6 +56,67 @@ const styles = {
 };
 
 class TimeLogger extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hoursLogged: 0,
+      minutesLogged: 59,
+      secondsLogged: 59
+    };
+  }
+
+  componentWillMount() {
+    const { stage, signInTime } = this.props.info;
+
+    if (stage === "AWAITING_SIGN_OUT") {
+      const currentTime = new Date(Date.now()).getTime();
+      const millisecondsLogged = currentTime - signInTime;
+
+      const hoursLogged = Math.floor(millisecondsLogged / 1000 / 60 / 60);
+      const minutesLogged = Math.floor(
+        (millisecondsLogged - hoursLogged * 1000 * 60 * 60) / 1000 / 60
+      );
+      const secondsLogged = Math.floor(
+        (millisecondsLogged -
+          (hoursLogged * 1000 * 60 * 60 + minutesLogged * 1000 * 60)) /
+          1000
+      );
+
+      this.setState({
+        hoursLogged,
+        minutesLogged,
+        secondsLogged
+      });
+
+      this.interval = setInterval(() => this.tick(), 1000);
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  tick() {
+    this.setState(prevState => {
+      if (prevState.secondsLogged === 59) {
+        if (prevState.minutesLogged === 59) {
+          return {
+            hoursLogged: prevState.hoursLogged + 1,
+            minutesLogged: 0,
+            secondsLogged: 0
+          };
+        } else {
+          return {
+            minutesLogged: prevState.minutesLogged + 1,
+            secondsLogged: 0
+          };
+        }
+      } else {
+        return { secondsLogged: prevState.secondsLogged + 1 };
+      }
+    });
+  }
+
   renderButton() {
     const { classes } = this.props;
     const { stage } = this.props.info;
@@ -78,6 +141,7 @@ class TimeLogger extends Component {
 
   render() {
     const { classes, isMobile, info } = this.props;
+    const { secondsLogged, minutesLogged, hoursLogged } = this.state;
 
     const timeOptions = { hour: "2-digit", minute: "2-digit" };
     const startTime = new Date(info.startTime).toLocaleTimeString(
@@ -88,6 +152,11 @@ class TimeLogger extends Component {
       "en-US",
       timeOptions
     );
+    const timeLogged = `${hoursLogged.toLocaleString("en", {
+      minimumIntegerDigits: 2
+    })}:${minutesLogged.toLocaleString("en", {
+      minimumIntegerDigits: 2
+    })}:${secondsLogged.toLocaleString("en", { minimumIntegerDigits: 2 })}`;
 
     return (
       <div className={classes.root}>
@@ -102,7 +171,7 @@ class TimeLogger extends Component {
                 <Button>View more event info</Button>
                 <div className={classes.timeWrapper}>
                   <Typography type="display2" component="p">
-                    00:00:00
+                    {timeLogged}
                   </Typography>
                 </div>
                 {this.renderButton()}
@@ -115,9 +184,14 @@ class TimeLogger extends Component {
             <div className={classes.cardContent}>
               <div className={classes.loggerWrapper}>
                 <div className={classes.timeWrapper}>
-                  <Typography type="display3" component="p">
-                    00:00:00
-                  </Typography>
+                  <div>
+                    <Typography type="subheading" component="h3">
+                      Time logged
+                    </Typography>
+                    <Typography type="display3" component="p">
+                      {timeLogged}
+                    </Typography>
+                  </div>
                 </div>
                 {this.renderButton()}
               </div>
@@ -126,6 +200,12 @@ class TimeLogger extends Component {
                   View more event info
                 </Button>
                 <List>
+                  <ListItem>
+                    <ListItemText
+                      primary="Type"
+                      secondary={info.eventTypeName}
+                    />
+                  </ListItem>
                   <ListItem>
                     <ListItemText primary="Starts at" secondary={startTime} />
                   </ListItem>
@@ -151,6 +231,9 @@ class TimeLogger extends Component {
                       </ListItem>
                     </div>
                   )}
+                  <ListItem>
+                    <ListItemText primary="Notes" secondary={info.notes} />
+                  </ListItem>
                 </List>
               </div>
             </div>

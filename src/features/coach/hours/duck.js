@@ -103,13 +103,13 @@ function awaitingApprovalReducer(
 
 export const inProgressInitialState = {
   id: "1",
-  stage: "AWAITING_SIGN_IN",
+  stage: "AWAITING_SIGN_OUT",
   eventTitle: "U/16 A Rugby Boys Match",
   eventType: "COMPETITIVE",
   eventTypeName: "Match",
   startTime: 1508328000000,
   endTime: 1508335200000,
-  isCanceled: false,
+  signInTime: 1505995522000,
   venue: "Sportomatic Grounds",
   notes: "Please remember to fill in and bring your pedo forms to practice.",
   matchInfo: {
