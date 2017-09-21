@@ -7,6 +7,7 @@ import CustomAppBar from "./components/CustomAppBar";
 import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
 import Dashboard from "../dashboard/DashboardView";
+import Hours from "../hours/HoursView";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
 import Settings from "../settings/SettingsView";
@@ -179,6 +180,9 @@ class CoreInterfaceLayout extends Component {
                 </Route>
                 <Route exact path={`/coach/dashboard/`}>
                   <Dashboard />
+                </Route>
+                <Route exact path={`/coach/hours/`}>
+                  <Hours />
                 </Route>
                 <Route exact path={`/coach/people/`}>
                   <People />

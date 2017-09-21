@@ -10,7 +10,6 @@ import HoursIcon from "material-ui-icons/Alarm";
 import WagesIcon from "material-ui-icons/AttachMoney";
 import PeopleIcon from "material-ui-icons/Person";
 import TeamsIcon from "material-ui-icons/People";
-import ReportsIcon from "material-ui-icons/Assignment";
 import Drawer from "material-ui/Drawer";
 import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";

@@ -11,6 +11,7 @@ import { wagesReducer } from "../features/wages/duck";
 
 import { coreInterfaceReducer as coachCoreInterface } from "../features/coach/core-interface/duck";
 import { dashboardReducer as coachDashboard } from "../features/coach/dashboard/duck";
+import { hoursReducer as coachHours } from "../features/coach/hours/duck";
 import { peopleReducer as coachPeople } from "../features/coach/people/duck";
 import { scheduleReducer as coachSchedule } from "../features/coach/schedule/duck";
 import { settingsReducer as coachSettings } from "../features/coach/settings/duck";
@@ -20,6 +21,7 @@ import { wagesReducer as coachWages } from "../features/coach/wages/duck";
 const coach = combineReducers({
   coreInterface: coachCoreInterface,
   dashboard: coachDashboard,
+  hours: coachHours,
   people: coachPeople,
   schedule: coachSchedule,
   settings: coachSettings,
