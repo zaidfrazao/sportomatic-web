@@ -4,8 +4,7 @@ import { createStructuredSelector } from "reselect";
 
 // Actions
 
-export const TOGGLE_SIDE_MENU =
-  "sportomatic-web/coach/dashboard/TOGGLE_SIDE_MENU";
+export const TOGGLE_SIDE_MENU = "sportomatic-web/coach/teams/TOGGLE_SIDE_MENU";
 
 // Reducers
 
@@ -27,13 +26,13 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   }
 }
 
-export const dashboardReducer = combineReducers({
+export const teamsReducer = combineReducers({
   uiConfig: uiConfigReducer
 });
 
 // Selectors
 
-const uiConfig = state => state.coach.dashboard.uiConfig;
+const uiConfig = state => state.coach.teams.uiConfig;
 
 export const selector = createStructuredSelector({
   uiConfig

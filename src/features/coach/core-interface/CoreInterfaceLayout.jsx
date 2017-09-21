@@ -7,11 +7,11 @@ import CustomAppBar from "./components/CustomAppBar";
 import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
 import Dashboard from "../dashboard/DashboardView";
-/*import People from "../people/PeopleView";
-import Schedule from "../schedule/ScheduleView";
-import Settings from "../settings/SettingsView";
+import People from "../people/PeopleView";
+/*import Schedule from "../schedule/ScheduleView";
+import Settings from "../settings/SettingsView";*/
 import Teams from "../teams/TeamsView";
-import Wages from "../wages/WagesView";*/
+/*import Wages from "../wages/WagesView";*/
 import backgroundImage from "./images/background-image.jpeg";
 
 const drawerWidth = 240;
@@ -180,13 +180,19 @@ class CoreInterfaceLayout extends Component {
                 <Route exact path={`/coach/dashboard/`}>
                   <Dashboard />
                 </Route>
+                <Route exact path={`/coach/people/`}>
+                  <People />
+                </Route>
+                <Route path={`/coach/people/:personID`}>
+                  <People />
+                </Route>
+                <Route exact path={`/coach/teams/`}>
+                  <Teams />
+                </Route>
+                <Route path={`/coach/teams/:teamID`}>
+                  <Teams />
+                </Route>
                 {/*
-                  <Route exact path={`/coach/people/`}>
-                    <People />
-                  </Route>
-                  <Route path={`/coach/people/:personID`}>
-                    <People />
-                  </Route>
                   <Route exact path={`/coach/schedule/`}>
                     <Schedule isMobile={isMobile} isTablet={isTablet} />
                   </Route>
@@ -198,12 +204,6 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={`/coach/settings/`}>
                     <Settings />
-                  </Route>
-                  <Route exact path={`/coach/teams/`}>
-                    <Teams />
-                  </Route>
-                  <Route path={`/coach/teams/:teamID`}>
-                    <Teams />
                   </Route>
                   <Route exact path={`/coach/wages`}>
                     <Wages isMobile={isMobile} isTablet={isTablet} />
