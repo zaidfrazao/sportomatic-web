@@ -11,12 +11,14 @@ const styles = {
   largeDisplay: {
     width: 728,
     height: 90,
+    margin: 24,
     backgroundImage: `url(${largeAdImage})`,
     backgroundColor: grey[300]
   },
   mediumDisplay: {
     width: 468,
     height: 60,
+    margin: 24,
     backgroundImage: `url(${mediumAdImage})`,
     backgroundColor: grey[300]
   },

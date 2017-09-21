@@ -15,8 +15,7 @@ const styles = theme => ({
   adWrapper: {
     width: "100%",
     display: "flex",
-    justifyContent: "center",
-    margin: "24px 0"
+    justifyContent: "center"
   },
   button: {
     margin: theme.spacing.unit,
