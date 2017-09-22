@@ -5,6 +5,10 @@ import { withStyles } from "material-ui/styles";
 import { Route } from "react-router-dom";
 import Card, { CardActions, CardContent, CardMedia } from "material-ui/Card";
 import Button from "material-ui/Button";
+import EditIcon from "material-ui-icons/Edit";
+import DeleteIcon from "material-ui-icons/Delete";
+import IconButton from "material-ui/IconButton";
+import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 
 const styles = {
@@ -53,6 +57,18 @@ class PersonCard extends Component {
                 </Button>
               )}
             />
+            <div>
+              <Tooltip label="Edit person's info" placement="bottom">
+                <IconButton aria-label="Edit team">
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip label="Remove person" placement="bottom">
+                <IconButton aria-label="Delete team">
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            </div>
           </CardActions>
         </Card>
       </div>
