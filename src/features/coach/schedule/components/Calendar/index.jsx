@@ -40,7 +40,7 @@ class Calendar extends Component {
     const { windowHeight } = this.state;
     let calendarHeight = isTablet ? windowHeight - 320 : windowHeight - 405;
     if (isMobile) {
-      calendarHeight = windowHeight - 353;
+      calendarHeight = windowHeight - 305;
     }
     return (
       <div className={classes.root}>
