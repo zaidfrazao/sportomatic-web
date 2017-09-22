@@ -73,7 +73,7 @@ class ScheduleLayout extends Component {
     if (!dateSelected) {
       return (
         <Redirect
-          to={`/manager/schedule/${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`}
+          to={`/institution/schedule/${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`}
         />
       );
     }

@@ -69,7 +69,7 @@ class Calendar extends Component {
               }}
               onSelect={date => {
                 history.push(
-                  `/manager/schedule/${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+                  `/institution/schedule/${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
                 );
                 updateView("EVENTS_LIST");
               }}

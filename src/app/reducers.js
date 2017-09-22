@@ -1,14 +1,6 @@
 // @flow
 import { combineReducers } from "redux";
 
-import { coreInterfaceReducer } from "../features/core-interface/duck";
-import { dashboardReducer } from "../features/dashboard/duck";
-import { peopleReducer } from "../features/people/duck";
-import { scheduleReducer } from "../features/schedule/duck";
-import { settingsReducer } from "../features/settings/duck";
-import { teamsReducer } from "../features/teams/duck";
-import { wagesReducer } from "../features/wages/duck";
-
 import { signInReducer } from "../features/sign-in/duck";
 
 import { coreInterfaceReducer as coachCoreInterface } from "../features/coach/core-interface/duck";
@@ -28,6 +20,14 @@ import { scheduleReducer as managerSchedule } from "../features/manager/schedule
 import { settingsReducer as managerSettings } from "../features/manager/settings/duck";
 import { teamsReducer as managerTeams } from "../features/manager/teams/duck";
 
+import { coreInterfaceReducer as institutionCoreInterface } from "../features/institution/core-interface/duck";
+import { dashboardReducer as institutionDashboard } from "../features/institution/dashboard/duck";
+import { hoursReducer as institutionHours } from "../features/institution/hours/duck";
+import { peopleReducer as institutionPeople } from "../features/institution/people/duck";
+import { scheduleReducer as institutionSchedule } from "../features/institution/schedule/duck";
+import { settingsReducer as institutionSettings } from "../features/institution/settings/duck";
+import { teamsReducer as institutionTeams } from "../features/institution/teams/duck";
+
 const coach = combineReducers({
   coreInterface: coachCoreInterface,
   dashboard: coachDashboard,
@@ -37,6 +37,16 @@ const coach = combineReducers({
   settings: coachSettings,
   teams: coachTeams,
   wages: coachWages
+});
+
+const institution = combineReducers({
+  coreInterface: institutionCoreInterface,
+  dashboard: institutionDashboard,
+  hours: institutionHours,
+  people: institutionPeople,
+  schedule: institutionSchedule,
+  settings: institutionSettings,
+  teams: institutionTeams
 });
 
 const manager = combineReducers({
@@ -50,14 +60,8 @@ const manager = combineReducers({
 });
 
 export default combineReducers({
-  coreInterface: coreInterfaceReducer,
-  dashboard: dashboardReducer,
-  people: peopleReducer,
-  schedule: scheduleReducer,
-  settings: settingsReducer,
-  teams: teamsReducer,
-  wages: wagesReducer,
   signIn: signInReducer,
   coach,
+  institution,
   manager
 });

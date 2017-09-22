@@ -98,7 +98,7 @@ class EventsList extends Component {
                 button
                 onClick={() => {
                   history.push(
-                    `/manager/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
+                    `/institution/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
                   );
                   updateView("EVENT_INFO");
                 }}
@@ -143,7 +143,7 @@ class EventsList extends Component {
                 button
                 onClick={() => {
                   history.push(
-                    `/manager/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
+                    `/institution/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
                   );
                   updateView("EVENT_INFO");
                 }}
@@ -188,7 +188,7 @@ class EventsList extends Component {
                 button
                 onClick={() => {
                   history.push(
-                    `/manager/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
+                    `/institution/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
                   );
                   updateView("EVENT_INFO");
                 }}

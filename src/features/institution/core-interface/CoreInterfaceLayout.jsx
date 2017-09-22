@@ -170,37 +170,40 @@ class CoreInterfaceLayout extends Component {
           <div className={classes.content}>
             <div className={classes.main}>
               <Switch>
-                <Route exact path={"/manager/"}>
+                <Route exact path={"/institution/"}>
                   <Dashboard />
                 </Route>
-                <Route exact path={`/manager/dashboard/`}>
+                <Route exact path={`/institution/dashboard/`}>
                   <Dashboard />
                 </Route>
-                <Route exact path={`/manager/hours/`}>
+                <Route exact path={`/institution/hours/`}>
                   <Hours isMobile={isMobile} isTablet={isTablet} />
                 </Route>
-                <Route exact path={`/manager/people/`}>
+                <Route exact path={`/institution/people/`}>
                   <People />
                 </Route>
-                <Route path={`/manager/people/:personID`}>
+                <Route path={`/institution/people/:personID`}>
                   <People />
                 </Route>
-                <Route exact path={`/manager/teams/`}>
+                <Route exact path={`/institution/teams/`}>
                   <Teams />
                 </Route>
-                <Route path={`/manager/teams/:teamID`}>
+                <Route path={`/institution/teams/:teamID`}>
                   <Teams />
                 </Route>
-                <Route exact path={`/manager/schedule/`}>
+                <Route exact path={`/institution/schedule/`}>
                   <Schedule isMobile={isMobile} isTablet={isTablet} />
                 </Route>
-                <Route exact path={`/manager/schedule/:dateSelected`}>
+                <Route exact path={`/institution/schedule/:dateSelected`}>
                   <Schedule isMobile={isMobile} isTablet={isTablet} />
                 </Route>
-                <Route exact path={`/manager/schedule/:dateSelected/:eventID`}>
+                <Route
+                  exact
+                  path={`/institution/schedule/:dateSelected/:eventID`}
+                >
                   <Schedule isMobile={isMobile} isTablet={isTablet} />
                 </Route>
-                <Route exact path={`/manager/settings/`}>
+                <Route exact path={`/institution/settings/`}>
                   <Settings />
                 </Route>
               </Switch>

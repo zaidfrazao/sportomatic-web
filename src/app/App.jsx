@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import CoreInterface from "../features/core-interface/CoreInterfaceView";
-import SignIn from "../features/sign-in/SignInView";
-import CoachAccount from "../features/coach/core-interface/CoreInterfaceView";
-import ManagerAccount from "../features/manager/core-interface/CoreInterfaceView";
 import { Route, Switch } from "react-router-dom";
+import CoachAccount from "../features/coach/core-interface/CoreInterfaceView";
+import InstitutionAccount from "../features/institution/core-interface/CoreInterfaceView";
+import ManagerAccount from "../features/manager/core-interface/CoreInterfaceView";
+import SignIn from "../features/sign-in/SignInView";
 
 class App extends Component {
   render() {
@@ -19,7 +19,7 @@ class App extends Component {
           <SignIn />
         </Route>
         <Route path="/institution">
-          <CoreInterface accountType="institution" />
+          <InstitutionAccount />
         </Route>
         <Route path="/manager">
           <ManagerAccount />

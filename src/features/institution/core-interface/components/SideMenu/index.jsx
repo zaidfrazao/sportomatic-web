@@ -88,7 +88,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/manager/dashboard");
+                    history.push("/institution/dashboard");
                     isMobile && toggleSideMenu();
                   }}
                 >
@@ -105,7 +105,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/manager/schedule");
+                    history.push("/institution/schedule");
                     isMobile && toggleSideMenu();
                   }}
                 >
@@ -122,7 +122,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/manager/hours");
+                    history.push("/institution/hours");
                     isMobile && toggleSideMenu();
                   }}
                 >
@@ -139,7 +139,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/manager/people");
+                    history.push("/institution/people");
                     isMobile && toggleSideMenu();
                   }}
                 >
@@ -156,7 +156,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/manager/teams");
+                    history.push("/institution/teams");
                     isMobile && toggleSideMenu();
                   }}
                 >
