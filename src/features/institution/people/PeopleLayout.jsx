@@ -30,16 +30,6 @@ const styles = theme => ({
   toolbar: {
     backgroundColor: grey[300],
     zIndex: 1
-  },
-  button: {
-    margin: theme.spacing.unit,
-    position: "fixed",
-    bottom: 72,
-    right: 24,
-    zIndex: 1,
-    "@media (min-width: 600px)": {
-      bottom: 24
-    }
   }
 });
 
