@@ -118,7 +118,7 @@ class CustomAppBar extends Component {
                       <IconButton
                         color="contrast"
                         aria-label="view notifications"
-                        onClick={() => history.push(`/coach/settings/`)}
+                        onClick={() => history.push(`/manager/settings/`)}
                       >
                         <SettingsIcon />
                       </IconButton>

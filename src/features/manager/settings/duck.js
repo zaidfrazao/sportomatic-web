@@ -1,12 +1,12 @@
 // @flow
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
-import rowanPicture from "./images/rowan.jpg";
+import brettPicture from "./images/brett.jpg";
 
 // Actions
 
 export const TOGGLE_SIDE_MENU =
-  "sportomatic-web/coach/settings/TOGGLE_SIDE_MENU";
+  "sportomatic-web/manager/settings/TOGGLE_SIDE_MENU";
 
 // Reducers
 
@@ -29,16 +29,15 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 }
 
 export const accountInfoInitialState = {
-  name: "Rowan",
-  surname: "Walker-Campbell",
-  email: "rowan@sportomaticapp.com",
-  phoneNumber: "(079) 507 - 0104",
-  profilePictureURL: rowanPicture,
+  name: "Brett",
+  surname: "Cook",
+  email: "brett@sportomaticapp.com",
+  phoneNumber: "(082) 746 - 8382",
+  profilePictureURL: brettPicture,
   sports: [
-    { name: "Athletics", numberOfTeams: 3 },
-    { name: "Cricket", numberOfTeams: 1 },
-    { name: "Rugby", numberOfTeams: 0 },
-    { name: "Soccer", numberOfTeams: 4 }
+    { name: "Cricket", numberOfTeams: 0 },
+    { name: "Rugby", numberOfTeams: 2 },
+    { name: "Swimming", numberOfTeams: 0 }
   ]
 };
 
@@ -56,8 +55,8 @@ export const settingsReducer = combineReducers({
 
 // Selectors
 
-const uiConfig = state => state.coach.settings.uiConfig;
-const accountInfo = state => state.coach.settings.accountInfo;
+const uiConfig = state => state.manager.settings.uiConfig;
+const accountInfo = state => state.manager.settings.accountInfo;
 
 export const selector = createStructuredSelector({
   uiConfig,
