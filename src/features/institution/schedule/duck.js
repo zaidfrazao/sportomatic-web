@@ -7,7 +7,7 @@ import brettPicture from "./images/brett.jpg";
 // Actions
 
 export const UPDATE_CURRENT_VIEW =
-  "sportomatic-web/manager/schedule/UPDATE_CURRENT_VIEW";
+  "sportomatic-web/institution/schedule/UPDATE_CURRENT_VIEW";
 
 // Reducers
 
@@ -106,8 +106,8 @@ export const scheduleReducer = combineReducers({
 
 // Selectors
 
-const uiConfig = state => state.manager.schedule.uiConfig;
-const events = state => state.manager.schedule.eventsList;
+const uiConfig = state => state.institution.schedule.uiConfig;
+const events = state => state.institution.schedule.eventsList;
 
 export const selector = createStructuredSelector({
   uiConfig,

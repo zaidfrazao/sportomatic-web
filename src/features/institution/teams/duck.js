@@ -8,7 +8,7 @@ import brettPicture from "./images/brett.jpg";
 // Actions
 
 export const TOGGLE_SIDE_MENU =
-  "sportomatic-web/manager/teams/TOGGLE_SIDE_MENU";
+  "sportomatic-web/institution/teams/TOGGLE_SIDE_MENU";
 
 // Reducers
 
@@ -150,8 +150,8 @@ export const teamsReducer = combineReducers({
 
 // Selectors
 
-const uiConfig = state => state.manager.teams.uiConfig;
-const teams = state => state.manager.teams.teamsList;
+const uiConfig = state => state.institution.teams.uiConfig;
+const teams = state => state.institution.teams.teamsList;
 
 export const selector = createStructuredSelector({
   uiConfig,
