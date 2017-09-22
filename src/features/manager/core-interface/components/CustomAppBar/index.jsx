@@ -125,7 +125,6 @@ class CustomAppBar extends Component {
                     </Tooltip>
                   )}
                 />
-
                 {isMobile ? (
                   <Tooltip label="Options" placement="bottom">
                     <IconButton color="contrast" aria-label="app bar menu">
@@ -134,11 +133,19 @@ class CustomAppBar extends Component {
                   </Tooltip>
                 ) : (
                   <div className={classes.desktopIcons}>
-                    <Tooltip label="Log out" placement="bottom">
-                      <IconButton color="contrast" aria-label="log out">
-                        <LogOutIcon />
-                      </IconButton>
-                    </Tooltip>
+                    <Route
+                      render={({ history }) => (
+                        <Tooltip label="Log out" placement="bottom">
+                          <IconButton
+                            color="contrast"
+                            aria-label="log out"
+                            onClick={() => history.push(`/sign-in`)}
+                          >
+                            <LogOutIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    />
                     <Tooltip label="Switch institutions" placement="bottom">
                       <Avatar
                         src={institutionLogo}
