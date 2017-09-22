@@ -27,6 +27,7 @@ import { peopleReducer as institutionPeople } from "../features/institution/peop
 import { scheduleReducer as institutionSchedule } from "../features/institution/schedule/duck";
 import { settingsReducer as institutionSettings } from "../features/institution/settings/duck";
 import { teamsReducer as institutionTeams } from "../features/institution/teams/duck";
+import { wagesReducer as institutionWages } from "../features/institution/wages/duck";
 
 const coach = combineReducers({
   coreInterface: coachCoreInterface,
@@ -46,7 +47,8 @@ const institution = combineReducers({
   people: institutionPeople,
   schedule: institutionSchedule,
   settings: institutionSettings,
-  teams: institutionTeams
+  teams: institutionTeams,
+  wages: institutionWages
 });
 
 const manager = combineReducers({

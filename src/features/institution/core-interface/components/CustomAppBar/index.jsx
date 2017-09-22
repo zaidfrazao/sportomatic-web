@@ -4,7 +4,6 @@ import { grey } from "material-ui/colors";
 import { Route } from "react-router-dom";
 import classNames from "classnames";
 import AppBar from "material-ui/AppBar";
-import Avatar from "material-ui/Avatar";
 import Grid from "material-ui/Grid";
 import IconButton from "material-ui/IconButton";
 import MenuIcon from "material-ui-icons/Menu";
@@ -14,7 +13,6 @@ import SettingsIcon from "material-ui-icons/Settings";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
-import institutionLogo from "./images/institutionLogo.png";
 
 const drawerWidth = 240;
 
@@ -51,12 +49,6 @@ const styles = theme => ({
   desktopIcons: {
     display: "flex",
     alignItems: "center"
-  },
-  institutionSelector: {
-    padding: 4,
-    width: 40,
-    height: 40,
-    cursor: "pointer"
   }
 });
 
@@ -146,12 +138,6 @@ class CustomAppBar extends Component {
                         </Tooltip>
                       )}
                     />
-                    <Tooltip label="Switch institutions" placement="bottom">
-                      <Avatar
-                        src={institutionLogo}
-                        className={classes.institutionSelector}
-                      />
-                    </Tooltip>
                   </div>
                 )}
               </Grid>

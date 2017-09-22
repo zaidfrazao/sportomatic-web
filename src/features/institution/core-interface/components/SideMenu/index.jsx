@@ -8,7 +8,9 @@ import DashboardIcon from "material-ui-icons/Dashboard";
 import ScheduleIcon from "material-ui-icons/Event";
 import HoursIcon from "material-ui-icons/Alarm";
 import PeopleIcon from "material-ui-icons/Person";
+import ReportsIcon from "material-ui-icons/Assignment";
 import TeamsIcon from "material-ui-icons/People";
+import WagesIcon from "material-ui-icons/AttachMoney";
 import Drawer from "material-ui/Drawer";
 import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";
@@ -139,6 +141,40 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
+                    history.push("/institution/wages");
+                    isMobile && toggleSideMenu();
+                  }}
+                >
+                  <ListItemIcon>
+                    <WagesIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Wages" />
+                </ListItem>
+              )}
+            />
+            <Route
+              key={5}
+              render={({ history }) => (
+                <ListItem
+                  button
+                  onClick={() => {
+                    history.push("/institution/reports");
+                    isMobile && toggleSideMenu();
+                  }}
+                >
+                  <ListItemIcon>
+                    <ReportsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Reports" />
+                </ListItem>
+              )}
+            />
+            <Route
+              key={6}
+              render={({ history }) => (
+                <ListItem
+                  button
+                  onClick={() => {
                     history.push("/institution/people");
                     isMobile && toggleSideMenu();
                   }}
@@ -151,7 +187,7 @@ class SideMenu extends Component {
               )}
             />
             <Route
-              key={5}
+              key={7}
               render={({ history }) => (
                 <ListItem
                   button
