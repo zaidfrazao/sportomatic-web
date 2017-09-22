@@ -6,8 +6,6 @@ import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
 import InProgressIcon from "material-ui-icons/Autorenew";
 import AwaitingApprovalIcon from "material-ui-icons/MoreHoriz";
-import HistoryIcon from "material-ui-icons/History";
-import HoursHistory from "./components/HoursHistory";
 import HoursCard from "./components/HoursCard";
 import TimeLogger from "./components/TimeLogger";
 import LeaderboardAd from "../../../components/LeaderboardAd";
@@ -46,7 +44,7 @@ const styles = theme => ({
 
 class HoursLayout extends Component {
   renderInProgressTab() {
-    const { classes, inProgress, isMobile } = this.props;
+    const { classes, inProgress, isTablet } = this.props;
 
     return (
       <div className={classes.inProgressWrapper}>
@@ -55,7 +53,7 @@ class HoursLayout extends Component {
         </div>
         <TimeLogger
           info={inProgress}
-          isMobile={isMobile}
+          isTablet={isTablet}
           currentTime={new Date(Date.now())}
         />
       </div>
@@ -73,24 +71,6 @@ class HoursLayout extends Component {
         {awaitingApproval.map(hoursInfo => (
           <HoursCard key={hoursInfo.id} info={hoursInfo} isTablet={isTablet} />
         ))}
-      </div>
-    );
-  }
-
-  renderHistoryTab() {
-    const { classes, isMobile, isTablet, hoursHistory } = this.props;
-    return (
-      <div className={classes.historyWrapper}>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
-        <div className={classes.historyTableWrapper}>
-          <HoursHistory
-            isMobile={isMobile}
-            isTablet={isTablet}
-            hoursData={hoursHistory}
-          />
-        </div>
       </div>
     );
   }
@@ -113,7 +93,6 @@ class HoursLayout extends Component {
             >
               <Tab value="IN_PROGRESS" icon={<InProgressIcon />} />
               <Tab value="AWAITING_APPROVAL" icon={<AwaitingApprovalIcon />} />
-              <Tab value="HISTORY" icon={<HistoryIcon />} />
             </Tabs>
           ) : (
             <Tabs
@@ -133,13 +112,11 @@ class HoursLayout extends Component {
                 value="AWAITING_APPROVAL"
                 icon={<AwaitingApprovalIcon />}
               />
-              <Tab label="History" value="HISTORY" icon={<HistoryIcon />} />
             </Tabs>
           )}
         </AppBar>
         {currentTab === "IN_PROGRESS" && this.renderInProgressTab()}
         {currentTab === "AWAITING_APPROVAL" && this.renderAwaitingApprovalTab()}
-        {currentTab === "HISTORY" && this.renderHistoryTab()}
       </div>
     );
   }

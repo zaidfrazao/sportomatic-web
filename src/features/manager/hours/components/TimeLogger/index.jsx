@@ -2,12 +2,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
+import { green, grey, lightBlue, orange } from "material-ui/colors";
+import ApproveIcon from "material-ui-icons/AssignmentTurnedIn";
 import Button from "material-ui/Button";
 import Card, { CardHeader } from "material-ui/Card";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import SignInIcon from "material-ui-icons/AssignmentReturned";
 import SignOutIcon from "material-ui-icons/AssignmentReturn";
+import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
 
 const styles = {
@@ -27,23 +29,27 @@ const styles = {
     display: "flex",
     flexDirection: "row"
   },
+  mobileCard: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    margin: "0 24px 24px 24px"
+  },
+  mobileCardContent: {
+    flexGrow: 1,
+    overflow: "auto"
+  },
   loggerWrapper: {
     flexGrow: 1,
     display: "flex",
     flexDirection: "column",
-    backgroundColor: grey[50]
+    backgroundColor: grey[50],
+    overflow: "auto"
   },
   button: {
     width: "100%",
     height: 60,
     color: grey[50]
-  },
-  timeWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center"
   },
   eventInfoWrapper: {
     width: "40%",
@@ -52,96 +58,242 @@ const styles = {
   },
   moreInfoButton: {
     width: "100%"
+  },
+  hoursWrapper: {
+    display: "flex",
+    alignItems: "stretch",
+    flexWrap: "wrap",
+    margin: 20
+  },
+  timesWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    justifyContent: "space-around",
+    flexWrap: "wrap",
+    backgroundColor: grey[100],
+    border: `1px solid ${grey[300]}`,
+    padding: 0
+  },
+  timeWrapper: {
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center"
+  },
+  time: {
+    fontSize: "1.6rem",
+    margin: 24
+  },
+  signInButton: {
+    backgroundColor: lightBlue[500],
+    color: grey[50],
+    width: "100%",
+    height: "100%"
+  },
+  signOutButton: {
+    backgroundColor: orange[500],
+    color: grey[50],
+    width: "100%",
+    height: "100%"
+  },
+  approveButton: {
+    backgroundColor: green[500],
+    color: grey[50],
+    width: "100%",
+    height: "100%"
+  },
+  buttonWrapper: {
+    width: "100%",
+    height: 60
+  },
+  profilePicture: {
+    border: `1px solid ${grey[300]}`,
+    display: "none",
+    "@media (min-width: 1100px)": {
+      display: "block",
+      height: 140,
+      width: 140
+    }
+  },
+  coachName: {
+    border: `1px solid ${grey[300]}`,
+    display: "block",
+    width: "100%",
+    padding: 10,
+    textAlign: "center",
+    "@media (min-width: 1100px)": {
+      display: "none"
+    }
   }
 };
 
 class TimeLogger extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      hoursLogged: 0,
-      minutesLogged: 59,
-      secondsLogged: 59
-    };
-  }
+  renderLogger() {
+    const { classes } = this.props;
+    const { coaches } = this.props.info;
 
-  componentWillMount() {
-    const { stage, signInTime } = this.props.info;
-
-    if (stage === "AWAITING_SIGN_OUT") {
-      const currentTime = new Date(Date.now()).getTime();
-      const millisecondsLogged = currentTime - signInTime;
-
-      const hoursLogged = Math.floor(millisecondsLogged / 1000 / 60 / 60);
-      const minutesLogged = Math.floor(
-        (millisecondsLogged - hoursLogged * 1000 * 60 * 60) / 1000 / 60
-      );
-      const secondsLogged = Math.floor(
-        (millisecondsLogged -
-          (hoursLogged * 1000 * 60 * 60 + minutesLogged * 1000 * 60)) /
-          1000
-      );
-
-      this.setState({
-        hoursLogged,
-        minutesLogged,
-        secondsLogged
-      });
-
-      this.interval = setInterval(() => this.tick(), 1000);
-    }
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
-  tick() {
-    this.setState(prevState => {
-      if (prevState.secondsLogged === 59) {
-        if (prevState.minutesLogged === 59) {
-          return {
-            hoursLogged: prevState.hoursLogged + 1,
-            minutesLogged: 0,
-            secondsLogged: 0
-          };
-        } else {
-          return {
-            minutesLogged: prevState.minutesLogged + 1,
-            secondsLogged: 0
-          };
-        }
-      } else {
-        return { secondsLogged: prevState.secondsLogged + 1 };
+    return coaches.map((coachHours, index) => {
+      const {
+        stage,
+        signInTime,
+        signOutTime,
+        profilePictureURL,
+        name
+      } = coachHours;
+      switch (stage) {
+        case "AWAITING_SIGN_IN":
+          return (
+            <div key={index} className={classes.hoursWrapper}>
+              <img
+                alt={name}
+                src={profilePictureURL}
+                className={classes.profilePicture}
+              />
+              <Typography
+                type="subheading"
+                component="h3"
+                className={classes.coachName}
+              >
+                {name}
+              </Typography>
+              <div className={classes.timesWrapper}>
+                <div className={classes.timeWrapper}>
+                  <TextField
+                    id="time"
+                    label="Signed in at"
+                    type="time"
+                    className={classes.time}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                  />
+                </div>
+                <div className={classes.timeWrapper}>
+                  <TextField
+                    id="time"
+                    label="Signed out at"
+                    type="time"
+                    className={classes.time}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                  />
+                </div>
+              </div>
+              <div className={classes.buttonWrapper}>
+                <Button raised className={classes.signInButton}>
+                  <SignInIcon /> Sign in
+                </Button>
+              </div>
+            </div>
+          );
+        case "AWAITING_SIGN_OUT":
+          return (
+            <div key={index} className={classes.hoursWrapper}>
+              <img
+                alt={name}
+                src={profilePictureURL}
+                className={classes.profilePicture}
+              />
+              <Typography
+                type="subheading"
+                component="h3"
+                className={classes.coachName}
+              >
+                {name}
+              </Typography>
+              <div className={classes.timesWrapper}>
+                <div className={classes.timeWrapper}>
+                  <TextField
+                    id="time"
+                    label="Signed in at"
+                    type="time"
+                    defaultValue={signInTime}
+                    className={classes.time}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                  />
+                </div>
+                <div className={classes.timeWrapper}>
+                  <TextField
+                    id="time"
+                    label="Signed out at"
+                    type="time"
+                    className={classes.time}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                  />
+                </div>
+              </div>
+              <div className={classes.buttonWrapper}>
+                <Button raised className={classes.signOutButton}>
+                  <SignOutIcon /> Sign out
+                </Button>
+              </div>
+            </div>
+          );
+        case "AWAITING_APPROVAL":
+          return (
+            <div key={index} className={classes.hoursWrapper}>
+              <img
+                alt={name}
+                src={profilePictureURL}
+                className={classes.profilePicture}
+              />
+              <Typography
+                type="subheading"
+                component="h3"
+                className={classes.coachName}
+              >
+                {name}
+              </Typography>
+              <div className={classes.timesWrapper}>
+                <div className={classes.timeWrapper}>
+                  <TextField
+                    id="time"
+                    label="Signed in at"
+                    type="time"
+                    defaultValue={signInTime}
+                    className={classes.time}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                  />
+                </div>
+                <div className={classes.timeWrapper}>
+                  <TextField
+                    id="time"
+                    label="Signed out at"
+                    type="time"
+                    defaultValue={signOutTime}
+                    className={classes.time}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                  />
+                </div>
+              </div>
+              <div className={classes.buttonWrapper}>
+                <Button raised className={classes.approveButton}>
+                  <ApproveIcon /> Approve
+                </Button>
+              </div>
+            </div>
+          );
+        default:
+          return (
+            <Typography type="body1" component="p" key={index}>
+              Invalid stage supplied.
+            </Typography>
+          );
       }
     });
   }
 
-  renderButton() {
-    const { classes } = this.props;
-    const { stage } = this.props.info;
-
-    switch (stage) {
-      case "AWAITING_SIGN_IN":
-        return (
-          <Button raised color="primary" className={classes.button}>
-            <SignInIcon /> Sign in
-          </Button>
-        );
-      case "AWAITING_SIGN_OUT":
-        return (
-          <Button raised color="accent" className={classes.button}>
-            <SignOutIcon /> Sign out
-          </Button>
-        );
-      default:
-        return <Typography>Error</Typography>;
-    }
-  }
-
   render() {
-    const { classes, isMobile, info } = this.props;
-    const { secondsLogged, minutesLogged, hoursLogged } = this.state;
+    const { classes, isTablet, info } = this.props;
 
     const timeOptions = { hour: "2-digit", minute: "2-digit" };
     const startTime = new Date(info.startTime).toLocaleTimeString(
@@ -152,49 +304,25 @@ class TimeLogger extends Component {
       "en-US",
       timeOptions
     );
-    const timeLogged = `${hoursLogged.toLocaleString("en", {
-      minimumIntegerDigits: 2
-    })}:${minutesLogged.toLocaleString("en", {
-      minimumIntegerDigits: 2
-    })}:${secondsLogged.toLocaleString("en", { minimumIntegerDigits: 2 })}`;
 
     return (
       <div className={classes.root}>
-        {isMobile ? (
-          <Card className={classes.cardWrapper}>
+        {isTablet ? (
+          <Card className={classes.mobileCard}>
             <CardHeader
               title={info.eventTitle}
               subheader={`${startTime} - ${endTime}`}
             />
-            <div className={classes.cardContent}>
-              <div className={classes.loggerWrapper}>
-                <Button>View more event info</Button>
-                <div className={classes.timeWrapper}>
-                  <Typography type="display2" component="p">
-                    {timeLogged}
-                  </Typography>
-                </div>
-                {this.renderButton()}
-              </div>
+            <div className={classes.mobileCardContent}>
+              <Button>View more event info</Button>
+              {this.renderLogger()}
             </div>
           </Card>
         ) : (
           <Card className={classes.cardWrapper}>
             <CardHeader title={info.eventTitle} />
             <div className={classes.cardContent}>
-              <div className={classes.loggerWrapper}>
-                <div className={classes.timeWrapper}>
-                  <div>
-                    <Typography type="subheading" component="h3">
-                      Time logged
-                    </Typography>
-                    <Typography type="display3" component="p">
-                      {timeLogged}
-                    </Typography>
-                  </div>
-                </div>
-                {this.renderButton()}
-              </div>
+              <div className={classes.loggerWrapper}>{this.renderLogger()}</div>
               <div className={classes.eventInfoWrapper}>
                 <Button className={classes.moreInfoButton}>
                   View more event info
