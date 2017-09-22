@@ -4,6 +4,9 @@ import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { lightBlue } from "material-ui/colors";
+import AddIcon from "material-ui-icons/Add";
+import Button from "material-ui/Button";
+import EditIcon from "material-ui-icons/Edit";
 import Paper from "material-ui/Paper";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 import Calendar from "./components/Calendar";
@@ -33,8 +36,21 @@ const styles = theme => ({
   desktopEventsList: {
     flexGrow: 1
   },
+  tabletEventsListWrapper: {
+    height: "100%"
+  },
   eventsListWrapper: {
     height: "calc(100% - 98px)"
+  },
+  button: {
+    margin: theme.spacing.unit,
+    position: "fixed",
+    bottom: 72,
+    right: 24,
+    zIndex: 1,
+    "@media (min-width: 600px)": {
+      bottom: 24
+    }
   }
 });
 
@@ -57,26 +73,46 @@ class ScheduleLayout extends Component {
     if (!dateSelected) {
       return (
         <Redirect
-          to={`/coach/schedule/${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`}
+          to={`/manager/schedule/${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`}
         />
       );
     }
 
     if (currentView === "EVENT_INFO") {
       return (
-        <EventInfo info={events["2017-8-18"][0]} actions={{ updateView }} />
+        <div>
+          <EventInfo info={events["2017-8-18"][0]} actions={{ updateView }} />
+          <Button
+            fab
+            color="accent"
+            aria-label="edit event"
+            className={classes.button}
+          >
+            <EditIcon />
+          </Button>
+        </div>
       );
     }
 
     if (isTablet) {
       if (currentView === "EVENTS_LIST") {
         return (
-          <EventsList
-            isTablet={isTablet}
-            dateSelected={new Date(...dateSelectedComponents)}
-            events={events[dateSelected] || []}
-            actions={{ updateView }}
-          />
+          <div className={classes.tabletEventsListWrapper}>
+            <EventsList
+              isTablet={isTablet}
+              dateSelected={new Date(...dateSelectedComponents)}
+              events={events[dateSelected] || []}
+              actions={{ updateView }}
+            />
+            <Button
+              fab
+              color="accent"
+              aria-label="add event"
+              className={classes.button}
+            >
+              <AddIcon />
+            </Button>
+          </div>
         );
       } else {
         return (
@@ -117,6 +153,14 @@ class ScheduleLayout extends Component {
               />
             </div>
           </Paper>
+          <Button
+            fab
+            color="accent"
+            aria-label="add event"
+            className={classes.button}
+          >
+            <AddIcon />
+          </Button>
         </div>
       );
     }

@@ -4,8 +4,15 @@ import PropTypes from "prop-types";
 import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { grey, lightBlue } from "material-ui/colors";
-import List, { ListItem, ListItemText } from "material-ui/List";
+import List, {
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText
+} from "material-ui/List";
 import Button from "material-ui/Button";
+import CancelIcon from "material-ui-icons/Cancel";
+import IconButton from "material-ui/IconButton";
+import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import LeaderboardAd from "../../../../../components/LeaderboardAd";
 
@@ -91,7 +98,7 @@ class EventsList extends Component {
                 button
                 onClick={() => {
                   history.push(
-                    `/coach/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
+                    `/manager/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
                   );
                   updateView("EVENT_INFO");
                 }}
@@ -100,6 +107,13 @@ class EventsList extends Component {
                   primary={eventInfo.title}
                   secondary={`${eventStartTime} - ${eventEndTime}`}
                 />
+                <ListItemSecondaryAction>
+                  <Tooltip label="Cancel event" placement="left">
+                    <IconButton aria-label="cancel event">
+                      <CancelIcon />
+                    </IconButton>
+                  </Tooltip>
+                </ListItemSecondaryAction>
               </ListItem>
             )}
           />
@@ -129,7 +143,7 @@ class EventsList extends Component {
                 button
                 onClick={() => {
                   history.push(
-                    `/coach/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
+                    `/manager/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
                   );
                   updateView("EVENT_INFO");
                 }}
@@ -138,6 +152,13 @@ class EventsList extends Component {
                   primary={eventInfo.title}
                   secondary={`${eventStartTime} - ${eventEndTime}`}
                 />
+                <ListItemSecondaryAction>
+                  <Tooltip label="Cancel event" placement="left">
+                    <IconButton aria-label="cancel event">
+                      <CancelIcon />
+                    </IconButton>
+                  </Tooltip>
+                </ListItemSecondaryAction>
               </ListItem>
             )}
           />
@@ -167,7 +188,7 @@ class EventsList extends Component {
                 button
                 onClick={() => {
                   history.push(
-                    `/coach/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
+                    `/manager/schedule/${dateSelected.getFullYear()}-${dateSelected.getMonth()}-${dateSelected.getDate()}/${eventInfo.id}`
                   );
                   updateView("EVENT_INFO");
                 }}
@@ -176,6 +197,13 @@ class EventsList extends Component {
                   primary={eventInfo.title}
                   secondary={`${eventStartTime} - ${eventEndTime}`}
                 />
+                <ListItemSecondaryAction>
+                  <Tooltip label="Cancel event" placement="left">
+                    <IconButton aria-label="cancel event">
+                      <CancelIcon />
+                    </IconButton>
+                  </Tooltip>
+                </ListItemSecondaryAction>
               </ListItem>
             )}
           />
