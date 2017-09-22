@@ -6,6 +6,9 @@ import { Route } from "react-router-dom";
 import { grey } from "material-ui/colors";
 import Card, { CardActions, CardContent } from "material-ui/Card";
 import Button from "material-ui/Button";
+import EditIcon from "material-ui-icons/Edit";
+import IconButton from "material-ui/IconButton";
+import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 
 const styles = theme => ({
@@ -57,12 +60,17 @@ class TeamCard extends Component {
                 <Button
                   dense
                   className={classes.viewButton}
-                  onClick={() => history.push(`/coach/teams/${id}`)}
+                  onClick={() => history.push(`/manager/teams/${id}`)}
                 >
                   View
                 </Button>
               )}
             />
+            <Tooltip label="Edit team" placement="bottom">
+              <IconButton aria-label="Edit team">
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
           </CardActions>
         </Card>
       </div>

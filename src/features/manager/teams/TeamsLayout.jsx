@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
+import Button from "material-ui/Button";
+import EditIcon from "material-ui-icons/Edit";
 import TeamsList from "./components/TeamsList";
 import TeamInfo from "./components/TeamInfo";
 import LeaderboardAd from "../../../components/LeaderboardAd";
@@ -41,6 +43,14 @@ class TeamsLayout extends Component {
         {teamID ? (
           <div>
             <TeamInfo info={teams[teamID]} />
+            <Button
+              fab
+              color="accent"
+              aria-label="edit team"
+              className={classes.button}
+            >
+              <EditIcon />
+            </Button>
           </div>
         ) : (
           <div>
