@@ -90,11 +90,17 @@ class AccountInfo extends Component {
     const { classes } = this.props;
     const {
       name,
-      surname,
       email,
       phoneNumber,
       sports,
-      profilePictureURL
+      emblemURL,
+      abbreviation,
+      physicalAddress,
+      institutionType,
+      genders,
+      divisions,
+      ageGroups,
+      coachPaymentOptions
     } = this.props.info;
     return (
       <div className={classes.wrapper}>
@@ -115,10 +121,10 @@ class AccountInfo extends Component {
         <Grid container direction="row" align="stretch">
           <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
             <div className={classes.pictureWrapper}>
-              <Avatar src={profilePictureURL} className={classes.picture} />
+              <Avatar src={emblemURL} className={classes.picture} />
               <div className={classes.pictureButtons}>
                 <Button raised className={classes.pictureButton}>
-                  Change profile picture
+                  Change emblem
                 </Button>
                 <Button raised className={classes.pictureButton}>
                   Change password
@@ -145,17 +151,20 @@ class AccountInfo extends Component {
                   <ListItemText primary="Name" secondary={name} />
                   <ListItemSecondaryAction>
                     <Tooltip label="Edit" placement="bottom">
-                      <IconButton aria-label="change first name">
+                      <IconButton aria-label="change institution name">
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
                   </ListItemSecondaryAction>
                 </ListItem>
                 <ListItem>
-                  <ListItemText primary="Surname" secondary={surname} />
+                  <ListItemText
+                    primary="Abbreviation"
+                    secondary={abbreviation}
+                  />
                   <ListItemSecondaryAction>
                     <Tooltip label="Edit" placement="bottom">
-                      <IconButton aria-label="change surname">
+                      <IconButton aria-label="change abbreviation">
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
@@ -179,6 +188,111 @@ class AccountInfo extends Component {
                   <ListItemSecondaryAction>
                     <Tooltip label="Edit" placement="bottom">
                       <IconButton aria-label="change phone number">
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary="Physical address"
+                    secondary={physicalAddress}
+                  />
+                  <ListItemSecondaryAction>
+                    <Tooltip label="Edit" placement="bottom">
+                      <IconButton aria-label="change physical address">
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary="Institution type"
+                    secondary={institutionType}
+                  />
+                  <ListItemSecondaryAction>
+                    <Tooltip label="Edit" placement="bottom">
+                      <IconButton aria-label="change institution type">
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Genders" secondary={genders} />
+                  <ListItemSecondaryAction>
+                    <Tooltip label="Edit" placement="bottom">
+                      <IconButton aria-label="change genders">
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </List>
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+            <div className={classes.section}>
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
+              >
+                Coach Payment Options
+              </Typography>
+              <List>
+                <ListItem>
+                  <ListItemText
+                    primary="Default standard hourly rate"
+                    secondary={`R${coachPaymentOptions.standardHourlyRate.toLocaleString(
+                      "en"
+                    )}`}
+                  />
+                  <ListItemSecondaryAction>
+                    <Tooltip label="Edit" placement="bottom">
+                      <IconButton aria-label="change standard hourly rate">
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary="Default overtime hourly rate"
+                    secondary={`R${coachPaymentOptions.overtimeHourlyRate.toLocaleString(
+                      "en"
+                    )}`}
+                  />
+                  <ListItemSecondaryAction>
+                    <Tooltip label="Edit" placement="bottom">
+                      <IconButton aria-label="change overtime hourly rate">
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary="Maximum overtime hours"
+                    secondary={coachPaymentOptions.maxOvertimeHours}
+                  />
+                  <ListItemSecondaryAction>
+                    <Tooltip label="Edit" placement="bottom">
+                      <IconButton aria-label="change max overtime hours">
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary="Pay Day"
+                    secondary={coachPaymentOptions.payDay}
+                  />
+                  <ListItemSecondaryAction>
+                    <Tooltip label="Edit" placement="bottom">
+                      <IconButton aria-label="change pay day">
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
@@ -209,6 +323,72 @@ class AccountInfo extends Component {
                         <Tooltip label="Remove" placement="bottom">
                           <IconButton
                             disabled={sportInfo.numberOfTeams > 0}
+                            aria-label="remove sport"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))}
+              </List>
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+            <div className={classes.section}>
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
+              >
+                Age Groups
+              </Typography>
+              <Button className={classes.addButton}>Add new age group</Button>
+              <List>
+                {ageGroups &&
+                  ageGroups.map(ageGroupsInfo => (
+                    <ListItem key={ageGroupsInfo.name}>
+                      <ListItemText
+                        primary={ageGroupsInfo.name}
+                        secondary={`${ageGroupsInfo.numberOfTeams} teams`}
+                      />
+                      <ListItemSecondaryAction>
+                        <Tooltip label="Remove" placement="bottom">
+                          <IconButton
+                            disabled={ageGroupsInfo.numberOfTeams > 0}
+                            aria-label="remove sport"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))}
+              </List>
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+            <div className={classes.section}>
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
+              >
+                Divisions
+              </Typography>
+              <Button className={classes.addButton}>Add new division</Button>
+              <List>
+                {divisions &&
+                  divisions.map(divisionsInfo => (
+                    <ListItem key={divisionsInfo.name}>
+                      <ListItemText
+                        primary={divisionsInfo.name}
+                        secondary={`${divisionsInfo.numberOfTeams} teams`}
+                      />
+                      <ListItemSecondaryAction>
+                        <Tooltip label="Remove" placement="bottom">
+                          <IconButton
+                            disabled={divisionsInfo.numberOfTeams > 0}
                             aria-label="remove sport"
                           >
                             <DeleteIcon />

@@ -52,9 +52,9 @@ class WagesLayout extends Component {
     } else {
       return (
         <Redirect
-          to={`/coach/wages/${new Date(Date.now()).getFullYear()}-${new Date(
+          to={`/institution/wages/${new Date(
             Date.now()
-          ).getMonth()}`}
+          ).getFullYear()}-${new Date(Date.now()).getMonth()}`}
         />
       );
     }
