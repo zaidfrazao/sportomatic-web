@@ -15,6 +15,9 @@ class App extends Component {
         <Route exact path="/sign-in">
           <SignIn />
         </Route>
+        <Route exact path="/sign-up">
+          <SignIn />
+        </Route>
         <Route path="/institution">
           <CoreInterface accountType="institution" />
         </Route>

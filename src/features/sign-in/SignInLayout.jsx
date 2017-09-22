@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { lightBlue, red } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
-import { Route } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
 import Button from "material-ui/Button";
 import Paper from "material-ui/Paper";
 import TextField from "material-ui/TextField";
@@ -99,6 +99,12 @@ const styles = theme => ({
 class SignInLayout extends Component {
   render() {
     const { classes, loading } = this.props;
+    const { pathname } = this.props.location;
+
+    console.log(this.props);
+    if (!pathname.includes("sign-in")) {
+      return <Redirect to="/sign-in" />;
+    }
 
     return (
       <div className={classes.wrapper}>
