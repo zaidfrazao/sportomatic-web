@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
+import AddIcon from "material-ui-icons/Add";
 import Button from "material-ui/Button";
 import EditIcon from "material-ui-icons/Edit";
 import TeamsList from "./components/TeamsList";
@@ -58,6 +59,14 @@ class TeamsLayout extends Component {
               <LeaderboardAd />
             </div>
             <TeamsList teams={teams} />
+            <Button
+              fab
+              color="accent"
+              aria-label="edit team"
+              className={classes.button}
+            >
+              <AddIcon />
+            </Button>
           </div>
         )}
       </div>

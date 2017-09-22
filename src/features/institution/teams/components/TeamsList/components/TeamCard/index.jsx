@@ -6,6 +6,7 @@ import { Route } from "react-router-dom";
 import { grey } from "material-ui/colors";
 import Card, { CardActions, CardContent } from "material-ui/Card";
 import Button from "material-ui/Button";
+import DeleteIcon from "material-ui-icons/Delete";
 import EditIcon from "material-ui-icons/Edit";
 import IconButton from "material-ui/IconButton";
 import Tooltip from "material-ui/Tooltip";
@@ -69,6 +70,11 @@ class TeamCard extends Component {
             <Tooltip label="Edit team" placement="bottom">
               <IconButton aria-label="Edit team">
                 <EditIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip label="Delete team" placement="bottom">
+              <IconButton aria-label="Delete team">
+                <DeleteIcon />
               </IconButton>
             </Tooltip>
           </CardActions>
