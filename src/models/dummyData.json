@@ -1,0 +1,99 @@
+{
+  "coach": {
+    "Bhmq7MvEEbawZJE6xnxqsXn4dWG2": {
+      "public": {
+        "metadata": {
+          "name": "Rowan",
+          "surname": "Walker-Campbell",
+          "profilePictureURL":
+            "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/coach%2FBhmq7MvEEbawZJE6xnxqsXn4dWG2%2Fprofile-picture.jpg?alt=media&token=88168b80-e085-4e52-b504-0357d0a0dcc7"
+        },
+        "preferredSports": {
+          "-Kcb7s4Qhl4H4W0sTxA-": "Athletics"
+        },
+        "institutions": {
+          "VidVN3BJ6VTHmtC1kGGVDrRpPVf2": {
+            "metadata": {
+              "emblemURL":
+                "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/institution%2FVidVN3BJ6VTHmtC1kGGVDrRpPVf2%2Femblem.png?alt=media&token=4cc7fce3-6c25-4ec8-93dd-17417b224fef",
+              "name": "Sportomatic Academy",
+              "type": "Sports Academy"
+            }
+          }
+        }
+      },
+      "private": {
+        "accountState": "ACTIVE",
+        "lastInstitutionAccessed": "VidVN3BJ6VTHmtC1kGGVDrRpPVf2",
+        "metadata": {
+          "email": "rowan@sportomaticapp.com",
+          "phoneNumber": "(079) 507 - 0104"
+        }
+      }
+    }
+  },
+  "institution": {
+    "VidVN3BJ6VTHmtC1kGGVDrRpPVf2": {
+      "public": {
+        "metadata": {
+          "abbreviation": "SA",
+          "ageGroups": [12, 13, 14, 15, 16, 17, 18],
+          "divisions": ["A", "B", "C", "D", "1st Team", "2nd Team"],
+          "email": "info@sportomaticapp.com",
+          "gender": "MIXED",
+          "phoneNumber": "(011) 283 - 8492",
+          "physicalAddress": "63 Alexandra Street, Florida",
+          "emblemURL":
+            "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/institution%2FVidVN3BJ6VTHmtC1kGGVDrRpPVf2%2Femblem.png?alt=media&token=4cc7fce3-6c25-4ec8-93dd-17417b224fef",
+          "name": "Sportomatic Academy",
+          "type": "Sports Academy"
+        },
+        "sportsOffered": {
+          "-Kcb7s4Qhl4H4W0sTxA-": {
+            "name": "Athletics",
+            "competitiveEventTypes": ["Meeting"],
+            "nonCompetitiveEventTypes": ["Practice", "Training"]
+          }
+        }
+      },
+      "private": {
+        "accountState": "ACTIVE",
+        "settings": {
+          "paymentDefaults": {
+            "type": "HOURLY",
+            "overtimeHourlyRate": 100.0,
+            "standardHourlyRate": 150.0,
+            "maxOvertimeHours": 3,
+            "payDay": {
+              "isEndOfTheMonth": false,
+              "day": 1
+            }
+          }
+        },
+        "coaches": {
+          "Bhmq7MvEEbawZJE6xnxqsXn4dWG2": {
+            "metadata": {
+              "name": "Rowan",
+              "surname": "Walker-Campbell",
+              "profilePictureURL":
+                "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/coach%2FBhmq7MvEEbawZJE6xnxqsXn4dWG2%2Fprofile-picture.jpg?alt=media&token=88168b80-e085-4e52-b504-0357d0a0dcc7"
+            },
+            "paymentDefaults": {
+              "type": "HOURLY",
+              "overtimeHourlyRate": 100.0,
+              "standardHourlyRate": 150.0,
+              "maxOvertimeHours": 3
+            }
+          }
+        }
+      }
+    }
+  },
+  "sport": {
+    "-Kcb7s4Qhl4H4W0sTxA-": {
+      "name": "Athletics",
+      "competitiveEventTypes": ["Meeting"],
+      "nonCompetitiveEventTypes": ["Practice", "Training"]
+    }
+  }
+}
