@@ -8,8 +8,10 @@ import { Provider } from "react-redux";
 import App from "./app/App";
 import defineMUITheme from "./utils/mui-theme";
 import registerServiceWorker from "./utils/register-service-worker";
+import { initFirebase } from "./utils/firebase";
 import "./index.css";
 
+initFirebase();
 const theme = defineMUITheme();
 const store = getStore();
 

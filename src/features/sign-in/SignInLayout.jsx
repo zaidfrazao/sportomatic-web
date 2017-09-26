@@ -101,7 +101,6 @@ class SignInLayout extends Component {
     const { classes, loading } = this.props;
     const { pathname } = this.props.location;
 
-    console.log(this.props);
     if (!pathname.includes("sign-in")) {
       return <Redirect to="/sign-in" />;
     }
@@ -113,7 +112,7 @@ class SignInLayout extends Component {
             <div className={classes.header} />
             <div className={classes.content}>
               {!loading && (
-                <form onSubmit={e => this.handleSubmit(e)}>
+                <form>
                   <img
                     src={logo}
                     alt="Sportomatic Logo"
