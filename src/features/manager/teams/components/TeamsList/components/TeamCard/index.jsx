@@ -6,12 +6,19 @@ import { Route } from "react-router-dom";
 import { grey } from "material-ui/colors";
 import Card, { CardActions, CardContent } from "material-ui/Card";
 import Button from "material-ui/Button";
-import EditIcon from "material-ui-icons/Edit";
-import IconButton from "material-ui/IconButton";
-import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 
 const styles = theme => ({
+  card: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
+  },
+  cardContent: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column"
+  },
   title: {
     marginBottom: 16,
     fontSize: 14,
@@ -36,7 +43,11 @@ const styles = theme => ({
   name: {
     textAlign: "center",
     backgroundColor: grey[100],
-    padding: "24px 0"
+    padding: "24px 0",
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   }
 });
 
@@ -44,36 +55,29 @@ class TeamCard extends Component {
   render() {
     const { classes, sport, name, id } = this.props;
     return (
-      <div>
-        <Card>
-          <CardContent>
-            <Typography type="body1" className={classes.title}>
-              {sport}
-            </Typography>
-            <Typography type="headline" component="h2" className={classes.name}>
-              {name}
-            </Typography>
-          </CardContent>
-          <CardActions className={classes.buttons}>
-            <Route
-              render={({ history }) => (
-                <Button
-                  dense
-                  className={classes.viewButton}
-                  onClick={() => history.push(`/manager/teams/${id}`)}
-                >
-                  View
-                </Button>
-              )}
-            />
-            <Tooltip label="Edit team" placement="bottom">
-              <IconButton aria-label="Edit team">
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
-          </CardActions>
-        </Card>
-      </div>
+      <Card className={classes.card}>
+        <CardContent className={classes.cardContent}>
+          <Typography type="body1" className={classes.title}>
+            {sport}
+          </Typography>
+          <Typography type="headline" component="h2" className={classes.name}>
+            {name}
+          </Typography>
+        </CardContent>
+        <CardActions className={classes.buttons}>
+          <Route
+            render={({ history }) => (
+              <Button
+                dense
+                className={classes.viewButton}
+                onClick={() => history.push(`/manager/teams/${id}`)}
+              >
+                View
+              </Button>
+            )}
+          />
+        </CardActions>
+      </Card>
     );
   }
 }

@@ -62,7 +62,7 @@ class TeamsLayout extends Component {
             <Button
               fab
               color="accent"
-              aria-label="edit team"
+              aria-label="add team"
               className={classes.button}
             >
               <AddIcon />
