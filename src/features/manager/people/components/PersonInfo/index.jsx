@@ -63,21 +63,23 @@ const styles = {
     "@media (max-width: 960px)": {
       width: "100%"
     }
+  },
+  noItems: {
+    textAlign: "center"
   }
 };
 
 class PersonInfo extends Component {
   render() {
     const { classes } = this.props;
+    const { sports, teams } = this.props.info;
     const {
       name,
       surname,
       email,
       phoneNumber,
-      sports,
-      profilePictureURL,
-      teams
-    } = this.props.info;
+      profilePictureURL
+    } = this.props.info.metadata;
     return (
       <div className={classes.wrapper}>
         <Route
@@ -156,7 +158,7 @@ class PersonInfo extends Component {
                 Teams
               </Typography>
               <List>
-                {teams &&
+                {teams && teams.length > 0 ? (
                   teams.map(teamInfo => (
                     <ListItem key={teamInfo.name} button>
                       <ListItemText
@@ -164,7 +166,12 @@ class PersonInfo extends Component {
                         secondary={teamInfo.sport}
                       />
                     </ListItem>
-                  ))}
+                  ))
+                ) : (
+                  <ListItem className={classes.noItems}>
+                    <ListItemText primary="No teams" />
+                  </ListItem>
+                )}
               </List>
             </div>
           </Grid>

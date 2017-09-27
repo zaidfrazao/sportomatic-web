@@ -3,13 +3,16 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
+import { CircularProgress } from "material-ui/Progress";
 import PeopleList from "./components/PeopleList";
 import PersonInfo from "./components/PersonInfo";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import _ from "lodash";
 
 const styles = theme => ({
   root: {
-    width: "100%"
+    width: "100%",
+    height: "100%"
   },
   adWrapper: {
     width: "100%",
@@ -28,25 +31,95 @@ const styles = theme => ({
   toolbar: {
     backgroundColor: grey[300],
     zIndex: 1
+  },
+  loaderWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  staffTab: {
+    height: "100%",
+    overflow: "auto"
+  },
+  staffTabNoCards: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    overflow: "auto"
   }
 });
 
 class PeopleLayout extends Component {
+  componentWillMount() {
+    const { activeInstitutionID } = this.props;
+    const { loadStaff } = this.props.actions;
+    loadStaff(activeInstitutionID);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { activeInstitutionID } = this.props;
+    const { loadStaff } = this.props.actions;
+
+    if (activeInstitutionID !== nextProps.activeInstitutionID) {
+      loadStaff(nextProps.activeInstitutionID);
+    }
+  }
+
   render() {
-    const { classes, people } = this.props;
+    const { classes, staff, userID } = this.props;
+    const { isStaffLoading } = this.props.loadingStatus;
     const { personID } = this.props.match.params;
+
+    const staffCardsInfo = _.values(
+      _.mapValues(staff, (value, key) => {
+        return {
+          ...value,
+          id: key,
+          name: value.metadata.name,
+          surname: value.metadata.surname,
+          profilePictureURL: value.metadata.profilePictureURL,
+          type: value.metadata.type
+        };
+      })
+    )
+      .filter(personInfo => {
+        return personInfo.id !== userID;
+      })
+      .sort((personA, personB) => {
+        if (personA.metadata.name > personB.metadata.name) return +1;
+        if (personA.metadata.name < personB.metadata.name) return -1;
+        if (personA.metadata.surname > personB.metadata.surname) return +1;
+        if (personA.metadata.surname < personB.metadata.surname) return -1;
+        return 0;
+      });
+
     return (
       <div className={classes.root}>
-        {personID ? (
+        {personID && staff[personID] ? (
           <div>
-            <PersonInfo info={people[personID]} />
+            <PersonInfo info={staff[personID]} />
           </div>
         ) : (
-          <div>
+          <div
+            className={
+              staffCardsInfo.length > 0 ? (
+                classes.staffTab
+              ) : (
+                classes.staffTabNoCards
+              )
+            }
+          >
             <div className={classes.adWrapper}>
               <LeaderboardAd />
             </div>
-            <PeopleList people={people} />
+            {isStaffLoading ? (
+              <div className={classes.loaderWrapper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <PeopleList people={staffCardsInfo} />
+            )}
           </div>
         )}
       </div>
