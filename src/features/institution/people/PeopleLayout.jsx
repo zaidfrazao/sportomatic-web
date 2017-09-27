@@ -75,8 +75,16 @@ class PeopleLayout extends Component {
   componentWillMount() {
     const { userID } = this.props;
     const { loadStaff } = this.props.actions;
-
     loadStaff(userID);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { userID } = this.props;
+    const { loadStaff } = this.props.actions;
+
+    if (userID !== nextProps.userID) {
+      loadStaff(nextProps.userID);
+    }
   }
 
   render() {

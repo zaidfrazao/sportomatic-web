@@ -8,6 +8,7 @@ import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Typography from "material-ui/Typography";
+import _ from "lodash";
 import BlockAd from "../../../../../components/BlockAd";
 
 const styles = {
@@ -72,13 +73,14 @@ const styles = {
 class PersonInfo extends Component {
   render() {
     const { classes } = this.props;
-    const { sports, teams } = this.props.info;
+    const { sports, teams, paymentDefaults } = this.props.info;
     const {
       name,
       surname,
       email,
       phoneNumber,
-      profilePictureURL
+      profilePictureURL,
+      type
     } = this.props.info.metadata;
     return (
       <div className={classes.wrapper}>
@@ -129,6 +131,45 @@ class PersonInfo extends Component {
               </List>
             </div>
           </Grid>
+          {type === "COACH" && (
+            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+              <div className={classes.section}>
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Payment Defaults
+                </Typography>
+                <List>
+                  <ListItem>
+                    <ListItemText
+                      primary="Type"
+                      secondary={_.capitalize(paymentDefaults.type)}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary="Standard Hourly Rate"
+                      secondary={`R${paymentDefaults.standardHourlyRate.toLocaleString(
+                        "en",
+                        { minimumFractionDigits: 2 }
+                      )}`}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary="Overtime Hourly Rate"
+                      secondary={`R${paymentDefaults.overtimeHourlyRate.toLocaleString(
+                        "en",
+                        { minimumFractionDigits: 2 }
+                      )}`}
+                    />
+                  </ListItem>
+                </List>
+              </div>
+            </Grid>
+          )}
           <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
             <div className={classes.section}>
               <Typography
