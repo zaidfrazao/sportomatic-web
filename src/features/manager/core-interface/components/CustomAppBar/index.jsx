@@ -82,7 +82,11 @@ class CustomAppBar extends Component {
       isMobile,
       activeInstitution
     } = this.props;
-    const { toggleSideMenu, signOut } = this.props.actions;
+    const {
+      toggleSideMenu,
+      signOut,
+      openSwitchInstitutionsDialog
+    } = this.props.actions;
 
     return (
       <AppBar
@@ -156,6 +160,7 @@ class CustomAppBar extends Component {
                       <Avatar
                         src={activeInstitution.emblemURL}
                         className={classes.institutionSelector}
+                        onClick={() => openSwitchInstitutionsDialog()}
                       />
                     </Tooltip>
                   </div>

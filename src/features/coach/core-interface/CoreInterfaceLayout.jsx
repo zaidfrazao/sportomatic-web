@@ -13,6 +13,7 @@ import Schedule from "../schedule/ScheduleView";
 import Settings from "../settings/SettingsView";
 import Teams from "../teams/TeamsView";
 import Wages from "../wages/WagesView";
+import NotificationModal from "../../../components/NotificationModal";
 import backgroundImage from "./images/background-image.jpeg";
 
 const drawerWidth = 240;
@@ -153,7 +154,13 @@ class CoreInterfaceLayout extends Component {
 
   render() {
     const { classes, uiConfig } = this.props;
-    const { toggleSideMenu, signOut } = this.props.actions;
+    const {
+      toggleSideMenu,
+      signOut,
+      openSwitchInstitutionsDialog,
+      closeSwitchInstitutionsDialog
+    } = this.props.actions;
+    const { isSwitchInstitutionsDialogOpen } = this.props.dialogs;
     const { windowWidth } = this.state;
     const isMobile = windowWidth < 600;
     const isTablet = windowWidth < 960;
@@ -172,7 +179,7 @@ class CoreInterfaceLayout extends Component {
           <CustomAppBar
             title={uiConfig.appBarTitle}
             isSideMenuOpen={uiConfig.isSideMenuOpen}
-            actions={{ toggleSideMenu, signOut }}
+            actions={{ toggleSideMenu, signOut, openSwitchInstitutionsDialog }}
             activeInstitution={uiConfig.activeInstitution}
             isMobile={isMobile}
           />
@@ -229,6 +236,12 @@ class CoreInterfaceLayout extends Component {
             </div>
             {isMobile && <BottomNav value={uiConfig.bottomNavValue} />}
           </div>
+          <NotificationModal
+            isOpen={isSwitchInstitutionsDialogOpen}
+            handleOkClick={closeSwitchInstitutionsDialog}
+            heading="Unavailable in Beta"
+            message="The ability to switch institutions is unavailable in this version of the beta."
+          />
         </div>
       </div>
     );

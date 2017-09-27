@@ -12,6 +12,10 @@ export const UPDATE_BOTTOM_NAV_VALUE =
   "sportomatic-web/manager/core-interface/UPDATE_BOTTOM_NAV_VALUE";
 export const SIGN_OUT = "sportomatic-web/manager/core-interface/SIGN_OUT";
 export const INIT_USER = "sportomatic-web/manager/core-interface/INIT_USER";
+export const OPEN_SWITCH_INSTITUTIONS_DIALOG =
+  "sportomatic-web/manager/core-interface/OPEN_SWITCH_INSTITUTIONS_DIALOG";
+export const CLOSE_SWITCH_INSTITUTIONS_DIALOG =
+  "sportomatic-web/manager/core-interface/CLOSE_SWITCH_INSTITUTIONS_DIALOG";
 
 // Reducers
 
@@ -58,16 +62,40 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   }
 }
 
+export const dialogsInitialState = {
+  isSwitchInstitutionsDialogOpen: false
+};
+
+function dialogsReducer(state = dialogsInitialState, action = {}) {
+  switch (action.type) {
+    case OPEN_SWITCH_INSTITUTIONS_DIALOG:
+      return {
+        ...state,
+        isSwitchInstitutionsDialogOpen: true
+      };
+    case CLOSE_SWITCH_INSTITUTIONS_DIALOG:
+      return {
+        ...state,
+        isSwitchInstitutionsDialogOpen: false
+      };
+    default:
+      return state;
+  }
+}
+
 export const coreInterfaceReducer = combineReducers({
-  uiConfig: uiConfigReducer
+  uiConfig: uiConfigReducer,
+  dialogs: dialogsReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.manager.coreInterface.uiConfig;
+const dialogs = state => state.manager.coreInterface.dialogs;
 
 export const selector = createStructuredSelector({
-  uiConfig
+  uiConfig,
+  dialogs
 });
 
 // Action Creators
@@ -86,6 +114,18 @@ export function initUser() {
     payload: {
       user
     }
+  };
+}
+
+export function openSwitchInstitutionsDialog() {
+  return {
+    type: OPEN_SWITCH_INSTITUTIONS_DIALOG
+  };
+}
+
+export function closeSwitchInstitutionsDialog() {
+  return {
+    type: CLOSE_SWITCH_INSTITUTIONS_DIALOG
   };
 }
 
