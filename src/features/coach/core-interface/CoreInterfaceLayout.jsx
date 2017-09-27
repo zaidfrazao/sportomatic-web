@@ -162,6 +162,10 @@ class CoreInterfaceLayout extends Component {
       return <Redirect to="/sign-in" />;
     }
 
+    if (uiConfig.type !== "COACH") {
+      return <Redirect to="/sign-in" />;
+    }
+
     return (
       <div className={classes.root}>
         <div className={classes.appFrame}>

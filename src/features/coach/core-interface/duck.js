@@ -20,7 +20,8 @@ export const uiConfigInitialState = {
   bottomNavValue: "dashboard",
   isSideMenuOpen: false,
   isLoggedIn: true,
-  activeInstitution: {}
+  activeInstitution: {},
+  type: "COACH"
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -29,7 +30,8 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
       return {
         ...state,
         isLoggedIn: action.payload.user.isLoggedIn,
-        activeInstitution: action.payload.user.activeInstitution
+        activeInstitution: action.payload.user.activeInstitution,
+        type: action.payload.user.type
       };
     case SIGN_OUT:
       return {
