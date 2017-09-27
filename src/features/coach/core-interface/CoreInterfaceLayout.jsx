@@ -173,6 +173,7 @@ class CoreInterfaceLayout extends Component {
             title={uiConfig.appBarTitle}
             isSideMenuOpen={uiConfig.isSideMenuOpen}
             actions={{ toggleSideMenu, signOut }}
+            activeInstitution={uiConfig.activeInstitution}
             isMobile={isMobile}
           />
           <SideMenu

@@ -14,7 +14,6 @@ import SettingsIcon from "material-ui-icons/Settings";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
-import institutionLogo from "./images/institutionLogo.png";
 
 const drawerWidth = 240;
 
@@ -56,7 +55,8 @@ const styles = theme => ({
     padding: 4,
     width: 40,
     height: 40,
-    cursor: "pointer"
+    cursor: "pointer",
+    backgroundColor: grey[100]
   }
 });
 
@@ -75,7 +75,13 @@ class CustomAppBar extends Component {
   };
 
   render() {
-    const { classes, title, isSideMenuOpen, isMobile } = this.props;
+    const {
+      classes,
+      title,
+      isSideMenuOpen,
+      isMobile,
+      activeInstitution
+    } = this.props;
     const { toggleSideMenu, signOut } = this.props.actions;
 
     return (
@@ -148,7 +154,7 @@ class CustomAppBar extends Component {
                     />
                     <Tooltip label="Switch institutions" placement="bottom">
                       <Avatar
-                        src={institutionLogo}
+                        src={activeInstitution.emblemURL}
                         className={classes.institutionSelector}
                       />
                     </Tooltip>
