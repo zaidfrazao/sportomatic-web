@@ -10,17 +10,30 @@ export const UPDATE_APP_BAR_TITLE =
   "sportomatic-web/institution/core-interface/UPDATE_APP_BAR_TITLE";
 export const UPDATE_BOTTOM_NAV_VALUE =
   "sportomatic-web/institution/core-interface/UPDATE_BOTTOM_NAV_VALUE";
+export const SIGN_OUT = "sportomatic-web/institution/core-interface/SIGN_OUT";
+export const INIT_USER = "sportomatic-web/institution/core-interface/INIT_USER";
 
 // Reducers
 
 export const uiConfigInitialState = {
   appBarTitle: "Dashboard",
   bottomNavValue: "dashboard",
-  isSideMenuOpen: false
+  isSideMenuOpen: false,
+  isLoggedIn: true
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case INIT_USER:
+      return {
+        ...state,
+        isLoggedIn: action.payload.user.isLoggedIn
+      };
+    case SIGN_OUT:
+      return {
+        ...state,
+        isLoggedIn: false
+      };
     case TOGGLE_SIDE_MENU:
       return {
         ...state,
@@ -55,6 +68,22 @@ export const selector = createStructuredSelector({
 
 // Action Creators
 
+export function initUser() {
+  const user = {
+    userID: localStorage.userID || "",
+    email: localStorage.email || "",
+    isLoggedIn: localStorage.isLoggedIn === "true" || false,
+    type: localStorage.type || ""
+  };
+
+  return {
+    type: INIT_USER,
+    payload: {
+      user
+    }
+  };
+}
+
 export function toggleSideMenu() {
   return {
     type: TOGGLE_SIDE_MENU
@@ -76,5 +105,12 @@ export function updateBottomNavValue(newValue) {
     payload: {
       newValue
     }
+  };
+}
+
+export function signOut() {
+  localStorage.setItem("isLoggedIn", "false");
+  return {
+    type: SIGN_OUT
   };
 }

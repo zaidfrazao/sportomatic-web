@@ -1,4 +1,30 @@
 {
+  "users": {
+    "Bhmq7MvEEbawZJE6xnxqsXn4dWG2": {
+      "type": "COACH",
+      "status": "ACTIVE",
+      "lastInstitutionAccessed": {
+        "id": "VidVN3BJ6VTHmtC1kGGVDrRpPVf2",
+        "name": "Sportomatic Academy",
+        "emblemURL":
+          "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/institution%2FVidVN3BJ6VTHmtC1kGGVDrRpPVf2%2Femblem.png?alt=media&token=4cc7fce3-6c25-4ec8-93dd-17417b224fef"
+      }
+    },
+    "VidVN3BJ6VTHmtC1kGGVDrRpPVf2": {
+      "type": "INSTITUTION",
+      "status": "ACTIVE"
+    },
+    "H4wegzYcs9RFot9wbJR4qOL4TZr2": {
+      "type": "MANAGER",
+      "status": "ACTIVE",
+      "lastInstitutionAccessed": {
+        "id": "VidVN3BJ6VTHmtC1kGGVDrRpPVf2",
+        "name": "Sportomatic Academy",
+        "emblemURL":
+          "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/institution%2FVidVN3BJ6VTHmtC1kGGVDrRpPVf2%2Femblem.png?alt=media&token=4cc7fce3-6c25-4ec8-93dd-17417b224fef"
+      }
+    }
+  },
   "coach": {
     "Bhmq7MvEEbawZJE6xnxqsXn4dWG2": {
       "public": {
@@ -23,8 +49,6 @@
         }
       },
       "private": {
-        "accountState": "ACTIVE",
-        "lastInstitutionAccessed": "VidVN3BJ6VTHmtC1kGGVDrRpPVf2",
         "metadata": {
           "email": "rowan@sportomaticapp.com",
           "phoneNumber": "(079) 507 - 0104"
@@ -57,7 +81,6 @@
         }
       },
       "private": {
-        "accountState": "ACTIVE",
         "settings": {
           "paymentDefaults": {
             "type": "HOURLY",
@@ -85,6 +108,37 @@
               "maxOvertimeHours": 3
             }
           }
+        }
+      }
+    }
+  },
+  "manager": {
+    "H4wegzYcs9RFot9wbJR4qOL4TZr2": {
+      "public": {
+        "metadata": {
+          "name": "Brett",
+          "surname": "Cook",
+          "profilePictureURL":
+            "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/manager%2FH4wegzYcs9RFot9wbJR4qOL4TZr2%2Fprofile-picture.jpg?alt=media&token=10703eaa-f132-46e5-8f05-f479b4b98bbb"
+        },
+        "preferredSports": {
+          "-Kcb7s4Qhl4H4W0sTxA-": "Athletics"
+        },
+        "institutions": {
+          "VidVN3BJ6VTHmtC1kGGVDrRpPVf2": {
+            "metadata": {
+              "emblemURL":
+                "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/institution%2FVidVN3BJ6VTHmtC1kGGVDrRpPVf2%2Femblem.png?alt=media&token=4cc7fce3-6c25-4ec8-93dd-17417b224fef",
+              "name": "Sportomatic Academy",
+              "type": "Sports Academy"
+            }
+          }
+        }
+      },
+      "private": {
+        "metadata": {
+          "email": "brett@sportomaticapp.com",
+          "phoneNumber": "(079) 507 - 0104"
         }
       }
     }

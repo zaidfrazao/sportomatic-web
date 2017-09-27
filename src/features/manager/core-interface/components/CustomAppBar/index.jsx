@@ -76,7 +76,7 @@ class CustomAppBar extends Component {
 
   render() {
     const { classes, title, isSideMenuOpen, isMobile } = this.props;
-    const { toggleSideMenu } = this.props.actions;
+    const { toggleSideMenu, signOut } = this.props.actions;
 
     return (
       <AppBar
@@ -139,7 +139,7 @@ class CustomAppBar extends Component {
                           <IconButton
                             color="contrast"
                             aria-label="log out"
-                            onClick={() => history.push(`/sign-in`)}
+                            onClick={() => signOut()}
                           >
                             <LogOutIcon />
                           </IconButton>

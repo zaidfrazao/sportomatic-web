@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import CustomAppBar from "./components/CustomAppBar";
 import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
@@ -84,6 +84,8 @@ class CoreInterfaceLayout extends Component {
 
   componentWillMount() {
     const { pathname } = this.props.location;
+    const { initUser } = this.props.actions;
+    initUser();
     this.updateCoreUI(pathname);
   }
 
@@ -146,10 +148,14 @@ class CoreInterfaceLayout extends Component {
 
   render() {
     const { classes, uiConfig } = this.props;
-    const { toggleSideMenu } = this.props.actions;
+    const { toggleSideMenu, signOut } = this.props.actions;
     const { windowWidth } = this.state;
     const isMobile = windowWidth < 600;
     const isTablet = windowWidth < 960;
+
+    if (!uiConfig.isLoggedIn) {
+      return <Redirect to="/sign-in" />;
+    }
 
     return (
       <div className={classes.root}>
@@ -157,7 +163,7 @@ class CoreInterfaceLayout extends Component {
           <CustomAppBar
             title={uiConfig.appBarTitle}
             isSideMenuOpen={uiConfig.isSideMenuOpen}
-            actions={{ toggleSideMenu }}
+            actions={{ toggleSideMenu, signOut }}
             isMobile={isMobile}
           />
           <SideMenu
