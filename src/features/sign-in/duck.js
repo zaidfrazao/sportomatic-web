@@ -620,7 +620,7 @@ export function fetchAccountInfo(userID: string, email: string) {
             email,
             accountInfo.type,
             accountInfo.status,
-            accountInfo.lastInstitutionAccessed
+            accountInfo.lastInstitutionAccessed || {}
           )
         );
       })
