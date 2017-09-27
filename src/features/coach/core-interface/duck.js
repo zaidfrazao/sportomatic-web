@@ -25,7 +25,8 @@ export const uiConfigInitialState = {
   isSideMenuOpen: false,
   isLoggedIn: true,
   activeInstitution: {},
-  type: "COACH"
+  type: "COACH",
+  userID: ""
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -35,7 +36,8 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         isLoggedIn: action.payload.user.isLoggedIn,
         activeInstitution: action.payload.user.activeInstitution,
-        type: action.payload.user.type
+        type: action.payload.user.type,
+        userID: action.payload.user.id
       };
     case SIGN_OUT:
       return {
@@ -102,7 +104,7 @@ export const selector = createStructuredSelector({
 
 export function initUser() {
   const user = {
-    userID: localStorage.userID || "",
+    id: localStorage.userID || "",
     email: localStorage.email || "",
     isLoggedIn: localStorage.isLoggedIn === "true" || false,
     type: localStorage.type || "",
