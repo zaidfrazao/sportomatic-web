@@ -73,9 +73,10 @@ const styles = theme => ({
 
 class PeopleLayout extends Component {
   componentWillMount() {
+    const { userID } = this.props;
     const { loadStaff } = this.props.actions;
-    const institutionID = localStorage.userID;
-    loadStaff(institutionID);
+
+    loadStaff(userID);
   }
 
   render() {
