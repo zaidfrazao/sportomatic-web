@@ -199,10 +199,10 @@ class CoreInterfaceLayout extends Component {
                   <Hours isMobile={isMobile} isTablet={isTablet} />
                 </Route>
                 <Route exact path={`/institution/people/`}>
-                  <People />
+                  <People isMobile={isMobile} />
                 </Route>
                 <Route path={`/institution/people/:personID`}>
-                  <People />
+                  <People isMobile={isMobile} />
                 </Route>
                 <Route exact path={`/institution/teams/`}>
                   <Teams />
