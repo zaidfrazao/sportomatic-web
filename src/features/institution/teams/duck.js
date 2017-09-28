@@ -7,24 +7,88 @@ import brettPicture from "./images/brett.jpg";
 
 // Actions
 
-export const TOGGLE_SIDE_MENU =
-  "sportomatic-web/institution/teams/TOGGLE_SIDE_MENU";
+export const OPEN_ADD_TEAM_DIALOG =
+  "sportomatic-web/institution/teams/OPEN_ADD_TEAM_DIALOG";
+export const CLOSE_ADD_TEAM_DIALOG =
+  "sportomatic-web/institution/teams/CLOSE_ADD_TEAM_DIALOG";
 
 // Reducers
 
-export const uiConfigInitialState = {
-  appBarTitle: "Dashboard",
-  bottomNavValue: "dashboard",
-  isSideMenuOpen: false
+export const dialogsInitialState = {
+  isAddTeamDialogOpen: true
 };
 
-function uiConfigReducer(state = uiConfigInitialState, action = {}) {
+function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
-    case TOGGLE_SIDE_MENU:
+    case OPEN_ADD_TEAM_DIALOG:
       return {
         ...state,
-        isSideMenuOpen: !state.isSideMenuOpen
+        isAddTeamDialogOpen: true
       };
+    case CLOSE_ADD_TEAM_DIALOG:
+      return {
+        ...state,
+        isAddTeamDialogOpen: false
+      };
+    default:
+      return state;
+  }
+}
+
+export const optionsInitialState = {
+  ageGroups: {
+    "12": "U/12",
+    "13": "U/13",
+    "18": "U/18"
+  },
+  divisions: {
+    A: "A",
+    B: "B",
+    C: "C",
+    "1st": "1st Team"
+  },
+  sports: {
+    x: "Athletics",
+    y: "Swimming",
+    z: "Squash"
+  },
+  genderType: "MIXED"
+};
+
+function optionsReducer(state = optionsInitialState, action = {}) {
+  switch (action.type) {
+    default:
+      return state;
+  }
+}
+
+export const coachesInitialState = {
+  a: {
+    name: "Rowan Walker-Campbell",
+    sports: ["x", "y"]
+  },
+  b: {
+    name: "Zaid Frazao",
+    sports: ["x"]
+  }
+};
+
+function coachesReducer(state = coachesInitialState, action = {}) {
+  switch (action.type) {
+    default:
+      return state;
+  }
+}
+
+export const managersInitialState = {
+  c: {
+    name: "Brett Cook",
+    sports: ["y"]
+  }
+};
+
+function managersReducer(state = managersInitialState, action = {}) {
+  switch (action.type) {
     default:
       return state;
   }
@@ -144,24 +208,39 @@ function teamsListReducer(state = teamsListInitialState, action = {}) {
 }
 
 export const teamsReducer = combineReducers({
-  uiConfig: uiConfigReducer,
-  teamsList: teamsListReducer
+  dialogs: dialogsReducer,
+  teamsList: teamsListReducer,
+  options: optionsReducer,
+  coaches: coachesReducer,
+  managers: managersReducer
 });
 
 // Selectors
 
-const uiConfig = state => state.institution.teams.uiConfig;
+const dialogs = state => state.institution.teams.dialogs;
 const teams = state => state.institution.teams.teamsList;
+const options = state => state.institution.teams.options;
+const coaches = state => state.institution.teams.coaches;
+const managers = state => state.institution.teams.managers;
 
 export const selector = createStructuredSelector({
-  uiConfig,
-  teams
+  dialogs,
+  teams,
+  options,
+  coaches,
+  managers
 });
 
 // Action Creators
 
-export function toggleSideMenu() {
+export function openAddTeamDialog() {
   return {
-    type: TOGGLE_SIDE_MENU
+    type: OPEN_ADD_TEAM_DIALOG
+  };
+}
+
+export function closeAddTeamDialog() {
+  return {
+    type: CLOSE_ADD_TEAM_DIALOG
   };
 }

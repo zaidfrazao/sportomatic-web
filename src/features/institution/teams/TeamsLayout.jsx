@@ -8,6 +8,7 @@ import Button from "material-ui/Button";
 import EditIcon from "material-ui-icons/Edit";
 import TeamsList from "./components/TeamsList";
 import TeamInfo from "./components/TeamInfo";
+import AddTeamDialog from "./components/AddTeamDialog";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 
 const styles = theme => ({
@@ -36,7 +37,9 @@ const styles = theme => ({
 
 class TeamsLayout extends Component {
   render() {
-    const { classes, teams } = this.props;
+    const { classes, teams, options, coaches, managers } = this.props;
+    const { isAddTeamDialogOpen } = this.props.dialogs;
+    const { openAddTeamDialog, closeAddTeamDialog } = this.props.actions;
     const { teamID } = this.props.match.params;
 
     return (
@@ -64,11 +67,19 @@ class TeamsLayout extends Component {
               color="accent"
               aria-label="add team"
               className={classes.button}
+              onClick={() => openAddTeamDialog()}
             >
               <AddIcon />
             </Button>
           </div>
         )}
+        <AddTeamDialog
+          isOpen={isAddTeamDialogOpen}
+          options={options}
+          coaches={coaches}
+          managers={managers}
+          actions={{ handleClose: closeAddTeamDialog }}
+        />
       </div>
     );
   }
