@@ -23,6 +23,7 @@ import List, {
 } from "material-ui/List";
 import Checkbox from "material-ui/Checkbox";
 import Avatar from "material-ui/Avatar";
+import { CircularProgress } from "material-ui/Progress";
 
 import _ from "lodash";
 
@@ -53,7 +54,7 @@ const styles = {
     margin: 0,
     width: "100%",
     textAlign: "center",
-    backgroundColor: grey[200],
+    backgroundColor: grey[300],
     color: grey[700]
   },
   formControl: {
@@ -64,6 +65,15 @@ const styles = {
     width: "100%",
     textAlign: "center",
     margin: "24px 0"
+  },
+  section: {
+    backgroundColor: grey[100]
+  },
+  loaderWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   }
 };
 
@@ -188,7 +198,7 @@ class AddTeamDialog extends Component {
   getRelevantCoaches(sport) {
     const { classes, coaches } = this.props;
     const listItems = _.toPairs(coaches)
-      .filter(coach => coach[1].sports.includes(sport))
+      .filter(coach => coach[1].preferredSports[sport])
       .map(coach => {
         const id = coach[0];
         const info = coach[1];
@@ -200,8 +210,13 @@ class AddTeamDialog extends Component {
             className={classes.listItem}
             onClick={() => this.handleToggle(id, "COACH")}
           >
-            <Avatar alt={info.name} src="" />
-            <ListItemText primary={info.name} />
+            <Avatar
+              alt={`${info.metadata.name} ${info.metadata.surname}`}
+              src={info.metadata.profilePictureURL}
+            />
+            <ListItemText
+              primary={`${info.metadata.name} ${info.metadata.surname}`}
+            />
             <ListItemSecondaryAction>
               <Checkbox
                 onClick={() => this.handleToggle(id, "COACH")}
@@ -231,7 +246,7 @@ class AddTeamDialog extends Component {
   getRelevantManagers(sport) {
     const { classes, managers } = this.props;
     const listItems = _.toPairs(managers)
-      .filter(manager => manager[1].sports.includes(sport))
+      .filter(manager => manager[1].preferredSports[sport])
       .map(manager => {
         const id = manager[0];
         const info = manager[1];
@@ -243,8 +258,13 @@ class AddTeamDialog extends Component {
             className={classes.listItem}
             onClick={() => this.handleToggle(id, "MANAGER")}
           >
-            <Avatar alt={info.name} src="" />
-            <ListItemText primary={info.name} />
+            <Avatar
+              alt={`${info.metadata.name} ${info.metadata.surname}`}
+              src={info.metadata.profilePictureURL}
+            />
+            <ListItemText
+              primary={`${info.metadata.name} ${info.metadata.surname}`}
+            />
             <ListItemSecondaryAction>
               <Checkbox
                 onClick={() => this.handleToggle(id, "MANAGER")}
@@ -298,15 +318,13 @@ class AddTeamDialog extends Component {
   };
 
   render() {
-    const { classes, isOpen } = this.props;
+    const { classes, isOpen, isLoading } = this.props;
     const { handleClose } = this.props.actions;
     const { ageGroups, divisions, sports, genderType } = this.props.options;
     const { ageGroup, division, sport, gender, teamName } = this.state;
     const genderOptions = this.setGenderOptions(ageGroup, genderType);
     const relevantCoaches = this.getRelevantCoaches(sport);
     const relevantManagers = this.getRelevantManagers(sport);
-
-    console.log(this.state);
 
     return (
       <Dialog
@@ -332,103 +350,145 @@ class AddTeamDialog extends Component {
             </Button>
           </Toolbar>
         </AppBar>
-        <Grid container className={classes.mainContent}>
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={12}
-            lg={12}
-            xl={12}
-            className={classes.teamNameWrapper}
-          >
-            <TextField
-              label="Team name"
-              value={teamName}
-              className={classes.teamName}
-              onChange={e => this.handleNameUpdate(e.target.value)}
-              error={teamName.length === 0}
-              helperText={
-                teamName.length === 0 ? "Please provide a team name" : ""
-              }
-            />
+        {isLoading ? (
+          <div className={classes.loaderWrapper}>
+            <CircularProgress />
+          </div>
+        ) : (
+          <Grid container className={classes.mainContent}>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              lg={12}
+              xl={12}
+              className={classes.teamNameWrapper}
+            >
+              <TextField
+                label="Team name"
+                value={teamName}
+                className={classes.teamName}
+                onChange={e => this.handleNameUpdate(e.target.value)}
+                error={teamName.length === 0}
+                helperText={
+                  teamName.length === 0 ? "Please provide a team name" : ""
+                }
+              />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={4}
+              lg={4}
+              xl={4}
+              className={classes.section}
+            >
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
+              >
+                Details
+              </Typography>
+              <form autoComplete="off">
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="age-group">Age group</InputLabel>
+                  <Select
+                    value={ageGroup}
+                    onChange={this.handleChange("ageGroup")}
+                    input={<Input id="age-group" />}
+                  >
+                    {_.toPairs(ageGroups).map(keyValuePair => (
+                      <MenuItem value={keyValuePair[0]} key={keyValuePair[0]}>
+                        {keyValuePair[1]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="division">Division</InputLabel>
+                  <Select
+                    value={division}
+                    onChange={this.handleChange("division")}
+                    input={<Input id="division" />}
+                  >
+                    {_.toPairs(divisions).map(keyValuePair => (
+                      <MenuItem value={keyValuePair[0]} key={keyValuePair[0]}>
+                        {keyValuePair[1]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="sport">Sport</InputLabel>
+                  <Select
+                    value={sport}
+                    onChange={this.handleChange("sport")}
+                    input={<Input id="sport" />}
+                  >
+                    {_.toPairs(sports).map(keyValuePair => (
+                      <MenuItem value={keyValuePair[0]} key={keyValuePair[0]}>
+                        {keyValuePair[1]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="gender">Gender</InputLabel>
+                  <Select
+                    value={gender}
+                    onChange={this.handleChange("gender")}
+                    input={<Input id="gender" />}
+                  >
+                    {_.toPairs(genderOptions).map(keyValuePair => (
+                      <MenuItem value={keyValuePair[0]} key={keyValuePair[0]}>
+                        {keyValuePair[1]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </form>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={4}
+              lg={4}
+              xl={4}
+              className={classes.section}
+            >
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
+              >
+                {sports[sport]} Managers
+              </Typography>
+              {relevantManagers}
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={4}
+              lg={4}
+              xl={4}
+              className={classes.section}
+            >
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
+              >
+                {sports[sport]} Coaches
+              </Typography>
+              {relevantCoaches}
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-            <Typography className={classes.heading} type="title" component="h3">
-              Details
-            </Typography>
-            <form autoComplete="off">
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="age-group">Age group</InputLabel>
-                <Select
-                  value={ageGroup}
-                  onChange={this.handleChange("ageGroup")}
-                  input={<Input id="age-group" />}
-                >
-                  {_.toPairs(ageGroups).map(keyValuePair => (
-                    <MenuItem value={keyValuePair[0]} key={keyValuePair[0]}>
-                      {keyValuePair[1]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="division">Division</InputLabel>
-                <Select
-                  value={division}
-                  onChange={this.handleChange("division")}
-                  input={<Input id="division" />}
-                >
-                  {_.toPairs(divisions).map(keyValuePair => (
-                    <MenuItem value={keyValuePair[0]} key={keyValuePair[0]}>
-                      {keyValuePair[1]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="sport">Sport</InputLabel>
-                <Select
-                  value={sport}
-                  onChange={this.handleChange("sport")}
-                  input={<Input id="sport" />}
-                >
-                  {_.toPairs(sports).map(keyValuePair => (
-                    <MenuItem value={keyValuePair[0]} key={keyValuePair[0]}>
-                      {keyValuePair[1]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="gender">Gender</InputLabel>
-                <Select
-                  value={gender}
-                  onChange={this.handleChange("gender")}
-                  input={<Input id="gender" />}
-                >
-                  {_.toPairs(genderOptions).map(keyValuePair => (
-                    <MenuItem value={keyValuePair[0]} key={keyValuePair[0]}>
-                      {keyValuePair[1]}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </form>
-          </Grid>
-          <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-            <Typography className={classes.heading} type="title" component="h3">
-              {sports[sport]} Managers
-            </Typography>
-            {relevantManagers}
-          </Grid>
-          <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-            <Typography className={classes.heading} type="title" component="h3">
-              {sports[sport]} Coaches
-            </Typography>
-            {relevantCoaches}
-          </Grid>
-        </Grid>
+        )}
       </Dialog>
     );
   }

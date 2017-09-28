@@ -61,7 +61,7 @@
       "public": {
         "metadata": {
           "abbreviation": "SA",
-          "ageGroups": [12, 13, 14, 15, 16, 17, 18],
+          "ageGroups": [12, 13, 14, 15, 16, 17, 18, "Open"],
           "divisions": ["A", "B", "C", "D", "1st Team", "2nd Team"],
           "email": "info@sportomaticapp.com",
           "gender": "MIXED",
@@ -104,7 +104,9 @@
               "email": "rowan@sportomaticapp.com",
               "phoneNumber": "(084) 291-0482"
             },
-            "sports": ["Cricket", "Rugby", "Soccer"],
+            "preferredSports": {
+              "-Kcb7s4Qhl4H4W0sTxA-": "Athletics"
+            },
             "paymentDefaults": {
               "type": "HOURLY",
               "overtimeHourlyRate": 100.0,
@@ -122,7 +124,9 @@
               "email": "brett@sportomaticapp.com",
               "phoneNumber": "(073) 812-1122"
             },
-            "sports": ["Cricket", "Rugby", "Swimming"]
+            "preferredSports": {
+              "-Kcb7s4Qhl4H4W0sTxA-": "Athletics"
+            }
           }
         }
       }

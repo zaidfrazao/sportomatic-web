@@ -37,9 +37,15 @@ const styles = theme => ({
 
 class TeamsLayout extends Component {
   render() {
-    const { classes, teams, options, coaches, managers } = this.props;
+    const { classes, teams, options, coaches, managers, userID } = this.props;
     const { isAddTeamDialogOpen } = this.props.dialogs;
-    const { openAddTeamDialog, closeAddTeamDialog } = this.props.actions;
+    const { isAddTeamDialogLoading } = this.props.loadingStatus;
+    const {
+      openAddTeamDialog,
+      closeAddTeamDialog,
+      loadStaff,
+      loadOptions
+    } = this.props.actions;
     const { teamID } = this.props.match.params;
 
     return (
@@ -67,7 +73,11 @@ class TeamsLayout extends Component {
               color="accent"
               aria-label="add team"
               className={classes.button}
-              onClick={() => openAddTeamDialog()}
+              onClick={() => {
+                loadOptions(userID);
+                loadStaff(userID);
+                openAddTeamDialog();
+              }}
             >
               <AddIcon />
             </Button>
@@ -75,6 +85,7 @@ class TeamsLayout extends Component {
         )}
         <AddTeamDialog
           isOpen={isAddTeamDialogOpen}
+          isLoading={isAddTeamDialogLoading}
           options={options}
           coaches={coaches}
           managers={managers}
