@@ -82,6 +82,11 @@ class PersonInfo extends Component {
       profilePictureURL,
       type
     } = this.props.info.metadata;
+
+    const teamsList = _.toPairs(teams).map(([teamID, teamInfo]) => {
+      return { id: teamID, ...teamInfo };
+    });
+
     return (
       <div className={classes.wrapper}>
         <Route
@@ -199,14 +204,23 @@ class PersonInfo extends Component {
                 Teams
               </Typography>
               <List>
-                {teams && teams.length > 0 ? (
-                  teams.map(teamInfo => (
-                    <ListItem key={teamInfo.name} button>
-                      <ListItemText
-                        primary={teamInfo.name}
-                        secondary={teamInfo.sport}
-                      />
-                    </ListItem>
+                {teamsList && teamsList.length > 0 ? (
+                  teamsList.map(teamInfo => (
+                    <Route
+                      key={teamInfo.id}
+                      component={({ history }) => (
+                        <ListItem
+                          button
+                          onClick={() =>
+                            history.push(`/institution/teams/${teamInfo.id}`)}
+                        >
+                          <ListItemText
+                            primary={teamInfo.name}
+                            secondary={teamInfo.sport}
+                          />
+                        </ListItem>
+                      )}
+                    />
                   ))
                 ) : (
                   <ListItem className={classes.noItems}>
