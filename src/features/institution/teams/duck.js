@@ -3,9 +3,6 @@ import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
 import _ from "lodash";
-import garyPicture from "./images/gary.jpg";
-import rowanPicture from "./images/rowan.jpg";
-import brettPicture from "./images/brett.jpg";
 
 // Actions
 
@@ -29,6 +26,11 @@ export const RECEIVE_ADD_TEAM =
   "sportomatic-web/institution/teams/RECEIVE_ADD_TEAM";
 export const ERROR_ADDING_TEAM =
   "sportomatic-web/institution/teams/ERROR_ADDING_TEAM";
+export const REQUEST_TEAMS = "sportomatic-web/institution/teams/REQUEST_TEAMS";
+export const RECEIVE_TEAMS = "sportomatic-web/institution/teams/RECEIVE_TEAMS";
+export const ERROR_LOADING_TEAMS =
+  "sportomatic-web/institution/teams/ERROR_LOADING_TEAMS";
+
 // Reducers
 
 export const dialogsInitialState = {
@@ -77,7 +79,8 @@ function optionsReducer(state = optionsInitialState, action = {}) {
 }
 
 export const loadingStatusInitialState = {
-  isAddTeamDialogLoading: false
+  isAddTeamDialogLoading: false,
+  isTeamsLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -98,6 +101,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isAddTeamDialogLoading: false
+      };
+    case REQUEST_TEAMS:
+      return {
+        ...state,
+        isTeamsLoading: true
+      };
+    case ERROR_LOADING_TEAMS:
+    case RECEIVE_TEAMS:
+      return {
+        ...state,
+        isTeamsLoading: false
       };
     default:
       return state;
@@ -122,114 +136,10 @@ function managersReducer(state = {}, action = {}) {
   }
 }
 
-export const teamsListInitialState = [
-  {
-    name: "Open 1st Team Swimming Girls",
-    sport: "Swimming",
-    ageGroup: "Open",
-    division: "1st Team",
-    gender: "Girls",
-    coaches: [],
-    managers: [
-      {
-        name: "Brett",
-        surname: "Cook",
-        type: "Manager",
-        profilePictureURL: brettPicture
-      }
-    ]
-  },
-  {
-    name: "U/16 A Rugby Boys",
-    sport: "Rugby",
-    ageGroup: "U/16",
-    division: "A",
-    gender: "Boys",
-    coaches: [
-      {
-        name: "Rowan",
-        surname: "Walker-Campbell",
-        type: "Coach",
-        profilePictureURL: rowanPicture
-      }
-    ],
-    managers: [
-      {
-        name: "Brett",
-        surname: "Cook",
-        type: "Manager",
-        profilePictureURL: brettPicture
-      }
-    ]
-  },
-  {
-    name: "U/12 A Cricket Boys",
-    sport: "Cricket",
-    ageGroup: "U/12",
-    division: "A",
-    gender: "Boys",
-    coaches: [],
-    managers: [
-      {
-        name: "Gary",
-        surname: "Kirstin",
-        type: "Manager",
-        profilePictureURL: garyPicture
-      }
-    ]
-  },
-  {
-    name: "U/12 B Cricket Boys",
-    sport: "Cricket",
-    ageGroup: "U/12",
-    division: "B",
-    gender: "Boys",
-    coaches: [],
-    managers: [
-      {
-        name: "Gary",
-        surname: "Kirstin",
-        type: "Manager",
-        profilePictureURL: garyPicture
-      }
-    ]
-  },
-  {
-    name: "U/13 A Cricket Boys",
-    sport: "Cricket",
-    ageGroup: "U/13",
-    division: "A",
-    gender: "Boys",
-    coaches: [],
-    managers: [
-      {
-        name: "Gary",
-        surname: "Kirstin",
-        type: "Manager",
-        profilePictureURL: garyPicture
-      }
-    ]
-  },
-  {
-    name: "U/13 B Cricket Boys",
-    sport: "Cricket",
-    ageGroup: "U/13",
-    division: "B",
-    gender: "Boys",
-    coaches: [],
-    managers: [
-      {
-        name: "Gary",
-        surname: "Kirstin",
-        type: "Manager",
-        profilePictureURL: garyPicture
-      }
-    ]
-  }
-];
-
-function teamsListReducer(state = teamsListInitialState, action = {}) {
+function teamsListReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RECEIVE_TEAMS:
+      return action.payload.teams;
     default:
       return state;
   }
@@ -324,6 +234,48 @@ export function loadStaff(institutionID) {
         dispatch(receiveStaff({}));
       } else {
         dispatch(receiveStaff(staff));
+      }
+    });
+  };
+}
+
+export function requestTeams() {
+  return {
+    type: REQUEST_TEAMS
+  };
+}
+
+export function receiveTeams(teams) {
+  return {
+    type: RECEIVE_TEAMS,
+    payload: {
+      teams
+    }
+  };
+}
+
+export function errorLoadingTeams(error: { code: string, message: string }) {
+  return {
+    type: ERROR_LOADING_TEAMS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadTeams(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestTeams());
+    const teamsRef = firebase
+      .database()
+      .ref(`institution/${institutionID}/private/teams`);
+
+    return teamsRef.on("value", snapshot => {
+      const teams = snapshot.val();
+      if (teams === null) {
+        dispatch(receiveTeams({}));
+      } else {
+        dispatch(receiveTeams(teams));
       }
     });
   };

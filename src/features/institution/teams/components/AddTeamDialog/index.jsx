@@ -375,20 +375,20 @@ class AddTeamDialog extends Component {
                     {
                       ageGroup,
                       division,
-                      sport,
+                      sport: sports[sport],
                       gender,
                       name: teamName
                     },
                     _.fromPairs(
-                      selectedCoaches.map(coachID => [
-                        coachID,
-                        coaches[coachID]
-                      ])
-                    ),
-                    _.fromPairs(
                       selectedManagers.map(managerID => [
                         managerID,
                         managers[managerID]
+                      ])
+                    ),
+                    _.fromPairs(
+                      selectedCoaches.map(coachID => [
+                        coachID,
+                        coaches[coachID]
                       ])
                     )
                   );

@@ -16,12 +16,12 @@ class TeamsList extends Component {
     return (
       <div className={classes.wrapper}>
         <Grid container direction="row" spacing={40} align="stretch">
-          {teams.map((teamInfo, index) => (
-            <Grid item xs={12} sm={12} md={6} lg={4} xl={3} key={index}>
+          {teams.map(teamInfo => (
+            <Grid item xs={12} sm={12} md={6} lg={4} xl={3} key={teamInfo.id}>
               <TeamCard
                 name={teamInfo.name}
                 sport={teamInfo.sport}
-                id={index}
+                id={teamInfo.id}
               />
             </Grid>
           ))}
