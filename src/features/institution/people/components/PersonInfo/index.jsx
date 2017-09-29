@@ -73,7 +73,7 @@ const styles = {
 class PersonInfo extends Component {
   render() {
     const { classes } = this.props;
-    const { sports, teams, paymentDefaults } = this.props.info;
+    const { preferredSports, teams, paymentDefaults } = this.props.info;
     const {
       name,
       surname,
@@ -180,9 +180,9 @@ class PersonInfo extends Component {
                 Sports
               </Typography>
               <List>
-                {sports &&
-                  sports.map(sport => (
-                    <ListItem key={sport}>
+                {preferredSports &&
+                  _.toPairs(preferredSports).map(([sportID, sport]) => (
+                    <ListItem key={sportID}>
                       <ListItemText primary={sport} />
                     </ListItem>
                   ))}
