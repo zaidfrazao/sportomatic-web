@@ -13,6 +13,7 @@ const styles = {
 class TeamsList extends Component {
   render() {
     const { classes, teams } = this.props;
+    const { openDeleteTeamAlert } = this.props.actions;
     return (
       <div className={classes.wrapper}>
         <Grid container direction="row" spacing={40} align="stretch">
@@ -22,6 +23,7 @@ class TeamsList extends Component {
                 name={teamInfo.name}
                 sport={teamInfo.sport}
                 id={teamInfo.id}
+                actions={{ deleteTeam: openDeleteTeamAlert }}
               />
             </Grid>
           ))}

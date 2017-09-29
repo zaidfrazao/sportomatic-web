@@ -57,6 +57,7 @@ const styles = theme => ({
 class TeamCard extends Component {
   render() {
     const { classes, sport, name, id } = this.props;
+    const { deleteTeam } = this.props.actions;
     return (
       <Card className={classes.card}>
         <CardContent className={classes.cardContent}>
@@ -80,7 +81,7 @@ class TeamCard extends Component {
             )}
           />
           <Tooltip label="Delete team" placement="bottom">
-            <IconButton aria-label="Delete team">
+            <IconButton aria-label="Delete team" onClick={() => deleteTeam()}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>

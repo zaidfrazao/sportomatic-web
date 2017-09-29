@@ -11,6 +11,7 @@ import TeamsList from "./components/TeamsList";
 import TeamInfo from "./components/TeamInfo";
 import AddTeamDialog from "./components/AddTeamDialog";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import NotificationModal from "../../../components/NotificationModal";
 import _ from "lodash";
 
 const styles = theme => ({
@@ -74,18 +75,24 @@ class TeamsLayout extends Component {
 
   render() {
     const { classes, teams, options, coaches, managers, userID } = this.props;
-    const { isAddTeamDialogOpen } = this.props.dialogs;
+    const {
+      isAddTeamDialogOpen,
+      isEditTeamAlertOpen,
+      isDeleteTeamAlertOpen
+    } = this.props.dialogs;
     const { isAddTeamDialogLoading, isTeamsLoading } = this.props.loadingStatus;
     const {
       openAddTeamDialog,
       closeAddTeamDialog,
       loadStaff,
       loadOptions,
-      addTeam
+      addTeam,
+      openEditTeamAlert,
+      closeEditTeamAlert,
+      openDeleteTeamAlert,
+      closeDeleteTeamAlert
     } = this.props.actions;
     const { teamID } = this.props.match.params;
-
-    console.log(this.props.loadingStatus);
 
     const teamsList = _.toPairs(teams).map(keyValuePair => {
       return {
@@ -105,9 +112,16 @@ class TeamsLayout extends Component {
               color="accent"
               aria-label="edit team"
               className={classes.button}
+              onClick={() => openEditTeamAlert()}
             >
               <EditIcon />
             </Button>
+            <NotificationModal
+              isOpen={isEditTeamAlertOpen}
+              handleOkClick={closeEditTeamAlert}
+              heading="Unavailable in Beta"
+              message="The ability to edit teams is unavailable in this version of the beta."
+            />
           </div>
         ) : (
           <div
@@ -123,7 +137,7 @@ class TeamsLayout extends Component {
                 <CircularProgress />
               </div>
             ) : (
-              <TeamsList teams={teamsList} />
+              <TeamsList teams={teamsList} actions={{ openDeleteTeamAlert }} />
             )}
             <Button
               fab
@@ -138,6 +152,12 @@ class TeamsLayout extends Component {
             >
               <AddIcon />
             </Button>
+            <NotificationModal
+              isOpen={isDeleteTeamAlertOpen}
+              handleOkClick={closeDeleteTeamAlert}
+              heading="Unavailable in Beta"
+              message="The ability to delete teams is unavailable in this version of the beta."
+            />
           </div>
         )}
         <AddTeamDialog

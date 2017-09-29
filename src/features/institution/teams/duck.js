@@ -30,12 +30,22 @@ export const REQUEST_TEAMS = "sportomatic-web/institution/teams/REQUEST_TEAMS";
 export const RECEIVE_TEAMS = "sportomatic-web/institution/teams/RECEIVE_TEAMS";
 export const ERROR_LOADING_TEAMS =
   "sportomatic-web/institution/teams/ERROR_LOADING_TEAMS";
+export const OPEN_EDIT_TEAM_ALERT =
+  "sportomatic-web/institution/teams/OPEN_EDIT_TEAM_ALERT";
+export const CLOSE_EDIT_TEAM_ALERT =
+  "sportomatic-web/institution/teams/CLOSE_EDIT_TEAM_ALERT";
+export const OPEN_DELETE_TEAM_ALERT =
+  "sportomatic-web/institution/teams/OPEN_DELETE_TEAM_ALERT";
+export const CLOSE_DELETE_TEAM_ALERT =
+  "sportomatic-web/institution/teams/CLOSE_DELETE_TEAM_ALERT";
 
 // Reducers
 
 export const dialogsInitialState = {
   isAddTeamDialogOpen: false,
-  isErrorAddingTeamAlertOpen: false
+  isErrorAddingTeamAlertOpen: false,
+  isEditTeamAlertOpen: false,
+  isDeleteTeamAlertOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
@@ -56,6 +66,26 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
         ...state,
         isAddTeamDialogOpen: false,
         isErrorAddingTeamAlertOpen: true
+      };
+    case OPEN_EDIT_TEAM_ALERT:
+      return {
+        ...state,
+        isEditTeamAlertOpen: true
+      };
+    case CLOSE_EDIT_TEAM_ALERT:
+      return {
+        ...state,
+        isEditTeamAlertOpen: false
+      };
+    case OPEN_DELETE_TEAM_ALERT:
+      return {
+        ...state,
+        isDeleteTeamAlertOpen: true
+      };
+    case CLOSE_DELETE_TEAM_ALERT:
+      return {
+        ...state,
+        isDeleteTeamAlertOpen: false
       };
     default:
       return state;
@@ -173,6 +203,30 @@ export const selector = createStructuredSelector({
 });
 
 // Action Creators
+
+export function openEditTeamAlert() {
+  return {
+    type: OPEN_EDIT_TEAM_ALERT
+  };
+}
+
+export function closeEditTeamAlert() {
+  return {
+    type: CLOSE_EDIT_TEAM_ALERT
+  };
+}
+
+export function openDeleteTeamAlert() {
+  return {
+    type: OPEN_DELETE_TEAM_ALERT
+  };
+}
+
+export function closeDeleteTeamAlert() {
+  return {
+    type: CLOSE_DELETE_TEAM_ALERT
+  };
+}
 
 export function openAddTeamDialog() {
   return {
