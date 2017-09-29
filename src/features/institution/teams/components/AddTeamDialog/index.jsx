@@ -169,9 +169,9 @@ class AddTeamDialog extends Component {
       }
     } else {
       if (genderType === "MALE") {
-        genderOptions = { MALE: "Men" };
+        genderOptions = { MALE: "Boys" };
       } else if (genderType === "FEMALE") {
-        genderOptions = { FEMALE: "Women" };
+        genderOptions = { FEMALE: "Girls" };
       }
     }
 
@@ -318,10 +318,25 @@ class AddTeamDialog extends Component {
   };
 
   render() {
-    const { classes, isOpen, isLoading } = this.props;
-    const { handleClose } = this.props.actions;
+    const {
+      classes,
+      isOpen,
+      isLoading,
+      institutionID,
+      coaches,
+      managers
+    } = this.props;
+    const { handleClose, addTeam } = this.props.actions;
     const { ageGroups, divisions, sports, genderType } = this.props.options;
-    const { ageGroup, division, sport, gender, teamName } = this.state;
+    const {
+      ageGroup,
+      division,
+      sport,
+      gender,
+      teamName,
+      selectedCoaches,
+      selectedManagers
+    } = this.state;
     const genderOptions = this.setGenderOptions(ageGroup, genderType);
     const relevantCoaches = this.getRelevantCoaches(sport);
     const relevantManagers = this.getRelevantManagers(sport);
@@ -345,7 +360,41 @@ class AddTeamDialog extends Component {
             <Typography type="title" color="inherit" className={classes.flex}>
               Add Team
             </Typography>
-            <Button color="contrast" onClick={() => handleClose()}>
+            <Button
+              color="contrast"
+              onClick={() => {
+                if (
+                  teamName.length === 0 ||
+                  selectedManagers.length === 0 ||
+                  selectedCoaches.length === 0
+                ) {
+                  console.log("ERROR");
+                } else {
+                  addTeam(
+                    institutionID,
+                    {
+                      ageGroup,
+                      division,
+                      sport,
+                      gender,
+                      name: teamName
+                    },
+                    _.fromPairs(
+                      selectedCoaches.map(coachID => [
+                        coachID,
+                        coaches[coachID]
+                      ])
+                    ),
+                    _.fromPairs(
+                      selectedManagers.map(managerID => [
+                        managerID,
+                        managers[managerID]
+                      ])
+                    )
+                  );
+                }
+              }}
+            >
               save
             </Button>
           </Toolbar>

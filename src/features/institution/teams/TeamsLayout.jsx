@@ -44,7 +44,8 @@ class TeamsLayout extends Component {
       openAddTeamDialog,
       closeAddTeamDialog,
       loadStaff,
-      loadOptions
+      loadOptions,
+      addTeam
     } = this.props.actions;
     const { teamID } = this.props.match.params;
 
@@ -86,10 +87,11 @@ class TeamsLayout extends Component {
         <AddTeamDialog
           isOpen={isAddTeamDialogOpen}
           isLoading={isAddTeamDialogLoading}
+          institutionID={userID}
           options={options}
           coaches={coaches}
           managers={managers}
-          actions={{ handleClose: closeAddTeamDialog }}
+          actions={{ handleClose: closeAddTeamDialog, addTeam }}
         />
       </div>
     );

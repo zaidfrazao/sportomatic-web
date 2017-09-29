@@ -23,11 +23,17 @@ export const RECEIVE_OPTIONS =
   "sportomatic-web/institution/teams/RECEIVE_OPTIONS";
 export const ERROR_LOADING_OPTIONS =
   "sportomatic-web/institution/teams/ERROR_LOADING_OPTIONS";
-
+export const REQUEST_ADD_TEAM =
+  "sportomatic-web/institution/teams/REQUEST_ADD_TEAM";
+export const RECEIVE_ADD_TEAM =
+  "sportomatic-web/institution/teams/RECEIVE_ADD_TEAM";
+export const ERROR_ADDING_TEAM =
+  "sportomatic-web/institution/teams/ERROR_ADDING_TEAM";
 // Reducers
 
 export const dialogsInitialState = {
-  isAddTeamDialogOpen: false
+  isAddTeamDialogOpen: false,
+  isErrorAddingTeamAlertOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
@@ -37,10 +43,17 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
         ...state,
         isAddTeamDialogOpen: true
       };
+    case RECEIVE_ADD_TEAM:
     case CLOSE_ADD_TEAM_DIALOG:
       return {
         ...state,
         isAddTeamDialogOpen: false
+      };
+    case ERROR_ADDING_TEAM:
+      return {
+        ...state,
+        isAddTeamDialogOpen: false,
+        isErrorAddingTeamAlertOpen: true
       };
     default:
       return state;
@@ -48,22 +61,9 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 }
 
 export const optionsInitialState = {
-  ageGroups: {
-    "12": "U/12",
-    "13": "U/13",
-    "18": "U/18"
-  },
-  divisions: {
-    A: "A",
-    B: "B",
-    C: "C",
-    "1st": "1st Team"
-  },
-  sports: {
-    "-Kcb7s4Qhl4H4W0sTxA-": "Athletics",
-    y: "Swimming",
-    z: "Squash"
-  },
+  ageGroups: { "12": "U/12" },
+  divisions: { A: "A" },
+  sports: { "-Kcb7s4Qhl4H4W0sTxA-": "Athletics" },
   genderType: "MIXED"
 };
 
@@ -82,11 +82,17 @@ export const loadingStatusInitialState = {
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
+    case REQUEST_ADD_TEAM:
+    case REQUEST_OPTIONS:
     case REQUEST_STAFF:
       return {
         ...state,
         isAddTeamDialogLoading: true
       };
+    case ERROR_ADDING_TEAM:
+    case RECEIVE_ADD_TEAM:
+    case ERROR_LOADING_OPTIONS:
+    case RECEIVE_OPTIONS:
     case ERROR_LOADING_STAFF:
     case RECEIVE_STAFF:
       return {
@@ -381,5 +387,46 @@ export function loadOptions(institutionID) {
       const institutionInfo = snapshot.val();
       dispatch(receiveOptions(institutionInfo));
     });
+  };
+}
+
+export function requestAddTeam() {
+  return {
+    type: REQUEST_ADD_TEAM
+  };
+}
+
+export function receiveAddTeam() {
+  return {
+    type: RECEIVE_ADD_TEAM
+  };
+}
+
+export function errorAddingTeam(error: { code: string, message: string }) {
+  return {
+    type: ERROR_ADDING_TEAM,
+    payload: {
+      error
+    }
+  };
+}
+
+export function addTeam(institutionID, teamInfo, managers, coaches) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestAddTeam());
+    const newTeamRef = firebase
+      .database()
+      .ref(`institution/${institutionID}/private/teams`)
+      .push();
+
+    return newTeamRef
+      .set({
+        status: "ACTIVE",
+        metadata: { ...teamInfo },
+        coaches,
+        managers
+      })
+      .then(() => dispatch(receiveAddTeam()))
+      .catch(error => dispatch(errorAddingTeam(error)));
   };
 }
