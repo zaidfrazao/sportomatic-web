@@ -156,17 +156,25 @@ class CoreInterfaceLayout extends Component {
   }
 
   render() {
-    const { classes, uiConfig } = this.props;
+    const { classes } = this.props;
     const { toggleSideMenu, signOut } = this.props.actions;
     const { windowWidth } = this.state;
+    const {
+      userID,
+      isLoggedIn,
+      type,
+      appBarTitle,
+      isSideMenuOpen,
+      bottomNavValue
+    } = this.props.uiConfig;
     const isMobile = windowWidth < 600;
     const isTablet = windowWidth < 960;
 
-    if (!uiConfig.isLoggedIn) {
+    if (!isLoggedIn) {
       return <Redirect to="/sign-in" />;
     }
 
-    if (uiConfig.type !== "INSTITUTION") {
+    if (type !== "INSTITUTION") {
       return <Redirect to="/sign-in" />;
     }
 
@@ -174,13 +182,13 @@ class CoreInterfaceLayout extends Component {
       <div className={classes.root}>
         <div className={classes.appFrame}>
           <CustomAppBar
-            title={uiConfig.appBarTitle}
-            isSideMenuOpen={uiConfig.isSideMenuOpen}
+            title={appBarTitle}
+            isSideMenuOpen={isSideMenuOpen}
             actions={{ toggleSideMenu, signOut }}
             isMobile={isMobile}
           />
           <SideMenu
-            isOpen={uiConfig.isSideMenuOpen}
+            isOpen={isSideMenuOpen}
             actions={{
               toggleSideMenu
             }}
@@ -199,28 +207,40 @@ class CoreInterfaceLayout extends Component {
                   <Hours isMobile={isMobile} isTablet={isTablet} />
                 </Route>
                 <Route exact path={`/institution/people/`}>
-                  <People userID={uiConfig.userID} isMobile={isMobile} />
+                  <People userID={userID} isMobile={isMobile} />
                 </Route>
                 <Route path={`/institution/people/:personID`}>
-                  <People userID={uiConfig.userID} isMobile={isMobile} />
+                  <People userID={userID} isMobile={isMobile} />
                 </Route>
                 <Route exact path={`/institution/teams/`}>
-                  <Teams userID={uiConfig.userID} />
+                  <Teams userID={userID} />
                 </Route>
                 <Route path={`/institution/teams/:teamID`}>
-                  <Teams userID={uiConfig.userID} />
+                  <Teams userID={userID} />
                 </Route>
                 <Route exact path={`/institution/schedule/`}>
-                  <Schedule isMobile={isMobile} isTablet={isTablet} />
+                  <Schedule
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                  />
                 </Route>
                 <Route exact path={`/institution/schedule/:dateSelected`}>
-                  <Schedule isMobile={isMobile} isTablet={isTablet} />
+                  <Schedule
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                  />
                 </Route>
                 <Route
                   exact
                   path={`/institution/schedule/:dateSelected/:eventID`}
                 >
-                  <Schedule isMobile={isMobile} isTablet={isTablet} />
+                  <Schedule
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                  />
                 </Route>
                 <Route exact path={`/institution/settings/`}>
                   <Settings />
@@ -233,7 +253,7 @@ class CoreInterfaceLayout extends Component {
                 </Route>
               </Switch>
             </div>
-            {isMobile && <BottomNav value={uiConfig.bottomNavValue} />}
+            {isMobile && <BottomNav value={bottomNavValue} />}
           </div>
         </div>
       </div>

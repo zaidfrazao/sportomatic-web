@@ -1,18 +1,57 @@
 // @flow
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
-import rowanPicture from "./images/rowan.jpg";
-import brettPicture from "./images/brett.jpg";
+import firebase from "firebase";
+import _ from "lodash";
 
 // Actions
 
+export const OPEN_ADD_EVENT_DIALOG =
+  "sportomatic-web/institution/schedule/OPEN_ADD_EVENT_DIALOG";
+export const CLOSE_ADD_EVENT_DIALOG =
+  "sportomatic-web/institution/schedule/CLOSE_ADD_EVENT_DIALOG";
+export const REQUEST_EVENTS =
+  "sportomatic-web/institution/schedule/REQUEST_EVENTS";
+export const RECEIVE_EVENTS =
+  "sportomatic-web/institution/schedule/RECEIVE_EVENTS";
+export const ERROR_LOADING_EVENTS =
+  "sportomatic-web/institution/schedule/ERROR_LOADING_EVENTS";
+export const REQUEST_ADD_EVENT =
+  "sportomatic-web/institution/schedule/REQUEST_ADD_EVENT";
+export const RECEIVE_ADD_EVENT =
+  "sportomatic-web/institution/schedule/RECEIVE_ADD_EVENT";
+export const ERROR_ADDING_EVENT =
+  "sportomatic-web/institution/schedule/ERROR_ADDING_EVENT";
+export const OPEN_EDIT_EVENT_DIALOG =
+  "sportomatic-web/institution/schedule/OPEN_EDIT_EVENT_DIALOG";
+export const CLOSE_EDIT_EVENT_DIALOG =
+  "sportomatic-web/institution/schedule/CLOSE_EDIT_EVENT_DIALOG";
+export const OPEN_CANCEL_EVENT_ALERT =
+  "sportomatic-web/institution/schedule/OPEN_CANCEL_EVENT_ALERT";
+export const CLOSE_CANCEL_EVENT_ALERT =
+  "sportomatic-web/institution/schedule/CLOSE_CANCEL_EVENT_ALERT";
+export const OPEN_UNCANCEL_EVENT_ALERT =
+  "sportomatic-web/institution/schedule/OPEN_CANCEL_EVENT_ALERT";
+export const CLOSE_UNCANCEL_EVENT_ALERT =
+  "sportomatic-web/institution/schedule/CLOSE_CANCEL_EVENT_ALERT";
 export const UPDATE_CURRENT_VIEW =
   "sportomatic-web/institution/schedule/UPDATE_CURRENT_VIEW";
+export const REQUEST_STAFF =
+  "sportomatic-web/institution/schedule/REQUEST_STAFF";
+export const RECEIVE_STAFF =
+  "sportomatic-web/institution/schedule/RECEIVE_STAFF";
+export const ERROR_LOADING_STAFF =
+  "sportomatic-web/institution/schedule/ERROR_LOADING_STAFF";
+export const REQUEST_TEAMS =
+  "sportomatic-web/institution/schedule/REQUEST_TEAMS";
+export const RECEIVE_TEAMS =
+  "sportomatic-web/institution/schedule/RECEIVE_TEAMS";
+export const ERROR_LOADING_TEAMS =
+  "sportomatic-web/institution/schedule/ERROR_LOADING_TEAMS";
 
 // Reducers
 
 export const uiConfigInitialState = {
-  isLoading: false,
   currentView: "SCHEDULE"
 };
 
@@ -28,72 +67,140 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   }
 }
 
-export const eventsListInitialState = {
-  "2017-8-18": [
-    {
-      id: "xyz",
-      title: "U/16 A Rugby Boys Match",
-      eventType: "COMPETITIVE",
-      eventTypeName: "Match",
-      startTime: 1508328000000,
-      endTime: 1508335200000,
-      isCanceled: false,
-      venue: "Sportomatic Grounds",
-      notes:
-        "Please remember to fill in and bring your pedo forms to practice.",
-      matchInfo: {
-        opponents: "Parktown Boys High School",
-        homeAway: "Home"
-      },
-      teams: [
-        {
-          id: "0",
-          name: "U/16 A Rugby Boys Practice",
-          sport: "Rugby"
-        }
-      ],
-      managers: [
-        {
-          id: "0",
-          name: "Brett",
-          surname: "Cook",
-          profilePictureURL: brettPicture,
-          phoneNumber: "(073) 812-1122"
-        }
-      ],
-      coaches: [
-        {
-          name: "Rowan",
-          surname: "Walker-Campbell",
-          profilePictureURL: rowanPicture,
-          phoneNumber: "(084) 291-0482",
-          hasFillIn: false,
-          wasAbsent: false,
-          hours: {
-            stage: "APPROVED",
-            signInTime: 1508328000000,
-            signOutTime: 1508335200000,
-            standardMinutes: 120,
-            overtimeMinutes: 0,
-            startTimeDelta: 0,
-            endTimeDelta: 0
-          },
-          wages: {
-            type: "HOURLY",
-            standardHourlyRate: 100,
-            overtimeHourlyRate: 150,
-            standardWage: 200,
-            overtimeWage: 0,
-            totalWage: 200
-          }
-        }
-      ]
-    }
-  ]
+export const dialogsInitialState = {
+  isAddEventDialogOpen: false,
+  isEditEventDialogOpen: false,
+  isCancelEventAlertOpen: false,
+  isUncancelEventAlertOpen: false,
+  isErrorAddingEventAlertOpen: false
 };
 
-function eventsListReducer(state = eventsListInitialState, action = {}) {
+function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
+    case OPEN_ADD_EVENT_DIALOG:
+      return {
+        ...state,
+        isAddEventDialogOpen: true
+      };
+    case RECEIVE_ADD_EVENT:
+    case CLOSE_ADD_EVENT_DIALOG:
+      return {
+        ...state,
+        isAddEventDialogOpen: false
+      };
+    case ERROR_ADDING_EVENT:
+      return {
+        ...state,
+        isAddEventDialogOpen: false,
+        isErrorAddingEventAlertOpen: true
+      };
+    case OPEN_EDIT_EVENT_DIALOG:
+      return {
+        ...state,
+        isEditEventDialogOpen: true
+      };
+    case CLOSE_EDIT_EVENT_DIALOG:
+      return {
+        ...state,
+        isEditEventDialogOpen: false
+      };
+    case OPEN_CANCEL_EVENT_ALERT:
+      return {
+        ...state,
+        isCancelEventAlertOpen: true
+      };
+    case CLOSE_CANCEL_EVENT_ALERT:
+      return {
+        ...state,
+        isCancelEventAlertOpen: false
+      };
+    case OPEN_UNCANCEL_EVENT_ALERT:
+      return {
+        ...state,
+        isUncancelEventAlertOpen: true
+      };
+    case CLOSE_UNCANCEL_EVENT_ALERT:
+      return {
+        ...state,
+        isUncancelEventAlertOpen: false
+      };
+    default:
+      return state;
+  }
+}
+
+export const loadingStatusInitialState = {
+  isAddEventDialogLoading: false,
+  isEditEventDialogLoading: false,
+  isEventsLoading: false
+};
+
+function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
+  switch (action.type) {
+    case REQUEST_STAFF:
+    case REQUEST_TEAMS:
+    case REQUEST_ADD_EVENT:
+      return {
+        ...state,
+        isAddEventDialogLoading: true
+      };
+    case ERROR_LOADING_TEAMS:
+    case RECEIVE_TEAMS:
+    case ERROR_LOADING_STAFF:
+    case RECEIVE_STAFF:
+    case ERROR_ADDING_EVENT:
+    case RECEIVE_ADD_EVENT:
+      return {
+        ...state,
+        isAddEventDialogLoading: false
+      };
+    case REQUEST_EVENTS:
+      return {
+        ...state,
+        isEventsLoading: true
+      };
+    case ERROR_LOADING_EVENTS:
+    case RECEIVE_EVENTS:
+      return {
+        ...state,
+        isEventsLoading: false
+      };
+    default:
+      return state;
+  }
+}
+
+function eventsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RECEIVE_EVENTS:
+      return action.payload.events;
+    default:
+      return state;
+  }
+}
+
+function coachesReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RECEIVE_STAFF:
+      return action.payload.coaches;
+    default:
+      return state;
+  }
+}
+
+function managersReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RECEIVE_STAFF:
+      return action.payload.managers;
+    default:
+      return state;
+  }
+}
+
+function teamsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RECEIVE_TEAMS:
+      return action.payload.teams;
     default:
       return state;
   }
@@ -101,17 +208,32 @@ function eventsListReducer(state = eventsListInitialState, action = {}) {
 
 export const scheduleReducer = combineReducers({
   uiConfig: uiConfigReducer,
-  eventsList: eventsListReducer
+  dialogs: dialogsReducer,
+  events: eventsReducer,
+  loadingStatus: loadingStatusReducer,
+  teams: teamsReducer,
+  coaches: coachesReducer,
+  managers: managersReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.institution.schedule.uiConfig;
-const events = state => state.institution.schedule.eventsList;
+const dialogs = state => state.institution.schedule.dialogs;
+const events = state => state.institution.schedule.events;
+const loadingStatus = state => state.institution.schedule.loadingStatus;
+const teams = state => state.institution.schedule.teams;
+const coaches = state => state.institution.schedule.coaches;
+const managers = state => state.institution.schedule.managers;
 
 export const selector = createStructuredSelector({
   uiConfig,
-  events
+  dialogs,
+  events,
+  loadingStatus,
+  teams,
+  coaches,
+  managers
 });
 
 // Action Creators
@@ -122,5 +244,244 @@ export function updateView(newView) {
     payload: {
       newView
     }
+  };
+}
+
+export function openEditEventDialog() {
+  return {
+    type: OPEN_EDIT_EVENT_DIALOG
+  };
+}
+
+export function closeEditEventDialog() {
+  return {
+    type: CLOSE_EDIT_EVENT_DIALOG
+  };
+}
+
+export function openCancelEventAlert() {
+  return {
+    type: OPEN_CANCEL_EVENT_ALERT
+  };
+}
+
+export function closeCancelEventAlert() {
+  return {
+    type: CLOSE_CANCEL_EVENT_ALERT
+  };
+}
+
+export function openAddEventDialog() {
+  return {
+    type: OPEN_ADD_EVENT_DIALOG
+  };
+}
+
+export function closeAddEventDialog() {
+  return {
+    type: CLOSE_ADD_EVENT_DIALOG
+  };
+}
+
+export function requestEvents() {
+  return {
+    type: REQUEST_EVENTS
+  };
+}
+
+export function receiveEvents(events) {
+  return {
+    type: RECEIVE_EVENTS,
+    payload: {
+      events
+    }
+  };
+}
+
+export function errorLoadingEvents(error: { code: string, message: string }) {
+  return {
+    type: ERROR_LOADING_EVENTS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadEvents(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEvents());
+    const teamsRef = firebase
+      .database()
+      .ref(`institution/${institutionID}/private/events`);
+
+    return teamsRef.on("value", snapshot => {
+      const teams = snapshot.val();
+      if (teams === null) {
+        dispatch(receiveEvents({}));
+      } else {
+        dispatch(receiveEvents(teams));
+      }
+    });
+  };
+}
+
+export function requestAddEvent() {
+  return {
+    type: REQUEST_ADD_EVENT
+  };
+}
+
+export function receiveAddEvent() {
+  return {
+    type: RECEIVE_ADD_EVENT
+  };
+}
+
+export function errorAddingEvent(error: { code: string, message: string }) {
+  return {
+    type: ERROR_ADDING_EVENT,
+    payload: {
+      error
+    }
+  };
+}
+
+export function addEvent(institutionID, eventInfo, teams, managers, coaches) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestAddEvent());
+    const newEventID = firebase
+      .database()
+      .ref(`institution/${institutionID}/private/events`)
+      .push().key;
+    const newEventInfo = {
+      status: "ACTIVE",
+      metadata: { ...eventInfo },
+      teams,
+      coaches,
+      managers
+    };
+    const managerUpdates = _.fromPairs(
+      _.toPairs(managers).map(([managerID, managerInfo]) => {
+        return [
+          `manager/${managerID}/private/institutions/${institutionID}/events/${newEventID}`,
+          newEventInfo
+        ];
+      })
+    );
+    const coachUpdates = _.fromPairs(
+      _.toPairs(coaches).map(([coachID, coachInfo]) => {
+        return [
+          `coach/${coachID}/private/institutions/${institutionID}/events/${newEventID}`,
+          newEventInfo
+        ];
+      })
+    );
+    const updates = {
+      [`institution/${institutionID}/private/events/${newEventID}`]: newEventInfo,
+      ...coachUpdates,
+      ...managerUpdates
+    };
+
+    return firebase
+      .database()
+      .ref()
+      .update(updates)
+      .then(() => dispatch(receiveAddEvent()))
+      .catch(error => dispatch(errorAddingEvent(error)));
+  };
+}
+
+export function requestStaff() {
+  return {
+    type: REQUEST_STAFF
+  };
+}
+
+export function receiveStaff(staff) {
+  const managers = _.fromPairs(
+    _.toPairs(staff).filter(
+      keyValuePairs => keyValuePairs[1].metadata.type === "MANAGER"
+    )
+  );
+  const coaches = _.fromPairs(
+    _.toPairs(staff).filter(
+      keyValuePairs => keyValuePairs[1].metadata.type === "COACH"
+    )
+  );
+  return {
+    type: RECEIVE_STAFF,
+    payload: {
+      managers,
+      coaches
+    }
+  };
+}
+
+export function errorLoadingStaff(error: { code: string, message: string }) {
+  return {
+    type: ERROR_LOADING_STAFF,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadStaff(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestStaff());
+    const staffRef = firebase
+      .database()
+      .ref(`institution/${institutionID}/private/staff`);
+
+    return staffRef.on("value", snapshot => {
+      const staff = snapshot.val();
+      if (staff === null) {
+        dispatch(receiveStaff({}));
+      } else {
+        dispatch(receiveStaff(staff));
+      }
+    });
+  };
+}
+
+export function requestTeams() {
+  return {
+    type: REQUEST_TEAMS
+  };
+}
+
+export function receiveTeams(teams) {
+  return {
+    type: RECEIVE_TEAMS,
+    payload: {
+      teams
+    }
+  };
+}
+
+export function errorLoadingTeams(error: { code: string, message: string }) {
+  return {
+    type: ERROR_LOADING_TEAMS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadTeams(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestTeams());
+    const teamsRef = firebase
+      .database()
+      .ref(`institution/${institutionID}/private/teams`);
+
+    return teamsRef.on("value", snapshot => {
+      const teams = snapshot.val();
+      if (teams === null) {
+        dispatch(receiveTeams({}));
+      } else {
+        dispatch(receiveTeams(teams));
+      }
+    });
   };
 }

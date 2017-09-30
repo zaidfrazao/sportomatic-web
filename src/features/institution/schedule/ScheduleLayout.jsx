@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { lightBlue } from "material-ui/colors";
+import { CircularProgress } from "material-ui/Progress";
 import AddIcon from "material-ui-icons/Add";
 import Button from "material-ui/Button";
 import EditIcon from "material-ui-icons/Edit";
@@ -12,6 +13,7 @@ import LeaderboardAd from "../../../components/LeaderboardAd";
 import Calendar from "./components/Calendar";
 import EventInfo from "./components/EventInfo";
 import EventsList from "./components/EventsList";
+import AddEventDialog from "./components/AddEventDialog";
 
 const styles = theme => ({
   root: {
@@ -51,37 +53,81 @@ const styles = theme => ({
     "@media (min-width: 600px)": {
       bottom: 24
     }
+  },
+  loaderWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  contentWrapper: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
   }
 });
 
 class ScheduleLayout extends Component {
+  componentWillMount() {
+    const { userID } = this.props;
+    const { loadEvents } = this.props.actions;
+    loadEvents(userID);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { userID } = this.props;
+    const { loadEvents } = this.props.actions;
+
+    if (userID !== nextProps.userID) {
+      loadEvents(nextProps.userID);
+    }
+  }
+
   renderView() {
-    const { isTablet, isMobile, classes, events } = this.props;
+    const {
+      isTablet,
+      isMobile,
+      classes,
+      userID,
+      teams,
+      coaches,
+      managers
+    } = this.props;
     const { dateSelected } = this.props.match.params;
     const { currentView } = this.props.uiConfig;
-    const { updateView } = this.props.actions;
+    const {
+      updateView,
+      openAddEventDialog,
+      closeAddEventDialog,
+      loadTeams,
+      loadStaff
+    } = this.props.actions;
+    const {
+      isEventsLoading,
+      isAddEventDialogLoading
+    } = this.props.loadingStatus;
+    const { isAddEventDialogOpen } = this.props.dialogs;
 
     const currentDate = new Date(Date.now());
-    const dateSelectedComponents = dateSelected
-      ? dateSelected.split("-")
-      : [
-          currentDate.getDate(),
-          currentDate.getMonth(),
-          currentDate.getFullYear()
-        ];
 
     if (!dateSelected) {
       return (
         <Redirect
-          to={`/institution/schedule/${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`}
+          to={`/institution/schedule/${currentDate.toISOString().slice(0, 10)}`}
         />
       );
     }
 
     if (currentView === "EVENT_INFO") {
       return (
-        <div>
-          <EventInfo info={events["2017-8-18"][0]} actions={{ updateView }} />
+        <div className={classes.contentWrapper}>
+          {isEventsLoading ? (
+            <div className={classes.loaderWrapper}>
+              <CircularProgress />
+            </div>
+          ) : (
+            <EventInfo info={{}} actions={{ updateView }} />
+          )}
           <Button
             fab
             color="accent"
@@ -98,69 +144,115 @@ class ScheduleLayout extends Component {
       if (currentView === "EVENTS_LIST") {
         return (
           <div className={classes.tabletEventsListWrapper}>
-            <EventsList
-              isTablet={isTablet}
-              dateSelected={new Date(...dateSelectedComponents)}
-              events={events[dateSelected] || []}
-              actions={{ updateView }}
-            />
+            {isEventsLoading ? (
+              <div className={classes.loaderWrapper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <EventsList
+                isTablet={isTablet}
+                dateSelected={new Date(dateSelected)}
+                events={[]}
+                actions={{ updateView }}
+              />
+            )}
             <Button
               fab
               color="accent"
               aria-label="add event"
               className={classes.button}
+              onClick={() => {
+                loadTeams(userID);
+                loadStaff(userID);
+                openAddEventDialog();
+              }}
             >
               <AddIcon />
             </Button>
+            <AddEventDialog
+              isOpen={isAddEventDialogOpen}
+              isLoading={isAddEventDialogLoading}
+              minDate={currentDate.toISOString().slice(0, 10)}
+              teams={teams}
+              coaches={coaches}
+              managers={managers}
+              actions={{ handleClose: closeAddEventDialog }}
+            />
           </div>
         );
       } else {
         return (
-          <div>
+          <div className={classes.contentWrapper}>
             <div className={classes.adWrapper}>
               <LeaderboardAd />
             </div>
-            <Calendar
-              dateSelected={new Date(...dateSelectedComponents)}
-              isMobile={isMobile}
-              isTablet={isTablet}
-              actions={{ updateView }}
-            />
+            {isEventsLoading ? (
+              <div className={classes.loaderWrapper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <Calendar
+                dateSelected={new Date(dateSelected)}
+                isMobile={isMobile}
+                isTablet={isTablet}
+                actions={{ updateView }}
+              />
+            )}
           </div>
         );
       }
     } else {
       return (
-        <div>
+        <div className={classes.contentWrapper}>
           <div className={classes.adWrapper}>
             <LeaderboardAd />
           </div>
-          <Paper className={classes.calendarWrapper}>
-            <div className={classes.desktopCalendar}>
-              <Calendar
-                dateSelected={new Date(...dateSelectedComponents)}
-                isMobile={isMobile}
-                isTablet={isTablet}
-                actions={{ updateView }}
-              />
+          {isEventsLoading ? (
+            <div className={classes.loaderWrapper}>
+              <CircularProgress />
             </div>
-            <div className={classes.desktopEventsList}>
-              <EventsList
-                isTablet={isTablet}
-                dateSelected={new Date(...dateSelectedComponents)}
-                events={events[dateSelected] || []}
-                actions={{ updateView }}
-              />
-            </div>
-          </Paper>
+          ) : (
+            <Paper className={classes.calendarWrapper}>
+              <div className={classes.desktopCalendar}>
+                <Calendar
+                  dateSelected={new Date(dateSelected)}
+                  isMobile={isMobile}
+                  isTablet={isTablet}
+                  actions={{ updateView }}
+                />
+              </div>
+              <div className={classes.desktopEventsList}>
+                <EventsList
+                  isTablet={isTablet}
+                  dateSelected={new Date(dateSelected)}
+                  events={[]}
+                  actions={{ updateView }}
+                />
+              </div>
+            </Paper>
+          )}
           <Button
             fab
             color="accent"
             aria-label="add event"
             className={classes.button}
+            onClick={() => {
+              loadTeams(userID);
+              loadStaff(userID);
+              openAddEventDialog();
+            }}
           >
             <AddIcon />
           </Button>
+          <AddEventDialog
+            isOpen={isAddEventDialogOpen}
+            isLoading={isAddEventDialogLoading}
+            minDate={currentDate.toISOString().slice(0, 10)}
+            teams={teams}
+            coaches={coaches}
+            managers={managers}
+            actions={{ handleClose: closeAddEventDialog }}
+          />
         </div>
       );
     }
