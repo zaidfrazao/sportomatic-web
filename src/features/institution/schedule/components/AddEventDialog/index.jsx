@@ -92,6 +92,7 @@ class AddEventDialog extends Component {
     frequency: "ONCE",
     numberOfEvents: "1",
     otherEventType: "",
+    notes: "",
     isOtherEventTypeCompetitive: false,
     selectedTeams: [],
     selectedManagers: [],
@@ -418,6 +419,7 @@ class AddEventDialog extends Component {
       opponents,
       homeAway,
       frequency,
+      notes,
       numberOfEvents,
       otherEventType,
       isOtherEventTypeCompetitive,
@@ -479,7 +481,8 @@ class AddEventDialog extends Component {
                   additionalInfo: {
                     venue,
                     opponents,
-                    homeAway
+                    homeAway,
+                    notes
                   }
                 };
                 if (hasTitleError || hasOtherEventTypeError || hasDateError) {
@@ -802,6 +805,8 @@ class AddEventDialog extends Component {
                     label="Event notes"
                     multiline
                     rows="4"
+                    value={notes}
+                    onChange={this.handleChange("notes")}
                     InputLabelProps={{
                       shrink: true
                     }}

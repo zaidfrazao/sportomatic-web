@@ -92,9 +92,10 @@ class ScheduleLayout extends Component {
       userID,
       teams,
       coaches,
-      managers
+      managers,
+      events
     } = this.props;
-    const { dateSelected } = this.props.match.params;
+    const { dateSelected, eventID } = this.props.match.params;
     const { currentView, errorType } = this.props.uiConfig;
     const {
       updateView,
@@ -116,6 +117,8 @@ class ScheduleLayout extends Component {
     } = this.props.dialogs;
 
     const currentDate = new Date(Date.now());
+    let yearSelected = "";
+    let monthSelected = "";
 
     if (!dateSelected) {
       return (
@@ -123,6 +126,9 @@ class ScheduleLayout extends Component {
           to={`/institution/schedule/${currentDate.toISOString().slice(0, 10)}`}
         />
       );
+    } else {
+      yearSelected = dateSelected.slice(0, 4);
+      monthSelected = dateSelected.slice(5, 7);
     }
 
     let addEventErrorAlertHeading = "Event Title Required";
@@ -152,7 +158,10 @@ class ScheduleLayout extends Component {
               <CircularProgress />
             </div>
           ) : (
-            <EventInfo info={{}} actions={{ updateView }} />
+            <EventInfo
+              info={events[yearSelected][monthSelected][eventID]}
+              actions={{ updateView }}
+            />
           )}
           <Button
             fab
@@ -177,8 +186,12 @@ class ScheduleLayout extends Component {
             ) : (
               <EventsList
                 isTablet={isTablet}
-                dateSelected={new Date(dateSelected)}
-                events={[]}
+                dateSelected={dateSelected}
+                events={
+                  (events[yearSelected] &&
+                    events[yearSelected][monthSelected]) ||
+                  {}
+                }
                 actions={{ updateView }}
               />
             )}
@@ -261,8 +274,12 @@ class ScheduleLayout extends Component {
               <div className={classes.desktopEventsList}>
                 <EventsList
                   isTablet={isTablet}
-                  dateSelected={new Date(dateSelected)}
-                  events={[]}
+                  dateSelected={dateSelected}
+                  events={
+                    (events[yearSelected] &&
+                      events[yearSelected][monthSelected]) ||
+                    {}
+                  }
                   actions={{ updateView }}
                 />
               </div>
