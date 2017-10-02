@@ -26,6 +26,10 @@ export const OPEN_EDIT_EVENT_DIALOG =
   "sportomatic-web/institution/schedule/OPEN_EDIT_EVENT_DIALOG";
 export const CLOSE_EDIT_EVENT_DIALOG =
   "sportomatic-web/institution/schedule/CLOSE_EDIT_EVENT_DIALOG";
+export const OPEN_ADD_EVENT_ERROR_ALERT =
+  "sportomatic-web/institution/schedule/OPEN_ADD_EVENT_ERROR_ALERT";
+export const CLOSE_ADD_EVENT_ERROR_ALERT =
+  "sportomatic-web/institution/schedule/CLOSE_ADD_EVENT_ERROR_ALERT";
 export const OPEN_CANCEL_EVENT_ALERT =
   "sportomatic-web/institution/schedule/OPEN_CANCEL_EVENT_ALERT";
 export const CLOSE_CANCEL_EVENT_ALERT =
@@ -52,7 +56,8 @@ export const ERROR_LOADING_TEAMS =
 // Reducers
 
 export const uiConfigInitialState = {
-  currentView: "SCHEDULE"
+  currentView: "SCHEDULE",
+  errorType: "NONE"
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -61,6 +66,16 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
       return {
         ...state,
         currentView: action.payload.newView
+      };
+    case OPEN_ADD_EVENT_ERROR_ALERT:
+      return {
+        ...state,
+        errorType: action.payload.errorType
+      };
+    case ERROR_ADDING_EVENT:
+      return {
+        ...state,
+        errorType: "LOADING"
       };
     default:
       return state;
@@ -72,7 +87,7 @@ export const dialogsInitialState = {
   isEditEventDialogOpen: false,
   isCancelEventAlertOpen: false,
   isUncancelEventAlertOpen: false,
-  isErrorAddingEventAlertOpen: false
+  isAddEventErrorAlertOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
@@ -92,7 +107,7 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
       return {
         ...state,
         isAddEventDialogOpen: false,
-        isErrorAddingEventAlertOpen: true
+        isAddEventErrorAlertOpen: true
       };
     case OPEN_EDIT_EVENT_DIALOG:
       return {
@@ -123,6 +138,16 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
       return {
         ...state,
         isUncancelEventAlertOpen: false
+      };
+    case OPEN_ADD_EVENT_ERROR_ALERT:
+      return {
+        ...state,
+        isAddEventErrorAlertOpen: true
+      };
+    case CLOSE_ADD_EVENT_ERROR_ALERT:
+      return {
+        ...state,
+        isAddEventErrorAlertOpen: false
       };
     default:
       return state;
@@ -247,6 +272,21 @@ export function updateView(newView) {
   };
 }
 
+export function openAddEventErrorAlert(errorType) {
+  return {
+    type: OPEN_ADD_EVENT_ERROR_ALERT,
+    payload: {
+      errorType
+    }
+  };
+}
+
+export function closeAddEventErrorAlert() {
+  return {
+    type: CLOSE_ADD_EVENT_ERROR_ALERT
+  };
+}
+
 export function openEditEventDialog() {
   return {
     type: OPEN_EDIT_EVENT_DIALOG
@@ -346,42 +386,166 @@ export function errorAddingEvent(error: { code: string, message: string }) {
   };
 }
 
-export function addEvent(institutionID, eventInfo, teams, managers, coaches) {
+export function getManagerUpdates(
+  institutionID,
+  managers,
+  year,
+  month,
+  newEventID,
+  newEventInfo
+) {
+  return _.fromPairs(
+    _.toPairs(managers).map(([managerID, managerInfo]) => {
+      return [
+        `manager/${managerID}/private/institutions/${institutionID}/events/${year}/${month}/${newEventID}`,
+        newEventInfo
+      ];
+    })
+  );
+}
+
+export function getCoachUpdates(
+  institutionID,
+  coaches,
+  year,
+  month,
+  newEventID,
+  newEventInfo
+) {
+  return _.fromPairs(
+    _.toPairs(coaches).map(([coachID, coachInfo]) => {
+      return [
+        `coach/${coachID}/private/institutions/${institutionID}/events/${year}/${month}/${newEventID}`,
+        newEventInfo
+      ];
+    })
+  );
+}
+
+export function addEvent(
+  institutionID,
+  eventInfo,
+  recurrencePattern,
+  teams,
+  managers,
+  coaches
+) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestAddEvent());
-    const newEventID = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/events`)
-      .push().key;
-    const newEventInfo = {
-      status: "ACTIVE",
-      metadata: { ...eventInfo },
-      teams,
-      coaches,
-      managers
-    };
-    const managerUpdates = _.fromPairs(
-      _.toPairs(managers).map(([managerID, managerInfo]) => {
-        return [
-          `manager/${managerID}/private/institutions/${institutionID}/events/${newEventID}`,
-          newEventInfo
-        ];
-      })
-    );
-    const coachUpdates = _.fromPairs(
+
+    // Distill required info from coaches & managers
+    const eventCoaches = _.fromPairs(
       _.toPairs(coaches).map(([coachID, coachInfo]) => {
         return [
-          `coach/${coachID}/private/institutions/${institutionID}/events/${newEventID}`,
-          newEventInfo
+          coachID,
+          {
+            name: coachInfo.metadata.name,
+            surname: coachInfo.metadata.surname,
+            profilePictureURL: coachInfo.metadata.profilePictureURL,
+            phoneNumber: coachInfo.metadata.phoneNumber,
+            hours: {
+              status: "AWAITING_SIGN_IN",
+              type: coachInfo.paymentDefaults.type,
+              standardHourlyRate: coachInfo.paymentDefaults.standardHourlyRate,
+              overtimeHourlyRate: coachInfo.paymentDefaults.overtimeHourlyRate
+            }
+          }
         ];
       })
     );
-    const updates = {
-      [`institution/${institutionID}/private/events/${newEventID}`]: newEventInfo,
-      ...coachUpdates,
-      ...managerUpdates
-    };
+    const eventManagers = _.fromPairs(
+      _.toPairs(managers).map(([managerID, managerInfo]) => {
+        return [
+          managerID,
+          {
+            name: managerInfo.metadata.name,
+            surname: managerInfo.metadata.surname,
+            profilePictureURL: managerInfo.metadata.profilePictureURL,
+            phoneNumber: managerInfo.metadata.phoneNumber
+          }
+        ];
+      })
+    );
 
+    // Set up recurring events
+    let instancePaths = [];
+    let eventsToCreate = [];
+    for (let i = 0; i < recurrencePattern.numberOfEvents; i++) {
+      const newEventID = firebase
+        .database()
+        .ref(`institution/${institutionID}/private/events`)
+        .push().key;
+
+      let date = new Date(eventInfo.date);
+      if (recurrencePattern.frequency === "WEEKLY") {
+        date = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate() + 7 * i
+        );
+      } else if (recurrencePattern.frequency === "MONTHLY") {
+        date = new Date(
+          date.getFullYear(),
+          date.getMonth() + 1 * i,
+          date.getDate()
+        );
+      }
+      const year = date.toISOString().slice(0, 4);
+      const month = date.toISOString().slice(5, 7);
+
+      instancePaths.push(`${year}/${month}/${newEventID}`);
+      date.setHours(date.getHours() + 2);
+      eventsToCreate.push({
+        id: newEventID,
+        date: date.toISOString().slice(0, 10),
+        year,
+        month
+      });
+    }
+
+    // Create events
+    let updates = {};
+    let managerUpdates = {};
+    let coachUpdates = {};
+    for (let i = 0; i < eventsToCreate.length; i++) {
+      const newEventInfo = {
+        status: "ACTIVE",
+        metadata: { ...eventInfo, date: eventsToCreate[i].date },
+        recurrencePattern: {
+          ...recurrencePattern,
+          instancePaths
+        },
+        teams,
+        coaches: eventCoaches,
+        managers: eventManagers
+      };
+      managerUpdates = getManagerUpdates(
+        institutionID,
+        managers,
+        eventsToCreate[i].year,
+        eventsToCreate[i].month,
+        eventsToCreate[i].id,
+        newEventInfo
+      );
+      coachUpdates = getCoachUpdates(
+        institutionID,
+        coaches,
+        eventsToCreate[i].year,
+        eventsToCreate[i].month,
+        eventsToCreate[i].id,
+        newEventInfo
+      );
+      updates = {
+        ...updates,
+        [`institution/${institutionID}/private/events/${eventsToCreate[i]
+          .year}/${eventsToCreate[i].month}/${eventsToCreate[i]
+          .id}`]: newEventInfo,
+        ...coachUpdates,
+        ...managerUpdates
+      };
+    }
+
+    // Save events to database
     return firebase
       .database()
       .ref()

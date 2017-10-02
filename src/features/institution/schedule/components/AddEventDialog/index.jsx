@@ -90,13 +90,17 @@ class AddEventDialog extends Component {
     opponents: "To be specified",
     homeAway: "UNKNOWN",
     frequency: "ONCE",
-    numberOfEvents: "5",
+    numberOfEvents: "1",
     otherEventType: "",
     isOtherEventTypeCompetitive: false,
     selectedTeams: [],
     selectedManagers: [],
     selectedCoaches: []
   };
+
+  componentWillMount() {
+    this.setState({ date: this.props.initialDate });
+  }
 
   createTeamsList() {
     const { classes, teams } = this.props;
@@ -292,6 +296,13 @@ class AddEventDialog extends Component {
         if (event.target.value < startTime)
           this.setState({ startTime: event.target.value });
         break;
+      case "frequency":
+        if (event.target.value === "ONCE") {
+          this.setState({ numberOfEvents: "1" });
+        } else {
+          this.setState({ numberOfEvents: "2" });
+        }
+        break;
       default:
         break;
     }
@@ -382,8 +393,21 @@ class AddEventDialog extends Component {
   };
 
   render() {
-    const { classes, isOpen, isLoading, minDate } = this.props;
-    const { handleClose } = this.props.actions;
+    const {
+      classes,
+      isOpen,
+      isLoading,
+      minDate,
+      teams,
+      coaches,
+      managers,
+      institutionID
+    } = this.props;
+    const {
+      handleClose,
+      addEvent,
+      openAddEventErrorAlert
+    } = this.props.actions;
     const {
       title,
       type,
@@ -396,7 +420,10 @@ class AddEventDialog extends Component {
       frequency,
       numberOfEvents,
       otherEventType,
-      isOtherEventTypeCompetitive
+      isOtherEventTypeCompetitive,
+      selectedTeams,
+      selectedCoaches,
+      selectedManagers
     } = this.state;
 
     const teamsList = this.createTeamsList();
@@ -404,7 +431,8 @@ class AddEventDialog extends Component {
     const managersList = this.createManagersList();
 
     const hasTitleError = title.length === 0;
-    const hasOtherEventTypeError = otherEventType.length === 0;
+    const hasOtherEventTypeError =
+      type === "OTHER" && otherEventType.length === 0;
     const hasDateError = new Date(date) < new Date(minDate);
 
     return (
@@ -426,7 +454,65 @@ class AddEventDialog extends Component {
             <Typography type="title" color="inherit" className={classes.flex}>
               Add Event
             </Typography>
-            <Button color="contrast">save</Button>
+            <Button
+              disabled={isLoading}
+              color="contrast"
+              onClick={() => {
+                let eventType = _.capitalize(type);
+                if (eventType === "OTHER") {
+                  eventType = otherEventType;
+                }
+                const isCompetitive =
+                  eventType === "MATCH" || isOtherEventTypeCompetitive;
+                const recurrencePattern = {
+                  frequency,
+                  numberOfEvents
+                };
+
+                const eventInfo = {
+                  title,
+                  isCompetitive,
+                  date,
+                  startTime,
+                  endTime,
+                  type: eventType,
+                  additionalInfo: {
+                    venue,
+                    opponents,
+                    homeAway
+                  }
+                };
+                if (hasTitleError || hasOtherEventTypeError || hasDateError) {
+                  let errorType = "TITLE";
+                  if (hasOtherEventTypeError) errorType = "EVENT_TYPE";
+                  if (hasDateError) errorType = "DATE";
+                  openAddEventErrorAlert(errorType);
+                } else {
+                  addEvent(
+                    institutionID,
+                    eventInfo,
+                    recurrencePattern,
+                    _.fromPairs(
+                      selectedTeams.map(teamID => [teamID, teams[teamID]])
+                    ),
+                    _.fromPairs(
+                      selectedManagers.map(managerID => [
+                        managerID,
+                        managers[managerID]
+                      ])
+                    ),
+                    _.fromPairs(
+                      selectedCoaches.map(coachID => [
+                        coachID,
+                        coaches[coachID]
+                      ])
+                    )
+                  );
+                }
+              }}
+            >
+              save
+            </Button>
           </Toolbar>
         </AppBar>
         {isLoading ? (

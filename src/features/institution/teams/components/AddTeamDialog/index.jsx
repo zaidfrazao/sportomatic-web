@@ -361,6 +361,7 @@ class AddTeamDialog extends Component {
               Add Team
             </Typography>
             <Button
+              disabled={isLoading}
               color="contrast"
               onClick={() => {
                 if (

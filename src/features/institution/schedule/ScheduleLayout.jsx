@@ -14,6 +14,7 @@ import Calendar from "./components/Calendar";
 import EventInfo from "./components/EventInfo";
 import EventsList from "./components/EventsList";
 import AddEventDialog from "./components/AddEventDialog";
+import NotificationModal from "../../../components/NotificationModal";
 
 const styles = theme => ({
   root: {
@@ -94,19 +95,25 @@ class ScheduleLayout extends Component {
       managers
     } = this.props;
     const { dateSelected } = this.props.match.params;
-    const { currentView } = this.props.uiConfig;
+    const { currentView, errorType } = this.props.uiConfig;
     const {
       updateView,
       openAddEventDialog,
       closeAddEventDialog,
       loadTeams,
-      loadStaff
+      loadStaff,
+      addEvent,
+      openAddEventErrorAlert,
+      closeAddEventErrorAlert
     } = this.props.actions;
     const {
       isEventsLoading,
       isAddEventDialogLoading
     } = this.props.loadingStatus;
-    const { isAddEventDialogOpen } = this.props.dialogs;
+    const {
+      isAddEventDialogOpen,
+      isAddEventErrorAlertOpen
+    } = this.props.dialogs;
 
     const currentDate = new Date(Date.now());
 
@@ -116,6 +123,25 @@ class ScheduleLayout extends Component {
           to={`/institution/schedule/${currentDate.toISOString().slice(0, 10)}`}
         />
       );
+    }
+
+    let addEventErrorAlertHeading = "Event Title Required";
+    let addEventErrorAlertMessage =
+      "You need to specify a title for this event before saving it.";
+    if (errorType === "DATE") {
+      addEventErrorAlertHeading = "Date Invalid";
+      addEventErrorAlertMessage =
+        "You cannot create an event scheduled for a date that has already passed.";
+    }
+    if (errorType === "LOADING") {
+      addEventErrorAlertHeading = "Network Issue";
+      addEventErrorAlertMessage =
+        "You have lost your connection to the internet. Please check your connectivity and try again.";
+    }
+    if (errorType === "EVENT_TYPE") {
+      addEventErrorAlertHeading = "Event Type Required";
+      addEventErrorAlertMessage =
+        "Please specify a name for your custom event type.";
     }
 
     if (currentView === "EVENT_INFO") {
@@ -173,10 +199,21 @@ class ScheduleLayout extends Component {
               isOpen={isAddEventDialogOpen}
               isLoading={isAddEventDialogLoading}
               minDate={currentDate.toISOString().slice(0, 10)}
+              initialDate={dateSelected}
               teams={teams}
               coaches={coaches}
               managers={managers}
-              actions={{ handleClose: closeAddEventDialog }}
+              actions={{
+                handleClose: closeAddEventDialog,
+                addEvent,
+                openAddEventErrorAlert
+              }}
+            />
+            <NotificationModal
+              isOpen={isAddEventErrorAlertOpen}
+              handleOkClick={closeAddEventErrorAlert}
+              heading={addEventErrorAlertHeading}
+              message={addEventErrorAlertMessage}
             />
           </div>
         );
@@ -248,10 +285,22 @@ class ScheduleLayout extends Component {
             isOpen={isAddEventDialogOpen}
             isLoading={isAddEventDialogLoading}
             minDate={currentDate.toISOString().slice(0, 10)}
+            initialDate={dateSelected}
+            institutionID={userID}
             teams={teams}
             coaches={coaches}
             managers={managers}
-            actions={{ handleClose: closeAddEventDialog }}
+            actions={{
+              handleClose: closeAddEventDialog,
+              addEvent,
+              openAddEventErrorAlert
+            }}
+          />
+          <NotificationModal
+            isOpen={isAddEventErrorAlertOpen}
+            handleOkClick={closeAddEventErrorAlert}
+            heading={addEventErrorAlertHeading}
+            message={addEventErrorAlertMessage}
           />
         </div>
       );
