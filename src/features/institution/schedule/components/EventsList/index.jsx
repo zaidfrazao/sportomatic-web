@@ -182,7 +182,7 @@ class EventsList extends Component {
     const eveningEvents = allEvents
       .filter(eventInfo => {
         const startHour = eventInfo.metadata.startTime;
-        const isEveningEvent = startHour > "18:00";
+        const isEveningEvent = startHour >= "18:00";
         return isEveningEvent;
       })
       .map(eventInfo => {
