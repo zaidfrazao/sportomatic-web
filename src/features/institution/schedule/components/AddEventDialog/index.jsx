@@ -103,6 +103,12 @@ class AddEventDialog extends Component {
     this.setState({ date: this.props.initialDate });
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.initialDate !== nextProps.initialDate) {
+      this.setState({ date: nextProps.initialDate });
+    }
+  }
+
   createTeamsList() {
     const { classes, teams } = this.props;
     const { selectedTeams } = this.state;
@@ -460,12 +466,13 @@ class AddEventDialog extends Component {
               disabled={isLoading}
               color="contrast"
               onClick={() => {
-                let eventType = _.capitalize(type);
+                let eventType = type;
                 if (eventType === "OTHER") {
                   eventType = otherEventType;
                 }
+                eventType = _.capitalize(type);
                 const isCompetitive =
-                  eventType === "MATCH" || isOtherEventTypeCompetitive;
+                  eventType === "Match" || isOtherEventTypeCompetitive;
                 const recurrencePattern = {
                   frequency,
                   numberOfEvents

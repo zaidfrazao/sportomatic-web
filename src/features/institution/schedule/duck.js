@@ -22,14 +22,20 @@ export const RECEIVE_ADD_EVENT =
   "sportomatic-web/institution/schedule/RECEIVE_ADD_EVENT";
 export const ERROR_ADDING_EVENT =
   "sportomatic-web/institution/schedule/ERROR_ADDING_EVENT";
+export const REQUEST_EDIT_EVENT =
+  "sportomatic-web/institution/schedule/REQUEST_EDIT_EVENT";
+export const RECEIVE_EDIT_EVENT =
+  "sportomatic-web/institution/schedule/RECEIVE_EDIT_EVENT";
+export const ERROR_EDITING_EVENT =
+  "sportomatic-web/institution/schedule/ERROR_EDITING_EVENT";
 export const OPEN_EDIT_EVENT_DIALOG =
   "sportomatic-web/institution/schedule/OPEN_EDIT_EVENT_DIALOG";
 export const CLOSE_EDIT_EVENT_DIALOG =
   "sportomatic-web/institution/schedule/CLOSE_EDIT_EVENT_DIALOG";
-export const OPEN_ADD_EVENT_ERROR_ALERT =
-  "sportomatic-web/institution/schedule/OPEN_ADD_EVENT_ERROR_ALERT";
-export const CLOSE_ADD_EVENT_ERROR_ALERT =
-  "sportomatic-web/institution/schedule/CLOSE_ADD_EVENT_ERROR_ALERT";
+export const OPEN_EVENT_ERROR_ALERT =
+  "sportomatic-web/institution/schedule/OPEN_EVENT_ERROR_ALERT";
+export const CLOSE_EVENT_ERROR_ALERT =
+  "sportomatic-web/institution/schedule/CLOSE_EVENT_ERROR_ALERT";
 export const OPEN_CANCEL_EVENT_ALERT =
   "sportomatic-web/institution/schedule/OPEN_CANCEL_EVENT_ALERT";
 export const CLOSE_CANCEL_EVENT_ALERT =
@@ -87,7 +93,7 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         currentView: action.payload.newView
       };
-    case OPEN_ADD_EVENT_ERROR_ALERT:
+    case OPEN_EVENT_ERROR_ALERT:
       return {
         ...state,
         errorType: action.payload.errorType
@@ -121,7 +127,7 @@ export const dialogsInitialState = {
   isEditEventDialogOpen: false,
   isCancelEventAlertOpen: false,
   isUncancelEventAlertOpen: false,
-  isAddEventErrorAlertOpen: false
+  isEventErrorAlertOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
@@ -141,13 +147,14 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
       return {
         ...state,
         isAddEventDialogOpen: false,
-        isAddEventErrorAlertOpen: true
+        isEventErrorAlertOpen: true
       };
     case OPEN_EDIT_EVENT_DIALOG:
       return {
         ...state,
         isEditEventDialogOpen: true
       };
+    case RECEIVE_EDIT_EVENT:
     case CLOSE_EDIT_EVENT_DIALOG:
       return {
         ...state,
@@ -173,15 +180,15 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
         ...state,
         isUncancelEventAlertOpen: false
       };
-    case OPEN_ADD_EVENT_ERROR_ALERT:
+    case OPEN_EVENT_ERROR_ALERT:
       return {
         ...state,
-        isAddEventErrorAlertOpen: true
+        isEventErrorAlertOpen: true
       };
-    case CLOSE_ADD_EVENT_ERROR_ALERT:
+    case CLOSE_EVENT_ERROR_ALERT:
       return {
         ...state,
-        isAddEventErrorAlertOpen: false
+        isEventErrorAlertOpen: false
       };
     default:
       return state;
@@ -198,20 +205,41 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
     case REQUEST_STAFF:
     case REQUEST_TEAMS:
-    case REQUEST_ADD_EVENT:
       return {
         ...state,
-        isAddEventDialogLoading: true
+        isAddEventDialogLoading: true,
+        isEditEventDialogLoading: true
       };
     case ERROR_LOADING_TEAMS:
     case RECEIVE_TEAMS:
     case ERROR_LOADING_STAFF:
     case RECEIVE_STAFF:
+      return {
+        ...state,
+        isAddEventDialogLoading: false,
+        isEditEventDialogLoading: false
+      };
+    case REQUEST_ADD_EVENT:
+      return {
+        ...state,
+        isAddEventDialogLoading: true
+      };
     case ERROR_ADDING_EVENT:
     case RECEIVE_ADD_EVENT:
       return {
         ...state,
         isAddEventDialogLoading: false
+      };
+    case REQUEST_EDIT_EVENT:
+      return {
+        ...state,
+        isEditEventDialogLoading: true
+      };
+    case ERROR_EDITING_EVENT:
+    case RECEIVE_EDIT_EVENT:
+      return {
+        ...state,
+        isEditEventDialogLoading: false
       };
     case REQUEST_EVENTS:
       return {
@@ -306,18 +334,18 @@ export function updateView(newView) {
   };
 }
 
-export function openAddEventErrorAlert(errorType) {
+export function openEventErrorAlert(errorType) {
   return {
-    type: OPEN_ADD_EVENT_ERROR_ALERT,
+    type: OPEN_EVENT_ERROR_ALERT,
     payload: {
       errorType
     }
   };
 }
 
-export function closeAddEventErrorAlert() {
+export function closeEventErrorAlert() {
   return {
-    type: CLOSE_ADD_EVENT_ERROR_ALERT
+    type: CLOSE_EVENT_ERROR_ALERT
   };
 }
 
@@ -544,7 +572,7 @@ export function addEvent(
     );
 
     // Set up recurring events
-    let instancePaths = [];
+    let instances = [];
     let eventsToCreate = [];
     for (let i = 0; i < recurrencePattern.numberOfEvents; i++) {
       const newEventID = firebase
@@ -568,8 +596,8 @@ export function addEvent(
       }
       const year = date.toISOString().slice(0, 4);
       const month = date.toISOString().slice(5, 7);
-
-      instancePaths.push(`${year}/${month}/${newEventID}`);
+      date.setHours(date.getHours() + 2);
+      instances.push({ date: date.toISOString().slice(0, 10), id: newEventID });
       date.setHours(date.getHours() + 2);
       eventsToCreate.push({
         id: newEventID,
@@ -589,7 +617,7 @@ export function addEvent(
         metadata: { ...eventInfo, date: eventsToCreate[i].date },
         recurrencePattern: {
           ...recurrencePattern,
-          instancePaths
+          instances
         },
         teams,
         coaches: eventCoaches,
@@ -628,6 +656,154 @@ export function addEvent(
       .update(updates)
       .then(() => dispatch(receiveAddEvent()))
       .catch(error => dispatch(errorAddingEvent(error)));
+  };
+}
+
+export function requestEditEvent() {
+  return {
+    type: REQUEST_EDIT_EVENT
+  };
+}
+
+export function receiveEditEvent() {
+  return {
+    type: RECEIVE_EDIT_EVENT
+  };
+}
+
+export function errorEditingEvent(error: { code: string, message: string }) {
+  return {
+    type: ERROR_EDITING_EVENT,
+    payload: {
+      error
+    }
+  };
+}
+
+export function editEvent(
+  institutionID,
+  eventInfo,
+  recurrencePattern,
+  teams,
+  managers,
+  coaches,
+  shouldEditAllEvents
+) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEditEvent());
+
+    // Distill required info from coaches & managers
+    const eventCoaches = _.fromPairs(
+      _.toPairs(coaches).map(([coachID, coachInfo]) => {
+        return [
+          coachID,
+          {
+            name: coachInfo.metadata.name,
+            surname: coachInfo.metadata.surname,
+            profilePictureURL: coachInfo.metadata.profilePictureURL,
+            phoneNumber: coachInfo.metadata.phoneNumber,
+            hours: {
+              status: "AWAITING_SIGN_IN",
+              type: coachInfo.paymentDefaults.type,
+              standardHourlyRate: coachInfo.paymentDefaults.standardHourlyRate,
+              overtimeHourlyRate: coachInfo.paymentDefaults.overtimeHourlyRate
+            }
+          }
+        ];
+      })
+    );
+    const eventManagers = _.fromPairs(
+      _.toPairs(managers).map(([managerID, managerInfo]) => {
+        return [
+          managerID,
+          {
+            name: managerInfo.metadata.name,
+            surname: managerInfo.metadata.surname,
+            profilePictureURL: managerInfo.metadata.profilePictureURL,
+            phoneNumber: managerInfo.metadata.phoneNumber
+          }
+        ];
+      })
+    );
+
+    // Set up recurring events
+    let instances = recurrencePattern.instances;
+    let eventsToEdit = [];
+
+    if (shouldEditAllEvents) {
+      let currentDate = new Date(Date.now());
+      currentDate.setHours(currentDate.getHours() + 2);
+      currentDate = currentDate.toISOString().slice(0, 10);
+      for (let i = 0; i < recurrencePattern.instances.length; i++) {
+        if (instances[i].date >= currentDate) {
+          const date = instances[i].date;
+          const year = date.slice(0, 4);
+          const month = date.slice(5, 7);
+          eventsToEdit.push({
+            id: instances[i].id,
+            date,
+            year,
+            month
+          });
+        }
+      }
+    } else {
+      const date = eventInfo.date;
+      const year = date.slice(0, 4);
+      const month = date.slice(5, 7);
+      eventsToEdit.push({
+        id: eventInfo.id,
+        date,
+        year,
+        month
+      });
+    }
+
+    // Create events
+    let updates = {};
+    let managerUpdates = {};
+    let coachUpdates = {};
+    for (let i = 0; i < eventsToEdit.length; i++) {
+      const newEventInfo = {
+        status: "ACTIVE",
+        metadata: { ...eventInfo, date: eventsToEdit[i].date },
+        recurrencePattern,
+        teams,
+        coaches: eventCoaches,
+        managers: eventManagers
+      };
+      managerUpdates = getManagerUpdates(
+        institutionID,
+        managers,
+        eventsToEdit[i].year,
+        eventsToEdit[i].month,
+        eventsToEdit[i].id,
+        newEventInfo
+      );
+      coachUpdates = getCoachUpdates(
+        institutionID,
+        coaches,
+        eventsToEdit[i].year,
+        eventsToEdit[i].month,
+        eventsToEdit[i].id,
+        newEventInfo
+      );
+      updates = {
+        ...updates,
+        [`institution/${institutionID}/private/events/${eventsToEdit[i]
+          .year}/${eventsToEdit[i].month}/${eventsToEdit[i].id}`]: newEventInfo,
+        ...coachUpdates,
+        ...managerUpdates
+      };
+    }
+
+    // Save events to database
+    return firebase
+      .database()
+      .ref()
+      .update(updates)
+      .then(() => dispatch(receiveEditEvent()))
+      .catch(error => dispatch(errorEditingEvent(error)));
   };
 }
 

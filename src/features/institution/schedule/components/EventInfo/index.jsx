@@ -178,7 +178,13 @@ class EventInfo extends Component {
                   <ListItem>
                     <ListItemText
                       primary="Home / Away"
-                      secondary={additionalInfo.homeAway}
+                      secondary={
+                        additionalInfo.homeAway === "UNKNOWN" ? (
+                          "Not yet specified"
+                        ) : (
+                          _.capitalize(additionalInfo.homeAway)
+                        )
+                      }
                     />
                   </ListItem>
                   <ListItem>

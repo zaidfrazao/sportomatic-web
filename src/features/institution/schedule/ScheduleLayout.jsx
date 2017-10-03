@@ -14,6 +14,7 @@ import Calendar from "./components/Calendar";
 import EventInfo from "./components/EventInfo";
 import EventsList from "./components/EventsList";
 import AddEventDialog from "./components/AddEventDialog";
+import EditEventDialog from "./components/EditEventDialog";
 import NotificationModal from "../../../components/NotificationModal";
 import DecisionModal from "../../../components/DecisionModal";
 
@@ -104,27 +105,32 @@ class ScheduleLayout extends Component {
       updateView,
       openAddEventDialog,
       closeAddEventDialog,
+      openEditEventDialog,
+      closeEditEventDialog,
       loadTeams,
       loadStaff,
       addEvent,
-      openAddEventErrorAlert,
-      closeAddEventErrorAlert,
+      openEventErrorAlert,
+      closeEventErrorAlert,
       openCancelEventAlert,
       closeCancelEventAlert,
       openUncancelEventAlert,
       closeUncancelEventAlert,
       cancelEvent,
-      uncancelEvent
+      uncancelEvent,
+      editEvent
     } = this.props.actions;
     const {
       isEventsLoading,
-      isAddEventDialogLoading
+      isAddEventDialogLoading,
+      isEditEventDialogLoading
     } = this.props.loadingStatus;
     const {
       isAddEventDialogOpen,
-      isAddEventErrorAlertOpen,
       isCancelEventAlertOpen,
-      isUncancelEventAlertOpen
+      isUncancelEventAlertOpen,
+      isEditEventDialogOpen,
+      isEventErrorAlertOpen
     } = this.props.dialogs;
 
     const currentDate = new Date(Date.now());
@@ -142,22 +148,22 @@ class ScheduleLayout extends Component {
       monthSelected = dateSelected.slice(5, 7);
     }
 
-    let addEventErrorAlertHeading = "Event Title Required";
-    let addEventErrorAlertMessage =
+    let eventErrorAlertHeading = "Event Title Required";
+    let eventErrorAlertMessage =
       "You need to specify a title for this event before saving it.";
     if (errorType === "DATE") {
-      addEventErrorAlertHeading = "Date Invalid";
-      addEventErrorAlertMessage =
+      eventErrorAlertHeading = "Date Invalid";
+      eventErrorAlertMessage =
         "You cannot create an event scheduled for a date that has already passed.";
     }
     if (errorType === "LOADING") {
-      addEventErrorAlertHeading = "Network Issue";
-      addEventErrorAlertMessage =
+      eventErrorAlertHeading = "Network Issue";
+      eventErrorAlertMessage =
         "You have lost your connection to the internet. Please check your connectivity and try again.";
     }
     if (errorType === "EVENT_TYPE") {
-      addEventErrorAlertHeading = "Event Type Required";
-      addEventErrorAlertMessage =
+      eventErrorAlertHeading = "Event Type Required";
+      eventErrorAlertMessage =
         "Please specify a name for your custom event type.";
     }
 
@@ -179,9 +185,37 @@ class ScheduleLayout extends Component {
             color="accent"
             aria-label="edit event"
             className={classes.button}
+            onClick={() => {
+              loadTeams(userID);
+              loadStaff(userID);
+              openEditEventDialog();
+            }}
           >
             <EditIcon />
           </Button>
+          <EditEventDialog
+            isOpen={isEditEventDialogOpen}
+            isLoading={isEditEventDialogLoading}
+            minDate={currentDate.toISOString().slice(0, 10)}
+            initialDate={dateSelected}
+            teams={teams}
+            coaches={coaches}
+            managers={managers}
+            initialEventInfo={events[yearSelected][monthSelected][eventID]}
+            initialEventID={eventID}
+            institutionID={userID}
+            actions={{
+              handleClose: closeEditEventDialog,
+              editEvent,
+              openEventErrorAlert
+            }}
+          />
+          <NotificationModal
+            isOpen={isEventErrorAlertOpen}
+            handleOkClick={closeEventErrorAlert}
+            heading={eventErrorAlertHeading}
+            message={eventErrorAlertMessage}
+          />
         </div>
       );
     }
@@ -236,7 +270,7 @@ class ScheduleLayout extends Component {
               actions={{
                 handleClose: closeAddEventDialog,
                 addEvent,
-                openAddEventErrorAlert
+                openEventErrorAlert
               }}
             />
             <DecisionModal
@@ -274,10 +308,10 @@ class ScheduleLayout extends Component {
               message="Are you sure you want to uncancel this event?"
             />
             <NotificationModal
-              isOpen={isAddEventErrorAlertOpen}
-              handleOkClick={closeAddEventErrorAlert}
-              heading={addEventErrorAlertHeading}
-              message={addEventErrorAlertMessage}
+              isOpen={isEventErrorAlertOpen}
+              handleOkClick={closeEventErrorAlert}
+              heading={eventErrorAlertHeading}
+              message={eventErrorAlertMessage}
             />
           </div>
         );
@@ -367,7 +401,7 @@ class ScheduleLayout extends Component {
             actions={{
               handleClose: closeAddEventDialog,
               addEvent,
-              openAddEventErrorAlert
+              openEventErrorAlert
             }}
           />
           <DecisionModal
@@ -405,10 +439,10 @@ class ScheduleLayout extends Component {
             message="Are you sure you want to uncancel this event?"
           />
           <NotificationModal
-            isOpen={isAddEventErrorAlertOpen}
-            handleOkClick={closeAddEventErrorAlert}
-            heading={addEventErrorAlertHeading}
-            message={addEventErrorAlertMessage}
+            isOpen={isEventErrorAlertOpen}
+            handleOkClick={closeEventErrorAlert}
+            heading={eventErrorAlertHeading}
+            message={eventErrorAlertMessage}
           />
         </div>
       );
