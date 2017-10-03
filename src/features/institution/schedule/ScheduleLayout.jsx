@@ -15,6 +15,7 @@ import EventInfo from "./components/EventInfo";
 import EventsList from "./components/EventsList";
 import AddEventDialog from "./components/AddEventDialog";
 import NotificationModal from "../../../components/NotificationModal";
+import DecisionModal from "../../../components/DecisionModal";
 
 const styles = theme => ({
   root: {
@@ -31,13 +32,15 @@ const styles = theme => ({
   calendarWrapper: {
     margin: "0 40px",
     display: "flex",
-    backgroundColor: lightBlue[700]
+    backgroundColor: lightBlue[700],
+    height: "calc(100vh - 257px)"
   },
   desktopCalendar: {
     width: "40%"
   },
   desktopEventsList: {
-    flexGrow: 1
+    width: "60%",
+    height: "100%"
   },
   tabletEventsListWrapper: {
     height: "100%"
@@ -96,7 +99,7 @@ class ScheduleLayout extends Component {
       events
     } = this.props;
     const { dateSelected, eventID } = this.props.match.params;
-    const { currentView, errorType } = this.props.uiConfig;
+    const { currentView, errorType, selectedEventInfo } = this.props.uiConfig;
     const {
       updateView,
       openAddEventDialog,
@@ -105,7 +108,13 @@ class ScheduleLayout extends Component {
       loadStaff,
       addEvent,
       openAddEventErrorAlert,
-      closeAddEventErrorAlert
+      closeAddEventErrorAlert,
+      openCancelEventAlert,
+      closeCancelEventAlert,
+      openUncancelEventAlert,
+      closeUncancelEventAlert,
+      cancelEvent,
+      uncancelEvent
     } = this.props.actions;
     const {
       isEventsLoading,
@@ -113,7 +122,9 @@ class ScheduleLayout extends Component {
     } = this.props.loadingStatus;
     const {
       isAddEventDialogOpen,
-      isAddEventErrorAlertOpen
+      isAddEventErrorAlertOpen,
+      isCancelEventAlertOpen,
+      isUncancelEventAlertOpen
     } = this.props.dialogs;
 
     const currentDate = new Date(Date.now());
@@ -192,7 +203,13 @@ class ScheduleLayout extends Component {
                     events[yearSelected][monthSelected]) ||
                   {}
                 }
-                actions={{ updateView }}
+                institutionID={userID}
+                actions={{
+                  updateView,
+                  openCancelEventAlert,
+                  openUncancelEventAlert,
+                  cancelEvent
+                }}
               />
             )}
             <Button
@@ -221,6 +238,40 @@ class ScheduleLayout extends Component {
                 addEvent,
                 openAddEventErrorAlert
               }}
+            />
+            <DecisionModal
+              isOpen={isCancelEventAlertOpen}
+              handleYesClick={() => {
+                cancelEvent(
+                  selectedEventInfo.institutionID,
+                  selectedEventInfo.eventID,
+                  selectedEventInfo.managerIDs,
+                  selectedEventInfo.coachIDs,
+                  selectedEventInfo.year,
+                  selectedEventInfo.month
+                );
+                closeCancelEventAlert();
+              }}
+              handleNoClick={closeCancelEventAlert}
+              heading="Cancel Event"
+              message="Are you sure you want to cancel this event?"
+            />
+            <DecisionModal
+              isOpen={isUncancelEventAlertOpen}
+              handleYesClick={() => {
+                uncancelEvent(
+                  selectedEventInfo.institutionID,
+                  selectedEventInfo.eventID,
+                  selectedEventInfo.managerIDs,
+                  selectedEventInfo.coachIDs,
+                  selectedEventInfo.year,
+                  selectedEventInfo.month
+                );
+                closeUncancelEventAlert();
+              }}
+              handleNoClick={closeUncancelEventAlert}
+              heading="Uncancel Event"
+              message="Are you sure you want to uncancel this event?"
             />
             <NotificationModal
               isOpen={isAddEventErrorAlertOpen}
@@ -280,7 +331,13 @@ class ScheduleLayout extends Component {
                       events[yearSelected][monthSelected]) ||
                     {}
                   }
-                  actions={{ updateView }}
+                  institutionID={userID}
+                  actions={{
+                    updateView,
+                    openCancelEventAlert,
+                    openUncancelEventAlert,
+                    cancelEvent
+                  }}
                 />
               </div>
             </Paper>
@@ -312,6 +369,40 @@ class ScheduleLayout extends Component {
               addEvent,
               openAddEventErrorAlert
             }}
+          />
+          <DecisionModal
+            isOpen={isCancelEventAlertOpen}
+            handleYesClick={() => {
+              cancelEvent(
+                selectedEventInfo.institutionID,
+                selectedEventInfo.eventID,
+                selectedEventInfo.managerIDs,
+                selectedEventInfo.coachIDs,
+                selectedEventInfo.year,
+                selectedEventInfo.month
+              );
+              closeCancelEventAlert();
+            }}
+            handleNoClick={closeCancelEventAlert}
+            heading="Cancel Event"
+            message="Are you sure you want to cancel this event?"
+          />
+          <DecisionModal
+            isOpen={isUncancelEventAlertOpen}
+            handleYesClick={() => {
+              uncancelEvent(
+                selectedEventInfo.institutionID,
+                selectedEventInfo.eventID,
+                selectedEventInfo.managerIDs,
+                selectedEventInfo.coachIDs,
+                selectedEventInfo.year,
+                selectedEventInfo.month
+              );
+              closeUncancelEventAlert();
+            }}
+            handleNoClick={closeUncancelEventAlert}
+            heading="Uncancel Event"
+            message="Are you sure you want to uncancel this event?"
           />
           <NotificationModal
             isOpen={isAddEventErrorAlertOpen}

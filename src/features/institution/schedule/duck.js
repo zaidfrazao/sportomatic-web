@@ -35,9 +35,9 @@ export const OPEN_CANCEL_EVENT_ALERT =
 export const CLOSE_CANCEL_EVENT_ALERT =
   "sportomatic-web/institution/schedule/CLOSE_CANCEL_EVENT_ALERT";
 export const OPEN_UNCANCEL_EVENT_ALERT =
-  "sportomatic-web/institution/schedule/OPEN_CANCEL_EVENT_ALERT";
+  "sportomatic-web/institution/schedule/OPEN_UNCANCEL_EVENT_ALERT";
 export const CLOSE_UNCANCEL_EVENT_ALERT =
-  "sportomatic-web/institution/schedule/CLOSE_CANCEL_EVENT_ALERT";
+  "sportomatic-web/institution/schedule/CLOSE_UNCANCEL_EVENT_ALERT";
 export const UPDATE_CURRENT_VIEW =
   "sportomatic-web/institution/schedule/UPDATE_CURRENT_VIEW";
 export const REQUEST_STAFF =
@@ -52,12 +52,32 @@ export const RECEIVE_TEAMS =
   "sportomatic-web/institution/schedule/RECEIVE_TEAMS";
 export const ERROR_LOADING_TEAMS =
   "sportomatic-web/institution/schedule/ERROR_LOADING_TEAMS";
+export const REQUEST_CANCEL_EVENT =
+  "sportomatic-web/institution/schedule/REQUEST_CANCEL_EVENT";
+export const RECEIVE_CANCEL_EVENT =
+  "sportomatic-web/institution/schedule/RECEIVE_CANCEL_EVENT";
+export const ERROR_CANCELLING_EVENT =
+  "sportomatic-web/institution/schedule/ERROR_CANCELLING_EVENT";
+export const REQUEST_UNCANCEL_EVENT =
+  "sportomatic-web/institution/schedule/REQUEST_UNCANCEL_EVENT";
+export const RECEIVE_UNCANCEL_EVENT =
+  "sportomatic-web/institution/schedule/RECEIVE_UNCANCEL_EVENT";
+export const ERROR_UNCANCELLING_EVENT =
+  "sportomatic-web/institution/schedule/ERROR_UNCANCELLING_EVENT";
 
 // Reducers
 
 export const uiConfigInitialState = {
   currentView: "SCHEDULE",
-  errorType: "NONE"
+  errorType: "NONE",
+  selectedEventInfo: {
+    institutionID: "",
+    eventID: "",
+    managerIDs: [],
+    coachIDs: [],
+    year: "",
+    month: ""
+  }
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -76,6 +96,20 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
       return {
         ...state,
         errorType: "LOADING"
+      };
+    case OPEN_CANCEL_EVENT_ALERT:
+      return {
+        ...state,
+        selectedEventInfo: {
+          ...action.payload
+        }
+      };
+    case OPEN_UNCANCEL_EVENT_ALERT:
+      return {
+        ...state,
+        selectedEventInfo: {
+          ...action.payload
+        }
       };
     default:
       return state;
@@ -299,15 +333,57 @@ export function closeEditEventDialog() {
   };
 }
 
-export function openCancelEventAlert() {
+export function openCancelEventAlert(
+  institutionID,
+  eventID,
+  managerIDs,
+  coachIDs,
+  year,
+  month
+) {
   return {
-    type: OPEN_CANCEL_EVENT_ALERT
+    type: OPEN_CANCEL_EVENT_ALERT,
+    payload: {
+      institutionID,
+      eventID,
+      managerIDs,
+      coachIDs,
+      year,
+      month
+    }
   };
 }
 
 export function closeCancelEventAlert() {
   return {
     type: CLOSE_CANCEL_EVENT_ALERT
+  };
+}
+
+export function openUncancelEventAlert(
+  institutionID,
+  eventID,
+  managerIDs,
+  coachIDs,
+  year,
+  month
+) {
+  return {
+    type: OPEN_UNCANCEL_EVENT_ALERT,
+    payload: {
+      institutionID,
+      eventID,
+      managerIDs,
+      coachIDs,
+      year,
+      month
+    }
+  };
+}
+
+export function closeUncancelEventAlert() {
+  return {
+    type: CLOSE_UNCANCEL_EVENT_ALERT
   };
 }
 
@@ -647,5 +723,124 @@ export function loadTeams(institutionID) {
         dispatch(receiveTeams(teams));
       }
     });
+  };
+}
+
+export function requestCancelEvent() {
+  return {
+    type: REQUEST_CANCEL_EVENT
+  };
+}
+
+export function receiveCancelEvent() {
+  return {
+    type: RECEIVE_CANCEL_EVENT
+  };
+}
+
+export function errorCancellingEvent(error: { code: string, message: string }) {
+  return {
+    type: ERROR_CANCELLING_EVENT,
+    payload: {
+      error
+    }
+  };
+}
+
+export function cancelEvent(
+  institutionID,
+  eventID,
+  managerIDs,
+  coachIDs,
+  year,
+  month
+) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestCancelEvent());
+    const managerUpdates = _.fromPairs(
+      managerIDs.map(id => [
+        `manager/private/${id}/institutions/${institutionID}/events/${year}/${month}/${eventID}/status`,
+        "CANCELLED"
+      ])
+    );
+    const coachUpdates = _.fromPairs(
+      coachIDs.map(id => [
+        `coach/private/${id}/institutions/${institutionID}/events/${year}/${month}/${eventID}/status`,
+        "CANCELLED"
+      ])
+    );
+    const updates = {
+      [`institution/${institutionID}/private/events/${year}/${month}/${eventID}/status`]: "CANCELLED",
+      ...managerUpdates,
+      ...coachUpdates
+    };
+
+    return firebase
+      .database()
+      .ref()
+      .update(updates)
+      .then(() => dispatch(receiveCancelEvent()))
+      .catch(error => dispatch(errorCancellingEvent(error)));
+  };
+}
+
+export function requestUncancelEvent() {
+  return {
+    type: REQUEST_UNCANCEL_EVENT
+  };
+}
+
+export function receiveUncancelEvent() {
+  return {
+    type: RECEIVE_UNCANCEL_EVENT
+  };
+}
+
+export function errorUncancellingEvent(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_UNCANCELLING_EVENT,
+    payload: {
+      error
+    }
+  };
+}
+
+export function uncancelEvent(
+  institutionID,
+  eventID,
+  managerIDs,
+  coachIDs,
+  year,
+  month
+) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestUncancelEvent());
+    const managerUpdates = _.fromPairs(
+      managerIDs.map(id => [
+        `manager/private/${id}/institutions/${institutionID}/events/${year}/${month}/${eventID}/status`,
+        "ACTIVE"
+      ])
+    );
+    const coachUpdates = _.fromPairs(
+      coachIDs.map(id => [
+        `coach/private/${id}/institutions/${institutionID}/events/${year}/${month}/${eventID}/status`,
+        "ACTIVE"
+      ])
+    );
+    const updates = {
+      [`institution/${institutionID}/private/events/${year}/${month}/${eventID}/status`]: "ACTIVE",
+      ...managerUpdates,
+      ...coachUpdates
+    };
+
+    return firebase
+      .database()
+      .ref()
+      .update(updates)
+      .then(() => dispatch(receiveUncancelEvent()))
+      .catch(error => dispatch(errorUncancellingEvent(error)));
   };
 }

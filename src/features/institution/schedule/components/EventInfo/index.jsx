@@ -89,7 +89,7 @@ class EventInfo extends Component {
       isCompetitive,
       additionalInfo
     } = this.props.info.metadata;
-    const { teams, coaches, managers } = this.props.info;
+    const { teams, coaches, managers, status } = this.props.info;
     const { updateView } = this.props.actions;
 
     const dateOptions = {
@@ -114,9 +114,15 @@ class EventInfo extends Component {
             </Button>
           )}
         />
-        <Typography className={classes.name} type="display2" component="h2">
-          {title}
-        </Typography>
+        {status === "CANCELLED" ? (
+          <Typography className={classes.name} type="display2" component="h2">
+            {title} - [Cancelled]
+          </Typography>
+        ) : (
+          <Typography className={classes.name} type="display2" component="h2">
+            {title}
+          </Typography>
+        )}
         <div className={classes.adWrapper}>
           <LeaderboardAd />
         </div>
