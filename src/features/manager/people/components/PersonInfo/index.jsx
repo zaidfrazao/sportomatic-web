@@ -9,6 +9,7 @@ import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Typography from "material-ui/Typography";
 import BlockAd from "../../../../../components/BlockAd";
+import _ from "lodash";
 
 const styles = {
   wrapper: {
@@ -72,7 +73,7 @@ const styles = {
 class PersonInfo extends Component {
   render() {
     const { classes } = this.props;
-    const { sports, teams } = this.props.info;
+    const { preferredSports, teams } = this.props.info;
     const {
       name,
       surname,
@@ -80,6 +81,11 @@ class PersonInfo extends Component {
       phoneNumber,
       profilePictureURL
     } = this.props.info.metadata;
+
+    const teamsList = _.toPairs(teams).map(([teamID, teamInfo]) => {
+      return { id: teamID, ...teamInfo };
+    });
+
     return (
       <div className={classes.wrapper}>
         <Route
@@ -139,9 +145,9 @@ class PersonInfo extends Component {
                 Sports
               </Typography>
               <List>
-                {sports &&
-                  sports.map(sport => (
-                    <ListItem key={sport}>
+                {preferredSports &&
+                  _.toPairs(preferredSports).map(([sportID, sport]) => (
+                    <ListItem key={sportID}>
                       <ListItemText primary={sport} />
                     </ListItem>
                   ))}
@@ -158,14 +164,23 @@ class PersonInfo extends Component {
                 Teams
               </Typography>
               <List>
-                {teams && teams.length > 0 ? (
-                  teams.map(teamInfo => (
-                    <ListItem key={teamInfo.name} button>
-                      <ListItemText
-                        primary={teamInfo.name}
-                        secondary={teamInfo.sport}
-                      />
-                    </ListItem>
+                {teamsList && teamsList.length > 0 ? (
+                  teamsList.map(teamInfo => (
+                    <Route
+                      key={teamInfo.id}
+                      component={({ history }) => (
+                        <ListItem
+                          button
+                          onClick={() =>
+                            history.push(`/manager/teams/${teamInfo.id}`)}
+                        >
+                          <ListItemText
+                            primary={teamInfo.name}
+                            secondary={teamInfo.sport}
+                          />
+                        </ListItem>
+                      )}
+                    />
                   ))
                 ) : (
                   <ListItem className={classes.noItems}>
