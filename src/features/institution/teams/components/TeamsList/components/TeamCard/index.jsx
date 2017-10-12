@@ -80,7 +80,7 @@ class TeamCard extends Component {
               </Button>
             )}
           />
-          <Tooltip label="Delete team" placement="bottom">
+          <Tooltip title="Delete team" placement="bottom">
             <IconButton aria-label="Delete team" onClick={() => deleteTeam()}>
               <DeleteIcon />
             </IconButton>

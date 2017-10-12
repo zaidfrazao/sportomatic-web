@@ -145,7 +145,7 @@ class EventsList extends Component {
                       secondary={`${eventStartTime} - ${eventEndTime}`}
                     />
                     <ListItemSecondaryAction>
-                      <Tooltip label="Uncancel" placement="left">
+                      <Tooltip title="Uncancel" placement="left">
                         <IconButton
                           aria-label="uncancel event"
                           onClick={() =>
@@ -180,7 +180,7 @@ class EventsList extends Component {
                       secondary={`${eventStartTime} - ${eventEndTime}`}
                     />
                     <ListItemSecondaryAction>
-                      <Tooltip label="Cancel" placement="left">
+                      <Tooltip title="Cancel" placement="left">
                         <IconButton
                           aria-label="cancel event"
                           onClick={() =>
@@ -271,7 +271,7 @@ class EventsList extends Component {
                       secondary={`${eventStartTime} - ${eventEndTime}`}
                     />
                     <ListItemSecondaryAction>
-                      <Tooltip label="Cancel" placement="left">
+                      <Tooltip title="Cancel" placement="left">
                         <IconButton
                           aria-label="cancel event"
                           onClick={() =>
@@ -326,7 +326,7 @@ class EventsList extends Component {
                       secondary={`${eventStartTime} - ${eventEndTime}`}
                     />
                     <ListItemSecondaryAction>
-                      <Tooltip label="Uncancel" placement="left">
+                      <Tooltip title="Uncancel" placement="left">
                         <IconButton
                           aria-label="uncancel event"
                           onClick={() =>
@@ -361,7 +361,7 @@ class EventsList extends Component {
                       secondary={`${eventStartTime} - ${eventEndTime}`}
                     />
                     <ListItemSecondaryAction>
-                      <Tooltip label="Cancel" placement="left">
+                      <Tooltip title="Cancel" placement="left">
                         <IconButton
                           aria-label="cancel event"
                           onClick={() =>

@@ -150,7 +150,7 @@ class AccountInfo extends Component {
                 <ListItem>
                   <ListItemText primary="Name" secondary={name} />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change institution name">
                         <EditIcon />
                       </IconButton>
@@ -163,7 +163,7 @@ class AccountInfo extends Component {
                     secondary={abbreviation}
                   />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change abbreviation">
                         <EditIcon />
                       </IconButton>
@@ -173,7 +173,7 @@ class AccountInfo extends Component {
                 <ListItem>
                   <ListItemText primary="Email" secondary={email} />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change email address">
                         <EditIcon />
                       </IconButton>
@@ -186,7 +186,7 @@ class AccountInfo extends Component {
                     secondary={phoneNumber}
                   />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change phone number">
                         <EditIcon />
                       </IconButton>
@@ -199,7 +199,7 @@ class AccountInfo extends Component {
                     secondary={physicalAddress}
                   />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change physical address">
                         <EditIcon />
                       </IconButton>
@@ -212,7 +212,7 @@ class AccountInfo extends Component {
                     secondary={institutionType}
                   />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change institution type">
                         <EditIcon />
                       </IconButton>
@@ -222,7 +222,7 @@ class AccountInfo extends Component {
                 <ListItem>
                   <ListItemText primary="Genders" secondary={genders} />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change genders">
                         <EditIcon />
                       </IconButton>
@@ -250,7 +250,7 @@ class AccountInfo extends Component {
                     )}`}
                   />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change standard hourly rate">
                         <EditIcon />
                       </IconButton>
@@ -265,7 +265,7 @@ class AccountInfo extends Component {
                     )}`}
                   />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change overtime hourly rate">
                         <EditIcon />
                       </IconButton>
@@ -278,7 +278,7 @@ class AccountInfo extends Component {
                     secondary={coachPaymentOptions.maxOvertimeHours}
                   />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change max overtime hours">
                         <EditIcon />
                       </IconButton>
@@ -291,7 +291,7 @@ class AccountInfo extends Component {
                     secondary={coachPaymentOptions.payDay}
                   />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change pay day">
                         <EditIcon />
                       </IconButton>
@@ -320,7 +320,7 @@ class AccountInfo extends Component {
                         secondary={`${sportInfo.numberOfTeams} teams`}
                       />
                       <ListItemSecondaryAction>
-                        <Tooltip label="Remove" placement="bottom">
+                        <Tooltip title="Remove" placement="bottom">
                           <IconButton
                             disabled={sportInfo.numberOfTeams > 0}
                             aria-label="remove sport"
@@ -353,7 +353,7 @@ class AccountInfo extends Component {
                         secondary={`${ageGroupsInfo.numberOfTeams} teams`}
                       />
                       <ListItemSecondaryAction>
-                        <Tooltip label="Remove" placement="bottom">
+                        <Tooltip title="Remove" placement="bottom">
                           <IconButton
                             disabled={ageGroupsInfo.numberOfTeams > 0}
                             aria-label="remove sport"
@@ -386,7 +386,7 @@ class AccountInfo extends Component {
                         secondary={`${divisionsInfo.numberOfTeams} teams`}
                       />
                       <ListItemSecondaryAction>
-                        <Tooltip label="Remove" placement="bottom">
+                        <Tooltip title="Remove" placement="bottom">
                           <IconButton
                             disabled={divisionsInfo.numberOfTeams > 0}
                             aria-label="remove sport"

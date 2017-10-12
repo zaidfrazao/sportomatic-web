@@ -58,7 +58,7 @@ class PersonCard extends Component {
               )}
             />
             <div>
-              <Tooltip label="Remove person" placement="bottom">
+              <Tooltip title="Remove person" placement="bottom">
                 <IconButton
                   aria-label="Remove person"
                   onClick={() => openDeletePersonAlert()}
