@@ -144,7 +144,7 @@ class AccountInfo extends Component {
                 <ListItem>
                   <ListItemText primary="Name" secondary={name} />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change first name">
                         <EditIcon />
                       </IconButton>
@@ -154,7 +154,7 @@ class AccountInfo extends Component {
                 <ListItem>
                   <ListItemText primary="Surname" secondary={surname} />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change surname">
                         <EditIcon />
                       </IconButton>
@@ -164,7 +164,7 @@ class AccountInfo extends Component {
                 <ListItem>
                   <ListItemText primary="Email" secondary={email} />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change email address">
                         <EditIcon />
                       </IconButton>
@@ -177,7 +177,7 @@ class AccountInfo extends Component {
                     secondary={phoneNumber}
                   />
                   <ListItemSecondaryAction>
-                    <Tooltip label="Edit" placement="bottom">
+                    <Tooltip title="Edit" placement="bottom">
                       <IconButton aria-label="change phone number">
                         <EditIcon />
                       </IconButton>
@@ -206,7 +206,7 @@ class AccountInfo extends Component {
                         secondary={`${sportInfo.numberOfTeams} teams`}
                       />
                       <ListItemSecondaryAction>
-                        <Tooltip label="Remove" placement="bottom">
+                        <Tooltip title="Remove" placement="bottom">
                           <IconButton
                             disabled={sportInfo.numberOfTeams > 0}
                             aria-label="remove sport"

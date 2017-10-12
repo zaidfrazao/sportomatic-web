@@ -108,7 +108,7 @@ class EventsList extends Component {
                   secondary={`${eventStartTime} - ${eventEndTime}`}
                 />
                 <ListItemSecondaryAction>
-                  <Tooltip label="Cancel event" placement="left">
+                  <Tooltip title="Cancel event" placement="left">
                     <IconButton aria-label="cancel event">
                       <CancelIcon />
                     </IconButton>
@@ -153,7 +153,7 @@ class EventsList extends Component {
                   secondary={`${eventStartTime} - ${eventEndTime}`}
                 />
                 <ListItemSecondaryAction>
-                  <Tooltip label="Cancel event" placement="left">
+                  <Tooltip title="Cancel event" placement="left">
                     <IconButton aria-label="cancel event">
                       <CancelIcon />
                     </IconButton>
@@ -198,7 +198,7 @@ class EventsList extends Component {
                   secondary={`${eventStartTime} - ${eventEndTime}`}
                 />
                 <ListItemSecondaryAction>
-                  <Tooltip label="Cancel event" placement="left">
+                  <Tooltip title="Cancel event" placement="left">
                     <IconButton aria-label="cancel event">
                       <CancelIcon />
                     </IconButton>

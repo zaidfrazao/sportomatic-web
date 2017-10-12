@@ -124,7 +124,7 @@ class CustomAppBar extends Component {
               <Grid container justify="space-around" align="center">
                 <Route
                   render={({ history }) => (
-                    <Tooltip label="Settings" placement="bottom">
+                    <Tooltip title="Settings" placement="bottom">
                       <IconButton
                         color="contrast"
                         aria-label="view notifications"
@@ -136,7 +136,7 @@ class CustomAppBar extends Component {
                   )}
                 />
                 {isMobile ? (
-                  <Tooltip label="Options" placement="bottom">
+                  <Tooltip title="Options" placement="bottom">
                     <IconButton color="contrast" aria-label="app bar menu">
                       <AppBarMenuIcon />
                     </IconButton>
@@ -145,7 +145,7 @@ class CustomAppBar extends Component {
                   <div className={classes.desktopIcons}>
                     <Route
                       render={({ history }) => (
-                        <Tooltip label="Log out" placement="bottom">
+                        <Tooltip title="Log out" placement="bottom">
                           <IconButton
                             color="contrast"
                             aria-label="log out"
@@ -156,7 +156,7 @@ class CustomAppBar extends Component {
                         </Tooltip>
                       )}
                     />
-                    <Tooltip label="Switch institutions" placement="bottom">
+                    <Tooltip title="Switch institutions" placement="bottom">
                       <Avatar
                         src={activeInstitution.emblemURL}
                         className={classes.institutionSelector}
