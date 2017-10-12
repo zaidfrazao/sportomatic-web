@@ -85,7 +85,8 @@ class CustomAppBar extends Component {
     const {
       toggleSideMenu,
       signOut,
-      openSwitchInstitutionsDialog
+      openSwitchInstitutionsDialog,
+      openSettingsAlert
     } = this.props.actions;
 
     return (
@@ -127,8 +128,8 @@ class CustomAppBar extends Component {
                     <Tooltip title="Settings" placement="bottom">
                       <IconButton
                         color="contrast"
-                        aria-label="view notifications"
-                        onClick={() => history.push(`/manager/settings/`)}
+                        aria-label="edit settings"
+                        onClick={() => openSettingsAlert()}
                       >
                         <SettingsIcon />
                       </IconButton>

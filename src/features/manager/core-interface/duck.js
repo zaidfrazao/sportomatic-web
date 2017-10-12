@@ -16,6 +16,10 @@ export const OPEN_SWITCH_INSTITUTIONS_DIALOG =
   "sportomatic-web/manager/core-interface/OPEN_SWITCH_INSTITUTIONS_DIALOG";
 export const CLOSE_SWITCH_INSTITUTIONS_DIALOG =
   "sportomatic-web/manager/core-interface/CLOSE_SWITCH_INSTITUTIONS_DIALOG";
+export const OPEN_SETTINGS_ALERT =
+  "sportomatic-web/manager/core-interface/OPEN_SETTINGS_ALERT";
+export const CLOSE_SETTINGS_ALERT =
+  "sportomatic-web/manager/core-interface/CLOSE_SETTINGS_ALERT";
 
 // Reducers
 
@@ -65,7 +69,8 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 }
 
 export const dialogsInitialState = {
-  isSwitchInstitutionsDialogOpen: false
+  isSwitchInstitutionsDialogOpen: false,
+  isSettingsAlertOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
@@ -79,6 +84,16 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
       return {
         ...state,
         isSwitchInstitutionsDialogOpen: false
+      };
+    case OPEN_SETTINGS_ALERT:
+      return {
+        ...state,
+        isSettingsAlertOpen: true
+      };
+    case CLOSE_SETTINGS_ALERT:
+      return {
+        ...state,
+        isSettingsAlertOpen: false
       };
     default:
       return state;
@@ -159,5 +174,17 @@ export function signOut() {
   localStorage.setItem("isLoggedIn", "false");
   return {
     type: SIGN_OUT
+  };
+}
+
+export function openSettingsAlert() {
+  return {
+    type: OPEN_SETTINGS_ALERT
+  };
+}
+
+export function closeSettingsAlert() {
+  return {
+    type: CLOSE_SETTINGS_ALERT
   };
 }

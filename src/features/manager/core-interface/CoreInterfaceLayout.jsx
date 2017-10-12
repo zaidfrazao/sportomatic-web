@@ -153,9 +153,14 @@ class CoreInterfaceLayout extends Component {
       toggleSideMenu,
       signOut,
       openSwitchInstitutionsDialog,
-      closeSwitchInstitutionsDialog
+      closeSwitchInstitutionsDialog,
+      closeSettingsAlert,
+      openSettingsAlert
     } = this.props.actions;
-    const { isSwitchInstitutionsDialogOpen } = this.props.dialogs;
+    const {
+      isSwitchInstitutionsDialogOpen,
+      isSettingsAlertOpen
+    } = this.props.dialogs;
     const { windowWidth } = this.state;
     const isMobile = windowWidth < 600;
     const isTablet = windowWidth < 960;
@@ -174,7 +179,12 @@ class CoreInterfaceLayout extends Component {
           <CustomAppBar
             title={uiConfig.appBarTitle}
             isSideMenuOpen={uiConfig.isSideMenuOpen}
-            actions={{ toggleSideMenu, signOut, openSwitchInstitutionsDialog }}
+            actions={{
+              toggleSideMenu,
+              signOut,
+              openSwitchInstitutionsDialog,
+              openSettingsAlert
+            }}
             activeInstitution={uiConfig.activeInstitution}
             isMobile={isMobile}
           />
@@ -236,6 +246,12 @@ class CoreInterfaceLayout extends Component {
             handleOkClick={closeSwitchInstitutionsDialog}
             heading="Unavailable in Beta"
             message="The ability to switch institutions is unavailable in this version of the beta."
+          />
+          <NotificationModal
+            isOpen={isSettingsAlertOpen}
+            handleOkClick={closeSettingsAlert}
+            heading="Unavailable in Beta"
+            message="The ability to edit account settings is unavailable in this version of the beta."
           />
         </div>
       </div>
