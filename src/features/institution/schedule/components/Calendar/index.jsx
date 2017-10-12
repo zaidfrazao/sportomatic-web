@@ -38,9 +38,9 @@ class Calendar extends Component {
     const { classes, dateSelected, isMobile, isTablet } = this.props;
     const { updateView } = this.props.actions;
     const { windowHeight } = this.state;
-    let calendarHeight = isTablet ? windowHeight - 320 : windowHeight - 405;
+    let calendarHeight = isTablet ? windowHeight - 300 : windowHeight - 405;
     if (isMobile) {
-      calendarHeight = windowHeight - 305;
+      calendarHeight = windowHeight - 300;
     }
     return (
       <div className={classes.root}>

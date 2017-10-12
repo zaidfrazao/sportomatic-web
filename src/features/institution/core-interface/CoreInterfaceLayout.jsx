@@ -14,6 +14,7 @@ import Settings from "../settings/SettingsView";
 import Teams from "../teams/TeamsView";
 import Wages from "../wages/WagesView";
 import backgroundImage from "./images/background-image.jpeg";
+import NotificationModal from "../../../components/NotificationModal";
 
 const drawerWidth = 240;
 
@@ -157,7 +158,12 @@ class CoreInterfaceLayout extends Component {
 
   render() {
     const { classes } = this.props;
-    const { toggleSideMenu, signOut } = this.props.actions;
+    const {
+      toggleSideMenu,
+      signOut,
+      closeSettingsAlert,
+      openSettingsAlert
+    } = this.props.actions;
     const { windowWidth } = this.state;
     const {
       userID,
@@ -165,7 +171,8 @@ class CoreInterfaceLayout extends Component {
       type,
       appBarTitle,
       isSideMenuOpen,
-      bottomNavValue
+      bottomNavValue,
+      isSettingsAlertOpen
     } = this.props.uiConfig;
     const isMobile = windowWidth < 600;
     const isTablet = windowWidth < 960;
@@ -184,7 +191,7 @@ class CoreInterfaceLayout extends Component {
           <CustomAppBar
             title={appBarTitle}
             isSideMenuOpen={isSideMenuOpen}
-            actions={{ toggleSideMenu, signOut }}
+            actions={{ toggleSideMenu, signOut, openSettingsAlert }}
             isMobile={isMobile}
           />
           <SideMenu
@@ -275,6 +282,12 @@ class CoreInterfaceLayout extends Component {
             {isMobile && <BottomNav value={bottomNavValue} />}
           </div>
         </div>
+        <NotificationModal
+          isOpen={isSettingsAlertOpen}
+          handleOkClick={closeSettingsAlert}
+          heading="Unavailable in Beta"
+          message="The ability to edit account settings is unavailable in this version of the beta."
+        />
       </div>
     );
   }

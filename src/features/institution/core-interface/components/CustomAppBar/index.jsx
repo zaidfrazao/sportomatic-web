@@ -68,7 +68,7 @@ class CustomAppBar extends Component {
 
   render() {
     const { classes, title, isSideMenuOpen, isMobile } = this.props;
-    const { toggleSideMenu, signOut } = this.props.actions;
+    const { toggleSideMenu, signOut, openSettingsAlert } = this.props.actions;
 
     return (
       <AppBar
@@ -106,11 +106,11 @@ class CustomAppBar extends Component {
               <Grid container justify="space-around" align="center">
                 <Route
                   render={({ history }) => (
-                    <Tooltip label="Settings" placement="bottom">
+                    <Tooltip title="Settings" placement="bottom">
                       <IconButton
                         color="contrast"
-                        aria-label="view notifications"
-                        onClick={() => history.push(`/institution/settings/`)}
+                        aria-label="edit settings"
+                        onClick={() => openSettingsAlert()}
                       >
                         <SettingsIcon />
                       </IconButton>
@@ -118,7 +118,7 @@ class CustomAppBar extends Component {
                   )}
                 />
                 {isMobile ? (
-                  <Tooltip label="Options" placement="bottom">
+                  <Tooltip title="Options" placement="bottom">
                     <IconButton color="contrast" aria-label="app bar menu">
                       <AppBarMenuIcon />
                     </IconButton>
@@ -127,7 +127,7 @@ class CustomAppBar extends Component {
                   <div className={classes.desktopIcons}>
                     <Route
                       render={({ history }) => (
-                        <Tooltip label="Log out" placement="bottom">
+                        <Tooltip title="Log out" placement="bottom">
                           <IconButton
                             color="contrast"
                             aria-label="log out"

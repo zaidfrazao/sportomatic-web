@@ -17,7 +17,8 @@ const styles = {
   root: {
     flexGrow: 1,
     display: "flex",
-    maxHeight: 600
+    maxHeight: 600,
+    marginTop: 24
   },
   cardWrapper: {
     flexGrow: 1,
@@ -138,6 +139,7 @@ class TimeLogger extends Component {
       signOutTime,
       profilePictureURL,
       name,
+      surname,
       coachID,
       standardHourlyRate,
       overtimeHourlyRate
@@ -161,7 +163,7 @@ class TimeLogger extends Component {
               component="h3"
               className={classes.coachName}
             >
-              {name}
+              {`${name} ${surname}`}
             </Typography>
             <div className={classes.timesWrapper}>
               <div className={classes.timeWrapper}>
@@ -228,7 +230,7 @@ class TimeLogger extends Component {
               component="h3"
               className={classes.coachName}
             >
-              {name}
+              {`${name} ${surname}`}
             </Typography>
             <div className={classes.timesWrapper}>
               <div className={classes.timeWrapper}>
@@ -295,7 +297,7 @@ class TimeLogger extends Component {
               component="h3"
               className={classes.coachName}
             >
-              {name}
+              {`${name} ${surname}`}
             </Typography>
             <div className={classes.timesWrapper}>
               <div className={classes.timeWrapper}>

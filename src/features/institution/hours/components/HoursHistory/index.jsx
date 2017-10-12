@@ -18,7 +18,7 @@ import _ from "lodash";
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    padding: "0 40px 40px 40px"
+    padding: "24px 40px 40px 40px"
   },
   mobileRoot: {
     flexGrow: 1

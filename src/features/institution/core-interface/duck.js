@@ -12,6 +12,10 @@ export const UPDATE_BOTTOM_NAV_VALUE =
   "sportomatic-web/institution/core-interface/UPDATE_BOTTOM_NAV_VALUE";
 export const SIGN_OUT = "sportomatic-web/institution/core-interface/SIGN_OUT";
 export const INIT_USER = "sportomatic-web/institution/core-interface/INIT_USER";
+export const OPEN_SETTINGS_ALERT =
+  "sportomatic-web/institution/core-interface/OPEN_SETTINGS_ALERT";
+export const CLOSE_SETTINGS_ALERT =
+  "sportomatic-web/institution/core-interface/CLOSE_SETTINGS_ALERT";
 
 // Reducers
 
@@ -21,7 +25,8 @@ export const uiConfigInitialState = {
   isSideMenuOpen: false,
   isLoggedIn: true,
   type: "INSTITUTION",
-  userID: ""
+  userID: "",
+  isSettingsAlertOpen: false
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -52,6 +57,16 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
       return {
         ...state,
         bottomNavValue: action.payload.newValue
+      };
+    case OPEN_SETTINGS_ALERT:
+      return {
+        ...state,
+        isSettingsAlertOpen: true
+      };
+    case CLOSE_SETTINGS_ALERT:
+      return {
+        ...state,
+        isSettingsAlertOpen: false
       };
     default:
       return state;
@@ -116,5 +131,17 @@ export function signOut() {
   localStorage.setItem("isLoggedIn", "false");
   return {
     type: SIGN_OUT
+  };
+}
+
+export function openSettingsAlert() {
+  return {
+    type: OPEN_SETTINGS_ALERT
+  };
+}
+
+export function closeSettingsAlert() {
+  return {
+    type: CLOSE_SETTINGS_ALERT
   };
 }

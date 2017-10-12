@@ -152,7 +152,7 @@ class SideMenu extends Component {
                 </ListItem>
               )}
             />
-            <Route
+            {/*<Route
               key={5}
               render={({ history }) => (
                 <ListItem
@@ -168,7 +168,7 @@ class SideMenu extends Component {
                   <ListItemText primary="Reports" />
                 </ListItem>
               )}
-            />
+            />*/}
             <Route
               key={6}
               render={({ history }) => (

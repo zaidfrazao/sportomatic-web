@@ -43,12 +43,17 @@ const styles = theme => ({
   historyWrapper: {
     flexGrow: 1,
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    overflow: "auto"
   },
   inProgressWrapper: {
     flexGrow: 1,
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    "@media (max-width: 960px)": {
+      display: "block",
+      overflow: "auto"
+    }
   },
   historyTableWrapper: {
     flexGrow: 1,
@@ -58,7 +63,10 @@ const styles = theme => ({
     flexGrow: 1,
     display: "flex",
     flexDirection: "column",
-    overflow: "auto"
+    overflow: "auto",
+    "@media (max-width: 960px)": {
+      display: "block"
+    }
   },
   loaderWrapper: {
     flexGrow: 1,
@@ -69,8 +77,9 @@ const styles = theme => ({
   button: {
     margin: "24px 24px 0 24px",
     "@media (max-width: 960px)": {
-      margin: 0,
-      width: "100%"
+      width: "100%",
+      padding: "0 24px",
+      margin: "24px 0"
     }
   },
   noEventsAwaitingApprovalWrapper: {
@@ -181,6 +190,7 @@ class HoursLayout extends Component {
             coachInfo={{
               coachID,
               name: coaches[coachID].metadata.name,
+              surname: coaches[coachID].metadata.surname,
               profilePictureURL: coaches[coachID].metadata.profilePictureURL,
               status: inProgressEvent.coaches[coachID].hours.status,
               signInTime: inProgressEvent.coaches[coachID].hours.signInTime,
@@ -264,6 +274,7 @@ class HoursLayout extends Component {
                 coachInfo={{
                   coachID,
                   name: coaches[coachID].metadata.name,
+                  surname: coaches[coachID].metadata.surname,
                   profilePictureURL:
                     coaches[coachID].metadata.profilePictureURL,
                   status: eventInfo.coaches[coachID].hours.status,
