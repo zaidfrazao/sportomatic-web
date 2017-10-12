@@ -204,7 +204,18 @@ class CoreInterfaceLayout extends Component {
                   <Dashboard />
                 </Route>
                 <Route exact path={`/institution/hours/`}>
-                  <Hours isMobile={isMobile} isTablet={isTablet} />
+                  <Hours
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                  />
+                </Route>
+                <Route exact path={`/institution/hours/:coachID`}>
+                  <Hours
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                  />
                 </Route>
                 <Route exact path={`/institution/people/`}>
                   <People userID={userID} isMobile={isMobile} />
@@ -246,10 +257,18 @@ class CoreInterfaceLayout extends Component {
                   <Settings />
                 </Route>
                 <Route exact path={`/institution/wages`}>
-                  <Wages isMobile={isMobile} isTablet={isTablet} />
+                  <Wages
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                  />
                 </Route>
-                <Route path={`/institution/wages/:dateSelected`}>
-                  <Wages isMobile={isMobile} isTablet={isTablet} />
+                <Route path={`/institution/wages/:coachID`}>
+                  <Wages
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                  />
                 </Route>
               </Switch>
             </div>

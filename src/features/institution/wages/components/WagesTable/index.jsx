@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { grey, lightBlue } from "material-ui/colors";
 import Button from "material-ui/Button";
@@ -10,10 +9,12 @@ import Table, {
   TableBody,
   TableCell,
   TableHead,
+  TableFooter,
   TableRow
 } from "material-ui/Table";
 import Typography from "material-ui/Typography";
 import { getMonthName } from "../../../../../utils/dates";
+import _ from "lodash";
 
 const styles = theme => ({
   root: {
@@ -69,209 +70,235 @@ const styles = theme => ({
 });
 
 class WagesTable extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      year: new Date(Date.now()).getFullYear(),
+      month: new Date(Date.now()).getMonth() + 1
+    };
+  }
+
+  goToPrevMonth() {
+    if (this.state.month > 1) {
+      this.setState({ month: this.state.month - 1 });
+    } else {
+      this.setState({ year: this.state.year - 1 });
+      this.setState({ month: 12 });
+    }
+  }
+
+  goToNextMonth() {
+    if (this.state.month < 12) {
+      this.setState({ month: this.state.month + 1 });
+    } else {
+      this.setState({ year: this.state.year + 1 });
+      this.setState({ month: 1 });
+    }
+  }
+
   renderTableBody() {
-    const { isMobile, isTablet, wageInfo } = this.props;
+    const { isMobile, isTablet, wages } = this.props;
+    const { year, month } = this.state;
     const dateOptions = {
       month: "short",
       day: "numeric",
       year: "numeric"
     };
 
-    if (!wageInfo) {
+    if (!wages[year] || !wages[year][month]) {
       return (
         <Typography type="body2" component="p">
-          No wage data
+          No wages recorded
         </Typography>
       );
-    }
-
-    if (isMobile) {
-      return (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell numeric>Wage (R)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {wageInfo.records.map(record => {
-              return (
-                <TableRow key={record.id}>
-                  <TableCell>
-                    {new Date(record.date).toLocaleDateString(
-                      "en-US",
-                      dateOptions
-                    )}
-                  </TableCell>
-                  <TableCell numeric>{record.wage}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      );
-    } else if (isTablet) {
-      return (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Event</TableCell>
-              <TableCell numeric>Wage (R)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {wageInfo.records.map(record => {
-              return (
-                <TableRow key={record.id}>
-                  <TableCell>
-                    {new Date(record.date).toLocaleDateString(
-                      "en-US",
-                      dateOptions
-                    )}
-                  </TableCell>
-                  <TableCell>{record.event}</TableCell>
-                  <TableCell numeric>{record.wage}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      );
     } else {
-      return (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Event</TableCell>
-              <TableCell>Payment Type</TableCell>
-              <TableCell numeric>Wage (R)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {wageInfo.records.map(record => {
-              return (
-                <TableRow key={record.id}>
-                  <TableCell>
-                    {new Date(record.date).toLocaleDateString(
-                      "en-US",
-                      dateOptions
-                    )}
-                  </TableCell>
-                  <TableCell>{record.event}</TableCell>
-                  <TableCell>{record.paymentType}</TableCell>
-                  <TableCell numeric>{record.wage}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      );
-    }
-  }
+      let totalStandardHours = 0;
+      let totalOvertimeHours = 0;
+      let totalWages = 0;
 
-  renderTableFooter() {
-    const { classes, isMobile, wageInfo } = this.props;
+      _.toPairs(wages[year][month]).map(([id, info]) => {
+        totalStandardHours += info.hours.standard;
+        totalOvertimeHours += info.hours.overtime;
+        totalWages += info.wage;
+      });
 
-    if (wageInfo) {
-      if (!isMobile) {
+      if (isMobile) {
         return (
-          <div className={classes.footer}>
-            <Typography
-              component="h2"
-              type="title"
-              className={classes.headerTitle}
-            >
-              Total
-            </Typography>
-            <Typography
-              component="h2"
-              type="title"
-              className={classes.headerTitle}
-            >
-              R{wageInfo.total.toLocaleString("en")}
-            </Typography>
-          </div>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell numeric>Wage</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {_.toPairs(wages[year][month]).map(([id, info]) => {
+                return (
+                  <TableRow key={id}>
+                    <TableCell>
+                      {new Date(info.date).toLocaleDateString(
+                        "en-US",
+                        dateOptions
+                      )}
+                    </TableCell>
+                    <TableCell numeric>R {info.wage}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell>TOTAL</TableCell>
+                <TableCell numeric>R {totalWages}</TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
+        );
+      } else if (isTablet) {
+        return (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell numeric>Standard Hours</TableCell>
+                <TableCell numeric>Overtime Hours</TableCell>
+                <TableCell numeric>Wages</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {_.toPairs(wages[year][month]).map(([id, info]) => {
+                return (
+                  <TableRow key={id}>
+                    <TableCell>
+                      {new Date(info.date).toLocaleDateString(
+                        "en-US",
+                        dateOptions
+                      )}
+                    </TableCell>
+                    <TableCell numeric>{info.hours.standard}</TableCell>
+                    <TableCell numeric>{info.hours.overtime}</TableCell>
+                    <TableCell numeric>R {info.wage}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell>TOTAL</TableCell>
+                <TableCell numeric>{totalStandardHours}</TableCell>
+                <TableCell numeric>{totalOvertimeHours}</TableCell>
+                <TableCell numeric>R {totalWages}</TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
         );
       } else {
         return (
-          <div className={classes.footer}>
-            <Typography
-              component="h2"
-              type="title"
-              className={classes.headerTitle}
-            >
-              R{wageInfo.total.toLocaleString("en")}
-            </Typography>
-          </div>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell numeric>Standard Hours</TableCell>
+                <TableCell numeric>Overtime Hours</TableCell>
+                <TableCell numeric>Wages</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {_.toPairs(wages[year][month]).map(([id, info]) => {
+                return (
+                  <TableRow key={id}>
+                    <TableCell>
+                      {new Date(info.date).toLocaleDateString(
+                        "en-US",
+                        dateOptions
+                      )}
+                    </TableCell>
+                    <TableCell>{info.title}</TableCell>
+                    <TableCell numeric>{info.hours.standard}</TableCell>
+                    <TableCell numeric>{info.hours.overtime}</TableCell>
+                    <TableCell numeric>R {info.wage}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell>TOTAL</TableCell>
+                <TableCell />
+                <TableCell numeric>{totalStandardHours}</TableCell>
+                <TableCell numeric>{totalOvertimeHours}</TableCell>
+                <TableCell numeric>R {totalWages}</TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
         );
       }
     }
   }
 
   render() {
-    const { classes, isMobile, year, month, wageInfo } = this.props;
+    const { classes, isMobile, wages } = this.props;
+    const { year, month } = this.state;
+
+    let disablePrev = false;
+    if (month > 1) {
+      if (!wages[year] || !wages[year][month - 1]) {
+        disablePrev = true;
+      } else {
+        disablePrev = false;
+      }
+    } else {
+      if (!wages[year - 1] || !wages[year - 1][1]) {
+        disablePrev = true;
+      } else {
+        disablePrev = false;
+      }
+    }
+
     return (
       <div className={isMobile ? classes.mobileRoot : classes.root}>
         <Paper className={classes.tableWrapper}>
           <div className={classes.header}>
-            <Route
-              render={({ history }) => (
-                <Button
-                  className={
-                    year !== new Date(Date.now()).getFullYear() ||
-                    month !== new Date(Date.now()).getMonth() ? (
-                      classes.headerButton
-                    ) : (
-                      ""
-                    )
-                  }
-                  disabled={
-                    year === new Date(Date.now()).getFullYear() &&
-                    month === new Date(Date.now()).getMonth()
-                  }
-                  onClick={() => {
-                    if (month < 11) {
-                      history.push(`/coach/wages/${year}-${month + 1}`);
-                    } else {
-                      history.push(`/coach/wages/${year + 1}-0`);
-                    }
-                  }}
-                >
-                  Next
-                </Button>
-              )}
-            />
+            <Button
+              className={
+                year !== new Date(Date.now()).getFullYear() ||
+                month !== new Date(Date.now()).getMonth() + 1
+                  ? classes.headerButton
+                  : ""
+              }
+              disabled={
+                year === new Date(Date.now()).getFullYear() &&
+                month === new Date(Date.now()).getMonth() + 1
+              }
+              onClick={() => this.goToNextMonth()}
+            >
+              Next
+            </Button>
             <Typography
               component="h2"
               type="title"
               className={classes.headerTitle}
             >
-              {getMonthName(month)} {year}
+              {getMonthName(month - 1)} {year}
             </Typography>
-            <Route
-              render={({ history }) => (
-                <Button
-                  className={classes.headerButton}
-                  onClick={() => {
-                    if (month > 0) {
-                      history.push(`/coach/wages/${year}-${month - 1}`);
-                    } else {
-                      history.push(`/coach/wages/${year - 1}-11`);
-                    }
-                  }}
-                >
-                  Prev
-                </Button>
-              )}
-            />
+            <Button
+              className={disablePrev ? "" : classes.headerButton}
+              disabled={disablePrev}
+              onClick={() => this.goToPrevMonth()}
+            >
+              Prev
+            </Button>
           </div>
-          <div className={wageInfo ? classes.tableBody : classes.noData}>
+          <div
+            className={
+              wages[year] && wages[year][month]
+                ? classes.tableBody
+                : classes.noData
+            }
+          >
             {this.renderTableBody()}
           </div>
-          <div>{this.renderTableFooter()}</div>
         </Paper>
       </div>
     );

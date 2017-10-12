@@ -93,171 +93,231 @@ const styles = {
 
 class HoursCard extends Component {
   renderCardContent() {
-    const { classes } = this.props;
-    const { coaches } = this.props.info;
+    const { classes, eventInfo, institutionID } = this.props;
+    const { signIn, signOut, approveHours } = this.props.actions;
+    const {
+      status,
+      signInTime,
+      signOutTime,
+      profilePictureURL,
+      name,
+      coachID,
+      standardHourlyRate,
+      overtimeHourlyRate
+    } = this.props.coachInfo;
 
-    return coaches.map((coachHours, index) => {
-      const {
-        stage,
-        signInTime,
-        signOutTime,
-        profilePictureURL,
-        name
-      } = coachHours;
-      switch (stage) {
-        case "AWAITING_SIGN_IN":
-          return (
-            <div key={index} className={classes.hoursWrapper}>
-              <img
-                alt={name}
-                src={profilePictureURL}
-                className={classes.profilePicture}
-              />
-              <Typography
-                type="subheading"
-                component="h3"
-                className={classes.coachName}
-              >
-                {name}
-              </Typography>
-              <div className={classes.timesWrapper}>
-                <div className={classes.timeWrapper}>
-                  <TextField
-                    id="time"
-                    label="Signed in at"
-                    type="time"
-                    className={classes.time}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                  />
-                </div>
-                <div className={classes.timeWrapper}>
-                  <TextField
-                    id="time"
-                    label="Signed out at"
-                    type="time"
-                    className={classes.time}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                  />
-                </div>
-              </div>
-              <div className={classes.buttonWrapper}>
-                <Button raised className={classes.signInButton}>
-                  <SignInIcon /> Sign in
-                </Button>
-              </div>
-            </div>
-          );
-        case "AWAITING_SIGN_OUT":
-          return (
-            <div key={index} className={classes.hoursWrapper}>
-              <img
-                alt={name}
-                src={profilePictureURL}
-                className={classes.profilePicture}
-              />
-              <Typography
-                type="subheading"
-                component="h3"
-                className={classes.coachName}
-              >
-                {name}
-              </Typography>
-              <div className={classes.timesWrapper}>
-                <div className={classes.timeWrapper}>
-                  <TextField
-                    id="time"
-                    label="Signed in at"
-                    type="time"
-                    defaultValue={signInTime}
-                    className={classes.time}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                  />
-                </div>
-                <div className={classes.timeWrapper}>
-                  <TextField
-                    id="time"
-                    label="Signed out at"
-                    type="time"
-                    className={classes.time}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                  />
-                </div>
-              </div>
-              <div className={classes.buttonWrapper}>
-                <Button raised className={classes.signOutButton}>
-                  <SignOutIcon /> Sign out
-                </Button>
-              </div>
-            </div>
-          );
-        case "AWAITING_APPROVAL":
-          return (
-            <div key={index} className={classes.hoursWrapper}>
-              <img
-                alt={name}
-                src={profilePictureURL}
-                className={classes.profilePicture}
-              />
-              <Typography
-                type="subheading"
-                component="h3"
-                className={classes.coachName}
-              >
-                {name}
-              </Typography>
-              <div className={classes.timesWrapper}>
-                <div className={classes.timeWrapper}>
-                  <TextField
-                    id="time"
-                    label="Signed in at"
-                    type="time"
-                    defaultValue={signInTime}
-                    className={classes.time}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                  />
-                </div>
-                <div className={classes.timeWrapper}>
-                  <TextField
-                    id="time"
-                    label="Signed out at"
-                    type="time"
-                    defaultValue={signOutTime}
-                    className={classes.time}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                  />
-                </div>
-              </div>
-              <div className={classes.buttonWrapper}>
-                <Button raised className={classes.approveButton}>
-                  <ApproveIcon /> Approve
-                </Button>
-              </div>
-            </div>
-          );
-        default:
-          return (
-            <Typography type="body1" component="p" key={index}>
-              Invalid stage supplied.
+    let currentTime = new Date(Date.now());
+    currentTime.setHours(currentTime.getHours() + 2);
+    currentTime = currentTime.toISOString().slice(11, 16);
+
+    switch (status) {
+      case "AWAITING_SIGN_IN":
+        return (
+          <div className={classes.hoursWrapper}>
+            <img
+              alt={name}
+              src={profilePictureURL}
+              className={classes.profilePicture}
+            />
+            <Typography
+              type="subheading"
+              component="h3"
+              className={classes.coachName}
+            >
+              {name}
             </Typography>
-          );
-      }
-    });
+            <div className={classes.timesWrapper}>
+              <div className={classes.timeWrapper}>
+                <TextField
+                  id="time"
+                  label="Signed in at"
+                  type="time"
+                  value={signInTime}
+                  onChange={e =>
+                    signIn(institutionID, eventInfo, coachID, e.target.value)}
+                  className={classes.time}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </div>
+              <div className={classes.timeWrapper}>
+                <TextField
+                  id="time"
+                  label="Signed out at"
+                  type="time"
+                  value={signOutTime}
+                  onChange={e =>
+                    signOut(institutionID, eventInfo, coachID, e.target.value)}
+                  className={classes.time}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </div>
+            </div>
+            <div className={classes.buttonWrapper}>
+              <Button
+                raised
+                className={classes.signInButton}
+                onClick={() => {
+                  if (currentTime > eventInfo.endTime) {
+                    signIn(
+                      institutionID,
+                      eventInfo,
+                      coachID,
+                      eventInfo.startTime
+                    );
+                  } else {
+                    signIn(institutionID, eventInfo, coachID, currentTime);
+                  }
+                }}
+              >
+                <SignInIcon /> Sign in
+              </Button>
+            </div>
+          </div>
+        );
+      case "AWAITING_SIGN_OUT":
+        return (
+          <div className={classes.hoursWrapper}>
+            <img
+              alt={name}
+              src={profilePictureURL}
+              className={classes.profilePicture}
+            />
+            <Typography
+              type="subheading"
+              component="h3"
+              className={classes.coachName}
+            >
+              {name}
+            </Typography>
+            <div className={classes.timesWrapper}>
+              <div className={classes.timeWrapper}>
+                <TextField
+                  id="time"
+                  label="Signed in at"
+                  type="time"
+                  value={signInTime}
+                  onChange={e =>
+                    signIn(institutionID, eventInfo, coachID, e.target.value)}
+                  className={classes.time}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </div>
+              <div className={classes.timeWrapper}>
+                <TextField
+                  id="time"
+                  label="Signed out at"
+                  type="time"
+                  value={signOutTime}
+                  onChange={e =>
+                    signOut(institutionID, eventInfo, coachID, e.target.value)}
+                  className={classes.time}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </div>
+            </div>
+            <div className={classes.buttonWrapper}>
+              <Button
+                raised
+                className={classes.signOutButton}
+                onClick={() => {
+                  if (currentTime > eventInfo.endTime) {
+                    signOut(
+                      institutionID,
+                      eventInfo,
+                      coachID,
+                      eventInfo.endTime
+                    );
+                  } else {
+                    signOut(institutionID, eventInfo, coachID, currentTime);
+                  }
+                }}
+              >
+                <SignOutIcon /> Sign out
+              </Button>
+            </div>
+          </div>
+        );
+      case "AWAITING_APPROVAL":
+        return (
+          <div className={classes.hoursWrapper}>
+            <img
+              alt={name}
+              src={profilePictureURL}
+              className={classes.profilePicture}
+            />
+            <Typography
+              type="subheading"
+              component="h3"
+              className={classes.coachName}
+            >
+              {name}
+            </Typography>
+            <div className={classes.timesWrapper}>
+              <div className={classes.timeWrapper}>
+                <TextField
+                  id="time"
+                  label="Signed in at"
+                  type="time"
+                  value={signInTime}
+                  onChange={e =>
+                    signIn(institutionID, eventInfo, coachID, e.target.value)}
+                  className={classes.time}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </div>
+              <div className={classes.timeWrapper}>
+                <TextField
+                  id="time"
+                  label="Signed out at"
+                  type="time"
+                  value={signOutTime}
+                  onChange={e =>
+                    signOut(institutionID, eventInfo, coachID, e.target.value)}
+                  className={classes.time}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </div>
+            </div>
+            <div className={classes.buttonWrapper}>
+              <Button
+                raised
+                className={classes.approveButton}
+                onClick={() =>
+                  approveHours(institutionID, eventInfo, coachID, {
+                    signInTime: signInTime,
+                    signOutTime: signOutTime,
+                    standardHourlyRate: standardHourlyRate,
+                    overtimeHourlyRate: overtimeHourlyRate
+                  })}
+              >
+                <ApproveIcon /> Approve
+              </Button>
+            </div>
+          </div>
+        );
+      default:
+        return (
+          <Typography type="body1" component="p">
+            Invalid stage supplied.
+          </Typography>
+        );
+    }
   }
 
   render() {
-    const { classes, info, isTablet } = this.props;
+    const { classes, eventInfo, isTablet } = this.props;
     const dateOptions = {
       month: "short",
       day: "numeric",
@@ -268,11 +328,11 @@ class HoursCard extends Component {
       <div className={isTablet ? classes.tabletRoot : classes.root}>
         <Card>
           <CardHeader
-            title={info.eventTitle}
-            subheader={new Date(info.date).toLocaleDateString(
+            title={eventInfo.eventTitle}
+            subheader={`${new Date(eventInfo.date).toLocaleDateString(
               "en-US",
               dateOptions
-            )}
+            )} | ${eventInfo.startTime} to ${eventInfo.endTime}`}
           />
           <CardContent>{this.renderCardContent()}</CardContent>
         </Card>
