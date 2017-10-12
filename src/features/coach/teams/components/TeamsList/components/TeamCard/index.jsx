@@ -54,6 +54,7 @@ const styles = theme => ({
 class TeamCard extends Component {
   render() {
     const { classes, sport, name, id } = this.props;
+
     return (
       <Card className={classes.card}>
         <CardContent className={classes.cardContent}>
@@ -70,7 +71,7 @@ class TeamCard extends Component {
               <Button
                 dense
                 className={classes.viewButton}
-                onClick={() => history.push(`/manager/teams/${id}`)}
+                onClick={() => history.push(`/coach/teams/${id}`)}
               >
                 View
               </Button>
