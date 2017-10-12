@@ -50,8 +50,8 @@ class DashboardLayout extends Component {
             product.
           </Typography>
           <Typography type="body1" component="p" className={classes.paragraph}>
-            Hopefully you find the functionality that has been implemented thus
-            far useful :)
+            Hopefully you will find the functionality that has been implemented
+            thus far useful :)
           </Typography>
           <Typography type="body1" component="p" className={classes.paragraph}>
             - The Sportomatic Team
