@@ -194,7 +194,7 @@ class HoursHistory extends Component {
               return (
                 <TableRow key={id}>
                   <TableCell>
-                    {new Date(info.date).toLocaleDateString(
+                    {new Date(info.metadata.date).toLocaleDateString(
                       "en-US",
                       dateOptions
                     )}
