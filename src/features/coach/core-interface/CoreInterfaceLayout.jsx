@@ -249,10 +249,12 @@ class CoreInterfaceLayout extends Component {
                   <Settings />
                 </Route>
                 <Route exact path={`/coach/wages`}>
-                  <Wages isMobile={isMobile} isTablet={isTablet} />
-                </Route>
-                <Route path={`/coach/wages/:dateSelected`}>
-                  <Wages isMobile={isMobile} isTablet={isTablet} />
+                  <Wages
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={uiConfig.userID}
+                    activeInstitutionID={uiConfig.activeInstitution.id}
+                  />
                 </Route>
               </Switch>
             </div>
