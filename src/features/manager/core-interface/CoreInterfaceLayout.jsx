@@ -220,10 +220,16 @@ class CoreInterfaceLayout extends Component {
                   />
                 </Route>
                 <Route exact path={`/manager/teams/`}>
-                  <Teams />
+                  <Teams
+                    activeInstitutionID={uiConfig.activeInstitution.id}
+                    userID={uiConfig.userID}
+                  />
                 </Route>
                 <Route path={`/manager/teams/:teamID`}>
-                  <Teams />
+                  <Teams
+                    activeInstitutionID={uiConfig.activeInstitution.id}
+                    userID={uiConfig.userID}
+                  />
                 </Route>
                 <Route exact path={`/manager/schedule/`}>
                   <Schedule isMobile={isMobile} isTablet={isTablet} />

@@ -9,6 +9,7 @@ import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Typography from "material-ui/Typography";
 import LeaderboardAd from "../../../../../components/LeaderboardAd";
+import _ from "lodash";
 
 const styles = {
   wrapper: {
@@ -67,6 +68,115 @@ const styles = {
 };
 
 class TeamInfo extends Component {
+  formatGender(gender, ageGroup) {
+    let formattedGender = "Mixed";
+    if (ageGroup < 18) {
+      if (ageGroup !== "Open" && gender === "MALE") {
+        formattedGender = "Boys";
+      } else if (gender === "FEMALE") {
+        formattedGender = "Girls";
+      }
+    } else {
+      if (gender === "FEMALE") {
+        formattedGender = "Men";
+      } else if (gender === "FEMALE") {
+        formattedGender = "Women";
+      }
+    }
+    return formattedGender;
+  }
+
+  formatAgeGroup(ageGroup) {
+    return ageGroup !== "Open" ? `U/${ageGroup}` : ageGroup;
+  }
+
+  getManagersList(managers) {
+    const { classes, userID } = this.props;
+    const managersArray = _.toPairs(managers).map(keyValuePair => {
+      return {
+        id: keyValuePair[0],
+        name: keyValuePair[1].metadata.name,
+        surname: keyValuePair[1].metadata.surname,
+        phoneNumber: keyValuePair[1].metadata.phoneNumber,
+        profilePictureURL: keyValuePair[1].metadata.profilePictureURL
+      };
+    });
+
+    return (
+      <List>
+        {managersArray.length > 0 ? (
+          managersArray.map(managerInfo => (
+            <Route
+              key={managerInfo.id}
+              component={({ history }) => (
+                <ListItem
+                  button={userID !== managerInfo.id}
+                  onClick={() => {
+                    if (userID !== managerInfo.id) {
+                      history.push(`/manager/people/${managerInfo.id}`);
+                    }
+                  }}
+                >
+                  <Avatar src={managerInfo.profilePictureURL} />
+                  <ListItemText
+                    primary={`${managerInfo.name} ${managerInfo.surname}`}
+                    secondary={managerInfo.phoneNumber}
+                  />
+                </ListItem>
+              )}
+            />
+          ))
+        ) : (
+          <ListItem className={classes.noItems}>
+            <ListItemText primary="No managers" />
+          </ListItem>
+        )}
+      </List>
+    );
+  }
+
+  getCoachesList(coaches) {
+    const { classes } = this.props;
+    const coachesArray = _.toPairs(coaches).map(keyValuePair => {
+      return {
+        id: keyValuePair[0],
+        name: keyValuePair[1].metadata.name,
+        surname: keyValuePair[1].metadata.surname,
+        phoneNumber: keyValuePair[1].metadata.phoneNumber,
+        profilePictureURL: keyValuePair[1].metadata.profilePictureURL
+      };
+    });
+
+    return (
+      <List>
+        {coachesArray.length > 0 ? (
+          coachesArray.map(coachInfo => (
+            <Route
+              key={coachInfo.id}
+              component={({ history }) => (
+                <ListItem
+                  button
+                  onClick={() =>
+                    history.push(`/manager/people/${coachInfo.id}`)}
+                >
+                  <Avatar src={coachInfo.profilePictureURL} />
+                  <ListItemText
+                    primary={`${coachInfo.name} ${coachInfo.surname}`}
+                    secondary={coachInfo.phoneNumber}
+                  />
+                </ListItem>
+              )}
+            />
+          ))
+        ) : (
+          <ListItem className={classes.noItems}>
+            <ListItemText primary="No coaches" />
+          </ListItem>
+        )}
+      </List>
+    );
+  }
+
   render() {
     const { classes } = this.props;
     const {
@@ -74,10 +184,15 @@ class TeamInfo extends Component {
       sport,
       division,
       ageGroup,
-      gender,
-      coaches,
-      managers
-    } = this.props.info;
+      gender
+    } = this.props.info.metadata;
+    const { coaches, managers } = this.props.info;
+
+    let formattedGender = this.formatGender(gender, ageGroup);
+    let formattedAgeGroup = this.formatAgeGroup(ageGroup);
+    let managersList = this.getManagersList(managers);
+    let coachesList = this.getCoachesList(coaches);
+
     return (
       <div className={classes.wrapper}>
         <Route
@@ -115,10 +230,13 @@ class TeamInfo extends Component {
                   <ListItemText primary="Division" secondary={division} />
                 </ListItem>
                 <ListItem>
-                  <ListItemText primary="Age Group" secondary={ageGroup} />
+                  <ListItemText
+                    primary="Age Group"
+                    secondary={formattedAgeGroup}
+                  />
                 </ListItem>
                 <ListItem>
-                  <ListItemText primary="Gender" secondary={gender} />
+                  <ListItemText primary="Gender" secondary={formattedGender} />
                 </ListItem>
               </List>
             </div>
@@ -132,22 +250,7 @@ class TeamInfo extends Component {
               >
                 Managers
               </Typography>
-              <List>
-                {managers.length > 0 ? (
-                  managers.map(managerInfo => (
-                    <ListItem key={managerInfo.name} button>
-                      <Avatar src={managerInfo.profilePictureURL} />
-                      <ListItemText
-                        primary={`${managerInfo.name} ${managerInfo.surname}`}
-                      />
-                    </ListItem>
-                  ))
-                ) : (
-                  <ListItem className={classes.noItems}>
-                    <ListItemText primary="No managers" />
-                  </ListItem>
-                )}
-              </List>
+              {managersList}
             </div>
           </Grid>
           <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
@@ -159,22 +262,7 @@ class TeamInfo extends Component {
               >
                 Coaches
               </Typography>
-              <List>
-                {coaches.length > 0 ? (
-                  coaches.map(coachInfo => (
-                    <ListItem key={coachInfo.name} button>
-                      <Avatar src={coachInfo.profilePictureURL} />
-                      <ListItemText
-                        primary={`${coachInfo.name} ${coachInfo.surname}`}
-                      />
-                    </ListItem>
-                  ))
-                ) : (
-                  <ListItem className={classes.noItems}>
-                    <ListItemText primary="No coaches" />
-                  </ListItem>
-                )}
-              </List>
+              {coachesList}
             </div>
           </Grid>
         </Grid>

@@ -54,6 +54,7 @@ const styles = theme => ({
 class TeamCard extends Component {
   render() {
     const { classes, sport, name, id } = this.props;
+
     return (
       <Card className={classes.card}>
         <CardContent className={classes.cardContent}>
