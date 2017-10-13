@@ -9,6 +9,7 @@ import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Typography from "material-ui/Typography";
 import LeaderboardAd from "../../../../../components/LeaderboardAd";
+import _ from "lodash";
 
 const styles = {
   wrapper: {
@@ -78,23 +79,19 @@ const styles = {
 
 class EventInfo extends Component {
   render() {
-    const { classes } = this.props;
+    const { classes, userID } = this.props;
     const {
       title,
-      eventTypeName,
-      eventType,
+      type,
+      date,
       startTime,
       endTime,
-      venue,
-      notes,
-      teams,
-      coaches,
-      managers,
-      matchInfo
-    } = this.props.info;
+      isCompetitive,
+      additionalInfo
+    } = this.props.info.metadata;
+    const { teams, coaches, managers, status } = this.props.info;
     const { updateView } = this.props.actions;
 
-    const timeOptions = { hour: "2-digit", minute: "2-digit" };
     const dateOptions = {
       weekday: "long",
       month: "long",
@@ -108,15 +105,24 @@ class EventInfo extends Component {
             <Button
               raised
               className={classes.button}
-              onClick={() => updateView("EVENTS_LIST")}
+              onClick={() => {
+                history.goBack();
+                updateView("EVENTS_LIST");
+              }}
             >
               Back
             </Button>
           )}
         />
-        <Typography className={classes.name} type="display2" component="h2">
-          {title}
-        </Typography>
+        {status === "CANCELLED" ? (
+          <Typography className={classes.name} type="display2" component="h2">
+            {title} - [Cancelled]
+          </Typography>
+        ) : (
+          <Typography className={classes.name} type="display2" component="h2">
+            {title}
+          </Typography>
+        )}
         <div className={classes.adWrapper}>
           <LeaderboardAd />
         </div>
@@ -134,43 +140,31 @@ class EventInfo extends Component {
                 <ListItem>
                   <ListItemText
                     primary="Date"
-                    secondary={new Date(startTime).toLocaleDateString(
+                    secondary={new Date(date).toLocaleDateString(
                       "en-US",
                       dateOptions
                     )}
                   />
                 </ListItem>
                 <ListItem>
-                  <ListItemText
-                    primary="Starts at"
-                    secondary={new Date(startTime).toLocaleTimeString(
-                      "en-US",
-                      timeOptions
-                    )}
-                  />
+                  <ListItemText primary="Starts at" secondary={startTime} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Ends as" secondary={endTime} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Event type" secondary={type} />
                 </ListItem>
                 <ListItem>
                   <ListItemText
-                    primary="Ends as"
-                    secondary={new Date(endTime).toLocaleTimeString(
-                      "en-US",
-                      timeOptions
-                    )}
+                    primary="Venue"
+                    secondary={additionalInfo.venue}
                   />
-                </ListItem>
-                <ListItem>
-                  <ListItemText
-                    primary="Event type"
-                    secondary={eventTypeName}
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Venue" secondary={venue} />
                 </ListItem>
               </List>
             </div>
           </Grid>
-          {eventType === "COMPETITIVE" && (
+          {isCompetitive && (
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
               <div className={classes.section}>
                 <Typography
@@ -184,13 +178,17 @@ class EventInfo extends Component {
                   <ListItem>
                     <ListItemText
                       primary="Home / Away"
-                      secondary={matchInfo.homeAway}
+                      secondary={
+                        additionalInfo.homeAway === "UNKNOWN"
+                          ? "Not yet specified"
+                          : _.capitalize(additionalInfo.homeAway)
+                      }
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemText
                       primary="Opponents"
-                      secondary={matchInfo.opponents}
+                      secondary={additionalInfo.opponents}
                     />
                   </ListItem>
                 </List>
@@ -207,14 +205,22 @@ class EventInfo extends Component {
                 Teams
               </Typography>
               <List>
-                {teams.length > 0 ? (
-                  teams.map(teamInfo => (
-                    <ListItem key={teamInfo.id} button>
-                      <ListItemText
-                        primary={teamInfo.name}
-                        secondary={teamInfo.sport}
-                      />
-                    </ListItem>
+                {_.keys(teams).length > 0 ? (
+                  _.toPairs(teams).map(([id, info]) => (
+                    <Route
+                      key={id}
+                      component={({ history }) => (
+                        <ListItem
+                          button
+                          onClick={() => history.push(`/coach/teams/${id}`)}
+                        >
+                          <ListItemText
+                            primary={info.metadata.name}
+                            secondary={info.metadata.sport}
+                          />
+                        </ListItem>
+                      )}
+                    />
                   ))
                 ) : (
                   <ListItem className={classes.noItems}>
@@ -234,15 +240,23 @@ class EventInfo extends Component {
                 Managers
               </Typography>
               <List>
-                {managers.length > 0 ? (
-                  managers.map(managerInfo => (
-                    <ListItem key={managerInfo.name} button>
-                      <Avatar src={managerInfo.profilePictureURL} />
-                      <ListItemText
-                        primary={`${managerInfo.name} ${managerInfo.surname}`}
-                        secondary={managerInfo.phoneNumber}
-                      />
-                    </ListItem>
+                {_.keys(managers).length > 0 ? (
+                  _.toPairs(managers).map(([id, info]) => (
+                    <Route
+                      key={id}
+                      component={({ history }) => (
+                        <ListItem
+                          button
+                          onClick={() => history.push(`/coach/people/${id}`)}
+                        >
+                          <Avatar src={info.profilePictureURL} />
+                          <ListItemText
+                            primary={`${info.name} ${info.surname}`}
+                            secondary={info.phoneNumber}
+                          />
+                        </ListItem>
+                      )}
+                    />
                   ))
                 ) : (
                   <ListItem className={classes.noItems}>
@@ -262,15 +276,27 @@ class EventInfo extends Component {
                 Coaches
               </Typography>
               <List>
-                {coaches.length > 0 ? (
-                  coaches.map(coachInfo => (
-                    <ListItem key={coachInfo.name} button>
-                      <Avatar src={coachInfo.profilePictureURL} />
-                      <ListItemText
-                        primary={`${coachInfo.name} ${coachInfo.surname}`}
-                        secondary={coachInfo.phoneNumber}
-                      />
-                    </ListItem>
+                {_.keys(coaches).length > 0 ? (
+                  _.toPairs(coaches).map(([id, info]) => (
+                    <Route
+                      key={id}
+                      component={({ history }) => (
+                        <ListItem
+                          button={userID !== id}
+                          onClick={() => {
+                            if (userID !== id) {
+                              history.push(`/coach/people/${id}`);
+                            }
+                          }}
+                        >
+                          <Avatar src={info.profilePictureURL} />
+                          <ListItemText
+                            primary={`${info.name} ${info.surname}`}
+                            secondary={info.phoneNumber}
+                          />
+                        </ListItem>
+                      )}
+                    />
                   ))
                 ) : (
                   <ListItem className={classes.noItems}>
@@ -290,7 +316,7 @@ class EventInfo extends Component {
                 Notes
               </Typography>
               <div className={classes.notesWrapper}>
-                {notes === "" ? (
+                {additionalInfo.notes === "" ? (
                   <Typography
                     className={classes.notes}
                     type="body2"
@@ -304,7 +330,7 @@ class EventInfo extends Component {
                     type="body2"
                     component="p"
                   >
-                    {notes}
+                    {additionalInfo.notes}
                   </Typography>
                 )}
               </div>

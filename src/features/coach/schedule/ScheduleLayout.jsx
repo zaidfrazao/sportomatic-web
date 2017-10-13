@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { lightBlue } from "material-ui/colors";
+import { CircularProgress } from "material-ui/Progress";
 import Paper from "material-ui/Paper";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 import Calendar from "./components/Calendar";
@@ -25,98 +26,183 @@ const styles = theme => ({
   calendarWrapper: {
     margin: "0 40px",
     display: "flex",
-    backgroundColor: lightBlue[700]
+    backgroundColor: lightBlue[700],
+    height: "calc(100vh - 257px)"
   },
   desktopCalendar: {
     width: "40%"
   },
   desktopEventsList: {
-    flexGrow: 1
+    width: "60%",
+    height: "100%"
+  },
+  tabletEventsListWrapper: {
+    height: "100%"
   },
   eventsListWrapper: {
     height: "calc(100% - 98px)"
+  },
+  button: {
+    margin: theme.spacing.unit,
+    position: "fixed",
+    bottom: 72,
+    right: 24,
+    zIndex: 1,
+    "@media (min-width: 600px)": {
+      bottom: 24
+    }
+  },
+  loaderWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  contentWrapper: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
   }
 });
 
 class ScheduleLayout extends Component {
+  componentWillMount() {
+    const { userID, activeInstitutionID } = this.props;
+    const { loadEvents } = this.props.actions;
+    loadEvents(activeInstitutionID, userID);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { userID, activeInstitutionID } = this.props;
+    const { loadEvents } = this.props.actions;
+
+    if (
+      userID !== nextProps.userID ||
+      activeInstitutionID !== nextProps.activeInstitutionID
+    ) {
+      loadEvents(nextProps.activeInstitutionID, nextProps.userID);
+    }
+  }
+
   renderView() {
-    const { isTablet, isMobile, classes, events } = this.props;
-    const { dateSelected } = this.props.match.params;
+    const { isTablet, isMobile, classes, userID, events } = this.props;
+    const { dateSelected, eventID } = this.props.match.params;
     const { currentView } = this.props.uiConfig;
     const { updateView } = this.props.actions;
+    const { isEventsLoading } = this.props.loadingStatus;
 
     const currentDate = new Date(Date.now());
-    const dateSelectedComponents = dateSelected
-      ? dateSelected.split("-")
-      : [
-          currentDate.getDate(),
-          currentDate.getMonth(),
-          currentDate.getFullYear()
-        ];
+    let yearSelected = "";
+    let monthSelected = "";
 
     if (!dateSelected) {
       return (
         <Redirect
-          to={`/coach/schedule/${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`}
+          to={`/coach/schedule/${currentDate.toISOString().slice(0, 10)}`}
         />
       );
+    } else {
+      yearSelected = dateSelected.slice(0, 4);
+      monthSelected = dateSelected.slice(5, 7);
     }
 
     if (currentView === "EVENT_INFO") {
       return (
-        <EventInfo info={events["2017-8-18"][0]} actions={{ updateView }} />
+        <div className={classes.contentWrapper}>
+          {isEventsLoading ? (
+            <div className={classes.loaderWrapper}>
+              <CircularProgress />
+            </div>
+          ) : (
+            <EventInfo
+              info={events[yearSelected][monthSelected][eventID]}
+              userID={userID}
+              actions={{ updateView }}
+            />
+          )}
+        </div>
       );
     }
 
     if (isTablet) {
       if (currentView === "EVENTS_LIST") {
         return (
-          <EventsList
-            isTablet={isTablet}
-            dateSelected={new Date(...dateSelectedComponents)}
-            events={events[dateSelected] || []}
-            actions={{ updateView }}
-          />
+          <div className={classes.tabletEventsListWrapper}>
+            {isEventsLoading ? (
+              <div className={classes.loaderWrapper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <EventsList
+                isTablet={isTablet}
+                dateSelected={dateSelected}
+                events={
+                  (events[yearSelected] &&
+                    events[yearSelected][monthSelected]) ||
+                  {}
+                }
+                institutionID={userID}
+                actions={{ updateView }}
+              />
+            )}
+          </div>
         );
       } else {
         return (
-          <div>
+          <div className={classes.contentWrapper}>
             <div className={classes.adWrapper}>
               <LeaderboardAd />
             </div>
-            <Calendar
-              dateSelected={new Date(...dateSelectedComponents)}
-              isMobile={isMobile}
-              isTablet={isTablet}
-              actions={{ updateView }}
-            />
+            {isEventsLoading ? (
+              <div className={classes.loaderWrapper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <Calendar
+                dateSelected={new Date(dateSelected)}
+                isMobile={isMobile}
+                isTablet={isTablet}
+                actions={{ updateView }}
+              />
+            )}
           </div>
         );
       }
     } else {
       return (
-        <div>
+        <div className={classes.contentWrapper}>
           <div className={classes.adWrapper}>
             <LeaderboardAd />
           </div>
-          <Paper className={classes.calendarWrapper}>
-            <div className={classes.desktopCalendar}>
-              <Calendar
-                dateSelected={new Date(...dateSelectedComponents)}
-                isMobile={isMobile}
-                isTablet={isTablet}
-                actions={{ updateView }}
-              />
+          {isEventsLoading ? (
+            <div className={classes.loaderWrapper}>
+              <CircularProgress />
             </div>
-            <div className={classes.desktopEventsList}>
-              <EventsList
-                isTablet={isTablet}
-                dateSelected={new Date(...dateSelectedComponents)}
-                events={events[dateSelected] || []}
-                actions={{ updateView }}
-              />
-            </div>
-          </Paper>
+          ) : (
+            <Paper className={classes.calendarWrapper}>
+              <div className={classes.desktopCalendar}>
+                <Calendar
+                  dateSelected={new Date(dateSelected)}
+                  isMobile={isMobile}
+                  isTablet={isTablet}
+                  actions={{ updateView }}
+                />
+              </div>
+              <div className={classes.desktopEventsList}>
+                <EventsList
+                  isTablet={isTablet}
+                  dateSelected={dateSelected}
+                  events={
+                    (events[yearSelected] &&
+                      events[yearSelected][monthSelected]) ||
+                    {}
+                  }
+                  institutionID={userID}
+                  actions={{ updateView }}
+                />
+              </div>
+            </Paper>
+          )}
         </div>
       );
     }
