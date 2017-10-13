@@ -236,7 +236,7 @@ class EventsList extends Component {
                     />
                     <ListItemSecondaryAction>
                       <Tooltip
-                        label="Uncancel"
+                        title="Uncancel"
                         placement="left"
                         onClick={() =>
                           openUncancelEventAlert(

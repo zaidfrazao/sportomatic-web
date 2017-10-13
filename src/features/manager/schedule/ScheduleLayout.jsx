@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { lightBlue } from "material-ui/colors";
-import AddIcon from "material-ui-icons/Add";
+import { CircularProgress } from "material-ui/Progress";
 import Button from "material-ui/Button";
 import EditIcon from "material-ui-icons/Edit";
 import Paper from "material-ui/Paper";
@@ -12,6 +12,9 @@ import LeaderboardAd from "../../../components/LeaderboardAd";
 import Calendar from "./components/Calendar";
 import EventInfo from "./components/EventInfo";
 import EventsList from "./components/EventsList";
+import EditEventDialog from "./components/EditEventDialog";
+import NotificationModal from "../../../components/NotificationModal";
+import DecisionModal from "../../../components/DecisionModal";
 
 const styles = theme => ({
   root: {
@@ -28,13 +31,15 @@ const styles = theme => ({
   calendarWrapper: {
     margin: "0 40px",
     display: "flex",
-    backgroundColor: lightBlue[700]
+    backgroundColor: lightBlue[700],
+    height: "calc(100vh - 257px)"
   },
   desktopCalendar: {
     width: "40%"
   },
   desktopEventsList: {
-    flexGrow: 1
+    width: "60%",
+    height: "100%"
   },
   tabletEventsListWrapper: {
     height: "100%"
@@ -51,45 +56,164 @@ const styles = theme => ({
     "@media (min-width: 600px)": {
       bottom: 24
     }
+  },
+  loaderWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  contentWrapper: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
   }
 });
 
 class ScheduleLayout extends Component {
+  componentWillMount() {
+    const { userID, activeInstitutionID } = this.props;
+    const { loadEvents } = this.props.actions;
+    loadEvents(activeInstitutionID, userID);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { userID, activeInstitutionID } = this.props;
+    const { loadEvents } = this.props.actions;
+
+    if (
+      userID !== nextProps.userID ||
+      activeInstitutionID !== nextProps.activeInstitutionID
+    ) {
+      loadEvents(nextProps.activeInstitutionID, nextProps.userID);
+    }
+  }
+
   renderView() {
-    const { isTablet, isMobile, classes, events } = this.props;
-    const { dateSelected } = this.props.match.params;
-    const { currentView } = this.props.uiConfig;
-    const { updateView } = this.props.actions;
+    const {
+      isTablet,
+      isMobile,
+      classes,
+      userID,
+      teams,
+      coaches,
+      managers,
+      events,
+      activeInstitutionID
+    } = this.props;
+    const { dateSelected, eventID } = this.props.match.params;
+    const { currentView, errorType, selectedEventInfo } = this.props.uiConfig;
+    const {
+      updateView,
+      openEditEventDialog,
+      closeEditEventDialog,
+      loadTeams,
+      loadStaff,
+      openEventErrorAlert,
+      closeEventErrorAlert,
+      openCancelEventAlert,
+      closeCancelEventAlert,
+      openUncancelEventAlert,
+      closeUncancelEventAlert,
+      cancelEvent,
+      uncancelEvent,
+      editEvent
+    } = this.props.actions;
+    const {
+      isEventsLoading,
+      isEditEventDialogLoading
+    } = this.props.loadingStatus;
+    const {
+      isCancelEventAlertOpen,
+      isUncancelEventAlertOpen,
+      isEditEventDialogOpen,
+      isEventErrorAlertOpen
+    } = this.props.dialogs;
 
     const currentDate = new Date(Date.now());
-    const dateSelectedComponents = dateSelected
-      ? dateSelected.split("-")
-      : [
-          currentDate.getDate(),
-          currentDate.getMonth(),
-          currentDate.getFullYear()
-        ];
+    let yearSelected = "";
+    let monthSelected = "";
 
     if (!dateSelected) {
       return (
         <Redirect
-          to={`/manager/schedule/${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`}
+          to={`/manager/schedule/${currentDate.toISOString().slice(0, 10)}`}
         />
       );
+    } else {
+      yearSelected = dateSelected.slice(0, 4);
+      monthSelected = dateSelected.slice(5, 7);
+    }
+
+    let eventErrorAlertHeading = "Event Title Required";
+    let eventErrorAlertMessage =
+      "You need to specify a title for this event before saving it.";
+    if (errorType === "DATE") {
+      eventErrorAlertHeading = "Date Invalid";
+      eventErrorAlertMessage =
+        "You cannot create an event scheduled for a date that has already passed.";
+    }
+    if (errorType === "LOADING") {
+      eventErrorAlertHeading = "Network Issue";
+      eventErrorAlertMessage =
+        "You have lost your connection to the internet. Please check your connectivity and try again.";
+    }
+    if (errorType === "EVENT_TYPE") {
+      eventErrorAlertHeading = "Event Type Required";
+      eventErrorAlertMessage =
+        "Please specify a name for your custom event type.";
     }
 
     if (currentView === "EVENT_INFO") {
       return (
-        <div>
-          <EventInfo info={events["2017-8-18"][0]} actions={{ updateView }} />
+        <div className={classes.contentWrapper}>
+          {isEventsLoading ? (
+            <div className={classes.loaderWrapper}>
+              <CircularProgress />
+            </div>
+          ) : (
+            <EventInfo
+              info={events[yearSelected][monthSelected][eventID]}
+              userID={userID}
+              actions={{ updateView }}
+            />
+          )}
           <Button
             fab
             color="accent"
             aria-label="edit event"
             className={classes.button}
+            onClick={() => {
+              loadTeams(activeInstitutionID);
+              loadStaff(activeInstitutionID);
+              openEditEventDialog();
+            }}
           >
             <EditIcon />
           </Button>
+          <EditEventDialog
+            isOpen={isEditEventDialogOpen}
+            isLoading={isEditEventDialogLoading}
+            minDate={currentDate.toISOString().slice(0, 10)}
+            initialDate={dateSelected}
+            teams={teams}
+            coaches={coaches}
+            managers={managers}
+            initialEventInfo={events[yearSelected][monthSelected][eventID]}
+            initialEventID={eventID}
+            institutionID={activeInstitutionID}
+            actions={{
+              handleClose: closeEditEventDialog,
+              editEvent,
+              openEventErrorAlert
+            }}
+          />
+          <NotificationModal
+            isOpen={isEventErrorAlertOpen}
+            handleOkClick={closeEventErrorAlert}
+            heading={eventErrorAlertHeading}
+            message={eventErrorAlertMessage}
+          />
         </div>
       );
     }
@@ -98,69 +222,171 @@ class ScheduleLayout extends Component {
       if (currentView === "EVENTS_LIST") {
         return (
           <div className={classes.tabletEventsListWrapper}>
-            <EventsList
-              isTablet={isTablet}
-              dateSelected={new Date(...dateSelectedComponents)}
-              events={events[dateSelected] || []}
-              actions={{ updateView }}
+            {isEventsLoading ? (
+              <div className={classes.loaderWrapper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <EventsList
+                isTablet={isTablet}
+                dateSelected={dateSelected}
+                events={
+                  (events[yearSelected] &&
+                    events[yearSelected][monthSelected]) ||
+                  {}
+                }
+                institutionID={activeInstitutionID}
+                actions={{
+                  updateView,
+                  openCancelEventAlert,
+                  openUncancelEventAlert,
+                  cancelEvent
+                }}
+              />
+            )}
+            <DecisionModal
+              isOpen={isCancelEventAlertOpen}
+              handleYesClick={() => {
+                cancelEvent(
+                  selectedEventInfo.institutionID,
+                  selectedEventInfo.eventID,
+                  selectedEventInfo.managerIDs,
+                  selectedEventInfo.coachIDs,
+                  selectedEventInfo.year,
+                  selectedEventInfo.month
+                );
+                closeCancelEventAlert();
+              }}
+              handleNoClick={closeCancelEventAlert}
+              heading="Cancel Event"
+              message="Are you sure you want to cancel this event?"
             />
-            <Button
-              fab
-              color="accent"
-              aria-label="add event"
-              className={classes.button}
-            >
-              <AddIcon />
-            </Button>
+            <DecisionModal
+              isOpen={isUncancelEventAlertOpen}
+              handleYesClick={() => {
+                uncancelEvent(
+                  selectedEventInfo.institutionID,
+                  selectedEventInfo.eventID,
+                  selectedEventInfo.managerIDs,
+                  selectedEventInfo.coachIDs,
+                  selectedEventInfo.year,
+                  selectedEventInfo.month
+                );
+                closeUncancelEventAlert();
+              }}
+              handleNoClick={closeUncancelEventAlert}
+              heading="Uncancel Event"
+              message="Are you sure you want to uncancel this event?"
+            />
+            <NotificationModal
+              isOpen={isEventErrorAlertOpen}
+              handleOkClick={closeEventErrorAlert}
+              heading={eventErrorAlertHeading}
+              message={eventErrorAlertMessage}
+            />
           </div>
         );
       } else {
         return (
-          <div>
+          <div className={classes.contentWrapper}>
             <div className={classes.adWrapper}>
               <LeaderboardAd />
             </div>
-            <Calendar
-              dateSelected={new Date(...dateSelectedComponents)}
-              isMobile={isMobile}
-              isTablet={isTablet}
-              actions={{ updateView }}
-            />
+            {isEventsLoading ? (
+              <div className={classes.loaderWrapper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <Calendar
+                dateSelected={new Date(dateSelected)}
+                isMobile={isMobile}
+                isTablet={isTablet}
+                actions={{ updateView }}
+              />
+            )}
           </div>
         );
       }
     } else {
       return (
-        <div>
+        <div className={classes.contentWrapper}>
           <div className={classes.adWrapper}>
             <LeaderboardAd />
           </div>
-          <Paper className={classes.calendarWrapper}>
-            <div className={classes.desktopCalendar}>
-              <Calendar
-                dateSelected={new Date(...dateSelectedComponents)}
-                isMobile={isMobile}
-                isTablet={isTablet}
-                actions={{ updateView }}
-              />
+          {isEventsLoading ? (
+            <div className={classes.loaderWrapper}>
+              <CircularProgress />
             </div>
-            <div className={classes.desktopEventsList}>
-              <EventsList
-                isTablet={isTablet}
-                dateSelected={new Date(...dateSelectedComponents)}
-                events={events[dateSelected] || []}
-                actions={{ updateView }}
-              />
-            </div>
-          </Paper>
-          <Button
-            fab
-            color="accent"
-            aria-label="add event"
-            className={classes.button}
-          >
-            <AddIcon />
-          </Button>
+          ) : (
+            <Paper className={classes.calendarWrapper}>
+              <div className={classes.desktopCalendar}>
+                <Calendar
+                  dateSelected={new Date(dateSelected)}
+                  isMobile={isMobile}
+                  isTablet={isTablet}
+                  actions={{ updateView }}
+                />
+              </div>
+              <div className={classes.desktopEventsList}>
+                <EventsList
+                  isTablet={isTablet}
+                  dateSelected={dateSelected}
+                  events={
+                    (events[yearSelected] &&
+                      events[yearSelected][monthSelected]) ||
+                    {}
+                  }
+                  institutionID={activeInstitutionID}
+                  actions={{
+                    updateView,
+                    openCancelEventAlert,
+                    openUncancelEventAlert,
+                    cancelEvent
+                  }}
+                />
+              </div>
+            </Paper>
+          )}
+          <DecisionModal
+            isOpen={isCancelEventAlertOpen}
+            handleYesClick={() => {
+              cancelEvent(
+                selectedEventInfo.institutionID,
+                selectedEventInfo.eventID,
+                selectedEventInfo.managerIDs,
+                selectedEventInfo.coachIDs,
+                selectedEventInfo.year,
+                selectedEventInfo.month
+              );
+              closeCancelEventAlert();
+            }}
+            handleNoClick={closeCancelEventAlert}
+            heading="Cancel Event"
+            message="Are you sure you want to cancel this event?"
+          />
+          <DecisionModal
+            isOpen={isUncancelEventAlertOpen}
+            handleYesClick={() => {
+              uncancelEvent(
+                selectedEventInfo.institutionID,
+                selectedEventInfo.eventID,
+                selectedEventInfo.managerIDs,
+                selectedEventInfo.coachIDs,
+                selectedEventInfo.year,
+                selectedEventInfo.month
+              );
+              closeUncancelEventAlert();
+            }}
+            handleNoClick={closeUncancelEventAlert}
+            heading="Uncancel Event"
+            message="Are you sure you want to uncancel this event?"
+          />
+          <NotificationModal
+            isOpen={isEventErrorAlertOpen}
+            handleOkClick={closeEventErrorAlert}
+            heading={eventErrorAlertHeading}
+            message={eventErrorAlertMessage}
+          />
         </div>
       );
     }

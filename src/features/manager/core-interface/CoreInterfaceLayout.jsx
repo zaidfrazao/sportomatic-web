@@ -232,13 +232,28 @@ class CoreInterfaceLayout extends Component {
                   />
                 </Route>
                 <Route exact path={`/manager/schedule/`}>
-                  <Schedule isMobile={isMobile} isTablet={isTablet} />
+                  <Schedule
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={uiConfig.userID}
+                    activeInstitutionID={uiConfig.activeInstitution.id}
+                  />
                 </Route>
                 <Route exact path={`/manager/schedule/:dateSelected`}>
-                  <Schedule isMobile={isMobile} isTablet={isTablet} />
+                  <Schedule
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={uiConfig.userID}
+                    activeInstitutionID={uiConfig.activeInstitution.id}
+                  />
                 </Route>
                 <Route exact path={`/manager/schedule/:dateSelected/:eventID`}>
-                  <Schedule isMobile={isMobile} isTablet={isTablet} />
+                  <Schedule
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={uiConfig.userID}
+                    activeInstitutionID={uiConfig.activeInstitution.id}
+                  />
                 </Route>
                 <Route exact path={`/manager/settings/`}>
                   <Settings />
