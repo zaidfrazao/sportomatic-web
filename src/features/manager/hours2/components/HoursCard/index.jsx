@@ -10,7 +10,6 @@ import SignInIcon from "material-ui-icons/AssignmentReturned";
 import SignOutIcon from "material-ui-icons/AssignmentReturn";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
-import _ from "lodash";
 
 const styles = {
   root: {
@@ -94,27 +93,21 @@ const styles = {
 
 class HoursCard extends Component {
   renderCardContent() {
-    const { classes, eventInfo, institutionID } = this.props;
-    const { signIn, signOut, approveHours } = this.props.actions;
+    const { classes } = this.props;
+    const { coaches } = this.props.info;
 
-    let currentTime = new Date(Date.now());
-    currentTime.setHours(currentTime.getHours() + 2);
-    currentTime = currentTime.toISOString().slice(11, 16);
-
-    return _.toPairs(eventInfo.coaches).map(([coachID, info]) => {
-      const { profilePictureURL, name, surname } = info;
+    return coaches.map((coachHours, index) => {
       const {
-        status,
+        stage,
         signInTime,
         signOutTime,
-        standardHourlyRate,
-        overtimeHourlyRate
-      } = info.hours;
-
-      switch (status) {
+        profilePictureURL,
+        name
+      } = coachHours;
+      switch (stage) {
         case "AWAITING_SIGN_IN":
           return (
-            <div className={classes.hoursWrapper} key={coachID}>
+            <div key={index} className={classes.hoursWrapper}>
               <img
                 alt={name}
                 src={profilePictureURL}
@@ -125,7 +118,7 @@ class HoursCard extends Component {
                 component="h3"
                 className={classes.coachName}
               >
-                {`${name} ${surname}`}
+                {name}
               </Typography>
               <div className={classes.timesWrapper}>
                 <div className={classes.timeWrapper}>
@@ -133,9 +126,6 @@ class HoursCard extends Component {
                     id="time"
                     label="Signed in at"
                     type="time"
-                    value={signInTime}
-                    onChange={e =>
-                      signIn(institutionID, eventInfo, coachID, e.target.value)}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -147,14 +137,6 @@ class HoursCard extends Component {
                     id="time"
                     label="Signed out at"
                     type="time"
-                    value={signOutTime}
-                    onChange={e =>
-                      signOut(
-                        institutionID,
-                        eventInfo,
-                        coachID,
-                        e.target.value
-                      )}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -163,22 +145,7 @@ class HoursCard extends Component {
                 </div>
               </div>
               <div className={classes.buttonWrapper}>
-                <Button
-                  raised
-                  className={classes.signInButton}
-                  onClick={() => {
-                    if (currentTime > eventInfo.endTime) {
-                      signIn(
-                        institutionID,
-                        eventInfo,
-                        coachID,
-                        eventInfo.startTime
-                      );
-                    } else {
-                      signIn(institutionID, eventInfo, coachID, currentTime);
-                    }
-                  }}
-                >
+                <Button raised className={classes.signInButton}>
                   <SignInIcon /> Sign in
                 </Button>
               </div>
@@ -186,7 +153,7 @@ class HoursCard extends Component {
           );
         case "AWAITING_SIGN_OUT":
           return (
-            <div className={classes.hoursWrapper} key={coachID}>
+            <div key={index} className={classes.hoursWrapper}>
               <img
                 alt={name}
                 src={profilePictureURL}
@@ -197,7 +164,7 @@ class HoursCard extends Component {
                 component="h3"
                 className={classes.coachName}
               >
-                {`${name} ${surname}`}
+                {name}
               </Typography>
               <div className={classes.timesWrapper}>
                 <div className={classes.timeWrapper}>
@@ -205,9 +172,7 @@ class HoursCard extends Component {
                     id="time"
                     label="Signed in at"
                     type="time"
-                    value={signInTime}
-                    onChange={e =>
-                      signIn(institutionID, eventInfo, coachID, e.target.value)}
+                    defaultValue={signInTime}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -219,14 +184,6 @@ class HoursCard extends Component {
                     id="time"
                     label="Signed out at"
                     type="time"
-                    value={signOutTime}
-                    onChange={e =>
-                      signOut(
-                        institutionID,
-                        eventInfo,
-                        coachID,
-                        e.target.value
-                      )}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -235,22 +192,7 @@ class HoursCard extends Component {
                 </div>
               </div>
               <div className={classes.buttonWrapper}>
-                <Button
-                  raised
-                  className={classes.signOutButton}
-                  onClick={() => {
-                    if (currentTime > eventInfo.endTime) {
-                      signOut(
-                        institutionID,
-                        eventInfo,
-                        coachID,
-                        eventInfo.endTime
-                      );
-                    } else {
-                      signOut(institutionID, eventInfo, coachID, currentTime);
-                    }
-                  }}
-                >
+                <Button raised className={classes.signOutButton}>
                   <SignOutIcon /> Sign out
                 </Button>
               </div>
@@ -258,7 +200,7 @@ class HoursCard extends Component {
           );
         case "AWAITING_APPROVAL":
           return (
-            <div className={classes.hoursWrapper} key={coachID}>
+            <div key={index} className={classes.hoursWrapper}>
               <img
                 alt={name}
                 src={profilePictureURL}
@@ -269,7 +211,7 @@ class HoursCard extends Component {
                 component="h3"
                 className={classes.coachName}
               >
-                {`${name} ${surname}`}
+                {name}
               </Typography>
               <div className={classes.timesWrapper}>
                 <div className={classes.timeWrapper}>
@@ -277,9 +219,7 @@ class HoursCard extends Component {
                     id="time"
                     label="Signed in at"
                     type="time"
-                    value={signInTime}
-                    onChange={e =>
-                      signIn(institutionID, eventInfo, coachID, e.target.value)}
+                    defaultValue={signInTime}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -291,14 +231,7 @@ class HoursCard extends Component {
                     id="time"
                     label="Signed out at"
                     type="time"
-                    value={signOutTime}
-                    onChange={e =>
-                      signOut(
-                        institutionID,
-                        eventInfo,
-                        coachID,
-                        e.target.value
-                      )}
+                    defaultValue={signOutTime}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -307,17 +240,7 @@ class HoursCard extends Component {
                 </div>
               </div>
               <div className={classes.buttonWrapper}>
-                <Button
-                  raised
-                  className={classes.approveButton}
-                  onClick={() =>
-                    approveHours(institutionID, eventInfo, coachID, {
-                      signInTime: signInTime,
-                      signOutTime: signOutTime,
-                      standardHourlyRate: standardHourlyRate,
-                      overtimeHourlyRate: overtimeHourlyRate
-                    })}
-                >
+                <Button raised className={classes.approveButton}>
                   <ApproveIcon /> Approve
                 </Button>
               </div>
@@ -325,7 +248,7 @@ class HoursCard extends Component {
           );
         default:
           return (
-            <Typography type="body1" component="p" key={coachID}>
+            <Typography type="body1" component="p" key={index}>
               Invalid stage supplied.
             </Typography>
           );
@@ -334,7 +257,7 @@ class HoursCard extends Component {
   }
 
   render() {
-    const { classes, eventInfo, isTablet } = this.props;
+    const { classes, info, isTablet } = this.props;
     const dateOptions = {
       month: "short",
       day: "numeric",
@@ -345,11 +268,11 @@ class HoursCard extends Component {
       <div className={isTablet ? classes.tabletRoot : classes.root}>
         <Card>
           <CardHeader
-            title={eventInfo.eventTitle}
-            subheader={`${new Date(eventInfo.date).toLocaleDateString(
+            title={info.eventTitle}
+            subheader={new Date(info.date).toLocaleDateString(
               "en-US",
               dateOptions
-            )} | ${eventInfo.startTime} to ${eventInfo.endTime}`}
+            )}
           />
           <CardContent>{this.renderCardContent()}</CardContent>
         </Card>

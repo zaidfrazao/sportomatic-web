@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
+import { Route } from "react-router-dom";
 import { green, grey, lightBlue, orange } from "material-ui/colors";
 import ApproveIcon from "material-ui-icons/AssignmentTurnedIn";
 import Button from "material-ui/Button";
@@ -11,12 +12,14 @@ import SignInIcon from "material-ui-icons/AssignmentReturned";
 import SignOutIcon from "material-ui-icons/AssignmentReturn";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
+import _ from "lodash";
 
 const styles = {
   root: {
     flexGrow: 1,
     display: "flex",
-    maxHeight: 600
+    maxHeight: 600,
+    marginTop: 24
   },
   cardWrapper: {
     flexGrow: 1,
@@ -129,21 +132,27 @@ const styles = {
 
 class TimeLogger extends Component {
   renderLogger() {
-    const { classes } = this.props;
-    const { coaches } = this.props.info;
+    const { classes, eventInfo, institutionID } = this.props;
+    const { signIn, signOut, approveHours } = this.props.actions;
 
-    return coaches.map((coachHours, index) => {
+    let currentTime = new Date(Date.now());
+    currentTime.setHours(currentTime.getHours() + 2);
+    currentTime = currentTime.toISOString().slice(11, 16);
+
+    return _.toPairs(eventInfo.coaches).map(([coachID, info]) => {
+      const { profilePictureURL, name, surname } = info;
       const {
-        stage,
+        status,
         signInTime,
         signOutTime,
-        profilePictureURL,
-        name
-      } = coachHours;
-      switch (stage) {
+        standardHourlyRate,
+        overtimeHourlyRate
+      } = info.hours;
+
+      switch (status) {
         case "AWAITING_SIGN_IN":
           return (
-            <div key={index} className={classes.hoursWrapper}>
+            <div className={classes.hoursWrapper} key={coachID}>
               <img
                 alt={name}
                 src={profilePictureURL}
@@ -154,7 +163,7 @@ class TimeLogger extends Component {
                 component="h3"
                 className={classes.coachName}
               >
-                {name}
+                {`${name} ${surname}`}
               </Typography>
               <div className={classes.timesWrapper}>
                 <div className={classes.timeWrapper}>
@@ -162,6 +171,9 @@ class TimeLogger extends Component {
                     id="time"
                     label="Signed in at"
                     type="time"
+                    value={signInTime}
+                    onChange={e =>
+                      signIn(institutionID, eventInfo, coachID, e.target.value)}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -173,6 +185,14 @@ class TimeLogger extends Component {
                     id="time"
                     label="Signed out at"
                     type="time"
+                    value={signOutTime}
+                    onChange={e =>
+                      signOut(
+                        institutionID,
+                        eventInfo,
+                        coachID,
+                        e.target.value
+                      )}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -181,7 +201,22 @@ class TimeLogger extends Component {
                 </div>
               </div>
               <div className={classes.buttonWrapper}>
-                <Button raised className={classes.signInButton}>
+                <Button
+                  raised
+                  className={classes.signInButton}
+                  onClick={() => {
+                    if (currentTime > eventInfo.endTime) {
+                      signIn(
+                        institutionID,
+                        eventInfo,
+                        coachID,
+                        eventInfo.startTime
+                      );
+                    } else {
+                      signIn(institutionID, eventInfo, coachID, currentTime);
+                    }
+                  }}
+                >
                   <SignInIcon /> Sign in
                 </Button>
               </div>
@@ -189,7 +224,7 @@ class TimeLogger extends Component {
           );
         case "AWAITING_SIGN_OUT":
           return (
-            <div key={index} className={classes.hoursWrapper}>
+            <div className={classes.hoursWrapper} key={coachID}>
               <img
                 alt={name}
                 src={profilePictureURL}
@@ -200,7 +235,7 @@ class TimeLogger extends Component {
                 component="h3"
                 className={classes.coachName}
               >
-                {name}
+                {`${name} ${surname}`}
               </Typography>
               <div className={classes.timesWrapper}>
                 <div className={classes.timeWrapper}>
@@ -208,7 +243,9 @@ class TimeLogger extends Component {
                     id="time"
                     label="Signed in at"
                     type="time"
-                    defaultValue={signInTime}
+                    value={signInTime}
+                    onChange={e =>
+                      signIn(institutionID, eventInfo, coachID, e.target.value)}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -220,6 +257,14 @@ class TimeLogger extends Component {
                     id="time"
                     label="Signed out at"
                     type="time"
+                    value={signOutTime}
+                    onChange={e =>
+                      signOut(
+                        institutionID,
+                        eventInfo,
+                        coachID,
+                        e.target.value
+                      )}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -228,7 +273,22 @@ class TimeLogger extends Component {
                 </div>
               </div>
               <div className={classes.buttonWrapper}>
-                <Button raised className={classes.signOutButton}>
+                <Button
+                  raised
+                  className={classes.signOutButton}
+                  onClick={() => {
+                    if (currentTime > eventInfo.endTime) {
+                      signOut(
+                        institutionID,
+                        eventInfo,
+                        coachID,
+                        eventInfo.endTime
+                      );
+                    } else {
+                      signOut(institutionID, eventInfo, coachID, currentTime);
+                    }
+                  }}
+                >
                   <SignOutIcon /> Sign out
                 </Button>
               </div>
@@ -236,7 +296,7 @@ class TimeLogger extends Component {
           );
         case "AWAITING_APPROVAL":
           return (
-            <div key={index} className={classes.hoursWrapper}>
+            <div className={classes.hoursWrapper} key={coachID}>
               <img
                 alt={name}
                 src={profilePictureURL}
@@ -247,7 +307,7 @@ class TimeLogger extends Component {
                 component="h3"
                 className={classes.coachName}
               >
-                {name}
+                {`${name} ${surname}`}
               </Typography>
               <div className={classes.timesWrapper}>
                 <div className={classes.timeWrapper}>
@@ -255,7 +315,9 @@ class TimeLogger extends Component {
                     id="time"
                     label="Signed in at"
                     type="time"
-                    defaultValue={signInTime}
+                    value={signInTime}
+                    onChange={e =>
+                      signIn(institutionID, eventInfo, coachID, e.target.value)}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -267,7 +329,14 @@ class TimeLogger extends Component {
                     id="time"
                     label="Signed out at"
                     type="time"
-                    defaultValue={signOutTime}
+                    value={signOutTime}
+                    onChange={e =>
+                      signOut(
+                        institutionID,
+                        eventInfo,
+                        coachID,
+                        e.target.value
+                      )}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -276,7 +345,17 @@ class TimeLogger extends Component {
                 </div>
               </div>
               <div className={classes.buttonWrapper}>
-                <Button raised className={classes.approveButton}>
+                <Button
+                  raised
+                  className={classes.approveButton}
+                  onClick={() =>
+                    approveHours(institutionID, eventInfo, coachID, {
+                      signInTime: signInTime,
+                      signOutTime: signOutTime,
+                      standardHourlyRate: standardHourlyRate,
+                      overtimeHourlyRate: overtimeHourlyRate
+                    })}
+                >
                   <ApproveIcon /> Approve
                 </Button>
               </div>
@@ -284,7 +363,7 @@ class TimeLogger extends Component {
           );
         default:
           return (
-            <Typography type="body1" component="p" key={index}>
+            <Typography type="body1" component="p" key={coachID}>
               Invalid stage supplied.
             </Typography>
           );
@@ -293,47 +372,57 @@ class TimeLogger extends Component {
   }
 
   render() {
-    const { classes, isTablet, info } = this.props;
+    const { classes, isTablet, eventInfo } = this.props;
 
     const timeOptions = { hour: "2-digit", minute: "2-digit" };
-    const startTime = new Date(info.startTime).toLocaleTimeString(
-      "en-US",
-      timeOptions
-    );
-    const endTime = new Date(info.endTime).toLocaleTimeString(
-      "en-US",
-      timeOptions
-    );
+    const startTime = eventInfo.startTime;
+    const endTime = eventInfo.endTime;
 
     return (
       <div className={classes.root}>
         {isTablet ? (
           <Card className={classes.mobileCard}>
             <CardHeader
-              title={info.eventTitle}
+              title={eventInfo.eventTitle}
               subheader={`${startTime} - ${endTime}`}
             />
             <div className={classes.mobileCardContent}>
-              <Button>View more event info</Button>
+              <Route
+                component={({ history }) => (
+                  <Button
+                    className={classes.moreInfoButton}
+                    onClick={() =>
+                      history.push(
+                        `/institution/schedule/${eventInfo.date}/${eventInfo.eventID}`
+                      )}
+                  >
+                    View more event info
+                  </Button>
+                )}
+              />
               {this.renderLogger()}
             </div>
           </Card>
         ) : (
           <Card className={classes.cardWrapper}>
-            <CardHeader title={info.eventTitle} />
+            <CardHeader title={eventInfo.eventTitle} />
             <div className={classes.cardContent}>
               <div className={classes.loggerWrapper}>{this.renderLogger()}</div>
               <div className={classes.eventInfoWrapper}>
-                <Button className={classes.moreInfoButton}>
-                  View more event info
-                </Button>
+                <Route
+                  component={({ history }) => (
+                    <Button
+                      className={classes.moreInfoButton}
+                      onClick={() =>
+                        history.push(
+                          `/institution/schedule/${eventInfo.date}/${eventInfo.eventID}`
+                        )}
+                    >
+                      View more event info
+                    </Button>
+                  )}
+                />
                 <List>
-                  <ListItem>
-                    <ListItemText
-                      primary="Type"
-                      secondary={info.eventTypeName}
-                    />
-                  </ListItem>
                   <ListItem>
                     <ListItemText primary="Starts at" secondary={startTime} />
                   </ListItem>
@@ -341,26 +430,12 @@ class TimeLogger extends Component {
                     <ListItemText primary="Ends as" secondary={endTime} />
                   </ListItem>
                   <ListItem>
-                    <ListItemText primary="Venue" secondary={info.venue} />
-                  </ListItem>
-                  {info.eventType === "COMPETITIVE" && (
-                    <div>
-                      <ListItem>
-                        <ListItemText
-                          primary="Home / away"
-                          secondary={info.matchInfo.homeAway}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Opponents"
-                          secondary={info.matchInfo.opponents}
-                        />
-                      </ListItem>
-                    </div>
-                  )}
-                  <ListItem>
-                    <ListItemText primary="Notes" secondary={info.notes} />
+                    <ListItemText
+                      primary="Notes"
+                      secondary={
+                        eventInfo.notes === "" ? "No notes" : eventInfo.notes
+                      }
+                    />
                   </ListItem>
                 </List>
               </div>

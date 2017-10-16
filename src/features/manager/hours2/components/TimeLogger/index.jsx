@@ -5,26 +5,65 @@ import { withStyles } from "material-ui/styles";
 import { green, grey, lightBlue, orange } from "material-ui/colors";
 import ApproveIcon from "material-ui-icons/AssignmentTurnedIn";
 import Button from "material-ui/Button";
-import Card, { CardContent, CardHeader } from "material-ui/Card";
+import Card, { CardHeader } from "material-ui/Card";
+import List, { ListItem, ListItemText } from "material-ui/List";
 import SignInIcon from "material-ui-icons/AssignmentReturned";
 import SignOutIcon from "material-ui-icons/AssignmentReturn";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
-import _ from "lodash";
 
 const styles = {
   root: {
-    maxWidth: 970,
-    margin: "24px auto"
+    flexGrow: 1,
+    display: "flex",
+    maxHeight: 600
   },
-  tabletRoot: {
-    margin: 24
+  cardWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    margin: "0 24px 24px 24px"
+  },
+  cardContent: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "row"
+  },
+  mobileCard: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    margin: "0 24px 24px 24px"
+  },
+  mobileCardContent: {
+    flexGrow: 1,
+    overflow: "auto"
+  },
+  loggerWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    backgroundColor: grey[50],
+    overflow: "auto"
+  },
+  button: {
+    width: "100%",
+    height: 60,
+    color: grey[50]
+  },
+  eventInfoWrapper: {
+    width: "40%",
+    backgroundColor: grey[100],
+    overflow: "auto"
+  },
+  moreInfoButton: {
+    width: "100%"
   },
   hoursWrapper: {
     display: "flex",
     alignItems: "stretch",
     flexWrap: "wrap",
-    margin: "10px 0"
+    margin: 20
   },
   timesWrapper: {
     flexGrow: 1,
@@ -65,16 +104,12 @@ const styles = {
   },
   buttonWrapper: {
     width: "100%",
-    height: 60,
-    "@media (min-width: 904px)": {
-      width: 200,
-      height: 140
-    }
+    height: 60
   },
   profilePicture: {
     border: `1px solid ${grey[300]}`,
     display: "none",
-    "@media (min-width: 704px)": {
+    "@media (min-width: 1100px)": {
       display: "block",
       height: 140,
       width: 140
@@ -86,35 +121,29 @@ const styles = {
     width: "100%",
     padding: 10,
     textAlign: "center",
-    "@media (min-width: 704px)": {
+    "@media (min-width: 1100px)": {
       display: "none"
     }
   }
 };
 
-class HoursCard extends Component {
-  renderCardContent() {
-    const { classes, eventInfo, institutionID } = this.props;
-    const { signIn, signOut, approveHours } = this.props.actions;
+class TimeLogger extends Component {
+  renderLogger() {
+    const { classes } = this.props;
+    const { coaches } = this.props.info;
 
-    let currentTime = new Date(Date.now());
-    currentTime.setHours(currentTime.getHours() + 2);
-    currentTime = currentTime.toISOString().slice(11, 16);
-
-    return _.toPairs(eventInfo.coaches).map(([coachID, info]) => {
-      const { profilePictureURL, name, surname } = info;
+    return coaches.map((coachHours, index) => {
       const {
-        status,
+        stage,
         signInTime,
         signOutTime,
-        standardHourlyRate,
-        overtimeHourlyRate
-      } = info.hours;
-
-      switch (status) {
+        profilePictureURL,
+        name
+      } = coachHours;
+      switch (stage) {
         case "AWAITING_SIGN_IN":
           return (
-            <div className={classes.hoursWrapper} key={coachID}>
+            <div key={index} className={classes.hoursWrapper}>
               <img
                 alt={name}
                 src={profilePictureURL}
@@ -125,7 +154,7 @@ class HoursCard extends Component {
                 component="h3"
                 className={classes.coachName}
               >
-                {`${name} ${surname}`}
+                {name}
               </Typography>
               <div className={classes.timesWrapper}>
                 <div className={classes.timeWrapper}>
@@ -133,9 +162,6 @@ class HoursCard extends Component {
                     id="time"
                     label="Signed in at"
                     type="time"
-                    value={signInTime}
-                    onChange={e =>
-                      signIn(institutionID, eventInfo, coachID, e.target.value)}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -147,14 +173,6 @@ class HoursCard extends Component {
                     id="time"
                     label="Signed out at"
                     type="time"
-                    value={signOutTime}
-                    onChange={e =>
-                      signOut(
-                        institutionID,
-                        eventInfo,
-                        coachID,
-                        e.target.value
-                      )}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -163,22 +181,7 @@ class HoursCard extends Component {
                 </div>
               </div>
               <div className={classes.buttonWrapper}>
-                <Button
-                  raised
-                  className={classes.signInButton}
-                  onClick={() => {
-                    if (currentTime > eventInfo.endTime) {
-                      signIn(
-                        institutionID,
-                        eventInfo,
-                        coachID,
-                        eventInfo.startTime
-                      );
-                    } else {
-                      signIn(institutionID, eventInfo, coachID, currentTime);
-                    }
-                  }}
-                >
+                <Button raised className={classes.signInButton}>
                   <SignInIcon /> Sign in
                 </Button>
               </div>
@@ -186,7 +189,7 @@ class HoursCard extends Component {
           );
         case "AWAITING_SIGN_OUT":
           return (
-            <div className={classes.hoursWrapper} key={coachID}>
+            <div key={index} className={classes.hoursWrapper}>
               <img
                 alt={name}
                 src={profilePictureURL}
@@ -197,7 +200,7 @@ class HoursCard extends Component {
                 component="h3"
                 className={classes.coachName}
               >
-                {`${name} ${surname}`}
+                {name}
               </Typography>
               <div className={classes.timesWrapper}>
                 <div className={classes.timeWrapper}>
@@ -205,9 +208,7 @@ class HoursCard extends Component {
                     id="time"
                     label="Signed in at"
                     type="time"
-                    value={signInTime}
-                    onChange={e =>
-                      signIn(institutionID, eventInfo, coachID, e.target.value)}
+                    defaultValue={signInTime}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -219,14 +220,6 @@ class HoursCard extends Component {
                     id="time"
                     label="Signed out at"
                     type="time"
-                    value={signOutTime}
-                    onChange={e =>
-                      signOut(
-                        institutionID,
-                        eventInfo,
-                        coachID,
-                        e.target.value
-                      )}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -235,22 +228,7 @@ class HoursCard extends Component {
                 </div>
               </div>
               <div className={classes.buttonWrapper}>
-                <Button
-                  raised
-                  className={classes.signOutButton}
-                  onClick={() => {
-                    if (currentTime > eventInfo.endTime) {
-                      signOut(
-                        institutionID,
-                        eventInfo,
-                        coachID,
-                        eventInfo.endTime
-                      );
-                    } else {
-                      signOut(institutionID, eventInfo, coachID, currentTime);
-                    }
-                  }}
-                >
+                <Button raised className={classes.signOutButton}>
                   <SignOutIcon /> Sign out
                 </Button>
               </div>
@@ -258,7 +236,7 @@ class HoursCard extends Component {
           );
         case "AWAITING_APPROVAL":
           return (
-            <div className={classes.hoursWrapper} key={coachID}>
+            <div key={index} className={classes.hoursWrapper}>
               <img
                 alt={name}
                 src={profilePictureURL}
@@ -269,7 +247,7 @@ class HoursCard extends Component {
                 component="h3"
                 className={classes.coachName}
               >
-                {`${name} ${surname}`}
+                {name}
               </Typography>
               <div className={classes.timesWrapper}>
                 <div className={classes.timeWrapper}>
@@ -277,9 +255,7 @@ class HoursCard extends Component {
                     id="time"
                     label="Signed in at"
                     type="time"
-                    value={signInTime}
-                    onChange={e =>
-                      signIn(institutionID, eventInfo, coachID, e.target.value)}
+                    defaultValue={signInTime}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -291,14 +267,7 @@ class HoursCard extends Component {
                     id="time"
                     label="Signed out at"
                     type="time"
-                    value={signOutTime}
-                    onChange={e =>
-                      signOut(
-                        institutionID,
-                        eventInfo,
-                        coachID,
-                        e.target.value
-                      )}
+                    defaultValue={signOutTime}
                     className={classes.time}
                     InputLabelProps={{
                       shrink: true
@@ -307,17 +276,7 @@ class HoursCard extends Component {
                 </div>
               </div>
               <div className={classes.buttonWrapper}>
-                <Button
-                  raised
-                  className={classes.approveButton}
-                  onClick={() =>
-                    approveHours(institutionID, eventInfo, coachID, {
-                      signInTime: signInTime,
-                      signOutTime: signOutTime,
-                      standardHourlyRate: standardHourlyRate,
-                      overtimeHourlyRate: overtimeHourlyRate
-                    })}
-                >
+                <Button raised className={classes.approveButton}>
                   <ApproveIcon /> Approve
                 </Button>
               </div>
@@ -325,7 +284,7 @@ class HoursCard extends Component {
           );
         default:
           return (
-            <Typography type="body1" component="p" key={coachID}>
+            <Typography type="body1" component="p" key={index}>
               Invalid stage supplied.
             </Typography>
           );
@@ -334,32 +293,87 @@ class HoursCard extends Component {
   }
 
   render() {
-    const { classes, eventInfo, isTablet } = this.props;
-    const dateOptions = {
-      month: "short",
-      day: "numeric",
-      year: "numeric"
-    };
+    const { classes, isTablet, info } = this.props;
+
+    const timeOptions = { hour: "2-digit", minute: "2-digit" };
+    const startTime = new Date(info.startTime).toLocaleTimeString(
+      "en-US",
+      timeOptions
+    );
+    const endTime = new Date(info.endTime).toLocaleTimeString(
+      "en-US",
+      timeOptions
+    );
 
     return (
-      <div className={isTablet ? classes.tabletRoot : classes.root}>
-        <Card>
-          <CardHeader
-            title={eventInfo.eventTitle}
-            subheader={`${new Date(eventInfo.date).toLocaleDateString(
-              "en-US",
-              dateOptions
-            )} | ${eventInfo.startTime} to ${eventInfo.endTime}`}
-          />
-          <CardContent>{this.renderCardContent()}</CardContent>
-        </Card>
+      <div className={classes.root}>
+        {isTablet ? (
+          <Card className={classes.mobileCard}>
+            <CardHeader
+              title={info.eventTitle}
+              subheader={`${startTime} - ${endTime}`}
+            />
+            <div className={classes.mobileCardContent}>
+              <Button>View more event info</Button>
+              {this.renderLogger()}
+            </div>
+          </Card>
+        ) : (
+          <Card className={classes.cardWrapper}>
+            <CardHeader title={info.eventTitle} />
+            <div className={classes.cardContent}>
+              <div className={classes.loggerWrapper}>{this.renderLogger()}</div>
+              <div className={classes.eventInfoWrapper}>
+                <Button className={classes.moreInfoButton}>
+                  View more event info
+                </Button>
+                <List>
+                  <ListItem>
+                    <ListItemText
+                      primary="Type"
+                      secondary={info.eventTypeName}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Starts at" secondary={startTime} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Ends as" secondary={endTime} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Venue" secondary={info.venue} />
+                  </ListItem>
+                  {info.eventType === "COMPETITIVE" && (
+                    <div>
+                      <ListItem>
+                        <ListItemText
+                          primary="Home / away"
+                          secondary={info.matchInfo.homeAway}
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText
+                          primary="Opponents"
+                          secondary={info.matchInfo.opponents}
+                        />
+                      </ListItem>
+                    </div>
+                  )}
+                  <ListItem>
+                    <ListItemText primary="Notes" secondary={info.notes} />
+                  </ListItem>
+                </List>
+              </div>
+            </div>
+          </Card>
+        )}
       </div>
     );
   }
 }
 
-HoursCard.propTypes = {
+TimeLogger.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(HoursCard);
+export default withStyles(styles)(TimeLogger);
