@@ -141,7 +141,7 @@ class WagesTable extends Component {
                         dateOptions
                       )}
                     </TableCell>
-                    <TableCell numeric>R {info.wage}</TableCell>
+                    <TableCell numeric>R {info.wage}.00</TableCell>
                   </TableRow>
                 );
               })}
@@ -149,7 +149,7 @@ class WagesTable extends Component {
             <TableFooter>
               <TableRow>
                 <TableCell>TOTAL</TableCell>
-                <TableCell numeric>R {totalWages}</TableCell>
+                <TableCell numeric>R {totalWages}.00</TableCell>
               </TableRow>
             </TableFooter>
           </Table>
@@ -177,7 +177,7 @@ class WagesTable extends Component {
                     </TableCell>
                     <TableCell numeric>{info.hours.standard}</TableCell>
                     <TableCell numeric>{info.hours.overtime}</TableCell>
-                    <TableCell numeric>R {info.wage}</TableCell>
+                    <TableCell numeric>R {info.wage}.00</TableCell>
                   </TableRow>
                 );
               })}
@@ -187,7 +187,7 @@ class WagesTable extends Component {
                 <TableCell>TOTAL</TableCell>
                 <TableCell numeric>{totalStandardHours}</TableCell>
                 <TableCell numeric>{totalOvertimeHours}</TableCell>
-                <TableCell numeric>R {totalWages}</TableCell>
+                <TableCell numeric>R {totalWages}.00</TableCell>
               </TableRow>
             </TableFooter>
           </Table>
@@ -217,7 +217,7 @@ class WagesTable extends Component {
                     <TableCell>{info.title}</TableCell>
                     <TableCell numeric>{info.hours.standard}</TableCell>
                     <TableCell numeric>{info.hours.overtime}</TableCell>
-                    <TableCell numeric>R {info.wage}</TableCell>
+                    <TableCell numeric>R {info.wage}.00</TableCell>
                   </TableRow>
                 );
               })}
@@ -228,7 +228,7 @@ class WagesTable extends Component {
                 <TableCell />
                 <TableCell numeric>{totalStandardHours}</TableCell>
                 <TableCell numeric>{totalOvertimeHours}</TableCell>
-                <TableCell numeric>R {totalWages}</TableCell>
+                <TableCell numeric>R {totalWages}.00</TableCell>
               </TableRow>
             </TableFooter>
           </Table>
