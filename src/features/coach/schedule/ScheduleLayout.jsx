@@ -69,18 +69,26 @@ class ScheduleLayout extends Component {
   componentWillMount() {
     const { userID, activeInstitutionID } = this.props;
     const { loadEvents } = this.props.actions;
+
     loadEvents(activeInstitutionID, userID);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID, activeInstitutionID } = this.props;
+    const { userID, activeInstitutionID, events } = this.props;
     const { loadEvents } = this.props.actions;
+    const { eventID } = this.props.match.params;
+    const { updateView } = this.props.actions;
 
     if (
       userID !== nextProps.userID ||
       activeInstitutionID !== nextProps.activeInstitutionID
     ) {
       loadEvents(nextProps.activeInstitutionID, nextProps.userID);
+    }
+    if (events !== nextProps.events) {
+      if (eventID) {
+        updateView("EVENT_INFO");
+      }
     }
   }
 
@@ -106,7 +114,12 @@ class ScheduleLayout extends Component {
       monthSelected = dateSelected.slice(5, 7);
     }
 
-    if (currentView === "EVENT_INFO") {
+    if (
+      currentView === "EVENT_INFO" &&
+      events[yearSelected] &&
+      events[yearSelected][monthSelected] &&
+      events[yearSelected][monthSelected][eventID]
+    ) {
       return (
         <div className={classes.contentWrapper}>
           {isEventsLoading ? (
