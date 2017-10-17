@@ -13,12 +13,11 @@ import Table, {
 } from "material-ui/Table";
 import Typography from "material-ui/Typography";
 import { getMonthName } from "../../../../../utils/dates";
-import _ from "lodash";
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    padding: "24px 40px 40px 40px"
+    padding: "0 40px 40px 40px"
   },
   mobileRoot: {
     flexGrow: 1
@@ -73,30 +72,30 @@ class HoursHistory extends Component {
     super(props);
     this.state = {
       year: new Date(Date.now()).getFullYear(),
-      month: new Date(Date.now()).getMonth() + 1
+      month: new Date(Date.now()).getMonth()
     };
   }
 
   goToPrevMonth() {
-    if (this.state.month > 1) {
+    if (this.state.month > 0) {
       this.setState({ month: this.state.month - 1 });
     } else {
       this.setState({ year: this.state.year - 1 });
-      this.setState({ month: 12 });
+      this.setState({ month: 11 });
     }
   }
 
   goToNextMonth() {
-    if (this.state.month < 12) {
+    if (this.state.month < 11) {
       this.setState({ month: this.state.month + 1 });
     } else {
       this.setState({ year: this.state.year + 1 });
-      this.setState({ month: 1 });
+      this.setState({ month: 0 });
     }
   }
 
   renderTableBody() {
-    const { isMobile, isTablet, events, coachID } = this.props;
+    const { isMobile, isTablet, hoursData } = this.props;
     const { year, month } = this.state;
     const dateOptions = {
       month: "short",
@@ -104,7 +103,7 @@ class HoursHistory extends Component {
       year: "numeric"
     };
 
-    if (!events[year] || !events[year][month]) {
+    if (!hoursData[year] || !hoursData[year][month]) {
       return (
         <Typography type="body2" component="p">
           No hours logged
@@ -122,36 +121,16 @@ class HoursHistory extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {_.toPairs(events[year][month]).map(([id, info]) => {
-              const hoursLogged = Math.round(
-                (new Date(
-                  2017,
-                  1,
-                  1,
-                  info.coaches[coachID].hours.signOutTime.slice(0, 2),
-                  info.coaches[coachID].hours.signOutTime.slice(3, 5)
-                ).getTime() -
-                  new Date(
-                    2017,
-                    1,
-                    1,
-                    info.coaches[coachID].hours.signInTime.slice(0, 2),
-                    info.coaches[coachID].hours.signInTime.slice(3, 5)
-                  ).getTime()) /
-                  1000 /
-                  60 /
-                  60
-              );
-
+            {hoursData[year][month].records.map(record => {
               return (
-                <TableRow key={id}>
+                <TableRow key={record.id}>
                   <TableCell>
-                    {new Date(info.metadata.date).toLocaleDateString(
+                    {new Date(record.date).toLocaleDateString(
                       "en-US",
                       dateOptions
                     )}
                   </TableCell>
-                  <TableCell numeric>{hoursLogged}</TableCell>
+                  <TableCell numeric>{record.hours}</TableCell>
                 </TableRow>
               );
             })}
@@ -170,42 +149,18 @@ class HoursHistory extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {_.toPairs(events[year][month]).map(([id, info]) => {
-              const hoursLogged = Math.round(
-                (new Date(
-                  2017,
-                  1,
-                  1,
-                  info.coaches[coachID].hours.signOutTime.slice(0, 2),
-                  info.coaches[coachID].hours.signOutTime.slice(3, 5)
-                ).getTime() -
-                  new Date(
-                    2017,
-                    1,
-                    1,
-                    info.coaches[coachID].hours.signInTime.slice(0, 2),
-                    info.coaches[coachID].hours.signInTime.slice(3, 5)
-                  ).getTime()) /
-                  1000 /
-                  60 /
-                  60
-              );
-
+            {hoursData[year][month].records.map(record => {
               return (
-                <TableRow key={id}>
+                <TableRow key={record.id}>
                   <TableCell>
-                    {new Date(info.metadata.date).toLocaleDateString(
+                    {new Date(record.date).toLocaleDateString(
                       "en-US",
                       dateOptions
                     )}
                   </TableCell>
-                  <TableCell>
-                    {info.coaches[coachID].hours.signInTime}
-                  </TableCell>
-                  <TableCell>
-                    {info.coaches[coachID].hours.signOutTime}
-                  </TableCell>
-                  <TableCell numeric>{hoursLogged}</TableCell>
+                  <TableCell>{record.signInTime}</TableCell>
+                  <TableCell>{record.signOutTime}</TableCell>
+                  <TableCell numeric>{record.hours}</TableCell>
                 </TableRow>
               );
             })}
@@ -225,43 +180,19 @@ class HoursHistory extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {_.toPairs(events[year][month]).map(([id, info]) => {
-              const hoursLogged = Math.round(
-                (new Date(
-                  2017,
-                  1,
-                  1,
-                  info.coaches[coachID].hours.signOutTime.slice(0, 2),
-                  info.coaches[coachID].hours.signOutTime.slice(3, 5)
-                ).getTime() -
-                  new Date(
-                    2017,
-                    1,
-                    1,
-                    info.coaches[coachID].hours.signInTime.slice(0, 2),
-                    info.coaches[coachID].hours.signInTime.slice(3, 5)
-                  ).getTime()) /
-                  1000 /
-                  60 /
-                  60
-              );
-
+            {hoursData[year][month].records.map(record => {
               return (
-                <TableRow key={id}>
+                <TableRow key={record.id}>
                   <TableCell>
-                    {new Date(info.metadata.date).toLocaleDateString(
+                    {new Date(record.date).toLocaleDateString(
                       "en-US",
                       dateOptions
                     )}
                   </TableCell>
-                  <TableCell>{info.metadata.title}</TableCell>
-                  <TableCell>
-                    {info.coaches[coachID].hours.signInTime}
-                  </TableCell>
-                  <TableCell>
-                    {info.coaches[coachID].hours.signOutTime}
-                  </TableCell>
-                  <TableCell numeric>{hoursLogged}</TableCell>
+                  <TableCell>{record.event}</TableCell>
+                  <TableCell>{record.signInTime}</TableCell>
+                  <TableCell>{record.signOutTime}</TableCell>
+                  <TableCell numeric>{record.hours}</TableCell>
                 </TableRow>
               );
             })}
@@ -272,34 +203,10 @@ class HoursHistory extends Component {
   }
 
   renderTableFooter() {
-    const { classes, isMobile, events, coachID } = this.props;
+    const { classes, isMobile, hoursData } = this.props;
     const { year, month } = this.state;
 
-    let totalHoursLogged = 0;
-    _.toPairs(events[year][month]).map(([id, info]) => {
-      const hoursLogged = Math.round(
-        (new Date(
-          2017,
-          1,
-          1,
-          info.coaches[coachID].hours.signOutTime.slice(0, 2),
-          info.coaches[coachID].hours.signOutTime.slice(3, 5)
-        ).getTime() -
-          new Date(
-            2017,
-            1,
-            1,
-            info.coaches[coachID].hours.signInTime.slice(0, 2),
-            info.coaches[coachID].hours.signInTime.slice(3, 5)
-          ).getTime()) /
-          1000 /
-          60 /
-          60
-      );
-      totalHoursLogged += hoursLogged;
-    });
-
-    if (events[year] && events[year][month]) {
+    if (hoursData[year] && hoursData[year][month]) {
       if (!isMobile) {
         return (
           <div className={classes.footer}>
@@ -315,7 +222,7 @@ class HoursHistory extends Component {
               type="title"
               className={classes.headerTitle}
             >
-              {totalHoursLogged.toLocaleString("en")}
+              {hoursData[year][month].total.toLocaleString("en")}
             </Typography>
           </div>
         );
@@ -327,7 +234,7 @@ class HoursHistory extends Component {
               type="title"
               className={classes.headerTitle}
             >
-              {totalHoursLogged.toLocaleString("en")} Hours
+              {hoursData[year][month].total.toLocaleString("en")} Hours
             </Typography>
           </div>
         );
@@ -336,24 +243,8 @@ class HoursHistory extends Component {
   }
 
   render() {
-    const { classes, isMobile, events } = this.props;
+    const { classes, isMobile, hoursData } = this.props;
     const { year, month } = this.state;
-
-    let disablePrev = false;
-    if (month > 1) {
-      if (!events[year] || !events[year][month - 1]) {
-        disablePrev = true;
-      } else {
-        disablePrev = false;
-      }
-    } else {
-      if (!events[year - 1] || !events[year - 1][1]) {
-        disablePrev = true;
-      } else {
-        disablePrev = false;
-      }
-    }
-
     return (
       <div className={isMobile ? classes.mobileRoot : classes.root}>
         <Paper className={classes.tableWrapper}>
@@ -361,13 +252,13 @@ class HoursHistory extends Component {
             <Button
               className={
                 year !== new Date(Date.now()).getFullYear() ||
-                month !== new Date(Date.now()).getMonth() + 1
+                month !== new Date(Date.now()).getMonth()
                   ? classes.headerButton
                   : ""
               }
               disabled={
                 year === new Date(Date.now()).getFullYear() &&
-                month === new Date(Date.now()).getMonth() + 1
+                month === new Date(Date.now()).getMonth()
               }
               onClick={() => this.goToNextMonth()}
             >
@@ -378,11 +269,10 @@ class HoursHistory extends Component {
               type="title"
               className={classes.headerTitle}
             >
-              {getMonthName(month - 1)} {year}
+              {getMonthName(month)} {year}
             </Typography>
             <Button
-              className={disablePrev ? "" : classes.headerButton}
-              disabled={disablePrev}
+              className={classes.headerButton}
               onClick={() => this.goToPrevMonth()}
             >
               Prev
@@ -390,15 +280,14 @@ class HoursHistory extends Component {
           </div>
           <div
             className={
-              events[year] && events[year][month]
+              hoursData[year] && hoursData[year][month]
                 ? classes.tableBody
                 : classes.noData
             }
           >
             {this.renderTableBody()}
           </div>
-          {events[year] &&
-            events[year][month] && <div>{this.renderTableFooter()}</div>}
+          <div>{this.renderTableFooter()}</div>
         </Paper>
       </div>
     );

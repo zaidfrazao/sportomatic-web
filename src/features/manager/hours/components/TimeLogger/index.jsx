@@ -393,7 +393,7 @@ class TimeLogger extends Component {
                     className={classes.moreInfoButton}
                     onClick={() =>
                       history.push(
-                        `/institution/schedule/${eventInfo.date}/${eventInfo.eventID}`
+                        `/manager/schedule/${eventInfo.date}/${eventInfo.eventID}`
                       )}
                   >
                     View more event info

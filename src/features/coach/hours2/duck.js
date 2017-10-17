@@ -1,12 +1,10 @@
 // @flow
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
-import rowanPicture from "./images/rowan.jpg";
-import brettPicture from "./images/brett.jpg";
 
 // Actions
 
-export const UPDATE_TAB = "sportomatic-web/manager/hours/UPDATE_TAB";
+export const UPDATE_TAB = "sportomatic-web/coach/hours/UPDATE_TAB";
 
 // Reducers
 
@@ -27,39 +25,69 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   }
 }
 
+export const HoursHistoryInitialState = {
+  "2017": {
+    "8": {
+      total: 8,
+      records: [
+        {
+          id: "0",
+          date: 1508328000000,
+          event: "U/16 A Rugby Boys Match",
+          signInTime: "2:00 pm",
+          signOutTime: "4:00 pm",
+          hours: 2
+        },
+        {
+          id: "1",
+          date: 1508328000000,
+          event: "U/16 A Rugby Boys Match",
+          signInTime: "2:00 pm",
+          signOutTime: "4:00 pm",
+          hours: 2
+        },
+        {
+          id: "2",
+          date: 1508328000000,
+          event: "U/16 A Rugby Boys Match",
+          signInTime: "2:00 pm",
+          signOutTime: "4:00 pm",
+          hours: 2
+        },
+        {
+          id: "3",
+          date: 1508328000000,
+          event: "U/16 A Rugby Boys Match",
+          signInTime: "2:00 pm",
+          signOutTime: "4:00 pm",
+          hours: 2
+        }
+      ]
+    }
+  }
+};
+
+function hoursHistoryReducer(state = HoursHistoryInitialState, action = {}) {
+  switch (action.type) {
+    default:
+      return state;
+  }
+}
+
 export const awaitingApprovalInitialState = [
   {
     id: "0",
     eventTitle: "U/16 Boys A Rugby Practice",
     date: 1508328000000,
-    coaches: [
-      {
-        name: "Rowan Walker-Campbell",
-        profilePictureURL: rowanPicture,
-        stage: "AWAITING_APPROVAL",
-        signInTime: "14:04",
-        signOutTime: "15:43"
-      },
-      {
-        name: "Brett Cook",
-        profilePictureURL: brettPicture,
-        stage: "AWAITING_SIGN_OUT",
-        signInTime: "14:04",
-        signOutTime: "15:43"
-      }
-    ]
+    stage: "AWAITING_APPROVAL",
+    signInTime: "2:04 pm",
+    signOutTime: "3:43 pm"
   },
   {
     id: "1",
     eventTitle: "U/16 Boys A Rugby Match",
     date: 1508328000000,
-    coaches: [
-      {
-        name: "Rowan Walker-Campbell",
-        profilePictureURL: rowanPicture,
-        stage: "AWAITING_SIGN_IN"
-      }
-    ]
+    stage: "AWAITING_SIGN_IN"
   }
 ];
 
@@ -81,28 +109,13 @@ export const inProgressInitialState = {
   eventTypeName: "Match",
   startTime: 1508328000000,
   endTime: 1508335200000,
+  signInTime: 1505995522000,
   venue: "Sportomatic Grounds",
   notes: "Please remember to fill in and bring your pedo forms to practice.",
   matchInfo: {
     opponents: "Parktown Boys High School",
     homeAway: "Home"
-  },
-  coaches: [
-    {
-      name: "Rowan Walker-Campbell",
-      profilePictureURL: rowanPicture,
-      stage: "AWAITING_APPROVAL",
-      signInTime: "14:04",
-      signOutTime: "15:43"
-    },
-    {
-      name: "Brett Cook",
-      profilePictureURL: brettPicture,
-      stage: "AWAITING_SIGN_OUT",
-      signInTime: "14:04",
-      signOutTime: "15:43"
-    }
-  ]
+  }
 };
 
 function inProgressReducer(state = inProgressInitialState, action = {}) {
@@ -114,18 +127,21 @@ function inProgressReducer(state = inProgressInitialState, action = {}) {
 
 export const hoursReducer = combineReducers({
   uiConfig: uiConfigReducer,
+  hoursHistory: hoursHistoryReducer,
   awaitingApproval: awaitingApprovalReducer,
   inProgress: inProgressReducer
 });
 
 // Selectors
 
-const uiConfig = state => state.manager.hours.uiConfig;
-const awaitingApproval = state => state.manager.hours.awaitingApproval;
-const inProgress = state => state.manager.hours.inProgress;
+const uiConfig = state => state.coach.hours.uiConfig;
+const hoursHistory = state => state.coach.hours.hoursHistory;
+const awaitingApproval = state => state.coach.hours.awaitingApproval;
+const inProgress = state => state.coach.hours.inProgress;
 
 export const selector = createStructuredSelector({
   uiConfig,
+  hoursHistory,
   awaitingApproval,
   inProgress
 });

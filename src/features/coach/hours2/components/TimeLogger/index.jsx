@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
 import Button from "material-ui/Button";
@@ -61,26 +60,17 @@ class TimeLogger extends Component {
     super(props);
     this.state = {
       hoursLogged: 0,
-      minutesLogged: 0,
-      secondsLogged: 0
+      minutesLogged: 59,
+      secondsLogged: 59
     };
   }
 
   componentWillMount() {
-    const { status, signInTime } = this.props.coachInfo;
+    const { stage, signInTime } = this.props.info;
 
-    if (status === "AWAITING_SIGN_OUT") {
-      const currentDate = new Date(Date.now());
-      const currentTimeValue = currentDate.getTime();
-      let signInTimeValue = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        currentDate.getDate(),
-        signInTime.slice(0, 2),
-        signInTime.slice(3, 5)
-      );
-      signInTimeValue = signInTimeValue.getTime();
-      const millisecondsLogged = currentTimeValue - signInTimeValue;
+    if (stage === "AWAITING_SIGN_OUT") {
+      const currentTime = new Date(Date.now()).getTime();
+      const millisecondsLogged = currentTime - signInTime;
 
       const hoursLogged = Math.floor(millisecondsLogged / 1000 / 60 / 60);
       const minutesLogged = Math.floor(
@@ -128,34 +118,19 @@ class TimeLogger extends Component {
   }
 
   renderButton() {
-    const { classes, info, institutionID } = this.props;
-    const { status, id } = this.props.coachInfo;
-    const { signIn, signOut } = this.props.actions;
+    const { classes } = this.props;
+    const { stage } = this.props.info;
 
-    let currentTime = new Date(Date.now());
-    currentTime.setHours(currentTime.getHours() + 2);
-    currentTime = currentTime.toISOString().slice(11, 16);
-
-    switch (status) {
+    switch (stage) {
       case "AWAITING_SIGN_IN":
         return (
-          <Button
-            raised
-            color="primary"
-            className={classes.button}
-            onClick={() => signIn(institutionID, info, id, currentTime)}
-          >
+          <Button raised color="primary" className={classes.button}>
             <SignInIcon /> Sign in
           </Button>
         );
       case "AWAITING_SIGN_OUT":
         return (
-          <Button
-            raised
-            color="accent"
-            className={classes.button}
-            onClick={() => signOut(institutionID, info, id, currentTime)}
-          >
+          <Button raised color="accent" className={classes.button}>
             <SignOutIcon /> Sign out
           </Button>
         );
@@ -169,8 +144,14 @@ class TimeLogger extends Component {
     const { secondsLogged, minutesLogged, hoursLogged } = this.state;
 
     const timeOptions = { hour: "2-digit", minute: "2-digit" };
-    const startTime = info.startTime;
-    const endTime = info.endTime;
+    const startTime = new Date(info.startTime).toLocaleTimeString(
+      "en-US",
+      timeOptions
+    );
+    const endTime = new Date(info.endTime).toLocaleTimeString(
+      "en-US",
+      timeOptions
+    );
     const timeLogged = `${hoursLogged.toLocaleString("en", {
       minimumIntegerDigits: 2
     })}:${minutesLogged.toLocaleString("en", {
@@ -215,20 +196,16 @@ class TimeLogger extends Component {
                 {this.renderButton()}
               </div>
               <div className={classes.eventInfoWrapper}>
-                <Route
-                  component={({ history }) => (
-                    <Button
-                      className={classes.moreInfoButton}
-                      onClick={() =>
-                        history.push(
-                          `/coach/schedule/${info.date}/${info.eventID}`
-                        )}
-                    >
-                      View more event info
-                    </Button>
-                  )}
-                />
+                <Button className={classes.moreInfoButton}>
+                  View more event info
+                </Button>
                 <List>
+                  <ListItem>
+                    <ListItemText
+                      primary="Type"
+                      secondary={info.eventTypeName}
+                    />
+                  </ListItem>
                   <ListItem>
                     <ListItemText primary="Starts at" secondary={startTime} />
                   </ListItem>
@@ -236,10 +213,26 @@ class TimeLogger extends Component {
                     <ListItemText primary="Ends as" secondary={endTime} />
                   </ListItem>
                   <ListItem>
-                    <ListItemText
-                      primary="Notes"
-                      secondary={info.notes === "" ? "No notes" : info.notes}
-                    />
+                    <ListItemText primary="Venue" secondary={info.venue} />
+                  </ListItem>
+                  {info.eventType === "COMPETITIVE" && (
+                    <div>
+                      <ListItem>
+                        <ListItemText
+                          primary="Home / away"
+                          secondary={info.matchInfo.homeAway}
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText
+                          primary="Opponents"
+                          secondary={info.matchInfo.opponents}
+                        />
+                      </ListItem>
+                    </div>
+                  )}
+                  <ListItem>
+                    <ListItemText primary="Notes" secondary={info.notes} />
                   </ListItem>
                 </List>
               </div>
