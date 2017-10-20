@@ -8,8 +8,9 @@ const initialState = {
 };
 
 describe("Reducers", () => {
-  describe("userInfoReducer", () => {
-    const { userInfoReducer } = imports;
+  describe("signInReducer", () => {
+    const { signInReducer } = imports;
+
     describe("INIT_USER", () => {
       const { INIT_USER } = imports;
       test("Initialises signIn state", () => {
@@ -24,7 +25,7 @@ describe("Reducers", () => {
           }
         };
 
-        const newState = new userInfoReducer(initialState, action);
+        const newState = signInReducer(initialState, action);
         expect(newState.userInfo.email).toEqual(action.payload.user.email);
         expect(newState.userInfo.isLoggedIn).toEqual(
           action.payload.user.isLoggedIn
@@ -42,7 +43,7 @@ describe("Reducers", () => {
             newPassword: "ThisisNopAssword"
           }
         };
-        const newState = new userInfoReducer(initialState, action);
+        const newState = signInReducer(initialState, action);
         expect(newState.userInfo.password).toEqual(action.payload.newPassword);
       });
     });
@@ -53,10 +54,42 @@ describe("Reducers", () => {
           type: OPEN_PASSWORD_RESET_DIALOG,
           payload: { initEmail: "user@mail.com" }
         };
-        const newState = new userInfoReducer(initialState, action);
+        const newState = signInReducer(initialState, action);
         expect(newState.userInfo.passwordResetEmail).toEqual(
           action.payload.initEmail
         );
+      });
+    });
+
+    describe("UPDATE_EMAIL", () => {
+      const { UPDATE_EMAIL } = imports;
+      test("Update user email", () => {
+        const action = {
+          type: UPDATE_EMAIL,
+          payload: { newEmail: "newuser@mail.com" }
+        };
+        const newState = signInReducer(initialState, action);
+        expect(newState.userInfo.email).toEqual(action.payload.newEmail);
+      });
+    });
+
+    describe("RECEIVE_ACCOUNT_INFO", () => {
+      const { RECEIVE_ACCOUNT_INFO } = imports;
+      test("Receives user account info", () => {
+        const action = {
+          type: RECEIVE_ACCOUNT_INFO,
+          payload: {
+            type: "coach",
+            status: "ACTIVE"
+          }
+        };
+        const newState = signInReducer(initialState, action);
+        expect(newState.userInfo.type).toEqual(action.payload.type);
+        expect(newState.userInfo.status).toEqual(action.payload.status);
+        expect(newState.userInfo.isLoggedIn).toBe(true);
+        //why is email being set to "" ?
+        expect(newState.userInfo.email).toEqual("");
+        expect(newState.userInfo.password).toEqual("");
       });
     });
   });

@@ -8,18 +8,19 @@ import firebase from "firebase";
 const REQUEST_SIGN_IN = "sportomatic-web/sign-in/REQUEST_SIGN_IN";
 const RECEIVE_SIGN_IN = "sportomatic-web/sign-in/RECEIVE_SIGN_IN";
 const ERROR_SIGNING_IN = "sportomatic-web/sign-in/ERROR_SIGNING_IN";
-const UPDATE_EMAIL = "sportomatic-web/sign-in/UPDATE_EMAIL";
-const UPDATE_PASSWORD = "sportomatic-web/sign-in/UPDATE_PASSWORD";
+export const UPDATE_EMAIL = "sportomatic-web/sign-in/UPDATE_EMAIL";
+export const UPDATE_PASSWORD = "sportomatic-web/sign-in/UPDATE_PASSWORD";
 const UPDATE_PASSWORD_RESET_EMAIL_ADDRESS =
   "sportomatic-web/sign-in/UPDATE_PASSWORD_RESET_EMAIL_ADDRESS";
 const EMAIL_ERROR_CHECK = "sportomatic-web/sign-in/EMAIL_ERROR_CHECK";
 const PASSWORD_ERROR_CHECK = "sportomatic-web/sign-in/PASSWORD_ERROR_CHECK";
 const REQUEST_ACCOUNT_INFO = "sportomatic-web/sign-in/REQUEST_ACCOUNT_INFO";
-const RECEIVE_ACCOUNT_INFO = "sportomatic-web/sign-in/RECEIVE_ACCOUNT_INFO";
+export const RECEIVE_ACCOUNT_INFO =
+  "sportomatic-web/sign-in/RECEIVE_ACCOUNT_INFO";
 const ERROR_FETCHING_ACCOUNT_INFO =
   "sportomatic-web/sign-in/ERROR_FETCHING_ACCOUNT_INFO";
-const INIT_USER = "sportomatic-web/config/INIT_USER";
-const OPEN_PASSWORD_RESET_DIALOG =
+export const INIT_USER = "sportomatic-web/config/INIT_USER";
+export const OPEN_PASSWORD_RESET_DIALOG =
   "sportomatic-web/sign-in/OPEN_PASSWORD_RESET_DIALOG";
 const CLOSE_PASSWORD_RESET_DIALOG =
   "sportomatic-web/sign-in/CLOSE_PASSWORD_RESET_DIALOG";
