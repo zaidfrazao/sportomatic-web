@@ -45,7 +45,7 @@ export const userInfoInitialState = {
   status: "ACTIVE"
 };
 
-function userInfoReducer(state = userInfoInitialState, action = {}) {
+export function userInfoReducer(state = userInfoInitialState, action = {}) {
   switch (action.type) {
     case INIT_USER:
       return {
