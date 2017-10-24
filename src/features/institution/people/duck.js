@@ -190,8 +190,8 @@ export function loadStaff(institutionID) {
       .then(people => {
         dispatch(receiveStaff(people));
       })
-      .catch(() => {
-        dispatch(receiveStaff({}));
+      .catch(err => {
+        dispatch(errorLoadingStaff({}));
       });
   };
 }
