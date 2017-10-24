@@ -191,7 +191,7 @@ export function loadStaff(institutionID) {
         dispatch(receiveStaff(people));
       })
       .catch(err => {
-        dispatch(errorLoadingStaff({}));
+        dispatch(errorLoadingStaff({ err }));
       });
   };
 }

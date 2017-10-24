@@ -10,9 +10,26 @@ export class SportomaticFirebaseAPI {
       staffRef.on("value", snapshot => {
         const staff = snapshot.val();
         if (staff === null) {
-          reject();
+          resolve({});
         } else {
           resolve(staff);
+        }
+      });
+    });
+  }
+
+  static getCoachWages(institutionID, coachID) {
+    return new Promise((resolve, reject) => {
+      const wagesRef = firebase
+        .database()
+        .ref(`institution/${institutionID}/private/wages/${coachID}`);
+
+      wagesRef.on("value", snapshot => {
+        const wages = snapshot.val();
+        if (wages === null) {
+          resolve({});
+        } else {
+          resolve(wages);
         }
       });
     });
