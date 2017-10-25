@@ -31,16 +31,15 @@ describe("ACTION CREATORS", () => {
   const coachID = 1;
   test("loadStaff - should load staff on successful response", () => {
     const store = mockStore({});
-    const expectedActions = [REQUEST_STAFF, RECEIVE_STAFF];
-
-    const people = [
-      {
+    const coaches = {
+      1: {
         metadata: {
-          email: "test@smtp.co.za",
+          email: "testn@sportomaticapp.com",
           name: "test",
+          phoneNumber: "(084) 291-0482",
+          profilePictureURL: "https://someurl.com/image.png",
           surname: "user",
-          phoneNumber: "011 000 0000",
-          profilePictureURL: "https://www.test.com/123.png"
+          type: "COACH"
         },
         paymentDefaults: {
           maxOvertimeHours: 3,
@@ -49,24 +48,45 @@ describe("ACTION CREATORS", () => {
           type: "HOURLY"
         },
         preferredSports: {
-          "1": "Athletics"
+          1: "Athletics"
+        }
+      }
+    };
+    const expectedActions = [
+      {
+        type: REQUEST_STAFF
+      },
+      {
+        type: RECEIVE_STAFF,
+        payload: {
+          coaches: coaches
         }
       }
     ];
 
     sportomaticFirebaseApiStub = sinon
       .stub(SportomaticFirebaseAPI, "getPeople")
-      .resolves(people);
+      .resolves(coaches);
 
     return store.dispatch(loadStaff(institutionID)).then(() => {
-      const actualActions = store.getActions().map(action => action.type);
+      const actualActions = store.getActions();
       expect(actualActions).toEqual(expectedActions);
     });
   });
 
   test("loadStaff - should dispatch error action on failure response", () => {
-    const expectedActions = [REQUEST_STAFF, ERROR_LOADING_STAFF];
     const error = { code: 500, message: "Internal Server error" };
+    const expectedActions = [
+      {
+        type: REQUEST_STAFF
+      },
+      {
+        type: ERROR_LOADING_STAFF,
+        payload: {
+          error: error
+        }
+      }
+    ];
     const store = mockStore({});
 
     sportomaticFirebaseApiStub = sinon
@@ -74,34 +94,55 @@ describe("ACTION CREATORS", () => {
       .rejects(error);
 
     return store.dispatch(loadStaff(institutionID)).then(() => {
-      const actualActions = store.getActions().map(action => action.type);
+      const actualActions = store.getActions();
       expect(actualActions).toEqual(expectedActions);
     });
   });
 
   test("loadWages - should load staff on successful response", () => {
     const store = mockStore({});
-    const expectedActions = [REQUEST_WAGES, RECEIVE_WAGES];
     const wages = {
       standardHourlyRate: 150,
       overtimeHourlyRate: 100,
       overtimeWage: 2,
       totalWage: 1200
     };
+    const expectedActions = [
+      {
+        type: REQUEST_WAGES
+      },
+      {
+        type: RECEIVE_WAGES,
+        payload: {
+          wages: wages
+        }
+      }
+    ];
 
     sportomaticFirebaseApiStub = sinon
       .stub(SportomaticFirebaseAPI, "getCoachWages")
       .resolves(wages);
 
     return store.dispatch(loadCoachWages(institutionID, coachID)).then(() => {
-      const actualActions = store.getActions().map(action => action.type);
+      const actualActions = store.getActions();
       expect(actualActions).toEqual(expectedActions);
     });
   });
 
   test("loadWages - should dispatch error action on failure response", () => {
-    const expectedActions = [REQUEST_WAGES, ERROR_LOADING_WAGES];
     const error = { code: 500, message: "Internal Server Error" };
+    const expectedActions = [
+      {
+        type: REQUEST_WAGES
+      },
+      {
+        type: ERROR_LOADING_WAGES,
+        payload: {
+          error: error
+        }
+      }
+    ];
+
     const store = mockStore({});
 
     sportomaticFirebaseApiStub = sinon
@@ -109,7 +150,7 @@ describe("ACTION CREATORS", () => {
       .rejects(error);
 
     return store.dispatch(loadCoachWages(institutionID, coachID)).then(() => {
-      const actualActions = store.getActions().map(action => action.type);
+      const actualActions = store.getActions();
       expect(actualActions).toEqual(expectedActions);
     });
   });
