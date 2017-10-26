@@ -131,7 +131,7 @@ class HoursCard extends Component {
                 <div className={classes.timeWrapper}>
                   <TextField
                     id="time"
-                    label="Signed in at"
+                    label="Signed in"
                     type="time"
                     value={signInTime}
                     onChange={e =>
@@ -145,7 +145,7 @@ class HoursCard extends Component {
                 <div className={classes.timeWrapper}>
                   <TextField
                     id="time"
-                    label="Signed out at"
+                    label="Signed out"
                     type="time"
                     value={signOutTime}
                     onChange={e =>
@@ -203,7 +203,7 @@ class HoursCard extends Component {
                 <div className={classes.timeWrapper}>
                   <TextField
                     id="time"
-                    label="Signed in at"
+                    label="Signed in"
                     type="time"
                     value={signInTime}
                     onChange={e =>
@@ -217,7 +217,7 @@ class HoursCard extends Component {
                 <div className={classes.timeWrapper}>
                   <TextField
                     id="time"
-                    label="Signed out at"
+                    label="Signed out"
                     type="time"
                     value={signOutTime}
                     onChange={e =>
@@ -275,7 +275,7 @@ class HoursCard extends Component {
                 <div className={classes.timeWrapper}>
                   <TextField
                     id="time"
-                    label="Signed in at"
+                    label="Signed in"
                     type="time"
                     value={signInTime}
                     onChange={e =>
@@ -289,7 +289,7 @@ class HoursCard extends Component {
                 <div className={classes.timeWrapper}>
                   <TextField
                     id="time"
-                    label="Signed out at"
+                    label="Signed out"
                     type="time"
                     value={signOutTime}
                     onChange={e =>

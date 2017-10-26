@@ -274,11 +274,6 @@ class EventsList extends Component {
             )}
           />
         )}
-        {isTablet && (
-          <div className={classes.adWrapper}>
-            <LeaderboardAd />
-          </div>
-        )}
         <div className={classes.header}>
           {isTablet && (
             <div className="Cal__Header__root">

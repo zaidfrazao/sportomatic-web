@@ -9,7 +9,6 @@ import "react-infinite-calendar/styles.css";
 
 const styles = theme => ({
   root: {
-    height: "100%",
     backgroundColor: grey[300]
   }
 });
@@ -40,7 +39,7 @@ class Calendar extends Component {
     const { windowHeight } = this.state;
     let calendarHeight = isTablet ? windowHeight - 300 : windowHeight - 405;
     if (isMobile) {
-      calendarHeight = windowHeight - 300;
+      calendarHeight = windowHeight - 380;
     }
     return (
       <div className={classes.root}>

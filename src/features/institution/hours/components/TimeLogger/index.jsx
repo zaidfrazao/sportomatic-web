@@ -46,6 +46,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     backgroundColor: grey[50],
+    justifyContent: "center",
     overflow: "auto"
   },
   button: {
@@ -153,23 +154,11 @@ class TimeLogger extends Component {
       case "AWAITING_SIGN_IN":
         return (
           <div className={classes.hoursWrapper}>
-            <img
-              alt={name}
-              src={profilePictureURL}
-              className={classes.profilePicture}
-            />
-            <Typography
-              type="subheading"
-              component="h3"
-              className={classes.coachName}
-            >
-              {`${name} ${surname}`}
-            </Typography>
             <div className={classes.timesWrapper}>
               <div className={classes.timeWrapper}>
                 <TextField
                   id="time"
-                  label="Signed in at"
+                  label="Signed in"
                   type="time"
                   className={classes.time}
                   value={signInTime}
@@ -183,7 +172,7 @@ class TimeLogger extends Component {
               <div className={classes.timeWrapper}>
                 <TextField
                   id="time"
-                  label="Signed out at"
+                  label="Signed out"
                   type="time"
                   value={signOutTime}
                   onChange={e =>
@@ -220,23 +209,11 @@ class TimeLogger extends Component {
       case "AWAITING_SIGN_OUT":
         return (
           <div className={classes.hoursWrapper}>
-            <img
-              alt={name}
-              src={profilePictureURL}
-              className={classes.profilePicture}
-            />
-            <Typography
-              type="subheading"
-              component="h3"
-              className={classes.coachName}
-            >
-              {`${name} ${surname}`}
-            </Typography>
             <div className={classes.timesWrapper}>
               <div className={classes.timeWrapper}>
                 <TextField
                   id="time"
-                  label="Signed in at"
+                  label="Signed in"
                   type="time"
                   value={signInTime}
                   onChange={e =>
@@ -250,7 +227,7 @@ class TimeLogger extends Component {
               <div className={classes.timeWrapper}>
                 <TextField
                   id="time"
-                  label="Signed out at"
+                  label="Signed out"
                   type="time"
                   value={signOutTime}
                   onChange={e =>
@@ -287,23 +264,11 @@ class TimeLogger extends Component {
       case "AWAITING_APPROVAL":
         return (
           <div className={classes.hoursWrapper}>
-            <img
-              alt={name}
-              src={profilePictureURL}
-              className={classes.profilePicture}
-            />
-            <Typography
-              type="subheading"
-              component="h3"
-              className={classes.coachName}
-            >
-              {`${name} ${surname}`}
-            </Typography>
             <div className={classes.timesWrapper}>
               <div className={classes.timeWrapper}>
                 <TextField
                   id="time"
-                  label="Signed in at"
+                  label="Signed in"
                   type="time"
                   value={signInTime}
                   onChange={e =>
@@ -317,7 +282,7 @@ class TimeLogger extends Component {
               <div className={classes.timeWrapper}>
                 <TextField
                   id="time"
-                  label="Signed out at"
+                  label="Signed out"
                   type="time"
                   value={signOutTime}
                   onChange={e =>

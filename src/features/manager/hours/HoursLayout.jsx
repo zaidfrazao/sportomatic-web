@@ -261,40 +261,16 @@ class HoursLayout extends Component {
           <div className={classes.contentWrapper}>
             <div className={classes.tabsWrapper}>
               <AppBar position="static" color="default">
-                {isMobile ? (
-                  <Tabs
-                    value={currentTab}
-                    onChange={(event, newTab) => updateTab(newTab)}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                  >
-                    <Tab value="IN_PROGRESS" icon={<InProgressIcon />} />
-                    <Tab
-                      value="AWAITING_APPROVAL"
-                      icon={<AwaitingApprovalIcon />}
-                    />
-                  </Tabs>
-                ) : (
-                  <Tabs
-                    value={currentTab}
-                    onChange={(event, newTab) => updateTab(newTab)}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                  >
-                    <Tab
-                      label="In Progress"
-                      value="IN_PROGRESS"
-                      icon={<InProgressIcon />}
-                    />
-                    <Tab
-                      label="Awaiting Approval"
-                      value="AWAITING_APPROVAL"
-                      icon={<AwaitingApprovalIcon />}
-                    />
-                  </Tabs>
-                )}
+                <Tabs
+                  value={currentTab}
+                  onChange={(event, newTab) => updateTab(newTab)}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab label="In Progress" value="IN_PROGRESS" />
+                  <Tab label="Pending" value="AWAITING_APPROVAL" />
+                </Tabs>
               </AppBar>
               {currentTab === "IN_PROGRESS" && this.renderInProgressTab()}
               {currentTab === "AWAITING_APPROVAL" &&

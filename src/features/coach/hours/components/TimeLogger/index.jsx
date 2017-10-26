@@ -21,7 +21,7 @@ const styles = {
     flexGrow: 1,
     display: "flex",
     flexDirection: "column",
-    margin: "0 24px 24px 24px"
+    margin: 24
   },
   cardContent: {
     flexGrow: 1,
@@ -44,7 +44,8 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    textAlign: "center"
+    textAlign: "center",
+    margin: "24px 0"
   },
   eventInfoWrapper: {
     width: "40%",
@@ -165,7 +166,7 @@ class TimeLogger extends Component {
   }
 
   render() {
-    const { classes, isMobile, info } = this.props;
+    const { classes, isTablet, info } = this.props;
     const { secondsLogged, minutesLogged, hoursLogged } = this.state;
 
     const timeOptions = { hour: "2-digit", minute: "2-digit" };
@@ -179,7 +180,7 @@ class TimeLogger extends Component {
 
     return (
       <div className={classes.root}>
-        {isMobile ? (
+        {isTablet ? (
           <Card className={classes.cardWrapper}>
             <CardHeader
               title={info.eventTitle}

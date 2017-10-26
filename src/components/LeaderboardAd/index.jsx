@@ -55,11 +55,50 @@ class LeaderboardAd extends Component {
     const { windowWidth } = this.state;
 
     if (windowWidth < 600) {
-      return <div className={classes.smallDisplay} />;
+      return (
+        <ins
+          className="adsbygoogle"
+          style={{
+            display: "inline-block",
+            width: 320,
+            height: 100,
+            margin: 10,
+            backgroundColor: grey[300]
+          }}
+          data-ad-client="ca-pub-7670057362856972"
+          data-ad-slot="8947288756"
+        />
+      );
     } else if (windowWidth < 960) {
-      return <div className={classes.mediumDisplay} />;
+      return (
+        <ins
+          className="adsbygoogle"
+          style={{
+            margin: 10,
+            display: "inline-block",
+            width: 468,
+            height: 60,
+            backgroundColor: grey[300]
+          }}
+          data-ad-client="ca-pub-7670057362856972"
+          data-ad-slot="5860647331"
+        />
+      );
     } else {
-      return <div className={classes.largeDisplay} />;
+      return (
+        <ins
+          className="adsbygoogle"
+          style={{
+            margin: 24,
+            display: "inline-block",
+            width: 728,
+            height: 90,
+            backgroundColor: grey[300]
+          }}
+          data-ad-client="ca-pub-7670057362856972"
+          data-ad-slot="2049039611"
+        />
+      );
     }
   }
 }

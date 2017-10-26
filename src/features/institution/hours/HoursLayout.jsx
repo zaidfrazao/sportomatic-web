@@ -68,6 +68,10 @@ const styles = theme => ({
       display: "block"
     }
   },
+  eventsAwaitingApprovalWrapper: {
+    flexGrow: 1,
+    overflow: "auto"
+  },
   loaderWrapper: {
     flexGrow: 1,
     display: "flex",
@@ -75,11 +79,9 @@ const styles = theme => ({
     justifyContent: "center"
   },
   button: {
-    margin: "24px 24px 0 24px",
-    "@media (max-width: 960px)": {
-      width: "100%",
-      padding: "0 24px",
-      margin: "24px 0"
+    margin: 24,
+    "@media (max-width: 600px)": {
+      width: "calc(100% - 48px)"
     }
   },
   noEventsAwaitingApprovalWrapper: {
@@ -121,7 +123,8 @@ class HoursLayout extends Component {
       isTablet,
       events,
       userID,
-      coaches
+      coaches,
+      isMobile
     } = this.props;
     const { signIn, signOut, approveHours } = this.props.actions;
     const { coachID } = this.props.match.params;
@@ -163,9 +166,11 @@ class HoursLayout extends Component {
             )}
           />
         </div>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
+        {!isMobile && (
+          <div className={classes.adWrapper}>
+            <LeaderboardAd />
+          </div>
+        )}
         {!inProgressEvent.metadata ? (
           <div className={classes.noEventsAwaitingApprovalWrapper}>
             <Typography type="subheading" component="h3">
@@ -212,7 +217,7 @@ class HoursLayout extends Component {
   }
 
   renderAwaitingApprovalTab() {
-    const { classes, isTablet, events, coaches, userID } = this.props;
+    const { classes, isTablet, events, coaches, userID, isMobile } = this.props;
     const { signIn, signOut, approveHours } = this.props.actions;
     const { coachID } = this.props.match.params;
 
@@ -247,9 +252,11 @@ class HoursLayout extends Component {
             )}
           />
         </div>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
+        {!isMobile && (
+          <div className={classes.adWrapper}>
+            <LeaderboardAd />
+          </div>
+        )}
         {eventsList.length === 0 ? (
           <div className={classes.noEventsAwaitingApprovalWrapper}>
             <Typography type="subheading" component="h3">
@@ -257,7 +264,7 @@ class HoursLayout extends Component {
             </Typography>
           </div>
         ) : (
-          <div>
+          <div className={classes.eventAwaitingApprovalWrapper}>
             {eventsList.map((eventInfo, index) => (
               <HoursCard
                 key={index}
@@ -343,9 +350,11 @@ class HoursLayout extends Component {
             )}
           />
         </div>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
+        {!isMobile && (
+          <div className={classes.adWrapper}>
+            <LeaderboardAd />
+          </div>
+        )}
         <div className={classes.historyTableWrapper}>
           <HoursHistory
             isMobile={isMobile}
@@ -402,46 +411,17 @@ class HoursLayout extends Component {
                     {`${coaches[coachID].metadata.name} ${coaches[coachID]
                       .metadata.surname}`}
                   </Typography>
-                  {isMobile ? (
-                    <Tabs
-                      value={currentTab}
-                      onChange={(event, newTab) => updateTab(newTab)}
-                      indicatorColor="primary"
-                      textColor="primary"
-                      centered
-                    >
-                      <Tab value="IN_PROGRESS" icon={<InProgressIcon />} />
-                      <Tab
-                        value="AWAITING_APPROVAL"
-                        icon={<AwaitingApprovalIcon />}
-                      />
-                      <Tab value="HISTORY" icon={<HistoryIcon />} />
-                    </Tabs>
-                  ) : (
-                    <Tabs
-                      value={currentTab}
-                      onChange={(event, newTab) => updateTab(newTab)}
-                      indicatorColor="primary"
-                      textColor="primary"
-                      centered
-                    >
-                      <Tab
-                        label="In Progress"
-                        value="IN_PROGRESS"
-                        icon={<InProgressIcon />}
-                      />
-                      <Tab
-                        label="Awaiting Approval"
-                        value="AWAITING_APPROVAL"
-                        icon={<AwaitingApprovalIcon />}
-                      />
-                      <Tab
-                        label="History"
-                        value="HISTORY"
-                        icon={<HistoryIcon />}
-                      />
-                    </Tabs>
-                  )}
+                  <Tabs
+                    value={currentTab}
+                    onChange={(event, newTab) => updateTab(newTab)}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    centered
+                  >
+                    <Tab label="In Progress" value="IN_PROGRESS" />
+                    <Tab label="Pending" value="AWAITING_APPROVAL" />
+                    <Tab label="History" value="HISTORY" />
+                  </Tabs>
                 </AppBar>
                 {currentTab === "IN_PROGRESS" && this.renderInProgressTab()}
                 {currentTab === "AWAITING_APPROVAL" &&
