@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
 import { Route } from "react-router-dom";
+import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
@@ -12,7 +13,15 @@ import LeaderboardAd from "../../../../../components/LeaderboardAd";
 import _ from "lodash";
 
 const styles = {
+  root: {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column"
+  },
   wrapper: {
+    flexGrow: 1,
+    overflow: "auto",
     padding: 24
   },
   adWrapper: {
@@ -42,20 +51,7 @@ const styles = {
   name: {
     width: "100%",
     textAlign: "center",
-    margin: "40px 0"
-  },
-  pictureWrapper: {
-    width: "100%",
-    height: "100%",
-    backgroundColor: grey[50],
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  picture: {
-    backgroundColor: grey[300],
-    width: 300,
-    height: "auto"
+    margin: "24px 0"
   },
   button: {
     "@media (max-width: 960px)": {
@@ -194,78 +190,85 @@ class TeamInfo extends Component {
     let coachesList = this.getCoachesList(coaches);
 
     return (
-      <div className={classes.wrapper}>
-        <Route
-          render={({ history }) => (
-            <Button
-              raised
-              className={classes.button}
-              onClick={() => history.goBack()}
-            >
-              Back
-            </Button>
-          )}
-        />
-        <Typography className={classes.name} type="display2" component="h2">
-          {name}
-        </Typography>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
+      <div className={classes.root}>
+        <AppBar position="static" color="default">
+          <Typography className={classes.name} type="title" component="h2">
+            {`${name}`}
+          </Typography>
+        </AppBar>
+        <div className={classes.wrapper}>
+          <Route
+            render={({ history }) => (
+              <Button
+                raised
+                className={classes.button}
+                onClick={() => history.goBack()}
+              >
+                Back
+              </Button>
+            )}
+          />
+          <div className={classes.adWrapper}>
+            <LeaderboardAd />
+          </div>
+          <Grid container direction="row" align="stretch">
+            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+              <div className={classes.section}>
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Details
+                </Typography>
+                <List>
+                  <ListItem>
+                    <ListItemText primary="Sport" secondary={sport} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Division" secondary={division} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary="Age Group"
+                      secondary={formattedAgeGroup}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary="Gender"
+                      secondary={formattedGender}
+                    />
+                  </ListItem>
+                </List>
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+              <div className={classes.section}>
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Managers
+                </Typography>
+                {managersList}
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+              <div className={classes.section}>
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Coaches
+                </Typography>
+                {coachesList}
+              </div>
+            </Grid>
+          </Grid>
         </div>
-        <Grid container direction="row" align="stretch">
-          <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-            <div className={classes.section}>
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
-              >
-                Details
-              </Typography>
-              <List>
-                <ListItem>
-                  <ListItemText primary="Sport" secondary={sport} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Division" secondary={division} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText
-                    primary="Age Group"
-                    secondary={formattedAgeGroup}
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Gender" secondary={formattedGender} />
-                </ListItem>
-              </List>
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-            <div className={classes.section}>
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
-              >
-                Managers
-              </Typography>
-              {managersList}
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-            <div className={classes.section}>
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
-              >
-                Coaches
-              </Typography>
-              {coachesList}
-            </div>
-          </Grid>
-        </Grid>
       </div>
     );
   }
