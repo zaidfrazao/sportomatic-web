@@ -9,7 +9,6 @@ export class SportomaticFirebaseAPI {
 
       staffRef.on("value", snapshot => {
         const staff = snapshot.val();
-        console.log(staff);
         if (staff === null) {
           resolve({});
         } else {
