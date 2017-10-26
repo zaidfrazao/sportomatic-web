@@ -8,6 +8,7 @@ import Paper from "material-ui/Paper";
 import Table, {
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableRow
 } from "material-ui/Table";
@@ -112,6 +113,30 @@ class HoursHistory extends Component {
       );
     }
 
+    let totalHoursLogged = 0;
+    _.toPairs(events[year][month]).map(([id, info]) => {
+      const hoursLogged = Math.round(
+        (new Date(
+          2017,
+          1,
+          1,
+          info.coaches[coachID].hours.signOutTime.slice(0, 2),
+          info.coaches[coachID].hours.signOutTime.slice(3, 5)
+        ).getTime() -
+          new Date(
+            2017,
+            1,
+            1,
+            info.coaches[coachID].hours.signInTime.slice(0, 2),
+            info.coaches[coachID].hours.signInTime.slice(3, 5)
+          ).getTime()) /
+          1000 /
+          60 /
+          60
+      );
+      totalHoursLogged += hoursLogged;
+    });
+
     if (isMobile) {
       return (
         <Table>
@@ -156,6 +181,14 @@ class HoursHistory extends Component {
               );
             })}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell>TOTAL</TableCell>
+              <TableCell numeric>
+                {totalHoursLogged.toLocaleString("en")}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       );
     } else if (isTablet) {
@@ -210,6 +243,16 @@ class HoursHistory extends Component {
               );
             })}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell>TOTAL</TableCell>
+              <TableCell />
+              <TableCell />
+              <TableCell numeric>
+                {totalHoursLogged.toLocaleString("en")}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       );
     } else {
@@ -266,72 +309,19 @@ class HoursHistory extends Component {
               );
             })}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell>TOTAL</TableCell>
+              <TableCell />
+              <TableCell />
+              <TableCell />
+              <TableCell numeric>
+                {totalHoursLogged.toLocaleString("en")}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       );
-    }
-  }
-
-  renderTableFooter() {
-    const { classes, isMobile, events, coachID } = this.props;
-    const { year, month } = this.state;
-
-    let totalHoursLogged = 0;
-    _.toPairs(events[year][month]).map(([id, info]) => {
-      const hoursLogged = Math.round(
-        (new Date(
-          2017,
-          1,
-          1,
-          info.coaches[coachID].hours.signOutTime.slice(0, 2),
-          info.coaches[coachID].hours.signOutTime.slice(3, 5)
-        ).getTime() -
-          new Date(
-            2017,
-            1,
-            1,
-            info.coaches[coachID].hours.signInTime.slice(0, 2),
-            info.coaches[coachID].hours.signInTime.slice(3, 5)
-          ).getTime()) /
-          1000 /
-          60 /
-          60
-      );
-      totalHoursLogged += hoursLogged;
-    });
-
-    if (events[year] && events[year][month]) {
-      if (!isMobile) {
-        return (
-          <div className={classes.footer}>
-            <Typography
-              component="h2"
-              type="title"
-              className={classes.headerTitle}
-            >
-              Total Hours
-            </Typography>
-            <Typography
-              component="h2"
-              type="title"
-              className={classes.headerTitle}
-            >
-              {totalHoursLogged.toLocaleString("en")}
-            </Typography>
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.footer}>
-            <Typography
-              component="h2"
-              type="title"
-              className={classes.headerTitle}
-            >
-              {totalHoursLogged.toLocaleString("en")} Hours
-            </Typography>
-          </div>
-        );
-      }
     }
   }
 
@@ -397,8 +387,6 @@ class HoursHistory extends Component {
           >
             {this.renderTableBody()}
           </div>
-          {events[year] &&
-            events[year][month] && <div>{this.renderTableFooter()}</div>}
         </Paper>
       </div>
     );

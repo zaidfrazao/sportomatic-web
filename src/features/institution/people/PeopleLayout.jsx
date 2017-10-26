@@ -22,6 +22,10 @@ const styles = theme => ({
     width: "100%",
     height: "100%"
   },
+  infoWrapper: {
+    height: "100%",
+    width: "100%"
+  },
   adWrapper: {
     width: "100%",
     display: "flex",
@@ -126,7 +130,7 @@ class PeopleLayout extends Component {
     return (
       <div className={classes.root}>
         {personID && staff[personID] ? (
-          <div>
+          <div className={classes.infoWrapper}>
             <PersonInfo info={staff[personID]} />
             <Button
               fab
@@ -147,42 +151,23 @@ class PeopleLayout extends Component {
         ) : (
           <div className={classes.tabsWrapper}>
             <AppBar position="static" color="default">
-              {isMobile ? (
-                <Tabs
-                  value={currentTab}
-                  onChange={(event, newTab) => updateTab(newTab)}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  centered
-                >
-                  <Tab value="STAFF" icon={<StaffIcon />} />
-                  <Tab value="REQUESTS" icon={<RequestsIcon />} />
-                </Tabs>
-              ) : (
-                <Tabs
-                  value={currentTab}
-                  onChange={(event, newTab) => updateTab(newTab)}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  centered
-                >
-                  <Tab label="Staff" value="STAFF" icon={<StaffIcon />} />
-                  <Tab
-                    label="Requests"
-                    value="REQUESTS"
-                    icon={<RequestsIcon />}
-                  />
-                </Tabs>
-              )}
+              <Tabs
+                value={currentTab}
+                onChange={(event, newTab) => updateTab(newTab)}
+                indicatorColor="primary"
+                textColor="primary"
+                centered
+              >
+                <Tab label="Staff" value="STAFF" />
+                <Tab label="Requests" value="REQUESTS" />
+              </Tabs>
             </AppBar>
             {currentTab === "STAFF" && (
               <div
                 className={
-                  staffCardsInfo.length > 0 ? (
-                    classes.staffTab
-                  ) : (
-                    classes.staffTabNoCards
-                  )
+                  staffCardsInfo.length > 0
+                    ? classes.staffTab
+                    : classes.staffTabNoCards
                 }
               >
                 <div className={classes.adWrapper}>

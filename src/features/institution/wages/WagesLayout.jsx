@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import WagesTable from "./components/WagesTable";
+import AppBar from "material-ui/AppBar";
 import Button from "material-ui/Button";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 import { CircularProgress } from "material-ui/Progress";
@@ -34,16 +35,15 @@ const styles = theme => ({
     justifyContent: "center"
   },
   button: {
-    margin: "24px 24px 0 24px",
+    margin: 24,
     "@media (max-width: 960px)": {
-      margin: 0,
-      width: "100%"
+      width: "calc(100% - 48px)"
     }
   },
   coachName: {
     width: "100%",
     textAlign: "center",
-    marginBottom: 24
+    margin: "24px 0"
   }
 });
 
@@ -88,6 +88,16 @@ class WagesLayout extends Component {
       if (coachID && coaches[coachID]) {
         return (
           <div className={classes.root}>
+            <AppBar position="static" color="default">
+              <Typography
+                type="title"
+                component="h2"
+                className={classes.coachName}
+              >
+                {`${coaches[coachID].metadata.name} ${coaches[coachID].metadata
+                  .surname}`}
+              </Typography>
+            </AppBar>
             <div>
               <Route
                 render={({ history }) => (
@@ -101,17 +111,11 @@ class WagesLayout extends Component {
                 )}
               />
             </div>
-            <div className={classes.adWrapper}>
-              <LeaderboardAd />
-            </div>
-            <Typography
-              type="title"
-              component="h2"
-              className={classes.coachName}
-            >
-              {`${coaches[coachID].metadata.name} ${coaches[coachID].metadata
-                .surname}`}
-            </Typography>
+            {!isMobile && (
+              <div className={classes.adWrapper}>
+                <LeaderboardAd />
+              </div>
+            )}
             <div className={classes.wagesTableWrapper}>
               <WagesTable
                 isMobile={isMobile}
