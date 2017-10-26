@@ -7,6 +7,8 @@ import { lightBlue } from "material-ui/colors";
 import { CircularProgress } from "material-ui/Progress";
 import Paper from "material-ui/Paper";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import BannerAd from "../../../components/BannerAd";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import Calendar from "./components/Calendar";
 import EventInfo from "./components/EventInfo";
 import EventsList from "./components/EventsList";
@@ -114,6 +116,13 @@ class ScheduleLayout extends Component {
       monthSelected = dateSelected.slice(5, 7);
     }
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     if (
       currentView === "EVENT_INFO" &&
       events[yearSelected] &&
@@ -130,6 +139,8 @@ class ScheduleLayout extends Component {
             <EventInfo
               info={events[yearSelected][monthSelected][eventID]}
               userID={userID}
+              isMobile={isMobile}
+              isTablet={isTablet}
               actions={{ updateView }}
             />
           )}
@@ -163,9 +174,7 @@ class ScheduleLayout extends Component {
       } else {
         return (
           <div className={classes.contentWrapper}>
-            <div className={classes.adWrapper}>
-              <LeaderboardAd />
-            </div>
+            <div className={classes.adWrapper}>{ad}</div>
             {isEventsLoading ? (
               <div className={classes.loaderWrapper}>
                 <CircularProgress />
@@ -184,9 +193,7 @@ class ScheduleLayout extends Component {
     } else {
       return (
         <div className={classes.contentWrapper}>
-          <div className={classes.adWrapper}>
-            <LeaderboardAd />
-          </div>
+          <div className={classes.adWrapper}>{ad}</div>
           {isEventsLoading ? (
             <div className={classes.loaderWrapper}>
               <CircularProgress />

@@ -7,6 +7,8 @@ import { CircularProgress } from "material-ui/Progress";
 import PeopleList from "./components/PeopleList";
 import PersonInfo from "./components/PersonInfo";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
+import BannerAd from "../../../components/BannerAd";
 import _ from "lodash";
 
 const styles = theme => ({
@@ -67,7 +69,7 @@ class PeopleLayout extends Component {
   }
 
   render() {
-    const { classes, staff, userID } = this.props;
+    const { classes, staff, userID, isMobile, isTablet } = this.props;
     const { isStaffLoading } = this.props.loadingStatus;
     const { personID } = this.props.match.params;
 
@@ -94,25 +96,32 @@ class PeopleLayout extends Component {
         return 0;
       });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.root}>
         {personID && staff[personID] ? (
           <div>
-            <PersonInfo info={staff[personID]} />
+            <PersonInfo
+              info={staff[personID]}
+              isMobile={isMobile}
+              isTablet={isTablet}
+            />
           </div>
         ) : (
           <div
             className={
-              staffCardsInfo.length > 0 ? (
-                classes.staffTab
-              ) : (
-                classes.staffTabNoCards
-              )
+              staffCardsInfo.length > 0
+                ? classes.staffTab
+                : classes.staffTabNoCards
             }
           >
-            <div className={classes.adWrapper}>
-              <LeaderboardAd />
-            </div>
+            <div className={classes.adWrapper}>{ad}</div>
             {isStaffLoading ? (
               <div className={classes.loaderWrapper}>
                 <CircularProgress />

@@ -7,6 +7,8 @@ import WagesTable from "./components/WagesTable";
 import AppBar from "material-ui/AppBar";
 import Button from "material-ui/Button";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import BannerAd from "../../../components/BannerAd";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import { CircularProgress } from "material-ui/Progress";
 import CoachesList from "./components/CoachesList";
 import Typography from "material-ui/Typography";
@@ -76,6 +78,13 @@ class WagesLayout extends Component {
     const { isWagesLoading, isStaffLoading } = this.props.loadingStatus;
     const { coachID } = this.props.match.params;
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     if (isWagesLoading || isStaffLoading) {
       return (
         <div className={classes.root}>
@@ -111,11 +120,7 @@ class WagesLayout extends Component {
                 )}
               />
             </div>
-            {!isMobile && (
-              <div className={classes.adWrapper}>
-                <LeaderboardAd />
-              </div>
-            )}
+            {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
             <div className={classes.wagesTableWrapper}>
               <WagesTable
                 isMobile={isMobile}
@@ -152,9 +157,7 @@ class WagesLayout extends Component {
                 : classes.coachesListNoCards
             }
           >
-            <div className={classes.adWrapper}>
-              <LeaderboardAd />
-            </div>
+            <div className={classes.adWrapper}>{ad}</div>
             <CoachesList coaches={coachesList} />
           </div>
         );

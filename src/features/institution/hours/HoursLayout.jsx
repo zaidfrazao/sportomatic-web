@@ -1,22 +1,21 @@
 // @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
 import { withStyles } from "material-ui/styles";
 import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
 import { Route } from "react-router-dom";
 import { CircularProgress } from "material-ui/Progress";
-import InProgressIcon from "material-ui-icons/Autorenew";
-import AwaitingApprovalIcon from "material-ui-icons/MoreHoriz";
+import Button from "material-ui/Button";
+import Typography from "material-ui/Typography";
 import HoursCard from "./components/HoursCard";
 import TimeLogger from "./components/TimeLogger";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import BannerAd from "../../../components/BannerAd";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import CoachesList from "./components/CoachesList";
 import HoursHistory from "./components/HoursHistory";
-import HistoryIcon from "material-ui-icons/History";
-import Button from "material-ui/Button";
-import Typography from "material-ui/Typography";
-import _ from "lodash";
 
 const styles = theme => ({
   root: {
@@ -151,6 +150,13 @@ class HoursLayout extends Component {
       });
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.inProgressWrapper}>
         <div>
@@ -166,11 +172,7 @@ class HoursLayout extends Component {
             )}
           />
         </div>
-        {!isMobile && (
-          <div className={classes.adWrapper}>
-            <LeaderboardAd />
-          </div>
-        )}
+        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
         {!inProgressEvent.metadata ? (
           <div className={classes.noEventsAwaitingApprovalWrapper}>
             <Typography type="subheading" component="h3">
@@ -237,6 +239,13 @@ class HoursLayout extends Component {
       });
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.awaitingApprovalWrapper}>
         <div>
@@ -252,11 +261,7 @@ class HoursLayout extends Component {
             )}
           />
         </div>
-        {!isMobile && (
-          <div className={classes.adWrapper}>
-            <LeaderboardAd />
-          </div>
-        )}
+        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
         {eventsList.length === 0 ? (
           <div className={classes.noEventsAwaitingApprovalWrapper}>
             <Typography type="subheading" component="h3">
@@ -335,6 +340,13 @@ class HoursLayout extends Component {
       });
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.historyWrapper}>
         <div>
@@ -350,11 +362,7 @@ class HoursLayout extends Component {
             )}
           />
         </div>
-        {!isMobile && (
-          <div className={classes.adWrapper}>
-            <LeaderboardAd />
-          </div>
-        )}
+        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
         <div className={classes.historyTableWrapper}>
           <HoursHistory
             isMobile={isMobile}
@@ -368,7 +376,7 @@ class HoursLayout extends Component {
   }
 
   render() {
-    const { classes, isMobile, coaches } = this.props;
+    const { classes, isMobile, isTablet, coaches } = this.props;
     const { isStaffLoading, isEventsLoading } = this.props.loadingStatus;
     const { currentTab } = this.props.uiConfig;
     const { updateTab } = this.props.actions;
@@ -391,6 +399,13 @@ class HoursLayout extends Component {
       if (personA.metadata.surname < personB.metadata.surname) return -1;
       return 0;
     });
+
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
 
     return (
       <div className={classes.root}>
@@ -436,9 +451,7 @@ class HoursLayout extends Component {
                     : classes.coachesListNoCards
                 }
               >
-                <div className={classes.adWrapper}>
-                  <LeaderboardAd />
-                </div>
+                <div className={classes.adWrapper}>{ad}</div>
                 <CoachesList coaches={coachesList} />
               </div>
             )}

@@ -214,24 +214,32 @@ class CoreInterfaceLayout extends Component {
                 </Route>
                 <Route exact path={`/manager/people/`}>
                   <People
+                    isMobile={isMobile}
+                    isTablet={isTablet}
                     userID={uiConfig.userID}
                     activeInstitutionID={uiConfig.activeInstitution.id}
                   />
                 </Route>
                 <Route path={`/manager/people/:personID`}>
                   <People
+                    isMobile={isMobile}
+                    isTablet={isTablet}
                     userID={uiConfig.userID}
                     activeInstitutionID={uiConfig.activeInstitution.id}
                   />
                 </Route>
                 <Route exact path={`/manager/teams/`}>
                   <Teams
+                    isMobile={isMobile}
+                    isTablet={isTablet}
                     activeInstitutionID={uiConfig.activeInstitution.id}
                     userID={uiConfig.userID}
                   />
                 </Route>
                 <Route path={`/manager/teams/:teamID`}>
                   <Teams
+                    isMobile={isMobile}
+                    isTablet={isTablet}
                     activeInstitutionID={uiConfig.activeInstitution.id}
                     userID={uiConfig.userID}
                   />

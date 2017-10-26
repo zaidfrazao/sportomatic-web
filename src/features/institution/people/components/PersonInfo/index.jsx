@@ -10,7 +10,9 @@ import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Typography from "material-ui/Typography";
 import _ from "lodash";
-import BlockAd from "../../../../../components/BlockAd";
+import LargeRectangleAd from "../../../../../components/LargeRectangleAd";
+import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
+import BannerAd from "../../../../../components/BannerAd";
 
 const styles = {
   root: {
@@ -81,7 +83,7 @@ const styles = {
 
 class PersonInfo extends Component {
   render() {
-    const { classes } = this.props;
+    const { classes, isMobile, isTablet } = this.props;
     const { preferredSports, teams, paymentDefaults } = this.props.info;
     const {
       name,
@@ -95,6 +97,13 @@ class PersonInfo extends Component {
     const teamsList = _.toPairs(teams).map(([teamID, teamInfo]) => {
       return { id: teamID, ...teamInfo };
     });
+
+    let ad = <LargeRectangleAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
 
     return (
       <div className={classes.root}>
@@ -122,9 +131,7 @@ class PersonInfo extends Component {
               </div>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-              <div className={classes.adWrapper}>
-                <BlockAd />
-              </div>
+              <div className={classes.adWrapper}>{ad}</div>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
               <div className={classes.section}>

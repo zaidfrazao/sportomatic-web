@@ -10,6 +10,8 @@ import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Typography from "material-ui/Typography";
 import LeaderboardAd from "../../../../../components/LeaderboardAd";
+import BannerAd from "../../../../../components/BannerAd";
+import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
 import _ from "lodash";
 
 const styles = {
@@ -88,7 +90,7 @@ const styles = {
 
 class EventInfo extends Component {
   render() {
-    const { classes } = this.props;
+    const { classes, isMobile, isTablet } = this.props;
     const {
       title,
       type,
@@ -106,6 +108,13 @@ class EventInfo extends Component {
       month: "long",
       day: "numeric"
     };
+
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
 
     return (
       <div className={classes.root}>
@@ -135,9 +144,7 @@ class EventInfo extends Component {
               </Button>
             )}
           />
-          <div className={classes.adWrapper}>
-            <LeaderboardAd />
-          </div>
+          <div className={classes.adWrapper}>{ad}</div>
           <Grid container direction="row" align="stretch">
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
               <div className={classes.section}>

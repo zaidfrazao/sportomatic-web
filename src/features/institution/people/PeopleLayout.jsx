@@ -8,12 +8,12 @@ import Button from "material-ui/Button";
 import EditIcon from "material-ui-icons/Edit";
 import { CircularProgress } from "material-ui/Progress";
 import Tabs, { Tab } from "material-ui/Tabs";
-import StaffIcon from "material-ui-icons/Person";
-import RequestsIcon from "material-ui-icons/PersonAdd";
 import Typography from "material-ui/Typography";
 import PeopleList from "./components/PeopleList";
 import PersonInfo from "./components/PersonInfo";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
+import BannerAd from "../../../components/BannerAd";
 import NotificationModal from "../../../components/NotificationModal";
 import _ from "lodash";
 
@@ -92,7 +92,7 @@ class PeopleLayout extends Component {
   }
 
   render() {
-    const { classes, staff, isMobile } = this.props;
+    const { classes, staff, isMobile, isTablet } = this.props;
     const { currentTab } = this.props.uiConfig;
     const { isStaffLoading } = this.props.loadingStatus;
     const {
@@ -127,11 +127,22 @@ class PeopleLayout extends Component {
       return 0;
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.root}>
         {personID && staff[personID] ? (
           <div className={classes.infoWrapper}>
-            <PersonInfo info={staff[personID]} />
+            <PersonInfo
+              info={staff[personID]}
+              isMobile={isMobile}
+              isTablet={isTablet}
+            />
             <Button
               fab
               color="accent"
@@ -170,9 +181,7 @@ class PeopleLayout extends Component {
                     : classes.staffTabNoCards
                 }
               >
-                <div className={classes.adWrapper}>
-                  <LeaderboardAd />
-                </div>
+                <div className={classes.adWrapper}>{ad}</div>
                 {isStaffLoading ? (
                   <div className={classes.loaderWrapper}>
                     <CircularProgress />

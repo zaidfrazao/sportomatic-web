@@ -5,13 +5,12 @@ import { withStyles } from "material-ui/styles";
 import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
 import { CircularProgress } from "material-ui/Progress";
-import InProgressIcon from "material-ui-icons/Autorenew";
-import AwaitingApprovalIcon from "material-ui-icons/MoreHoriz";
 import HoursCard from "./components/HoursCard";
 import TimeLogger from "./components/TimeLogger";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
+import BannerAd from "../../../components/BannerAd";
 import HoursHistory from "./components/HoursHistory";
-import HistoryIcon from "material-ui-icons/History";
 import Typography from "material-ui/Typography";
 import _ from "lodash";
 
@@ -115,6 +114,7 @@ class HoursLayout extends Component {
   renderInProgressTab() {
     const {
       classes,
+      isMobile,
       isTablet,
       events,
       userID,
@@ -145,11 +145,16 @@ class HoursLayout extends Component {
       });
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.inProgressWrapper}>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
+        <div className={classes.adWrapper}>{ad}</div>
         {!inProgressEvent.metadata ? (
           <div className={classes.noEventsAwaitingApprovalWrapper}>
             <Typography type="subheading" component="h3">
@@ -193,6 +198,7 @@ class HoursLayout extends Component {
   renderAwaitingApprovalTab() {
     const {
       classes,
+      isMobile,
       isTablet,
       events,
       userID,
@@ -216,11 +222,16 @@ class HoursLayout extends Component {
       });
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.awaitingApprovalWrapper}>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
+        <div className={classes.adWrapper}>{ad}</div>
         {eventsList.length === 0 ? (
           <div className={classes.noEventsAwaitingApprovalWrapper}>
             <Typography type="subheading" component="h3">
@@ -293,11 +304,16 @@ class HoursLayout extends Component {
       });
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.historyWrapper}>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
+        <div className={classes.adWrapper}>{ad}</div>
         <div className={classes.historyTableWrapper}>
           <HoursHistory
             isMobile={isMobile}
@@ -311,7 +327,7 @@ class HoursLayout extends Component {
   }
 
   render() {
-    const { classes, isMobile } = this.props;
+    const { classes } = this.props;
     const { isEventsLoading } = this.props.loadingStatus;
     const { currentTab } = this.props.uiConfig;
     const { updateTab } = this.props.actions;

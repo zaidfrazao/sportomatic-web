@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import WagesTable from "./components/WagesTable";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import BannerAd from "../../../components/BannerAd";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import { CircularProgress } from "material-ui/Progress";
 
 const styles = theme => ({
@@ -66,6 +68,13 @@ class WagesLayout extends Component {
     const { classes, isMobile, isTablet, coachWages } = this.props;
     const { isWagesLoading } = this.props.loadingStatus;
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     if (isWagesLoading) {
       return (
         <div className={classes.root}>
@@ -77,9 +86,7 @@ class WagesLayout extends Component {
     } else {
       return (
         <div className={classes.root}>
-          <div className={classes.adWrapper}>
-            <LeaderboardAd />
-          </div>
+          <div className={classes.adWrapper}>{ad}</div>
           <div className={classes.wagesTableWrapper}>
             <WagesTable
               isMobile={isMobile}
