@@ -40,6 +40,7 @@ class LeaderboardAd extends Component {
   componentDidMount() {
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
   }
 
   componentWillUnmount() {
