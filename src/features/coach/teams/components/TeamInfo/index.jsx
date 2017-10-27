@@ -51,9 +51,9 @@ const styles = {
     borderBottom: `1px solid ${grey[200]}`
   },
   name: {
-    width: "100%",
-    textAlign: "center",
-    margin: "24px 0"
+    margin: 24,
+    width: "calc(100% - 48px)",
+    textAlign: "center"
   },
   button: {
     "@media (max-width: 960px)": {

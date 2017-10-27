@@ -38,9 +38,9 @@ const styles = theme => ({
     }
   },
   coachName: {
-    width: "100%",
-    textAlign: "center",
-    marginBottom: 24
+    margin: 24,
+    width: "calc(100% - 48px)",
+    textAlign: "center"
   }
 });
 

@@ -52,8 +52,8 @@ const styles = {
     borderBottom: `1px solid ${grey[200]}`
   },
   name: {
-    margin: "24px 0",
-    width: "100%",
+    margin: 24,
+    width: "calc(100% - 48px)",
     textAlign: "center"
   },
   pictureWrapper: {

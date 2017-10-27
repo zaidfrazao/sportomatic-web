@@ -90,8 +90,8 @@ const styles = theme => ({
     alignItems: "center"
   },
   coachName: {
-    margin: "24px 0",
-    width: "100%",
+    margin: 24,
+    width: "calc(100% - 48px)",
     textAlign: "center"
   }
 });
