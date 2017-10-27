@@ -10,6 +10,7 @@ import MenuIcon from "material-ui-icons/Menu";
 import AppBarMenuIcon from "material-ui-icons/MoreVert";
 import LogOutIcon from "material-ui-icons/ExitToApp";
 import SettingsIcon from "material-ui-icons/Settings";
+import Menu, { MenuItem } from "material-ui/Menu";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
@@ -118,11 +119,32 @@ class CustomAppBar extends Component {
                   )}
                 />
                 {isMobile ? (
-                  <Tooltip title="Options" placement="bottom">
-                    <IconButton color="contrast" aria-label="app bar menu">
-                      <AppBarMenuIcon />
-                    </IconButton>
-                  </Tooltip>
+                  <div>
+                    <Tooltip title="Options" placement="bottom">
+                      <IconButton
+                        color="contrast"
+                        aria-label="app bar menu"
+                        onClick={this.handleClick}
+                      >
+                        <AppBarMenuIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={this.state.anchorEl}
+                      open={this.state.open}
+                      onRequestClose={this.handleRequestClose}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          this.handleRequestClose();
+                          signOut();
+                        }}
+                      >
+                        Logout
+                      </MenuItem>
+                    </Menu>
+                  </div>
                 ) : (
                   <div className={classes.desktopIcons}>
                     <Route

@@ -34,9 +34,9 @@ const styles = theme => ({
     flexDirection: "column"
   },
   logo: {
-    width: "300px",
+    width: "240px",
     height: "auto",
-    margin: "0 auto"
+    margin: "10px auto"
   },
   button: {
     margin: 10,
