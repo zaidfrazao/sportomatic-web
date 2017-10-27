@@ -208,10 +208,10 @@ class CoreInterfaceLayout extends Component {
             <div className={classes.main}>
               <Switch>
                 <Route exact path={"/coach/"}>
-                  <Dashboard />
+                  <Dashboard isTablet={isTablet} />
                 </Route>
                 <Route exact path={`/coach/dashboard/`}>
-                  <Dashboard />
+                  <Dashboard isTablet={isTablet} />
                 </Route>
                 <Route exact path={`/coach/hours/`}>
                   <Hours

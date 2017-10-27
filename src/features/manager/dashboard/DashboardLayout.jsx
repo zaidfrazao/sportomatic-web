@@ -12,7 +12,7 @@ const styles = theme => ({
   explanation: {
     margin: "80px auto",
     maxWidth: 600,
-    "@media (max-width: 960px)": {
+    "@media (max-width: 760px)": {
       margin: 40
     }
   },
@@ -23,20 +23,17 @@ const styles = theme => ({
 
 class DashboardLayout extends Component {
   render() {
-    const { classes } = this.props;
+    const { classes, isTablet } = this.props;
+
     return (
       <div className={classes.root}>
-        <BannerCarousel />
+        <BannerCarousel isTablet={isTablet} />
         <div className={classes.explanation}>
           <Typography type="body1" component="p" className={classes.paragraph}>
             This is the first version of the Sportomatic Beta release. It is
             only intented to be used by St Stithians staff members. It contains
             very rudimentary versions of the final functionality of the
             software.
-          </Typography>
-          <Typography type="body1" component="p" className={classes.paragraph}>
-            The mobile version of this Beta version of the app, while usable,
-            needs a lot of work. There are quite a few layout issues.
           </Typography>
           <Typography type="body1" component="p" className={classes.paragraph}>
             This dashboard would not normally contain this type of explanatory
