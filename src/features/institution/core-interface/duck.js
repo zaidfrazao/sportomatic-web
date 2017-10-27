@@ -16,6 +16,10 @@ export const OPEN_SETTINGS_ALERT =
   "sportomatic-web/institution/core-interface/OPEN_SETTINGS_ALERT";
 export const CLOSE_SETTINGS_ALERT =
   "sportomatic-web/institution/core-interface/CLOSE_SETTINGS_ALERT";
+export const OPEN_LOG_OUT_MODAL =
+  "sportomatic-web/institution/core-interface/OPEN_LOG_OUT_MODAL";
+export const CLOSE_LOG_OUT_MODAL =
+  "sportomatic-web/institution/core-interface/CLOSE_LOG_OUT_MODAL";
 
 // Reducers
 
@@ -25,8 +29,7 @@ export const uiConfigInitialState = {
   isSideMenuOpen: false,
   isLoggedIn: true,
   type: "INSTITUTION",
-  userID: "",
-  isSettingsAlertOpen: false
+  userID: ""
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -58,6 +61,18 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         bottomNavValue: action.payload.newValue
       };
+    default:
+      return state;
+  }
+}
+
+export const dialogsInitialState = {
+  isSettingsAlertOpen: false,
+  isLogOutModalOpen: false
+};
+
+function dialogsReducer(state = dialogsInitialState, action = {}) {
+  switch (action.type) {
     case OPEN_SETTINGS_ALERT:
       return {
         ...state,
@@ -68,21 +83,34 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         isSettingsAlertOpen: false
       };
+    case OPEN_LOG_OUT_MODAL:
+      return {
+        ...state,
+        isLogOutModalOpen: true
+      };
+    case CLOSE_LOG_OUT_MODAL:
+      return {
+        ...state,
+        isLogOutModalOpen: false
+      };
     default:
       return state;
   }
 }
 
 export const coreInterfaceReducer = combineReducers({
-  uiConfig: uiConfigReducer
+  uiConfig: uiConfigReducer,
+  dialogs: dialogsReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.institution.coreInterface.uiConfig;
+const dialogs = state => state.institution.coreInterface.dialogs;
 
 export const selector = createStructuredSelector({
-  uiConfig
+  uiConfig,
+  dialogs
 });
 
 // Action Creators
@@ -143,5 +171,17 @@ export function openSettingsAlert() {
 export function closeSettingsAlert() {
   return {
     type: CLOSE_SETTINGS_ALERT
+  };
+}
+
+export function openLogOutModal() {
+  return {
+    type: OPEN_LOG_OUT_MODAL
+  };
+}
+
+export function closeLogOutModal() {
+  return {
+    type: CLOSE_LOG_OUT_MODAL
   };
 }

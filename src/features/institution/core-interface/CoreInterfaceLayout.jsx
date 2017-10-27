@@ -15,6 +15,7 @@ import Teams from "../teams/TeamsView";
 import Wages from "../wages/WagesView";
 import backgroundImage from "./images/background-image.jpeg";
 import NotificationModal from "../../../components/NotificationModal";
+import DecisionModal from "../../../components/DecisionModal";
 
 const drawerWidth = 240;
 
@@ -162,7 +163,9 @@ class CoreInterfaceLayout extends Component {
       toggleSideMenu,
       signOut,
       closeSettingsAlert,
-      openSettingsAlert
+      openSettingsAlert,
+      openLogOutModal,
+      closeLogOutModal
     } = this.props.actions;
     const { windowWidth } = this.state;
     const {
@@ -171,9 +174,9 @@ class CoreInterfaceLayout extends Component {
       type,
       appBarTitle,
       isSideMenuOpen,
-      bottomNavValue,
-      isSettingsAlertOpen
+      bottomNavValue
     } = this.props.uiConfig;
+    const { isSettingsAlertOpen, isLogOutModalOpen } = this.props.dialogs;
     const isMobile = windowWidth < 600;
     const isTablet = windowWidth < 960;
 
@@ -191,7 +194,7 @@ class CoreInterfaceLayout extends Component {
           <CustomAppBar
             title={appBarTitle}
             isSideMenuOpen={isSideMenuOpen}
-            actions={{ toggleSideMenu, signOut, openSettingsAlert }}
+            actions={{ toggleSideMenu, openLogOutModal, openSettingsAlert }}
             isMobile={isMobile}
           />
           <SideMenu
@@ -303,6 +306,16 @@ class CoreInterfaceLayout extends Component {
           handleOkClick={closeSettingsAlert}
           heading="Unavailable in Beta"
           message="The ability to edit account settings is unavailable in this version of the beta."
+        />
+        <DecisionModal
+          isOpen={isLogOutModalOpen}
+          handleYesClick={() => {
+            signOut();
+            closeLogOutModal();
+          }}
+          handleNoClick={closeLogOutModal}
+          heading="Log Out"
+          message="Are you sure you want to log out?"
         />
       </div>
     );

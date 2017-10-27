@@ -69,7 +69,11 @@ class CustomAppBar extends Component {
 
   render() {
     const { classes, title, isSideMenuOpen, isMobile } = this.props;
-    const { toggleSideMenu, signOut, openSettingsAlert } = this.props.actions;
+    const {
+      toggleSideMenu,
+      openLogOutModal,
+      openSettingsAlert
+    } = this.props.actions;
 
     return (
       <AppBar
@@ -138,7 +142,7 @@ class CustomAppBar extends Component {
                       <MenuItem
                         onClick={() => {
                           this.handleRequestClose();
-                          signOut();
+                          openLogOutModal();
                         }}
                       >
                         Logout
@@ -153,7 +157,7 @@ class CustomAppBar extends Component {
                           <IconButton
                             color="contrast"
                             aria-label="log out"
-                            onClick={() => signOut()}
+                            onClick={() => openLogOutModal()}
                           >
                             <LogOutIcon />
                           </IconButton>

@@ -20,6 +20,10 @@ export const OPEN_SETTINGS_ALERT =
   "sportomatic-web/manager/core-interface/OPEN_SETTINGS_ALERT";
 export const CLOSE_SETTINGS_ALERT =
   "sportomatic-web/manager/core-interface/CLOSE_SETTINGS_ALERT";
+export const OPEN_LOG_OUT_MODAL =
+  "sportomatic-web/manager/core-interface/OPEN_LOG_OUT_MODAL";
+export const CLOSE_LOG_OUT_MODAL =
+  "sportomatic-web/manager/core-interface/CLOSE_LOG_OUT_MODAL";
 
 // Reducers
 
@@ -70,7 +74,8 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 
 export const dialogsInitialState = {
   isSwitchInstitutionsDialogOpen: false,
-  isSettingsAlertOpen: false
+  isSettingsAlertOpen: false,
+  isLogOutModalOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
@@ -94,6 +99,16 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
       return {
         ...state,
         isSettingsAlertOpen: false
+      };
+    case OPEN_LOG_OUT_MODAL:
+      return {
+        ...state,
+        isLogOutModalOpen: true
+      };
+    case CLOSE_LOG_OUT_MODAL:
+      return {
+        ...state,
+        isLogOutModalOpen: false
       };
     default:
       return state;
@@ -186,5 +201,17 @@ export function openSettingsAlert() {
 export function closeSettingsAlert() {
   return {
     type: CLOSE_SETTINGS_ALERT
+  };
+}
+
+export function openLogOutModal() {
+  return {
+    type: OPEN_LOG_OUT_MODAL
+  };
+}
+
+export function closeLogOutModal() {
+  return {
+    type: CLOSE_LOG_OUT_MODAL
   };
 }
