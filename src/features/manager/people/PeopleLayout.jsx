@@ -16,6 +16,10 @@ const styles = theme => ({
     width: "100%",
     height: "100%"
   },
+  infoWrapper: {
+    width: "100%",
+    height: "100%"
+  },
   adWrapper: {
     width: "100%",
     display: "flex",
@@ -106,7 +110,7 @@ class PeopleLayout extends Component {
     return (
       <div className={classes.root}>
         {personID && staff[personID] ? (
-          <div>
+          <div className={classes.infoWrapper}>
             <PersonInfo
               info={staff[personID]}
               isMobile={isMobile}

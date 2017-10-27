@@ -18,6 +18,10 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column"
   },
+  infoWrapper: {
+    width: "100%",
+    height: "100%"
+  },
   adWrapper: {
     width: "100%",
     display: "flex",
@@ -93,7 +97,7 @@ class TeamsLayout extends Component {
     return (
       <div className={classes.root}>
         {teamID && teams[teamID] ? (
-          <div>
+          <div className={classes.infoWrapper}>
             <TeamInfo
               info={teams[teamID]}
               userID={userID}
