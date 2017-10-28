@@ -316,18 +316,13 @@ export function errorLoadingTeams(error: { code: string, message: string }) {
 export function loadTeams(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestTeams());
-    const teamsRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/teams`);
-
-    return teamsRef.on("value", snapshot => {
-      const teams = snapshot.val();
-      if (teams === null) {
-        dispatch(receiveTeams({}));
-      } else {
+    return SportomaticFirebaseAPI.getTeams(institutionID)
+      .then(teams => {
         dispatch(receiveTeams(teams));
-      }
-    });
+      })
+      .catch(err => {
+        dispatch(errorLoadingTeams(err));
+      });
   };
 }
 
@@ -381,14 +376,13 @@ export function errorLoadingOptions(error: { code: string, message: string }) {
 export function loadOptions(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestOptions());
-    const institutionInfoRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/public`);
-
-    return institutionInfoRef.on("value", snapshot => {
-      const institutionInfo = snapshot.val();
-      dispatch(receiveOptions(institutionInfo));
-    });
+    return SportomaticFirebaseAPI.getTeamOptions(institutionID)
+      .then(options => {
+        dispatch(receiveOptions(options));
+      })
+      .catch(err => {
+        dispatch(errorLoadingOptions(err));
+      });
   };
 }
 

@@ -34,4 +34,38 @@ export class SportomaticFirebaseAPI {
       });
     });
   }
+
+  static getTeams(institutionID) {
+    return new Promise((resolve, reject) => {
+      const teamsRef = firebase
+        .database()
+        .ref(`institution/${institutionID}/private/teams`);
+
+      teamsRef.on("value", snapshot => {
+        const teams = snapshot.val();
+        if (teams === null) {
+          resolve({});
+        } else {
+          resolve(teams);
+        }
+      });
+    });
+  }
+
+  static getTeamOptions(institutionID) {
+    return new Promise((resolve, reject) => {
+      const institutionRef = firebase
+        .database()
+        .ref(`institution/${institutionID}/public`);
+
+      institutionRef.on("value", snapshot => {
+        const institutions = snapshot.val();
+        if (institutions === null) {
+          reject({});
+        } else {
+          resolve(institutions);
+        }
+      });
+    });
+  }
 }
