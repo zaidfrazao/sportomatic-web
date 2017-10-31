@@ -18,7 +18,6 @@ export const ERROR_LOADING_EVENTS =
 // Reducers
 
 export const uiConfigInitialState = {
-  isLoading: false,
   currentTab: "IN_PROGRESS"
 };
 
