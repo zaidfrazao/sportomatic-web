@@ -1,40 +1,43 @@
 // @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { Route } from "react-router-dom";
 import _ from "lodash";
 import { withStyles } from "material-ui/styles";
 import AppBar from "material-ui/AppBar";
-import Tabs, { Tab } from "material-ui/Tabs";
-import { Route } from "react-router-dom";
-import { CircularProgress } from "material-ui/Progress";
 import Button from "material-ui/Button";
+import { CircularProgress } from "material-ui/Progress";
+import Tabs, { Tab } from "material-ui/Tabs";
 import Typography from "material-ui/Typography";
-import LeaderboardAd from "../../../components/LeaderboardAd";
 import BannerAd from "../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
+import LeaderboardAd from "../../../components/LeaderboardAd";
 import TeamsList from "./components/TeamsList";
 
 const styles = theme => ({
-  root: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column"
-  },
-  contentWrapper: {
-    width: "100%",
-    height: "100%"
-  },
-  tabsWrapper: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column"
-  },
   adWrapper: {
     width: "100%",
     display: "flex",
     justifyContent: "center"
+  },
+  awaitingApprovalWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    overflow: "auto",
+    "@media (max-width: 960px)": {
+      display: "block"
+    }
+  },
+  backButton: {
+    margin: 24,
+    "@media (max-width: 600px)": {
+      width: "calc(100% - 48px)"
+    }
+  },
+  contentWrapper: {
+    width: "100%",
+    height: "100%"
   },
   historyWrapper: {
     flexGrow: 1,
@@ -51,49 +54,32 @@ const styles = theme => ({
       overflow: "auto"
     }
   },
-  historyTableWrapper: {
-    flexGrow: 1,
-    display: "flex"
-  },
-  awaitingApprovalWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    overflow: "auto",
-    "@media (max-width: 960px)": {
-      display: "block"
-    }
-  },
-  eventsAwaitingApprovalWrapper: {
-    flexGrow: 1,
-    overflow: "auto"
-  },
   loaderWrapper: {
     flexGrow: 1,
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
   },
-  button: {
-    margin: 24,
-    "@media (max-width: 600px)": {
-      width: "calc(100% - 48px)"
-    }
-  },
-  noEventsAwaitingApprovalWrapper: {
-    flexGrow: 1,
+  root: {
+    width: "100%",
+    height: "100%",
     display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
+    flexDirection: "column"
   },
-  coachName: {
+  tabsWrapper: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
+  },
+  teamName: {
     margin: 24,
     width: "calc(100% - 48px)",
     textAlign: "center"
   }
 });
 
-class HoursLayout extends Component {
+class ResultsLayout extends Component {
   componentWillMount() {
     const { activeInstitutionID } = this.props;
     const { loadTeams, loadEvents } = this.props.actions;
@@ -113,14 +99,9 @@ class HoursLayout extends Component {
   }
 
   renderInProgressTab() {
-    const { classes, isTablet, isMobile } = this.props;
+    const { classes, isMobile } = this.props;
 
-    let ad = <LeaderboardAd />;
-    if (isMobile) {
-      ad = <LargeMobileBannerAd />;
-    } else if (isTablet) {
-      ad = <BannerAd />;
-    }
+    const ad = this.createAd();
 
     return (
       <div className={classes.inProgressWrapper}>
@@ -129,7 +110,7 @@ class HoursLayout extends Component {
             render={({ history }) => (
               <Button
                 raised
-                className={classes.button}
+                className={classes.backButton}
                 onClick={() => history.goBack()}
               >
                 Back
@@ -143,14 +124,9 @@ class HoursLayout extends Component {
   }
 
   renderAwaitingApprovalTab() {
-    const { classes, isTablet, isMobile } = this.props;
+    const { classes, isMobile } = this.props;
 
-    let ad = <LeaderboardAd />;
-    if (isMobile) {
-      ad = <LargeMobileBannerAd />;
-    } else if (isTablet) {
-      ad = <BannerAd />;
-    }
+    let ad = this.createAd();
 
     return (
       <div className={classes.awaitingApprovalWrapper}>
@@ -159,7 +135,7 @@ class HoursLayout extends Component {
             render={({ history }) => (
               <Button
                 raised
-                className={classes.button}
+                className={classes.backButton}
                 onClick={() => history.goBack()}
               >
                 Back
@@ -173,14 +149,9 @@ class HoursLayout extends Component {
   }
 
   renderHistoryTab() {
-    const { classes, isMobile, isTablet } = this.props;
+    const { classes, isMobile } = this.props;
 
-    let ad = <LeaderboardAd />;
-    if (isMobile) {
-      ad = <LargeMobileBannerAd />;
-    } else if (isTablet) {
-      ad = <BannerAd />;
-    }
+    const ad = this.createAd();
 
     return (
       <div className={classes.historyWrapper}>
@@ -189,7 +160,7 @@ class HoursLayout extends Component {
             render={({ history }) => (
               <Button
                 raised
-                className={classes.button}
+                className={classes.backButton}
                 onClick={() => history.goBack()}
               >
                 Back
@@ -202,15 +173,23 @@ class HoursLayout extends Component {
     );
   }
 
-  render() {
-    const { classes, isMobile, isTablet, teams, userID } = this.props;
-    const { isTeamsLoading, isEventsLoading } = this.props.loadingStatus;
-    const { currentTab } = this.props.uiConfig;
-    const { updateTab } = this.props.actions;
-    const { teamID } = this.props.match.params;
+  createAd() {
+    const { isMobile, isTablet } = this.props;
+
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
+    return ad;
+  }
+
+  createTeamsList() {
+    const { teams, userID } = this.props;
 
     const teamsList = [];
-
     _.values(
       _.mapValues(teams, (value, key) => {
         if (value.coaches[userID]) {
@@ -228,12 +207,18 @@ class HoursLayout extends Component {
       return 0;
     });
 
-    let ad = <LeaderboardAd />;
-    if (isMobile) {
-      ad = <LargeMobileBannerAd />;
-    } else if (isTablet) {
-      ad = <BannerAd />;
-    }
+    return teamsList;
+  }
+
+  render() {
+    const { classes, teams } = this.props;
+    const { isTeamsLoading, isEventsLoading } = this.props.loadingStatus;
+    const { currentTab } = this.props.uiConfig;
+    const { updateTab } = this.props.actions;
+    const { teamID } = this.props.match.params;
+
+    const teamsList = this.createTeamsList();
+    const ad = this.createAd();
 
     return (
       <div className={classes.root}>
@@ -249,7 +234,7 @@ class HoursLayout extends Component {
                   <Typography
                     type="title"
                     component="h2"
-                    className={classes.coachName}
+                    className={classes.teamName}
                   >
                     {teams[teamID].metadata.name}
                   </Typography>
@@ -271,13 +256,7 @@ class HoursLayout extends Component {
                 {currentTab === "HISTORY" && this.renderHistoryTab()}
               </div>
             ) : (
-              <div
-                className={
-                  teamsList.length > 0
-                    ? classes.coachesList
-                    : classes.coachesListNoCards
-                }
-              >
+              <div>
                 <div className={classes.adWrapper}>{ad}</div>
                 <TeamsList teams={teamsList} />
               </div>
@@ -289,8 +268,8 @@ class HoursLayout extends Component {
   }
 }
 
-HoursLayout.propTypes = {
+ResultsLayout.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(HoursLayout);
+export default withStyles(styles)(ResultsLayout);
