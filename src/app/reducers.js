@@ -1,4 +1,3 @@
-// @flow
 import { combineReducers } from "redux";
 
 import { signInReducer } from "../features/sign-in/duck";

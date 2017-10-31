@@ -1,4 +1,3 @@
-// @flow
 import { createMuiTheme } from "material-ui/styles";
 import { lightBlue, orange, red } from "material-ui/colors";
 

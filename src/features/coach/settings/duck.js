@@ -1,4 +1,3 @@
-// @flow
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import rowanPicture from "./images/rowan.jpg";

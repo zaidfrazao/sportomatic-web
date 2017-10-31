@@ -1,4 +1,3 @@
-// @flow
 export function getMonthName(monthNumber: number, format: string = "long") {
   const longNames = [
     "January",

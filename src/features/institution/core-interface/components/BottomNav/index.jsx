@@ -1,4 +1,3 @@
-// @flow
 import React from "react";
 import { withStyles } from "material-ui/styles";
 import { Route } from "react-router-dom";
