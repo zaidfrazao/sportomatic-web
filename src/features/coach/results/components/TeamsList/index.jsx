@@ -14,13 +14,11 @@ type Props = {
   classes: {
     wrapper: string
   },
-  teams: [
-    {
-      id: string,
-      name: string,
-      sport: string
-    }
-  ]
+  teams: Array<{
+    id: string,
+    name: string,
+    sport: string
+  }>
 };
 
 class TeamsList extends Component<Props> {

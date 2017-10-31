@@ -110,7 +110,7 @@ export type EventAlias = {
   },
   recurrencePattern: {
     frequency: "ONCE" | "WEEKLY" | "MONTHLY",
-    instances: [{ date: string, id: string }],
+    instances: Array<{ date: string, id: string }>,
     numberOfEvents: string
   },
   teams: {
