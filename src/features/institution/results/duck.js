@@ -2,6 +2,13 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
+import {
+  ActionAlias,
+  DispatchAlias,
+  ErrorAlias,
+  EventAlias,
+  TeamAlias
+} from "../../../models/aliases";
 
 // Actions
 
@@ -25,7 +32,10 @@ export const uiConfigInitialState = {
   currentTab: "IN_PROGRESS"
 };
 
-function uiConfigReducer(state = uiConfigInitialState, action = {}) {
+function uiConfigReducer(
+  state = uiConfigInitialState,
+  action: ActionAlias = {}
+) {
   switch (action.type) {
     case UPDATE_TAB:
       return {
@@ -37,7 +47,7 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   }
 }
 
-function teamsReducer(state = {}, action = {}) {
+function teamsReducer(state = {}, action: ActionAlias = {}) {
   switch (action.type) {
     case RECEIVE_TEAMS:
       return action.payload.teams;
@@ -51,7 +61,10 @@ export const loadingStatusInitialState = {
   isEventsLoading: false
 };
 
-function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
+function loadingStatusReducer(
+  state = loadingStatusInitialState,
+  action: ActionAlias = {}
+) {
   switch (action.type) {
     case REQUEST_TEAMS:
       return {
@@ -80,7 +93,7 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   }
 }
 
-function eventsReducer(state = {}, action = {}) {
+function eventsReducer(state = {}, action: ActionAlias = {}) {
   switch (action.type) {
     case RECEIVE_EVENTS:
       return action.payload.events;
@@ -112,7 +125,9 @@ export const selector = createStructuredSelector({
 
 // Action Creators
 
-export function updateTab(newTab) {
+export function updateTab(
+  newTab: "IN_PROGRESS" | "AWAITING_APPROVAL" | "HISTORY"
+) {
   return {
     type: UPDATE_TAB,
     payload: {
@@ -127,7 +142,7 @@ export function requestTeams() {
   };
 }
 
-export function receiveTeams(teams) {
+export function receiveTeams(teams: { [teamID: string]: TeamAlias }) {
   return {
     type: RECEIVE_TEAMS,
     payload: {
@@ -136,7 +151,7 @@ export function receiveTeams(teams) {
   };
 }
 
-export function errorLoadingTeams(error: { code: string, message: string }) {
+export function errorLoadingTeams(error: ErrorAlias) {
   return {
     type: ERROR_LOADING_TEAMS,
     payload: {
@@ -145,7 +160,7 @@ export function errorLoadingTeams(error: { code: string, message: string }) {
   };
 }
 
-export function loadTeams(institutionID) {
+export function loadTeams(institutionID: string) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestTeams());
     const teamsRef = firebase
@@ -169,7 +184,9 @@ export function requestEvents() {
   };
 }
 
-export function receiveEvents(events) {
+export function receiveEvents(events: {
+  [year: number]: { [month: number]: { [eventID]: EventAlias } }
+}) {
   return {
     type: RECEIVE_EVENTS,
     payload: {
@@ -178,7 +195,7 @@ export function receiveEvents(events) {
   };
 }
 
-export function errorLoadingEvents(error: { code: string, message: string }) {
+export function errorLoadingEvents(error: ErrorAlias) {
   return {
     type: ERROR_LOADING_EVENTS,
     payload: {
@@ -187,7 +204,7 @@ export function errorLoadingEvents(error: { code: string, message: string }) {
   };
 }
 
-export function loadEvents(institutionID) {
+export function loadEvents(institutionID: string) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestEvents());
     const eventsRef = firebase
