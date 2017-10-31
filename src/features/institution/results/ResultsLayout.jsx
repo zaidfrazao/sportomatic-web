@@ -8,6 +8,15 @@ import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import Tabs, { Tab } from "material-ui/Tabs";
 import Typography from "material-ui/Typography";
+import {
+  ActionAlias,
+  ErrorAlias,
+  EventAlias,
+  HistoryAlias,
+  LocationAlias,
+  MatchAlias,
+  TeamAlias
+} from "../../../models/aliases";
 import BannerAd from "../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
