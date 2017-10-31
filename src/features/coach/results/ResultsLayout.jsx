@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { Route } from "react-router-dom";
 import _ from "lodash";
 import { withStyles } from "material-ui/styles";
@@ -9,6 +8,15 @@ import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import Tabs, { Tab } from "material-ui/Tabs";
 import Typography from "material-ui/Typography";
+import {
+  ActionAlias,
+  ErrorAlias,
+  EventAlias,
+  HistoryAlias,
+  LocationAlias,
+  MatchAlias,
+  TeamAlias
+} from "../../../models/aliases";
 import BannerAd from "../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
@@ -79,7 +87,56 @@ const styles = theme => ({
   }
 });
 
-class ResultsLayout extends Component {
+type Props = {
+  actions: {
+    errorLoadingEvents: (error: ErrorAlias) => ActionAlias,
+    errorLoadingEvents: (error: ErrorAlias) => ActionAlias,
+    loadEvents: (institutionID: string) => void,
+    loadTeams: (institutionID: string) => void,
+    receiveEvents: (events: {
+      [year: number]: { [month: number]: { [eventID: string]: EventAlias } }
+    }) => ActionAlias,
+    receiveTeams: (teams: { [teamID: string]: TeamAlias }) => ActionAlias,
+    requestEvents: () => ActionAlias,
+    requestTeams: () => ActionAlias,
+    resultsReducer: (state: {}, action: ActionAlias) => {},
+    selector: (state: {}) => {},
+    updateTab: (newTab: string) => ActionAlias
+  },
+  activeInstitutionID: string,
+  classes: {
+    adWrapper: string,
+    awaitingApprovalWrapper: string,
+    backButton: string,
+    contentWrapper: string,
+    historyWrapper: string,
+    inProgressWrapper: string,
+    loaderWrapper: string,
+    root: string,
+    tabsWrapper: string,
+    teamName: string
+  },
+  events: {
+    [year: number]: { [month: number]: { [eventID: string]: EventAlias } }
+  },
+  history: HistoryAlias,
+  isMobile: boolean,
+  isTablet: boolean,
+  loadingStatus: {
+    isEventsLoading: boolean,
+    isTeamsLoading: boolean
+  },
+  location: LocationAlias,
+  match: MatchAlias,
+  staticContext: typeof undefined, // needs more research
+  teams: { [teamID: string]: TeamAlias },
+  uiConfig: {
+    currentTab: "IN_PROGRESS" | "AWAITING_APPROVAL" | "HISTORY"
+  },
+  userID: string
+};
+
+class ResultsLayout extends Component<Props> {
   componentWillMount() {
     const { activeInstitutionID } = this.props;
     const { loadTeams, loadEvents } = this.props.actions;
@@ -194,7 +251,6 @@ class ResultsLayout extends Component {
       _.mapValues(teams, (value, key) => {
         if (value.coaches[userID]) {
           teamsList.push({
-            ...value,
             id: key,
             name: value.metadata.name,
             sport: value.metadata.sport
@@ -267,9 +323,5 @@ class ResultsLayout extends Component {
     );
   }
 }
-
-ResultsLayout.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(ResultsLayout);

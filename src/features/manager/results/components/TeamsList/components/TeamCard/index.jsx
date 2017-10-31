@@ -46,7 +46,22 @@ const styles = theme => ({
   }
 });
 
-class TeamCard extends Component {
+type Props = {
+  classes: {
+    actions: string,
+    card: string,
+    cardContent: string,
+    name: string,
+    sport: string,
+    subheading: string,
+    viewButton: string
+  },
+  id: string,
+  name: string,
+  sport: string
+};
+
+class TeamCard extends Component<Props> {
   render() {
     const { classes, sport, name, id } = this.props;
 

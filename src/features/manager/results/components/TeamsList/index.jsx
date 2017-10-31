@@ -10,7 +10,20 @@ const styles = {
   }
 };
 
-class TeamsList extends Component {
+type Props = {
+  classes: {
+    wrapper: string
+  },
+  teams: [
+    {
+      id: string,
+      name: string,
+      sport: string
+    }
+  ]
+};
+
+class TeamsList extends Component<Props> {
   render() {
     const { classes, teams } = this.props;
 

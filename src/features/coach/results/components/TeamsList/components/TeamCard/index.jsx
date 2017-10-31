@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
@@ -46,7 +45,22 @@ const styles = theme => ({
   }
 });
 
-class TeamCard extends Component {
+type Props = {
+  classes: {
+    actions: string,
+    card: string,
+    cardContent: string,
+    name: string,
+    sport: string,
+    subheading: string,
+    viewButton: string
+  },
+  id: string,
+  name: string,
+  sport: string
+};
+
+class TeamCard extends Component<Props> {
   render() {
     const { classes, sport, name, id } = this.props;
 
@@ -77,9 +91,5 @@ class TeamCard extends Component {
     );
   }
 }
-
-TeamCard.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(TeamCard);
