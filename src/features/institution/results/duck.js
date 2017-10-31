@@ -185,7 +185,7 @@ export function requestEvents() {
 }
 
 export function receiveEvents(events: {
-  [year: number]: { [month: number]: { [eventID]: EventAlias } }
+  [year: number]: { [month: number]: { [eventID: string]: EventAlias } }
 }) {
   return {
     type: RECEIVE_EVENTS,

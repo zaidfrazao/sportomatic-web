@@ -138,7 +138,7 @@ export function requestTeams() {
   };
 }
 
-export function receiveTeams(teams: { [teamID]: TeamAlias }) {
+export function receiveTeams(teams: { [teamID: string]: TeamAlias }) {
   return {
     type: RECEIVE_TEAMS,
     payload: {
