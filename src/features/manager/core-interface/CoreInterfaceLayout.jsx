@@ -137,6 +137,10 @@ class CoreInterfaceLayout extends Component {
         updateAppBarTitle("Settings");
         updateBottomNavValue("settings");
         break;
+      case "results":
+        updateAppBarTitle("Results");
+        updateBottomNavValue("results");
+        break;
       default:
         updateAppBarTitle("Dashboard");
         updateBottomNavValue("dashboard");
