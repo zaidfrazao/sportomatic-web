@@ -1,4 +1,3 @@
-// @flow
 import * as imports from "./duck.js";
 import { sampleStore } from "../../../models/sampleStore";
 
