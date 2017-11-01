@@ -27,7 +27,7 @@ class TeamsList extends Component<Props> {
 
     return (
       <div className={classes.wrapper}>
-        <Grid container direction="row" spacing={40} align="stretch">
+        <Grid container direction="row" spacing={40} alignItems="stretch">
           {teams.map(teamInfo => (
             <Grid item xs={12} sm={12} md={6} lg={4} xl={3} key={teamInfo.id}>
               <TeamCard

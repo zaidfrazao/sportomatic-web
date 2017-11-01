@@ -1,10 +1,33 @@
 [ignore]
-.*/node_modules/config-chain/test/broken.json
+<PROJECT_ROOT>/build/.*
+.*/node_modules/editions
+.*/node_modules/babel-plugin-flow-react-proptypes
+.*/node_modules/babel-plugin-transform-react-remove-prop-types
+.*/node_modules/eslint-plugin-jsx-a11y
+.*/node_modules/graphql
+.*/node_modules/kefir
+.*/node_modules/react-event-listener/src
+.*/node_modules/material-ui/test-utils
+.*/node_modules/jss/lib/.*\.js\.flow
+.*/node_modules/radium
+.*/node_modules/immutable
 
 [include]
 
 [libs]
+./node_modules/jss/flow-typed
 
 [lints]
 
 [options]
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable
+esproposal.export_star_as=enable
+esproposal.decorators=ignore
+
+unsafe.enable_getters_and_setters=true
+
+module.name_mapper='^flow-example-material-ui\/\(.*\)$' -> '<PROJECT_ROOT>/src/\1'
+
+suppress_type=$FlowFixMe
+suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
