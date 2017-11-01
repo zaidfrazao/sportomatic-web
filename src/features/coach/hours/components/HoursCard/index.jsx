@@ -94,14 +94,7 @@ class HoursCard extends Component {
   renderCardContent() {
     const { classes, eventInfo, institutionID } = this.props;
     const { signIn, signOut } = this.props.actions;
-    const {
-      status,
-      signInTime,
-      signOutTime,
-      name,
-      surname,
-      coachID
-    } = this.props.coachInfo;
+    const { status, signInTime, signOutTime, coachID } = this.props.coachInfo;
 
     let currentTime = new Date(Date.now());
     currentTime.setHours(currentTime.getHours() + 2);

@@ -98,9 +98,6 @@ class HoursCard extends Component {
       status,
       signInTime,
       signOutTime,
-      profilePictureURL,
-      name,
-      surname,
       coachID,
       standardHourlyRate,
       overtimeHourlyRate

@@ -137,9 +137,6 @@ class TimeLogger extends Component {
       status,
       signInTime,
       signOutTime,
-      profilePictureURL,
-      name,
-      surname,
       coachID,
       standardHourlyRate,
       overtimeHourlyRate
@@ -322,7 +319,6 @@ class TimeLogger extends Component {
   render() {
     const { classes, isTablet, eventInfo } = this.props;
 
-    const timeOptions = { hour: "2-digit", minute: "2-digit" };
     const startTime = eventInfo.startTime;
     const endTime = eventInfo.endTime;
 
