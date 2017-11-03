@@ -38,13 +38,7 @@ const styles = theme => ({
     justifyContent: "center"
   },
   awaitingApprovalWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    overflow: "auto",
-    "@media (max-width: 960px)": {
-      display: "block"
-    }
+    overflow: "auto"
   },
   backButton: {
     margin: 24,
@@ -57,9 +51,6 @@ const styles = theme => ({
     height: "100%"
   },
   historyWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
     overflow: "auto"
   },
   inProgressWrapper: {
@@ -178,7 +169,7 @@ class ResultsLayout extends Component<Props> {
             )}
           />
         </div>
-        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
+        <div className={classes.adWrapper}>{ad}</div>
         {isMobile ? (
           <MobileSoccerScorer
             eventInfo={{
@@ -268,7 +259,7 @@ class ResultsLayout extends Component<Props> {
             )}
           />
         </div>
-        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
+        <div className={classes.adWrapper}>{ad}</div>
         {isMobile ? (
           <MobileSoccerPendingCard
             eventInfo={{
@@ -330,7 +321,7 @@ class ResultsLayout extends Component<Props> {
             )}
           />
         </div>
-        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
+        <div className={classes.adWrapper}>{ad}</div>
         {isMobile ? (
           <MobileSoccerResultsCard
             eventInfo={{
