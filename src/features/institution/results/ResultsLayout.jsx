@@ -38,7 +38,13 @@ const styles = theme => ({
     justifyContent: "center"
   },
   awaitingApprovalWrapper: {
-    overflow: "auto"
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    overflow: "auto",
+    "@media (max-width: 960px)": {
+      display: "block"
+    }
   },
   backButton: {
     margin: 24,
@@ -51,10 +57,19 @@ const styles = theme => ({
     height: "100%"
   },
   historyWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
     overflow: "auto"
   },
   inProgressWrapper: {
-    overflow: "auto"
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    "@media (max-width: 960px)": {
+      display: "block",
+      overflow: "auto"
+    }
   },
   loaderWrapper: {
     flexGrow: 1,
@@ -168,7 +183,7 @@ class ResultsLayout extends Component<Props> {
             )}
           />
         </div>
-        <div className={classes.adWrapper}>{ad}</div>
+        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
         {isMobile ? (
           <MobileSoccerScorer
             eventInfo={{
@@ -258,7 +273,7 @@ class ResultsLayout extends Component<Props> {
             )}
           />
         </div>
-        <div className={classes.adWrapper}>{ad}</div>
+        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
         {isMobile ? (
           <MobileSoccerPendingCard
             eventInfo={{
@@ -320,7 +335,7 @@ class ResultsLayout extends Component<Props> {
             )}
           />
         </div>
-        <div className={classes.adWrapper}>{ad}</div>
+        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
         {isMobile ? (
           <MobileSoccerResultsCard
             eventInfo={{
