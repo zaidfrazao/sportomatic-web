@@ -1,16 +1,17 @@
 // @flow
 import React, { Component } from "react";
 import Avatar from "material-ui/Avatar";
-import Button from "material-ui/Button";
 import Card, { CardActions, CardHeader } from "material-ui/Card";
 import Collapse from "material-ui/transitions/Collapse";
 import classnames from "classnames";
 import DownIcon from "material-ui-icons/ExpandMore";
 import ExpandMoreIcon from "material-ui-icons/ExpandMore";
+import { FormControlLabel, FormGroup } from "material-ui/Form";
 import { grey } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import LeftIcon from "material-ui-icons/ChevronLeft";
 import RightIcon from "material-ui-icons/ChevronRight";
+import Switch from "material-ui/Switch";
 import Typography from "material-ui/Typography";
 import UpIcon from "material-ui-icons/ExpandLess";
 import { withStyles } from "material-ui/styles";
@@ -69,6 +70,9 @@ const styles = theme => ({
     flexGrow: 1,
     textAlign: "center"
   },
+  statsToggle: {
+    margin: "0 24px"
+  },
   statsWrapper: {
     backgroundColor: grey[50],
     width: "100%",
@@ -125,7 +129,7 @@ type Props = {
 };
 
 class SoccerScorer extends Component<Props> {
-  state = { expanded: false };
+  state = { expanded: false, hasStats: true };
 
   handleExpandClick = () => {
     this.setState({ expanded: !this.state.expanded });
@@ -207,233 +211,248 @@ class SoccerScorer extends Component<Props> {
             </div>
           </div>
           <CardActions disableActionSpacing>
-            <Button>Finalise scores</Button>
+            <FormGroup className={classes.statsToggle}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={this.state.hasStats}
+                    onChange={(event, checked) =>
+                      this.setState({ hasStats: checked })}
+                  />
+                }
+                label="Track additional stats"
+              />
+            </FormGroup>
             <div className={classes.flexGrow} />
-            <IconButton
-              className={classnames(classes.expand, {
-                [classes.expandOpen]: this.state.expanded
-              })}
-              onClick={this.handleExpandClick}
-              aria-expanded={this.state.expanded}
-              aria-label="Show more"
-            >
-              <ExpandMoreIcon />
-            </IconButton>
+            {this.state.hasStats && (
+              <IconButton
+                className={classnames(classes.expand, {
+                  [classes.expandOpen]: this.state.expanded
+                })}
+                onClick={this.handleExpandClick}
+                aria-expanded={this.state.expanded}
+                aria-label="Show more"
+              >
+                <ExpandMoreIcon />
+              </IconButton>
+            )}
           </CardActions>
-          <Collapse
-            in={this.state.expanded}
-            transitionDuration="auto"
-            unmountOnExit
-          >
-            <div className={classes.subheadingWrapper}>
-              <Typography type="title" component="h3">
-                Stats
-              </Typography>
-            </div>
-            <div className={classes.statsWrapper}>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement shots">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {ourTeamInfo.shots}
-                </Typography>
-                <IconButton aria-label="Increment shots">
-                  <RightIcon />
-                </IconButton>
-              </div>
-              <div className={classes.statName}>
-                <Typography type="subheading" component="h4">
-                  Shots
+          {this.state.hasStats && (
+            <Collapse
+              in={this.state.expanded}
+              transitionDuration="auto"
+              unmountOnExit
+            >
+              <div className={classes.subheadingWrapper}>
+                <Typography type="title" component="h3">
+                  Stats
                 </Typography>
               </div>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement shots">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {theirTeamInfo.shots}
-                </Typography>
-                <IconButton aria-label="Increment shots">
-                  <RightIcon />
-                </IconButton>
+              <div className={classes.statsWrapper}>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement shots">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.shots}
+                  </Typography>
+                  <IconButton aria-label="Increment shots">
+                    <RightIcon />
+                  </IconButton>
+                </div>
+                <div className={classes.statName}>
+                  <Typography type="subheading" component="h4">
+                    Shots
+                  </Typography>
+                </div>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement shots">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.shots}
+                  </Typography>
+                  <IconButton aria-label="Increment shots">
+                    <RightIcon />
+                  </IconButton>
+                </div>
               </div>
-            </div>
-            <div className={classes.statsWrapper}>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement shots on target">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {ourTeamInfo.shotsOnTarget}
-                </Typography>
-                <IconButton aria-label="Increment shots on target">
-                  <RightIcon />
-                </IconButton>
+              <div className={classes.statsWrapper}>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement shots on target">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.shotsOnTarget}
+                  </Typography>
+                  <IconButton aria-label="Increment shots on target">
+                    <RightIcon />
+                  </IconButton>
+                </div>
+                <div className={classes.statName}>
+                  <Typography type="subheading" component="h4">
+                    Shots on target
+                  </Typography>
+                </div>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement shots on target">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.shotsOnTarget}
+                  </Typography>
+                  <IconButton aria-label="Increment shots on target">
+                    <RightIcon />
+                  </IconButton>
+                </div>
               </div>
-              <div className={classes.statName}>
-                <Typography type="subheading" component="h4">
-                  Shots on target
-                </Typography>
+              <div className={classes.statsWrapper}>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement fouls">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.fouls}
+                  </Typography>
+                  <IconButton aria-label="Increment fouls">
+                    <RightIcon />
+                  </IconButton>
+                </div>
+                <div className={classes.statName}>
+                  <Typography type="subheading" component="h4">
+                    Fouls
+                  </Typography>
+                </div>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement fouls">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.fouls}
+                  </Typography>
+                  <IconButton aria-label="Increment fouls">
+                    <RightIcon />
+                  </IconButton>
+                </div>
               </div>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement shots on target">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {theirTeamInfo.shotsOnTarget}
-                </Typography>
-                <IconButton aria-label="Increment shots on target">
-                  <RightIcon />
-                </IconButton>
+              <div className={classes.statsWrapper}>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement yellow cards">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.yellowCards}
+                  </Typography>
+                  <IconButton aria-label="Increment yellow cards">
+                    <RightIcon />
+                  </IconButton>
+                </div>
+                <div className={classes.statName}>
+                  <Typography type="subheading" component="h4">
+                    Yellow cards
+                  </Typography>
+                </div>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement yellow cards">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.yellowCards}
+                  </Typography>
+                  <IconButton aria-label="Increment yellow cards">
+                    <RightIcon />
+                  </IconButton>
+                </div>
               </div>
-            </div>
-            <div className={classes.statsWrapper}>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement fouls">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {ourTeamInfo.fouls}
-                </Typography>
-                <IconButton aria-label="Increment fouls">
-                  <RightIcon />
-                </IconButton>
+              <div className={classes.statsWrapper}>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement red cards">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.redCards}
+                  </Typography>
+                  <IconButton aria-label="Increment red cards">
+                    <RightIcon />
+                  </IconButton>
+                </div>
+                <div className={classes.statName}>
+                  <Typography type="subheading" component="h4">
+                    Red cards
+                  </Typography>
+                </div>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement red cards">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.redCards}
+                  </Typography>
+                  <IconButton aria-label="Increment red cards">
+                    <RightIcon />
+                  </IconButton>
+                </div>
               </div>
-              <div className={classes.statName}>
-                <Typography type="subheading" component="h4">
-                  Fouls
-                </Typography>
+              <div className={classes.statsWrapper}>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement offsides">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.offsides}
+                  </Typography>
+                  <IconButton aria-label="Increment offsides">
+                    <RightIcon />
+                  </IconButton>
+                </div>
+                <div className={classes.statName}>
+                  <Typography type="subheading" component="h4">
+                    Offsides
+                  </Typography>
+                </div>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement offsides">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.offsides}
+                  </Typography>
+                  <IconButton aria-label="Increment offsides">
+                    <RightIcon />
+                  </IconButton>
+                </div>
               </div>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement fouls">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {theirTeamInfo.fouls}
-                </Typography>
-                <IconButton aria-label="Increment fouls">
-                  <RightIcon />
-                </IconButton>
+              <div className={classes.statsWrapper}>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement corners">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.corners}
+                  </Typography>
+                  <IconButton aria-label="Increment corners">
+                    <RightIcon />
+                  </IconButton>
+                </div>
+                <div className={classes.statName}>
+                  <Typography type="subheading" component="h4">
+                    Corners
+                  </Typography>
+                </div>
+                <div className={classes.gridItem}>
+                  <IconButton aria-label="Decrement corners">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.corners}
+                  </Typography>
+                  <IconButton aria-label="Increment corners">
+                    <RightIcon />
+                  </IconButton>
+                </div>
               </div>
-            </div>
-            <div className={classes.statsWrapper}>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement yellow cards">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {ourTeamInfo.yellowCards}
-                </Typography>
-                <IconButton aria-label="Increment yellow cards">
-                  <RightIcon />
-                </IconButton>
-              </div>
-              <div className={classes.statName}>
-                <Typography type="subheading" component="h4">
-                  Yellow cards
-                </Typography>
-              </div>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement yellow cards">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {theirTeamInfo.yellowCards}
-                </Typography>
-                <IconButton aria-label="Increment yellow cards">
-                  <RightIcon />
-                </IconButton>
-              </div>
-            </div>
-            <div className={classes.statsWrapper}>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement red cards">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {ourTeamInfo.redCards}
-                </Typography>
-                <IconButton aria-label="Increment red cards">
-                  <RightIcon />
-                </IconButton>
-              </div>
-              <div className={classes.statName}>
-                <Typography type="subheading" component="h4">
-                  Red cards
-                </Typography>
-              </div>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement red cards">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {theirTeamInfo.redCards}
-                </Typography>
-                <IconButton aria-label="Increment red cards">
-                  <RightIcon />
-                </IconButton>
-              </div>
-            </div>
-            <div className={classes.statsWrapper}>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement offsides">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {ourTeamInfo.offsides}
-                </Typography>
-                <IconButton aria-label="Increment offsides">
-                  <RightIcon />
-                </IconButton>
-              </div>
-              <div className={classes.statName}>
-                <Typography type="subheading" component="h4">
-                  Offsides
-                </Typography>
-              </div>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement offsides">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {theirTeamInfo.offsides}
-                </Typography>
-                <IconButton aria-label="Increment offsides">
-                  <RightIcon />
-                </IconButton>
-              </div>
-            </div>
-            <div className={classes.statsWrapper}>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement corners">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {ourTeamInfo.corners}
-                </Typography>
-                <IconButton aria-label="Increment corners">
-                  <RightIcon />
-                </IconButton>
-              </div>
-              <div className={classes.statName}>
-                <Typography type="subheading" component="h4">
-                  Corners
-                </Typography>
-              </div>
-              <div className={classes.gridItem}>
-                <IconButton aria-label="Decrement corners">
-                  <LeftIcon />
-                </IconButton>
-                <Typography type="title" component="p">
-                  {theirTeamInfo.corners}
-                </Typography>
-                <IconButton aria-label="Increment corners">
-                  <RightIcon />
-                </IconButton>
-              </div>
-            </div>
-          </Collapse>
+            </Collapse>
+          )}
         </Card>
       </div>
     );
