@@ -436,7 +436,7 @@ class ResultsLayout extends Component<Props> {
                   >
                     <Tab label="In Progress" value="IN_PROGRESS" />
                     <Tab label="Pending" value="AWAITING_APPROVAL" />
-                    <Tab label="History" value="HISTORY" />
+                    <Tab label="Results" value="HISTORY" />
                   </Tabs>
                 </AppBar>
                 {currentTab === "IN_PROGRESS" && this.renderInProgressTab()}
