@@ -20,7 +20,11 @@ import {
 import BannerAd from "../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import SoccerScorer from "./components/SoccerScorer";
 import TeamsList from "./components/TeamsList";
+
+import canada from "./images/canada.png";
+import mexico from "./images/mexico.png";
 
 const styles = theme => ({
   adWrapper: {
@@ -54,13 +58,7 @@ const styles = theme => ({
     overflow: "auto"
   },
   inProgressWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    "@media (max-width: 960px)": {
-      display: "block",
-      overflow: "auto"
-    }
+    overflow: "auto"
   },
   loaderWrapper: {
     flexGrow: 1,
@@ -176,6 +174,40 @@ class ResultsLayout extends Component<Props> {
           />
         </div>
         {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
+        <SoccerScorer
+          eventInfo={{
+            title: "FIFA World Cup Qualifiers 2018",
+            startTime: "2:00pm",
+            endTime: "5:00pm"
+          }}
+          isMobile={isMobile}
+          ourTeamInfo={{
+            abbreviation: "CAN",
+            name: "Canada",
+            institutionEmblemURL: canada,
+            goals: 2,
+            shots: 12,
+            fouls: 5,
+            yellowCards: 2,
+            redCards: 0,
+            shotsOnTarget: 4,
+            offsides: 0,
+            corners: 7
+          }}
+          theirTeamInfo={{
+            abbreviation: "MEX",
+            name: "Mexico",
+            institutionEmblemURL: mexico,
+            goals: 3,
+            shots: 7,
+            shotsOnTarget: 5,
+            fouls: 5,
+            yellowCards: 0,
+            redCards: 0,
+            offsides: 5,
+            corners: 4
+          }}
+        />
       </div>
     );
   }
