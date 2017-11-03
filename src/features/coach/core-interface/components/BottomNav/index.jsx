@@ -1,4 +1,3 @@
-// @flow
 import React from "react";
 import { withStyles } from "material-ui/styles";
 import { Route } from "react-router-dom";
@@ -9,6 +8,7 @@ import Paper from "material-ui/Paper";
 import DashboardIcon from "material-ui-icons/Dashboard";
 import ScheduleIcon from "material-ui-icons/Event";
 import HoursIcon from "material-ui-icons/Alarm";
+import ResultsIcon from "material-ui-icons/PlusOne";
 
 const styles = {
   root: {
@@ -39,20 +39,34 @@ class BottomNav extends React.Component {
                   case "hours":
                     history.push(`/coach/hours`);
                     break;
+                  case "results":
+                    history.push(`/coach/results`);
+                    break;
                   default:
                     break;
                 }
               }}
             >
               <BottomNavigationButton
+                label="Dashboard"
                 value="dashboard"
                 icon={<DashboardIcon />}
               />
               <BottomNavigationButton
+                label="Schedule"
                 value="schedule"
                 icon={<ScheduleIcon />}
               />
-              <BottomNavigationButton value="hours" icon={<HoursIcon />} />
+              <BottomNavigationButton
+                label="Hours"
+                value="hours"
+                icon={<HoursIcon />}
+              />
+              <BottomNavigationButton
+                label="Results"
+                value="results"
+                icon={<ResultsIcon />}
+              />
             </BottomNavigation>
           </Paper>
         )}

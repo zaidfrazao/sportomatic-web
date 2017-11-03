@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Route } from "react-router-dom";
@@ -7,7 +6,6 @@ import { grey, lightBlue, red } from "material-ui/colors";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Button from "material-ui/Button";
 import Typography from "material-ui/Typography";
-import LeaderboardAd from "../../../../../components/LeaderboardAd";
 import _ from "lodash";
 
 const styles = theme => ({
