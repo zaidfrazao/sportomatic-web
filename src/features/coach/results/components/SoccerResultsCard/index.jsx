@@ -1,9 +1,9 @@
 // @flow
 import React, { Component } from "react";
 import Avatar from "material-ui/Avatar";
+import { blue, grey, green, red } from "material-ui/colors";
 import Button from "material-ui/Button";
 import Card, { CardActions, CardHeader } from "material-ui/Card";
-import { blue, grey, green, red } from "material-ui/colors";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 
@@ -28,23 +28,11 @@ const styles = theme => ({
     margin: 10,
     height: "auto"
   },
-  expand: {
-    transform: "rotate(0deg)",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest
-    })
-  },
-  expandOpen: {
-    transform: "rotate(180deg)"
-  },
-  flexGrow: {
-    flex: "1 1 auto"
-  },
-  gridItem: {
-    width: "25%",
+  goalsWrapper: {
+    width: "15%",
     padding: 24,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center"
   },
@@ -55,6 +43,10 @@ const styles = theme => ({
     padding: 24,
     textAlign: "center"
   },
+  teamName: {
+    width: "100%",
+    textAlign: "center"
+  },
   teamNameWrapper: {
     width: "25%",
     padding: 24,
@@ -63,40 +55,10 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center"
   },
-  goalsWrapper: {
-    width: "15%",
-    padding: 24,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  statName: {
-    flexGrow: 1,
-    textAlign: "center"
-  },
-  statsWrapper: {
-    backgroundColor: grey[50],
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  subheadingWrapper: {
-    backgroundColor: grey[100],
-    width: "100%",
-    textAlign: "center",
-    padding: "24px 0"
-  },
   teamsWrapper: {
     width: "100%",
     display: "flex",
     flexDirection: "row"
-  },
-  vsText: {
-    width: "100%",
-    textAlign: "center"
   },
   win: {
     backgroundColor: green[500],
@@ -112,21 +74,27 @@ const styles = theme => ({
 
 type Props = {
   classes: {
-    teamsGridItem: string,
+    centerSpace: string,
+    draw: string,
+    emblems: string,
+    goalsWrapper: string,
+    loss: string,
+    teamName: string,
+    teamNameWrapper: string,
     teamsWrapper: string,
-    vsText: string,
+    win: string,
     wrapper: string
   },
   eventInfo: {
     title: string,
     date: string
   },
-  isMobile: boolean,
   ourTeamInfo: {
     name: string,
     institutionEmblemURL: string,
     goals: number
   },
+  resultStatus: "WIN" | "LOSS" | "DRAW",
   theirTeamInfo: {
     name: string,
     institutionEmblemURL: string,
@@ -134,19 +102,12 @@ type Props = {
   }
 };
 
-class SoccerResultsCard extends Component<Props> {
-  state = { expanded: false };
-
-  handleExpandClick = () => {
-    this.setState({ expanded: !this.state.expanded });
-  };
-
+class SoccerPendingCard extends Component<Props> {
   render() {
     const {
       classes,
       ourTeamInfo,
       theirTeamInfo,
-      isMobile,
       eventInfo,
       resultStatus
     } = this.props;
@@ -172,9 +133,9 @@ class SoccerResultsCard extends Component<Props> {
               <Typography
                 type="headline"
                 component="p"
-                className={classes.vsText}
+                className={classes.teamName}
               >
-                {isMobile ? ourTeamInfo.abbreviation : ourTeamInfo.name}
+                {ourTeamInfo.name}
               </Typography>
             </div>
             <div className={classes.goalsWrapper}>
@@ -186,7 +147,7 @@ class SoccerResultsCard extends Component<Props> {
               <Typography
                 type="display4"
                 component="p"
-                className={classes.vsText}
+                className={classes.teamName}
               >
                 -
               </Typography>
@@ -204,9 +165,9 @@ class SoccerResultsCard extends Component<Props> {
               <Typography
                 type="headline"
                 component="p"
-                className={classes.vsText}
+                className={classes.teamName}
               >
-                {isMobile ? theirTeamInfo.abbreviation : theirTeamInfo.name}
+                {theirTeamInfo.name}
               </Typography>
             </div>
           </div>
@@ -219,4 +180,4 @@ class SoccerResultsCard extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(SoccerResultsCard);
+export default withStyles(styles)(SoccerPendingCard);

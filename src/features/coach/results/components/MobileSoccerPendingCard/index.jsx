@@ -8,13 +8,6 @@ import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
-  centerSpace: {
-    width: "10%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  },
   draw: {
     backgroundColor: blue[500],
     color: grey[50],
@@ -27,21 +20,8 @@ const styles = theme => ({
     margin: 10,
     height: "auto"
   },
-  expand: {
-    transform: "rotate(0deg)",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest
-    })
-  },
-  expandOpen: {
-    transform: "rotate(180deg)"
-  },
-  flexGrow: {
-    flex: "1 1 auto"
-  },
-  gridItem: {
-    width: "25%",
-    padding: 24,
+  goalsWrapper: {
+    width: "40%",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -54,24 +34,6 @@ const styles = theme => ({
     padding: 24,
     textAlign: "center"
   },
-  statName: {
-    flexGrow: 1,
-    textAlign: "center"
-  },
-  statsWrapper: {
-    backgroundColor: grey[50],
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  subheadingWrapper: {
-    backgroundColor: grey[100],
-    width: "100%",
-    textAlign: "center",
-    padding: "24px 0"
-  },
   teamNameWrapper: {
     width: "60%",
     display: "flex",
@@ -80,23 +42,12 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "flex-start"
   },
-  goalsWrapper: {
-    width: "40%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
-  },
   teamsWrapper: {
     margin: "10px 0",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around"
-  },
-  vsText: {
-    width: "100%",
-    textAlign: "center"
   },
   win: {
     backgroundColor: green[500],
@@ -112,35 +63,33 @@ const styles = theme => ({
 
 type Props = {
   classes: {
-    teamsGridItem: string,
+    draw: string,
+    emblems: string,
+    goalsWrapper: string,
+    loss: string,
+    teamNameWrapper: string,
     teamsWrapper: string,
-    vsText: string,
+    win: string,
     wrapper: string
   },
   eventInfo: {
     title: string,
     date: string
   },
-  isMobile: boolean,
   ourTeamInfo: {
-    name: string,
+    abbreviation: string,
     institutionEmblemURL: string,
     goals: number
   },
+  resultStatus: "WIN" | "LOSS" | "DRAW",
   theirTeamInfo: {
-    name: string,
+    abbreviation: string,
     institutionEmblemURL: string,
     goals: number
   }
 };
 
 class MobileSoccerPendingCard extends Component<Props> {
-  state = { expanded: false };
-
-  handleExpandClick = () => {
-    this.setState({ expanded: !this.state.expanded });
-  };
-
   render() {
     const {
       classes,

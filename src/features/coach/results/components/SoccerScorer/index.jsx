@@ -2,8 +2,8 @@
 import React, { Component } from "react";
 import Avatar from "material-ui/Avatar";
 import Card, { CardActions, CardHeader } from "material-ui/Card";
-import Collapse from "material-ui/transitions/Collapse";
 import classnames from "classnames";
+import Collapse from "material-ui/transitions/Collapse";
 import DownIcon from "material-ui-icons/ExpandMore";
 import ExpandMoreIcon from "material-ui-icons/ExpandMore";
 import { FormControlLabel, FormGroup } from "material-ui/Form";
@@ -42,27 +42,19 @@ const styles = theme => ({
   flexGrow: {
     flex: "1 1 auto"
   },
-  gridItem: {
-    width: "25%",
-    padding: 24,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  teamNameWrapper: {
-    width: "25%",
-    padding: 24,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  },
   goalsWrapper: {
     width: "15%",
     padding: 24,
     display: "flex",
     flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  gridItem: {
+    width: "25%",
+    padding: 24,
+    display: "flex",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center"
   },
@@ -87,14 +79,22 @@ const styles = theme => ({
     textAlign: "center",
     padding: "24px 0"
   },
+  teamName: {
+    width: "100%",
+    textAlign: "center"
+  },
+  teamNameWrapper: {
+    width: "25%",
+    padding: 24,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center"
+  },
   teamsWrapper: {
     width: "100%",
     display: "flex",
     flexDirection: "row"
-  },
-  vsText: {
-    width: "100%",
-    textAlign: "center"
   },
   wrapper: {
     padding: 24
@@ -103,9 +103,20 @@ const styles = theme => ({
 
 type Props = {
   classes: {
-    teamsGridItem: string,
+    centerSpace: string,
+    emblems: string,
+    expand: string,
+    expandOpen: string,
+    flexGrow: string,
+    goalsWrapper: string,
+    gridItem: string,
+    statName: string,
+    statsToggle: string,
+    statsWrapper: string,
+    subheadingWrapper: string,
+    teamName: string,
+    teamNameWrapper: string,
     teamsWrapper: string,
-    vsText: string,
     wrapper: string
   },
   eventInfo: {
@@ -113,22 +124,38 @@ type Props = {
     startTime: string,
     endTime: string
   },
-  isMobile: boolean,
   ourTeamInfo: {
-    abbreviation: string,
     name: string,
     institutionEmblemURL: string,
-    goals: number
+    goals: number,
+    shots: number,
+    fouls: number,
+    yellowCards: number,
+    redCards: number,
+    shotsOnTarget: number,
+    offsides: number,
+    corners: number
   },
   theirTeamInfo: {
-    abbreviation: string,
     name: string,
     institutionEmblemURL: string,
-    goals: number
+    goals: number,
+    shots: number,
+    fouls: number,
+    yellowCards: number,
+    redCards: number,
+    shotsOnTarget: number,
+    offsides: number,
+    corners: number
   }
 };
 
-class SoccerScorer extends Component<Props> {
+type State = {
+  expanded: boolean,
+  hasStats: boolean
+};
+
+class SoccerScorer extends Component<Props, State> {
   state = { expanded: false, hasStats: true };
 
   handleExpandClick = () => {
@@ -154,7 +181,7 @@ class SoccerScorer extends Component<Props> {
               <Typography
                 type="headline"
                 component="p"
-                className={classes.vsText}
+                className={classes.teamName}
               >
                 {ourTeamInfo.name}
               </Typography>
@@ -174,7 +201,7 @@ class SoccerScorer extends Component<Props> {
               <Typography
                 type="display4"
                 component="p"
-                className={classes.vsText}
+                className={classes.teamName}
               >
                 -
               </Typography>
@@ -198,7 +225,7 @@ class SoccerScorer extends Component<Props> {
               <Typography
                 type="headline"
                 component="p"
-                className={classes.vsText}
+                className={classes.teamName}
               >
                 {theirTeamInfo.name}
               </Typography>

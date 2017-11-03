@@ -2,8 +2,8 @@
 import React, { Component } from "react";
 import Avatar from "material-ui/Avatar";
 import Card, { CardActions, CardHeader } from "material-ui/Card";
-import Collapse from "material-ui/transitions/Collapse";
 import classnames from "classnames";
+import Collapse from "material-ui/transitions/Collapse";
 import ExpandMoreIcon from "material-ui-icons/ExpandMore";
 import { FormControlLabel, FormGroup } from "material-ui/Form";
 import { grey } from "material-ui/colors";
@@ -16,13 +16,6 @@ import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
-  centerSpace: {
-    width: "10%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  },
   emblems: {
     width: 48,
     margin: 10,
@@ -39,14 +32,6 @@ const styles = theme => ({
   },
   flexGrow: {
     flex: "1 1 auto"
-  },
-  teamNameWrapper: {
-    width: "60%",
-    display: "flex",
-    marginLeft: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start"
   },
   goalsWrapper: {
     width: "40%",
@@ -84,16 +69,20 @@ const styles = theme => ({
     textAlign: "center",
     padding: "24px 0"
   },
+  teamNameWrapper: {
+    width: "60%",
+    display: "flex",
+    marginLeft: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start"
+  },
   teamsWrapper: {
     margin: "10px 0",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around"
-  },
-  vsText: {
-    width: "100%",
-    textAlign: "center"
   },
   wrapper: {
     padding: 24
@@ -102,9 +91,18 @@ const styles = theme => ({
 
 type Props = {
   classes: {
-    teamsGridItem: string,
+    emblems: string,
+    expand: string,
+    expandOpen: string,
+    flexGrow: string,
+    goalsWrapper: string,
+    gridItem: string,
+    statName: string,
+    statsToggle: string,
+    statsWrapper: string,
+    subheadingWrapper: string,
+    teamNameWrapper: string,
     teamsWrapper: string,
-    vsText: string,
     wrapper: string
   },
   eventInfo: {
@@ -112,22 +110,38 @@ type Props = {
     startTime: string,
     endTime: string
   },
-  isMobile: boolean,
   ourTeamInfo: {
     abbreviation: string,
-    name: string,
     institutionEmblemURL: string,
-    goals: number
+    goals: number,
+    shots: number,
+    fouls: number,
+    yellowCards: number,
+    redCards: number,
+    shotsOnTarget: number,
+    offsides: number,
+    corners: number
   },
   theirTeamInfo: {
     abbreviation: string,
-    name: string,
     institutionEmblemURL: string,
-    goals: number
+    goals: number,
+    shots: number,
+    fouls: number,
+    yellowCards: number,
+    redCards: number,
+    shotsOnTarget: number,
+    offsides: number,
+    corners: number
   }
 };
 
-class MobileSoccerScorer extends Component<Props> {
+type State = {
+  expanded: boolean,
+  hasStats: boolean
+};
+
+class MobileSoccerScorer extends Component<Props, State> {
   state = { expanded: false, hasStats: true };
 
   handleExpandClick = () => {
