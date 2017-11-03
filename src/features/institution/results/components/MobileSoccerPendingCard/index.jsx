@@ -144,6 +144,7 @@ class MobileSoccerPendingCard extends Component<Props> {
             </div>
           </div>
           <CardActions>
+            <Button color="primary">Approve</Button>
             <Button>View stats</Button>
           </CardActions>
         </Card>
