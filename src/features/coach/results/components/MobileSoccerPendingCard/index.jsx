@@ -1,9 +1,9 @@
 // @flow
 import React, { Component } from "react";
 import Avatar from "material-ui/Avatar";
+import { blue, grey, green, red } from "material-ui/colors";
 import Button from "material-ui/Button";
 import Card, { CardActions, CardHeader } from "material-ui/Card";
-import { blue, grey, green, red } from "material-ui/colors";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 
@@ -23,8 +23,7 @@ const styles = theme => ({
     textAlign: "center"
   },
   emblems: {
-    width: "80%",
-    maxWidth: 100,
+    width: 48,
     margin: 10,
     height: "auto"
   },
@@ -55,22 +54,6 @@ const styles = theme => ({
     padding: 24,
     textAlign: "center"
   },
-  teamNameWrapper: {
-    width: "25%",
-    padding: 24,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  goalsWrapper: {
-    width: "15%",
-    padding: 24,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  },
   statName: {
     flexGrow: 1,
     textAlign: "center"
@@ -89,10 +72,27 @@ const styles = theme => ({
     textAlign: "center",
     padding: "24px 0"
   },
-  teamsWrapper: {
-    width: "100%",
+  teamNameWrapper: {
+    width: "60%",
     display: "flex",
-    flexDirection: "row"
+    marginLeft: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start"
+  },
+  goalsWrapper: {
+    width: "40%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  teamsWrapper: {
+    margin: "10px 0",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around"
   },
   vsText: {
     width: "100%",
@@ -134,7 +134,7 @@ type Props = {
   }
 };
 
-class SoccerPendingCard extends Component<Props> {
+class MobileSoccerPendingCard extends Component<Props> {
   state = { expanded: false };
 
   handleExpandClick = () => {
@@ -168,44 +168,29 @@ class SoccerPendingCard extends Component<Props> {
                 src={ourTeamInfo.institutionEmblemURL}
                 className={classes.emblems}
               />
-              <Typography
-                type="headline"
-                component="p"
-                className={classes.vsText}
-              >
-                {ourTeamInfo.name}
+              <Typography type="title" component="p">
+                {ourTeamInfo.abbreviation}
               </Typography>
             </div>
             <div className={classes.goalsWrapper}>
-              <Typography type="display4" component="p">
+              <Typography type="headline" component="p">
                 {ourTeamInfo.goals}
               </Typography>
             </div>
-            <div className={classes.centerSpace}>
-              <Typography
-                type="display4"
-                component="p"
-                className={classes.vsText}
-              >
-                -
-              </Typography>
-            </div>
-            <div className={classes.goalsWrapper}>
-              <Typography type="display4" component="p">
-                {theirTeamInfo.goals}
-              </Typography>
-            </div>
+          </div>
+          <div className={classes.teamsWrapper}>
             <div className={classes.teamNameWrapper}>
               <Avatar
                 src={theirTeamInfo.institutionEmblemURL}
                 className={classes.emblems}
               />
-              <Typography
-                type="headline"
-                component="p"
-                className={classes.vsText}
-              >
-                {theirTeamInfo.name}
+              <Typography type="title" component="p">
+                {theirTeamInfo.abbreviation}
+              </Typography>
+            </div>
+            <div className={classes.goalsWrapper}>
+              <Typography type="headline" component="p">
+                {theirTeamInfo.goals}
               </Typography>
             </div>
           </div>
@@ -219,4 +204,4 @@ class SoccerPendingCard extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(SoccerPendingCard);
+export default withStyles(styles)(MobileSoccerPendingCard);

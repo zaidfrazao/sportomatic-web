@@ -20,6 +20,8 @@ import {
 import BannerAd from "../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import MobileSoccerPendingCard from "./components/MobileSoccerPendingCard";
+import MobileSoccerResultsCard from "./components/MobileSoccerResultsCard";
 import MobileSoccerScorer from "./components/MobileSoccerScorer";
 import SoccerPendingCard from "./components/SoccerPendingCard";
 import SoccerResultsCard from "./components/SoccerResultsCard";
@@ -267,24 +269,43 @@ class ResultsLayout extends Component<Props> {
           />
         </div>
         {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
-        <SoccerPendingCard
-          eventInfo={{
-            title: "FIFA World Cup Qualifiers 2018",
-            date: "3 November 2017"
-          }}
-          isMobile={isMobile}
-          ourTeamInfo={{
-            name: "Canada",
-            institutionEmblemURL: canada,
-            goals: 2
-          }}
-          resultStatus="LOSS"
-          theirTeamInfo={{
-            name: "Mexico",
-            institutionEmblemURL: mexico,
-            goals: 3
-          }}
-        />
+        {isMobile ? (
+          <MobileSoccerPendingCard
+            eventInfo={{
+              title: "FIFA World Cup Qualifiers 2018",
+              date: "3 November 2017"
+            }}
+            ourTeamInfo={{
+              abbreviation: "CAN",
+              institutionEmblemURL: canada,
+              goals: 2
+            }}
+            resultStatus="LOSS"
+            theirTeamInfo={{
+              abbreviation: "MEX",
+              institutionEmblemURL: mexico,
+              goals: 3
+            }}
+          />
+        ) : (
+          <SoccerPendingCard
+            eventInfo={{
+              title: "FIFA World Cup Qualifiers 2018",
+              date: "3 November 2017"
+            }}
+            ourTeamInfo={{
+              name: "Canada",
+              institutionEmblemURL: canada,
+              goals: 2
+            }}
+            resultStatus="LOSS"
+            theirTeamInfo={{
+              name: "Mexico",
+              institutionEmblemURL: mexico,
+              goals: 3
+            }}
+          />
+        )}
       </div>
     );
   }
@@ -310,24 +331,43 @@ class ResultsLayout extends Component<Props> {
           />
         </div>
         {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
-        <SoccerResultsCard
-          eventInfo={{
-            title: "FIFA World Cup Qualifiers 2018",
-            date: "3 November 2017"
-          }}
-          isMobile={isMobile}
-          ourTeamInfo={{
-            name: "Canada",
-            institutionEmblemURL: canada,
-            goals: 2
-          }}
-          resultStatus="LOSS"
-          theirTeamInfo={{
-            name: "Mexico",
-            institutionEmblemURL: mexico,
-            goals: 3
-          }}
-        />
+        {isMobile ? (
+          <MobileSoccerResultsCard
+            eventInfo={{
+              title: "FIFA World Cup Qualifiers 2018",
+              date: "3 November 2017"
+            }}
+            ourTeamInfo={{
+              abbreviation: "CAN",
+              institutionEmblemURL: canada,
+              goals: 2
+            }}
+            resultStatus="LOSS"
+            theirTeamInfo={{
+              abbreviation: "MEX",
+              institutionEmblemURL: mexico,
+              goals: 3
+            }}
+          />
+        ) : (
+          <SoccerResultsCard
+            eventInfo={{
+              title: "FIFA World Cup Qualifiers 2018",
+              date: "3 November 2017"
+            }}
+            ourTeamInfo={{
+              name: "Canada",
+              institutionEmblemURL: canada,
+              goals: 2
+            }}
+            resultStatus="LOSS"
+            theirTeamInfo={{
+              name: "Mexico",
+              institutionEmblemURL: mexico,
+              goals: 3
+            }}
+          />
+        )}
       </div>
     );
   }
