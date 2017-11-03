@@ -20,6 +20,8 @@ import {
 import BannerAd from "../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import SoccerPendingCard from "./components/SoccerPendingCard";
+import SoccerResultsCard from "./components/SoccerResultsCard";
 import SoccerScorer from "./components/SoccerScorer";
 import TeamsList from "./components/TeamsList";
 
@@ -233,6 +235,24 @@ class ResultsLayout extends Component<Props> {
           />
         </div>
         {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
+        <SoccerPendingCard
+          eventInfo={{
+            title: "FIFA World Cup Qualifiers 2018",
+            date: "3 November 2017"
+          }}
+          isMobile={isMobile}
+          ourTeamInfo={{
+            name: "Canada",
+            institutionEmblemURL: canada,
+            goals: 2
+          }}
+          resultStatus="LOSS"
+          theirTeamInfo={{
+            name: "Mexico",
+            institutionEmblemURL: mexico,
+            goals: 3
+          }}
+        />
       </div>
     );
   }
@@ -258,6 +278,24 @@ class ResultsLayout extends Component<Props> {
           />
         </div>
         {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
+        <SoccerResultsCard
+          eventInfo={{
+            title: "FIFA World Cup Qualifiers 2018",
+            date: "3 November 2017"
+          }}
+          isMobile={isMobile}
+          ourTeamInfo={{
+            name: "Canada",
+            institutionEmblemURL: canada,
+            goals: 2
+          }}
+          resultStatus="LOSS"
+          theirTeamInfo={{
+            name: "Mexico",
+            institutionEmblemURL: mexico,
+            goals: 3
+          }}
+        />
       </div>
     );
   }
