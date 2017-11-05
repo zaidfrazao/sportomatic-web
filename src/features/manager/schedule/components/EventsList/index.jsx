@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Route } from "react-router-dom";
@@ -15,7 +14,6 @@ import UncancelIcon from "material-ui-icons/Undo";
 import IconButton from "material-ui/IconButton";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
-import LeaderboardAd from "../../../../../components/LeaderboardAd";
 import _ from "lodash";
 
 const styles = theme => ({
@@ -400,11 +398,6 @@ class EventsList extends Component {
               </Button>
             )}
           />
-        )}
-        {isTablet && (
-          <div className={classes.adWrapper}>
-            <LeaderboardAd />
-          </div>
         )}
         <div className={classes.header}>
           {isTablet && (

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
@@ -95,14 +94,7 @@ class HoursCard extends Component {
   renderCardContent() {
     const { classes, eventInfo, institutionID } = this.props;
     const { signIn, signOut } = this.props.actions;
-    const {
-      status,
-      signInTime,
-      signOutTime,
-      name,
-      surname,
-      coachID
-    } = this.props.coachInfo;
+    const { status, signInTime, signOutTime, coachID } = this.props.coachInfo;
 
     let currentTime = new Date(Date.now());
     currentTime.setHours(currentTime.getHours() + 2);
@@ -112,18 +104,11 @@ class HoursCard extends Component {
       case "AWAITING_SIGN_IN":
         return (
           <div className={classes.hoursWrapper}>
-            <Typography
-              type="subheading"
-              component="h3"
-              className={classes.coachName}
-            >
-              {`${name} ${surname}`}
-            </Typography>
             <div className={classes.timesWrapper}>
               <div className={classes.timeWrapper}>
                 <TextField
                   id="time"
-                  label="Signed in at"
+                  label="Signed in"
                   type="time"
                   value={signInTime}
                   disabled
@@ -136,7 +121,7 @@ class HoursCard extends Component {
               <div className={classes.timeWrapper}>
                 <TextField
                   id="time"
-                  label="Signed out at"
+                  label="Signed out"
                   type="time"
                   value={signOutTime}
                   disabled
@@ -172,18 +157,11 @@ class HoursCard extends Component {
       case "AWAITING_SIGN_OUT":
         return (
           <div className={classes.hoursWrapper}>
-            <Typography
-              type="subheading"
-              component="h3"
-              className={classes.coachName}
-            >
-              {`${name} ${surname}`}
-            </Typography>
             <div className={classes.timesWrapper}>
               <div className={classes.timeWrapper}>
                 <TextField
                   id="time"
-                  label="Signed in at"
+                  label="Signed in"
                   type="time"
                   value={signInTime}
                   disabled
@@ -196,7 +174,7 @@ class HoursCard extends Component {
               <div className={classes.timeWrapper}>
                 <TextField
                   id="time"
-                  label="Signed out at"
+                  label="Signed out"
                   type="time"
                   value={signOutTime}
                   disabled
@@ -232,18 +210,11 @@ class HoursCard extends Component {
       case "AWAITING_APPROVAL":
         return (
           <div className={classes.hoursWrapper}>
-            <Typography
-              type="subheading"
-              component="h3"
-              className={classes.coachName}
-            >
-              {`${name} ${surname}`}
-            </Typography>
             <div className={classes.timesWrapper}>
               <div className={classes.timeWrapper}>
                 <TextField
                   id="time"
-                  label="Signed in at"
+                  label="Signed in"
                   type="time"
                   value={signInTime}
                   disabled
@@ -256,7 +227,7 @@ class HoursCard extends Component {
               <div className={classes.timeWrapper}>
                 <TextField
                   id="time"
-                  label="Signed out at"
+                  label="Signed out"
                   type="time"
                   value={signOutTime}
                   disabled

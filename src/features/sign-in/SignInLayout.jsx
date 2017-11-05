@@ -1,5 +1,3 @@
-// @flow
-/* eslint-disable flowtype/require-valid-file-annotation */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { lightBlue, red } from "material-ui/colors";
@@ -34,9 +32,9 @@ const styles = theme => ({
     flexDirection: "column"
   },
   logo: {
-    width: "300px",
+    width: "240px",
     height: "auto",
-    margin: "0 auto"
+    margin: "10px auto"
   },
   button: {
     margin: 10,

@@ -10,6 +10,7 @@ import HoursIcon from "material-ui-icons/Alarm";
 import WagesIcon from "material-ui-icons/AttachMoney";
 import PeopleIcon from "material-ui-icons/Person";
 import TeamsIcon from "material-ui-icons/People";
+import ResultsIcon from "material-ui-icons/PlusOne";
 import Drawer from "material-ui/Drawer";
 import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";
@@ -140,6 +141,23 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
+                    history.push("/coach/results");
+                    isMobile && toggleSideMenu();
+                  }}
+                >
+                  <ListItemIcon>
+                    <ResultsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Results" />
+                </ListItem>
+              )}
+            />
+            <Route
+              key={5}
+              render={({ history }) => (
+                <ListItem
+                  button
+                  onClick={() => {
                     history.push("/coach/wages");
                     isMobile && toggleSideMenu();
                   }}
@@ -152,7 +170,7 @@ class SideMenu extends Component {
               )}
             />
             <Route
-              key={5}
+              key={6}
               render={({ history }) => (
                 <ListItem
                   button
@@ -169,7 +187,7 @@ class SideMenu extends Component {
               )}
             />
             <Route
-              key={6}
+              key={7}
               render={({ history }) => (
                 <ListItem
                   button

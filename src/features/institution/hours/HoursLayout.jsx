@@ -1,22 +1,21 @@
-// @flow
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
 import { withStyles } from "material-ui/styles";
 import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
 import { Route } from "react-router-dom";
 import { CircularProgress } from "material-ui/Progress";
-import InProgressIcon from "material-ui-icons/Autorenew";
-import AwaitingApprovalIcon from "material-ui-icons/MoreHoriz";
+import Button from "material-ui/Button";
+import Typography from "material-ui/Typography";
 import HoursCard from "./components/HoursCard";
 import TimeLogger from "./components/TimeLogger";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import BannerAd from "../../../components/BannerAd";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import CoachesList from "./components/CoachesList";
 import HoursHistory from "./components/HoursHistory";
-import HistoryIcon from "material-ui-icons/History";
-import Button from "material-ui/Button";
-import Typography from "material-ui/Typography";
-import _ from "lodash";
 
 const styles = theme => ({
   root: {
@@ -68,6 +67,10 @@ const styles = theme => ({
       display: "block"
     }
   },
+  eventsAwaitingApprovalWrapper: {
+    flexGrow: 1,
+    overflow: "auto"
+  },
   loaderWrapper: {
     flexGrow: 1,
     display: "flex",
@@ -75,11 +78,9 @@ const styles = theme => ({
     justifyContent: "center"
   },
   button: {
-    margin: "24px 24px 0 24px",
-    "@media (max-width: 960px)": {
-      width: "100%",
-      padding: "0 24px",
-      margin: "24px 0"
+    margin: 24,
+    "@media (max-width: 600px)": {
+      width: "calc(100% - 48px)"
     }
   },
   noEventsAwaitingApprovalWrapper: {
@@ -89,8 +90,8 @@ const styles = theme => ({
     alignItems: "center"
   },
   coachName: {
-    margin: "24px 0",
-    width: "100%",
+    margin: 24,
+    width: "calc(100% - 48px)",
     textAlign: "center"
   }
 });
@@ -121,7 +122,8 @@ class HoursLayout extends Component {
       isTablet,
       events,
       userID,
-      coaches
+      coaches,
+      isMobile
     } = this.props;
     const { signIn, signOut, approveHours } = this.props.actions;
     const { coachID } = this.props.match.params;
@@ -148,6 +150,13 @@ class HoursLayout extends Component {
       });
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.inProgressWrapper}>
         <div>
@@ -163,9 +172,7 @@ class HoursLayout extends Component {
             )}
           />
         </div>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
+        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
         {!inProgressEvent.metadata ? (
           <div className={classes.noEventsAwaitingApprovalWrapper}>
             <Typography type="subheading" component="h3">
@@ -212,7 +219,7 @@ class HoursLayout extends Component {
   }
 
   renderAwaitingApprovalTab() {
-    const { classes, isTablet, events, coaches, userID } = this.props;
+    const { classes, isTablet, events, coaches, userID, isMobile } = this.props;
     const { signIn, signOut, approveHours } = this.props.actions;
     const { coachID } = this.props.match.params;
 
@@ -232,6 +239,13 @@ class HoursLayout extends Component {
       });
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.awaitingApprovalWrapper}>
         <div>
@@ -247,9 +261,7 @@ class HoursLayout extends Component {
             )}
           />
         </div>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
+        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
         {eventsList.length === 0 ? (
           <div className={classes.noEventsAwaitingApprovalWrapper}>
             <Typography type="subheading" component="h3">
@@ -257,7 +269,7 @@ class HoursLayout extends Component {
             </Typography>
           </div>
         ) : (
-          <div>
+          <div className={classes.eventAwaitingApprovalWrapper}>
             {eventsList.map((eventInfo, index) => (
               <HoursCard
                 key={index}
@@ -328,6 +340,13 @@ class HoursLayout extends Component {
       });
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.historyWrapper}>
         <div>
@@ -343,9 +362,7 @@ class HoursLayout extends Component {
             )}
           />
         </div>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
+        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
         <div className={classes.historyTableWrapper}>
           <HoursHistory
             isMobile={isMobile}
@@ -359,7 +376,7 @@ class HoursLayout extends Component {
   }
 
   render() {
-    const { classes, isMobile, coaches } = this.props;
+    const { classes, isMobile, isTablet, coaches } = this.props;
     const { isStaffLoading, isEventsLoading } = this.props.loadingStatus;
     const { currentTab } = this.props.uiConfig;
     const { updateTab } = this.props.actions;
@@ -383,6 +400,13 @@ class HoursLayout extends Component {
       return 0;
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.root}>
         {isStaffLoading || isEventsLoading ? (
@@ -402,46 +426,17 @@ class HoursLayout extends Component {
                     {`${coaches[coachID].metadata.name} ${coaches[coachID]
                       .metadata.surname}`}
                   </Typography>
-                  {isMobile ? (
-                    <Tabs
-                      value={currentTab}
-                      onChange={(event, newTab) => updateTab(newTab)}
-                      indicatorColor="primary"
-                      textColor="primary"
-                      centered
-                    >
-                      <Tab value="IN_PROGRESS" icon={<InProgressIcon />} />
-                      <Tab
-                        value="AWAITING_APPROVAL"
-                        icon={<AwaitingApprovalIcon />}
-                      />
-                      <Tab value="HISTORY" icon={<HistoryIcon />} />
-                    </Tabs>
-                  ) : (
-                    <Tabs
-                      value={currentTab}
-                      onChange={(event, newTab) => updateTab(newTab)}
-                      indicatorColor="primary"
-                      textColor="primary"
-                      centered
-                    >
-                      <Tab
-                        label="In Progress"
-                        value="IN_PROGRESS"
-                        icon={<InProgressIcon />}
-                      />
-                      <Tab
-                        label="Awaiting Approval"
-                        value="AWAITING_APPROVAL"
-                        icon={<AwaitingApprovalIcon />}
-                      />
-                      <Tab
-                        label="History"
-                        value="HISTORY"
-                        icon={<HistoryIcon />}
-                      />
-                    </Tabs>
-                  )}
+                  <Tabs
+                    value={currentTab}
+                    onChange={(event, newTab) => updateTab(newTab)}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    centered
+                  >
+                    <Tab label="In Progress" value="IN_PROGRESS" />
+                    <Tab label="Pending" value="AWAITING_APPROVAL" />
+                    <Tab label="History" value="HISTORY" />
+                  </Tabs>
                 </AppBar>
                 {currentTab === "IN_PROGRESS" && this.renderInProgressTab()}
                 {currentTab === "AWAITING_APPROVAL" &&
@@ -456,9 +451,7 @@ class HoursLayout extends Component {
                     : classes.coachesListNoCards
                 }
               >
-                <div className={classes.adWrapper}>
-                  <LeaderboardAd />
-                </div>
+                <div className={classes.adWrapper}>{ad}</div>
                 <CoachesList coaches={coachesList} />
               </div>
             )}

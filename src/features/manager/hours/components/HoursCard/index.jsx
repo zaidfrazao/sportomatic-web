@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
@@ -131,7 +130,7 @@ class HoursCard extends Component {
                 <div className={classes.timeWrapper}>
                   <TextField
                     id="time"
-                    label="Signed in at"
+                    label="Signed in"
                     type="time"
                     value={signInTime}
                     onChange={e =>
@@ -145,7 +144,7 @@ class HoursCard extends Component {
                 <div className={classes.timeWrapper}>
                   <TextField
                     id="time"
-                    label="Signed out at"
+                    label="Signed out"
                     type="time"
                     value={signOutTime}
                     onChange={e =>
@@ -203,7 +202,7 @@ class HoursCard extends Component {
                 <div className={classes.timeWrapper}>
                   <TextField
                     id="time"
-                    label="Signed in at"
+                    label="Signed in"
                     type="time"
                     value={signInTime}
                     onChange={e =>
@@ -217,7 +216,7 @@ class HoursCard extends Component {
                 <div className={classes.timeWrapper}>
                   <TextField
                     id="time"
-                    label="Signed out at"
+                    label="Signed out"
                     type="time"
                     value={signOutTime}
                     onChange={e =>
@@ -275,7 +274,7 @@ class HoursCard extends Component {
                 <div className={classes.timeWrapper}>
                   <TextField
                     id="time"
-                    label="Signed in at"
+                    label="Signed in"
                     type="time"
                     value={signInTime}
                     onChange={e =>
@@ -289,7 +288,7 @@ class HoursCard extends Component {
                 <div className={classes.timeWrapper}>
                   <TextField
                     id="time"
-                    label="Signed out at"
+                    label="Signed out"
                     type="time"
                     value={signOutTime}
                     onChange={e =>

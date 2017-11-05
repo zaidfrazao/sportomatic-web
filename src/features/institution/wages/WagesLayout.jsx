@@ -1,11 +1,13 @@
-// @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import WagesTable from "./components/WagesTable";
+import AppBar from "material-ui/AppBar";
 import Button from "material-ui/Button";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import BannerAd from "../../../components/BannerAd";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import { CircularProgress } from "material-ui/Progress";
 import CoachesList from "./components/CoachesList";
 import Typography from "material-ui/Typography";
@@ -34,16 +36,15 @@ const styles = theme => ({
     justifyContent: "center"
   },
   button: {
-    margin: "24px 24px 0 24px",
+    margin: 24,
     "@media (max-width: 960px)": {
-      margin: 0,
-      width: "100%"
+      width: "calc(100% - 48px)"
     }
   },
   coachName: {
-    width: "100%",
-    textAlign: "center",
-    marginBottom: 24
+    margin: 24,
+    width: "calc(100% - 48px)",
+    textAlign: "center"
   }
 });
 
@@ -76,6 +77,13 @@ class WagesLayout extends Component {
     const { isWagesLoading, isStaffLoading } = this.props.loadingStatus;
     const { coachID } = this.props.match.params;
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     if (isWagesLoading || isStaffLoading) {
       return (
         <div className={classes.root}>
@@ -88,6 +96,16 @@ class WagesLayout extends Component {
       if (coachID && coaches[coachID]) {
         return (
           <div className={classes.root}>
+            <AppBar position="static" color="default">
+              <Typography
+                type="title"
+                component="h2"
+                className={classes.coachName}
+              >
+                {`${coaches[coachID].metadata.name} ${coaches[coachID].metadata
+                  .surname}`}
+              </Typography>
+            </AppBar>
             <div>
               <Route
                 render={({ history }) => (
@@ -101,17 +119,7 @@ class WagesLayout extends Component {
                 )}
               />
             </div>
-            <div className={classes.adWrapper}>
-              <LeaderboardAd />
-            </div>
-            <Typography
-              type="title"
-              component="h2"
-              className={classes.coachName}
-            >
-              {`${coaches[coachID].metadata.name} ${coaches[coachID].metadata
-                .surname}`}
-            </Typography>
+            {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
             <div className={classes.wagesTableWrapper}>
               <WagesTable
                 isMobile={isMobile}
@@ -148,9 +156,7 @@ class WagesLayout extends Component {
                 : classes.coachesListNoCards
             }
           >
-            <div className={classes.adWrapper}>
-              <LeaderboardAd />
-            </div>
+            <div className={classes.adWrapper}>{ad}</div>
             <CoachesList coaches={coachesList} />
           </div>
         );

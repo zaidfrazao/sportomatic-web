@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.1.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Check Node & npm versions
+      - run:
+          name: "Checking versions"
+          command: |
+              node --version
+              npm --version
+
+      # Install node modules
+      - run:
+          name: "Install dependencies"
+          command: npm install
+
+      # Run tests
+      - run:
+          name: "Checking for type errors"
+          command: npm run flow
+      - run:
+          name: "Running unit and snapshot tests"
+          command: npm run test
+
+      # Build project
+      - run:
+          name: "Building production version"
+          command: npm run build

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
@@ -7,6 +6,8 @@ import { CircularProgress } from "material-ui/Progress";
 import TeamsList from "./components/TeamsList";
 import TeamInfo from "./components/TeamInfo";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import BannerAd from "../../../components/BannerAd";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import _ from "lodash";
 
 const styles = theme => ({
@@ -15,6 +16,10 @@ const styles = theme => ({
     height: "100%",
     display: "flex",
     flexDirection: "column"
+  },
+  infoWrapper: {
+    width: "100%",
+    height: "100%"
   },
   adWrapper: {
     width: "100%",
@@ -69,7 +74,7 @@ class TeamsLayout extends Component {
   }
 
   render() {
-    const { classes, teams, userID } = this.props;
+    const { classes, teams, userID, isMobile, isTablet } = this.props;
     const { isTeamsLoading } = this.props.loadingStatus;
     const { teamID } = this.props.match.params;
 
@@ -81,11 +86,23 @@ class TeamsLayout extends Component {
       };
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.root}>
         {teamID && teams[teamID] ? (
-          <div>
-            <TeamInfo info={teams[teamID]} userID={userID} />
+          <div className={classes.infoWrapper}>
+            <TeamInfo
+              info={teams[teamID]}
+              userID={userID}
+              isMobile={isMobile}
+              isTablet={isTablet}
+            />
           </div>
         ) : (
           <div
@@ -93,9 +110,7 @@ class TeamsLayout extends Component {
               teamsList.length > 0 ? classes.teamCards : classes.teamNoCards
             }
           >
-            <div className={classes.adWrapper}>
-              <LeaderboardAd />
-            </div>
+            <div className={classes.adWrapper}>{ad}</div>
             {isTeamsLoading ? (
               <div className={classes.loaderWrapper}>
                 <CircularProgress />

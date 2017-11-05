@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
@@ -8,11 +7,13 @@ import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
 import Dashboard from "../dashboard/DashboardView";
 import Hours from "../hours/HoursView";
+import Results from "../results/ResultsView";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
 import Settings from "../settings/SettingsView";
 import Teams from "../teams/TeamsView";
 import NotificationModal from "../../../components/NotificationModal";
+import DecisionModal from "../../../components/DecisionModal";
 import backgroundImage from "./images/background-image.jpeg";
 
 const drawerWidth = 240;
@@ -136,6 +137,10 @@ class CoreInterfaceLayout extends Component {
         updateAppBarTitle("Settings");
         updateBottomNavValue("settings");
         break;
+      case "results":
+        updateAppBarTitle("Results");
+        updateBottomNavValue("results");
+        break;
       default:
         updateAppBarTitle("Dashboard");
         updateBottomNavValue("dashboard");
@@ -155,11 +160,14 @@ class CoreInterfaceLayout extends Component {
       openSwitchInstitutionsDialog,
       closeSwitchInstitutionsDialog,
       closeSettingsAlert,
-      openSettingsAlert
+      openSettingsAlert,
+      openLogOutModal,
+      closeLogOutModal
     } = this.props.actions;
     const {
       isSwitchInstitutionsDialogOpen,
-      isSettingsAlertOpen
+      isSettingsAlertOpen,
+      isLogOutModalOpen
     } = this.props.dialogs;
     const { windowWidth } = this.state;
     const isMobile = windowWidth < 600;
@@ -181,7 +189,7 @@ class CoreInterfaceLayout extends Component {
             isSideMenuOpen={uiConfig.isSideMenuOpen}
             actions={{
               toggleSideMenu,
-              signOut,
+              openLogOutModal,
               openSwitchInstitutionsDialog,
               openSettingsAlert
             }}
@@ -199,10 +207,10 @@ class CoreInterfaceLayout extends Component {
             <div className={classes.main}>
               <Switch>
                 <Route exact path={"/manager/"}>
-                  <Dashboard />
+                  <Dashboard isTablet={isTablet} />
                 </Route>
                 <Route exact path={`/manager/dashboard/`}>
-                  <Dashboard />
+                  <Dashboard isTablet={isTablet} />
                 </Route>
                 <Route exact path={`/manager/hours/`}>
                   <Hours
@@ -212,26 +220,50 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={uiConfig.activeInstitution.id}
                   />
                 </Route>
+                <Route exact path={`/manager/results/`}>
+                  <Results
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={uiConfig.userID}
+                    activeInstitutionID={uiConfig.activeInstitution.id}
+                  />
+                </Route>
+                <Route exact path={`/manager/results/:teamID`}>
+                  <Results
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={uiConfig.userID}
+                    activeInstitutionID={uiConfig.activeInstitution.id}
+                  />
+                </Route>
                 <Route exact path={`/manager/people/`}>
                   <People
+                    isMobile={isMobile}
+                    isTablet={isTablet}
                     userID={uiConfig.userID}
                     activeInstitutionID={uiConfig.activeInstitution.id}
                   />
                 </Route>
                 <Route path={`/manager/people/:personID`}>
                   <People
+                    isMobile={isMobile}
+                    isTablet={isTablet}
                     userID={uiConfig.userID}
                     activeInstitutionID={uiConfig.activeInstitution.id}
                   />
                 </Route>
                 <Route exact path={`/manager/teams/`}>
                   <Teams
+                    isMobile={isMobile}
+                    isTablet={isTablet}
                     activeInstitutionID={uiConfig.activeInstitution.id}
                     userID={uiConfig.userID}
                   />
                 </Route>
                 <Route path={`/manager/teams/:teamID`}>
                   <Teams
+                    isMobile={isMobile}
+                    isTablet={isTablet}
                     activeInstitutionID={uiConfig.activeInstitution.id}
                     userID={uiConfig.userID}
                   />
@@ -278,6 +310,16 @@ class CoreInterfaceLayout extends Component {
             handleOkClick={closeSettingsAlert}
             heading="Unavailable in Beta"
             message="The ability to edit account settings is unavailable in this version of the beta."
+          />
+          <DecisionModal
+            isOpen={isLogOutModalOpen}
+            handleYesClick={() => {
+              signOut();
+              closeLogOutModal();
+            }}
+            handleNoClick={closeLogOutModal}
+            heading="Log Out"
+            message="Are you sure you want to log out?"
           />
         </div>
       </div>

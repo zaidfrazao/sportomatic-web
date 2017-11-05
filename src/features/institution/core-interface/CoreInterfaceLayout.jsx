@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
@@ -8,6 +7,7 @@ import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
 import Dashboard from "../dashboard/DashboardView";
 import Hours from "../hours/HoursView";
+import Results from "../results/ResultsView";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
 import Settings from "../settings/SettingsView";
@@ -15,6 +15,7 @@ import Teams from "../teams/TeamsView";
 import Wages from "../wages/WagesView";
 import backgroundImage from "./images/background-image.jpeg";
 import NotificationModal from "../../../components/NotificationModal";
+import DecisionModal from "../../../components/DecisionModal";
 
 const drawerWidth = 240;
 
@@ -145,6 +146,10 @@ class CoreInterfaceLayout extends Component {
         updateAppBarTitle("Settings");
         updateBottomNavValue("settings");
         break;
+      case "results":
+        updateAppBarTitle("Results");
+        updateBottomNavValue("results");
+        break;
       default:
         updateAppBarTitle("Dashboard");
         updateBottomNavValue("dashboard");
@@ -162,7 +167,9 @@ class CoreInterfaceLayout extends Component {
       toggleSideMenu,
       signOut,
       closeSettingsAlert,
-      openSettingsAlert
+      openSettingsAlert,
+      openLogOutModal,
+      closeLogOutModal
     } = this.props.actions;
     const { windowWidth } = this.state;
     const {
@@ -171,9 +178,9 @@ class CoreInterfaceLayout extends Component {
       type,
       appBarTitle,
       isSideMenuOpen,
-      bottomNavValue,
-      isSettingsAlertOpen
+      bottomNavValue
     } = this.props.uiConfig;
+    const { isSettingsAlertOpen, isLogOutModalOpen } = this.props.dialogs;
     const isMobile = windowWidth < 600;
     const isTablet = windowWidth < 960;
 
@@ -191,7 +198,7 @@ class CoreInterfaceLayout extends Component {
           <CustomAppBar
             title={appBarTitle}
             isSideMenuOpen={isSideMenuOpen}
-            actions={{ toggleSideMenu, signOut, openSettingsAlert }}
+            actions={{ toggleSideMenu, openLogOutModal, openSettingsAlert }}
             isMobile={isMobile}
           />
           <SideMenu
@@ -205,10 +212,10 @@ class CoreInterfaceLayout extends Component {
             <div className={classes.main}>
               <Switch>
                 <Route exact path={"/institution/"}>
-                  <Dashboard />
+                  <Dashboard isTablet={isTablet} />
                 </Route>
                 <Route exact path={`/institution/dashboard/`}>
-                  <Dashboard />
+                  <Dashboard isTablet={isTablet} />
                 </Route>
                 <Route exact path={`/institution/hours/`}>
                   <Hours
@@ -224,17 +231,47 @@ class CoreInterfaceLayout extends Component {
                     userID={userID}
                   />
                 </Route>
+                <Route exact path={`/institution/results/`}>
+                  <Results
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                  />
+                </Route>
+                <Route exact path={`/institution/results/:teamID`}>
+                  <Results
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                  />
+                </Route>
                 <Route exact path={`/institution/people/`}>
-                  <People userID={userID} isMobile={isMobile} />
+                  <People
+                    userID={userID}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                  />
                 </Route>
                 <Route path={`/institution/people/:personID`}>
-                  <People userID={userID} isMobile={isMobile} />
+                  <People
+                    userID={userID}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                  />
                 </Route>
                 <Route exact path={`/institution/teams/`}>
-                  <Teams userID={userID} />
+                  <Teams
+                    userID={userID}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                  />
                 </Route>
                 <Route path={`/institution/teams/:teamID`}>
-                  <Teams userID={userID} />
+                  <Teams
+                    userID={userID}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                  />
                 </Route>
                 <Route exact path={`/institution/schedule/`}>
                   <Schedule
@@ -287,6 +324,16 @@ class CoreInterfaceLayout extends Component {
           handleOkClick={closeSettingsAlert}
           heading="Unavailable in Beta"
           message="The ability to edit account settings is unavailable in this version of the beta."
+        />
+        <DecisionModal
+          isOpen={isLogOutModalOpen}
+          handleYesClick={() => {
+            signOut();
+            closeLogOutModal();
+          }}
+          handleNoClick={closeLogOutModal}
+          heading="Log Out"
+          message="Are you sure you want to log out?"
         />
       </div>
     );

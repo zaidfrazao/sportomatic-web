@@ -1,18 +1,28 @@
-// @flow
 import React, { Component } from "react";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
 import { Route } from "react-router-dom";
+import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Typography from "material-ui/Typography";
 import LeaderboardAd from "../../../../../components/LeaderboardAd";
+import BannerAd from "../../../../../components/BannerAd";
+import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
 import _ from "lodash";
 
 const styles = {
+  root: {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column"
+  },
   wrapper: {
+    flexGrow: 1,
+    overflow: "auto",
     padding: 24
   },
   adWrapper: {
@@ -40,9 +50,9 @@ const styles = {
     borderBottom: `1px solid ${grey[200]}`
   },
   name: {
-    width: "100%",
-    textAlign: "center",
-    margin: "40px 0"
+    margin: 24,
+    width: "calc(100% - 48px)",
+    textAlign: "center"
   },
   pictureWrapper: {
     width: "100%",
@@ -175,7 +185,7 @@ class TeamInfo extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, isMobile, isTablet } = this.props;
     const {
       name,
       sport,
@@ -190,79 +200,91 @@ class TeamInfo extends Component {
     let managersList = this.getManagersList(managers);
     let coachesList = this.getCoachesList(coaches);
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
-      <div className={classes.wrapper}>
-        <Route
-          render={({ history }) => (
-            <Button
-              raised
-              className={classes.button}
-              onClick={() => history.goBack()}
-            >
-              Back
-            </Button>
-          )}
-        />
-        <Typography className={classes.name} type="display2" component="h2">
-          {name}
-        </Typography>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
+      <div className={classes.root}>
+        <AppBar position="static" color="default">
+          <Typography className={classes.name} type="title" component="h2">
+            {`${name}`}
+          </Typography>
+        </AppBar>
+        <div className={classes.wrapper}>
+          <Route
+            render={({ history }) => (
+              <Button
+                raised
+                className={classes.button}
+                onClick={() => history.goBack()}
+              >
+                Back
+              </Button>
+            )}
+          />
+          <div className={classes.adWrapper}>{ad}</div>
+          <Grid container direction="row" align="stretch">
+            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+              <div className={classes.section}>
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Details
+                </Typography>
+                <List>
+                  <ListItem>
+                    <ListItemText primary="Sport" secondary={sport} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Division" secondary={division} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary="Age Group"
+                      secondary={formattedAgeGroup}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary="Gender"
+                      secondary={formattedGender}
+                    />
+                  </ListItem>
+                </List>
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+              <div className={classes.section}>
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Managers
+                </Typography>
+                {managersList}
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+              <div className={classes.section}>
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Coaches
+                </Typography>
+                {coachesList}
+              </div>
+            </Grid>
+          </Grid>
         </div>
-        <Grid container direction="row" align="stretch">
-          <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-            <div className={classes.section}>
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
-              >
-                Details
-              </Typography>
-              <List>
-                <ListItem>
-                  <ListItemText primary="Sport" secondary={sport} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Division" secondary={division} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText
-                    primary="Age Group"
-                    secondary={formattedAgeGroup}
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Gender" secondary={formattedGender} />
-                </ListItem>
-              </List>
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-            <div className={classes.section}>
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
-              >
-                Managers
-              </Typography>
-              {managersList}
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-            <div className={classes.section}>
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
-              >
-                Coaches
-              </Typography>
-              {coachesList}
-            </div>
-          </Grid>
-        </Grid>
       </div>
     );
   }

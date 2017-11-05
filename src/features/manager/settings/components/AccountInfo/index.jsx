@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
@@ -16,7 +15,7 @@ import List, {
 } from "material-ui/List";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
-import BlockAd from "../../../../../components/BlockAd";
+import LargeRectangleAd from "../../../../../components/LargeRectangleAd";
 
 const styles = {
   wrapper: {
@@ -128,7 +127,7 @@ class AccountInfo extends Component {
           </Grid>
           <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
             <div className={classes.adWrapper}>
-              <BlockAd />
+              <LargeRectangleAd />
             </div>
           </Grid>
           <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>

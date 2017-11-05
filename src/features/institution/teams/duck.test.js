@@ -276,4 +276,6 @@ describe("ACTION CREATORS", () => {
       expect(actualActions).toEqual(expectedActions);
     });
   });
+
+  test("addTeam - should create new team", () => {});
 });

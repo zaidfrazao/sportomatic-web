@@ -1,15 +1,15 @@
-// @flow
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import AppBar from "material-ui/AppBar";
 import Tabs, { Tab } from "material-ui/Tabs";
 import { CircularProgress } from "material-ui/Progress";
-import InProgressIcon from "material-ui-icons/Autorenew";
-import AwaitingApprovalIcon from "material-ui-icons/MoreHoriz";
 import HoursCard from "./components/HoursCard";
 import TimeLogger from "./components/TimeLogger";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import BannerAd from "../../../components/BannerAd";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import Typography from "material-ui/Typography";
 import _ from "lodash";
 
@@ -102,7 +102,8 @@ class HoursLayout extends Component {
       isTablet,
       events,
       userID,
-      activeInstitutionID
+      activeInstitutionID,
+      isMobile
     } = this.props;
     const { signIn, signOut, approveHours } = this.props.actions;
 
@@ -134,11 +135,16 @@ class HoursLayout extends Component {
       });
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.inProgressWrapper}>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
+        <div className={classes.adWrapper}>{ad}</div>
         {!inProgressEvent.metadata ? (
           <div className={classes.noEventsAwaitingApprovalWrapper}>
             <Typography type="subheading" component="h3">
@@ -178,7 +184,8 @@ class HoursLayout extends Component {
       isTablet,
       events,
       userID,
-      activeInstitutionID
+      activeInstitutionID,
+      isMobile
     } = this.props;
     const { signIn, signOut, approveHours } = this.props.actions;
 
@@ -204,11 +211,16 @@ class HoursLayout extends Component {
       });
     });
 
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
     return (
       <div className={classes.awaitingApprovalWrapper}>
-        <div className={classes.adWrapper}>
-          <LeaderboardAd />
-        </div>
+        <div className={classes.adWrapper}>{ad}</div>
         {eventsList.length === 0 ? (
           <div className={classes.noEventsAwaitingApprovalWrapper}>
             <Typography type="subheading" component="h3">
@@ -246,7 +258,7 @@ class HoursLayout extends Component {
   }
 
   render() {
-    const { classes, isMobile } = this.props;
+    const { classes } = this.props;
     const { isStaffLoading, isEventsLoading } = this.props.loadingStatus;
     const { currentTab } = this.props.uiConfig;
     const { updateTab } = this.props.actions;
@@ -261,40 +273,16 @@ class HoursLayout extends Component {
           <div className={classes.contentWrapper}>
             <div className={classes.tabsWrapper}>
               <AppBar position="static" color="default">
-                {isMobile ? (
-                  <Tabs
-                    value={currentTab}
-                    onChange={(event, newTab) => updateTab(newTab)}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                  >
-                    <Tab value="IN_PROGRESS" icon={<InProgressIcon />} />
-                    <Tab
-                      value="AWAITING_APPROVAL"
-                      icon={<AwaitingApprovalIcon />}
-                    />
-                  </Tabs>
-                ) : (
-                  <Tabs
-                    value={currentTab}
-                    onChange={(event, newTab) => updateTab(newTab)}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                  >
-                    <Tab
-                      label="In Progress"
-                      value="IN_PROGRESS"
-                      icon={<InProgressIcon />}
-                    />
-                    <Tab
-                      label="Awaiting Approval"
-                      value="AWAITING_APPROVAL"
-                      icon={<AwaitingApprovalIcon />}
-                    />
-                  </Tabs>
-                )}
+                <Tabs
+                  value={currentTab}
+                  onChange={(event, newTab) => updateTab(newTab)}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab label="In Progress" value="IN_PROGRESS" />
+                  <Tab label="Pending" value="AWAITING_APPROVAL" />
+                </Tabs>
               </AppBar>
               {currentTab === "IN_PROGRESS" && this.renderInProgressTab()}
               {currentTab === "AWAITING_APPROVAL" &&
