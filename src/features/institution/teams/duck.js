@@ -409,69 +409,66 @@ export function errorAddingTeam(error: { code: string, message: string }) {
 export function addTeam(institutionID, teamInfo, managers, coaches) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestAddTeam());
-    const newTeamID = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/teams`)
-      .push().key;
-    const newTeamInfo = {
-      status: "ACTIVE",
-      metadata: { ...teamInfo },
-      coaches,
-      managers
-    };
-    const managerUpdates = _.fromPairs(
-      _.toPairs(managers).map(([managerID, managerInfo]) => {
-        return [
-          `manager/${managerID}/private/institutions/${institutionID}/teams/${newTeamID}`,
-          newTeamInfo
-        ];
-      })
-    );
-    const managerStaffUpdates = _.fromPairs(
-      _.toPairs(managers).map(([managerID, managerInfo]) => {
-        return [
-          `institution/${institutionID}/private/staff/${managerID}/teams/${newTeamID}`,
-          {
-            status: newTeamInfo.status,
-            name: newTeamInfo.metadata.name,
-            sport: newTeamInfo.metadata.sport
-          }
-        ];
-      })
-    );
-    const coachUpdates = _.fromPairs(
-      _.toPairs(coaches).map(([coachID, coachInfo]) => {
-        return [
-          `coach/${coachID}/private/institutions/${institutionID}/teams/${newTeamID}`,
-          newTeamInfo
-        ];
-      })
-    );
-    const coachStaffUpdates = _.fromPairs(
-      _.toPairs(coaches).map(([coachID, coachInfo]) => {
-        return [
-          `institution/${institutionID}/private/staff/${coachID}/teams/${newTeamID}`,
-          {
-            status: newTeamInfo.status,
-            name: newTeamInfo.metadata.name,
-            sport: newTeamInfo.metadata.sport
-          }
-        ];
-      })
-    );
-    const updates = {
-      [`institution/${institutionID}/private/teams/${newTeamID}`]: newTeamInfo,
-      ...coachUpdates,
-      ...coachStaffUpdates,
-      ...managerUpdates,
-      ...managerStaffUpdates
-    };
+    return SportomaticFirebaseAPI.getNewTeamID(institutionID)
+      .then(newTeamID => {
+        const newTeamInfo = {
+          status: "ACTIVE",
+          metadata: { ...teamInfo },
+          coaches,
+          managers
+        };
+        const managerUpdates = _.fromPairs(
+          _.toPairs(managers).map(([managerID, managerInfo]) => {
+            return [
+              `manager/${managerID}/private/institutions/${institutionID}/teams/${newTeamID}`,
+              newTeamInfo
+            ];
+          })
+        );
+        const managerStaffUpdates = _.fromPairs(
+          _.toPairs(managers).map(([managerID, managerInfo]) => {
+            return [
+              `institution/${institutionID}/private/staff/${managerID}/teams/${newTeamID}`,
+              {
+                status: newTeamInfo.status,
+                name: newTeamInfo.metadata.name,
+                sport: newTeamInfo.metadata.sport
+              }
+            ];
+          })
+        );
+        const coachUpdates = _.fromPairs(
+          _.toPairs(coaches).map(([coachID, coachInfo]) => {
+            return [
+              `coach/${coachID}/private/institutions/${institutionID}/teams/${newTeamID}`,
+              newTeamInfo
+            ];
+          })
+        );
+        const coachStaffUpdates = _.fromPairs(
+          _.toPairs(coaches).map(([coachID, coachInfo]) => {
+            return [
+              `institution/${institutionID}/private/staff/${coachID}/teams/${newTeamID}`,
+              {
+                status: newTeamInfo.status,
+                name: newTeamInfo.metadata.name,
+                sport: newTeamInfo.metadata.sport
+              }
+            ];
+          })
+        );
+        const updates = {
+          [`institution/${institutionID}/private/teams/${newTeamID}`]: newTeamInfo,
+          ...coachUpdates,
+          ...coachStaffUpdates,
+          ...managerUpdates,
+          ...managerStaffUpdates
+        };
 
-    return firebase
-      .database()
-      .ref()
-      .update(updates)
-      .then(() => dispatch(receiveAddTeam()))
-      .catch(error => dispatch(errorAddingTeam(error)));
+        return SportomaticFirebaseAPI.addTeam(updates)
+          .then(() => dispatch(receiveAddTeam()))
+          .catch(error => dispatch(errorAddingTeam(error)));
+      })
+      .catch(error => errorAddingTeam(error));
   };
 }

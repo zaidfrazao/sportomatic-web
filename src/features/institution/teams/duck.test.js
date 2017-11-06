@@ -2,6 +2,7 @@ import {
   loadStaff,
   loadTeams,
   loadOptions,
+  addTeam,
   REQUEST_STAFF,
   RECEIVE_STAFF,
   ERROR_LOADING_STAFF,
@@ -10,7 +11,9 @@ import {
   ERROR_LOADING_TEAMS,
   REQUEST_OPTIONS,
   RECEIVE_OPTIONS,
-  ERROR_LOADING_OPTIONS
+  ERROR_LOADING_OPTIONS,
+  REQUEST_ADD_TEAM,
+  RECEIVE_ADD_TEAM
 } from "./duck";
 import { SportomaticFirebaseAPI } from "../../../api/sportmatic-firebase-api";
 import sinon from "sinon";
@@ -277,5 +280,60 @@ describe("ACTION CREATORS", () => {
     });
   });
 
-  test("addTeam - should create new team", () => {});
+  test("addTeam - should create new team", () => {
+    const store = mockStore({});
+    const expectedActions = [
+      {
+        type: REQUEST_ADD_TEAM
+      },
+      {
+        type: RECEIVE_ADD_TEAM
+      }
+    ];
+
+    const institutionID = 1;
+    const teamInfo = {
+      ageGroup: "U/16",
+      division: "A",
+      gender: "Male",
+      sport: "Athletics",
+      name: "U/16 Athletics Male"
+    };
+    const managers = {
+      1: {
+        metadata: {
+          email: "test@smtp.co.za",
+          name: "Test",
+          phoneNumber: "082 438 2901",
+          surname: "User",
+          type: "MANAGER"
+        }
+      }
+    };
+    const coaches = {
+      1: {
+        metadata: {
+          email: "test@smtp.co.za",
+          name: "Test",
+          surname: "User",
+          phoneNumber: "011 329 3290",
+          profilePictureURL: "http://someurl.com/img.png",
+          type: "COACH"
+        }
+      }
+    };
+
+    sinon.stub(SportomaticFirebaseAPI, "getNewTeamID").resolves(1);
+
+    sportomaticFirebaseAPI = sinon
+      .stub(SportomaticFirebaseAPI, "addTeam")
+      .resolves();
+
+    store
+      .dispatch(addTeam(institutionID, teamInfo, managers, coaches))
+      .then(() => {
+        const actualActions = store.getActions();
+        expect(actualActions).toEqual(expectedActions);
+      });
+  });
 });

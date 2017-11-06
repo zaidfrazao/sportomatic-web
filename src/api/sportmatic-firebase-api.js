@@ -68,4 +68,28 @@ export class SportomaticFirebaseAPI {
       });
     });
   }
+  static getNewTeamID(institutionID) {
+    return new Promise((resolve, reject) => {
+      const newTeamID = firebase
+        .database()
+        .ref(`institution/${institutionID}/private/teams`)
+        .push().key;
+
+      if (!newTeamID) {
+        reject({});
+      } else {
+        resolve(newTeamID);
+      }
+    });
+  }
+  static addTeam(team) {
+    return new Promise((resolve, reject) => {
+      firebase
+        .database()
+        .ref()
+        .update(team)
+        .then(() => resolve())
+        .catch(err => reject(err));
+    });
+  }
 }
