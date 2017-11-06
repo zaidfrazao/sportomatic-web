@@ -102,7 +102,8 @@ class EditEventDialog extends Component {
     selectedManagers: [],
     selectedCoaches: [],
     isRecurringEventModalOpen: false,
-    shouldEditAllEvents: false
+    shouldEditAllEvents: false,
+    Transition: props => <Slide direction="up" {...props} />
   };
 
   componentWillMount() {
@@ -551,7 +552,7 @@ class EditEventDialog extends Component {
           fullScreen
           open={isOpen}
           onRequestClose={() => handleClose()}
-          transition={<Slide direction="up" />}
+          transition={this.state.Transition}
         >
           <AppBar className={classes.appBar}>
             <Toolbar>
