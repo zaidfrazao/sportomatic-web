@@ -10,7 +10,21 @@ const initialState= {
   coachWages: {}
 };
 describe("Reducers", ()=>{
-  
+  const {coachesReducer} = imports;
+  describe("coachesReducer", () => {
+    describe("RECEIVE_STAFF", ()=>{
+      const {RECEIVE_STAFF} = imports;
+      const action = {
+        type:RECEIVE_STAFF,
+        payload:{
+          coaches:{}
+        }
+      };
+      const newState = wagesReducer(initialState, action);
+      expect(newState.uiConfig.coaches).toEqual(action.payload.coaches);
+    });
+
+  });
 
   const {loadingStatusReducer} = imports;
   describe("loadingStatusReducer", () => {
