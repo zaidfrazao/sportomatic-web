@@ -82,4 +82,18 @@ describe("Reducers", ()=>{
     });
 
   });
+
+  const {coachWagesReducer} = imports;
+  describe("coachWagesReducer", ()=>{
+      describe("RECEIVE_WAGES", ()=>{
+          const {RECEIVE_WAGES} =imports;
+          const action = {
+            type:RECEIVE_WAGES,
+            payload:{wages:{}}
+          };
+
+          const newState= wagesReducer(initialState, action);
+          expect(newState).toEqual(action.payload.wages);
+      });
+  });
 });
