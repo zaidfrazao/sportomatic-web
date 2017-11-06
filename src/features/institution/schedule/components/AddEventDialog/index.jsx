@@ -96,7 +96,8 @@ class AddEventDialog extends Component {
     isOtherEventTypeCompetitive: false,
     selectedTeams: [],
     selectedManagers: [],
-    selectedCoaches: []
+    selectedCoaches: [],
+    Transition: props => <Slide direction="up" {...props} />
   };
 
   componentWillMount() {
@@ -448,7 +449,7 @@ class AddEventDialog extends Component {
         fullScreen
         open={isOpen}
         onRequestClose={() => handleClose()}
-        transition={<Slide direction="up" />}
+        transition={this.state.Transition}
       >
         <AppBar className={classes.appBar}>
           <Toolbar>
@@ -608,11 +609,9 @@ class AddEventDialog extends Component {
                         placeholder="E.g. Gym Session, Sports Day, Meeting"
                         error={hasOtherEventTypeError}
                         helperText={
-                          hasOtherEventTypeError ? (
-                            "Please specify the event type"
-                          ) : (
-                            ""
-                          )
+                          hasOtherEventTypeError
+                            ? "Please specify the event type"
+                            : ""
                         }
                         onChange={this.handleChange("otherEventType")}
                         InputLabelProps={{
@@ -644,11 +643,9 @@ class AddEventDialog extends Component {
                     value={date}
                     error={hasDateError}
                     helperText={
-                      hasDateError ? (
-                        "You cannot schedule events in the past"
-                      ) : (
-                        ""
-                      )
+                      hasDateError
+                        ? "You cannot schedule events in the past"
+                        : ""
                     }
                     onChange={this.handleChange("date")}
                     InputLabelProps={{
@@ -716,11 +713,9 @@ class AddEventDialog extends Component {
                     <TextField
                       id="numberOfEvents"
                       label={
-                        frequency === "WEEKLY" ? (
-                          "Number of weeks"
-                        ) : (
-                          "Number of months"
-                        )
+                        frequency === "WEEKLY"
+                          ? "Number of weeks"
+                          : "Number of months"
                       }
                       type="number"
                       value={numberOfEvents}
@@ -744,49 +739,49 @@ class AddEventDialog extends Component {
                 </FormControl>
                 {(type === "MATCH" ||
                   (type === "OTHER" && isOtherEventTypeCompetitive)) &&
-                frequency === "ONCE" && (
-                  <div>
-                    <FormControl className={classes.formControl}>
-                      <TextField
-                        id="opponents"
-                        label="Opponents"
-                        value={opponents}
-                        onChange={this.handleChange("opponents")}
-                        InputLabelProps={{
-                          shrink: true
-                        }}
-                      />
-                    </FormControl>
-                    <FormControl
-                      component="fieldset"
-                      className={classes.formControl}
-                    >
-                      <FormLabel component="legend">Home / away</FormLabel>
-                      <RadioGroup
-                        aria-label="home"
-                        name="home"
-                        value={homeAway}
-                        onChange={this.handleChange("homeAway")}
+                  frequency === "ONCE" && (
+                    <div>
+                      <FormControl className={classes.formControl}>
+                        <TextField
+                          id="opponents"
+                          label="Opponents"
+                          value={opponents}
+                          onChange={this.handleChange("opponents")}
+                          InputLabelProps={{
+                            shrink: true
+                          }}
+                        />
+                      </FormControl>
+                      <FormControl
+                        component="fieldset"
+                        className={classes.formControl}
                       >
-                        <FormControlLabel
-                          value="UNKNOWN"
-                          control={<Radio />}
-                          label="To be specified"
-                        />
-                        <FormControlLabel
-                          value="HOME"
-                          control={<Radio />}
-                          label="Home"
-                        />
-                        <FormControlLabel
-                          value="AWAY"
-                          control={<Radio />}
-                          label="Away"
-                        />
-                      </RadioGroup>
-                    </FormControl>
-                  </div>
-                )}
+                        <FormLabel component="legend">Home / away</FormLabel>
+                        <RadioGroup
+                          aria-label="home"
+                          name="home"
+                          value={homeAway}
+                          onChange={this.handleChange("homeAway")}
+                        >
+                          <FormControlLabel
+                            value="UNKNOWN"
+                            control={<Radio />}
+                            label="To be specified"
+                          />
+                          <FormControlLabel
+                            value="HOME"
+                            control={<Radio />}
+                            label="Home"
+                          />
+                          <FormControlLabel
+                            value="AWAY"
+                            control={<Radio />}
+                            label="Away"
+                          />
+                        </RadioGroup>
+                      </FormControl>
+                    </div>
+                  )}
               </form>
             </Grid>
             <Grid
