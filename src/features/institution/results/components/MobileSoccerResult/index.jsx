@@ -138,11 +138,13 @@ type Props = {
     adWrapper: string,
     backButton: string,
     contentWrapper: string,
+    draw: string,
     emblems: string,
     eventName: string,
     goalsWrapper: string,
     gridItem: string,
     infoWrapper: string,
+    loss: string,
     scoreWrapper: string,
     statName: string,
     statsWrapper: string,
@@ -150,12 +152,8 @@ type Props = {
     teamName: string,
     teamNameWrapper: string,
     teamsWrapper: string,
+    win: string,
     wrapper: string
-  },
-  eventInfo: {
-    title: string,
-    startTime: string,
-    endTime: string
   },
   eventTitle: string,
   ourTeamInfo: {
@@ -170,6 +168,7 @@ type Props = {
     offsides: number,
     corners: number
   },
+  resultStatus: "WIN" | "LOSS" | "DRAW",
   theirTeamInfo: {
     abbreviation: string,
     institutionEmblemURL: string,
@@ -184,11 +183,7 @@ type Props = {
   }
 };
 
-type State = {
-  hasStats: boolean
-};
-
-class MobileSoccerResult extends Component<Props, State> {
+class MobileSoccerResult extends Component<Props> {
   render() {
     const {
       classes,

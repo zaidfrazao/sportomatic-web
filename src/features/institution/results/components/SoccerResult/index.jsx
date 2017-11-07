@@ -59,15 +59,6 @@ const styles = theme => ({
     width: "calc(100% - 48px)",
     textAlign: "center"
   },
-  expand: {
-    transform: "rotate(0deg)",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest
-    })
-  },
-  expandOpen: {
-    transform: "rotate(180deg)"
-  },
   flexGrow: {
     flex: "1 1 auto"
   },
@@ -158,14 +149,14 @@ type Props = {
     backButton: string,
     centerSpace: string,
     contentWrapper: string,
+    draw: string,
     emblems: string,
     eventName: string,
-    expand: string,
-    expandOpen: string,
     flexGrow: string,
     goalsWrapper: string,
     gridItem: string,
     infoWrapper: string,
+    loss: string,
     statName: string,
     statsToggle: string,
     statsWrapper: string,
@@ -173,12 +164,8 @@ type Props = {
     teamName: string,
     teamNameWrapper: string,
     teamsWrapper: string,
+    win: string,
     wrapper: string
-  },
-  eventInfo: {
-    title: string,
-    startTime: string,
-    endTime: string
   },
   eventTitle: string,
   ourTeamInfo: {
@@ -193,6 +180,7 @@ type Props = {
     offsides: number,
     corners: number
   },
+  resultStatus: "WIN" | "LOSS" | "DRAW",
   theirTeamInfo: {
     name: string,
     institutionEmblemURL: string,
@@ -207,18 +195,7 @@ type Props = {
   }
 };
 
-type State = {
-  expanded: boolean,
-  hasStats: boolean
-};
-
-class SoccerResult extends Component<Props, State> {
-  state = { expanded: false, hasStats: true };
-
-  handleExpandClick = () => {
-    this.setState({ expanded: !this.state.expanded });
-  };
-
+class SoccerResult extends Component<Props> {
   render() {
     const {
       classes,

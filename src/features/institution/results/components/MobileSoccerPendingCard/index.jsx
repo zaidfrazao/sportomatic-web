@@ -72,7 +72,9 @@ type Props = {
   classes: {
     draw: string,
     emblems: string,
+    footer: string,
     goalsWrapper: string,
+    header: string,
     loss: string,
     teamNameWrapper: string,
     teamsWrapper: string,
