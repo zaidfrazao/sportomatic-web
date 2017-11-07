@@ -1,13 +1,8 @@
 // @flow
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
 import _ from "lodash";
-import { withStyles } from "material-ui/styles";
-import AppBar from "material-ui/AppBar";
-import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
-import Tabs, { Tab } from "material-ui/Tabs";
-import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
 import {
   ActionAlias,
   ErrorAlias,
@@ -20,6 +15,7 @@ import {
 import BannerAd from "../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import SoccerResults from "./components/SoccerResults";
 import TeamsList from "./components/TeamsList";
 
 const styles = theme => ({
@@ -54,13 +50,7 @@ const styles = theme => ({
     overflow: "auto"
   },
   inProgressWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    "@media (max-width: 960px)": {
-      display: "block",
-      overflow: "auto"
-    }
+    overflow: "auto"
   },
   loaderWrapper: {
     flexGrow: 1,
@@ -155,81 +145,6 @@ class ResultsLayout extends Component<Props> {
     }
   }
 
-  renderInProgressTab() {
-    const { classes, isMobile } = this.props;
-
-    const ad = this.createAd();
-
-    return (
-      <div className={classes.inProgressWrapper}>
-        <div>
-          <Route
-            render={({ history }) => (
-              <Button
-                raised
-                className={classes.backButton}
-                onClick={() => history.goBack()}
-              >
-                Back
-              </Button>
-            )}
-          />
-        </div>
-        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
-      </div>
-    );
-  }
-
-  renderAwaitingApprovalTab() {
-    const { classes, isMobile } = this.props;
-
-    let ad = this.createAd();
-
-    return (
-      <div className={classes.awaitingApprovalWrapper}>
-        <div>
-          <Route
-            render={({ history }) => (
-              <Button
-                raised
-                className={classes.backButton}
-                onClick={() => history.goBack()}
-              >
-                Back
-              </Button>
-            )}
-          />
-        </div>
-        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
-      </div>
-    );
-  }
-
-  renderHistoryTab() {
-    const { classes, isMobile } = this.props;
-
-    const ad = this.createAd();
-
-    return (
-      <div className={classes.historyWrapper}>
-        <div>
-          <Route
-            render={({ history }) => (
-              <Button
-                raised
-                className={classes.backButton}
-                onClick={() => history.goBack()}
-              >
-                Back
-              </Button>
-            )}
-          />
-        </div>
-        {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
-      </div>
-    );
-  }
-
   createAd() {
     const { isMobile, isTablet } = this.props;
 
@@ -267,11 +182,11 @@ class ResultsLayout extends Component<Props> {
   }
 
   render() {
-    const { classes, teams } = this.props;
+    const { classes, teams, isMobile, isTablet } = this.props;
     const { isTeamsLoading, isEventsLoading } = this.props.loadingStatus;
     const { currentTab } = this.props.uiConfig;
     const { updateTab } = this.props.actions;
-    const { teamID } = this.props.match.params;
+    const { teamID, eventID } = this.props.match.params;
 
     const teamsList = this.createTeamsList();
     const ad = this.createAd();
@@ -284,33 +199,18 @@ class ResultsLayout extends Component<Props> {
           </div>
         ) : (
           <div className={classes.contentWrapper}>
-            {teams[teamID] ? (
-              <div className={classes.tabsWrapper}>
-                <AppBar position="static" color="default">
-                  <Typography
-                    type="title"
-                    component="h2"
-                    className={classes.teamName}
-                  >
-                    {teams[teamID].metadata.name}
-                  </Typography>
-                  <Tabs
-                    value={currentTab}
-                    onChange={(event, newTab) => updateTab(newTab)}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                  >
-                    <Tab label="In Progress" value="IN_PROGRESS" />
-                    <Tab label="Pending" value="AWAITING_APPROVAL" />
-                    <Tab label="History" value="HISTORY" />
-                  </Tabs>
-                </AppBar>
-                {currentTab === "IN_PROGRESS" && this.renderInProgressTab()}
-                {currentTab === "AWAITING_APPROVAL" &&
-                  this.renderAwaitingApprovalTab()}
-                {currentTab === "HISTORY" && this.renderHistoryTab()}
-              </div>
+            {eventID || teams[teamID] ? (
+              <SoccerResults
+                isMobile={isMobile}
+                isTablet={isTablet}
+                currentTab={currentTab}
+                teams={teams}
+                teamID={teamID}
+                eventID={eventID}
+                actions={{
+                  updateTab
+                }}
+              />
             ) : (
               <div>
                 <div className={classes.adWrapper}>{ad}</div>
