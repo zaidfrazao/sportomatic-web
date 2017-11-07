@@ -148,7 +148,7 @@ type State = {
   hasStats: boolean
 };
 
-class MobileSoccerScorer extends Component<Props, State> {
+class MobileScorer extends Component<Props, State> {
   state = { expanded: false, hasStats: true };
 
   handleExpandClick = () => {
@@ -403,4 +403,4 @@ class MobileSoccerScorer extends Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(MobileSoccerScorer);
+export default withStyles(styles)(MobileScorer);

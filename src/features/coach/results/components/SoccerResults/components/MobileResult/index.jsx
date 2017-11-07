@@ -179,7 +179,7 @@ type Props = {
   }
 };
 
-class MobileSoccerResult extends Component<Props> {
+class MobileResult extends Component<Props> {
   render() {
     const {
       classes,
@@ -386,4 +386,4 @@ class MobileSoccerResult extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(MobileSoccerResult);
+export default withStyles(styles)(MobileResult);

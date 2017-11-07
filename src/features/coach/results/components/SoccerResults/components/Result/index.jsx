@@ -190,7 +190,7 @@ type Props = {
   }
 };
 
-class SoccerResult extends Component<Props> {
+class Result extends Component<Props> {
   render() {
     const {
       classes,
@@ -410,4 +410,4 @@ class SoccerResult extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(SoccerResult);
+export default withStyles(styles)(Result);

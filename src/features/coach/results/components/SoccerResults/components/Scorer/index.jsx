@@ -162,7 +162,7 @@ type State = {
   hasStats: boolean
 };
 
-class SoccerScorer extends Component<Props, State> {
+class Scorer extends Component<Props, State> {
   state = { expanded: false, hasStats: true };
 
   handleExpandClick = () => {
@@ -488,4 +488,4 @@ class SoccerScorer extends Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(SoccerScorer);
+export default withStyles(styles)(Scorer);

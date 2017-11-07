@@ -9,13 +9,6 @@ import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
-  centerSpace: {
-    width: "10%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  },
   draw: {
     backgroundColor: blue[500],
     color: grey[50],
@@ -24,8 +17,7 @@ const styles = theme => ({
     textAlign: "center"
   },
   emblems: {
-    width: "80%",
-    maxWidth: 100,
+    width: 48,
     margin: 10,
     height: "auto"
   },
@@ -33,10 +25,9 @@ const styles = theme => ({
     backgroundColor: grey[100]
   },
   goalsWrapper: {
-    width: "15%",
-    padding: 24,
+    width: "40%",
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center"
   },
@@ -50,22 +41,20 @@ const styles = theme => ({
     padding: 24,
     textAlign: "center"
   },
-  teamName: {
-    width: "100%",
-    textAlign: "center"
-  },
   teamNameWrapper: {
-    width: "25%",
-    padding: 24,
+    width: "60%",
     display: "flex",
-    flexDirection: "column",
+    marginLeft: 10,
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "flex-start"
   },
   teamsWrapper: {
-    width: "100%",
+    margin: "10px 0",
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around"
   },
   win: {
     backgroundColor: green[500],
@@ -81,14 +70,12 @@ const styles = theme => ({
 
 type Props = {
   classes: {
-    centerSpace: string,
     draw: string,
     emblems: string,
     footer: string,
     goalsWrapper: string,
     header: string,
     loss: string,
-    teamName: string,
     teamNameWrapper: string,
     teamsWrapper: string,
     win: string,
@@ -100,20 +87,20 @@ type Props = {
     date: string
   },
   ourTeamInfo: {
-    name: string,
+    abbreviation: string,
     institutionEmblemURL: string,
     goals: number
   },
   resultStatus: "WIN" | "LOSS" | "DRAW",
   teamID: string,
   theirTeamInfo: {
-    name: string,
+    abbreviation: string,
     institutionEmblemURL: string,
     goals: number
   }
 };
 
-class SoccerPendingCard extends Component<Props> {
+class MobilePendingCard extends Component<Props> {
   render() {
     const {
       classes,
@@ -147,44 +134,29 @@ class SoccerPendingCard extends Component<Props> {
                 src={ourTeamInfo.institutionEmblemURL}
                 className={classes.emblems}
               />
-              <Typography
-                type="headline"
-                component="p"
-                className={classes.teamName}
-              >
-                {ourTeamInfo.name}
+              <Typography type="title" component="p">
+                {ourTeamInfo.abbreviation}
               </Typography>
             </div>
             <div className={classes.goalsWrapper}>
-              <Typography type="display4" component="p">
+              <Typography type="headline" component="p">
                 {ourTeamInfo.goals}
               </Typography>
             </div>
-            <div className={classes.centerSpace}>
-              <Typography
-                type="display4"
-                component="p"
-                className={classes.teamName}
-              >
-                -
-              </Typography>
-            </div>
-            <div className={classes.goalsWrapper}>
-              <Typography type="display4" component="p">
-                {theirTeamInfo.goals}
-              </Typography>
-            </div>
+          </div>
+          <div className={classes.teamsWrapper}>
             <div className={classes.teamNameWrapper}>
               <Avatar
                 src={theirTeamInfo.institutionEmblemURL}
                 className={classes.emblems}
               />
-              <Typography
-                type="headline"
-                component="p"
-                className={classes.teamName}
-              >
-                {theirTeamInfo.name}
+              <Typography type="title" component="p">
+                {theirTeamInfo.abbreviation}
+              </Typography>
+            </div>
+            <div className={classes.goalsWrapper}>
+              <Typography type="headline" component="p">
+                {theirTeamInfo.goals}
               </Typography>
             </div>
           </div>
@@ -206,4 +178,4 @@ class SoccerPendingCard extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(SoccerPendingCard);
+export default withStyles(styles)(MobilePendingCard);
