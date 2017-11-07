@@ -100,7 +100,7 @@ type Props = {
   }
 };
 
-class MobileSoccerPendingCard extends Component<Props> {
+class MobileResultCard extends Component<Props> {
   render() {
     const {
       classes,
@@ -178,4 +178,4 @@ class MobileSoccerPendingCard extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(MobileSoccerPendingCard);
+export default withStyles(styles)(MobileResultCard);

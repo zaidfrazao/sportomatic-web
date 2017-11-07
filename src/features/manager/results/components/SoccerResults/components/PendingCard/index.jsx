@@ -113,7 +113,7 @@ type Props = {
   }
 };
 
-class SoccerPendingCard extends Component<Props> {
+class PendingCard extends Component<Props> {
   render() {
     const {
       classes,
@@ -189,6 +189,7 @@ class SoccerPendingCard extends Component<Props> {
             </div>
           </div>
           <CardActions className={classes.footer}>
+            <Button color="primary">Approve</Button>
             <Route
               render={({ history }) => (
                 <Button
@@ -206,4 +207,4 @@ class SoccerPendingCard extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(SoccerPendingCard);
+export default withStyles(styles)(PendingCard);
