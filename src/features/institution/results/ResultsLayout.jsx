@@ -35,18 +35,13 @@ import mexico from "./images/mexico.png";
 
 const styles = theme => ({
   adWrapper: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center"
+    textAlign: "center"
   },
   awaitingApprovalWrapper: {
     flexGrow: 1,
     display: "flex",
     flexDirection: "column",
-    overflow: "auto",
-    "@media (max-width: 960px)": {
-      display: "block"
-    }
+    overflow: "auto"
   },
   backButton: {
     margin: 24,
@@ -68,10 +63,7 @@ const styles = theme => ({
     flexGrow: 1,
     display: "flex",
     flexDirection: "column",
-    "@media (max-width: 960px)": {
-      display: "block",
-      overflow: "auto"
-    }
+    overflow: "auto"
   },
   loaderWrapper: {
     flexGrow: 1,
