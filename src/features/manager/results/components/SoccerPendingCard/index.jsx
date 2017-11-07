@@ -4,6 +4,7 @@ import Avatar from "material-ui/Avatar";
 import { blue, grey, green, red } from "material-ui/colors";
 import Button from "material-ui/Button";
 import Card, { CardActions, CardHeader } from "material-ui/Card";
+import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 
@@ -28,6 +29,9 @@ const styles = theme => ({
     margin: 10,
     height: "auto"
   },
+  footer: {
+    backgroundColor: grey[100]
+  },
   goalsWrapper: {
     width: "15%",
     padding: 24,
@@ -35,6 +39,9 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center"
+  },
+  header: {
+    backgroundColor: grey[100]
   },
   loss: {
     backgroundColor: red[500],
@@ -77,7 +84,9 @@ type Props = {
     centerSpace: string,
     draw: string,
     emblems: string,
+    footer: string,
     goalsWrapper: string,
+    header: string,
     loss: string,
     teamName: string,
     teamNameWrapper: string,
@@ -85,6 +94,7 @@ type Props = {
     win: string,
     wrapper: string
   },
+  eventID: string,
   eventInfo: {
     title: string,
     date: string
@@ -95,6 +105,7 @@ type Props = {
     goals: number
   },
   resultStatus: "WIN" | "LOSS" | "DRAW",
+  teamID: string,
   theirTeamInfo: {
     name: string,
     institutionEmblemURL: string,
@@ -109,7 +120,9 @@ class SoccerPendingCard extends Component<Props> {
       ourTeamInfo,
       theirTeamInfo,
       eventInfo,
-      resultStatus
+      resultStatus,
+      teamID,
+      eventID
     } = this.props;
 
     let statusStyle = classes.draw;
@@ -122,7 +135,11 @@ class SoccerPendingCard extends Component<Props> {
     return (
       <div className={classes.wrapper}>
         <Card>
-          <CardHeader title={eventInfo.title} subheader={eventInfo.date} />
+          <CardHeader
+            title={eventInfo.title}
+            subheader={eventInfo.date}
+            className={classes.header}
+          />
           <div className={statusStyle}>{resultStatus}</div>
           <div className={classes.teamsWrapper}>
             <div className={classes.teamNameWrapper}>
@@ -171,9 +188,18 @@ class SoccerPendingCard extends Component<Props> {
               </Typography>
             </div>
           </div>
-          <CardActions>
+          <CardActions className={classes.footer}>
             <Button color="primary">Approve</Button>
-            <Button>View stats</Button>
+            <Route
+              render={({ history }) => (
+                <Button
+                  onClick={() =>
+                    history.push(`/manager/results/${teamID}/${eventID}`)}
+                >
+                  View stats
+                </Button>
+              )}
+            />
           </CardActions>
         </Card>
       </div>

@@ -21,10 +21,12 @@ import BannerAd from "../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 import MobileSoccerPendingCard from "./components/MobileSoccerPendingCard";
+import MobileSoccerResult from "./components/MobileSoccerResult";
 import MobileSoccerResultsCard from "./components/MobileSoccerResultsCard";
 import MobileSoccerScorer from "./components/MobileSoccerScorer";
 import SoccerPendingCard from "./components/SoccerPendingCard";
 import SoccerResultsCard from "./components/SoccerResultsCard";
+import SoccerResult from "./components/SoccerResult";
 import SoccerScorer from "./components/SoccerScorer";
 import TeamsList from "./components/TeamsList";
 
@@ -33,18 +35,13 @@ import mexico from "./images/mexico.png";
 
 const styles = theme => ({
   adWrapper: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center"
+    textAlign: "center"
   },
   awaitingApprovalWrapper: {
     flexGrow: 1,
     display: "flex",
     flexDirection: "column",
-    overflow: "auto",
-    "@media (max-width: 960px)": {
-      display: "block"
-    }
+    overflow: "auto"
   },
   backButton: {
     margin: 24,
@@ -66,10 +63,7 @@ const styles = theme => ({
     flexGrow: 1,
     display: "flex",
     flexDirection: "column",
-    "@media (max-width: 960px)": {
-      display: "block",
-      overflow: "auto"
-    }
+    overflow: "auto"
   },
   loaderWrapper: {
     flexGrow: 1,
@@ -141,8 +135,7 @@ type Props = {
   teams: { [teamID: string]: TeamAlias },
   uiConfig: {
     currentTab: "IN_PROGRESS" | "AWAITING_APPROVAL" | "HISTORY"
-  },
-  userID: string
+  }
 };
 
 class ResultsLayout extends Component<Props> {
@@ -256,6 +249,7 @@ class ResultsLayout extends Component<Props> {
 
   renderAwaitingApprovalTab() {
     const { classes, isMobile } = this.props;
+    const { teamID, eventID } = this.props.match.params;
 
     let ad = this.createAd();
 
@@ -292,6 +286,8 @@ class ResultsLayout extends Component<Props> {
               institutionEmblemURL: mexico,
               goals: 3
             }}
+            teamID={teamID}
+            eventID={eventID}
           />
         ) : (
           <SoccerPendingCard
@@ -310,6 +306,8 @@ class ResultsLayout extends Component<Props> {
               institutionEmblemURL: mexico,
               goals: 3
             }}
+            teamID={teamID}
+            eventID={eventID}
           />
         )}
       </div>
@@ -318,6 +316,7 @@ class ResultsLayout extends Component<Props> {
 
   renderHistoryTab() {
     const { classes, isMobile } = this.props;
+    const { teamID, eventID } = this.props.match.params;
 
     const ad = this.createAd();
 
@@ -354,6 +353,8 @@ class ResultsLayout extends Component<Props> {
               institutionEmblemURL: mexico,
               goals: 3
             }}
+            teamID={teamID}
+            eventID={eventID}
           />
         ) : (
           <SoccerResultsCard
@@ -372,6 +373,8 @@ class ResultsLayout extends Component<Props> {
               institutionEmblemURL: mexico,
               goals: 3
             }}
+            teamID={teamID}
+            eventID={eventID}
           />
         )}
       </div>
@@ -392,19 +395,17 @@ class ResultsLayout extends Component<Props> {
   }
 
   createTeamsList() {
-    const { teams, userID } = this.props;
+    const { teams } = this.props;
 
     const teamsList = [];
     _.values(
       _.mapValues(teams, (value, key) => {
-        if (value.managers[userID]) {
-          teamsList.push({
-            ...value,
-            id: key,
-            name: value.metadata.name,
-            sport: value.metadata.sport
-          });
-        }
+        teamsList.push({
+          ...value,
+          id: key,
+          name: value.metadata.name,
+          sport: value.metadata.sport
+        });
       })
     ).sort((teamA, teamB) => {
       if (teamA.name > teamB.name) return +1;
@@ -416,14 +417,119 @@ class ResultsLayout extends Component<Props> {
   }
 
   render() {
-    const { classes, teams } = this.props;
+    const { classes, teams, isMobile } = this.props;
     const { isTeamsLoading, isEventsLoading } = this.props.loadingStatus;
     const { currentTab } = this.props.uiConfig;
     const { updateTab } = this.props.actions;
-    const { teamID } = this.props.match.params;
+    const { teamID, eventID } = this.props.match.params;
 
     const teamsList = this.createTeamsList();
     const ad = this.createAd();
+
+    let view = {};
+    if (eventID) {
+      if (isMobile) {
+        view = (
+          <MobileSoccerResult
+            ourTeamInfo={{
+              abbreviation: "CAN",
+              institutionEmblemURL: canada,
+              goals: 2,
+              shots: 12,
+              fouls: 5,
+              yellowCards: 2,
+              redCards: 0,
+              shotsOnTarget: 4,
+              offsides: 0,
+              corners: 7
+            }}
+            theirTeamInfo={{
+              abbreviation: "MEX",
+              institutionEmblemURL: mexico,
+              goals: 3,
+              shots: 7,
+              shotsOnTarget: 5,
+              fouls: 5,
+              yellowCards: 0,
+              redCards: 0,
+              offsides: 5,
+              corners: 4
+            }}
+            eventTitle="FIFA World Cup Qualifiers 2018"
+            ad={this.createAd()}
+            resultStatus="WIN"
+          />
+        );
+      } else {
+        view = (
+          <SoccerResult
+            ourTeamInfo={{
+              name: "Canada",
+              institutionEmblemURL: canada,
+              goals: 2,
+              shots: 12,
+              fouls: 5,
+              yellowCards: 2,
+              redCards: 0,
+              shotsOnTarget: 4,
+              offsides: 0,
+              corners: 7
+            }}
+            theirTeamInfo={{
+              name: "Mexico",
+              institutionEmblemURL: mexico,
+              goals: 3,
+              shots: 7,
+              shotsOnTarget: 5,
+              fouls: 5,
+              yellowCards: 0,
+              redCards: 0,
+              offsides: 5,
+              corners: 4
+            }}
+            eventTitle="FIFA World Cup Qualifiers 2018"
+            ad={this.createAd()}
+            resultStatus="DRAW"
+          />
+        );
+      }
+    } else if (teams[teamID]) {
+      view = (
+        <div className={classes.tabsWrapper}>
+          <AppBar position="static" color="default">
+            <Typography
+              type="title"
+              component="h2"
+              className={classes.teamName}
+            >
+              {teams[teamID].metadata.name}
+            </Typography>
+            <Tabs
+              value={currentTab}
+              onChange={(event, newTab) => updateTab(newTab)}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+            >
+              <Tab label="In Progress" value="IN_PROGRESS" />
+              <Tab label="Pending" value="AWAITING_APPROVAL" />
+              <Tab label="Results" value="HISTORY" />
+            </Tabs>
+          </AppBar>
+          {currentTab === "IN_PROGRESS" && this.renderInProgressTab()}
+          {currentTab === "AWAITING_APPROVAL" &&
+            this.renderAwaitingApprovalTab()}
+          {currentTab === "HISTORY" && this.renderHistoryTab()}
+        </div>
+      );
+    } else {
+      view = (
+        <div>
+          <div className={classes.adWrapper}>{ad}</div>
+          <TeamsList teams={teamsList} />
+        </div>
+      );
+    }
 
     return (
       <div className={classes.root}>
@@ -432,41 +538,7 @@ class ResultsLayout extends Component<Props> {
             <CircularProgress />
           </div>
         ) : (
-          <div className={classes.contentWrapper}>
-            {teams[teamID] ? (
-              <div className={classes.tabsWrapper}>
-                <AppBar position="static" color="default">
-                  <Typography
-                    type="title"
-                    component="h2"
-                    className={classes.teamName}
-                  >
-                    {teams[teamID].metadata.name}
-                  </Typography>
-                  <Tabs
-                    value={currentTab}
-                    onChange={(event, newTab) => updateTab(newTab)}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                  >
-                    <Tab label="In Progress" value="IN_PROGRESS" />
-                    <Tab label="Pending" value="AWAITING_APPROVAL" />
-                    <Tab label="Results" value="HISTORY" />
-                  </Tabs>
-                </AppBar>
-                {currentTab === "IN_PROGRESS" && this.renderInProgressTab()}
-                {currentTab === "AWAITING_APPROVAL" &&
-                  this.renderAwaitingApprovalTab()}
-                {currentTab === "HISTORY" && this.renderHistoryTab()}
-              </div>
-            ) : (
-              <div>
-                <div className={classes.adWrapper}>{ad}</div>
-                <TeamsList teams={teamsList} />
-              </div>
-            )}
-          </div>
+          <div className={classes.contentWrapper}>{view}</div>
         )}
       </div>
     );
