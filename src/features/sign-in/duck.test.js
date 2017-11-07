@@ -8,7 +8,7 @@ const initialState = {
 };
 
 describe("Reducers", () => {
-  describe("signInReducer", () => {
+  describe("userInfoReducer", () => {
     const { signInReducer } = imports;
 
     describe("INIT_USER", () => {
@@ -90,6 +90,152 @@ describe("Reducers", () => {
         //why is email being set to "" ?
         expect(newState.userInfo.email).toEqual("");
         expect(newState.userInfo.password).toEqual("");
+      });
+    });
+  });
+
+  describe("loadingStatusReducer", () => {
+    const { signInReducer } = imports;
+    describe("REQUEST_SIGN_IN", () => {
+      const { REQUEST_SIGN_IN } = imports;
+      test("Sets isSignInLoading to true", () => {
+        const action = { type: REQUEST_SIGN_IN };
+        const newState = signInReducer(initialState, action);
+        expect(newState.loadingStatus.isSignInLoading).toBe(true);
+      });
+    });
+
+    describe("RECEIVE_ACCOUNT_INFO", () => {
+      const { RECEIVE_ACCOUNT_INFO } = imports;
+      test("Sets isSignInLoading to false", () => {
+        const action = {
+          type: RECEIVE_ACCOUNT_INFO,
+          payload: {
+            type: "coach",
+            status: "ACTIVE"
+          }
+        };
+        const newState = signInReducer(initialState, action);
+        expect(newState.loadingStatus.isSignInLoading).toBe(false);
+      });
+    });
+
+    describe("ERROR_FETCHING_ACCOUNT_INFO", () => {
+      const { ERROR_FETCHING_ACCOUNT_INFO } = imports;
+      test("Sets isSignInLoading to false", () => {
+        const action = { type: ERROR_FETCHING_ACCOUNT_INFO };
+        const newState = signInReducer(initialState, action);
+        expect(newState.loadingStatus.isSignInLoading).toBe(false);
+      });
+    });
+
+    describe("ERROR_SIGNING_IN", () => {
+      const { ERROR_SIGNING_IN } = imports;
+      test("Sets isSignInLoading to false", () => {
+        const action = { type: ERROR_SIGNING_IN };
+        const newState = signInReducer(initialState, action);
+        expect(newState.loadingStatus.isSignInLoading).toBe(false);
+      });
+    });
+
+    describe("REQUEST_PASSWORD_RESET", () => {
+      const { REQUEST_PASSWORD_RESET } = imports;
+      test("Sets isPasswordResetLoading to true", () => {
+        const action = { type: REQUEST_PASSWORD_RESET };
+        const newState = signInReducer(initialState, action);
+        expect(newState.loadingStatus.isPasswordResetLoading).toBe(true);
+      });
+    });
+
+    describe("RECEIVE_PASSWORD_RESET", () => {
+      const { RECEIVE_PASSWORD_RESET } = imports;
+      test("Sets isPasswordResetLoading to false", () => {
+        const action = { type: RECEIVE_PASSWORD_RESET };
+        const newState = signInReducer(initialState, action);
+        expect(newState.loadingStatus.isPasswordResetLoading).toBe(false);
+      });
+    });
+
+    describe("ERROR_RESETTING_PASSWORD", () => {
+      const { ERROR_RESETTING_PASSWORD } = imports;
+      test("Sets isPasswordResetLoading to false", () => {
+        const action = { type: ERROR_RESETTING_PASSWORD };
+        const newState = signInReducer(initialState, action);
+        expect(newState.loadingStatus.isPasswordResetLoading).toBe(false);
+      });
+    });
+  });
+  describe("errorsReducer", () => {
+    const { signInReducer } = imports;
+    describe("EMAIL_ERROR_CHECK", () => {
+      const { EMAIL_ERROR_CHECK } = imports;
+      test("Checks email errors", () => {
+        const action = {
+          EMAIL_ERROR_CHECK,
+          payload: {
+            hasError: false,
+            message: ""
+          }
+        };
+        const newState = signInReducer(initialState, action);
+        expect(newState.errors.emailErrors).toEqual(action.payload);
+      });
+    });
+    describe("PASSWORD_ERROR_CHECK", () => {
+      const { PASSWORD_ERROR_CHECK } = imports;
+      test("Checks password error", () => {
+        const action = {
+          PASSWORD_ERROR_CHECK,
+          payload: {
+            hasError: false,
+            message: ""
+          }
+        };
+        const newState = signInReducer(initialState, action);
+        expect(newState.errors.passwordErrors).toEqual(action.payload);
+      });
+    });
+
+    describe("ERROR_SIGNING_IN", () => {
+      const { ERROR_SIGNING_IN } = imports;
+      test("Checks signin errors", () => {
+        const action = {
+          ERROR_SIGNING_IN,
+          payload: {
+            emailErrors: {
+              hasError: false,
+              message: ""
+            },
+            networkErrors: {
+              hasError: false,
+              message: ""
+            },
+            passwordErrors: {
+              hasError: false,
+              message: ""
+            },
+            passwordResetEmailErrors: {
+              hasError: false,
+              message: ""
+            }
+          }
+        };
+        const newState = signInReducer(initialState, action);
+        expect(newState.errors).toEqual(action.payload);
+      });
+    });
+    //TODO check why it returns hasNetwork error false
+    describe("ERROR_FETCHING_ACCOUNT_INFO", () => {
+      const { ERROR_FETCHING_ACCOUNT_INFO } = imports;
+      test("Checks networkErrors", () => {
+        const action = {
+          ERROR_FETCHING_ACCOUNT_INFO
+        };
+        const newState = signInReducer(initialState, action);
+        expect(newState.errors.networkErrors.hasError).toBe(true);
+        expect(newState.errors.networkErrors.message).toEqual(
+          "You have been disconnected from the internet. Please reconnect and try again."
+        );
       });
     });
   });
