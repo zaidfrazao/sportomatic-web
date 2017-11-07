@@ -189,6 +189,7 @@ class PendingCard extends Component<Props> {
             </div>
           </div>
           <CardActions className={classes.footer}>
+            <Button color="primary">Approve</Button>
             <Route
               render={({ history }) => (
                 <Button
