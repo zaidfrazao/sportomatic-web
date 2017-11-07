@@ -15,7 +15,7 @@ import {
 import BannerAd from "../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
-import SoccerResults from "./components/SoccerResults";
+import RugbyResults from "./components/RugbyResults";
 import TeamsList from "./components/TeamsList";
 
 const styles = theme => ({
@@ -196,7 +196,7 @@ class ResultsLayout extends Component<Props> {
         ) : (
           <div className={classes.contentWrapper}>
             {eventID || teams[teamID] ? (
-              <SoccerResults
+              <RugbyResults
                 isMobile={isMobile}
                 isTablet={isTablet}
                 currentTab={currentTab}
