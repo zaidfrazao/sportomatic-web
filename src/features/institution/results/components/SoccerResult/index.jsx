@@ -92,7 +92,6 @@ const styles = theme => ({
     margin: "0 24px"
   },
   statsWrapper: {
-    backgroundColor: grey[50],
     width: "100%",
     display: "flex",
     flexDirection: "row",
@@ -100,7 +99,7 @@ const styles = theme => ({
     justifyContent: "center"
   },
   subheadingWrapper: {
-    backgroundColor: grey[100],
+    backgroundColor: grey[50],
     width: "100%",
     textAlign: "center",
     padding: "24px 0"

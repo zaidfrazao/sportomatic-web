@@ -29,6 +29,9 @@ const styles = theme => ({
     margin: 10,
     height: "auto"
   },
+  footer: {
+    backgroundColor: grey[100]
+  },
   goalsWrapper: {
     width: "15%",
     padding: 24,
@@ -36,6 +39,9 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center"
+  },
+  header: {
+    backgroundColor: grey[100]
   },
   loss: {
     backgroundColor: red[500],
@@ -127,7 +133,11 @@ class SoccerPendingCard extends Component<Props> {
     return (
       <div className={classes.wrapper}>
         <Card>
-          <CardHeader title={eventInfo.title} subheader={eventInfo.date} />
+          <CardHeader
+            title={eventInfo.title}
+            subheader={eventInfo.date}
+            className={classes.header}
+          />
           <div className={statusStyle}>{resultStatus}</div>
           <div className={classes.teamsWrapper}>
             <div className={classes.teamNameWrapper}>
@@ -176,7 +186,7 @@ class SoccerPendingCard extends Component<Props> {
               </Typography>
             </div>
           </div>
-          <CardActions>
+          <CardActions className={classes.footer}>
             <Route
               render={({ history }) => (
                 <Button
