@@ -4,6 +4,7 @@ import Avatar from "material-ui/Avatar";
 import { blue, grey, green, red } from "material-ui/colors";
 import Button from "material-ui/Button";
 import Card, { CardActions, CardHeader } from "material-ui/Card";
+import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 
@@ -72,6 +73,7 @@ type Props = {
     win: string,
     wrapper: string
   },
+  eventID: string,
   eventInfo: {
     title: string,
     date: string
@@ -82,6 +84,7 @@ type Props = {
     goals: number
   },
   resultStatus: "WIN" | "LOSS" | "DRAW",
+  teamID: string,
   theirTeamInfo: {
     abbreviation: string,
     institutionEmblemURL: string,
@@ -96,7 +99,9 @@ class MobileSoccerPendingCard extends Component<Props> {
       ourTeamInfo,
       theirTeamInfo,
       eventInfo,
-      resultStatus
+      resultStatus,
+      teamID,
+      eventID
     } = this.props;
 
     let statusStyle = classes.draw;
@@ -144,7 +149,16 @@ class MobileSoccerPendingCard extends Component<Props> {
             </div>
           </div>
           <CardActions>
-            <Button>View stats</Button>
+            <Route
+              render={({ history }) => (
+                <Button
+                  onClick={() =>
+                    history.push(`/institution/results/${teamID}/${eventID}`)}
+                >
+                  View stats
+                </Button>
+              )}
+            />
           </CardActions>
         </Card>
       </div>
