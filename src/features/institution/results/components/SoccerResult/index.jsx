@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from "react";
+import type { Node } from "react";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
@@ -130,15 +131,20 @@ const styles = theme => ({
 });
 
 type Props = {
-  ad: React.Node,
+  ad: Node,
   classes: {
+    adWrapper: string,
+    backButton: string,
     centerSpace: string,
+    contentWrapper: string,
     emblems: string,
+    eventName: string,
     expand: string,
     expandOpen: string,
     flexGrow: string,
     goalsWrapper: string,
     gridItem: string,
+    infoWrapper: string,
     statName: string,
     statsToggle: string,
     statsWrapper: string,
@@ -153,6 +159,7 @@ type Props = {
     startTime: string,
     endTime: string
   },
+  eventTitle: string,
   ourTeamInfo: {
     name: string,
     institutionEmblemURL: string,
