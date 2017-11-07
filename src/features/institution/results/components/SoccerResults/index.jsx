@@ -1,11 +1,11 @@
 // @flow
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
-import { withStyles } from "material-ui/styles";
 import AppBar from "material-ui/AppBar";
 import Button from "material-ui/Button";
+import { Route } from "react-router-dom";
 import Tabs, { Tab } from "material-ui/Tabs";
 import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
 import { ActionAlias, TeamAlias } from "../../../../../models/aliases";
 import BannerAd from "../../../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
@@ -15,8 +15,8 @@ import MobileResult from "./components/MobileResult";
 import MobileResultCard from "./components/MobileResultCard";
 import MobileScorer from "./components/MobileScorer";
 import PendingCard from "./components/PendingCard";
-import ResultCard from "./components/ResultCard";
 import Result from "./components/Result";
+import ResultCard from "./components/ResultCard";
 import Scorer from "./components/Scorer";
 
 import canada from "./images/canada.png";

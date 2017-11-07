@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from "react";
 import _ from "lodash";
-import { withStyles } from "material-ui/styles";
 import { CircularProgress } from "material-ui/Progress";
+import { withStyles } from "material-ui/styles";
 import {
   ActionAlias,
   ErrorAlias,
