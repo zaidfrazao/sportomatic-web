@@ -4,7 +4,7 @@ import type { Node } from "react";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
-import { grey } from "material-ui/colors";
+import { blue, grey, green, red } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import LeftIcon from "material-ui-icons/ChevronLeft";
 import RightIcon from "material-ui-icons/ChevronRight";
@@ -32,6 +32,13 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     overflow: "auto"
+  },
+  draw: {
+    backgroundColor: blue[500],
+    color: grey[50],
+    width: "calc(100% - 48px)",
+    padding: 24,
+    textAlign: "center"
   },
   emblems: {
     width: 48,
@@ -61,6 +68,13 @@ const styles = theme => ({
   infoWrapper: {
     flexGrow: 1,
     padding: "0 24px 24px 24px"
+  },
+  loss: {
+    backgroundColor: red[500],
+    color: grey[50],
+    width: "calc(100% - 48px)",
+    padding: 24,
+    textAlign: "center"
   },
   scoreWrapper: {
     width: "100%",
@@ -102,6 +116,13 @@ const styles = theme => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around"
+  },
+  win: {
+    backgroundColor: green[500],
+    color: grey[50],
+    width: "calc(100% - 48px)",
+    padding: 24,
+    textAlign: "center"
   },
   wrapper: {
     width: "100%",
@@ -169,7 +190,21 @@ type State = {
 
 class MobileSoccerResult extends Component<Props, State> {
   render() {
-    const { classes, ourTeamInfo, theirTeamInfo, eventTitle, ad } = this.props;
+    const {
+      classes,
+      ourTeamInfo,
+      theirTeamInfo,
+      eventTitle,
+      ad,
+      resultStatus
+    } = this.props;
+
+    let statusStyle = classes.draw;
+    if (resultStatus === "WIN") {
+      statusStyle = classes.win;
+    } else if (resultStatus === "LOSS") {
+      statusStyle = classes.loss;
+    }
 
     return (
       <div className={classes.wrapper}>
@@ -192,6 +227,7 @@ class MobileSoccerResult extends Component<Props, State> {
           />
           <div className={classes.infoWrapper}>
             <Paper className={classes.scoreWrapper}>
+              <div className={statusStyle}>{resultStatus}</div>
               <div className={classes.teamsWrapper}>
                 <div className={classes.teamNameWrapper}>
                   <Avatar

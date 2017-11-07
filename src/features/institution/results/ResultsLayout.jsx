@@ -457,6 +457,7 @@ class ResultsLayout extends Component<Props> {
             }}
             eventTitle="FIFA World Cup Qualifiers 2018"
             ad={this.createAd()}
+            resultStatus="WIN"
           />
         );
       } else {
@@ -488,6 +489,7 @@ class ResultsLayout extends Component<Props> {
             }}
             eventTitle="FIFA World Cup Qualifiers 2018"
             ad={this.createAd()}
+            resultStatus="DRAW"
           />
         );
       }
