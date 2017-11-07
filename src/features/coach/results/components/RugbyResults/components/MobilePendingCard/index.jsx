@@ -89,14 +89,14 @@ type Props = {
   ourTeamInfo: {
     abbreviation: string,
     institutionEmblemURL: string,
-    goals: number
+    score: number
   },
   resultStatus: "WIN" | "LOSS" | "DRAW",
   teamID: string,
   theirTeamInfo: {
     abbreviation: string,
     institutionEmblemURL: string,
-    goals: number
+    score: number
   }
 };
 

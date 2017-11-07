@@ -118,26 +118,24 @@ type Props = {
   ourTeamInfo: {
     abbreviation: string,
     institutionEmblemURL: string,
-    goals: number,
-    shots: number,
-    fouls: number,
-    yellowCards: number,
+    score: number,
+    tries: number,
+    conversions: number,
+    penalties: number,
+    dropKicks: number,
     redCards: number,
-    shotsOnTarget: number,
-    offsides: number,
-    corners: number
+    yellowCards: number
   },
   theirTeamInfo: {
     abbreviation: string,
     institutionEmblemURL: string,
-    goals: number,
-    shots: number,
-    fouls: number,
-    yellowCards: number,
+    score: number,
+    tries: number,
+    conversions: number,
+    penalties: number,
+    dropKicks: number,
     redCards: number,
-    shotsOnTarget: number,
-    offsides: number,
-    corners: number
+    yellowCards: number
   }
 };
 

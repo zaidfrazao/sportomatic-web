@@ -145,6 +145,7 @@ type Props = {
     gridItem: string,
     infoWrapper: string,
     loss: string,
+    mainStatsWrapper: string,
     scoreWrapper: string,
     statName: string,
     statsWrapper: string,
@@ -159,27 +160,25 @@ type Props = {
   ourTeamInfo: {
     abbreviation: string,
     institutionEmblemURL: string,
-    goals: number,
-    shots: number,
-    fouls: number,
-    yellowCards: number,
+    score: number,
+    tries: number,
+    conversions: number,
+    penalties: number,
+    dropKicks: number,
     redCards: number,
-    shotsOnTarget: number,
-    offsides: number,
-    corners: number
+    yellowCards: number
   },
   resultStatus: "WIN" | "LOSS" | "DRAW",
   theirTeamInfo: {
     abbreviation: string,
     institutionEmblemURL: string,
-    goals: number,
-    shots: number,
-    fouls: number,
-    yellowCards: number,
+    score: number,
+    tries: number,
+    conversions: number,
+    penalties: number,
+    dropKicks: number,
     redCards: number,
-    shotsOnTarget: number,
-    offsides: number,
-    corners: number
+    yellowCards: number
   }
 };
 
