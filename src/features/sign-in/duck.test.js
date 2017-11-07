@@ -185,7 +185,7 @@ describe("Reducers", () => {
       const { PASSWORD_ERROR_CHECK } = imports;
       test("Checks password error", () => {
         const action = {
-          PASSWORD_ERROR_CHECK,
+          type: PASSWORD_ERROR_CHECK,
           payload: {
             hasError: false,
             message: ""
@@ -200,7 +200,7 @@ describe("Reducers", () => {
       const { ERROR_SIGNING_IN } = imports;
       test("Checks signin errors", () => {
         const action = {
-          ERROR_SIGNING_IN,
+          type: ERROR_SIGNING_IN,
           payload: {
             emailErrors: {
               hasError: false,
@@ -224,18 +224,127 @@ describe("Reducers", () => {
         expect(newState.errors).toEqual(action.payload);
       });
     });
-    //TODO check why it returns hasNetwork error false
+
     describe("ERROR_FETCHING_ACCOUNT_INFO", () => {
       const { ERROR_FETCHING_ACCOUNT_INFO } = imports;
       test("Checks networkErrors", () => {
         const action = {
-          ERROR_FETCHING_ACCOUNT_INFO
+          type: ERROR_FETCHING_ACCOUNT_INFO
         };
         const newState = signInReducer(initialState, action);
         expect(newState.errors.networkErrors.hasError).toBe(true);
         expect(newState.errors.networkErrors.message).toEqual(
           "You have been disconnected from the internet. Please reconnect and try again."
         );
+      });
+    });
+  });
+  describe("dialogsReducer", () => {
+    const { signInReducer } = imports;
+
+    describe("OPEN_PASSWORD_RESET_DIALOG", () => {
+      const { OPEN_PASSWORD_RESET_DIALOG } = imports;
+      test("Shows password reset dialog", () => {
+        const action = {
+          type: OPEN_PASSWORD_RESET_DIALOG,
+          payload: { initEmail: "user@mail.com" }
+        };
+        const newState = signInReducer(initialState, action);
+        expect(newState.dialogs.isPasswordResetDialogOpen).toBe(true);
+      });
+    });
+
+    describe("RECEIVE_PASSWORD_RESET", () => {
+      const { RECEIVE_PASSWORD_RESET } = imports;
+      test("Closes password reset dialog", () => {
+        const action = {
+          type: RECEIVE_PASSWORD_RESET
+        };
+        const newState = signInReducer(initialState, action);
+        expect(newState.dialogs.isPasswordResetDialogOpen).toBe(false);
+      });
+      test("Shows password reset success dialog", () => {
+        const action = {
+          type: RECEIVE_PASSWORD_RESET
+        };
+        const newState = signInReducer(initialState, action);
+        expect(newState.dialogs.isPasswordResetSuccessModalOpen).toBe(true);
+      });
+    });
+
+    describe("CLOSE_PASSWORD_RESET_DIALOG", () => {
+      const { CLOSE_PASSWORD_RESET_DIALOG } = imports;
+      test("Shows password reset dialog", () => {
+        const action = { type: CLOSE_PASSWORD_RESET_DIALOG };
+        const newState = signInReducer(initialState, action);
+        expect(newState.dialogs.isPasswordResetDialogOpen).toBe(false);
+      });
+    });
+
+    describe("ERROR_SIGNING_IN", () => {
+      const { ERROR_SIGNING_IN } = imports;
+      test("Shows password reset dialog", () => {
+        const action = {
+          type: ERROR_SIGNING_IN,
+          payload: {
+            errors: {
+              networkErrors: {
+                hasError: true
+              }
+            }
+          }
+        };
+        const newState = signInReducer(initialState, action);
+        expect(newState.dialogs.isNetworkFailureModalOpen).toEqual(
+          action.payload.errors.hasError
+        );
+      });
+    });
+
+    describe("ERROR_RESETTING_PASSWORD", () => {
+      const { ERROR_RESETTING_PASSWORD } = imports;
+      test("Shows password reset dialog", () => {
+        const action = {
+          type: ERROR_RESETTING_PASSWORD,
+          payload: {
+            errors: {
+              networkErrors: {
+                hasError: true
+              }
+            }
+          }
+        };
+        const newState = signInReducer(initialState, action);
+        expect(newState.dialogs.isNetworkFailureModalOpen).toEqual(
+          action.payload.errors.hasError
+        );
+      });
+    });
+
+    describe("ERROR_FETCHING_ACCOUNT_INFO", () => {
+      const { ERROR_FETCHING_ACCOUNT_INFO } = imports;
+      test("Shows network failure modal", () => {
+        const action = { type: ERROR_FETCHING_ACCOUNT_INFO };
+        const newState = signInReducer(initialState, action);
+        expect(newState.dialogs.isNetworkFailureModalOpen).toBe(true);
+      });
+    });
+
+    describe("CLOSE_PASSWORD_RESET_SUCCESS_MODAL", () => {
+      const { CLOSE_PASSWORD_RESET_SUCCESS_MODAL } = imports;
+      test("Shows network failure modal", () => {
+        const action = { type: CLOSE_PASSWORD_RESET_SUCCESS_MODAL };
+        const newState = signInReducer(initialState, action);
+        expect(newState.dialogs.isPasswordResetSuccessModalOpen).toBe(false);
+      });
+    });
+
+    describe("CLOSE_NETWORK_FAILURE_MODAL", () => {
+      const { CLOSE_NETWORK_FAILURE_MODAL } = imports;
+      test("Closes network failure modal", () => {
+        const action = { type: CLOSE_NETWORK_FAILURE_MODAL };
+        const newState = signInReducer(initialState, action);
+        expect(newState.dialogs.isNetworkFailureModalOpen).toBe(false);
       });
     });
   });

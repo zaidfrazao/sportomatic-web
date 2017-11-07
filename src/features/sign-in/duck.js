@@ -7,7 +7,7 @@ import firebase from "firebase";
 
 export const REQUEST_SIGN_IN = "sportomatic-web/sign-in/REQUEST_SIGN_IN";
 export const RECEIVE_SIGN_IN = "sportomatic-web/sign-in/RECEIVE_SIGN_IN";
-const ERROR_SIGNING_IN = "sportomatic-web/sign-in/ERROR_SIGNING_IN";
+export const ERROR_SIGNING_IN = "sportomatic-web/sign-in/ERROR_SIGNING_IN";
 export const UPDATE_EMAIL = "sportomatic-web/sign-in/UPDATE_EMAIL";
 export const UPDATE_PASSWORD = "sportomatic-web/sign-in/UPDATE_PASSWORD";
 const UPDATE_PASSWORD_RESET_EMAIL_ADDRESS =
@@ -202,15 +202,12 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
         isPasswordResetDialogOpen: false
       };
     case ERROR_SIGNING_IN:
-      return {
-        ...state,
-        isNetworkFailureModalOpen: action.payload.errors.networkErrors.hasError
-      };
     case ERROR_RESETTING_PASSWORD:
       return {
         ...state,
         isNetworkFailureModalOpen: action.payload.errors.networkErrors.hasError
       };
+
     case ERROR_FETCHING_ACCOUNT_INFO:
       return {
         ...state,
