@@ -182,7 +182,7 @@ class ResultsLayout extends Component<Props> {
   }
 
   render() {
-    const { classes, teams, isMobile } = this.props;
+    const { classes, teams, isMobile, isTablet } = this.props;
     const { isTeamsLoading, isEventsLoading } = this.props.loadingStatus;
     const { currentTab } = this.props.uiConfig;
     const { updateTab } = this.props.actions;
@@ -202,6 +202,7 @@ class ResultsLayout extends Component<Props> {
             {eventID || teams[teamID] ? (
               <SoccerResults
                 isMobile={isMobile}
+                isTablet={isTablet}
                 currentTab={currentTab}
                 teams={teams}
                 teamID={teamID}

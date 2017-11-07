@@ -68,6 +68,7 @@ type Props = {
     updateTab: (newTab: string) => ActionAlias
   },
   classes: {
+    adWrapper: string,
     awaitingApprovalWrapper: string,
     backButton: string,
     historyWrapper: string,
@@ -76,10 +77,11 @@ type Props = {
     teamName: string
   },
   currentTab: "IN_PROGRESS" | "AWAITING_APPROVAL" | "HISTORY",
+  eventID: string,
   isMobile: boolean,
   isTablet: boolean,
-  teams: { [teamID: string]: TeamAlias },
-  userID: string
+  teamID: string,
+  teams: { [teamID: string]: TeamAlias }
 };
 
 class SoccerResults extends Component<Props> {
