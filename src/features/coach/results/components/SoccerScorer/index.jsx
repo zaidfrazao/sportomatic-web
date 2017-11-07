@@ -42,6 +42,9 @@ const styles = theme => ({
   flexGrow: {
     flex: "1 1 auto"
   },
+  footer: {
+    backgroundColor: grey[100]
+  },
   goalsWrapper: {
     width: "15%",
     padding: 24,
@@ -58,6 +61,9 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center"
   },
+  header: {
+    backgroundColor: grey[100]
+  },
   statName: {
     flexGrow: 1,
     textAlign: "center"
@@ -66,7 +72,6 @@ const styles = theme => ({
     margin: "0 24px"
   },
   statsWrapper: {
-    backgroundColor: grey[50],
     width: "100%",
     display: "flex",
     flexDirection: "row",
@@ -74,7 +79,7 @@ const styles = theme => ({
     justifyContent: "center"
   },
   subheadingWrapper: {
-    backgroundColor: grey[100],
+    backgroundColor: grey[50],
     width: "100%",
     textAlign: "center",
     padding: "24px 0"
@@ -108,8 +113,10 @@ type Props = {
     expand: string,
     expandOpen: string,
     flexGrow: string,
+    footer: string,
     goalsWrapper: string,
     gridItem: string,
+    header: string,
     statName: string,
     statsToggle: string,
     statsWrapper: string,
@@ -169,6 +176,7 @@ class SoccerScorer extends Component<Props, State> {
       <div className={classes.wrapper}>
         <Card>
           <CardHeader
+            className={classes.header}
             title={eventInfo.title}
             subheader={`${eventInfo.startTime} - ${eventInfo.endTime}`}
           />
@@ -231,7 +239,7 @@ class SoccerScorer extends Component<Props, State> {
               </Typography>
             </div>
           </div>
-          <CardActions disableActionSpacing>
+          <CardActions disableActionSpacing className={classes.footer}>
             <FormGroup className={classes.statsToggle}>
               <FormControlLabel
                 control={
