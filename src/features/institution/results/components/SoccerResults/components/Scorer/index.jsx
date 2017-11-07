@@ -4,6 +4,7 @@ import Avatar from "material-ui/Avatar";
 import Card, { CardActions, CardHeader } from "material-ui/Card";
 import classnames from "classnames";
 import Collapse from "material-ui/transitions/Collapse";
+import DownIcon from "material-ui-icons/ExpandMore";
 import ExpandMoreIcon from "material-ui-icons/ExpandMore";
 import { FormControlLabel, FormGroup } from "material-ui/Form";
 import { grey } from "material-ui/colors";
@@ -11,13 +12,21 @@ import IconButton from "material-ui/IconButton";
 import LeftIcon from "material-ui-icons/ChevronLeft";
 import RightIcon from "material-ui-icons/ChevronRight";
 import Switch from "material-ui/Switch";
-import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
+import UpIcon from "material-ui-icons/ExpandLess";
 import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
+  centerSpace: {
+    width: "10%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center"
+  },
   emblems: {
-    width: 48,
+    width: "80%",
+    maxWidth: 100,
     margin: 10,
     height: "auto"
   },
@@ -37,9 +46,10 @@ const styles = theme => ({
     backgroundColor: grey[100]
   },
   goalsWrapper: {
-    width: "40%",
+    width: "15%",
+    padding: 24,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center"
   },
@@ -74,20 +84,22 @@ const styles = theme => ({
     textAlign: "center",
     padding: "24px 0"
   },
+  teamName: {
+    width: "100%",
+    textAlign: "center"
+  },
   teamNameWrapper: {
-    width: "60%",
+    width: "25%",
+    padding: 24,
     display: "flex",
-    marginLeft: 10,
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
-    justifyContent: "flex-start"
+    justifyContent: "center"
   },
   teamsWrapper: {
-    margin: "10px 0",
+    width: "100%",
     display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around"
+    flexDirection: "row"
   },
   wrapper: {
     padding: 24
@@ -96,6 +108,7 @@ const styles = theme => ({
 
 type Props = {
   classes: {
+    centerSpace: string,
     emblems: string,
     expand: string,
     expandOpen: string,
@@ -108,6 +121,7 @@ type Props = {
     statsToggle: string,
     statsWrapper: string,
     subheadingWrapper: string,
+    teamName: string,
     teamNameWrapper: string,
     teamsWrapper: string,
     wrapper: string
@@ -118,7 +132,7 @@ type Props = {
     endTime: string
   },
   ourTeamInfo: {
-    abbreviation: string,
+    name: string,
     institutionEmblemURL: string,
     goals: number,
     shots: number,
@@ -130,7 +144,7 @@ type Props = {
     corners: number
   },
   theirTeamInfo: {
-    abbreviation: string,
+    name: string,
     institutionEmblemURL: string,
     goals: number,
     shots: number,
@@ -148,7 +162,7 @@ type State = {
   hasStats: boolean
 };
 
-class MobileSoccerScorer extends Component<Props, State> {
+class Scorer extends Component<Props, State> {
   state = { expanded: false, hasStats: true };
 
   handleExpandClick = () => {
@@ -172,42 +186,57 @@ class MobileSoccerScorer extends Component<Props, State> {
                 src={ourTeamInfo.institutionEmblemURL}
                 className={classes.emblems}
               />
-              <Typography type="title" component="p">
-                {ourTeamInfo.abbreviation}
+              <Typography
+                type="headline"
+                component="p"
+                className={classes.teamName}
+              >
+                {ourTeamInfo.name}
               </Typography>
             </div>
             <div className={classes.goalsWrapper}>
               <IconButton aria-label="Increment goals">
-                <LeftIcon />
+                <UpIcon />
               </IconButton>
-              <Typography type="headline" component="p">
+              <Typography type="display4" component="p">
                 {ourTeamInfo.goals}
               </Typography>
               <IconButton aria-label="Decrement goals">
-                <RightIcon />
+                <DownIcon />
               </IconButton>
             </div>
-          </div>
-          <div className={classes.teamsWrapper}>
+            <div className={classes.centerSpace}>
+              <Typography
+                type="display4"
+                component="p"
+                className={classes.teamName}
+              >
+                -
+              </Typography>
+            </div>
+            <div className={classes.goalsWrapper}>
+              <IconButton aria-label="Increment goals">
+                <UpIcon />
+              </IconButton>
+              <Typography type="display4" component="p">
+                {theirTeamInfo.goals}
+              </Typography>
+              <IconButton aria-label="Decrement goals">
+                <DownIcon />
+              </IconButton>
+            </div>
             <div className={classes.teamNameWrapper}>
               <Avatar
                 src={theirTeamInfo.institutionEmblemURL}
                 className={classes.emblems}
               />
-              <Typography type="title" component="p">
-                {theirTeamInfo.abbreviation}
+              <Typography
+                type="headline"
+                component="p"
+                className={classes.teamName}
+              >
+                {theirTeamInfo.name}
               </Typography>
-            </div>
-            <div className={classes.goalsWrapper}>
-              <IconButton aria-label="Increment goals">
-                <LeftIcon />
-              </IconButton>
-              <Typography type="headline" component="p">
-                {theirTeamInfo.goals}
-              </Typography>
-              <IconButton aria-label="Decrement goals">
-                <RightIcon />
-              </IconButton>
             </div>
           </div>
           <CardActions disableActionSpacing className={classes.footer}>
@@ -250,11 +279,15 @@ class MobileSoccerScorer extends Component<Props, State> {
               </div>
               <div className={classes.statsWrapper}>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={ourTeamInfo.shots}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement shots">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.shots}
+                  </Typography>
+                  <IconButton aria-label="Increment shots">
+                    <RightIcon />
+                  </IconButton>
                 </div>
                 <div className={classes.statName}>
                   <Typography type="subheading" component="h4">
@@ -262,20 +295,28 @@ class MobileSoccerScorer extends Component<Props, State> {
                   </Typography>
                 </div>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={theirTeamInfo.shots}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement shots">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.shots}
+                  </Typography>
+                  <IconButton aria-label="Increment shots">
+                    <RightIcon />
+                  </IconButton>
                 </div>
               </div>
               <div className={classes.statsWrapper}>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={ourTeamInfo.shotsOnTarget}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement shots on target">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.shotsOnTarget}
+                  </Typography>
+                  <IconButton aria-label="Increment shots on target">
+                    <RightIcon />
+                  </IconButton>
                 </div>
                 <div className={classes.statName}>
                   <Typography type="subheading" component="h4">
@@ -283,20 +324,28 @@ class MobileSoccerScorer extends Component<Props, State> {
                   </Typography>
                 </div>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={theirTeamInfo.shotsOnTarget}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement shots on target">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.shotsOnTarget}
+                  </Typography>
+                  <IconButton aria-label="Increment shots on target">
+                    <RightIcon />
+                  </IconButton>
                 </div>
               </div>
               <div className={classes.statsWrapper}>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={ourTeamInfo.fouls}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement fouls">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.fouls}
+                  </Typography>
+                  <IconButton aria-label="Increment fouls">
+                    <RightIcon />
+                  </IconButton>
                 </div>
                 <div className={classes.statName}>
                   <Typography type="subheading" component="h4">
@@ -304,20 +353,28 @@ class MobileSoccerScorer extends Component<Props, State> {
                   </Typography>
                 </div>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={theirTeamInfo.fouls}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement fouls">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.fouls}
+                  </Typography>
+                  <IconButton aria-label="Increment fouls">
+                    <RightIcon />
+                  </IconButton>
                 </div>
               </div>
               <div className={classes.statsWrapper}>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={ourTeamInfo.yellowCards}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement yellow cards">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.yellowCards}
+                  </Typography>
+                  <IconButton aria-label="Increment yellow cards">
+                    <RightIcon />
+                  </IconButton>
                 </div>
                 <div className={classes.statName}>
                   <Typography type="subheading" component="h4">
@@ -325,20 +382,28 @@ class MobileSoccerScorer extends Component<Props, State> {
                   </Typography>
                 </div>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={theirTeamInfo.yellowCards}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement yellow cards">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.yellowCards}
+                  </Typography>
+                  <IconButton aria-label="Increment yellow cards">
+                    <RightIcon />
+                  </IconButton>
                 </div>
               </div>
               <div className={classes.statsWrapper}>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={ourTeamInfo.redCards}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement red cards">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.redCards}
+                  </Typography>
+                  <IconButton aria-label="Increment red cards">
+                    <RightIcon />
+                  </IconButton>
                 </div>
                 <div className={classes.statName}>
                   <Typography type="subheading" component="h4">
@@ -346,20 +411,28 @@ class MobileSoccerScorer extends Component<Props, State> {
                   </Typography>
                 </div>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={theirTeamInfo.redCards}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement red cards">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.redCards}
+                  </Typography>
+                  <IconButton aria-label="Increment red cards">
+                    <RightIcon />
+                  </IconButton>
                 </div>
               </div>
               <div className={classes.statsWrapper}>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={ourTeamInfo.offsides}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement offsides">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.offsides}
+                  </Typography>
+                  <IconButton aria-label="Increment offsides">
+                    <RightIcon />
+                  </IconButton>
                 </div>
                 <div className={classes.statName}>
                   <Typography type="subheading" component="h4">
@@ -367,20 +440,28 @@ class MobileSoccerScorer extends Component<Props, State> {
                   </Typography>
                 </div>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={theirTeamInfo.offsides}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement offsides">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.offsides}
+                  </Typography>
+                  <IconButton aria-label="Increment offsides">
+                    <RightIcon />
+                  </IconButton>
                 </div>
               </div>
               <div className={classes.statsWrapper}>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={ourTeamInfo.corners}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement corners">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {ourTeamInfo.corners}
+                  </Typography>
+                  <IconButton aria-label="Increment corners">
+                    <RightIcon />
+                  </IconButton>
                 </div>
                 <div className={classes.statName}>
                   <Typography type="subheading" component="h4">
@@ -388,11 +469,15 @@ class MobileSoccerScorer extends Component<Props, State> {
                   </Typography>
                 </div>
                 <div className={classes.gridItem}>
-                  <TextField
-                    value={theirTeamInfo.corners}
-                    type="number"
-                    margin="normal"
-                  />
+                  <IconButton aria-label="Decrement corners">
+                    <LeftIcon />
+                  </IconButton>
+                  <Typography type="title" component="p">
+                    {theirTeamInfo.corners}
+                  </Typography>
+                  <IconButton aria-label="Increment corners">
+                    <RightIcon />
+                  </IconButton>
                 </div>
               </div>
             </Collapse>
@@ -403,4 +488,4 @@ class MobileSoccerScorer extends Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(MobileSoccerScorer);
+export default withStyles(styles)(Scorer);
