@@ -386,5 +386,38 @@ describe("eventsReducer", ()=>{
   });
 });
 
+describe("coachesReducer", ()=>{
+
+  describe("RECEIVE_STAFF", ()=>{
+    const {RECEIVE_STAFF} = imports;
+    test("Dismisses events loading dialog", ()=>{
+      const action = {
+        type:RECEIVE_STAFF,
+        payload:{
+          coaches:{}
+        }
+      };
+      const newState = scheduleReducer(initialState, action);
+      expect(newState.coaches).toBe(action.events.payload.coaches);
+    });
+  });
+});
+
+describe("managersReducer", ()=>{
+
+  describe("RECEIVE_STAFF", ()=>{
+    const {RECEIVE_STAFF} = imports;
+    test("Dismisses events loading dialog", ()=>{
+      const action = {
+        type:RECEIVE_STAFF,
+        payload:{
+          managers:{}
+        }
+      };
+      const newState = scheduleReducer(initialState, action);
+      expect(newState.managers).toBe(action.events.payload.managers);
+    });
+  });
+});
 
 });
