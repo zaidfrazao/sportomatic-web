@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
@@ -8,6 +7,7 @@ import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
 import Dashboard from "../dashboard/DashboardView";
 import Hours from "../hours/HoursView";
+import Results from "../results/ResultsView";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
 import Settings from "../settings/SettingsView";
@@ -137,6 +137,10 @@ class CoreInterfaceLayout extends Component {
         updateAppBarTitle("Settings");
         updateBottomNavValue("settings");
         break;
+      case "results":
+        updateAppBarTitle("Results");
+        updateBottomNavValue("results");
+        break;
       default:
         updateAppBarTitle("Dashboard");
         updateBottomNavValue("dashboard");
@@ -210,6 +214,22 @@ class CoreInterfaceLayout extends Component {
                 </Route>
                 <Route exact path={`/manager/hours/`}>
                   <Hours
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={uiConfig.userID}
+                    activeInstitutionID={uiConfig.activeInstitution.id}
+                  />
+                </Route>
+                <Route exact path={`/manager/results/`}>
+                  <Results
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={uiConfig.userID}
+                    activeInstitutionID={uiConfig.activeInstitution.id}
+                  />
+                </Route>
+                <Route exact path={`/manager/results/:teamID`}>
+                  <Results
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={uiConfig.userID}

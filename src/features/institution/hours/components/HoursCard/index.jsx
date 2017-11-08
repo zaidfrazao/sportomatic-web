@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
@@ -99,9 +98,6 @@ class HoursCard extends Component {
       status,
       signInTime,
       signOutTime,
-      profilePictureURL,
-      name,
-      surname,
       coachID,
       standardHourlyRate,
       overtimeHourlyRate
