@@ -132,7 +132,29 @@ describe("Reducers", () => {
     describe("ERROR_SIGNING_IN", () => {
       const { ERROR_SIGNING_IN } = imports;
       test("Sets isSignInLoading to false", () => {
-        const action = { type: ERROR_SIGNING_IN };
+        const action = {
+          type: ERROR_SIGNING_IN,
+          payload: {
+            errors: {
+              emailErrors: {
+                hasError: false,
+                message: ""
+              },
+              networkErrors: {
+                hasError: false,
+                message: ""
+              },
+              passwordErrors: {
+                hasError: false,
+                message: ""
+              },
+              passwordResetEmailErrors: {
+                hasError: false,
+                message: ""
+              }
+            }
+          }
+        };
         const newState = signInReducer(initialState, action);
         expect(newState.loadingStatus.isSignInLoading).toBe(false);
       });
@@ -159,7 +181,29 @@ describe("Reducers", () => {
     describe("ERROR_RESETTING_PASSWORD", () => {
       const { ERROR_RESETTING_PASSWORD } = imports;
       test("Sets isPasswordResetLoading to false", () => {
-        const action = { type: ERROR_RESETTING_PASSWORD };
+        const action = {
+          type: ERROR_RESETTING_PASSWORD,
+          payload: {
+            errors: {
+              emailErrors: {
+                hasError: false,
+                message: ""
+              },
+              networkErrors: {
+                hasError: false,
+                message: ""
+              },
+              passwordErrors: {
+                hasError: false,
+                message: ""
+              },
+              passwordResetEmailErrors: {
+                hasError: false,
+                message: ""
+              }
+            }
+          }
+        };
         const newState = signInReducer(initialState, action);
         expect(newState.loadingStatus.isPasswordResetLoading).toBe(false);
       });
@@ -274,7 +318,7 @@ describe("Reducers", () => {
 
     describe("CLOSE_PASSWORD_RESET_DIALOG", () => {
       const { CLOSE_PASSWORD_RESET_DIALOG } = imports;
-      test("Shows password reset dialog", () => {
+      test("Closes password reset dialog", () => {
         const action = { type: CLOSE_PASSWORD_RESET_DIALOG };
         const newState = signInReducer(initialState, action);
         expect(newState.dialogs.isPasswordResetDialogOpen).toBe(false);
@@ -288,15 +332,28 @@ describe("Reducers", () => {
           type: ERROR_SIGNING_IN,
           payload: {
             errors: {
+              emailErrors: {
+                hasError: false,
+                message: ""
+              },
               networkErrors: {
-                hasError: true
+                hasError: false,
+                message: ""
+              },
+              passwordErrors: {
+                hasError: false,
+                message: ""
+              },
+              passwordResetEmailErrors: {
+                hasError: false,
+                message: ""
               }
             }
           }
         };
         const newState = signInReducer(initialState, action);
         expect(newState.dialogs.isNetworkFailureModalOpen).toEqual(
-          action.payload.errors.hasError
+          action.payload.errors.networkErrors.hasError
         );
       });
     });
@@ -316,7 +373,7 @@ describe("Reducers", () => {
         };
         const newState = signInReducer(initialState, action);
         expect(newState.dialogs.isNetworkFailureModalOpen).toEqual(
-          action.payload.errors.hasError
+          action.payload.errors.networkErrors.hasError
         );
       });
     });
@@ -345,6 +402,223 @@ describe("Reducers", () => {
         const action = { type: CLOSE_NETWORK_FAILURE_MODAL };
         const newState = signInReducer(initialState, action);
         expect(newState.dialogs.isNetworkFailureModalOpen).toBe(false);
+      });
+    });
+  });
+});
+
+describe("Action Creators", () => {
+  describe("Synchronous functions", () => {
+    describe("openPasswordResetDialog", () => {
+      const { openPasswordResetDialog, OPEN_PASSWORD_RESET_DIALOG } = imports;
+      let initEmail = "user@sportomaticapp.com";
+      test("Returns the correct action", () => {
+        const createdAction = openPasswordResetDialog(initEmail);
+        const expectedAction = {
+          type: OPEN_PASSWORD_RESET_DIALOG,
+          payload: {
+            initEmail
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("closePasswordResetDialog", () => {
+      const { closePasswordResetDialog, CLOSE_PASSWORD_RESET_DIALOG } = imports;
+
+      test("Returns the correct action", () => {
+        const createdAction = closePasswordResetDialog();
+        const expectedAction = {
+          type: CLOSE_PASSWORD_RESET_DIALOG
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("updateEmail", () => {
+      const { updateEmail, UPDATE_EMAIL } = imports;
+      let newEmail = "user@sportomaticapp.com";
+      test("Returns the correct action", () => {
+        const createdAction = updateEmail(newEmail);
+        const expectedAction = {
+          type: UPDATE_EMAIL,
+          payload: {
+            newEmail
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("updatePassword", () => {
+      const { updatePassword, UPDATE_PASSWORD } = imports;
+      let newPassword = "ThiNotpA##w079";
+      test("Returns the correct action", () => {
+        const createdAction = updatePassword(newPassword);
+        const expectedAction = {
+          type: UPDATE_PASSWORD,
+          payload: {
+            newPassword
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("updatePasswordResetEmail", () => {
+      const { updatePasswordResetEmail, UPDATE_PASSWORD_RESET_EMAIL } = imports;
+      let newEmail = "info@mail.com";
+      test("Returns the correct action", () => {
+        const createdAction = updatePasswordResetEmail(newEmail);
+        const expectedAction = {
+          type: UPDATE_PASSWORD_RESET_EMAIL,
+          payload: {
+            newEmail
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("checkEmail", () => {
+      const { checkEmail, EMAIL_ERROR_CHECK } = imports;
+
+      test("Returns the correct action", () => {
+        let newEmail = "info@mail.com";
+        const createdAction = checkEmail(newEmail);
+        const expectedAction = {
+          type: EMAIL_ERROR_CHECK,
+          payload: {
+            hasError: false,
+            message: ""
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+      test("Returns the correct action", () => {
+        let newEmail = "";
+        const createdAction = checkEmail(newEmail);
+        const expectedAction = {
+          type: EMAIL_ERROR_CHECK,
+          payload: {
+            hasError: true,
+            message: "Please provide an email address"
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+      test("Returns the correct action", () => {
+        let newEmail = "mymail.cc";
+        const createdAction = checkEmail(newEmail);
+        const expectedAction = {
+          type: EMAIL_ERROR_CHECK,
+          payload: {
+            hasError: true,
+            message: "This is not a valid email address"
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+    describe("checkPassword", () => {
+      const { checkPassword, PASSWORD_ERROR_CHECK } = imports;
+
+      test("Returns the correct action", () => {
+        let password = "Tioh#542N90C";
+        const createdAction = checkPassword(password);
+        const expectedAction = {
+          type: PASSWORD_ERROR_CHECK,
+          payload: {
+            hasError: false,
+            message: ""
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+      test("Returns the correct action", () => {
+        let password = "";
+        const createdAction = checkPassword(password);
+        const expectedAction = {
+          type: PASSWORD_ERROR_CHECK,
+          payload: {
+            hasError: true,
+            message: "Please enter a password"
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+      test("Returns the correct action", () => {
+        let password = "word";
+        const createdAction = checkPassword(password);
+        const expectedAction = {
+          type: PASSWORD_ERROR_CHECK,
+          payload: {
+            hasError: true,
+            message: "Must be at least 6 characters long"
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestSignIn", () => {
+      const { requestSignIn, REQUEST_SIGN_IN } = imports;
+
+      test("Returns the correct action", () => {
+        const createdAction = requestSignIn();
+        const expectedAction = {
+          type: REQUEST_SIGN_IN
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("closeNetworkFailureModal", () => {
+      const { closeNetworkFailureModal, CLOSE_NETWORK_FAILURE_MODAL } = imports;
+
+      test("Returns the correct action", () => {
+        const createdAction = closeNetworkFailureModal();
+        const expectedAction = {
+          type: CLOSE_NETWORK_FAILURE_MODAL
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestPasswordReset", () => {
+      const { requestPasswordReset, REQUEST_PASSWORD_RESET } = imports;
+
+      test("Returns the correct action", () => {
+        const createdAction = requestPasswordReset();
+        const expectedAction = {
+          type: REQUEST_PASSWORD_RESET
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("receivePasswordReset", () => {
+      const { receivePasswordReset, RECEIVE_PASSWORD_RESET } = imports;
+
+      test("Returns the correct action", () => {
+        const createdAction = receivePasswordReset();
+        const expectedAction = {
+          type: RECEIVE_PASSWORD_RESET
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestAccountInfo", () => {
+      const { requestAccountInfo, REQUEST_ACCOUNT_INFO } = imports;
+
+      test("Returns the correct action", () => {
+        const createdAction = requestAccountInfo();
+        const expectedAction = {
+          type: REQUEST_ACCOUNT_INFO
+        };
+        expect(createdAction).toEqual(expectedAction);
       });
     });
   });
