@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
 import Grid from "material-ui/Grid";
 import TeamCard from "./components/TeamCard";
+import { withStyles } from "material-ui/styles";
 
 const styles = {
   wrapper: {
