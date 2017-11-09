@@ -85,7 +85,8 @@ class AddTeamDialog extends Component {
     sport: "Cricket",
     gender: "Boys",
     selectedManagers: [],
-    selectedCoaches: []
+    selectedCoaches: [],
+    Transition: props => <Slide direction="up" {...props} />
   };
 
   componentWillMount() {
@@ -346,7 +347,7 @@ class AddTeamDialog extends Component {
         fullScreen
         open={isOpen}
         onRequestClose={() => handleClose()}
-        transition={<Slide direction="up" />}
+        transition={this.state.Transition}
       >
         <AppBar className={classes.appBar}>
           <Toolbar>
