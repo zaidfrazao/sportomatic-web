@@ -20,7 +20,7 @@ describe("Reducers", () => {
         }
       };
       const newState = wagesReducer(initialState, action);
-      expect(newState.uiConfig.coaches).toEqual(action.payload.coaches);
+      expect(newState.coaches.coaches).toEqual(action.payload.coaches);
     });
   });
 
@@ -32,15 +32,18 @@ describe("Reducers", () => {
         type: REQUEST_STAFF
       };
       const newState = wagesReducer(initialState, action);
-      expect(newState.loadingStatus.isStaffLoading).ToBeTruthy();
+      expect(newState.loadingStatus.isStaffLoading).toBe(true);
     });
     describe("RECEIVE_STAFF", () => {
       const { RECEIVE_STAFF } = imports;
       const action = {
-        type: RECEIVE_STAFF
+        type: RECEIVE_STAFF,
+        payload: {
+          coaches: {}
+        }
       };
       const newState = wagesReducer(initialState, action);
-      expect(newState.loadingStatus.isStaffLoading).ToBeFalsy();
+      expect(newState.loadingStatus.isStaffLoading).toBe(false);
     });
 
     describe("ERROR_LOADING_STAFF", () => {
@@ -49,7 +52,7 @@ describe("Reducers", () => {
         type: ERROR_LOADING_STAFF
       };
       const newState = wagesReducer(initialState, action);
-      expect(newState.loadingStatus.isStaffLoading).ToBeFalsy();
+      expect(newState.loadingStatus.isStaffLoading).toBe(false);
     });
 
     describe("REQUEST_WAGES", () => {
@@ -58,16 +61,19 @@ describe("Reducers", () => {
         type: REQUEST_WAGES
       };
       const newState = wagesReducer(initialState, action);
-      expect(newState.loadingStatus.isWagesLoading).ToBeTruthy();
+      expect(newState.loadingStatus.isWagesLoading).toBe(true);
     });
 
     describe("RECEIVE_WAGES", () => {
       const { RECEIVE_WAGES } = imports;
       const action = {
-        type: RECEIVE_WAGES
+        type: RECEIVE_WAGES,
+        payload: {
+          wages: {}
+        }
       };
       const newState = wagesReducer(initialState, action);
-      expect(newState.loadingStatus.isWagesLoading).ToBeFalsy();
+      expect(newState.loadingStatus.isWagesLoading).toBe(false);
     });
 
     describe("ERROR_LOADING_WAGES", () => {
@@ -76,21 +82,27 @@ describe("Reducers", () => {
         type: ERROR_LOADING_WAGES
       };
       const newState = wagesReducer(initialState, action);
-      expect(newState.loadingStatus.isWagesLoading).ToBeFalsy();
+      expect(newState.loadingStatus.isWagesLoading).toBe(false);
     });
   });
 
-  const { coachWagesReducer } = imports;
   describe("coachWagesReducer", () => {
     describe("RECEIVE_WAGES", () => {
       const { RECEIVE_WAGES } = imports;
       const action = {
         type: RECEIVE_WAGES,
-        payload: { wages: {} }
+        payload: {
+          wages: {
+            coachWages: {},
+            coaches: {},
+            loadingStatus: { isStaffLoading: false, isWagesLoading: false },
+            uiConfig: { isLoading: false }
+          }
+        }
       };
 
       const newState = wagesReducer(initialState, action);
-      expect(newState).toEqual(action.payload.wages);
+      expect(newState.coachWages).toEqual(action.payload.wages);
     });
   });
 });
