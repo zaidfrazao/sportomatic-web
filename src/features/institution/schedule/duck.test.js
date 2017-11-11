@@ -415,3 +415,181 @@ describe("Reducers", () => {
     });
   });
 });
+
+//Action creator tests
+describe("Action Creators", () => {
+  describe("Synchronous functions", () => {
+    describe("updateView", () => {
+      const { updateView, UPDATE_CURRENT_VIEW } = imports;
+      test("Returns the correct action", () => {
+        let newView = "ADD_EVENT";
+        const createdAction = updateView(newView);
+        const expectedAction = {
+          type: UPDATE_CURRENT_VIEW,
+          payload: { newView }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("openEventErrorAlert", () => {
+      const { openEventErrorAlert, OPEN_EVENT_ERROR_ALERT } = imports;
+      test("Returns the correct action", () => {
+        let errorType = "LOAD_ERROR";
+        const createdAction = openEventErrorAlert(errorType);
+        const expectedAction = {
+          type: OPEN_EVENT_ERROR_ALERT,
+          payload: { errorType }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("closeEventErrorAlert", () => {
+      const { closeEventErrorAlert, CLOSE_EVENT_ERROR_ALERT } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = closeEventErrorAlert();
+        const expectedAction = {
+          type: CLOSE_EVENT_ERROR_ALERT
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("openEditEventDialog", () => {
+      const { openEditEventDialog, OPEN_EDIT_EVENT_DIALOG } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = openEditEventDialog();
+        const expectedAction = {
+          type: OPEN_EDIT_EVENT_DIALOG
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+    describe("closeEditEventDialog", () => {
+      const { closeEditEventDialog, CLOSE_EDIT_EVENT_DIALOG } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = closeEditEventDialog();
+        const expectedAction = {
+          type: CLOSE_EDIT_EVENT_DIALOG
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+    describe("closeCancelEventAlert", () => {
+      const { closeCancelEventAlert, CLOSE_CANCEL_EVENT_ALERT } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = closeCancelEventAlert();
+        const expectedAction = {
+          type: CLOSE_CANCEL_EVENT_ALERT
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("closeUncancelEventAlert", () => {
+      const { closeUncancelEventAlert, CLOSE_UNCANCEL_EVENT_ALERT } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = closeUncancelEventAlert();
+        const expectedAction = {
+          type: CLOSE_UNCANCEL_EVENT_ALERT
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("openAddEventDialog", () => {
+      const { openAddEventDialog, OPEN_ADD_EVENT_DIALOG } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = openAddEventDialog();
+        const expectedAction = {
+          type: OPEN_ADD_EVENT_DIALOG
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("closeAddEventDialog", () => {
+      const { closeAddEventDialog, CLOSE_ADD_EVENT_DIALOG } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = closeAddEventDialog();
+        const expectedAction = {
+          type: CLOSE_ADD_EVENT_DIALOG
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestEvents", () => {
+      const { requestEvents, REQUEST_EVENTS } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = requestEvents();
+        const expectedAction = {
+          type: REQUEST_EVENTS
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("receiveEvents", () => {
+      const { receiveEvents, RECEIVE_EVENTS } = imports;
+      test("Returns the correct action", () => {
+        let events = [{ id: "ed43r", title: "Test event" }];
+        const createdAction = receiveEvents(events);
+        const expectedAction = {
+          type: RECEIVE_EVENTS,
+          payload: { events }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("errorLoadingEvents", () => {
+      const { errorLoadingEvents, ERROR_LOADING_EVENTS } = imports;
+      test("Returns the correct action", () => {
+        let error = { code: "LOAD_FAILED", message: "Failed to load events" };
+        const createdAction = errorLoadingEvents(error);
+        const expectedAction = {
+          type: ERROR_LOADING_EVENTS,
+          payload: { error }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestAddEvent", () => {
+      const { requestAddEvent, REQUEST_ADD_EVENT } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = requestAddEvent();
+        const expectedAction = {
+          type: REQUEST_ADD_EVENT
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("receiveAddEvent", () => {
+      const { receiveAddEvent, RECEIVE_ADD_EVENT } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = receiveAddEvent();
+        const expectedAction = {
+          type: RECEIVE_ADD_EVENT
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("errorAddingEvent", () => {
+      const { errorAddingEvent, ERROR_ADDING_EVENT } = imports;
+      test("Returns the correct action", () => {
+        let error = { code: "ADD_EVENT_ERROR", message: "Failed to add event" };
+        const createdAction = errorAddingEvent(error);
+        const expectedAction = {
+          type: ERROR_ADDING_EVENT,
+          payload: { error }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+  });
+});
