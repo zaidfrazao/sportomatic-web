@@ -137,3 +137,202 @@ describe("Reducers", () => {
     });
   });
 });
+
+describe("Action Creators", () => {
+  describe("Synchronous functions", () => {
+    describe("updateTab", () => {
+      const { updateTab, UPDATE_TAB } = imports;
+      let newTab = "IN_PROGRESS";
+      test("Returns the correct action", () => {
+        const createdAction = updateTab(newTab);
+        const expectedAction = {
+          type: UPDATE_TAB,
+          payload: { newTab }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestStaff", () => {
+      const { requestStaff, REQUEST_STAFF } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = requestStaff();
+        const expectedAction = {
+          type: REQUEST_STAFF
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("errorLoadingStaff", () => {
+      const { errorLoadingStaff, ERROR_LOADING_STAFF } = imports;
+      test("Returns the correct action", () => {
+        let error = {
+          code: "hours/loading_error",
+          message: "Error loading staff"
+        };
+        const createdAction = errorLoadingStaff(error);
+        const expectedAction = {
+          type: ERROR_LOADING_STAFF,
+          payload: { error }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestEvents", () => {
+      const { requestEvents, REQUEST_EVENTS } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = requestEvents();
+        const expectedAction = {
+          type: REQUEST_EVENTS
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("receiveEvents", () => {
+      const { receiveEvents, RECEIVE_EVENTS } = imports;
+      test("Returns the correct action", () => {
+        let events = {};
+        const createdAction = receiveEvents(events);
+        const expectedAction = {
+          type: RECEIVE_EVENTS,
+          payload: {
+            events
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("errorLoadingEvents", () => {
+      const { errorLoadingEvents, ERROR_LOADING_EVENTS } = imports;
+      test("Returns the correct action", () => {
+        let error = {
+          code: "hours/loading_error",
+          message: "Error loading events"
+        };
+        const createdAction = errorLoadingEvents(error);
+        const expectedAction = {
+          type: ERROR_LOADING_EVENTS,
+          payload: { error }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestSignIn", () => {
+      const { requestSignIn, REQUEST_SIGN_IN } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = requestSignIn();
+        const expectedAction = {
+          type: REQUEST_SIGN_IN
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("receiveSignIn", () => {
+      const { receiveSignIn, RECEIVE_SIGN_IN } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = receiveSignIn();
+        const expectedAction = {
+          type: RECEIVE_SIGN_IN
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+    describe("errorSigningIn", () => {
+      const { errorSigningIn, ERROR_SIGNING_IN } = imports;
+      test("Returns the correct action", () => {
+        let error = {
+          code: "hours/signin_error",
+          message: "Error loading events"
+        };
+        const createdAction = errorSigningIn(error);
+        const expectedAction = {
+          type: ERROR_SIGNING_IN,
+          payload: { error }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestSignOut", () => {
+      const { requestSignOut, REQUEST_SIGN_OUT } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = requestSignOut();
+        const expectedAction = {
+          type: REQUEST_SIGN_OUT
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("receiveSignOut", () => {
+      const { receiveSignOut, RECEIVE_SIGN_OUT } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = receiveSignOut();
+        const expectedAction = {
+          type: RECEIVE_SIGN_OUT
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("errorSigningOut", () => {
+      const { errorSigningOut, ERROR_SIGNING_OUT } = imports;
+      test("Returns the correct action", () => {
+        let error = {
+          code: "hours/signout_error",
+          message: "Error loading events"
+        };
+        const createdAction = errorSigningOut(error);
+        const expectedAction = {
+          type: ERROR_SIGNING_OUT,
+          payload: { error }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestApproveHours", () => {
+      const { requestApproveHours, REQUEST_APPROVE_HOURS } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = requestApproveHours();
+        const expectedAction = {
+          type: REQUEST_APPROVE_HOURS
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("receiveApproveHours", () => {
+      const { receiveApproveHours, RECEIVE_APPROVE_HOURS } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = receiveApproveHours();
+        const expectedAction = {
+          type: RECEIVE_APPROVE_HOURS
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("errorApprovingHours", () => {
+      const { errorApprovingHours, ERROR_APPROVING_HOURS } = imports;
+      test("Returns the correct action", () => {
+        let error = {
+          code: "hours/approval_error",
+          message: "Error loading events"
+        };
+        const createdAction = errorApprovingHours(error);
+        const expectedAction = {
+          type: ERROR_APPROVING_HOURS,
+          payload: { error }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+  });
+});
