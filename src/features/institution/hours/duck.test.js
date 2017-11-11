@@ -120,4 +120,20 @@ describe("Reducers", () => {
       });
     });
   });
+
+  describe("eventsReducer", () => {
+    describe("RECEIVE_EVENTS", () => {
+      const { RECEIVE_EVENTS } = imports;
+      test("Receives events", () => {
+        const action = {
+          type: RECEIVE_EVENTS,
+          payload: {
+            events: {}
+          }
+        };
+        const newState = hoursReducer(initialState, action);
+        expect(newState.events).toEqual(action.payload.events);
+      });
+    });
+  });
 });
