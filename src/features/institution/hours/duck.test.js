@@ -48,4 +48,76 @@ describe("Reducers", () => {
       });
     });
   });
+
+  describe("loadingStatusReducer", () => {
+    describe("REQUEST_STAFF", () => {
+      const { REQUEST_STAFF } = imports;
+      test("Sets loading to true", () => {
+        const action = {
+          type: REQUEST_STAFF
+        };
+        const newState = hoursReducer(initialState, action);
+        expect(newState.loadingStatus.isStaffLoading).toBe(true);
+      });
+    });
+    describe("ERROR_LOADING_STAFF", () => {
+      const { ERROR_LOADING_STAFF } = imports;
+      test("Sets loading to false", () => {
+        const action = {
+          type: ERROR_LOADING_STAFF
+        };
+        const newState = hoursReducer(initialState, action);
+        expect(newState.loadingStatus.isStaffLoading).toBe(false);
+      });
+    });
+    describe("RECEIVE_STAFF", () => {
+      const { RECEIVE_STAFF } = imports;
+      test("Sets loading to false", () => {
+        const action = {
+          type: RECEIVE_STAFF,
+          payload: {
+            coaches: {}
+          }
+        };
+        const newState = hoursReducer(initialState, action);
+        expect(newState.loadingStatus.isStaffLoading).toBe(false);
+      });
+    });
+
+    describe("REQUEST_EVENTS", () => {
+      const { REQUEST_EVENTS } = imports;
+      test("Sets isEventsLoading to true", () => {
+        const action = {
+          type: REQUEST_EVENTS
+        };
+        const newState = hoursReducer(initialState, action);
+        expect(newState.loadingStatus.isEventsLoading).toBe(true);
+      });
+    });
+
+    describe("ERROR_LOADING_EVENTS", () => {
+      const { ERROR_LOADING_EVENTS } = imports;
+      test("Sets isEventsLoading to false", () => {
+        const action = {
+          type: ERROR_LOADING_EVENTS
+        };
+        const newState = hoursReducer(initialState, action);
+        expect(newState.loadingStatus.isEventsLoading).toBe(false);
+      });
+    });
+
+    describe("RECEIVE_EVENTS", () => {
+      const { RECEIVE_EVENTS } = imports;
+      test("Sets isEventsLoading to false", () => {
+        const action = {
+          type: RECEIVE_EVENTS,
+          payload: {
+            events: {}
+          }
+        };
+        const newState = hoursReducer(initialState, action);
+        expect(newState.loadingStatus.isEventsLoading).toBe(false);
+      });
+    });
+  });
 });
