@@ -591,5 +591,126 @@ describe("Action Creators", () => {
         expect(createdAction).toEqual(expectedAction);
       });
     });
+
+    describe("requestTeams", () => {
+      const { requestTeams, REQUEST_TEAMS } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = requestTeams();
+        const expectedAction = {
+          type: REQUEST_TEAMS
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("receiveTeams", () => {
+      const { receiveTeams, RECEIVE_TEAMS } = imports;
+      test("Returns the correct action", () => {
+        let teams = ["je3rko12", "dsd85t293"];
+        const createdAction = receiveTeams(teams);
+        const expectedAction = {
+          type: RECEIVE_TEAMS,
+          payload: {
+            teams
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("errorLoadingTeams", () => {
+      const { errorLoadingTeams, ERROR_LOADING_TEAMS } = imports;
+      test("Returns the correct action", () => {
+        let error = { code: "LOAD_ERROR", message: "Error" };
+        const createdAction = errorLoadingTeams(error);
+        const expectedAction = {
+          type: ERROR_LOADING_TEAMS,
+          payload: {
+            error
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestCancelEvent", () => {
+      const { requestCancelEvent, REQUEST_CANCEL_EVENT } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = requestCancelEvent();
+        const expectedAction = {
+          type: REQUEST_CANCEL_EVENT
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("receiveCancelEvent", () => {
+      const { receiveCancelEvent, RECEIVE_CANCEL_EVENT } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = receiveCancelEvent();
+        const expectedAction = {
+          type: RECEIVE_CANCEL_EVENT
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("errorCancellingEvent", () => {
+      const { errorCancellingEvent, ERROR_CANCELLING_EVENT } = imports;
+      test("Returns the correct action", () => {
+        let error = {
+          code: "CANCELLING_ERROR",
+          message: "Error cancelling event"
+        };
+        const createdAction = errorCancellingEvent(error);
+        const expectedAction = {
+          type: ERROR_CANCELLING_EVENT,
+          payload: {
+            error
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestUncancelEvent", () => {
+      const { requestUncancelEvent, REQUEST_UNCANCEL_EVENT } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = requestUncancelEvent();
+        const expectedAction = {
+          type: REQUEST_UNCANCEL_EVENT
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("receiveUncancelEvent", () => {
+      const { receiveUncancelEvent, RECEIVE_UNCANCEL_EVENT } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = receiveUncancelEvent();
+        const expectedAction = {
+          type: RECEIVE_UNCANCEL_EVENT
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("errorUncancellingEvent", () => {
+      const { errorUncancellingEvent, ERROR_UNCANCELLING_EVENT } = imports;
+      test("Returns the correct action", () => {
+        let error = {
+          code: "UNCANCELLING_ERROR",
+          message: "Error cancelling event"
+        };
+        const createdAction = errorUncancellingEvent(error);
+        const expectedAction = {
+          type: ERROR_UNCANCELLING_EVENT,
+          payload: {
+            error
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
   });
 });
