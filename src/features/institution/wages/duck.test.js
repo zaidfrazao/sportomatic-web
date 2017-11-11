@@ -20,11 +20,10 @@ describe("Reducers", () => {
         }
       };
       const newState = wagesReducer(initialState, action);
-      expect(newState.coaches.coaches).toEqual(action.payload.coaches);
+      expect(newState.coaches).toEqual(action.payload.coaches);
     });
   });
 
-  const { loadingStatusReducer } = imports;
   describe("loadingStatusReducer", () => {
     describe("REQUEST_STAFF", () => {
       const { REQUEST_STAFF } = imports;
@@ -165,7 +164,7 @@ describe("Action Creators", () => {
     describe("receiveWages", () => {
       const { receiveWages, RECEIVE_WAGES } = imports;
       test("Returns the correct action", () => {
-        var wages = {
+        let wages = {
           date: "2017-10-26",
           hours: {
             overtime: 0,
@@ -181,6 +180,32 @@ describe("Action Creators", () => {
           payload: {
             wages
           }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("errorLoadingWages", () => {
+      const { errorLoadingWages, ERROR_LOADING_WAGES } = imports;
+      test("Returns the correct action", () => {
+        let error = { code: "ERROR", message: "Error loading wages" };
+        const createdAction = errorLoadingWages(error);
+        const expectedAction = {
+          type: ERROR_LOADING_WAGES,
+          payload: {
+            error
+          }
+        };
+        expect(createdAction).toEqual(expectedAction);
+      });
+    });
+
+    describe("requestWages", () => {
+      const { requestWages, REQUEST_WAGES } = imports;
+      test("Returns the correct action", () => {
+        const createdAction = requestWages();
+        const expectedAction = {
+          type: REQUEST_WAGES
         };
         expect(createdAction).toEqual(expectedAction);
       });
