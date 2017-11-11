@@ -1,12 +1,11 @@
 // @flow
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Route } from "react-router-dom";
-import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
 import Button from "material-ui/Button";
 import Card, { CardActions, CardContent } from "material-ui/Card";
+import { grey } from "material-ui/colors";
+import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
   actions: {
@@ -92,9 +91,5 @@ class TeamCard extends Component<Props> {
     );
   }
 }
-
-TeamCard.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(TeamCard);
