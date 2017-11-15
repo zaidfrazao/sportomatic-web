@@ -265,3 +265,28 @@ describe("Action Creators", () => {
     });
   });
 });
+
+// Selector tests
+describe("Selector", () => {
+  const { selector } = imports;
+  test("Selects UI config from state", () => {
+    const selectedVariable = selector(sampleStore).uiConfig;
+    const expectedVariable = sampleStore.institution.wages.uiConfig;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects coaches from state", () => {
+    const selectedVariable = selector(sampleStore).coaches;
+    const expectedVariable = sampleStore.institution.wages.coaches;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects loading statuses from state", () => {
+    const selectedVariable = selector(sampleStore).loadingStatus;
+    const expectedVariable = sampleStore.institution.wages.loadingStatus;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects coachWages from state", () => {
+    const selectedVariable = selector(sampleStore).coachWages;
+    const expectedVariable = sampleStore.institution.wages.coachWages;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+});
