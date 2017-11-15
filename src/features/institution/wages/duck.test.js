@@ -16,7 +16,12 @@ describe("Reducers", () => {
       const action = {
         type: RECEIVE_STAFF,
         payload: {
-          coaches: {}
+          coaches: {
+            m8N5l8Ajo4eYKEREzMd99OMABnt2: {
+              name: "Jonathan",
+              surname: "Cele"
+            }
+          }
         }
       };
       const newState = wagesReducer(initialState, action);
@@ -38,7 +43,12 @@ describe("Reducers", () => {
       const action = {
         type: RECEIVE_STAFF,
         payload: {
-          coaches: {}
+          coaches: {
+            m8N5l8Ajo4eYKEREzMd99OMABnt2: {
+              name: "Jonathan",
+              surname: "Cele"
+            }
+          }
         }
       };
       const newState = wagesReducer(initialState, action);
@@ -68,7 +78,26 @@ describe("Reducers", () => {
       const action = {
         type: RECEIVE_WAGES,
         payload: {
-          wages: {}
+          wages: {
+            "2017": {
+              "10": {
+                "-KxNuraI0AULS_49kAP4": {
+                  date: "2017-10-26",
+                  hours: {
+                    overtime: 0,
+                    standard: 2
+                  },
+                  rates: {
+                    overtime: 100,
+                    stardard: 150
+                  },
+                  title: "U/12 A Athletics Mixed Match",
+                  type: "HOURLY",
+                  wage: 300
+                }
+              }
+            }
+          }
         }
       };
       const newState = wagesReducer(initialState, action);
@@ -92,8 +121,32 @@ describe("Reducers", () => {
         type: RECEIVE_WAGES,
         payload: {
           wages: {
-            coachWages: {},
-            coaches: {},
+            coachWages: {
+              "2017": {
+                "10": {
+                  "-KxNuraI0AULS_49kAP4": {
+                    date: "2017-10-26",
+                    hours: {
+                      overtime: 0,
+                      standard: 2
+                    },
+                    rates: {
+                      overtime: 100,
+                      stardard: 150
+                    },
+                    title: "U/12 A Athletics Mixed Match",
+                    type: "HOURLY",
+                    wage: 300
+                  }
+                }
+              }
+            },
+            coaches: {
+              m8N5l8Ajo4eYKEREzMd99OMABnt2: {
+                name: "John",
+                surname: "Doe"
+              }
+            },
             loadingStatus: { isStaffLoading: false, isWagesLoading: false },
             uiConfig: { isLoading: false }
           }
