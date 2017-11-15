@@ -18,7 +18,7 @@ describe("Reducers", () => {
           const action = {
             type: UPDATE_CURRENT_VIEW,
             payload: {
-              newView: "Schedule"
+              newView: "SCHEDULE"
             }
           };
           const newState = new scheduleReducer(initialState, action);
