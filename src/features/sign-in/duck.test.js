@@ -267,7 +267,7 @@ describe("Reducers", () => {
           }
         };
         const newState = signInReducer(initialState, action);
-        expect(newState.errors).toEqual(action.payload);
+        expect(newState.errors).toEqual(action.payload.errors);
       });
     });
 
@@ -623,5 +623,30 @@ describe("Action Creators", () => {
         expect(createdAction).toEqual(expectedAction);
       });
     });
+  });
+});
+
+// Selector tests
+describe("Selector", () => {
+  const { selector } = imports;
+  test("Selects userInfo from state", () => {
+    const selectedVariable = selector(sampleStore).userInfo;
+    const expectedVariable = sampleStore.signIn.userInfo;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects coaches from state", () => {
+    const selectedVariable = selector(sampleStore).dialogs;
+    const expectedVariable = sampleStore.signIn.dialogs;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects loading status from state", () => {
+    const selectedVariable = selector(sampleStore).loadingStatus;
+    const expectedVariable = sampleStore.signIn.loadingStatus;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects errors from state", () => {
+    const selectedVariable = selector(sampleStore).errors;
+    const expectedVariable = sampleStore.signIn.errors;
+    expect(selectedVariable).toEqual(expectedVariable);
   });
 });
