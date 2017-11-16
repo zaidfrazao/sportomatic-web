@@ -137,8 +137,8 @@ describe("Reducers", () => {
           payload: {
             errors: {
               emailErrors: {
-                hasError: false,
-                message: ""
+                hasError: true,
+                message: "Invalid email"
               },
               networkErrors: {
                 hasError: false,
@@ -246,21 +246,23 @@ describe("Reducers", () => {
         const action = {
           type: ERROR_SIGNING_IN,
           payload: {
-            emailErrors: {
-              hasError: false,
-              message: ""
-            },
-            networkErrors: {
-              hasError: false,
-              message: ""
-            },
-            passwordErrors: {
-              hasError: false,
-              message: ""
-            },
-            passwordResetEmailErrors: {
-              hasError: false,
-              message: ""
+            errors: {
+              emailErrors: {
+                hasError: true,
+                message: "Invalid email"
+              },
+              networkErrors: {
+                hasError: false,
+                message: ""
+              },
+              passwordErrors: {
+                hasError: false,
+                message: ""
+              },
+              passwordResetEmailErrors: {
+                hasError: false,
+                message: ""
+              }
             }
           }
         };
