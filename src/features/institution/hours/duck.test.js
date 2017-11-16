@@ -1,4 +1,5 @@
 import * as imports from "./duck.js";
+import { sampleStore } from "../../../models/sampleStore";
 
 const initialState = {
   uiConfig: imports.uiConfigInitialState,
@@ -393,5 +394,30 @@ describe("Action Creators", () => {
         expect(createdAction).toEqual(expectedAction);
       });
     });
+  });
+});
+
+// Selector tests
+describe("Selector", () => {
+  const { selector } = imports;
+  test("Selects uiConfig from state", () => {
+    const selectedVariable = selector(sampleStore).uiConfig;
+    const expectedVariable = sampleStore.institution.hours.uiConfig;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects coaches from state", () => {
+    const selectedVariable = selector(sampleStore).coaches;
+    const expectedVariable = sampleStore.institution.hours.coaches;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects loading status from state", () => {
+    const selectedVariable = selector(sampleStore).loadingStatus;
+    const expectedVariable = sampleStore.institution.hours.loadingStatus;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects events from state", () => {
+    const selectedVariable = selector(sampleStore).events;
+    const expectedVariable = sampleStore.institution.hours.events;
+    expect(selectedVariable).toEqual(expectedVariable);
   });
 });
