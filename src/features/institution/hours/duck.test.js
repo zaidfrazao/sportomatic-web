@@ -76,7 +76,15 @@ describe("Reducers", () => {
         const action = {
           type: RECEIVE_STAFF,
           payload: {
-            coaches: {}
+            coaches: {
+              Bhmq7MvEEbawZJE6xnxqsXn4dWG2: {
+                name: "Rowan",
+                phoneNumber: "(084) 291-0482",
+                profilePictureURL:
+                  "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/coach%2FBhmq7MvEEbawZJE6xnxqsXn4dWG2%2Fprofile-picture.jpg?alt=media&token=88168b80-e085-4e52-b504-0357d0a0dcc7",
+                surname: "Walker-Campbell"
+              }
+            }
           }
         };
         const newState = hoursReducer(initialState, action);
@@ -112,7 +120,22 @@ describe("Reducers", () => {
         const action = {
           type: RECEIVE_EVENTS,
           payload: {
-            events: {}
+            events: {
+              "2017": {
+                "10": {
+                  "-KxNuraI0AULS_49kAP4": {
+                    status: "ACTIVE",
+                    teams: {
+                      metadata: {
+                        name: "U/12 A Athletics Mixed",
+                        sport: "Athletics"
+                      },
+                      status: "ACTIVE"
+                    }
+                  }
+                }
+              }
+            }
           }
         };
         const newState = hoursReducer(initialState, action);
@@ -128,7 +151,25 @@ describe("Reducers", () => {
         const action = {
           type: RECEIVE_EVENTS,
           payload: {
-            events: {}
+            events: {
+              "2017": {
+                "10": {
+                  "-KxNuraI0AULS_49kAP4": {
+                    status: "ACTIVE",
+                    teams: {
+                      metadata: {
+                        ageGroup: "12",
+                        division: "A",
+                        gender: "MIXED",
+                        name: "U/12 A Athletics Mixed",
+                        sport: "Athletics"
+                      },
+                      status: "ACTIVE"
+                    }
+                  }
+                }
+              }
+            }
           }
         };
         const newState = hoursReducer(initialState, action);
@@ -194,7 +235,25 @@ describe("Action Creators", () => {
     describe("receiveEvents", () => {
       const { receiveEvents, RECEIVE_EVENTS } = imports;
       test("Returns the correct action", () => {
-        let events = {};
+        let events = {
+          "2017": {
+            "11": {
+              "-KxNuraI0AULS_49kAP4": {
+                status: "ACTIVE",
+                teams: {
+                  "-kIUr56gGRtu_oku6g5RFTf": {
+                    metadata: {
+                      ageGroup: "12",
+                      name: "U/12 A Athletics Mixed",
+                      sport: "Athletics"
+                    },
+                    status: "ACTIVE"
+                  }
+                }
+              }
+            }
+          }
+        };
         const createdAction = receiveEvents(events);
         const expectedAction = {
           type: RECEIVE_EVENTS,
