@@ -257,7 +257,20 @@ describe("Reducers", () => {
         const action = {
           type: RECEIVE_TEAMS,
           payload: {
-            teams: {}
+            teams: {
+              "-Lc4thJUI5g7Ojjtf": {
+                metadata: {
+                  ageGroup: "12",
+                  division: "A",
+                  gender: "MIXED",
+                  name: "U/12 A Athletics Mixed",
+                  sport: "Athletics"
+                },
+                coaches: {},
+                managers: {},
+                status: "ACTIVE"
+              }
+            }
           }
         };
         const newState = scheduleReducer(initialState, action);
@@ -284,8 +297,25 @@ describe("Reducers", () => {
         const action = {
           type: RECEIVE_STAFF,
           payload: {
-            coaches: {},
-            managers: {}
+            coaches: {
+              Bhmq7MvEEbawZJE6xnxqsXn4dWG2: {
+                hours: {},
+                name: "Jon",
+                phoneNumber: "(082) 353-9287",
+                profilePictureURL:
+                  "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/coach%2FBhmq7MvEEbawZJE6xnxqsXn4dWG2%2Fprofile-picture.jpg?alt=media&token=88168b80-e085-4e52-b504-0357d0a0dcc7",
+                surname: "Snow"
+              }
+            },
+            managers: {
+              H4wegzYcs9RFot9wbJR4qOL4TZr2: {
+                name: "Brett",
+                phoneNumber: "(073) 812-1122",
+                profilePictureURL:
+                  "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/manager%2FH4wegzYcs9RFot9wbJR4qOL4TZr2%2Fprofile-picture.jpg?alt=media&token=10703eaa-f132-46e5-8f05-f479b4b98bbb",
+                surname: "Cook"
+              }
+            }
           }
         };
         const newState = scheduleReducer(initialState, action);
@@ -388,7 +418,40 @@ describe("Reducers", () => {
         const action = {
           type: RECEIVE_EVENTS,
           payload: {
-            events: {}
+            events: {
+              "2017": {
+                "11": {
+                  "-JxR56gGI0AULS_49kAP4": {
+                    coaches: {
+                      Bhmq7MvEEbawZJE6xnxqsXn4dWG2: {
+                        hours: {},
+                        name: "Jon",
+                        phoneNumber: "(082) 353-9287",
+                        profilePictureURL:
+                          "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/coach%2FBhmq7MvEEbawZJE6xnxqsXn4dWG2%2Fprofile-picture.jpg?alt=media&token=88168b80-e085-4e52-b504-0357d0a0dcc7",
+                        surname: "Snow"
+                      }
+                    },
+                    managers: {
+                      H4wegzYcs9RFot9wbJR4qOL4TZr2: {
+                        name: "Brett",
+                        phoneNumber: "(073) 812-1122",
+                        profilePictureURL:
+                          "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/manager%2FH4wegzYcs9RFot9wbJR4qOL4TZr2%2Fprofile-picture.jpg?alt=media&token=10703eaa-f132-46e5-8f05-f479b4b98bbb",
+                        surname: "Cook"
+                      }
+                    },
+                    date: "2017-10-26",
+                    endTime: "17:00",
+                    isCompetitive: true,
+                    startTime: "14:00",
+                    title: "U/12 A Athletics Mixed Match",
+                    type: "Match",
+                    metadata: {}
+                  }
+                }
+              }
+            }
           }
         };
         const newState = scheduleReducer(initialState, action);
@@ -404,7 +467,32 @@ describe("Reducers", () => {
         const action = {
           type: RECEIVE_EVENTS,
           payload: {
-            events: {}
+            events: {
+              "2017": {
+                "11": {
+                  "-JxR56gGI0AULS_49kAP4": {
+                    coaches: {
+                      Bhmq7MvEEbawZJE6xnxqsXn4dWG2: {
+                        hours: {},
+                        name: "Jon",
+                        phoneNumber: "(082) 353-9287",
+                        profilePictureURL:
+                          "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/coach%2FBhmq7MvEEbawZJE6xnxqsXn4dWG2%2Fprofile-picture.jpg?alt=media&token=88168b80-e085-4e52-b504-0357d0a0dcc7",
+                        surname: "Snow"
+                      }
+                    },
+                    managers: {},
+                    date: "2017-10-26",
+                    endTime: "17:00",
+                    isCompetitive: true,
+                    startTime: "14:00",
+                    title: "U/12 A Athletics Mixed Match",
+                    type: "Match",
+                    metadata: {}
+                  }
+                }
+              }
+            }
           }
         };
         const newState = scheduleReducer(initialState, action);
@@ -420,8 +508,25 @@ describe("Reducers", () => {
         const action = {
           type: RECEIVE_STAFF,
           payload: {
-            coaches: {},
-            managers: {}
+            coaches: {
+              Bhmq7MvEEbawZJE6xnxqsXn4dWG2: {
+                hours: {},
+                name: "Jon",
+                phoneNumber: "(082) 353-9287",
+                profilePictureURL:
+                  "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/coach%2FBhmq7MvEEbawZJE6xnxqsXn4dWG2%2Fprofile-picture.jpg?alt=media&token=88168b80-e085-4e52-b504-0357d0a0dcc7",
+                surname: "Snow"
+              }
+            },
+            managers: {
+              H4wegzYcs9RFot9wbJR4qOL4TZr2: {
+                name: "Brett",
+                phoneNumber: "(073) 812-1122",
+                profilePictureURL:
+                  "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/manager%2FH4wegzYcs9RFot9wbJR4qOL4TZr2%2Fprofile-picture.jpg?alt=media&token=10703eaa-f132-46e5-8f05-f479b4b98bbb",
+                surname: "Cook"
+              }
+            }
           }
         };
         const newState = scheduleReducer(initialState, action);
@@ -437,8 +542,25 @@ describe("Reducers", () => {
         const action = {
           type: RECEIVE_STAFF,
           payload: {
-            coaches: {},
-            managers: {}
+            coaches: {
+              Bhmq7MvEEbawZJE6xnxqsXn4dWG2: {
+                hours: {},
+                name: "Jon",
+                phoneNumber: "(082) 353-9287",
+                profilePictureURL:
+                  "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/coach%2FBhmq7MvEEbawZJE6xnxqsXn4dWG2%2Fprofile-picture.jpg?alt=media&token=88168b80-e085-4e52-b504-0357d0a0dcc7",
+                surname: "Snow"
+              }
+            },
+            managers: {
+              H4wegzYcs9RFot9wbJR4qOL4TZr2: {
+                name: "Brett",
+                phoneNumber: "(073) 812-1122",
+                profilePictureURL:
+                  "https://firebasestorage.googleapis.com/v0/b/sportomatic-beta.appspot.com/o/manager%2FH4wegzYcs9RFot9wbJR4qOL4TZr2%2Fprofile-picture.jpg?alt=media&token=10703eaa-f132-46e5-8f05-f479b4b98bbb",
+                surname: "Cook"
+              }
+            }
           }
         };
         const newState = scheduleReducer(initialState, action);
