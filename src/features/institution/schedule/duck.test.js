@@ -868,3 +868,43 @@ describe("Action Creators", () => {
     });
   });
 });
+
+// Selector tests
+describe("Selectors", () => {
+  const { selector } = imports;
+  test("Selects UI config from state", () => {
+    const selectedVariable = selector(sampleStore).uiConfig;
+    const expectedVariable = sampleStore.institution.schedule.uiConfig;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects dialogs from state", () => {
+    const selectedVariable = selector(sampleStore).dialogs;
+    const expectedVariable = sampleStore.institution.schedule.dialogs;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects events from state", () => {
+    const selectedVariable = selector(sampleStore).events;
+    const expectedVariable = sampleStore.institution.schedule.events;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects teams from state", () => {
+    const selectedVariable = selector(sampleStore).teams;
+    const expectedVariable = sampleStore.institution.schedule.teams;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects loading status from state", () => {
+    const selectedVariable = selector(sampleStore).loadingStatus;
+    const expectedVariable = sampleStore.institution.schedule.loadingStatus;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects managers from state", () => {
+    const selectedVariable = selector(sampleStore).managers;
+    const expectedVariable = sampleStore.institution.schedule.managers;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+  test("Selects coaches from state", () => {
+    const selectedVariable = selector(sampleStore).coaches;
+    const expectedVariable = sampleStore.institution.schedule.coaches;
+    expect(selectedVariable).toEqual(expectedVariable);
+  });
+});
