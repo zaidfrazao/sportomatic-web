@@ -1,8 +1,6 @@
-// @flow
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
-import firebase from "firebase";
-
+import { SportomaticFirebaseAPI } from "../../../api/sportmatic-firebase-api";
 // Actions
 
 export const UPDATE_TAB = "sportomatic-web/institution/people/UPDATE_TAB";
@@ -186,17 +184,12 @@ export function errorLoadingStaff(error: { code: string, message: string }) {
 export function loadStaff(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestStaff());
-    const staffRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/staff`);
-
-    return staffRef.on("value", snapshot => {
-      const staff = snapshot.val();
-      if (staff === null) {
-        dispatch(receiveStaff({}));
-      } else {
-        dispatch(receiveStaff(staff));
-      }
-    });
+    return SportomaticFirebaseAPI.getPeople(institutionID)
+      .then(people => {
+        dispatch(receiveStaff(people));
+      })
+      .catch(err => {
+        dispatch(errorLoadingStaff({ err }));
+      });
   };
 }

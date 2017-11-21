@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Route } from "react-router-dom";
@@ -169,7 +168,6 @@ class TimeLogger extends Component {
     const { classes, isTablet, info } = this.props;
     const { secondsLogged, minutesLogged, hoursLogged } = this.state;
 
-    const timeOptions = { hour: "2-digit", minute: "2-digit" };
     const startTime = info.startTime;
     const endTime = info.endTime;
     const timeLogged = `${hoursLogged.toLocaleString("en", {

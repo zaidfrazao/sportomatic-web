@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";

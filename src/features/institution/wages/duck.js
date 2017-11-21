@@ -1,9 +1,7 @@
-// @flow
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
-import firebase from "firebase";
 import _ from "lodash";
-
+import { SportomaticFirebaseAPI } from "../../../api/sportmatic-firebase-api";
 // Actions
 
 export const REQUEST_STAFF = "sportomatic-web/institution/wages/REQUEST_STAFF";
@@ -133,18 +131,13 @@ export function errorLoadingStaff(error: { code: string, message: string }) {
 export function loadStaff(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestStaff());
-    const staffRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/staff`);
-
-    return staffRef.on("value", snapshot => {
-      const staff = snapshot.val();
-      if (staff === null) {
-        dispatch(receiveStaff({}));
-      } else {
+    return SportomaticFirebaseAPI.getPeople(institutionID)
+      .then(staff => {
         dispatch(receiveStaff(staff));
-      }
-    });
+      })
+      .catch(err => {
+        dispatch(errorLoadingStaff(err));
+      });
   };
 }
 
@@ -175,17 +168,12 @@ export function errorLoadingWages(error: { code: string, message: string }) {
 export function loadCoachWages(institutionID, coachID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestWages());
-    const wagesRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/wages/${coachID}`);
-
-    return wagesRef.on("value", snapshot => {
-      const wages = snapshot.val();
-      if (wages === null) {
-        dispatch(receiveWages({}));
-      } else {
+    return SportomaticFirebaseAPI.getCoachWages(institutionID, coachID)
+      .then(wages => {
         dispatch(receiveWages(wages));
-      }
-    });
+      })
+      .catch(err => {
+        dispatch(errorLoadingWages(err));
+      });
   };
 }

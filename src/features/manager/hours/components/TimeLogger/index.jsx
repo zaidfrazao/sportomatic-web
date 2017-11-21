@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
@@ -374,7 +373,6 @@ class TimeLogger extends Component {
   render() {
     const { classes, isTablet, eventInfo } = this.props;
 
-    const timeOptions = { hour: "2-digit", minute: "2-digit" };
     const startTime = eventInfo.startTime;
     const endTime = eventInfo.endTime;
 
