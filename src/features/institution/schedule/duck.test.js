@@ -32,7 +32,7 @@ describe("Reducers", () => {
           const action = {
             type: OPEN_EVENT_ERROR_ALERT,
             payload: {
-              newView: "Schedule"
+              errorType: "LOADING"
             }
           };
           const newState = scheduleReducer(initialState, action);
@@ -44,7 +44,13 @@ describe("Reducers", () => {
         const { ERROR_ADDING_EVENT } = imports;
         test("Shows error adding event  alert", () => {
           const action = {
-            type: ERROR_ADDING_EVENT
+            type: ERROR_ADDING_EVENT,
+            payload: {
+              error: {
+                code: "401",
+                message: "Not authorised"
+              }
+            }
           };
           const newState = scheduleReducer(initialState, action);
           expect(newState.uiConfig.errorType).toEqual("LOADING");
@@ -56,7 +62,33 @@ describe("Reducers", () => {
         test("Shows cancel event alert", () => {
           const action = {
             type: OPEN_CANCEL_EVENT_ALERT,
-            payload: { showCancelEvent: true }
+            payload: {
+              institutionID: "y23l98Ty67f45uy7y3u2h",
+              eventID: "Ev34YhiU75ghj9iMl98TyhSw2dF3",
+              coachIDs: ["2hGteP7ju4fJ8n", "nTde4SDCp96f3eriKhy4gI"],
+              managerIDs: ["tRp0763Ghl67hn"],
+              year: "2017",
+              month: "11"
+            }
+          };
+          const newState = scheduleReducer(initialState, action);
+          expect(newState.uiConfig.selectedEventInfo).toEqual(action.payload);
+        });
+      });
+
+      describe("OPEN_UNCANCEL_EVENT_ALERT", () => {
+        const { OPEN_UNCANCEL_EVENT_ALERT } = imports;
+        test("Shows uncancel event alert", () => {
+          const action = {
+            type: OPEN_UNCANCEL_EVENT_ALERT,
+            payload: {
+              institutionID: "y23l98Ty67f45uy7y3u2h",
+              eventID: "Ev34YhiU75ghj9iMl98TyhSw2dF3",
+              coachIDs: ["2hGteP7ju4fJ8n", "nTde4SDCp96f3eriKhy4gI"],
+              managerIDs: ["tRp0763Ghl67hn"],
+              year: "2017",
+              month: "11"
+            }
           };
           const newState = scheduleReducer(initialState, action);
           expect(newState.uiConfig.selectedEventInfo).toEqual(action.payload);
@@ -547,7 +579,7 @@ describe("Action Creators", () => {
     describe("errorLoadingEvents", () => {
       const { errorLoadingEvents, ERROR_LOADING_EVENTS } = imports;
       test("Returns the correct action", () => {
-        let error = { code: "LOAD_FAILED", message: "Failed to load events" };
+        let error = { code: "404", message: "Failed to load events" };
         const createdAction = errorLoadingEvents(error);
         const expectedAction = {
           type: ERROR_LOADING_EVENTS,
@@ -582,7 +614,7 @@ describe("Action Creators", () => {
     describe("errorAddingEvent", () => {
       const { errorAddingEvent, ERROR_ADDING_EVENT } = imports;
       test("Returns the correct action", () => {
-        let error = { code: "ADD_EVENT_ERROR", message: "Failed to add event" };
+        let error = { code: "403", message: "Failed to add event" };
         const createdAction = errorAddingEvent(error);
         const expectedAction = {
           type: ERROR_ADDING_EVENT,
@@ -621,7 +653,7 @@ describe("Action Creators", () => {
     describe("errorLoadingTeams", () => {
       const { errorLoadingTeams, ERROR_LOADING_TEAMS } = imports;
       test("Returns the correct action", () => {
-        let error = { code: "LOAD_ERROR", message: "Error" };
+        let error = { code: "404", message: "Not found" };
         const createdAction = errorLoadingTeams(error);
         const expectedAction = {
           type: ERROR_LOADING_TEAMS,
@@ -659,7 +691,7 @@ describe("Action Creators", () => {
       const { errorCancellingEvent, ERROR_CANCELLING_EVENT } = imports;
       test("Returns the correct action", () => {
         let error = {
-          code: "CANCELLING_ERROR",
+          code: "401",
           message: "Error cancelling event"
         };
         const createdAction = errorCancellingEvent(error);
@@ -699,7 +731,7 @@ describe("Action Creators", () => {
       const { errorUncancellingEvent, ERROR_UNCANCELLING_EVENT } = imports;
       test("Returns the correct action", () => {
         let error = {
-          code: "UNCANCELLING_ERROR",
+          code: "401",
           message: "Error cancelling event"
         };
         const createdAction = errorUncancellingEvent(error);
