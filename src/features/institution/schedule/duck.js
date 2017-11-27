@@ -883,24 +883,6 @@ export function errorLoadingTeams(error: { code: string, message: string }) {
   };
 }
 
-export function loadTeams(institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestTeams());
-    const teamsRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/teams`);
-
-    return teamsRef.on("value", snapshot => {
-      const teams = snapshot.val();
-      if (teams === null) {
-        dispatch(receiveTeams({}));
-      } else {
-        dispatch(receiveTeams(teams));
-      }
-    });
-  };
-}
-
 export function requestCancelEvent() {
   return {
     type: REQUEST_CANCEL_EVENT
@@ -919,6 +901,48 @@ export function errorCancellingEvent(error: { code: string, message: string }) {
     payload: {
       error
     }
+  };
+}
+
+export function requestUncancelEvent() {
+  return {
+    type: REQUEST_UNCANCEL_EVENT
+  };
+}
+
+export function receiveUncancelEvent() {
+  return {
+    type: RECEIVE_UNCANCEL_EVENT
+  };
+}
+
+export function errorUncancellingEvent(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_UNCANCELLING_EVENT,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadTeams(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestTeams());
+    const teamsRef = firebase
+      .database()
+      .ref(`institution/${institutionID}/private/teams`);
+
+    return teamsRef.on("value", snapshot => {
+      const teams = snapshot.val();
+      if (teams === null) {
+        dispatch(receiveTeams({}));
+      } else {
+        dispatch(receiveTeams(teams));
+      }
+    });
   };
 }
 
@@ -956,30 +980,6 @@ export function cancelEvent(
       .update(updates)
       .then(() => dispatch(receiveCancelEvent()))
       .catch(error => dispatch(errorCancellingEvent(error)));
-  };
-}
-
-export function requestUncancelEvent() {
-  return {
-    type: REQUEST_UNCANCEL_EVENT
-  };
-}
-
-export function receiveUncancelEvent() {
-  return {
-    type: RECEIVE_UNCANCEL_EVENT
-  };
-}
-
-export function errorUncancellingEvent(error: {
-  code: string,
-  message: string
-}) {
-  return {
-    type: ERROR_UNCANCELLING_EVENT,
-    payload: {
-      error
-    }
   };
 }
 
