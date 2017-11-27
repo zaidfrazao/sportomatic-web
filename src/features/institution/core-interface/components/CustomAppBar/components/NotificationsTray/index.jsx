@@ -30,7 +30,8 @@ const styles = theme => ({
 
 type Props = {
   classes: {
-    badge: string
+    badge: string,
+    list: string
   },
   notifications: Array<{
     body: string,
@@ -41,6 +42,7 @@ type Props = {
 };
 
 type State = {
+  anchorEl: HTMLElement | null,
   isOpen: boolean
 };
 
