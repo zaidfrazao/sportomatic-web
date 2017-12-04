@@ -109,11 +109,6 @@ class PeopleLayout extends Component {
 
     return (
       <div className={classes.root}>
-        <FiltersToolbar
-          isMobile={isMobile}
-          types={["Coach", "Manager"]}
-          sports={["Cricket", "Rugby", "Soccer"]}
-        />
         {personID && staff[personID] ? (
           <div className={classes.infoWrapper}>
             <PersonInfo
@@ -130,6 +125,11 @@ class PeopleLayout extends Component {
                 : classes.staffTabNoCards
             }
           >
+            <FiltersToolbar
+              isMobile={isMobile}
+              types={["Coach", "Manager"]}
+              sports={["Cricket", "Rugby", "Soccer"]}
+            />
             <div className={classes.adWrapper}>{ad}</div>
             {isStaffLoading ? (
               <div className={classes.loaderWrapper}>
