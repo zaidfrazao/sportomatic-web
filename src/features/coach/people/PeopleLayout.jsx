@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
 import { CircularProgress } from "material-ui/Progress";
+import FiltersToolbar from "./components/FiltersToolbar";
 import PeopleList from "./components/PeopleList";
 import PersonInfo from "./components/PersonInfo";
 import LeaderboardAd from "../../../components/LeaderboardAd";
@@ -108,6 +109,11 @@ class PeopleLayout extends Component {
 
     return (
       <div className={classes.root}>
+        <FiltersToolbar
+          isMobile={isMobile}
+          types={["Coach", "Manager"]}
+          sports={["Cricket", "Rugby", "Soccer"]}
+        />
         {personID && staff[personID] ? (
           <div className={classes.infoWrapper}>
             <PersonInfo
