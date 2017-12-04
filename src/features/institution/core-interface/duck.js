@@ -28,7 +28,8 @@ export const uiConfigInitialState = {
   isSideMenuOpen: false,
   isLoggedIn: true,
   type: "INSTITUTION",
-  userID: ""
+  userID: "",
+  accountInfo: {}
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -38,7 +39,8 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         isLoggedIn: action.payload.user.isLoggedIn,
         type: action.payload.user.type,
-        userID: action.payload.user.id
+        userID: action.payload.user.id,
+        accountInfo: action.payload.user.accountInfo
       };
     case SIGN_OUT:
       return {
@@ -119,7 +121,8 @@ export function initUser() {
     id: localStorage.userID || "",
     email: localStorage.email || "",
     isLoggedIn: localStorage.isLoggedIn === "true" || false,
-    type: localStorage.type || ""
+    type: localStorage.type || "",
+    accountInfo: JSON.parse(localStorage.accountInfo)
   };
 
   return {

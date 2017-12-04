@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
@@ -82,16 +83,16 @@ const styles = {
 
 class PersonInfo extends Component {
   render() {
-    const { classes, isMobile, isTablet } = this.props;
-    const { preferredSports, teams, paymentDefaults } = this.props.info;
+    const { classes, isMobile, isTablet, type } = this.props;
+    const { teams, paymentDefaults } = this.props.info;
     const {
       name,
       surname,
       email,
       phoneNumber,
       profilePictureURL,
-      type
-    } = this.props.info.metadata;
+      sports
+    } = this.props.info.info;
 
     const teamsList = _.toPairs(teams).map(([teamID, teamInfo]) => {
       return { id: teamID, ...teamInfo };
@@ -203,12 +204,15 @@ class PersonInfo extends Component {
                   Sports
                 </Typography>
                 <List>
-                  {preferredSports &&
-                    _.toPairs(preferredSports).map(([sportID, sport]) => (
-                      <ListItem key={sportID}>
-                        <ListItemText primary={sport} />
-                      </ListItem>
-                    ))}
+                  {sports &&
+                    _.toPairs(sports).map(([sport, exists]) => {
+                      if (exists)
+                        return (
+                          <ListItem key={sport}>
+                            <ListItemText primary={sport} />
+                          </ListItem>
+                        );
+                    })}
                 </List>
               </div>
             </Grid>

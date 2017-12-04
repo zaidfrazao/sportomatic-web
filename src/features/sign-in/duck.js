@@ -425,6 +425,13 @@ export function errorSigningIn(error: { code: string, message: string }) {
       };
       break;
     default:
+      errors = {
+        ...errors,
+        otherErrors: {
+          hasError: true,
+          message: error.message
+        }
+      };
       break;
   }
 
@@ -506,6 +513,10 @@ export function errorResettingPassword(error: {
     networkErrors: {
       hasError: false,
       message: ""
+    },
+    otherErrors: {
+      hasError: false,
+      message: ""
     }
   };
 
@@ -539,6 +550,13 @@ export function errorResettingPassword(error: {
       };
       break;
     default:
+      errors = {
+        ...errors,
+        otherErrors: {
+          hasError: true,
+          message: error.message
+        }
+      };
       break;
   }
 
@@ -575,27 +593,19 @@ export function requestAccountInfo() {
 export function receiveAccountInfo(
   userID: string,
   email: string,
-  type: string,
-  status: string,
-  lastInstitutionAccessed: {
-    id: string,
-    name: string,
-    emblemURL: string
-  }
+  accountInfo: {}
 ) {
   localStorage.setItem("email", email);
   localStorage.setItem("userID", userID);
-  localStorage.setItem("type", type);
+  localStorage.setItem("type", accountInfo.lastTypeUsed);
   localStorage.setItem("isLoggedIn", "true");
-  localStorage.setItem(
-    "activeInstitution",
-    JSON.stringify(lastInstitutionAccessed)
-  );
+  localStorage.setItem("accountInfo", JSON.stringify(accountInfo));
   return {
     type: RECEIVE_ACCOUNT_INFO,
     payload: {
-      type,
-      status
+      type: accountInfo.lastTypeUsed,
+      status: accountInfo.metadata.status,
+      accountInfo
     }
   };
 }
@@ -609,20 +619,18 @@ export function errorFetchingAccountInfo() {
 export function fetchAccountInfo(userID: string, email: string) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestAccountInfo());
-    const userRef = firebase.database().ref(`users/${userID}`);
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
     userRef
-      .once("value")
-      .then(snapshot => {
-        const accountInfo = snapshot.val();
-        dispatch(
-          receiveAccountInfo(
-            userID,
-            email,
-            accountInfo.type,
-            accountInfo.status,
-            accountInfo.lastInstitutionAccessed || {}
-          )
-        );
+      .get()
+      .then(userDoc => {
+        if (userDoc.exists) {
+          const accountInfo = userDoc.data();
+          dispatch(receiveAccountInfo(userID, email, accountInfo));
+        } else {
+          dispatch(errorFetchingAccountInfo());
+        }
       })
       .catch(() => {
         dispatch(errorFetchingAccountInfo());

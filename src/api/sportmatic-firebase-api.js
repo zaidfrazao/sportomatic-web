@@ -1,19 +1,36 @@
 import firebase from "firebase";
 
 export class SportomaticFirebaseAPI {
-  static getPeople(institutionID) {
+  static getCoaches(institutionID, type) {
     return new Promise((resolve, reject) => {
-      const staffRef = firebase
-        .database()
-        .ref(`institution/${institutionID}/private/staff`);
+      const coachesRef = firebase
+        .firestore()
+        .collection("users")
+        .where(`institutions.${institutionID}.coachStatus`, "==", type);
 
-      staffRef.on("value", snapshot => {
-        const staff = snapshot.val();
-        if (staff === null) {
-          resolve({});
-        } else {
-          resolve(staff);
-        }
+      coachesRef.onSnapshot(querySnapshot => {
+        let coaches = {};
+        querySnapshot.forEach(doc => {
+          coaches[doc.id] = doc.data();
+        });
+        resolve(coaches);
+      });
+    });
+  }
+
+  static getManagers(institutionID, type) {
+    return new Promise((resolve, reject) => {
+      const managersRef = firebase
+        .firestore()
+        .collection("users")
+        .where(`institutions.${institutionID}.managerStatus`, "==", type);
+
+      managersRef.onSnapshot(querySnapshot => {
+        let managers = {};
+        querySnapshot.forEach(doc => {
+          managers[doc.id] = doc.data();
+        });
+        resolve(managers);
       });
     });
   }

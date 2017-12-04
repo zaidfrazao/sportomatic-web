@@ -3,7 +3,6 @@ import { withStyles } from "material-ui/styles";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
 import PersonCard from "./components/PersonCard";
-import _ from "lodash";
 
 const styles = {
   cardsWrapper: {
@@ -40,7 +39,7 @@ class PeopleList extends Component {
                   name={personInfo.name}
                   surname={personInfo.surname}
                   profilePictureURL={personInfo.profilePictureURL}
-                  type={_.capitalize(personInfo.type)}
+                  type={personInfo.type}
                   actions={{ openDeletePersonAlert }}
                   id={personInfo.id}
                 />

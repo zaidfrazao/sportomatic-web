@@ -77,21 +77,24 @@ const styles = theme => ({
 class PeopleLayout extends Component {
   componentWillMount() {
     const { userID } = this.props;
-    const { loadStaff } = this.props.actions;
-    loadStaff(userID);
+    const { loadCoaches, loadManagers } = this.props.actions;
+
+    loadCoaches(userID);
+    loadManagers(userID);
   }
 
   componentWillReceiveProps(nextProps) {
     const { userID } = this.props;
-    const { loadStaff } = this.props.actions;
+    const { loadCoaches, loadManagers } = this.props.actions;
 
     if (userID !== nextProps.userID) {
-      loadStaff(nextProps.userID);
+      loadCoaches(nextProps.userID);
+      loadManagers(nextProps.userID);
     }
   }
 
   render() {
-    const { classes, staff, isMobile, isTablet } = this.props;
+    const { classes, staff, isMobile, isTablet, userID } = this.props;
     const { currentTab } = this.props.uiConfig;
     const { isStaffLoading } = this.props.loadingStatus;
     const {
@@ -109,20 +112,33 @@ class PeopleLayout extends Component {
 
     const staffCardsInfo = _.values(
       _.mapValues(staff, (value, key) => {
+        let type = "";
+        if (value.institutions[userID].managerStatus === "APPROVED") {
+          type = "Manager";
+        }
+        if (value.institutions[userID].coachStatus === "APPROVED") {
+          type = "Coach";
+        }
+        if (
+          value.institutions[userID].coachStatus === "APPROVED" &&
+          value.institutions[userID].managerStatus === "APPROVED"
+        ) {
+          type = "Manager / Coach";
+        }
         return {
           ...value,
           id: key,
-          name: value.metadata.name,
-          surname: value.metadata.surname,
-          profilePictureURL: value.metadata.profilePictureURL,
-          type: value.metadata.type
+          name: value.info.name,
+          surname: value.info.surname,
+          profilePictureURL: value.info.profilePictureURL,
+          type: type
         };
       })
     ).sort((personA, personB) => {
-      if (personA.metadata.name > personB.metadata.name) return +1;
-      if (personA.metadata.name < personB.metadata.name) return -1;
-      if (personA.metadata.surname > personB.metadata.surname) return +1;
-      if (personA.metadata.surname < personB.metadata.surname) return -1;
+      if (personA.info.name > personB.info.name) return +1;
+      if (personA.info.name < personB.info.name) return -1;
+      if (personA.info.surname > personB.info.surname) return +1;
+      if (personA.info.surname < personB.info.surname) return -1;
       return 0;
     });
 
@@ -133,11 +149,22 @@ class PeopleLayout extends Component {
       ad = <BannerAd />;
     }
 
+    let type = "";
+    if (personID && staff[personID]) {
+      if (staff[personID].institutions[userID].managerStatus === "APPROVED") {
+        type = "Manager";
+      }
+      if (staff[personID].institutions[userID].coachStatus === "APPROVED") {
+        type = "Coach";
+      }
+    }
+
     return (
       <div className={classes.root}>
         {personID && staff[personID] ? (
           <div className={classes.infoWrapper}>
             <PersonInfo
+              type={type}
               info={staff[personID]}
               isMobile={isMobile}
               isTablet={isTablet}

@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
-import { SportomaticFirebaseAPI } from "../../../api/sportmatic-firebase-api";
+import firebase from "firebase";
 // Actions
 
 export const UPDATE_TAB = "sportomatic-web/institution/people/UPDATE_TAB";
@@ -12,10 +12,18 @@ export const OPEN_EDIT_PERSON_DIALOG =
   "sportomatic-web/institution/people/OPEN_EDIT_PERSON_DIALOG";
 export const CLOSE_EDIT_PERSON_DIALOG =
   "sportomatic-web/institution/people/CLOSE_EDIT_PERSON_DIALOG";
-export const REQUEST_STAFF = "sportomatic-web/institution/people/REQUEST_STAFF";
-export const RECEIVE_STAFF = "sportomatic-web/institution/people/RECEIVE_STAFF";
-export const ERROR_LOADING_STAFF =
-  "sportomatic-web/institution/people/ERROR_LOADING_STAFF";
+export const REQUEST_COACHES =
+  "sportomatic-web/institution/people/REQUEST_COACHES";
+export const RECEIVE_COACHES =
+  "sportomatic-web/institution/people/RECEIVE_COACHES";
+export const ERROR_LOADING_COACHES =
+  "sportomatic-web/institution/people/ERROR_LOADING_COACHES";
+export const REQUEST_MANAGERS =
+  "sportomatic-web/institution/people/REQUEST_MANAGERS";
+export const RECEIVE_MANAGERS =
+  "sportomatic-web/institution/people/RECEIVE_MANAGERS";
+export const ERROR_LOADING_MANAGERS =
+  "sportomatic-web/institution/people/ERROR_LOADING_MANAGERS";
 
 // Reducers
 
@@ -69,8 +77,16 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 
 function staffReducer(state = {}, action = {}) {
   switch (action.type) {
-    case RECEIVE_STAFF:
-      return action.payload.staff;
+    case RECEIVE_COACHES:
+      return {
+        ...state,
+        ...action.payload.coaches
+      };
+    case RECEIVE_MANAGERS:
+      return {
+        ...state,
+        ...action.payload.managers
+      };
     default:
       return state;
   }
@@ -85,13 +101,16 @@ function loadingStatusListReducer(
   action = {}
 ) {
   switch (action.type) {
-    case REQUEST_STAFF:
+    case REQUEST_COACHES:
+    case REQUEST_MANAGERS:
       return {
         ...state,
         isStaffLoading: true
       };
-    case ERROR_LOADING_STAFF:
-    case RECEIVE_STAFF:
+    case ERROR_LOADING_COACHES:
+    case RECEIVE_COACHES:
+    case ERROR_LOADING_MANAGERS:
+    case RECEIVE_MANAGERS:
       return {
         ...state,
         isStaffLoading: false
@@ -157,39 +176,88 @@ export function closeEditPersonDialog() {
   };
 }
 
-export function requestStaff() {
+export function requestCoaches() {
   return {
-    type: REQUEST_STAFF
+    type: REQUEST_COACHES
   };
 }
 
-export function receiveStaff(staff) {
+export function receiveCoaches(coaches) {
   return {
-    type: RECEIVE_STAFF,
+    type: RECEIVE_COACHES,
     payload: {
-      staff
+      coaches
     }
   };
 }
 
-export function errorLoadingStaff(error: { code: string, message: string }) {
+export function errorLoadingCoaches(error: { code: string, message: string }) {
   return {
-    type: ERROR_LOADING_STAFF,
+    type: ERROR_LOADING_COACHES,
     payload: {
       error
     }
   };
 }
 
-export function loadStaff(institutionID) {
+export function loadCoaches(institutionID) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestStaff());
-    return SportomaticFirebaseAPI.getPeople(institutionID)
-      .then(people => {
-        dispatch(receiveStaff(people));
-      })
-      .catch(err => {
-        dispatch(errorLoadingStaff({ err }));
+    dispatch(requestCoaches());
+
+    const coachesRef = firebase
+      .firestore()
+      .collection("users")
+      .where(`institutions.${institutionID}.coachStatus`, "==", "APPROVED");
+
+    return coachesRef.onSnapshot(querySnapshot => {
+      let coaches = {};
+      querySnapshot.forEach(doc => {
+        coaches[doc.id] = doc.data();
       });
+      dispatch(receiveCoaches(coaches));
+    });
+  };
+}
+
+export function requestManagers() {
+  return {
+    type: REQUEST_MANAGERS
+  };
+}
+
+export function receiveManagers(managers) {
+  return {
+    type: RECEIVE_MANAGERS,
+    payload: {
+      managers
+    }
+  };
+}
+
+export function errorLoadingManagers(error: { code: string, message: string }) {
+  return {
+    type: ERROR_LOADING_MANAGERS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadManagers(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestManagers());
+
+    const managersRef = firebase
+      .firestore()
+      .collection("users")
+      .where(`institutions.${institutionID}.managerStatus`, "==", "APPROVED");
+
+    return managersRef.onSnapshot(querySnapshot => {
+      let managers = {};
+      querySnapshot.forEach(doc => {
+        managers[doc.id] = doc.data();
+      });
+      dispatch(receiveManagers(managers));
+    });
   };
 }

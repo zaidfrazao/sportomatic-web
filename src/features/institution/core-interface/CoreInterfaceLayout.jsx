@@ -173,9 +173,9 @@ class CoreInterfaceLayout extends Component {
     } = this.props.actions;
     const { windowWidth } = this.state;
     const {
-      userID,
       isLoggedIn,
       type,
+      accountInfo,
       appBarTitle,
       isSideMenuOpen,
       bottomNavValue
@@ -221,61 +221,61 @@ class CoreInterfaceLayout extends Component {
                   <Hours
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                   />
                 </Route>
                 <Route exact path={`/institution/hours/:coachID`}>
                   <Hours
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                   />
                 </Route>
                 <Route exact path={`/institution/results/`}>
                   <Results
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                   />
                 </Route>
                 <Route exact path={`/institution/results/:teamID`}>
                   <Results
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                   />
                 </Route>
                 <Route exact path={`/institution/results/:teamID/:eventID`}>
                   <Results
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                   />
                 </Route>
                 <Route exact path={`/institution/people/`}>
                   <People
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                     isMobile={isMobile}
                     isTablet={isTablet}
                   />
                 </Route>
                 <Route path={`/institution/people/:personID`}>
                   <People
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                     isMobile={isMobile}
                     isTablet={isTablet}
                   />
                 </Route>
                 <Route exact path={`/institution/teams/`}>
                   <Teams
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                     isMobile={isMobile}
                     isTablet={isTablet}
                   />
                 </Route>
                 <Route path={`/institution/teams/:teamID`}>
                   <Teams
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                     isMobile={isMobile}
                     isTablet={isTablet}
                   />
@@ -284,14 +284,14 @@ class CoreInterfaceLayout extends Component {
                   <Schedule
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                   />
                 </Route>
                 <Route exact path={`/institution/schedule/:dateSelected`}>
                   <Schedule
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                   />
                 </Route>
                 <Route
@@ -301,7 +301,7 @@ class CoreInterfaceLayout extends Component {
                   <Schedule
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                   />
                 </Route>
                 <Route exact path={`/institution/settings/`}>
@@ -311,14 +311,14 @@ class CoreInterfaceLayout extends Component {
                   <Wages
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                   />
                 </Route>
                 <Route path={`/institution/wages/:coachID`}>
                   <Wages
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    userID={userID}
+                    userID={accountInfo.lastInstitutionAccessed}
                   />
                 </Route>
               </Switch>
