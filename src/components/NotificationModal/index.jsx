@@ -25,8 +25,7 @@ class NotificationModal extends Component {
   };
 
   render() {
-    const { isOpen, message, heading } = this.props;
-    const { handleOkClick } = this.props.actions;
+    const { isOpen, message, heading, handleOkClick } = this.props;
 
     return (
       <Dialog open={isOpen}>
