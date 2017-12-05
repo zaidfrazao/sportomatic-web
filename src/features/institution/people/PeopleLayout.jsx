@@ -5,13 +5,13 @@ import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import EditIcon from "material-ui-icons/Edit";
 import Tabs, { Tab } from "material-ui/Tabs";
-import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 import NotificationModal from "../../../components/NotificationModal";
 import PeopleList from "./components/PeopleList";
+import RequestsList from "./components/RequestsList";
 import PersonInfo from "./components/PersonInfo";
 
 const styles = theme => ({
@@ -71,20 +71,36 @@ const styles = theme => ({
 class PeopleLayout extends Component {
   componentWillMount() {
     const { userID } = this.props;
-    const { loadCoaches, loadManagers, loadTeams } = this.props.actions;
+    const {
+      loadCoaches,
+      loadManagers,
+      loadTeams,
+      loadCoachRequests,
+      loadManagerRequests
+    } = this.props.actions;
 
     loadCoaches(userID);
     loadManagers(userID);
+    loadCoachRequests(userID);
+    loadManagerRequests(userID);
     loadTeams(userID);
   }
 
   componentWillReceiveProps(nextProps) {
     const { userID } = this.props;
-    const { loadCoaches, loadManagers, loadTeams } = this.props.actions;
+    const {
+      loadCoaches,
+      loadManagers,
+      loadTeams,
+      loadCoachRequests,
+      loadManagerRequests
+    } = this.props.actions;
 
     if (userID !== nextProps.userID) {
       loadCoaches(nextProps.userID);
       loadManagers(nextProps.userID);
+      loadCoachRequests(nextProps.userID);
+      loadManagerRequests(nextProps.userID);
       loadTeams(nextProps.userID);
     }
   }
@@ -155,6 +171,42 @@ class PeopleLayout extends Component {
     });
   }
 
+  getRequestsCardsInfo() {
+    const { requests, userID } = this.props;
+
+    return _.values(
+      _.mapValues(requests, (value, key) => {
+        let type = "";
+        if (value.institutions[userID].managerStatus === "AWAITING_APPROVAL") {
+          type = "Manager";
+        }
+        if (value.institutions[userID].coachStatus === "AWAITING_APPROVAL") {
+          type = "Coach";
+        }
+        if (
+          value.institutions[userID].coachStatus === "AWAITING_APPROVAL" &&
+          value.institutions[userID].managerStatus === "AWAITING_APPROVAL"
+        ) {
+          type = "Manager / Coach";
+        }
+        return {
+          ...value,
+          id: key,
+          name: value.info.name,
+          surname: value.info.surname,
+          profilePictureURL: value.info.profilePictureURL,
+          type: type
+        };
+      })
+    ).sort((personA, personB) => {
+      if (personA.info.name > personB.info.name) return +1;
+      if (personA.info.name < personB.info.name) return -1;
+      if (personA.info.surname > personB.info.surname) return +1;
+      if (personA.info.surname < personB.info.surname) return -1;
+      return 0;
+    });
+  }
+
   render() {
     const { classes, staff, teams, isMobile, isTablet } = this.props;
     const { currentTab } = this.props.uiConfig;
@@ -173,6 +225,7 @@ class PeopleLayout extends Component {
     const { personID } = this.props.match.params;
 
     const staffCardsInfo = this.getStaffCardsInfo();
+    const requestsCardsInfo = this.getRequestsCardsInfo();
     const ad = this.createAd();
     const type = this.getType();
 
@@ -241,10 +294,24 @@ class PeopleLayout extends Component {
               </div>
             )}
             {currentTab === "REQUESTS" && (
-              <div className={classes.requestsTab}>
-                <Typography type="title" component="h3">
-                  Unavailable in this version of the beta.
-                </Typography>
+              <div
+                className={
+                  staffCardsInfo.length > 0
+                    ? classes.staffTab
+                    : classes.staffTabNoCards
+                }
+              >
+                <div className={classes.adWrapper}>{ad}</div>
+                {isStaffLoading ? (
+                  <div className={classes.loaderWrapper}>
+                    <CircularProgress />
+                  </div>
+                ) : (
+                  <RequestsList
+                    people={requestsCardsInfo}
+                    actions={{ openDeletePersonAlert }}
+                  />
+                )}
               </div>
             )}
             <NotificationModal

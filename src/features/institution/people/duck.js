@@ -15,16 +15,18 @@ export const CLOSE_EDIT_PERSON_DIALOG =
   "sportomatic-web/admin/people/CLOSE_EDIT_PERSON_DIALOG";
 export const REQUEST_COACHES = "sportomatic-web/admin/people/REQUEST_COACHES";
 export const RECEIVE_COACHES = "sportomatic-web/admin/people/RECEIVE_COACHES";
-export const ERROR_LOADING_COACHES =
-  "sportomatic-web/admin/people/ERROR_LOADING_COACHES";
 export const REQUEST_MANAGERS = "sportomatic-web/admin/people/REQUEST_MANAGERS";
 export const RECEIVE_MANAGERS = "sportomatic-web/admin/people/RECEIVE_MANAGERS";
-export const ERROR_LOADING_MANAGERS =
-  "sportomatic-web/admin/people/ERROR_LOADING_MANAGERS";
+export const REQUEST_COACH_REQUESTS =
+  "sportomatic-web/admin/people/REQUEST_COACH_REQUESTS";
+export const RECEIVE_COACH_REQUESTS =
+  "sportomatic-web/admin/people/RECEIVE_COACH_REQUESTS";
+export const REQUEST_MANAGER_REQUESTS =
+  "sportomatic-web/admin/people/REQUEST_MANAGER_REQUESTS";
+export const RECEIVE_MANAGER_REQUESTS =
+  "sportomatic-web/admin/people/RECEIVE_MANAGER_REQUESTS";
 export const REQUEST_TEAMS = "sportomatic-web/admin/people/REQUEST_TEAMS";
 export const RECEIVE_TEAMS = "sportomatic-web/admin/people/RECEIVE_TEAMS";
-export const ERROR_LOADING_TEAMS =
-  "sportomatic-web/admin/people/ERROR_LOADING_TEAMS";
 
 // Reducers
 
@@ -93,6 +95,23 @@ function staffReducer(state = {}, action = {}) {
   }
 }
 
+function requestsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RECEIVE_COACH_REQUESTS:
+      return {
+        ...state,
+        ...action.payload.coaches
+      };
+    case RECEIVE_MANAGER_REQUESTS:
+      return {
+        ...state,
+        ...action.payload.managers
+      };
+    default:
+      return state;
+  }
+}
+
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RECEIVE_TEAMS:
@@ -121,9 +140,7 @@ function loadingStatusListReducer(
         ...state,
         isStaffLoading: true
       };
-    case ERROR_LOADING_COACHES:
     case RECEIVE_COACHES:
-    case ERROR_LOADING_MANAGERS:
     case RECEIVE_MANAGERS:
       return {
         ...state,
@@ -134,7 +151,6 @@ function loadingStatusListReducer(
         ...state,
         isTeamsLoading: true
       };
-    case ERROR_LOADING_TEAMS:
     case RECEIVE_TEAMS:
       return {
         ...state,
@@ -150,13 +166,15 @@ export const peopleReducer = combineReducers({
   staff: staffReducer,
   dialogs: dialogsReducer,
   loadingStatus: loadingStatusListReducer,
-  teams: teamsReducer
+  teams: teamsReducer,
+  requests: requestsReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.institution.people.uiConfig;
 const staff = state => state.institution.people.staff;
+const requests = state => state.institution.people.requests;
 const teams = state => state.institution.people.teams;
 const dialogs = state => state.institution.people.dialogs;
 const loadingStatus = state => state.institution.people.loadingStatus;
@@ -166,7 +184,8 @@ export const selector = createStructuredSelector({
   staff,
   dialogs,
   loadingStatus,
-  teams
+  teams,
+  requests
 });
 
 // Action Creators
@@ -219,15 +238,6 @@ export function receiveCoaches(coaches) {
   };
 }
 
-export function errorLoadingCoaches(error: { code: string, message: string }) {
-  return {
-    type: ERROR_LOADING_COACHES,
-    payload: {
-      error
-    }
-  };
-}
-
 export function loadCoaches(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestCoaches());
@@ -247,6 +257,44 @@ export function loadCoaches(institutionID) {
   };
 }
 
+export function requestCoachRequests() {
+  return {
+    type: REQUEST_COACH_REQUESTS
+  };
+}
+
+export function receiveCoachRequests(coaches) {
+  return {
+    type: RECEIVE_COACH_REQUESTS,
+    payload: {
+      coaches
+    }
+  };
+}
+
+export function loadCoachRequests(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestCoachRequests());
+
+    const coachesRef = firebase
+      .firestore()
+      .collection("users")
+      .where(
+        `institutions.${institutionID}.coachStatus`,
+        "==",
+        "AWAITING_APPROVAL"
+      );
+
+    return coachesRef.onSnapshot(querySnapshot => {
+      let coaches = {};
+      querySnapshot.forEach(doc => {
+        coaches[doc.id] = doc.data();
+      });
+      dispatch(receiveCoachRequests(coaches));
+    });
+  };
+}
+
 export function requestManagers() {
   return {
     type: REQUEST_MANAGERS
@@ -258,15 +306,6 @@ export function receiveManagers(managers) {
     type: RECEIVE_MANAGERS,
     payload: {
       managers
-    }
-  };
-}
-
-export function errorLoadingManagers(error: { code: string, message: string }) {
-  return {
-    type: ERROR_LOADING_MANAGERS,
-    payload: {
-      error
     }
   };
 }
@@ -290,6 +329,44 @@ export function loadManagers(institutionID) {
   };
 }
 
+export function requestManagerRequests() {
+  return {
+    type: REQUEST_MANAGER_REQUESTS
+  };
+}
+
+export function receiveManagerRequests(managers) {
+  return {
+    type: RECEIVE_MANAGER_REQUESTS,
+    payload: {
+      managers
+    }
+  };
+}
+
+export function loadManagerRequests(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestManagerRequests());
+
+    const managersRef = firebase
+      .firestore()
+      .collection("users")
+      .where(
+        `institutions.${institutionID}.managerStatus`,
+        "==",
+        "AWAITING_APPROVAL"
+      );
+
+    return managersRef.onSnapshot(querySnapshot => {
+      let managers = {};
+      querySnapshot.forEach(doc => {
+        managers[doc.id] = doc.data();
+      });
+      dispatch(receiveManagerRequests(managers));
+    });
+  };
+}
+
 export function requestTeams() {
   return {
     type: REQUEST_TEAMS
@@ -301,15 +378,6 @@ export function receiveTeams(teams: Array<TeamAlias>) {
     type: RECEIVE_TEAMS,
     payload: {
       teams
-    }
-  };
-}
-
-export function errorLoadingTeams(error: { code: string, message: string }) {
-  return {
-    type: ERROR_LOADING_TEAMS,
-    payload: {
-      error
     }
   };
 }
