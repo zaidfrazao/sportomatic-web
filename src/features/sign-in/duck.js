@@ -598,12 +598,12 @@ export function receiveAccountInfo(
   status: string,
   accountInfo: UserAlias
 ) {
-  console.log(accountInfo);
   localStorage.setItem("email", email);
   localStorage.setItem("userID", userID);
   localStorage.setItem("type", accountInfo.lastTypeUsed);
   localStorage.setItem("isLoggedIn", "true");
   localStorage.setItem("accountInfo", JSON.stringify(accountInfo));
+
   return {
     type: RECEIVE_ACCOUNT_INFO,
     payload: {
