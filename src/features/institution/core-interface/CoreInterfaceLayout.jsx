@@ -195,6 +195,7 @@ class CoreInterfaceLayout extends Component {
               toggleSideMenu
             }}
             isMobile={isMobile}
+            feature={appBarTitle}
           />
           <div className={classes.content}>
             <div className={classes.main}>

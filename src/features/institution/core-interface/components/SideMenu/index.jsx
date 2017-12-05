@@ -1,19 +1,20 @@
 import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
-import classNames from "classnames";
-import { Route } from "react-router-dom";
-import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import ChevronLeftIcon from "material-ui-icons/ChevronLeft";
+import classNames from "classnames";
 import DashboardIcon from "material-ui-icons/Dashboard";
-import ScheduleIcon from "material-ui-icons/Event";
+import Divider from "material-ui/Divider";
+import Drawer from "material-ui/Drawer";
+import { grey } from "material-ui/colors";
 import HoursIcon from "material-ui-icons/Alarm";
-import PeopleIcon from "material-ui-icons/Person";
+import IconButton from "material-ui/IconButton";
+import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import ResultsIcon from "material-ui-icons/PlusOne";
+import { Route } from "react-router-dom";
+import PeopleIcon from "material-ui-icons/Person";
+import ScheduleIcon from "material-ui-icons/Event";
 import TeamsIcon from "material-ui-icons/People";
 import WagesIcon from "material-ui-icons/AttachMoney";
-import Drawer from "material-ui/Drawer";
-import Divider from "material-ui/Divider";
-import IconButton from "material-ui/IconButton";
+import { withStyles } from "material-ui/styles";
 import logo from "./images/logo.png";
 
 const drawerWidth = 240;
@@ -55,12 +56,18 @@ const styles = theme => ({
     backgroundSize: "cover",
     width: 160,
     height: 30
+  },
+  selectedItem: {
+    backgroundColor: grey[300]
+  },
+  unselectedItem: {
+    backgroundColor: grey[0]
   }
 });
 
 class SideMenu extends Component {
   render() {
-    const { classes, isOpen, isMobile } = this.props;
+    const { classes, isOpen, isMobile, feature } = this.props;
     const { toggleSideMenu } = this.props.actions;
 
     return (
@@ -93,6 +100,10 @@ class SideMenu extends Component {
                     history.push("/admin/dashboard");
                     isMobile && toggleSideMenu();
                   }}
+                  className={classNames(
+                    feature !== "Dashboard" && classes.unselectedItem,
+                    feature === "Dashboard" && classes.selectedItem
+                  )}
                 >
                   <ListItemIcon>
                     <DashboardIcon />
@@ -110,6 +121,10 @@ class SideMenu extends Component {
                     history.push("/admin/schedule");
                     isMobile && toggleSideMenu();
                   }}
+                  className={classNames(
+                    feature !== "Schedule" && classes.unselectedItem,
+                    feature === "Schedule" && classes.selectedItem
+                  )}
                 >
                   <ListItemIcon>
                     <ScheduleIcon />
@@ -127,6 +142,10 @@ class SideMenu extends Component {
                     history.push("/admin/hours");
                     isMobile && toggleSideMenu();
                   }}
+                  className={classNames(
+                    feature !== "Hours" && classes.unselectedItem,
+                    feature === "Hours" && classes.selectedItem
+                  )}
                 >
                   <ListItemIcon>
                     <HoursIcon />
@@ -144,6 +163,10 @@ class SideMenu extends Component {
                     history.push("/admin/results");
                     isMobile && toggleSideMenu();
                   }}
+                  className={classNames(
+                    feature !== "Results" && classes.unselectedItem,
+                    feature === "Results" && classes.selectedItem
+                  )}
                 >
                   <ListItemIcon>
                     <ResultsIcon />
@@ -161,6 +184,10 @@ class SideMenu extends Component {
                     history.push("/admin/wages");
                     isMobile && toggleSideMenu();
                   }}
+                  className={classNames(
+                    feature !== "Wages" && classes.unselectedItem,
+                    feature === "Wages" && classes.selectedItem
+                  )}
                 >
                   <ListItemIcon>
                     <WagesIcon />
@@ -178,6 +205,10 @@ class SideMenu extends Component {
                     history.push("/admin/people");
                     isMobile && toggleSideMenu();
                   }}
+                  className={classNames(
+                    feature !== "People" && classes.unselectedItem,
+                    feature === "People" && classes.selectedItem
+                  )}
                 >
                   <ListItemIcon>
                     <PeopleIcon />
@@ -195,6 +226,10 @@ class SideMenu extends Component {
                     history.push("/admin/teams");
                     isMobile && toggleSideMenu();
                   }}
+                  className={classNames(
+                    feature !== "Teams" && classes.unselectedItem,
+                    feature === "Teams" && classes.selectedItem
+                  )}
                 >
                   <ListItemIcon>
                     <TeamsIcon />
