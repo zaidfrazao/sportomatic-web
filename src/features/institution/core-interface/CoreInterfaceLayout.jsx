@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import { Redirect, Route, Switch } from "react-router-dom";
 import CustomAppBar from "./components/CustomAppBar";
-import BottomNav from "./components/BottomNav";
 import SideMenu from "./components/SideMenu";
 import Dashboard from "../dashboard/DashboardView";
 import Hours from "../hours/HoursView";
@@ -110,49 +109,39 @@ class CoreInterfaceLayout extends Component {
   }
 
   updateCoreUI(pathname) {
-    const { updateAppBarTitle, updateBottomNavValue } = this.props.actions;
+    const { updateAppBarTitle } = this.props.actions;
     const featureName = pathname.split("/")[2];
 
     switch (featureName) {
       case "dashboard":
         updateAppBarTitle("Dashboard");
-        updateBottomNavValue("dashboard");
         break;
       case "schedule":
         updateAppBarTitle("Schedule");
-        updateBottomNavValue("schedule");
         break;
       case "hours":
         updateAppBarTitle("Hours");
-        updateBottomNavValue("hours");
         break;
       case "wages":
         updateAppBarTitle("Wages");
-        updateBottomNavValue("wages");
         break;
       case "reports":
         updateAppBarTitle("Reports");
-        updateBottomNavValue("reports");
         break;
       case "people":
         updateAppBarTitle("People");
-        updateBottomNavValue("people");
         break;
       case "teams":
         updateAppBarTitle("Teams");
-        updateBottomNavValue("teams");
         break;
       case "settings":
         updateAppBarTitle("Settings");
-        updateBottomNavValue("settings");
         break;
       case "results":
         updateAppBarTitle("Results");
-        updateBottomNavValue("results");
         break;
       default:
         updateAppBarTitle("Dashboard");
-        updateBottomNavValue("dashboard");
         break;
     }
   }
@@ -177,8 +166,7 @@ class CoreInterfaceLayout extends Component {
       type,
       accountInfo,
       appBarTitle,
-      isSideMenuOpen,
-      bottomNavValue
+      isSideMenuOpen
     } = this.props.uiConfig;
     const { isSettingsAlertOpen, isLogOutModalOpen } = this.props.dialogs;
     const isMobile = windowWidth < 600;
@@ -320,7 +308,6 @@ class CoreInterfaceLayout extends Component {
                 </Route>
               </Switch>
             </div>
-            {isMobile && <BottomNav value={bottomNavValue} />}
           </div>
         </div>
         <NotificationModal

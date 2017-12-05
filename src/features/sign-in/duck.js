@@ -600,14 +600,14 @@ export function receiveAccountInfo(
 ) {
   localStorage.setItem("email", email);
   localStorage.setItem("userID", userID);
-  localStorage.setItem("type", accountInfo.lastTypeUsed);
+  localStorage.setItem("type", accountInfo.lastAccessed.accountType);
   localStorage.setItem("isLoggedIn", "true");
   localStorage.setItem("accountInfo", JSON.stringify(accountInfo));
 
   return {
     type: RECEIVE_ACCOUNT_INFO,
     payload: {
-      type: accountInfo.lastTypeUsed,
+      type: accountInfo.lastAccessed.accountType,
       status: accountInfo.metadata.status,
       accountInfo
     }
