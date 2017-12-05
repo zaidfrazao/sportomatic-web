@@ -47,7 +47,7 @@ class CoachCard extends Component {
                 <Button
                   dense
                   className={classes.viewButton}
-                  onClick={() => history.push(`/institution/hours/${id}`)}
+                  onClick={() => history.push(`/admin/hours/${id}`)}
                 >
                   View hours
                 </Button>

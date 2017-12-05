@@ -141,7 +141,7 @@ class ScheduleLayout extends Component {
     if (!dateSelected) {
       return (
         <Redirect
-          to={`/institution/schedule/${currentDate.toISOString().slice(0, 10)}`}
+          to={`/admin/schedule/${currentDate.toISOString().slice(0, 10)}`}
         />
       );
     } else {

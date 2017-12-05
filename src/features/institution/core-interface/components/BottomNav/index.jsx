@@ -31,16 +31,16 @@ class BottomNav extends React.Component {
               onChange={(event, value) => {
                 switch (value) {
                   case "dashboard":
-                    history.push(`/institution/dashboard`);
+                    history.push(`/admin/dashboard`);
                     break;
                   case "schedule":
-                    history.push(`/institution/schedule`);
+                    history.push(`/admin/schedule`);
                     break;
                   case "hours":
-                    history.push(`/institution/hours`);
+                    history.push(`/admin/hours`);
                     break;
                   case "results":
-                    history.push(`/institution/results`);
+                    history.push(`/admin/results`);
                     break;
                   default:
                     break;

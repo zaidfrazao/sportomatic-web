@@ -234,7 +234,7 @@ class PersonInfo extends Component {
                           <ListItem
                             button
                             onClick={() =>
-                              history.push(`/institution/teams/${teamInfo.id}`)}
+                              history.push(`/admin/teams/${teamInfo.id}`)}
                           >
                             <ListItemText
                               primary={teamInfo.name}

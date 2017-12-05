@@ -133,7 +133,7 @@ class EventsList extends Component {
                     className={classes.canceledEvent}
                     onClick={() => {
                       history.push(
-                        `/institution/schedule/${dateSelected}/${eventInfo.id}`
+                        `/admin/schedule/${dateSelected}/${eventInfo.id}`
                       );
                       updateView("EVENT_INFO");
                     }}
@@ -168,7 +168,7 @@ class EventsList extends Component {
                     button
                     onClick={() => {
                       history.push(
-                        `/institution/schedule/${dateSelected}/${eventInfo.id}`
+                        `/admin/schedule/${dateSelected}/${eventInfo.id}`
                       );
                       updateView("EVENT_INFO");
                     }}
@@ -223,7 +223,7 @@ class EventsList extends Component {
                     className={classes.canceledEvent}
                     onClick={() => {
                       history.push(
-                        `/institution/schedule/${dateSelected}/${eventInfo.id}`
+                        `/admin/schedule/${dateSelected}/${eventInfo.id}`
                       );
                       updateView("EVENT_INFO");
                     }}
@@ -259,7 +259,7 @@ class EventsList extends Component {
                     button
                     onClick={() => {
                       history.push(
-                        `/institution/schedule/${dateSelected}/${eventInfo.id}`
+                        `/admin/schedule/${dateSelected}/${eventInfo.id}`
                       );
                       updateView("EVENT_INFO");
                     }}
@@ -314,7 +314,7 @@ class EventsList extends Component {
                     className={classes.canceledEvent}
                     onClick={() => {
                       history.push(
-                        `/institution/schedule/${dateSelected}/${eventInfo.id}`
+                        `/admin/schedule/${dateSelected}/${eventInfo.id}`
                       );
                       updateView("EVENT_INFO");
                     }}
@@ -349,7 +349,7 @@ class EventsList extends Component {
                     button
                     onClick={() => {
                       history.push(
-                        `/institution/schedule/${dateSelected}/${eventInfo.id}`
+                        `/admin/schedule/${dateSelected}/${eventInfo.id}`
                       );
                       updateView("EVENT_INFO");
                     }}

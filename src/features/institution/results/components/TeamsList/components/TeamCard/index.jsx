@@ -80,7 +80,7 @@ class TeamCard extends Component<Props> {
               <Button
                 dense
                 className={classes.viewButton}
-                onClick={() => history.push(`/institution/results/${id}`)}
+                onClick={() => history.push(`/admin/results/${id}`)}
               >
                 View Results
               </Button>

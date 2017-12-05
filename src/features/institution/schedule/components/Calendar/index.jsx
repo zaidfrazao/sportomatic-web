@@ -75,7 +75,7 @@ class Calendar extends Component {
                 )
                   .toISOString()
                   .slice(0, 10);
-                history.push(`/institution/schedule/${ISOdate}`);
+                history.push(`/admin/schedule/${ISOdate}`);
                 updateView("EVENTS_LIST");
               }}
             />

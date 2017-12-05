@@ -230,8 +230,7 @@ class EventInfo extends Component {
                         component={({ history }) => (
                           <ListItem
                             button
-                            onClick={() =>
-                              history.push(`/institution/teams/${id}`)}
+                            onClick={() => history.push(`/admin/teams/${id}`)}
                           >
                             <ListItemText
                               primary={info.metadata.name}
@@ -266,8 +265,7 @@ class EventInfo extends Component {
                         component={({ history }) => (
                           <ListItem
                             button
-                            onClick={() =>
-                              history.push(`/institution/people/${id}`)}
+                            onClick={() => history.push(`/admin/people/${id}`)}
                           >
                             <Avatar src={info.profilePictureURL} />
                             <ListItemText
@@ -303,8 +301,7 @@ class EventInfo extends Component {
                         component={({ history }) => (
                           <ListItem
                             button
-                            onClick={() =>
-                              history.push(`/institution/people/${id}`)}
+                            onClick={() => history.push(`/admin/people/${id}`)}
                           >
                             <Avatar src={info.profilePictureURL} />
                             <ListItemText

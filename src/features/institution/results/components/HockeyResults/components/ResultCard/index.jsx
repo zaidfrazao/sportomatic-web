@@ -193,7 +193,7 @@ class ResultCard extends Component<Props> {
               render={({ history }) => (
                 <Button
                   onClick={() =>
-                    history.push(`/institution/results/${teamID}/${eventID}`)}
+                    history.push(`/admin/results/${teamID}/${eventID}`)}
                 >
                   View stats
                 </Button>

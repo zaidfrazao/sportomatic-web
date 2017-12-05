@@ -122,7 +122,7 @@ class TeamInfo extends Component {
                 <ListItem
                   button
                   onClick={() =>
-                    history.push(`/institution/people/${managerInfo.id}`)}
+                    history.push(`/admin/people/${managerInfo.id}`)}
                 >
                   <Avatar src={managerInfo.profilePictureURL} />
                   <ListItemText
@@ -163,8 +163,7 @@ class TeamInfo extends Component {
               component={({ history }) => (
                 <ListItem
                   button
-                  onClick={() =>
-                    history.push(`/institution/people/${coachInfo.id}`)}
+                  onClick={() => history.push(`/admin/people/${coachInfo.id}`)}
                 >
                   <Avatar src={coachInfo.profilePictureURL} />
                   <ListItemText

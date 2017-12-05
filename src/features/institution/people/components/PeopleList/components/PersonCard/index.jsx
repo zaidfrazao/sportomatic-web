@@ -50,7 +50,7 @@ class PersonCard extends Component {
                 <Button
                   dense
                   className={classes.viewButton}
-                  onClick={() => history.push(`/institution/people/${id}`)}
+                  onClick={() => history.push(`/admin/people/${id}`)}
                 >
                   View
                 </Button>
