@@ -236,24 +236,26 @@ class SignInLayout extends Component {
         </div>
         <PasswordResetDialog
           isOpen={isPasswordResetDialogOpen}
-          closeDialog={closePasswordResetDialog}
           email={passwordResetEmail}
-          updateEmail={updatePasswordResetEmail}
           isLoading={isPasswordResetLoading}
-          sendEmail={sendPasswordResetEmail}
           emailError={passwordResetEmailErrors}
+          actions={{
+            closeDialog: closePasswordResetDialog,
+            updateEmail: updatePasswordResetEmail,
+            sendEmail: sendPasswordResetEmail
+          }}
         />
         <NotificationModal
           isOpen={isPasswordResetSuccessModalOpen}
-          handleOkClick={closePasswordResetSuccessModal}
           heading="Password Reset Email Sent"
           message={`Check your inbox for ${passwordResetEmail} for a password reset email from Sportomatic. Click the link contained in this email to choose a new password.`}
+          handleOkClick={closePasswordResetSuccessModal}
         />
         <NotificationModal
           isOpen={isNetworkFailureModalOpen}
-          handleOkClick={closeNetworkFailureModal}
           heading="Network Failure"
           message="You have been disconnected from the internet. Please reconnect and try again."
+          handleOkClick={closeNetworkFailureModal}
         />
       </div>
     );

@@ -42,16 +42,8 @@ class PasswordResetDialog extends Component {
   };
 
   render() {
-    const {
-      classes,
-      isOpen,
-      closeDialog,
-      sendEmail,
-      email,
-      updateEmail,
-      isLoading,
-      emailError
-    } = this.props;
+    const { classes, isOpen, email, isLoading, emailError } = this.props;
+    const { closeDialog, sendEmail, updateEmail } = this.props.actions;
 
     return (
       <Dialog open={isOpen} onRequestClose={() => closeDialog()}>
