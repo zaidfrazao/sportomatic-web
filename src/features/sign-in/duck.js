@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import { isValidEmail } from "../../utils/validation";
 import firebase from "firebase";
+import { UserAlias } from "../../models/aliases";
 
 // Actions
 
@@ -593,8 +594,11 @@ export function requestAccountInfo() {
 export function receiveAccountInfo(
   userID: string,
   email: string,
-  accountInfo: {}
+  type: string,
+  status: string,
+  accountInfo: UserAlias
 ) {
+  console.log(accountInfo);
   localStorage.setItem("email", email);
   localStorage.setItem("userID", userID);
   localStorage.setItem("type", accountInfo.lastTypeUsed);
@@ -619,15 +623,25 @@ export function errorFetchingAccountInfo() {
 export function fetchAccountInfo(userID: string, email: string) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestAccountInfo());
-    const db = firebase.firestore();
-    const userRef = db.collection("users").doc(userID);
+    const userRef = firebase
+      .firestore()
+      .collection("users")
+      .doc(userID);
 
     userRef
       .get()
       .then(userDoc => {
         if (userDoc.exists) {
           const accountInfo = userDoc.data();
-          dispatch(receiveAccountInfo(userID, email, accountInfo));
+          dispatch(
+            receiveAccountInfo(
+              userID,
+              email,
+              accountInfo.lastAccessed.accountType,
+              accountInfo.metadata.status,
+              accountInfo
+            )
+          );
         } else {
           dispatch(errorFetchingAccountInfo());
         }

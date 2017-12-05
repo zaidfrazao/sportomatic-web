@@ -188,7 +188,7 @@ class CoreInterfaceLayout extends Component {
       return <Redirect to="/sign-in" />;
     }
 
-    if (type !== "INSTITUTION") {
+    if (type !== "ADMIN") {
       return <Redirect to="/sign-in" />;
     }
 
@@ -211,110 +211,107 @@ class CoreInterfaceLayout extends Component {
           <div className={classes.content}>
             <div className={classes.main}>
               <Switch>
-                <Route exact path={"/institution/"}>
+                <Route exact path={"/admin/"}>
                   <Dashboard isTablet={isTablet} />
                 </Route>
-                <Route exact path={`/institution/dashboard/`}>
+                <Route exact path={`/admin/dashboard/`}>
                   <Dashboard isTablet={isTablet} />
                 </Route>
-                <Route exact path={`/institution/hours/`}>
+                <Route exact path={`/admin/hours/`}>
                   <Hours
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={accountInfo.lastInstitutionAccessed || ""}
                   />
                 </Route>
-                <Route exact path={`/institution/hours/:coachID`}>
+                <Route exact path={`/admin/hours/:coachID`}>
                   <Hours
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={accountInfo.lastInstitutionAccessed || ""}
                   />
                 </Route>
-                <Route exact path={`/institution/results/`}>
+                <Route exact path={`/admin/results/`}>
                   <Results
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={accountInfo.lastInstitutionAccessed || ""}
                   />
                 </Route>
-                <Route exact path={`/institution/results/:teamID`}>
+                <Route exact path={`/admin/results/:teamID`}>
                   <Results
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={accountInfo.lastInstitutionAccessed || ""}
                   />
                 </Route>
-                <Route exact path={`/institution/results/:teamID/:eventID`}>
+                <Route exact path={`/admin/results/:teamID/:eventID`}>
                   <Results
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={accountInfo.lastInstitutionAccessed || ""}
                   />
                 </Route>
-                <Route exact path={`/institution/people/`}>
+                <Route exact path={`/admin/people/`}>
                   <People
                     userID={accountInfo.lastInstitutionAccessed || ""}
                     isMobile={isMobile}
                     isTablet={isTablet}
                   />
                 </Route>
-                <Route path={`/institution/people/:personID`}>
+                <Route path={`/admin/people/:personID`}>
                   <People
                     userID={accountInfo.lastInstitutionAccessed || ""}
                     isMobile={isMobile}
                     isTablet={isTablet}
                   />
                 </Route>
-                <Route exact path={`/institution/teams/`}>
+                <Route exact path={`/admin/teams/`}>
                   <Teams
                     userID={accountInfo.lastInstitutionAccessed || ""}
                     isMobile={isMobile}
                     isTablet={isTablet}
                   />
                 </Route>
-                <Route path={`/institution/teams/:teamID`}>
+                <Route path={`/admin/teams/:teamID`}>
                   <Teams
                     userID={accountInfo.lastInstitutionAccessed || ""}
                     isMobile={isMobile}
                     isTablet={isTablet}
                   />
                 </Route>
-                <Route exact path={`/institution/schedule/`}>
+                <Route exact path={`/admin/schedule/`}>
                   <Schedule
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={accountInfo.lastInstitutionAccessed || ""}
                   />
                 </Route>
-                <Route exact path={`/institution/schedule/:dateSelected`}>
+                <Route exact path={`/admin/schedule/:dateSelected`}>
                   <Schedule
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={accountInfo.lastInstitutionAccessed || ""}
                   />
                 </Route>
-                <Route
-                  exact
-                  path={`/institution/schedule/:dateSelected/:eventID`}
-                >
+                <Route exact path={`/admin/schedule/:dateSelected/:eventID`}>
                   <Schedule
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={accountInfo.lastInstitutionAccessed || ""}
                   />
                 </Route>
-                <Route exact path={`/institution/settings/`}>
+                <Route exact path={`/admin/settings/`}>
                   <Settings />
                 </Route>
-                <Route exact path={`/institution/wages`}>
+                <Route exact path={`/admin/wages`}>
                   <Wages
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={accountInfo.lastInstitutionAccessed || ""}
                   />
                 </Route>
-                <Route path={`/institution/wages/:coachID`}>
+                <Route path={`/admin/wages/:coachID`}>
                   <Wages
                     isMobile={isMobile}
                     isTablet={isTablet}

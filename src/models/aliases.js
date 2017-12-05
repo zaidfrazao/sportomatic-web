@@ -7,6 +7,12 @@ export type DispatchAlias = (action: ActionAlias) => void;
 
 export type ErrorAlias = { code: string, message: string };
 
+export type AccountStatusAlias =
+  | "APPROVED"
+  | "AWAITING_APPROVAL"
+  | "REJECTED"
+  | "N/A";
+
 export type FileAlias = {
   lastModified: number,
   lastModificationDate: Date,
@@ -16,37 +22,29 @@ export type FileAlias = {
   webkitRelativePath: string
 };
 
-export type CoachAlias = {
-  metadata: {
+export type UserAlias = {
+  info: {
     email: string,
     name: string,
     phoneNumber: string,
     profilePictureURL: string,
-    surname: string,
-    type: "COACH"
+    sports: Array<string>,
+    surname: string
   },
-  paymentDefaults: {
-    maxOvertimeHours: number,
-    overtimeHourlyRate: number,
-    standardHourlyRate: number,
-    type: "HOURLY" | "FIXED" | "SALARY"
+  institutions: {
+    [institutionID]: {
+      adminStatus: AccountStatusAlias,
+      coachStatus: AccountStatusAlias,
+      managerStatus: AccountStatusAlias
+    }
   },
-  preferredSports: {
-    [sportID]: string
-  }
-};
-
-export type ManagerAlias = {
+  lastAccessed: {
+    institutionID: string,
+    accountType: "ADMIN" | "COACH" | "MANAGER"
+  },
   metadata: {
-    email: string,
-    name: string,
-    phoneNumber: string,
-    profilePictureURL: string,
-    surname: string,
-    type: "MAANGER"
-  },
-  preferredSports: {
-    [sportID]: string
+    creationDate: Date,
+    status: "ACTIVE" | "SUSPENDED" | "DISABLED"
   }
 };
 
