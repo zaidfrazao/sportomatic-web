@@ -1,31 +1,19 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
-import { CircularProgress } from "material-ui/Progress";
+import _ from "lodash";
 import AddIcon from "material-ui-icons/Add";
 import Button from "material-ui/Button";
+import { CircularProgress } from "material-ui/Progress";
 import EditIcon from "material-ui-icons/Edit";
-import TeamsList from "./components/TeamsList";
-import TeamInfo from "./components/TeamInfo";
+import { withStyles } from "material-ui/styles";
 import AddTeamDialog from "./components/AddTeamDialog";
-import LeaderboardAd from "../../../components/LeaderboardAd";
 import BannerAd from "../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
+import LeaderboardAd from "../../../components/LeaderboardAd";
 import NotificationModal from "../../../components/NotificationModal";
-import _ from "lodash";
+import TeamInfo from "./components/TeamInfo";
+import TeamsList from "./components/TeamsList";
 
 const styles = theme => ({
-  root: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column"
-  },
-  infoWrapper: {
-    width: "100%",
-    height: "100%"
-  },
   adWrapper: {
     width: "100%",
     display: "flex",
@@ -40,15 +28,21 @@ const styles = theme => ({
       bottom: 24
     }
   },
-  toolbar: {
-    backgroundColor: grey[300],
-    zIndex: 1
+  infoWrapper: {
+    width: "100%",
+    height: "100%"
   },
   loaderWrapper: {
     flexGrow: 1,
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
+  },
+  root: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
   },
   teamCards: {
     flexGrow: 1,
@@ -76,6 +70,31 @@ class TeamsLayout extends Component {
     if (userID !== nextProps.userID) {
       loadTeams(nextProps.userID);
     }
+  }
+
+  createAd() {
+    const { isMobile, isTablet } = this.props;
+
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
+    return ad;
+  }
+
+  getTeamsList() {
+    const { teams } = this.props;
+
+    return _.toPairs(teams).map(keyValuePair => {
+      return {
+        id: keyValuePair[0],
+        name: keyValuePair[1].info.name,
+        sport: keyValuePair[1].info.sport
+      };
+    });
   }
 
   render() {
@@ -108,20 +127,8 @@ class TeamsLayout extends Component {
     } = this.props.actions;
     const { teamID } = this.props.match.params;
 
-    const teamsList = _.toPairs(teams).map(keyValuePair => {
-      return {
-        id: keyValuePair[0],
-        name: keyValuePair[1].info.name,
-        sport: keyValuePair[1].info.sport
-      };
-    });
-
-    let ad = <LeaderboardAd />;
-    if (isMobile) {
-      ad = <LargeMobileBannerAd />;
-    } else if (isTablet) {
-      ad = <BannerAd />;
-    }
+    const teamsList = this.getTeamsList();
+    const ad = this.createAd();
 
     return (
       <div className={classes.root}>
@@ -196,9 +203,5 @@ class TeamsLayout extends Component {
     );
   }
 }
-
-TeamsLayout.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(TeamsLayout);
