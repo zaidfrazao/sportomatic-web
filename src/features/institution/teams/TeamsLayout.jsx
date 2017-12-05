@@ -111,8 +111,8 @@ class TeamsLayout extends Component {
     const teamsList = _.toPairs(teams).map(keyValuePair => {
       return {
         id: keyValuePair[0],
-        name: keyValuePair[1].metadata.name,
-        sport: keyValuePair[1].metadata.sport
+        name: keyValuePair[1].info.name,
+        sport: keyValuePair[1].info.sport
       };
     });
 

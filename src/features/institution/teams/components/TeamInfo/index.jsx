@@ -102,13 +102,13 @@ class TeamInfo extends Component {
 
   getManagersList(managers) {
     const { classes } = this.props;
-    const managersArray = _.toPairs(managers).map(keyValuePair => {
+    const managersArray = _.toPairs(managers).map(([key, value]) => {
       return {
-        id: keyValuePair[0],
-        name: keyValuePair[1].metadata.name,
-        surname: keyValuePair[1].metadata.surname,
-        phoneNumber: keyValuePair[1].metadata.phoneNumber,
-        profilePictureURL: keyValuePair[1].metadata.profilePictureURL
+        id: key,
+        name: value.info.name,
+        surname: value.info.surname,
+        phoneNumber: value.info.phoneNumber,
+        profilePictureURL: value.info.profilePictureURL
       };
     });
 
@@ -144,13 +144,13 @@ class TeamInfo extends Component {
 
   getCoachesList(coaches) {
     const { classes } = this.props;
-    const coachesArray = _.toPairs(coaches).map(keyValuePair => {
+    const coachesArray = _.toPairs(coaches).map(([key, value]) => {
       return {
-        id: keyValuePair[0],
-        name: keyValuePair[1].metadata.name,
-        surname: keyValuePair[1].metadata.surname,
-        phoneNumber: keyValuePair[1].metadata.phoneNumber,
-        profilePictureURL: keyValuePair[1].metadata.profilePictureURL
+        id: key,
+        name: value.info.name,
+        surname: value.info.surname,
+        phoneNumber: value.info.phoneNumber,
+        profilePictureURL: value.info.profilePictureURL
       };
     });
 
@@ -186,19 +186,13 @@ class TeamInfo extends Component {
 
   render() {
     const { classes, isMobile, isTablet } = this.props;
-    const {
-      name,
-      sport,
-      division,
-      ageGroup,
-      gender
-    } = this.props.info.metadata;
+    const { name, sport, division, ageGroup, gender } = this.props.info.info;
     const { coaches, managers } = this.props.info;
 
     let formattedGender = this.formatGender(gender, ageGroup);
     let formattedAgeGroup = this.formatAgeGroup(ageGroup);
-    let managersList = this.getManagersList(managers);
-    let coachesList = this.getCoachesList(coaches);
+    let managersList = [];
+    let coachesList = [];
 
     let ad = <LeaderboardAd />;
     if (isMobile) {
