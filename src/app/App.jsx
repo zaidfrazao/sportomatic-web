@@ -18,7 +18,7 @@ class App extends Component {
         <Route exact path="/sign-up">
           <SignIn />
         </Route>
-        <Route path="/institution">
+        <Route path="/admin">
           <InstitutionAccount />
         </Route>
         <Route path="/manager">

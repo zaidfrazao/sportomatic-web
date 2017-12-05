@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import { isValidEmail } from "../../utils/validation";
 import firebase from "firebase";
+import { UserAlias } from "../../models/aliases";
 
 // Actions
 
@@ -577,20 +578,14 @@ export function receiveAccountInfo(
   email: string,
   type: string,
   status: string,
-  lastInstitutionAccessed: {
-    id: string,
-    name: string,
-    emblemURL: string
-  }
+  accountInfo: UserAlias
 ) {
+  console.log(accountInfo);
   localStorage.setItem("email", email);
   localStorage.setItem("userID", userID);
   localStorage.setItem("type", type);
   localStorage.setItem("isLoggedIn", "true");
-  localStorage.setItem(
-    "activeInstitution",
-    JSON.stringify(lastInstitutionAccessed)
-  );
+  localStorage.setItem("accountInfo", JSON.stringify(accountInfo));
   return {
     type: RECEIVE_ACCOUNT_INFO,
     payload: {
@@ -609,20 +604,28 @@ export function errorFetchingAccountInfo() {
 export function fetchAccountInfo(userID: string, email: string) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestAccountInfo());
-    const userRef = firebase.database().ref(`users/${userID}`);
+    const userRef = firebase
+      .firestore()
+      .collection("users")
+      .doc(userID);
+
     userRef
-      .once("value")
-      .then(snapshot => {
-        const accountInfo = snapshot.val();
-        dispatch(
-          receiveAccountInfo(
-            userID,
-            email,
-            accountInfo.type,
-            accountInfo.status,
-            accountInfo.lastInstitutionAccessed || {}
-          )
-        );
+      .get()
+      .then(userDoc => {
+        if (userDoc.exists) {
+          const accountInfo = userDoc.data();
+          dispatch(
+            receiveAccountInfo(
+              userID,
+              email,
+              accountInfo.lastAccessed.accountType,
+              accountInfo.metadata.status,
+              accountInfo
+            )
+          );
+        } else {
+          dispatch(errorFetchingAccountInfo());
+        }
       })
       .catch(() => {
         dispatch(errorFetchingAccountInfo());
