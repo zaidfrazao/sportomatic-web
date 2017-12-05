@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
 import Dialog, {
   DialogActions,
   DialogContent,
@@ -9,6 +8,7 @@ import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
 
 const styles = {
   emailTextField: {
@@ -16,42 +16,38 @@ const styles = {
   }
 };
 
-class PasswordResetDialog extends Component {
-  props: {
-    isOpen: boolean,
+type Props = {
+  isOpen: boolean,
+  email: string,
+  isLoading: boolean,
+  actions: {
     closeDialog: () => void,
     sendEmail: string => void,
-    email: string,
-    updateEmail: string => void,
-    isLoading: boolean
-  };
+    updateEmail: string => void
+  }
+};
 
+class PasswordResetDialog extends Component<Props> {
   static defaultProps = {
     isOpen: false,
-    closeDialog: () => {
-      console.log("Password reset dialog was closed.");
-    },
-    sendEmail: email => {
-      console.log(`Password reset email sent to "${email}".`);
-    },
     email: "default@email.com",
-    updateEmail: newEmail => {
-      console.log(`Password reset email address updated to "${newEmail}".`);
-    },
-    isLoading: true
+    isLoading: true,
+    actions: {
+      closeDialog: () => {
+        console.log("Password reset dialog was closed.");
+      },
+      sendEmail: email => {
+        console.log(`Password reset email sent to "${email}".`);
+      },
+      updateEmail: newEmail => {
+        console.log(`Password reset email address updated to "${newEmail}".`);
+      }
+    }
   };
 
   render() {
-    const {
-      classes,
-      isOpen,
-      closeDialog,
-      sendEmail,
-      email,
-      updateEmail,
-      isLoading,
-      emailError
-    } = this.props;
+    const { classes, isOpen, email, isLoading, emailError } = this.props;
+    const { closeDialog, sendEmail, updateEmail } = this.props.actions;
 
     return (
       <Dialog open={isOpen} onRequestClose={() => closeDialog()}>
