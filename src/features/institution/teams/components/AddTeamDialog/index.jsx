@@ -1,31 +1,29 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
-import Button from "material-ui/Button";
-import Dialog from "material-ui/Dialog";
-import Grid from "material-ui/Grid";
-import TextField from "material-ui/TextField";
+import _ from "lodash";
 import AppBar from "material-ui/AppBar";
-import Toolbar from "material-ui/Toolbar";
-import IconButton from "material-ui/IconButton";
-import Typography from "material-ui/Typography";
+import Avatar from "material-ui/Avatar";
+import Button from "material-ui/Button";
+import Checkbox from "material-ui/Checkbox";
+import { CircularProgress } from "material-ui/Progress";
 import CloseIcon from "material-ui-icons/Close";
-import Slide from "material-ui/transitions/Slide";
-import Input, { InputLabel } from "material-ui/Input";
-import { MenuItem } from "material-ui/Menu";
+import Dialog from "material-ui/Dialog";
 import { FormControl } from "material-ui/Form";
-import Select from "material-ui/Select";
+import { grey } from "material-ui/colors";
+import Grid from "material-ui/Grid";
+import IconButton from "material-ui/IconButton";
+import Input, { InputLabel } from "material-ui/Input";
 import List, {
   ListItem,
   ListItemSecondaryAction,
   ListItemText
 } from "material-ui/List";
-import Checkbox from "material-ui/Checkbox";
-import Avatar from "material-ui/Avatar";
-import { CircularProgress } from "material-ui/Progress";
-
-import _ from "lodash";
+import { MenuItem } from "material-ui/Menu";
+import Select from "material-ui/Select";
+import Slide from "material-ui/transitions/Slide";
+import TextField from "material-ui/TextField";
+import Toolbar from "material-ui/Toolbar";
+import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
 
 const styles = {
   appBar: {
@@ -34,18 +32,9 @@ const styles = {
   flex: {
     flex: 1
   },
-  mainContent: {
-    height: "100%",
-    overflow: "auto"
-  },
-  teamNameWrapper: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  teamName: {
-    margin: 24,
-    fontSize: "1.4rem"
+  formControl: {
+    width: "80%",
+    margin: "24px 10%"
   },
   heading: {
     fontWeight: "normal",
@@ -57,20 +46,29 @@ const styles = {
     backgroundColor: grey[300],
     color: grey[700]
   },
-  formControl: {
-    width: "80%",
-    margin: "24px 10%"
+  loaderWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  mainContent: {
+    height: "100%",
+    overflow: "auto"
+  },
+  section: {
+    backgroundColor: grey[100]
   },
   subheading: {
     width: "100%",
     textAlign: "center",
     margin: "24px 0"
   },
-  section: {
-    backgroundColor: grey[100]
+  teamName: {
+    margin: 24,
+    fontSize: "1.4rem"
   },
-  loaderWrapper: {
-    flexGrow: 1,
+  teamNameWrapper: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
@@ -544,9 +542,5 @@ class AddTeamDialog extends Component {
     );
   }
 }
-
-AddTeamDialog.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(AddTeamDialog);

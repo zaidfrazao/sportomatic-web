@@ -7,45 +7,37 @@ import { SportomaticFirebaseAPI } from "../../../api/sportmatic-firebase-api";
 // Actions
 
 export const OPEN_ADD_TEAM_DIALOG =
-  "sportomatic-web/institution/teams/OPEN_ADD_TEAM_DIALOG";
+  "sportomatic-web/admin/teams/OPEN_ADD_TEAM_DIALOG";
 export const CLOSE_ADD_TEAM_DIALOG =
-  "sportomatic-web/institution/teams/CLOSE_ADD_TEAM_DIALOG";
-export const REQUEST_COACHES =
-  "sportomatic-web/institution/teams/REQUEST_COACHES";
-export const RECEIVE_COACHES =
-  "sportomatic-web/institution/teams/RECEIVE_COACHES";
+  "sportomatic-web/admin/teams/CLOSE_ADD_TEAM_DIALOG";
+export const REQUEST_COACHES = "sportomatic-web/admin/teams/REQUEST_COACHES";
+export const RECEIVE_COACHES = "sportomatic-web/admin/teams/RECEIVE_COACHES";
 export const ERROR_LOADING_COACHES =
-  "sportomatic-web/institution/teams/ERROR_LOADING_COACHES";
-export const REQUEST_MANAGERS =
-  "sportomatic-web/institution/teams/REQUEST_MANAGERS";
-export const RECEIVE_MANAGERS =
-  "sportomatic-web/institution/teams/RECEIVE_MANAGERS";
+  "sportomatic-web/admin/teams/ERROR_LOADING_COACHES";
+export const REQUEST_MANAGERS = "sportomatic-web/admin/teams/REQUEST_MANAGERS";
+export const RECEIVE_MANAGERS = "sportomatic-web/admin/teams/RECEIVE_MANAGERS";
 export const ERROR_LOADING_MANAGERS =
-  "sportomatic-web/institution/teams/ERROR_LOADING_MANAGERS";
-export const REQUEST_OPTIONS =
-  "sportomatic-web/institution/teams/REQUEST_OPTIONS";
-export const RECEIVE_OPTIONS =
-  "sportomatic-web/institution/teams/RECEIVE_OPTIONS";
+  "sportomatic-web/admin/teams/ERROR_LOADING_MANAGERS";
+export const REQUEST_OPTIONS = "sportomatic-web/admin/teams/REQUEST_OPTIONS";
+export const RECEIVE_OPTIONS = "sportomatic-web/admin/teams/RECEIVE_OPTIONS";
 export const ERROR_LOADING_OPTIONS =
-  "sportomatic-web/institution/teams/ERROR_LOADING_OPTIONS";
-export const REQUEST_ADD_TEAM =
-  "sportomatic-web/institution/teams/REQUEST_ADD_TEAM";
-export const RECEIVE_ADD_TEAM =
-  "sportomatic-web/institution/teams/RECEIVE_ADD_TEAM";
+  "sportomatic-web/admin/teams/ERROR_LOADING_OPTIONS";
+export const REQUEST_ADD_TEAM = "sportomatic-web/admin/teams/REQUEST_ADD_TEAM";
+export const RECEIVE_ADD_TEAM = "sportomatic-web/admin/teams/RECEIVE_ADD_TEAM";
 export const ERROR_ADDING_TEAM =
-  "sportomatic-web/institution/teams/ERROR_ADDING_TEAM";
-export const REQUEST_TEAMS = "sportomatic-web/institution/teams/REQUEST_TEAMS";
-export const RECEIVE_TEAMS = "sportomatic-web/institution/teams/RECEIVE_TEAMS";
+  "sportomatic-web/admin/teams/ERROR_ADDING_TEAM";
+export const REQUEST_TEAMS = "sportomatic-web/admin/teams/REQUEST_TEAMS";
+export const RECEIVE_TEAMS = "sportomatic-web/admin/teams/RECEIVE_TEAMS";
 export const ERROR_LOADING_TEAMS =
-  "sportomatic-web/institution/teams/ERROR_LOADING_TEAMS";
+  "sportomatic-web/admin/teams/ERROR_LOADING_TEAMS";
 export const OPEN_EDIT_TEAM_ALERT =
-  "sportomatic-web/institution/teams/OPEN_EDIT_TEAM_ALERT";
+  "sportomatic-web/admin/teams/OPEN_EDIT_TEAM_ALERT";
 export const CLOSE_EDIT_TEAM_ALERT =
-  "sportomatic-web/institution/teams/CLOSE_EDIT_TEAM_ALERT";
+  "sportomatic-web/admin/teams/CLOSE_EDIT_TEAM_ALERT";
 export const OPEN_DELETE_TEAM_ALERT =
-  "sportomatic-web/institution/teams/OPEN_DELETE_TEAM_ALERT";
+  "sportomatic-web/admin/teams/OPEN_DELETE_TEAM_ALERT";
 export const CLOSE_DELETE_TEAM_ALERT =
-  "sportomatic-web/institution/teams/CLOSE_DELETE_TEAM_ALERT";
+  "sportomatic-web/admin/teams/CLOSE_DELETE_TEAM_ALERT";
 
 // Reducers
 

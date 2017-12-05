@@ -5,7 +5,9 @@ import TeamCard from "./components/TeamCard";
 
 const styles = {
   wrapper: {
-    padding: 24
+    padding: 24,
+    maxWidth: 1200,
+    margin: "0 auto"
   }
 };
 
@@ -17,7 +19,7 @@ class TeamsList extends Component {
       <div className={classes.wrapper}>
         <Grid container direction="row" spacing={40} align="stretch">
           {teams.map(teamInfo => (
-            <Grid item xs={12} sm={12} md={6} lg={4} xl={3} key={teamInfo.id}>
+            <Grid item xs={12} sm={12} md={6} lg={4} xl={4} key={teamInfo.id}>
               <TeamCard
                 name={teamInfo.name}
                 sport={teamInfo.sport}

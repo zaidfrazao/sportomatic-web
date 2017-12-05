@@ -1,30 +1,19 @@
 import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
-import { Route } from "react-router-dom";
+import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
+import { grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
+import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
-import LeaderboardAd from "../../../../../components/LeaderboardAd";
+import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
-import _ from "lodash";
+import LeaderboardAd from "../../../../../components/LeaderboardAd";
 
 const styles = {
-  root: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column"
-  },
-  wrapper: {
-    flexGrow: 1,
-    overflow: "auto",
-    padding: 24
-  },
   adWrapper: {
     width: "100%",
     display: "flex",
@@ -32,11 +21,10 @@ const styles = {
     justifyContent: "center",
     margin: "24px 0"
   },
-  section: {
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[200]}`,
-    height: "100%",
-    width: "100%"
+  button: {
+    "@media (max-width: 960px)": {
+      width: "100%"
+    }
   },
   heading: {
     fontWeight: "normal",
@@ -54,26 +42,25 @@ const styles = {
     width: "calc(100% - 48px)",
     textAlign: "center"
   },
-  pictureWrapper: {
-    width: "100%",
-    height: "100%",
-    backgroundColor: grey[50],
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  picture: {
-    backgroundColor: grey[300],
-    width: 300,
-    height: "auto"
-  },
-  button: {
-    "@media (max-width: 960px)": {
-      width: "100%"
-    }
-  },
   noItems: {
     textAlign: "center"
+  },
+  root: {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column"
+  },
+  section: {
+    backgroundColor: grey[50],
+    border: `1px solid ${grey[200]}`,
+    height: "100%",
+    width: "100%"
+  },
+  wrapper: {
+    flexGrow: 1,
+    overflow: "auto",
+    padding: 24
   }
 };
 
