@@ -115,7 +115,7 @@ class CustomAppBar extends Component {
           >
             {title}
           </Typography>
-          <div item className={classes.rightButtons}>
+          <div className={classes.rightButtons}>
             <Grid container justify="space-around" align="center">
               <Route
                 render={({ history }) => (

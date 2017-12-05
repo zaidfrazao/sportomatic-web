@@ -49,15 +49,16 @@ export type UserAlias = {
 };
 
 export type TeamAlias = {
-  coaches: { [coachID]: CoachAlias },
-  managers: { [managerID]: ManagerAlias },
-  metadata: {
+  coaches: { [coachID]: boolean },
+  info: {
     ageGroup: number,
     division: string,
     gender: "MALE" | "FEMALE" | "MIXED",
     name: string,
     sport: string
   },
+  institutionID: string,
+  managers: { [managerID]: boolean },
   status: "ACTIVE" | "DELETED"
 };
 

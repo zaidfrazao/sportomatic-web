@@ -96,11 +96,16 @@ class PersonInfo extends Component {
   }
 
   createTeamsList() {
-    const { teams } = this.props.info;
+    const { teams, personID } = this.props;
 
-    return _.toPairs(teams).map(([teamID, teamInfo]) => {
-      return { id: teamID, ...teamInfo };
+    let teamsList = [];
+    _.toPairs(teams).map(([teamID, teamInfo]) => {
+      if (teamInfo.coaches[personID] || teamInfo.managers[personID]) {
+        return teamsList.push({ id: teamID, ...teamInfo });
+      }
     });
+
+    return teamsList;
   }
 
   render() {
@@ -117,6 +122,8 @@ class PersonInfo extends Component {
 
     const teamsList = this.createTeamsList();
     const ad = this.createAd();
+
+    console.log(teamsList);
 
     return (
       <div className={classes.root}>
@@ -250,8 +257,8 @@ class PersonInfo extends Component {
                               history.push(`/admin/teams/${teamInfo.id}`)}
                           >
                             <ListItemText
-                              primary={teamInfo.name}
-                              secondary={teamInfo.sport}
+                              primary={teamInfo.info.name}
+                              secondary={teamInfo.info.sport}
                             />
                           </ListItem>
                         )}

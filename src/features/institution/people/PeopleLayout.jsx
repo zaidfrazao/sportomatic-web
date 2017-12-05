@@ -71,19 +71,21 @@ const styles = theme => ({
 class PeopleLayout extends Component {
   componentWillMount() {
     const { userID } = this.props;
-    const { loadCoaches, loadManagers } = this.props.actions;
+    const { loadCoaches, loadManagers, loadTeams } = this.props.actions;
 
     loadCoaches(userID);
     loadManagers(userID);
+    loadTeams(userID);
   }
 
   componentWillReceiveProps(nextProps) {
     const { userID } = this.props;
-    const { loadCoaches, loadManagers } = this.props.actions;
+    const { loadCoaches, loadManagers, loadTeams } = this.props.actions;
 
     if (userID !== nextProps.userID) {
       loadCoaches(nextProps.userID);
       loadManagers(nextProps.userID);
+      loadTeams(nextProps.userID);
     }
   }
 
@@ -154,9 +156,9 @@ class PeopleLayout extends Component {
   }
 
   render() {
-    const { classes, staff, isMobile, isTablet } = this.props;
+    const { classes, staff, teams, isMobile, isTablet } = this.props;
     const { currentTab } = this.props.uiConfig;
-    const { isStaffLoading } = this.props.loadingStatus;
+    const { isStaffLoading, isTeamsLoading } = this.props.loadingStatus;
     const {
       updateTab,
       openEditPersonDialog,
@@ -180,7 +182,10 @@ class PeopleLayout extends Component {
           <div className={classes.infoWrapper}>
             <PersonInfo
               type={type}
+              teams={teams}
+              personID={personID}
               info={staff[personID]}
+              isLoading={isTeamsLoading}
               isMobile={isMobile}
               isTablet={isTablet}
             />
