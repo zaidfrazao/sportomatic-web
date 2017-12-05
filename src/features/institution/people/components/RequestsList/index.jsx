@@ -6,13 +6,17 @@ import PersonCard from "./components/PersonCard";
 
 const styles = {
   cardsWrapper: {
-    padding: 24
+    padding: 24,
+    maxWidth: 1200,
+    margin: "0 auto"
   },
   noCardsWrapper: {
     flexGrow: 1,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    maxWidth: 1200,
+    margin: "0 auto"
   }
 };
 
@@ -32,7 +36,7 @@ class RequestsList extends Component {
                 sm={12}
                 md={6}
                 lg={4}
-                xl={3}
+                xl={4}
                 key={personInfo.id}
               >
                 <PersonCard
