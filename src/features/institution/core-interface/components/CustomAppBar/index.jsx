@@ -34,6 +34,13 @@ const styles = theme => ({
       duration: theme.transitions.duration.enteringScreen
     })
   },
+  appBarWrapper: {
+    display: "flex",
+    alignItems: "center"
+  },
+  flexGrow: {
+    flexGrow: 1
+  },
   menuButton: {
     marginLeft: 12,
     marginRight: 36
@@ -50,6 +57,9 @@ const styles = theme => ({
   desktopIcons: {
     display: "flex",
     alignItems: "center"
+  },
+  titleMargin: {
+    marginLeft: 36
   }
 });
 
@@ -82,93 +92,90 @@ class CustomAppBar extends Component {
           !isMobile && isSideMenuOpen && classes.appBarShift
         )}
       >
-        <Toolbar disableGutters={!isSideMenuOpen}>
-          <Grid container justify="space-between" align="center">
-            <Grid item>
-              <Grid container direction="row" align="center">
-                <IconButton
-                  color="contrast"
-                  aria-label="open drawer"
-                  onClick={() => toggleSideMenu()}
-                  className={classNames(
-                    classes.menuButton,
-                    isSideMenuOpen && classes.hide
-                  )}
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Typography
-                  type="title"
-                  color="inherit"
-                  noWrap
-                  className={classNames(isMobile && classes.mobileTitle)}
-                >
-                  {title}
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid item className={classes.rightButtons}>
-              <Grid container justify="space-around" align="center">
-                <Route
-                  render={({ history }) => (
-                    <Tooltip title="Settings" placement="bottom">
-                      <IconButton
-                        color="contrast"
-                        aria-label="edit settings"
-                        onClick={() => openSettingsAlert()}
-                      >
-                        <SettingsIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                />
-                {isMobile ? (
-                  <div>
-                    <Tooltip title="Options" placement="bottom">
-                      <IconButton
-                        color="contrast"
-                        aria-label="app bar menu"
-                        onClick={this.handleClick}
-                      >
-                        <AppBarMenuIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Menu
-                      id="simple-menu"
-                      anchorEl={this.state.anchorEl}
-                      open={this.state.open}
-                      onRequestClose={this.handleRequestClose}
+        <Toolbar disableGutters className={classes.appBarWrapper}>
+          <IconButton
+            color="contrast"
+            aria-label="open drawer"
+            onClick={() => toggleSideMenu()}
+            className={classNames(
+              classes.menuButton,
+              isSideMenuOpen && classes.hide
+            )}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            type="title"
+            color="inherit"
+            noWrap
+            className={classNames(
+              classes.flexGrow,
+              isSideMenuOpen && classes.titleMargin
+            )}
+          >
+            {title}
+          </Typography>
+          <div item className={classes.rightButtons}>
+            <Grid container justify="space-around" align="center">
+              <Route
+                render={({ history }) => (
+                  <Tooltip title="Settings" placement="bottom">
+                    <IconButton
+                      color="contrast"
+                      aria-label="edit settings"
+                      onClick={() => openSettingsAlert()}
                     >
-                      <MenuItem
-                        onClick={() => {
-                          this.handleRequestClose();
-                          openLogOutModal();
-                        }}
-                      >
-                        Logout
-                      </MenuItem>
-                    </Menu>
-                  </div>
-                ) : (
-                  <div className={classes.desktopIcons}>
-                    <Route
-                      render={({ history }) => (
-                        <Tooltip title="Log out" placement="bottom">
-                          <IconButton
-                            color="contrast"
-                            aria-label="log out"
-                            onClick={() => openLogOutModal()}
-                          >
-                            <LogOutIcon />
-                          </IconButton>
-                        </Tooltip>
-                      )}
-                    />
-                  </div>
+                      <SettingsIcon />
+                    </IconButton>
+                  </Tooltip>
                 )}
-              </Grid>
+              />
+              {isMobile ? (
+                <div>
+                  <Tooltip title="Options" placement="bottom">
+                    <IconButton
+                      color="contrast"
+                      aria-label="app bar menu"
+                      onClick={this.handleClick}
+                    >
+                      <AppBarMenuIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    id="simple-menu"
+                    anchorEl={this.state.anchorEl}
+                    open={this.state.open}
+                    onRequestClose={this.handleRequestClose}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        this.handleRequestClose();
+                        openLogOutModal();
+                      }}
+                    >
+                      Logout
+                    </MenuItem>
+                  </Menu>
+                </div>
+              ) : (
+                <div className={classes.desktopIcons}>
+                  <Route
+                    render={({ history }) => (
+                      <Tooltip title="Log out" placement="bottom">
+                        <IconButton
+                          color="contrast"
+                          aria-label="log out"
+                          onClick={() => openLogOutModal()}
+                        >
+                          <LogOutIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  />
+                </div>
+              )}
             </Grid>
-          </Grid>
+          </div>
         </Toolbar>
       </AppBar>
     );
