@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
 import PersonCard from "./components/PersonCard";
 
 const styles = {

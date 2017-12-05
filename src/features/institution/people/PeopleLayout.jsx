@@ -1,30 +1,20 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
+import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import Button from "material-ui/Button";
-import EditIcon from "material-ui-icons/Edit";
 import { CircularProgress } from "material-ui/Progress";
+import EditIcon from "material-ui-icons/Edit";
 import Tabs, { Tab } from "material-ui/Tabs";
 import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
+import BannerAd from "../../../components/BannerAd";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
+import LeaderboardAd from "../../../components/LeaderboardAd";
+import NotificationModal from "../../../components/NotificationModal";
 import PeopleList from "./components/PeopleList";
 import PersonInfo from "./components/PersonInfo";
-import LeaderboardAd from "../../../components/LeaderboardAd";
-import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
-import BannerAd from "../../../components/BannerAd";
-import NotificationModal from "../../../components/NotificationModal";
-import _ from "lodash";
 
 const styles = theme => ({
-  root: {
-    width: "100%",
-    height: "100%"
-  },
-  infoWrapper: {
-    height: "100%",
-    width: "100%"
-  },
   adWrapper: {
     width: "100%",
     display: "flex",
@@ -39,14 +29,27 @@ const styles = theme => ({
       bottom: 24
     }
   },
-  toolbar: {
-    backgroundColor: grey[300],
-    zIndex: 1
-  },
-  tabsWrapper: {
+  infoWrapper: {
     height: "100%",
+    width: "100%"
+  },
+  loaderWrapper: {
+    flexGrow: 1,
     display: "flex",
-    flexDirection: "column"
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  requestsTab: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
+    textAlign: "center"
+  },
+  root: {
+    width: "100%",
+    height: "100%"
   },
   staffTab: {
     flexGrow: 1,
@@ -58,19 +61,10 @@ const styles = theme => ({
     flexDirection: "column",
     overflow: "auto"
   },
-  requestsTab: {
-    flexGrow: 1,
+  tabsWrapper: {
+    height: "100%",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-    textAlign: "center"
-  },
-  loaderWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
+    flexDirection: "column"
   }
 });
 
@@ -93,24 +87,40 @@ class PeopleLayout extends Component {
     }
   }
 
-  render() {
-    const { classes, staff, isMobile, isTablet, userID } = this.props;
-    const { currentTab } = this.props.uiConfig;
-    const { isStaffLoading } = this.props.loadingStatus;
-    const {
-      updateTab,
-      openEditPersonDialog,
-      closeEditPersonDialog,
-      openDeletePersonAlert,
-      closeDeletePersonAlert
-    } = this.props.actions;
-    const {
-      isDeletPersonAlertOpen,
-      isEditPersonDialogOpen
-    } = this.props.dialogs;
+  createAd() {
+    const { isMobile, isTablet } = this.props;
+
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
+    return ad;
+  }
+
+  getType() {
+    const { staff, userID } = this.props;
     const { personID } = this.props.match.params;
 
-    const staffCardsInfo = _.values(
+    let type = "";
+    if (personID && staff[personID]) {
+      if (staff[personID].institutions[userID].managerStatus === "APPROVED") {
+        type = "Manager";
+      }
+      if (staff[personID].institutions[userID].coachStatus === "APPROVED") {
+        type = "Coach";
+      }
+    }
+
+    return type;
+  }
+
+  getStaffCardsInfo() {
+    const { staff, userID } = this.props;
+
+    return _.values(
       _.mapValues(staff, (value, key) => {
         let type = "";
         if (value.institutions[userID].managerStatus === "APPROVED") {
@@ -141,23 +151,28 @@ class PeopleLayout extends Component {
       if (personA.info.surname < personB.info.surname) return -1;
       return 0;
     });
+  }
 
-    let ad = <LeaderboardAd />;
-    if (isMobile) {
-      ad = <LargeMobileBannerAd />;
-    } else if (isTablet) {
-      ad = <BannerAd />;
-    }
+  render() {
+    const { classes, staff, isMobile, isTablet } = this.props;
+    const { currentTab } = this.props.uiConfig;
+    const { isStaffLoading } = this.props.loadingStatus;
+    const {
+      updateTab,
+      openEditPersonDialog,
+      closeEditPersonDialog,
+      openDeletePersonAlert,
+      closeDeletePersonAlert
+    } = this.props.actions;
+    const {
+      isDeletPersonAlertOpen,
+      isEditPersonDialogOpen
+    } = this.props.dialogs;
+    const { personID } = this.props.match.params;
 
-    let type = "";
-    if (personID && staff[personID]) {
-      if (staff[personID].institutions[userID].managerStatus === "APPROVED") {
-        type = "Manager";
-      }
-      if (staff[personID].institutions[userID].coachStatus === "APPROVED") {
-        type = "Coach";
-      }
-    }
+    const staffCardsInfo = this.getStaffCardsInfo();
+    const ad = this.createAd();
+    const type = this.getType();
 
     return (
       <div className={classes.root}>
@@ -239,9 +254,5 @@ class PeopleLayout extends Component {
     );
   }
 }
-
-PeopleLayout.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(PeopleLayout);

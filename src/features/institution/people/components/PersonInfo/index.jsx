@@ -1,31 +1,20 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
-import { Route } from "react-router-dom";
+import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
+import { grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
+import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
-import _ from "lodash";
-import LargeRectangleAd from "../../../../../components/LargeRectangleAd";
-import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
+import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../../components/BannerAd";
+import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
+import LargeRectangleAd from "../../../../../components/LargeRectangleAd";
 
 const styles = {
-  root: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column"
-  },
-  wrapper: {
-    flexGrow: 1,
-    overflow: "auto",
-    padding: 24
-  },
   adWrapper: {
     width: "100%",
     height: "100%",
@@ -35,11 +24,10 @@ const styles = {
     alignItems: "center",
     justifyContent: "center"
   },
-  section: {
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[200]}`,
-    height: "100%",
-    width: "100%"
+  button: {
+    "@media (max-width: 960px)": {
+      width: "100%"
+    }
   },
   heading: {
     fontWeight: "normal",
@@ -57,6 +45,15 @@ const styles = {
     width: "calc(100% - 48px)",
     textAlign: "center"
   },
+  noItems: {
+    textAlign: "center"
+  },
+  picture: {
+    backgroundColor: grey[300],
+    width: 240,
+    height: "auto",
+    margin: 24
+  },
   pictureWrapper: {
     width: "100%",
     height: "100%",
@@ -65,26 +62,50 @@ const styles = {
     alignItems: "center",
     justifyContent: "center"
   },
-  picture: {
-    backgroundColor: grey[300],
-    width: 240,
-    height: "auto",
-    margin: 24
+  root: {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column"
   },
-  button: {
-    "@media (max-width: 960px)": {
-      width: "100%"
-    }
+  section: {
+    backgroundColor: grey[50],
+    border: `1px solid ${grey[200]}`,
+    height: "100%",
+    width: "100%"
   },
-  noItems: {
-    textAlign: "center"
+  wrapper: {
+    flexGrow: 1,
+    overflow: "auto",
+    padding: 24
   }
 };
 
 class PersonInfo extends Component {
+  createAd() {
+    const { isMobile, isTablet } = this.props;
+
+    let ad = <LargeRectangleAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
+    return ad;
+  }
+
+  createTeamsList() {
+    const { teams } = this.props.info;
+
+    return _.toPairs(teams).map(([teamID, teamInfo]) => {
+      return { id: teamID, ...teamInfo };
+    });
+  }
+
   render() {
-    const { classes, isMobile, isTablet, type } = this.props;
-    const { teams, paymentDefaults } = this.props.info;
+    const { classes, type } = this.props;
+    const { paymentDefaults } = this.props.info;
     const {
       name,
       surname,
@@ -94,16 +115,8 @@ class PersonInfo extends Component {
       sports
     } = this.props.info.info;
 
-    const teamsList = _.toPairs(teams).map(([teamID, teamInfo]) => {
-      return { id: teamID, ...teamInfo };
-    });
-
-    let ad = <LargeRectangleAd />;
-    if (isMobile) {
-      ad = <LargeMobileBannerAd />;
-    } else if (isTablet) {
-      ad = <BannerAd />;
-    }
+    const teamsList = this.createTeamsList();
+    const ad = this.createAd();
 
     return (
       <div className={classes.root}>
