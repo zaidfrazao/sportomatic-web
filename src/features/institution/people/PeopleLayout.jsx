@@ -14,6 +14,7 @@ import LeaderboardAd from "../../../components/LeaderboardAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import BannerAd from "../../../components/BannerAd";
 import NotificationModal from "../../../components/NotificationModal";
+import FiltersToolbar from "./components/FiltersToolbar";
 import _ from "lodash";
 
 const styles = theme => ({
@@ -99,7 +100,8 @@ class PeopleLayout extends Component {
       openEditPersonDialog,
       closeEditPersonDialog,
       openDeletePersonAlert,
-      closeDeletePersonAlert
+      closeDeletePersonAlert,
+      performFilter
     } = this.props.actions;
     const {
       isDeletPersonAlertOpen,
@@ -180,6 +182,13 @@ class PeopleLayout extends Component {
                     : classes.staffTabNoCards
                 }
               >
+                <FiltersToolbar
+                  isMobile={isMobile}
+                  types={["Coach", "Manager"]}
+                  sports={["Cricket", "Rugby", "Soccer"]}
+                  applyFilter={performFilter}
+                />
+
                 <div className={classes.adWrapper}>{ad}</div>
                 {isStaffLoading ? (
                   <div className={classes.loaderWrapper}>

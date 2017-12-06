@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
+import * as _ from "lodash";
 
 // Actions
 
@@ -197,5 +198,20 @@ export function loadStaff(institutionID) {
         dispatch(receiveStaff(staff));
       }
     });
+  };
+}
+
+export function performFilter(userType, sport) {
+  return function(dispatch: DispatchAlias) {
+    const filteredStaff = _.fromPairs(
+      _.toPairs(staff).filter(
+        keyValuePairs => keyValuePairs[1].metadata.type === userType
+      )
+    );
+    if (filteredStaff === null) {
+      dispatch(receiveStaff({}));
+    } else {
+      dispatch(receiveStaff(filteredStaff));
+    }
   };
 }
