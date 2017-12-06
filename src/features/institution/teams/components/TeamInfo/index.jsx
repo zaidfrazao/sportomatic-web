@@ -173,7 +173,6 @@ class TeamInfo extends Component {
   render() {
     const { classes, isMobile, isTablet } = this.props;
     const { name, sport, division, ageGroup, gender } = this.props.info.info;
-    const { coaches, managers } = this.props.info;
 
     let formattedGender = this.formatGender(gender, ageGroup);
     let formattedAgeGroup = this.formatAgeGroup(ageGroup);

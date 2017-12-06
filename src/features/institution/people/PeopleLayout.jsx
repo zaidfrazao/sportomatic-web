@@ -208,7 +208,7 @@ class PeopleLayout extends Component {
   }
 
   render() {
-    const { classes, staff, teams, isMobile, isTablet } = this.props;
+    const { classes, staff, teams, isMobile, isTablet, userID } = this.props;
     const { currentTab } = this.props.uiConfig;
     const { isStaffLoading, isTeamsLoading } = this.props.loadingStatus;
     const {
@@ -238,6 +238,9 @@ class PeopleLayout extends Component {
               teams={teams}
               personID={personID}
               info={staff[personID]}
+              paymentDefaults={
+                staff[personID].institutions[userID].paymentDefaults
+              }
               isLoading={isTeamsLoading}
               isMobile={isMobile}
               isTablet={isTablet}

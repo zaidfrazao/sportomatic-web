@@ -109,8 +109,7 @@ class PersonInfo extends Component {
   }
 
   render() {
-    const { classes, type } = this.props;
-    const { paymentDefaults } = this.props.info;
+    const { classes, type, paymentDefaults } = this.props;
     const {
       name,
       surname,
@@ -122,8 +121,6 @@ class PersonInfo extends Component {
 
     const teamsList = this.createTeamsList();
     const ad = this.createAd();
-
-    console.log(teamsList);
 
     return (
       <div className={classes.root}>
@@ -175,7 +172,7 @@ class PersonInfo extends Component {
                 </List>
               </div>
             </Grid>
-            {type === "COACH" && (
+            {type === "Coach" && (
               <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
                 <div className={classes.section}>
                   <Typography
@@ -195,7 +192,7 @@ class PersonInfo extends Component {
                     <ListItem>
                       <ListItemText
                         primary="Standard Hourly Rate"
-                        secondary={`R${paymentDefaults.standardHourlyRate.toLocaleString(
+                        secondary={`R${paymentDefaults.rates.standard.toLocaleString(
                           "en",
                           { minimumFractionDigits: 2 }
                         )}`}
@@ -204,7 +201,7 @@ class PersonInfo extends Component {
                     <ListItem>
                       <ListItemText
                         primary="Overtime Hourly Rate"
-                        secondary={`R${paymentDefaults.overtimeHourlyRate.toLocaleString(
+                        secondary={`R${paymentDefaults.rates.overtime.toLocaleString(
                           "en",
                           { minimumFractionDigits: 2 }
                         )}`}
