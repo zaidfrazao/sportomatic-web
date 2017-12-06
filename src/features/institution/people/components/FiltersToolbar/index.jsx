@@ -93,14 +93,7 @@ class FiltersToolbar extends Component {
   }
 
   render() {
-    const {
-      classes,
-      isMobile,
-      types,
-      sports,
-      applyFilter,
-      removeFilter
-    } = this.props;
+    const { classes, isMobile, types, sports, applyFilter } = this.props;
     const {
       searchText,
       confirmedType,
@@ -199,7 +192,13 @@ class FiltersToolbar extends Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => this.toggleDialog()}>Close</Button>
-            <Button color="accent" onClick={() => this.resetFilters()}>
+            <Button
+              color="accent"
+              onClick={() => {
+                this.resetFilters();
+                applyFilter("All", "All");
+              }}
+            >
               Reset
             </Button>
             <Button

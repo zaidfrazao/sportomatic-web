@@ -203,7 +203,7 @@ export function loadStaff(institutionID) {
 
 export function performFilter(userType, sport) {
   return function(dispatch: DispatchAlias) {
-    const filteredStaff = _.fromPairs(
+    let filteredStaff = _.fromPairs(
       _.toPairs(staff).filter(
         keyValuePairs => keyValuePairs[1].metadata.type === userType
       )
