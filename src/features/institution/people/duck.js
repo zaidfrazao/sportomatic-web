@@ -203,11 +203,23 @@ export function loadStaff(institutionID) {
 
 export function performFilter(userType, sport) {
   return function(dispatch: DispatchAlias) {
-    let filteredStaff = _.fromPairs(
-      _.toPairs(staff).filter(
-        keyValuePairs => keyValuePairs[1].metadata.type === userType
-      )
-    );
+    let filteredStaff = staff;
+    if (userType !== "") {
+      filteredStaff = _.fromPairs(
+        _.toPairs(filteredStaff).filter(
+          keyValuePairs => keyValuePairs[1].metadata.type === userType
+        )
+      );
+    }
+
+    if (sport !== "") {
+      filteredStaff = _.fromPairs(
+        _.toPairs(filteredStaff).filter(
+          keyValuePairs => keyValuePairs[1].preferredSports === sport
+        )
+      );
+    }
+
     if (filteredStaff === null) {
       dispatch(receiveStaff({}));
     } else {
