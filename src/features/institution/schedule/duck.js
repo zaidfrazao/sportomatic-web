@@ -45,12 +45,16 @@ export const CLOSE_UNCANCEL_EVENT_ALERT =
   "sportomatic-web/institution/schedule/CLOSE_UNCANCEL_EVENT_ALERT";
 export const UPDATE_CURRENT_VIEW =
   "sportomatic-web/institution/schedule/UPDATE_CURRENT_VIEW";
-export const REQUEST_STAFF =
-  "sportomatic-web/institution/schedule/REQUEST_STAFF";
-export const RECEIVE_STAFF =
-  "sportomatic-web/institution/schedule/RECEIVE_STAFF";
-export const ERROR_LOADING_STAFF =
-  "sportomatic-web/institution/schedule/ERROR_LOADING_STAFF";
+export const REQUEST_COACHES = "sportomatic-web/admin/schedule/REQUEST_COACHES";
+export const RECEIVE_COACHES = "sportomatic-web/admin/schedule/RECEIVE_COACHES";
+export const ERROR_LOADING_COACHES =
+  "sportomatic-web/admin/schedule/ERROR_LOADING_COACHES";
+export const REQUEST_MANAGERS =
+  "sportomatic-web/admin/schedule/REQUEST_MANAGERS";
+export const RECEIVE_MANAGERS =
+  "sportomatic-web/admin/schedule/RECEIVE_MANAGERS";
+export const ERROR_LOADING_MANAGERS =
+  "sportomatic-web/admin/schedule/ERROR_LOADING_MANAGERS";
 export const REQUEST_TEAMS =
   "sportomatic-web/institution/schedule/REQUEST_TEAMS";
 export const RECEIVE_TEAMS =
@@ -214,22 +218,6 @@ export const loadingStatusInitialState = {
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
-    case REQUEST_STAFF:
-    case REQUEST_TEAMS:
-      return {
-        ...state,
-        isAddEventDialogLoading: true,
-        isEditEventDialogLoading: true
-      };
-    case ERROR_LOADING_TEAMS:
-    case RECEIVE_TEAMS:
-    case ERROR_LOADING_STAFF:
-    case RECEIVE_STAFF:
-      return {
-        ...state,
-        isAddEventDialogLoading: false,
-        isEditEventDialogLoading: false
-      };
     case REQUEST_ADD_EVENT:
       return {
         ...state,
@@ -251,6 +239,27 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isEditEventDialogLoading: false
+      };
+    case REQUEST_TEAMS:
+    case REQUEST_COACHES:
+    case REQUEST_MANAGERS:
+      return {
+        ...state,
+        isAddEventDialogLoading: true,
+        isEditEventDialogLoading: true,
+        isEventsLoading: true
+      };
+    case RECEIVE_TEAMS:
+    case RECEIVE_COACHES:
+    case RECEIVE_MANAGERS:
+    case ERROR_LOADING_TEAMS:
+    case ERROR_LOADING_COACHES:
+    case ERROR_LOADING_MANAGERS:
+      return {
+        ...state,
+        isAddEventDialogLoading: false,
+        isEditEventDialogLoading: false,
+        isEventsLoading: false
       };
     case REQUEST_CREATION_DATE:
     case REQUEST_EVENTS:
@@ -274,7 +283,10 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 function eventsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RECEIVE_EVENTS:
-      return action.payload.events;
+      return {
+        ...state,
+        ...action.payload.events
+      };
     default:
       return state;
   }
@@ -282,8 +294,8 @@ function eventsReducer(state = {}, action = {}) {
 
 function coachesReducer(state = {}, action = {}) {
   switch (action.type) {
-    case RECEIVE_STAFF:
-      return action.payload.coaches;
+    case RECEIVE_COACHES:
+      return { ...state, ...action.payload.coaches };
     default:
       return state;
   }
@@ -291,8 +303,8 @@ function coachesReducer(state = {}, action = {}) {
 
 function managersReducer(state = {}, action = {}) {
   switch (action.type) {
-    case RECEIVE_STAFF:
-      return action.payload.managers;
+    case RECEIVE_MANAGERS:
+      return { ...state, ...action.payload.managers };
     default:
       return state;
   }
@@ -301,7 +313,10 @@ function managersReducer(state = {}, action = {}) {
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RECEIVE_TEAMS:
-      return action.payload.teams;
+      return {
+        ...state,
+        ...action.payload.teams
+      };
     default:
       return state;
   }
@@ -468,17 +483,17 @@ export function errorLoadingEvents(error: { code: string, message: string }) {
 export function loadEvents(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestEvents());
-    const teamsRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/events`);
+    const eventsRef = firebase
+      .firestore()
+      .collection("events")
+      .where("institutionID", "==", institutionID);
 
-    return teamsRef.on("value", snapshot => {
-      const teams = snapshot.val();
-      if (teams === null) {
-        dispatch(receiveEvents({}));
-      } else {
-        dispatch(receiveEvents(teams));
-      }
+    return eventsRef.onSnapshot(querySnapshot => {
+      let events = {};
+      querySnapshot.forEach(doc => {
+        events[doc.id] = doc.data();
+      });
+      dispatch(receiveEvents(events));
     });
   };
 }
@@ -821,55 +836,88 @@ export function editEvent(
   };
 }
 
-export function requestStaff() {
+export function requestCoaches() {
   return {
-    type: REQUEST_STAFF
+    type: REQUEST_COACHES
   };
 }
 
-export function receiveStaff(staff) {
-  const managers = _.fromPairs(
-    _.toPairs(staff).filter(
-      keyValuePairs => keyValuePairs[1].metadata.type === "MANAGER"
-    )
-  );
-  const coaches = _.fromPairs(
-    _.toPairs(staff).filter(
-      keyValuePairs => keyValuePairs[1].metadata.type === "COACH"
-    )
-  );
+export function receiveCoaches(coaches) {
   return {
-    type: RECEIVE_STAFF,
+    type: RECEIVE_COACHES,
     payload: {
-      managers,
       coaches
     }
   };
 }
 
-export function errorLoadingStaff(error: { code: string, message: string }) {
+export function errorLoadingCoaches(error: { code: string, message: string }) {
   return {
-    type: ERROR_LOADING_STAFF,
+    type: ERROR_LOADING_COACHES,
     payload: {
       error
     }
   };
 }
 
-export function loadStaff(institutionID) {
+export function loadCoaches(institutionID) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestStaff());
-    const staffRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/staff`);
+    dispatch(requestCoaches());
 
-    return staffRef.on("value", snapshot => {
-      const staff = snapshot.val();
-      if (staff === null) {
-        dispatch(receiveStaff({}));
-      } else {
-        dispatch(receiveStaff(staff));
-      }
+    const coachesRef = firebase
+      .firestore()
+      .collection("users")
+      .where(`institutions.${institutionID}.coachStatus`, "==", "APPROVED");
+
+    return coachesRef.onSnapshot(querySnapshot => {
+      let coaches = {};
+      querySnapshot.forEach(doc => {
+        coaches[doc.id] = doc.data();
+      });
+      dispatch(receiveCoaches(coaches));
+    });
+  };
+}
+
+export function requestManagers() {
+  return {
+    type: REQUEST_MANAGERS
+  };
+}
+
+export function receiveManagers(managers) {
+  return {
+    type: RECEIVE_MANAGERS,
+    payload: {
+      managers
+    }
+  };
+}
+
+export function errorLoadingManagers(error: { code: string, message: string }) {
+  return {
+    type: ERROR_LOADING_MANAGERS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadManagers(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestManagers());
+
+    const managersRef = firebase
+      .firestore()
+      .collection("users")
+      .where(`institutions.${institutionID}.managerStatus`, "==", "APPROVED");
+
+    return managersRef.onSnapshot(querySnapshot => {
+      let managers = {};
+      querySnapshot.forEach(doc => {
+        managers[doc.id] = doc.data();
+      });
+      dispatch(receiveManagers(managers));
     });
   };
 }
@@ -895,6 +943,25 @@ export function errorLoadingTeams(error: { code: string, message: string }) {
     payload: {
       error
     }
+  };
+}
+
+export function loadTeams(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestTeams());
+
+    const teamsRef = firebase
+      .firestore()
+      .collection("teams")
+      .where("institutionID", "==", institutionID);
+
+    return teamsRef.onSnapshot(querySnapshot => {
+      let teams = {};
+      querySnapshot.forEach(doc => {
+        teams[doc.id] = doc.data();
+      });
+      dispatch(receiveTeams(teams));
+    });
   };
 }
 
@@ -940,24 +1007,6 @@ export function errorUncancellingEvent(error: {
     payload: {
       error
     }
-  };
-}
-
-export function loadTeams(institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestTeams());
-    const teamsRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/teams`);
-
-    return teamsRef.on("value", snapshot => {
-      const teams = snapshot.val();
-      if (teams === null) {
-        dispatch(receiveTeams({}));
-      } else {
-        dispatch(receiveTeams(teams));
-      }
-    });
   };
 }
 

@@ -88,18 +88,94 @@ const styles = {
 };
 
 class EventInfo extends Component {
+  getListItems() {
+    const { coaches, managers, teams, info, isLoading } = this.props;
+
+    let eventTeams = [];
+    let eventCoaches = [];
+    let eventManagers = [];
+
+    !isLoading &&
+      _.toPairs(info.teams).map(([id, isTeam]) => {
+        if (isTeam) {
+          eventTeams.push(
+            <Route
+              key={id}
+              render={({ history }) => {
+                return (
+                  <ListItem
+                    button
+                    onClick={() => history.push(`/admin/teams/${id}`)}
+                  >
+                    <ListItemText
+                      primary={teams[id].info.name}
+                      secondary={teams[id].info.sport}
+                    />
+                  </ListItem>
+                );
+              }}
+            />
+          );
+        }
+      });
+    !isLoading &&
+      _.toPairs(info.coaches).map(([id, coachEventInfo]) => {
+        const coachInfo = coaches[id].info;
+        eventCoaches.push(
+          <Route
+            key={id}
+            render={({ history }) => {
+              return (
+                <ListItem
+                  button
+                  onClick={() => history.push(`/admin/people/${id}`)}
+                >
+                  <Avatar src={coachInfo.profilePictureURL} />
+                  <ListItemText
+                    primary={`${coachInfo.name} ${coachInfo.surname}`}
+                    secondary={coachInfo.phoneNumber}
+                  />
+                </ListItem>
+              );
+            }}
+          />
+        );
+      });
+    !isLoading &&
+      _.toPairs(info.managers).map(([id, managerEventInfo]) => {
+        const managerInfo = managers[id].info;
+        eventManagers.push(
+          <Route
+            key={id}
+            render={({ history }) => {
+              return (
+                <ListItem
+                  button
+                  onClick={() => history.push(`/admin/people/${id}`)}
+                >
+                  <Avatar src={managerInfo.profilePictureURL} />
+                  <ListItemText
+                    primary={`${managerInfo.name} ${managerInfo.surname}`}
+                    secondary={managerInfo.phoneNumber}
+                  />
+                </ListItem>
+              );
+            }}
+          />
+        );
+      });
+
+    return {
+      teams: eventTeams,
+      coaches: eventCoaches,
+      managers: eventManagers
+    };
+  }
+
   render() {
     const { classes, isMobile, isTablet } = this.props;
-    const {
-      title,
-      type,
-      date,
-      startTime,
-      endTime,
-      isCompetitive,
-      additionalInfo
-    } = this.props.info.metadata;
-    const { teams, coaches, managers, status } = this.props.info;
+    const { title, type, times, isCompetitive } = this.props.info.requiredInfo;
+    const { status, optionalInfo } = this.props.info;
     const { updateView } = this.props.actions;
 
     const dateOptions = {
@@ -107,6 +183,7 @@ class EventInfo extends Component {
       month: "long",
       day: "numeric"
     };
+    const timeOptions = { hour12: true, hour: "2-digit", minute: "2-digit" };
 
     let ad = <LeaderboardAd />;
     if (isMobile) {
@@ -114,6 +191,8 @@ class EventInfo extends Component {
     } else if (isTablet) {
       ad = <BannerAd />;
     }
+
+    const { coaches, managers, teams } = this.getListItems();
 
     return (
       <div className={classes.root}>
@@ -158,17 +237,29 @@ class EventInfo extends Component {
                   <ListItem>
                     <ListItemText
                       primary="Date"
-                      secondary={new Date(date).toLocaleDateString(
+                      secondary={times.start.toLocaleDateString(
                         "en-US",
                         dateOptions
                       )}
                     />
                   </ListItem>
                   <ListItem>
-                    <ListItemText primary="Starts at" secondary={startTime} />
+                    <ListItemText
+                      primary="Starts at"
+                      secondary={times.start.toLocaleTimeString(
+                        "en-US",
+                        timeOptions
+                      )}
+                    />
                   </ListItem>
                   <ListItem>
-                    <ListItemText primary="Ends as" secondary={endTime} />
+                    <ListItemText
+                      primary="Ends as"
+                      secondary={times.end.toLocaleTimeString(
+                        "en-US",
+                        timeOptions
+                      )}
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemText primary="Event type" secondary={type} />
@@ -176,7 +267,7 @@ class EventInfo extends Component {
                   <ListItem>
                     <ListItemText
                       primary="Venue"
-                      secondary={additionalInfo.venue}
+                      secondary={optionalInfo.venue}
                     />
                   </ListItem>
                 </List>
@@ -197,16 +288,16 @@ class EventInfo extends Component {
                       <ListItemText
                         primary="Home / Away"
                         secondary={
-                          additionalInfo.homeAway === "UNKNOWN"
+                          optionalInfo.homeAway === "UNKNOWN"
                             ? "Not yet specified"
-                            : _.capitalize(additionalInfo.homeAway)
+                            : _.capitalize(optionalInfo.homeAway)
                         }
                       />
                     </ListItem>
                     <ListItem>
                       <ListItemText
                         primary="Opponents"
-                        secondary={additionalInfo.opponents}
+                        secondary={optionalInfo.opponents.institution}
                       />
                     </ListItem>
                   </List>
@@ -223,23 +314,8 @@ class EventInfo extends Component {
                   Teams
                 </Typography>
                 <List>
-                  {_.keys(teams).length > 0 ? (
-                    _.toPairs(teams).map(([id, info]) => (
-                      <Route
-                        key={id}
-                        component={({ history }) => (
-                          <ListItem
-                            button
-                            onClick={() => history.push(`/admin/teams/${id}`)}
-                          >
-                            <ListItemText
-                              primary={info.metadata.name}
-                              secondary={info.metadata.sport}
-                            />
-                          </ListItem>
-                        )}
-                      />
-                    ))
+                  {teams.length > 0 ? (
+                    teams
                   ) : (
                     <ListItem className={classes.noItems}>
                       <ListItemText primary="No teams" />
@@ -258,24 +334,8 @@ class EventInfo extends Component {
                   Managers
                 </Typography>
                 <List>
-                  {_.keys(managers).length > 0 ? (
-                    _.toPairs(managers).map(([id, info]) => (
-                      <Route
-                        key={id}
-                        component={({ history }) => (
-                          <ListItem
-                            button
-                            onClick={() => history.push(`/admin/people/${id}`)}
-                          >
-                            <Avatar src={info.profilePictureURL} />
-                            <ListItemText
-                              primary={`${info.name} ${info.surname}`}
-                              secondary={info.phoneNumber}
-                            />
-                          </ListItem>
-                        )}
-                      />
-                    ))
+                  {managers.length > 0 ? (
+                    managers
                   ) : (
                     <ListItem className={classes.noItems}>
                       <ListItemText primary="No managers" />
@@ -294,24 +354,8 @@ class EventInfo extends Component {
                   Coaches
                 </Typography>
                 <List>
-                  {_.keys(coaches).length > 0 ? (
-                    _.toPairs(coaches).map(([id, info]) => (
-                      <Route
-                        key={id}
-                        component={({ history }) => (
-                          <ListItem
-                            button
-                            onClick={() => history.push(`/admin/people/${id}`)}
-                          >
-                            <Avatar src={info.profilePictureURL} />
-                            <ListItemText
-                              primary={`${info.name} ${info.surname}`}
-                              secondary={info.phoneNumber}
-                            />
-                          </ListItem>
-                        )}
-                      />
-                    ))
+                  {coaches.length > 0 ? (
+                    coaches
                   ) : (
                     <ListItem className={classes.noItems}>
                       <ListItemText primary="No coaches" />
@@ -330,7 +374,7 @@ class EventInfo extends Component {
                   Notes
                 </Typography>
                 <div className={classes.notesWrapper}>
-                  {additionalInfo.notes === "" ? (
+                  {optionalInfo.notes === "" ? (
                     <Typography
                       className={classes.notes}
                       type="body2"
@@ -344,7 +388,7 @@ class EventInfo extends Component {
                       type="body2"
                       component="p"
                     >
-                      {additionalInfo.notes}
+                      {optionalInfo.notes}
                     </Typography>
                   )}
                 </div>

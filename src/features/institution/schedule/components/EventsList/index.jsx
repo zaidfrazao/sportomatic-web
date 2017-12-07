@@ -68,19 +68,14 @@ const styles = theme => ({
 });
 
 class EventsList extends Component {
-  getDaySuffix(day) {
-    if (day === 1 || day === 21 || day === 31) return "st";
-    if (day === 2 || day === 22) return "nd";
-    if (day === 3 || day === 23) return "rd";
-    return "th";
-  }
-
   getFullSortedEventsList(events) {
     const { dateSelected } = this.props;
     return _.toPairs(events)
       .filter(
         ([id, info]) =>
-          info.status !== "DELETED" && info.metadata.date === dateSelected
+          info.status !== "DELETED" &&
+          info.requiredInfo.times.start.toDateString() ===
+            new Date(dateSelected).toDateString()
       )
       .map(([id, info]) => {
         return {
@@ -89,12 +84,14 @@ class EventsList extends Component {
         };
       })
       .sort((eventA, eventB) => {
-        if (eventA.metadata.date < eventB.metadata.date) return -1;
-        if (eventA.metadata.date > eventB.metadata.date) return +1;
-        if (eventA.metadata.startTime < eventB.metadata.startTime) return -1;
-        if (eventA.metadata.startTime > eventB.metadata.startTime) return +1;
-        if (eventA.metadata.endTime < eventB.metadata.endTime) return -1;
-        if (eventA.metadata.endTime > eventB.metadata.endTime) return +1;
+        if (eventA.requiredInfo.startTime < eventB.requiredInfo.startTime)
+          return -1;
+        if (eventA.requiredInfo.startTime > eventB.requiredInfo.startTime)
+          return +1;
+        if (eventA.requiredInfo.endTime < eventB.requiredInfo.endTime)
+          return -1;
+        if (eventA.requiredInfo.endTime > eventB.requiredInfo.endTime)
+          return +1;
         return 0;
       });
   }
@@ -115,19 +112,26 @@ class EventsList extends Component {
     } = this.props.actions;
 
     const allEvents = this.getFullSortedEventsList(events);
+    const options = { hour12: true, hour: "2-digit", minute: "2-digit" };
 
     const morningEvents = allEvents
       .filter(eventInfo => {
-        const startHour = eventInfo.metadata.startTime;
-        const isMorningEvent = startHour < "12:00";
+        const startHour = eventInfo.requiredInfo.times.start.getHours();
+        const isMorningEvent = startHour < 12;
         return isMorningEvent;
       })
       .map(eventInfo => {
-        const eventDate = new Date(eventInfo.metadata.date);
+        const eventDate = new Date(eventInfo.requiredInfo.times.start);
         const currentDate = new Date(Date.now());
         const showCancelButton = eventDate > currentDate;
-        const eventStartTime = eventInfo.metadata.startTime;
-        const eventEndTime = eventInfo.metadata.endTime;
+        const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
+          "en-US",
+          options
+        );
+        const eventEndTime = eventInfo.requiredInfo.times.end.toLocaleTimeString(
+          "en-US",
+          options
+        );
         return (
           <Route
             key={eventInfo.id}
@@ -146,13 +150,13 @@ class EventsList extends Component {
                   >
                     <Avatar
                       className={
-                        eventInfo.metadata.isCompetitive
+                        eventInfo.requiredInfo.isCompetitive
                           ? classes.competitiveEvent
                           : classes.nonCompetitiveEvent
                       }
                     />
                     <ListItemText
-                      primary={eventInfo.metadata.title + " [Cancelled]"}
+                      primary={eventInfo.requiredInfo.title + " [Cancelled]"}
                       secondary={`${eventStartTime} - ${eventEndTime}`}
                     />
                     {showCancelButton && (
@@ -190,13 +194,13 @@ class EventsList extends Component {
                   >
                     <Avatar
                       className={
-                        eventInfo.metadata.isCompetitive
+                        eventInfo.requiredInfo.isCompetitive
                           ? classes.competitiveEvent
                           : classes.nonCompetitiveEvent
                       }
                     />
                     <ListItemText
-                      primary={eventInfo.metadata.title}
+                      primary={eventInfo.requiredInfo.title}
                       secondary={`${eventStartTime} - ${eventEndTime}`}
                     />
                     {showCancelButton && (
@@ -229,16 +233,22 @@ class EventsList extends Component {
 
     const afternoonEvents = allEvents
       .filter(eventInfo => {
-        const startHour = eventInfo.metadata.startTime;
-        const isAfternoonEvent = startHour >= "12:00" && startHour < "18:00";
+        const startHour = eventInfo.requiredInfo.times.start.getHours();
+        const isAfternoonEvent = startHour >= 12 && startHour < 18;
         return isAfternoonEvent;
       })
       .map(eventInfo => {
-        const eventDate = new Date(eventInfo.metadata.date);
+        const eventDate = new Date(eventInfo.requiredInfo.times.start);
         const currentDate = new Date(Date.now());
         const showCancelButton = eventDate > currentDate;
-        const eventStartTime = eventInfo.metadata.startTime;
-        const eventEndTime = eventInfo.metadata.endTime;
+        const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
+          "en-US",
+          options
+        );
+        const eventEndTime = eventInfo.requiredInfo.times.end.toLocaleTimeString(
+          "en-US",
+          options
+        );
         return (
           <Route
             key={eventInfo.id}
@@ -257,13 +267,13 @@ class EventsList extends Component {
                   >
                     <Avatar
                       className={
-                        eventInfo.metadata.isCompetitive
+                        eventInfo.requiredInfo.isCompetitive
                           ? classes.competitiveEvent
                           : classes.nonCompetitiveEvent
                       }
                     />
                     <ListItemText
-                      primary={eventInfo.metadata.title + " [Cancelled]"}
+                      primary={eventInfo.requiredInfo.title + " [Cancelled]"}
                       secondary={`${eventStartTime} - ${eventEndTime}`}
                     />
                     {showCancelButton && (
@@ -302,13 +312,13 @@ class EventsList extends Component {
                   >
                     <Avatar
                       className={
-                        eventInfo.metadata.isCompetitive
+                        eventInfo.requiredInfo.isCompetitive
                           ? classes.competitiveEvent
                           : classes.nonCompetitiveEvent
                       }
                     />
                     <ListItemText
-                      primary={eventInfo.metadata.title}
+                      primary={eventInfo.requiredInfo.title}
                       secondary={`${eventStartTime} - ${eventEndTime}`}
                     />
                     {showCancelButton && (
@@ -341,16 +351,22 @@ class EventsList extends Component {
 
     const eveningEvents = allEvents
       .filter(eventInfo => {
-        const startHour = eventInfo.metadata.startTime;
-        const isEveningEvent = startHour >= "18:00";
+        const startHour = eventInfo.requiredInfo.times.start.getHours();
+        const isEveningEvent = startHour >= 18;
         return isEveningEvent;
       })
       .map(eventInfo => {
-        const eventDate = new Date(eventInfo.metadata.date);
+        const eventDate = new Date(eventInfo.requiredInfo.times.start);
         const currentDate = new Date(Date.now());
         const showCancelButton = eventDate > currentDate;
-        const eventStartTime = eventInfo.metadata.startTime;
-        const eventEndTime = eventInfo.metadata.endTime;
+        const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
+          "en-US",
+          options
+        );
+        const eventEndTime = eventInfo.requiredInfo.times.end.toLocaleTimeString(
+          "en-US",
+          options
+        );
         return (
           <Route
             key={eventInfo.id}
@@ -369,13 +385,13 @@ class EventsList extends Component {
                   >
                     <Avatar
                       className={
-                        eventInfo.metadata.isCompetitive
+                        eventInfo.requiredInfo.isCompetitive
                           ? classes.competitiveEvent
                           : classes.nonCompetitiveEvent
                       }
                     />
                     <ListItemText
-                      primary={eventInfo.metadata.title + " [Cancelled]"}
+                      primary={eventInfo.requiredInfo.title + " [Cancelled]"}
                       secondary={`${eventStartTime} - ${eventEndTime}`}
                     />
                     {showCancelButton && (
@@ -413,13 +429,13 @@ class EventsList extends Component {
                   >
                     <Avatar
                       className={
-                        eventInfo.metadata.isCompetitive
+                        eventInfo.requiredInfo.isCompetitive
                           ? classes.competitiveEvent
                           : classes.nonCompetitiveEvent
                       }
                     />
                     <ListItemText
-                      primary={eventInfo.metadata.title}
+                      primary={eventInfo.requiredInfo.title}
                       secondary={`${eventStartTime} - ${eventEndTime}`}
                     />
                     {showCancelButton && (
@@ -478,13 +494,15 @@ class EventsList extends Component {
             >
               Morning
             </Typography>
-            {morningEvents.length > 0 ? (
-              morningEvents
-            ) : (
-              <ListItem>
-                <ListItemText primary="No morning events" />
-              </ListItem>
-            )}
+            <List>
+              {morningEvents.length > 0 ? (
+                morningEvents
+              ) : (
+                <ListItem>
+                  <ListItemText primary="No morning events" />
+                </ListItem>
+              )}
+            </List>
             <Typography
               component="h3"
               type="body2"
@@ -508,13 +526,15 @@ class EventsList extends Component {
             >
               Evening
             </Typography>
-            {eveningEvents.length > 0 ? (
-              eveningEvents
-            ) : (
-              <ListItem>
-                <ListItemText primary="No evening events" />
-              </ListItem>
-            )}
+            <List>
+              {eveningEvents.length > 0 ? (
+                eveningEvents
+              ) : (
+                <ListItem>
+                  <ListItemText primary="No evening events" />
+                </ListItem>
+              )}
+            </List>
           </div>
         )}
       </div>

@@ -81,10 +81,19 @@ class ScheduleLayout extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { userID } = this.props;
-    const { loadEvents, fetchCreationDate } = this.props.actions;
+    const {
+      loadEvents,
+      fetchCreationDate,
+      loadCoaches,
+      loadManagers,
+      loadTeams
+    } = this.props.actions;
 
     if (userID !== nextProps.userID) {
+      loadCoaches(nextProps.userID);
+      loadManagers(nextProps.userID);
       loadEvents(nextProps.userID);
+      loadTeams(nextProps.userID);
       fetchCreationDate(nextProps.userID);
     }
   }
@@ -140,8 +149,6 @@ class ScheduleLayout extends Component {
     } = this.props.dialogs;
 
     const currentDate = new Date(Date.now());
-    let yearSelected = "";
-    let monthSelected = "";
 
     if (!dateSelected) {
       return (
@@ -149,9 +156,6 @@ class ScheduleLayout extends Component {
           to={`/admin/schedule/${currentDate.toISOString().slice(0, 10)}`}
         />
       );
-    } else {
-      yearSelected = dateSelected.slice(0, 4);
-      monthSelected = dateSelected.slice(5, 7);
     }
 
     let eventErrorAlertHeading = "Event Title Required";
@@ -189,7 +193,10 @@ class ScheduleLayout extends Component {
             </div>
           ) : (
             <EventInfo
-              info={events[yearSelected][monthSelected][eventID]}
+              coaches={coaches}
+              managers={managers}
+              teams={teams}
+              info={events[eventID]}
               isMobile={isMobile}
               isTablet={isTablet}
               actions={{ updateView }}
@@ -208,23 +215,25 @@ class ScheduleLayout extends Component {
           >
             <EditIcon />
           </Button>
-          <EditEventDialog
-            isOpen={isEditEventDialogOpen}
-            isLoading={isEditEventDialogLoading}
-            minDate={currentDate.toISOString().slice(0, 10)}
-            initialDate={dateSelected}
-            teams={teams}
-            coaches={coaches}
-            managers={managers}
-            initialEventInfo={events[yearSelected][monthSelected][eventID]}
-            initialEventID={eventID}
-            institutionID={userID}
-            actions={{
-              handleClose: closeEditEventDialog,
-              editEvent,
-              openEventErrorAlert
-            }}
-          />
+          {false && (
+            <EditEventDialog
+              isOpen={isEditEventDialogOpen}
+              isLoading={isEditEventDialogLoading}
+              minDate={currentDate.toISOString().slice(0, 10)}
+              initialDate={dateSelected}
+              teams={teams}
+              coaches={coaches}
+              managers={managers}
+              initialEventInfo={events[eventID]}
+              initialEventID={eventID}
+              institutionID={userID}
+              actions={{
+                handleClose: closeEditEventDialog,
+                editEvent,
+                openEventErrorAlert
+              }}
+            />
+          )}
           <NotificationModal
             isOpen={isEventErrorAlertOpen}
             handleOkClick={closeEventErrorAlert}
@@ -266,21 +275,23 @@ class ScheduleLayout extends Component {
           >
             <AddIcon />
           </Button>
-          <AddEventDialog
-            isOpen={isAddEventDialogOpen}
-            isLoading={isAddEventDialogLoading}
-            minDate={currentDate.toISOString().slice(0, 10)}
-            initialDate={dateSelected}
-            institutionID={userID}
-            teams={teams}
-            coaches={coaches}
-            managers={managers}
-            actions={{
-              handleClose: closeAddEventDialog,
-              addEvent,
-              openEventErrorAlert
-            }}
-          />
+          {false && (
+            <AddEventDialog
+              isOpen={isAddEventDialogOpen}
+              isLoading={isAddEventDialogLoading}
+              minDate={currentDate.toISOString().slice(0, 10)}
+              initialDate={dateSelected}
+              institutionID={userID}
+              teams={teams}
+              coaches={coaches}
+              managers={managers}
+              actions={{
+                handleClose: closeAddEventDialog,
+                addEvent,
+                openEventErrorAlert
+              }}
+            />
+          )}
           <DecisionModal
             isOpen={isCancelEventAlertOpen}
             handleYesClick={() => {

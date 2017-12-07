@@ -172,13 +172,6 @@ const styles = theme => ({
 });
 
 class Calendar extends Component {
-  getDaySuffix(day) {
-    if (day === 1 || day === 21 || day === 31) return "st";
-    if (day === 2 || day === 22) return "nd";
-    if (day === 3 || day === 23) return "rd";
-    return "th";
-  }
-
   compareDates(dateA, dateB) {
     if (dateA.getFullYear() < dateB.getFullYear()) return -1;
     if (dateA.getFullYear() > dateB.getFullYear()) return +1;
@@ -206,42 +199,27 @@ class Calendar extends Component {
       cancelEvent
     } = this.props.actions;
 
-    const yearSelected = dateSelected.slice(0, 4);
-    const monthSelected = dateSelected.slice(5, 7);
-
     let dates = {};
-    events[yearSelected] &&
-      events[yearSelected][monthSelected] &&
-      _.values(events[yearSelected][monthSelected]).map(eventInfo => {
-        const isCompetitive = eventInfo.metadata.isCompetitive;
-        const eventDate = new Date(eventInfo.metadata.date);
+    _.values(events).map(eventInfo => {
+      const isCompetitive = eventInfo.requiredInfo.isCompetitive;
+      const eventDate = eventInfo.requiredInfo.times.start.toDateString();
 
-        if (dates[eventDate]) {
-          if (isCompetitive) {
-            dates[eventDate].hasCompetitive = true;
-          } else {
-            dates[eventDate].hasNonCompetitive = true;
-          }
+      if (dates[eventDate]) {
+        if (isCompetitive) {
+          dates[eventDate].hasCompetitive = true;
         } else {
-          dates[eventDate] = {
-            hasCompetitive: isCompetitive,
-            hasNonCompetitive: !isCompetitive
-          };
+          dates[eventDate].hasNonCompetitive = true;
         }
-      });
+      } else {
+        dates[eventDate] = {
+          hasCompetitive: isCompetitive,
+          hasNonCompetitive: !isCompetitive
+        };
+      }
+    });
 
-    const currentTime = new Date(Date.now());
-    const currentDate = new Date(
-      currentTime.getFullYear(),
-      currentTime.getMonth(),
-      currentTime.getDate()
-    ).toString();
-    const tempDate = new Date(dateSelected);
-    const formattedDateSelected = new Date(
-      tempDate.getFullYear(),
-      tempDate.getMonth(),
-      tempDate.getDate()
-    ).toString();
+    const currentDate = new Date(Date.now()).toDateString();
+    const formattedDateSelected = new Date(dateSelected).toDateString();
 
     const headingDateOptions = {
       month: "long"
@@ -331,7 +309,7 @@ class Calendar extends Component {
                 <ReactCalendar
                   tileContent={({ date, view }) => {
                     date.setHours(2);
-                    const eventDate = dates[date.toString()];
+                    const eventDate = dates[date.toDateString()];
                     if (eventDate) {
                       if (
                         eventDate.hasCompetitive &&
@@ -365,12 +343,12 @@ class Calendar extends Component {
                   tileClassName={({ date, view }) => {
                     let tileClasses = [];
 
-                    if (date > minDate) {
-                      if (date.toString() === formattedDateSelected) {
+                    if (date >= minDate) {
+                      if (date.toDateString() === formattedDateSelected) {
                         tileClasses.push(classes.selectedTile);
-                      } else if (date.toString() === currentDate) {
+                      } else if (date.toDateString() === currentDate) {
                         tileClasses.push(classes.todayTile);
-                      } else if (dates[date.toString()]) {
+                      } else if (dates[date.toDateString()]) {
                         tileClasses.push(classes.eventTile);
                       } else {
                         tileClasses.push(classes.normalTile);
@@ -414,10 +392,7 @@ class Calendar extends Component {
               isTablet={isTablet}
               dateSelected={dateSelected}
               isLoading={isLoading}
-              events={
-                (events[yearSelected] && events[yearSelected][monthSelected]) ||
-                {}
-              }
+              events={events}
               institutionID={institutionID}
               actions={{
                 updateView,
@@ -450,42 +425,27 @@ class Calendar extends Component {
       cancelEvent
     } = this.props.actions;
 
-    const yearSelected = dateSelected.slice(0, 4);
-    const monthSelected = dateSelected.slice(5, 7);
-
     let dates = {};
-    events[yearSelected] &&
-      events[yearSelected][monthSelected] &&
-      _.values(events[yearSelected][monthSelected]).map(eventInfo => {
-        const isCompetitive = eventInfo.metadata.isCompetitive;
-        const eventDate = new Date(eventInfo.metadata.date);
+    _.values(events).map(eventInfo => {
+      const isCompetitive = eventInfo.requiredInfo.isCompetitive;
+      const eventDate = eventInfo.requiredInfo.times.start.toDateString();
 
-        if (dates[eventDate]) {
-          if (isCompetitive) {
-            dates[eventDate].hasCompetitive = true;
-          } else {
-            dates[eventDate].hasNonCompetitive = true;
-          }
+      if (dates[eventDate]) {
+        if (isCompetitive) {
+          dates[eventDate].hasCompetitive = true;
         } else {
-          dates[eventDate] = {
-            hasCompetitive: isCompetitive,
-            hasNonCompetitive: !isCompetitive
-          };
+          dates[eventDate].hasNonCompetitive = true;
         }
-      });
+      } else {
+        dates[eventDate] = {
+          hasCompetitive: isCompetitive,
+          hasNonCompetitive: !isCompetitive
+        };
+      }
+    });
 
-    const currentTime = new Date(Date.now());
-    const currentDate = new Date(
-      currentTime.getFullYear(),
-      currentTime.getMonth(),
-      currentTime.getDate()
-    ).toString();
-    const tempDate = new Date(dateSelected);
-    const formattedDateSelected = new Date(
-      tempDate.getFullYear(),
-      tempDate.getMonth(),
-      tempDate.getDate()
-    ).toString();
+    const currentDate = new Date(Date.now()).toDateString();
+    const formattedDateSelected = new Date(dateSelected).toDateString();
 
     const scheduleHeadingDateOptions = {
       month: "long"
@@ -622,7 +582,7 @@ class Calendar extends Component {
                   <ReactCalendar
                     tileContent={({ date, view }) => {
                       date.setHours(2);
-                      const eventDate = dates[date.toString()];
+                      const eventDate = dates[date.toDateString()];
                       if (eventDate) {
                         if (
                           eventDate.hasCompetitive &&
@@ -657,11 +617,11 @@ class Calendar extends Component {
                       let tileClasses = [];
 
                       if (date > minDate) {
-                        if (date.toString() === formattedDateSelected) {
+                        if (date.toDateString() === formattedDateSelected) {
                           tileClasses.push(classes.selectedTile);
-                        } else if (date.toString() === currentDate) {
+                        } else if (date.toDateString() === currentDate) {
                           tileClasses.push(classes.todayTile);
-                        } else if (dates[date.toString()]) {
+                        } else if (dates[date.toDateString()]) {
                           tileClasses.push(classes.eventTile);
                         } else {
                           tileClasses.push(classes.normalTile);
@@ -705,11 +665,7 @@ class Calendar extends Component {
               <EventsList
                 isTablet={isTablet}
                 dateSelected={dateSelected}
-                events={
-                  (events[yearSelected] &&
-                    events[yearSelected][monthSelected]) ||
-                  {}
-                }
+                events={events}
                 institutionID={institutionID}
                 isLoading={isLoading}
                 actions={{
