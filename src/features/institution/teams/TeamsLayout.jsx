@@ -60,7 +60,10 @@ class TeamsLayout extends Component {
   componentWillMount() {
     const { userID } = this.props;
     const { loadTeams } = this.props.actions;
-    loadTeams(userID);
+
+    if (userID !== "") {
+      loadTeams(userID);
+    }
   }
 
   componentWillReceiveProps(nextProps) {

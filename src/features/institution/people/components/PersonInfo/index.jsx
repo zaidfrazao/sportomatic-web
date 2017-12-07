@@ -29,6 +29,12 @@ const styles = {
       width: "100%"
     }
   },
+  contentWrapper: {
+    "@media (min-width: 1200px)": {
+      width: 1200,
+      margin: "0 auto"
+    }
+  },
   heading: {
     fontWeight: "normal",
     fontSize: "1.2rem",
@@ -141,7 +147,12 @@ class PersonInfo extends Component {
               </Button>
             )}
           />
-          <Grid container direction="row" align="stretch">
+          <Grid
+            container
+            direction="row"
+            align="stretch"
+            className={classes.contentWrapper}
+          >
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
               <div className={classes.pictureWrapper}>
                 <Avatar src={profilePictureURL} className={classes.picture} />

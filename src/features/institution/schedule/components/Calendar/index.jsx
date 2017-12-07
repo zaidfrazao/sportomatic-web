@@ -100,6 +100,10 @@ const styles = theme => ({
     "@media (min-width: 960px)": {
       margin: 48,
       width: "calc(100% - 96px)"
+    },
+    "@media (min-width: 1200px)": {
+      width: 1200,
+      margin: "48px auto"
     }
   },
   contentWrapper: {

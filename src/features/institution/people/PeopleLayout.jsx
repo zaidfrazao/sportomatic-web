@@ -79,11 +79,13 @@ class PeopleLayout extends Component {
       loadManagerRequests
     } = this.props.actions;
 
-    loadCoaches(userID);
-    loadManagers(userID);
-    loadCoachRequests(userID);
-    loadManagerRequests(userID);
-    loadTeams(userID);
+    if (userID !== "") {
+      loadCoaches(userID);
+      loadManagers(userID);
+      loadCoachRequests(userID);
+      loadManagerRequests(userID);
+      loadTeams(userID);
+    }
   }
 
   componentWillReceiveProps(nextProps) {

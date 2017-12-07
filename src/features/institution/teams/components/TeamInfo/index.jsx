@@ -26,6 +26,12 @@ const styles = {
       width: "100%"
     }
   },
+  contentWrapper: {
+    "@media (min-width: 1200px)": {
+      width: 1200,
+      margin: "0 auto"
+    }
+  },
   heading: {
     fontWeight: "normal",
     fontSize: "1.2rem",
@@ -206,7 +212,12 @@ class TeamInfo extends Component {
             )}
           />
           <div className={classes.adWrapper}>{ad}</div>
-          <Grid container direction="row" align="stretch">
+          <Grid
+            container
+            direction="row"
+            align="stretch"
+            className={classes.contentWrapper}
+          >
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
               <div className={classes.section}>
                 <Typography

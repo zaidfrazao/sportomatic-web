@@ -76,7 +76,9 @@ class ScheduleLayout extends Component {
     const { userID } = this.props;
     const { loadEvents } = this.props.actions;
 
-    loadEvents(userID);
+    if (userID !== "") {
+      loadEvents(userID);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
