@@ -75,15 +75,17 @@ class ScheduleLayout extends Component {
   componentWillMount() {
     const { userID } = this.props;
     const { loadEvents } = this.props.actions;
+
     loadEvents(userID);
   }
 
   componentWillReceiveProps(nextProps) {
     const { userID } = this.props;
-    const { loadEvents } = this.props.actions;
+    const { loadEvents, fetchCreationDate } = this.props.actions;
 
     if (userID !== nextProps.userID) {
       loadEvents(nextProps.userID);
+      fetchCreationDate(nextProps.userID);
     }
   }
 
@@ -99,7 +101,12 @@ class ScheduleLayout extends Component {
       events
     } = this.props;
     const { dateSelected, eventID } = this.props.match.params;
-    const { currentView, errorType, selectedEventInfo } = this.props.uiConfig;
+    const {
+      currentView,
+      errorType,
+      selectedEventInfo,
+      minDate
+    } = this.props.uiConfig;
     const {
       updateView,
       openAddEventDialog,
@@ -232,6 +239,7 @@ class ScheduleLayout extends Component {
           {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
           <Calendar
             events={events}
+            minDate={minDate}
             dateSelected={dateSelected}
             isMobile={isMobile}
             isTablet={isTablet}

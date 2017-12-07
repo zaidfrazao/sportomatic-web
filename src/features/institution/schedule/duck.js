@@ -69,12 +69,19 @@ export const RECEIVE_UNCANCEL_EVENT =
   "sportomatic-web/institution/schedule/RECEIVE_UNCANCEL_EVENT";
 export const ERROR_UNCANCELLING_EVENT =
   "sportomatic-web/institution/schedule/ERROR_UNCANCELLING_EVENT";
+export const REQUEST_CREATION_DATE =
+  "sportomatic-web/institution/schedule/REQUEST_CREATION_DATE";
+export const RECEIVE_CREATION_DATE =
+  "sportomatic-web/institution/schedule/RECEIVE_CREATION_DATE";
+export const ERROR_FETCHING_CREATION_DATE =
+  "sportomatic-web/institution/schedule/ERROR_FETCHING_CREATION_DATE";
 
 // Reducers
 
 export const uiConfigInitialState = {
   currentView: "SCHEDULE",
   errorType: "NONE",
+  minDate: new Date(2017, 1, 1),
   selectedEventInfo: {
     institutionID: "",
     eventID: "",
@@ -87,6 +94,11 @@ export const uiConfigInitialState = {
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case RECEIVE_CREATION_DATE:
+      return {
+        ...state,
+        minDate: action.payload.date
+      };
     case UPDATE_CURRENT_VIEW:
       return {
         ...state,
@@ -240,11 +252,14 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isEditEventDialogLoading: false
       };
+    case REQUEST_CREATION_DATE:
     case REQUEST_EVENTS:
       return {
         ...state,
         isEventsLoading: true
       };
+    case RECEIVE_CREATION_DATE:
+    case ERROR_FETCHING_CREATION_DATE:
     case ERROR_LOADING_EVENTS:
     case RECEIVE_EVENTS:
       return {
@@ -1017,5 +1032,50 @@ export function uncancelEvent(
       .update(updates)
       .then(() => dispatch(receiveUncancelEvent()))
       .catch(error => dispatch(errorUncancellingEvent(error)));
+  };
+}
+
+export function requestCreationDate() {
+  return {
+    type: REQUEST_CREATION_DATE
+  };
+}
+
+export function receiveCreationDate(date) {
+  return {
+    type: RECEIVE_CREATION_DATE,
+    payload: {
+      date
+    }
+  };
+}
+
+export function errorFetchingCreationDate(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_FETCHING_CREATION_DATE,
+    payload: {
+      error
+    }
+  };
+}
+
+export function fetchCreationDate(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestCreationDate());
+    const institutionRef = firebase
+      .firestore()
+      .collection("institutions")
+      .doc(institutionID);
+
+    return institutionRef
+      .get()
+      .then(doc => {
+        const institutionInfo = doc.data();
+        dispatch(receiveCreationDate(institutionInfo.metadata.creationDate));
+      })
+      .catch(error => dispatch(errorFetchingCreationDate(error)));
   };
 }

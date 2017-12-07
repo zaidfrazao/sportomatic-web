@@ -172,8 +172,6 @@ class CoreInterfaceLayout extends Component {
     const isMobile = windowWidth < 600;
     const isTablet = windowWidth < 960;
 
-    console.log(type);
-
     if (!isLoggedIn) {
       return <Redirect to="/sign-in" />;
     }

@@ -32,6 +32,11 @@ const styles = theme => ({
   weekendTile: {
     color: `${grey[500]} !important`
   },
+  disabledDate: {
+    height: 64,
+    width: 64,
+    fontSize: 20
+  },
   normalTile: {
     height: 64,
     width: 64,
@@ -191,7 +196,8 @@ class Calendar extends Component {
       isTablet,
       events,
       institutionID,
-      isLoading
+      isLoading,
+      minDate
     } = this.props;
     const {
       updateView,
@@ -241,7 +247,6 @@ class Calendar extends Component {
       month: "long"
     };
 
-    const minDate = new Date("2017-08-30");
     const dateSelectedObject = new Date(dateSelected);
     const prevDate = new Date(
       dateSelectedObject.getFullYear(),
@@ -370,6 +375,8 @@ class Calendar extends Component {
                       } else {
                         tileClasses.push(classes.normalTile);
                       }
+                    } else {
+                      tileClasses.push(classes.disabledDate);
                     }
 
                     if (date.getDay() === 6 || date.getDay() === 0) {
@@ -433,7 +440,8 @@ class Calendar extends Component {
       events,
       institutionID,
       currentView,
-      isLoading
+      isLoading,
+      minDate
     } = this.props;
     const {
       updateView,
@@ -487,7 +495,6 @@ class Calendar extends Component {
       month: "short"
     };
 
-    const minDate = new Date("2017-08-30");
     const dateSelectedObject = new Date(dateSelected);
     let prevDate = new Date();
     if (currentView === "SCHEDULE") {
@@ -659,6 +666,8 @@ class Calendar extends Component {
                         } else {
                           tileClasses.push(classes.normalTile);
                         }
+                      } else {
+                        tileClasses.push(classes.disabledDate);
                       }
 
                       if (date.getDay() === 6 || date.getDay() === 0) {
