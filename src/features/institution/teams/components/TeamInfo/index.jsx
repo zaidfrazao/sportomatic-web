@@ -93,70 +93,23 @@ class TeamInfo extends Component {
     return ageGroup !== "Open" ? `U/${ageGroup}` : ageGroup;
   }
 
-  getManagersList(managers) {
-    const { classes } = this.props;
-    const managersArray = _.toPairs(managers).map(([key, value]) => {
-      return {
-        id: key,
-        name: value.info.name,
-        surname: value.info.surname,
-        phoneNumber: value.info.phoneNumber,
-        profilePictureURL: value.info.profilePictureURL
-      };
-    });
+  getListItems() {
+    const { coaches, managers, info, isLoading } = this.props;
 
-    return (
-      <List>
-        {managersArray.length > 0 ? (
-          managersArray.map(managerInfo => (
-            <Route
-              key={managerInfo.id}
-              component={({ history }) => (
+    let eventCoaches = [];
+    let eventManagers = [];
+
+    !isLoading &&
+      _.toPairs(info.coaches).map(([id, coachEventInfo]) => {
+        const coachInfo = coaches[id].info;
+        eventCoaches.push(
+          <Route
+            key={id}
+            render={({ history }) => {
+              return (
                 <ListItem
                   button
-                  onClick={() =>
-                    history.push(`/admin/people/${managerInfo.id}`)}
-                >
-                  <Avatar src={managerInfo.profilePictureURL} />
-                  <ListItemText
-                    primary={`${managerInfo.name} ${managerInfo.surname}`}
-                    secondary={managerInfo.phoneNumber}
-                  />
-                </ListItem>
-              )}
-            />
-          ))
-        ) : (
-          <ListItem className={classes.noItems}>
-            <ListItemText primary="No managers" />
-          </ListItem>
-        )}
-      </List>
-    );
-  }
-
-  getCoachesList(coaches) {
-    const { classes } = this.props;
-    const coachesArray = _.toPairs(coaches).map(([key, value]) => {
-      return {
-        id: key,
-        name: value.info.name,
-        surname: value.info.surname,
-        phoneNumber: value.info.phoneNumber,
-        profilePictureURL: value.info.profilePictureURL
-      };
-    });
-
-    return (
-      <List>
-        {coachesArray.length > 0 ? (
-          coachesArray.map(coachInfo => (
-            <Route
-              key={coachInfo.id}
-              component={({ history }) => (
-                <ListItem
-                  button
-                  onClick={() => history.push(`/admin/people/${coachInfo.id}`)}
+                  onClick={() => history.push(`/admin/people/${id}`)}
                 >
                   <Avatar src={coachInfo.profilePictureURL} />
                   <ListItemText
@@ -164,16 +117,39 @@ class TeamInfo extends Component {
                     secondary={coachInfo.phoneNumber}
                   />
                 </ListItem>
-              )}
-            />
-          ))
-        ) : (
-          <ListItem className={classes.noItems}>
-            <ListItemText primary="No coaches" />
-          </ListItem>
-        )}
-      </List>
-    );
+              );
+            }}
+          />
+        );
+      });
+    !isLoading &&
+      _.toPairs(info.managers).map(([id, managerEventInfo]) => {
+        const managerInfo = managers[id].info;
+        eventManagers.push(
+          <Route
+            key={id}
+            render={({ history }) => {
+              return (
+                <ListItem
+                  button
+                  onClick={() => history.push(`/admin/people/${id}`)}
+                >
+                  <Avatar src={managerInfo.profilePictureURL} />
+                  <ListItemText
+                    primary={`${managerInfo.name} ${managerInfo.surname}`}
+                    secondary={managerInfo.phoneNumber}
+                  />
+                </ListItem>
+              );
+            }}
+          />
+        );
+      });
+
+    return {
+      coaches: eventCoaches,
+      managers: eventManagers
+    };
   }
 
   render() {
@@ -182,8 +158,6 @@ class TeamInfo extends Component {
 
     let formattedGender = this.formatGender(gender, ageGroup);
     let formattedAgeGroup = this.formatAgeGroup(ageGroup);
-    let managersList = [];
-    let coachesList = [];
 
     let ad = <LeaderboardAd />;
     if (isMobile) {
@@ -191,6 +165,8 @@ class TeamInfo extends Component {
     } else if (isTablet) {
       ad = <BannerAd />;
     }
+
+    const { coaches, managers } = this.getListItems();
 
     return (
       <div className={classes.root}>
@@ -258,7 +234,15 @@ class TeamInfo extends Component {
                 >
                   Managers
                 </Typography>
-                {managersList}
+                <List>
+                  {managers.length > 0 ? (
+                    managers
+                  ) : (
+                    <ListItem className={classes.noItems}>
+                      <ListItemText primary="No managers" />
+                    </ListItem>
+                  )}
+                </List>
               </div>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
@@ -270,7 +254,15 @@ class TeamInfo extends Component {
                 >
                   Coaches
                 </Typography>
-                {coachesList}
+                <List>
+                  {coaches.length > 0 ? (
+                    coaches
+                  ) : (
+                    <ListItem className={classes.noItems}>
+                      <ListItemText primary="No coaches" />
+                    </ListItem>
+                  )}
+                </List>
               </div>
             </Grid>
           </Grid>

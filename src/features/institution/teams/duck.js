@@ -117,8 +117,6 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
     case REQUEST_ADD_TEAM:
     case REQUEST_OPTIONS:
-    case REQUEST_COACHES:
-    case REQUEST_MANAGERS:
       return {
         ...state,
         isAddTeamDialogLoading: true
@@ -127,24 +125,28 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
     case RECEIVE_ADD_TEAM:
     case ERROR_LOADING_OPTIONS:
     case RECEIVE_OPTIONS:
-    case ERROR_LOADING_COACHES:
-    case RECEIVE_COACHES:
-    case ERROR_LOADING_MANAGERS:
-    case RECEIVE_MANAGERS:
       return {
         ...state,
         isAddTeamDialogLoading: false
       };
+    case REQUEST_COACHES:
+    case REQUEST_MANAGERS:
     case REQUEST_TEAMS:
       return {
         ...state,
-        isTeamsLoading: true
+        isTeamsLoading: true,
+        isAddTeamDialogLoading: true
       };
+    case RECEIVE_COACHES:
+    case ERROR_LOADING_COACHES:
+    case RECEIVE_MANAGERS:
+    case ERROR_LOADING_MANAGERS:
     case ERROR_LOADING_TEAMS:
     case RECEIVE_TEAMS:
       return {
         ...state,
-        isTeamsLoading: false
+        isTeamsLoading: false,
+        isAddTeamDialogLoading: false
       };
     default:
       return state;

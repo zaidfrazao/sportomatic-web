@@ -59,19 +59,23 @@ const styles = theme => ({
 class TeamsLayout extends Component {
   componentWillMount() {
     const { userID } = this.props;
-    const { loadTeams } = this.props.actions;
+    const { loadTeams, loadCoaches, loadManagers } = this.props.actions;
 
     if (userID !== "") {
       loadTeams(userID);
+      loadCoaches(userID);
+      loadManagers(userID);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { userID } = this.props;
-    const { loadTeams } = this.props.actions;
+    const { loadTeams, loadCoaches, loadManagers } = this.props.actions;
 
     if (userID !== nextProps.userID) {
       loadTeams(nextProps.userID);
+      loadCoaches(nextProps.userID);
+      loadManagers(nextProps.userID);
     }
   }
 
@@ -138,6 +142,9 @@ class TeamsLayout extends Component {
         {teamID && teams[teamID] ? (
           <div className={classes.infoWrapper}>
             <TeamInfo
+              isLoading={isTeamsLoading}
+              coaches={coaches}
+              managers={managers}
               info={teams[teamID]}
               isMobile={isMobile}
               isTablet={isTablet}
@@ -193,15 +200,17 @@ class TeamsLayout extends Component {
             />
           </div>
         )}
-        <AddTeamDialog
-          isOpen={isAddTeamDialogOpen}
-          isLoading={isAddTeamDialogLoading}
-          institutionID={userID}
-          options={options}
-          coaches={coaches}
-          managers={managers}
-          actions={{ handleClose: closeAddTeamDialog, addTeam }}
-        />
+        {false && (
+          <AddTeamDialog
+            isOpen={isAddTeamDialogOpen}
+            isLoading={isAddTeamDialogLoading}
+            institutionID={userID}
+            options={options}
+            coaches={coaches}
+            managers={managers}
+            actions={{ handleClose: closeAddTeamDialog, addTeam }}
+          />
+        )}
       </div>
     );
   }
