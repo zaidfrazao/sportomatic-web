@@ -27,9 +27,14 @@ export const uiConfigInitialState = {
   bottomNavValue: "dashboard",
   isSideMenuOpen: false,
   isLoggedIn: true,
-  type: "INSTITUTION",
+  type: "ADMIN",
   userID: "",
-  accountInfo: {}
+  accountInfo: {
+    lastAccessed: {
+      institutionID: "",
+      type: "ADMIN"
+    }
+  }
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {

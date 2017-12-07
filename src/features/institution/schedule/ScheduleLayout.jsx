@@ -1,25 +1,32 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
-import { lightBlue } from "material-ui/colors";
+import { lightBlue, orange } from "material-ui/colors";
 import { CircularProgress } from "material-ui/Progress";
 import AddIcon from "material-ui-icons/Add";
 import Button from "material-ui/Button";
 import EditIcon from "material-ui-icons/Edit";
-import Paper from "material-ui/Paper";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 import BannerAd from "../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import Calendar from "./components/Calendar";
 import EventInfo from "./components/EventInfo";
-import EventsList from "./components/EventsList";
 import AddEventDialog from "./components/AddEventDialog";
 import EditEventDialog from "./components/EditEventDialog";
 import NotificationModal from "../../../components/NotificationModal";
 import DecisionModal from "../../../components/DecisionModal";
 
 const styles = theme => ({
+  competitiveEvent: {
+    width: 12,
+    height: 12,
+    color: orange[500]
+  },
+  nonCompetitiveEvent: {
+    width: 12,
+    height: 12,
+    color: lightBlue[500]
+  },
   root: {
     width: "100%",
     height: "100%",
@@ -31,17 +38,11 @@ const styles = theme => ({
     display: "flex",
     justifyContent: "center"
   },
-  calendarWrapper: {
-    margin: "0 40px",
-    display: "flex",
-    backgroundColor: lightBlue[700],
-    height: "calc(100vh - 257px)"
-  },
   desktopCalendar: {
-    width: "40%"
+    width: "60%"
   },
   desktopEventsList: {
-    width: "60%",
+    width: "40%",
     height: "100%"
   },
   tabletEventsListWrapper: {
@@ -53,12 +54,9 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
     position: "fixed",
-    bottom: 72,
+    bottom: 24,
     right: 24,
-    zIndex: 1,
-    "@media (min-width: 600px)": {
-      bottom: 24
-    }
+    zIndex: 1
   },
   loaderWrapper: {
     flexGrow: 1,
@@ -228,160 +226,25 @@ class ScheduleLayout extends Component {
           />
         </div>
       );
-    }
-
-    if (isTablet) {
-      if (currentView === "EVENTS_LIST") {
-        return (
-          <div className={classes.tabletEventsListWrapper}>
-            {isEventsLoading ? (
-              <div className={classes.loaderWrapper}>
-                <CircularProgress />
-              </div>
-            ) : (
-              <EventsList
-                isTablet={isTablet}
-                dateSelected={dateSelected}
-                events={
-                  (events[yearSelected] &&
-                    events[yearSelected][monthSelected]) ||
-                  {}
-                }
-                institutionID={userID}
-                actions={{
-                  updateView,
-                  openCancelEventAlert,
-                  openUncancelEventAlert,
-                  cancelEvent
-                }}
-              />
-            )}
-            <Button
-              fab
-              color="accent"
-              aria-label="add event"
-              className={classes.button}
-              onClick={() => {
-                loadTeams(userID);
-                loadStaff(userID);
-                openAddEventDialog();
-              }}
-            >
-              <AddIcon />
-            </Button>
-            <AddEventDialog
-              isOpen={isAddEventDialogOpen}
-              isLoading={isAddEventDialogLoading}
-              minDate={currentDate.toISOString().slice(0, 10)}
-              initialDate={dateSelected}
-              teams={teams}
-              coaches={coaches}
-              managers={managers}
-              actions={{
-                handleClose: closeAddEventDialog,
-                addEvent,
-                openEventErrorAlert
-              }}
-            />
-            <DecisionModal
-              isOpen={isCancelEventAlertOpen}
-              handleYesClick={() => {
-                cancelEvent(
-                  selectedEventInfo.institutionID,
-                  selectedEventInfo.eventID,
-                  selectedEventInfo.managerIDs,
-                  selectedEventInfo.coachIDs,
-                  selectedEventInfo.year,
-                  selectedEventInfo.month
-                );
-                closeCancelEventAlert();
-              }}
-              handleNoClick={closeCancelEventAlert}
-              heading="Cancel Event"
-              message="Are you sure you want to cancel this event?"
-            />
-            <DecisionModal
-              isOpen={isUncancelEventAlertOpen}
-              handleYesClick={() => {
-                uncancelEvent(
-                  selectedEventInfo.institutionID,
-                  selectedEventInfo.eventID,
-                  selectedEventInfo.managerIDs,
-                  selectedEventInfo.coachIDs,
-                  selectedEventInfo.year,
-                  selectedEventInfo.month
-                );
-                closeUncancelEventAlert();
-              }}
-              handleNoClick={closeUncancelEventAlert}
-              heading="Uncancel Event"
-              message="Are you sure you want to uncancel this event?"
-            />
-            <NotificationModal
-              isOpen={isEventErrorAlertOpen}
-              handleOkClick={closeEventErrorAlert}
-              heading={eventErrorAlertHeading}
-              message={eventErrorAlertMessage}
-            />
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.contentWrapper}>
-            <div className={classes.adWrapper}>{ad}</div>
-            {isEventsLoading ? (
-              <div className={classes.loaderWrapper}>
-                <CircularProgress />
-              </div>
-            ) : (
-              <Calendar
-                dateSelected={new Date(dateSelected)}
-                isMobile={isMobile}
-                isTablet={isTablet}
-                actions={{ updateView }}
-              />
-            )}
-          </div>
-        );
-      }
     } else {
       return (
         <div className={classes.contentWrapper}>
-          <div className={classes.adWrapper}>{ad}</div>
-          {isEventsLoading ? (
-            <div className={classes.loaderWrapper}>
-              <CircularProgress />
-            </div>
-          ) : (
-            <Paper className={classes.calendarWrapper}>
-              <div className={classes.desktopCalendar}>
-                <Calendar
-                  dateSelected={new Date(dateSelected)}
-                  isMobile={isMobile}
-                  isTablet={isTablet}
-                  actions={{ updateView }}
-                />
-              </div>
-              <div className={classes.desktopEventsList}>
-                <EventsList
-                  isTablet={isTablet}
-                  dateSelected={dateSelected}
-                  events={
-                    (events[yearSelected] &&
-                      events[yearSelected][monthSelected]) ||
-                    {}
-                  }
-                  institutionID={userID}
-                  actions={{
-                    updateView,
-                    openCancelEventAlert,
-                    openUncancelEventAlert,
-                    cancelEvent
-                  }}
-                />
-              </div>
-            </Paper>
-          )}
+          {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
+          <Calendar
+            events={events}
+            dateSelected={dateSelected}
+            isMobile={isMobile}
+            isTablet={isTablet}
+            institutionID={userID}
+            currentView={currentView}
+            isLoading={isEventsLoading}
+            actions={{
+              updateView,
+              openCancelEventAlert,
+              openUncancelEventAlert,
+              cancelEvent
+            }}
+          />
           <Button
             fab
             color="accent"
@@ -460,9 +323,5 @@ class ScheduleLayout extends Component {
     return <div className={classes.root}>{this.renderView()}</div>;
   }
 }
-
-ScheduleLayout.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(ScheduleLayout);
