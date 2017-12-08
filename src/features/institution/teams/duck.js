@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
-import firebase from "firebase";
 import _ from "lodash";
+import { SportomaticFirebaseAPI } from "../../../api/sportmatic-firebase-api";
 
 // Actions
 
@@ -277,18 +277,13 @@ export function errorLoadingStaff(error: { code: string, message: string }) {
 export function loadStaff(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestStaff());
-    const staffRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/staff`);
-
-    return staffRef.on("value", snapshot => {
-      const staff = snapshot.val();
-      if (staff === null) {
-        dispatch(receiveStaff({}));
-      } else {
+    return SportomaticFirebaseAPI.getPeople(institutionID)
+      .then(staff => {
         dispatch(receiveStaff(staff));
-      }
-    });
+      })
+      .catch(err => {
+        dispatch(errorLoadingStaff(err));
+      });
   };
 }
 
@@ -319,18 +314,13 @@ export function errorLoadingTeams(error: { code: string, message: string }) {
 export function loadTeams(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestTeams());
-    const teamsRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/teams`);
-
-    return teamsRef.on("value", snapshot => {
-      const teams = snapshot.val();
-      if (teams === null) {
-        dispatch(receiveTeams({}));
-      } else {
+    return SportomaticFirebaseAPI.getTeams(institutionID)
+      .then(teams => {
         dispatch(receiveTeams(teams));
-      }
-    });
+      })
+      .catch(err => {
+        dispatch(errorLoadingTeams(err));
+      });
   };
 }
 
@@ -384,14 +374,13 @@ export function errorLoadingOptions(error: { code: string, message: string }) {
 export function loadOptions(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestOptions());
-    const institutionInfoRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/public`);
-
-    return institutionInfoRef.on("value", snapshot => {
-      const institutionInfo = snapshot.val();
-      dispatch(receiveOptions(institutionInfo));
-    });
+    return SportomaticFirebaseAPI.getTeamOptions(institutionID)
+      .then(options => {
+        dispatch(receiveOptions(options));
+      })
+      .catch(err => {
+        dispatch(errorLoadingOptions(err));
+      });
   };
 }
 
@@ -419,69 +408,76 @@ export function errorAddingTeam(error: { code: string, message: string }) {
 export function addTeam(institutionID, teamInfo, managers, coaches) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestAddTeam());
-    const newTeamID = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/teams`)
-      .push().key;
-    const newTeamInfo = {
-      status: "ACTIVE",
-      metadata: { ...teamInfo },
-      coaches,
-      managers
-    };
-    const managerUpdates = _.fromPairs(
-      _.toPairs(managers).map(([managerID, managerInfo]) => {
-        return [
-          `manager/${managerID}/private/institutions/${institutionID}/teams/${newTeamID}`,
-          newTeamInfo
-        ];
-      })
-    );
-    const managerStaffUpdates = _.fromPairs(
-      _.toPairs(managers).map(([managerID, managerInfo]) => {
-        return [
-          `institution/${institutionID}/private/staff/${managerID}/teams/${newTeamID}`,
-          {
-            status: newTeamInfo.status,
-            name: newTeamInfo.metadata.name,
-            sport: newTeamInfo.metadata.sport
-          }
-        ];
-      })
-    );
-    const coachUpdates = _.fromPairs(
-      _.toPairs(coaches).map(([coachID, coachInfo]) => {
-        return [
-          `coach/${coachID}/private/institutions/${institutionID}/teams/${newTeamID}`,
-          newTeamInfo
-        ];
-      })
-    );
-    const coachStaffUpdates = _.fromPairs(
-      _.toPairs(coaches).map(([coachID, coachInfo]) => {
-        return [
-          `institution/${institutionID}/private/staff/${coachID}/teams/${newTeamID}`,
-          {
-            status: newTeamInfo.status,
-            name: newTeamInfo.metadata.name,
-            sport: newTeamInfo.metadata.sport
-          }
-        ];
-      })
-    );
-    const updates = {
-      [`institution/${institutionID}/private/teams/${newTeamID}`]: newTeamInfo,
-      ...coachUpdates,
-      ...coachStaffUpdates,
-      ...managerUpdates,
-      ...managerStaffUpdates
-    };
+    return SportomaticFirebaseAPI.getNewTeamID(institutionID)
+      .then(newTeamID => {
+        const newTeamInfo = {
+          status: "ACTIVE",
+          metadata: { ...teamInfo },
+          coaches,
+          managers
+        };
+        const managerUpdates = _.fromPairs(
+          _.toPairs(managers).map(([managerID, managerInfo]) => {
+            return [
+              `manager/${managerID}/private/institutions/${
+                institutionID
+              }/teams/${newTeamID}`,
+              newTeamInfo
+            ];
+          })
+        );
+        const managerStaffUpdates = _.fromPairs(
+          _.toPairs(managers).map(([managerID, managerInfo]) => {
+            return [
+              `institution/${institutionID}/private/staff/${managerID}/teams/${
+                newTeamID
+              }`,
+              {
+                status: newTeamInfo.status,
+                name: newTeamInfo.metadata.name,
+                sport: newTeamInfo.metadata.sport
+              }
+            ];
+          })
+        );
+        const coachUpdates = _.fromPairs(
+          _.toPairs(coaches).map(([coachID, coachInfo]) => {
+            return [
+              `coach/${coachID}/private/institutions/${institutionID}/teams/${
+                newTeamID
+              }`,
+              newTeamInfo
+            ];
+          })
+        );
+        const coachStaffUpdates = _.fromPairs(
+          _.toPairs(coaches).map(([coachID, coachInfo]) => {
+            return [
+              `institution/${institutionID}/private/staff/${coachID}/teams/${
+                newTeamID
+              }`,
+              {
+                status: newTeamInfo.status,
+                name: newTeamInfo.metadata.name,
+                sport: newTeamInfo.metadata.sport
+              }
+            ];
+          })
+        );
+        const updates = {
+          [`institution/${institutionID}/private/teams/${
+            newTeamID
+          }`]: newTeamInfo,
+          ...coachUpdates,
+          ...coachStaffUpdates,
+          ...managerUpdates,
+          ...managerStaffUpdates
+        };
 
-    return firebase
-      .database()
-      .ref()
-      .update(updates)
-      .then(() => dispatch(receiveAddTeam()))
-      .catch(error => dispatch(errorAddingTeam(error)));
+        return SportomaticFirebaseAPI.addTeam(updates)
+          .then(() => dispatch(receiveAddTeam()))
+          .catch(error => dispatch(errorAddingTeam(error)));
+      })
+      .catch(error => errorAddingTeam(error));
   };
 }

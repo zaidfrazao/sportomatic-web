@@ -500,7 +500,9 @@ export function getManagerUpdates(
   return _.fromPairs(
     _.toPairs(managers).map(([managerID, managerInfo]) => {
       return [
-        `manager/${managerID}/private/institutions/${institutionID}/events/${year}/${month}/${newEventID}`,
+        `manager/${managerID}/private/institutions/${institutionID}/events/${
+          year
+        }/${month}/${newEventID}`,
         newEventInfo
       ];
     })
@@ -518,7 +520,9 @@ export function getCoachUpdates(
   return _.fromPairs(
     _.toPairs(coaches).map(([coachID, coachInfo]) => {
       return [
-        `coach/${coachID}/private/institutions/${institutionID}/events/${year}/${month}/${newEventID}`,
+        `coach/${coachID}/private/institutions/${institutionID}/events/${
+          year
+        }/${month}/${newEventID}`,
         newEventInfo
       ];
     })
@@ -640,9 +644,9 @@ export function addEvent(
       );
       updates = {
         ...updates,
-        [`institution/${institutionID}/private/events/${eventsToCreate[i]
-          .year}/${eventsToCreate[i].month}/${eventsToCreate[i]
-          .id}`]: newEventInfo,
+        [`institution/${institutionID}/private/events/${
+          eventsToCreate[i].year
+        }/${eventsToCreate[i].month}/${eventsToCreate[i].id}`]: newEventInfo,
         ...coachUpdates,
         ...managerUpdates
       };
@@ -789,8 +793,9 @@ export function editEvent(
       );
       updates = {
         ...updates,
-        [`institution/${institutionID}/private/events/${eventsToEdit[i]
-          .year}/${eventsToEdit[i].month}/${eventsToEdit[i].id}`]: newEventInfo,
+        [`institution/${institutionID}/private/events/${eventsToEdit[i].year}/${
+          eventsToEdit[i].month
+        }/${eventsToEdit[i].id}`]: newEventInfo,
         ...coachUpdates,
         ...managerUpdates
       };
@@ -883,24 +888,6 @@ export function errorLoadingTeams(error: { code: string, message: string }) {
   };
 }
 
-export function loadTeams(institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestTeams());
-    const teamsRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/teams`);
-
-    return teamsRef.on("value", snapshot => {
-      const teams = snapshot.val();
-      if (teams === null) {
-        dispatch(receiveTeams({}));
-      } else {
-        dispatch(receiveTeams(teams));
-      }
-    });
-  };
-}
-
 export function requestCancelEvent() {
   return {
     type: REQUEST_CANCEL_EVENT
@@ -919,43 +906,6 @@ export function errorCancellingEvent(error: { code: string, message: string }) {
     payload: {
       error
     }
-  };
-}
-
-export function cancelEvent(
-  institutionID,
-  eventID,
-  managerIDs,
-  coachIDs,
-  year,
-  month
-) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestCancelEvent());
-    const managerUpdates = _.fromPairs(
-      managerIDs.map(id => [
-        `manager/private/${id}/institutions/${institutionID}/events/${year}/${month}/${eventID}/status`,
-        "CANCELLED"
-      ])
-    );
-    const coachUpdates = _.fromPairs(
-      coachIDs.map(id => [
-        `coach/private/${id}/institutions/${institutionID}/events/${year}/${month}/${eventID}/status`,
-        "CANCELLED"
-      ])
-    );
-    const updates = {
-      [`institution/${institutionID}/private/events/${year}/${month}/${eventID}/status`]: "CANCELLED",
-      ...managerUpdates,
-      ...coachUpdates
-    };
-
-    return firebase
-      .database()
-      .ref()
-      .update(updates)
-      .then(() => dispatch(receiveCancelEvent()))
-      .catch(error => dispatch(errorCancellingEvent(error)));
   };
 }
 
@@ -983,6 +933,67 @@ export function errorUncancellingEvent(error: {
   };
 }
 
+export function loadTeams(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestTeams());
+    const teamsRef = firebase
+      .database()
+      .ref(`institution/${institutionID}/private/teams`);
+
+    return teamsRef.on("value", snapshot => {
+      const teams = snapshot.val();
+      if (teams === null) {
+        dispatch(receiveTeams({}));
+      } else {
+        dispatch(receiveTeams(teams));
+      }
+    });
+  };
+}
+
+export function cancelEvent(
+  institutionID,
+  eventID,
+  managerIDs,
+  coachIDs,
+  year,
+  month
+) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestCancelEvent());
+    const managerUpdates = _.fromPairs(
+      managerIDs.map(id => [
+        `manager/private/${id}/institutions/${institutionID}/events/${year}/${
+          month
+        }/${eventID}/status`,
+        "CANCELLED"
+      ])
+    );
+    const coachUpdates = _.fromPairs(
+      coachIDs.map(id => [
+        `coach/private/${id}/institutions/${institutionID}/events/${year}/${
+          month
+        }/${eventID}/status`,
+        "CANCELLED"
+      ])
+    );
+    const updates = {
+      [`institution/${institutionID}/private/events/${year}/${month}/${
+        eventID
+      }/status`]: "CANCELLED",
+      ...managerUpdates,
+      ...coachUpdates
+    };
+
+    return firebase
+      .database()
+      .ref()
+      .update(updates)
+      .then(() => dispatch(receiveCancelEvent()))
+      .catch(error => dispatch(errorCancellingEvent(error)));
+  };
+}
+
 export function uncancelEvent(
   institutionID,
   eventID,
@@ -995,18 +1006,24 @@ export function uncancelEvent(
     dispatch(requestUncancelEvent());
     const managerUpdates = _.fromPairs(
       managerIDs.map(id => [
-        `manager/private/${id}/institutions/${institutionID}/events/${year}/${month}/${eventID}/status`,
+        `manager/private/${id}/institutions/${institutionID}/events/${year}/${
+          month
+        }/${eventID}/status`,
         "ACTIVE"
       ])
     );
     const coachUpdates = _.fromPairs(
       coachIDs.map(id => [
-        `coach/private/${id}/institutions/${institutionID}/events/${year}/${month}/${eventID}/status`,
+        `coach/private/${id}/institutions/${institutionID}/events/${year}/${
+          month
+        }/${eventID}/status`,
         "ACTIVE"
       ])
     );
     const updates = {
-      [`institution/${institutionID}/private/events/${year}/${month}/${eventID}/status`]: "ACTIVE",
+      [`institution/${institutionID}/private/events/${year}/${month}/${
+        eventID
+      }/status`]: "ACTIVE",
       ...managerUpdates,
       ...coachUpdates
     };
