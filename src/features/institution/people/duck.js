@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import { SportomaticFirebaseAPI } from "../../../api/sportmatic-firebase-api";
-import firebase from "firebase";
 import * as _ from "lodash";
 
 // Actions
