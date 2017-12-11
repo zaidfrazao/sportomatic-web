@@ -4,21 +4,21 @@ import { createStructuredSelector } from "reselect";
 // Actions
 
 export const TOGGLE_SIDE_MENU =
-  "sportomatic-web/institution/core-interface/TOGGLE_SIDE_MENU";
+  "sportomatic-web/admin/core-interface/TOGGLE_SIDE_MENU";
 export const UPDATE_APP_BAR_TITLE =
-  "sportomatic-web/institution/core-interface/UPDATE_APP_BAR_TITLE";
+  "sportomatic-web/admin/core-interface/UPDATE_APP_BAR_TITLE";
 export const UPDATE_BOTTOM_NAV_VALUE =
-  "sportomatic-web/institution/core-interface/UPDATE_BOTTOM_NAV_VALUE";
-export const SIGN_OUT = "sportomatic-web/institution/core-interface/SIGN_OUT";
-export const INIT_USER = "sportomatic-web/institution/core-interface/INIT_USER";
+  "sportomatic-web/admin/core-interface/UPDATE_BOTTOM_NAV_VALUE";
+export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
+export const INIT_USER = "sportomatic-web/admin/core-interface/INIT_USER";
 export const OPEN_SETTINGS_ALERT =
-  "sportomatic-web/institution/core-interface/OPEN_SETTINGS_ALERT";
+  "sportomatic-web/admin/core-interface/OPEN_SETTINGS_ALERT";
 export const CLOSE_SETTINGS_ALERT =
-  "sportomatic-web/institution/core-interface/CLOSE_SETTINGS_ALERT";
+  "sportomatic-web/admin/core-interface/CLOSE_SETTINGS_ALERT";
 export const OPEN_LOG_OUT_MODAL =
-  "sportomatic-web/institution/core-interface/OPEN_LOG_OUT_MODAL";
+  "sportomatic-web/admin/core-interface/OPEN_LOG_OUT_MODAL";
 export const CLOSE_LOG_OUT_MODAL =
-  "sportomatic-web/institution/core-interface/CLOSE_LOG_OUT_MODAL";
+  "sportomatic-web/admin/core-interface/CLOSE_LOG_OUT_MODAL";
 
 // Reducers
 

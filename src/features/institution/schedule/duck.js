@@ -6,45 +6,43 @@ import _ from "lodash";
 // Actions
 
 export const OPEN_ADD_EVENT_DIALOG =
-  "sportomatic-web/institution/schedule/OPEN_ADD_EVENT_DIALOG";
+  "sportomatic-web/admin/schedule/OPEN_ADD_EVENT_DIALOG";
 export const CLOSE_ADD_EVENT_DIALOG =
-  "sportomatic-web/institution/schedule/CLOSE_ADD_EVENT_DIALOG";
-export const REQUEST_EVENTS =
-  "sportomatic-web/institution/schedule/REQUEST_EVENTS";
-export const RECEIVE_EVENTS =
-  "sportomatic-web/institution/schedule/RECEIVE_EVENTS";
+  "sportomatic-web/admin/schedule/CLOSE_ADD_EVENT_DIALOG";
+export const REQUEST_EVENTS = "sportomatic-web/admin/schedule/REQUEST_EVENTS";
+export const RECEIVE_EVENTS = "sportomatic-web/admin/schedule/RECEIVE_EVENTS";
 export const ERROR_LOADING_EVENTS =
-  "sportomatic-web/institution/schedule/ERROR_LOADING_EVENTS";
+  "sportomatic-web/admin/schedule/ERROR_LOADING_EVENTS";
 export const REQUEST_ADD_EVENT =
-  "sportomatic-web/institution/schedule/REQUEST_ADD_EVENT";
+  "sportomatic-web/admin/schedule/REQUEST_ADD_EVENT";
 export const RECEIVE_ADD_EVENT =
-  "sportomatic-web/institution/schedule/RECEIVE_ADD_EVENT";
+  "sportomatic-web/admin/schedule/RECEIVE_ADD_EVENT";
 export const ERROR_ADDING_EVENT =
-  "sportomatic-web/institution/schedule/ERROR_ADDING_EVENT";
+  "sportomatic-web/admin/schedule/ERROR_ADDING_EVENT";
 export const REQUEST_EDIT_EVENT =
-  "sportomatic-web/institution/schedule/REQUEST_EDIT_EVENT";
+  "sportomatic-web/admin/schedule/REQUEST_EDIT_EVENT";
 export const RECEIVE_EDIT_EVENT =
-  "sportomatic-web/institution/schedule/RECEIVE_EDIT_EVENT";
+  "sportomatic-web/admin/schedule/RECEIVE_EDIT_EVENT";
 export const ERROR_EDITING_EVENT =
-  "sportomatic-web/institution/schedule/ERROR_EDITING_EVENT";
+  "sportomatic-web/admin/schedule/ERROR_EDITING_EVENT";
 export const OPEN_EDIT_EVENT_DIALOG =
-  "sportomatic-web/institution/schedule/OPEN_EDIT_EVENT_DIALOG";
+  "sportomatic-web/admin/schedule/OPEN_EDIT_EVENT_DIALOG";
 export const CLOSE_EDIT_EVENT_DIALOG =
-  "sportomatic-web/institution/schedule/CLOSE_EDIT_EVENT_DIALOG";
+  "sportomatic-web/admin/schedule/CLOSE_EDIT_EVENT_DIALOG";
 export const OPEN_EVENT_ERROR_ALERT =
-  "sportomatic-web/institution/schedule/OPEN_EVENT_ERROR_ALERT";
+  "sportomatic-web/admin/schedule/OPEN_EVENT_ERROR_ALERT";
 export const CLOSE_EVENT_ERROR_ALERT =
-  "sportomatic-web/institution/schedule/CLOSE_EVENT_ERROR_ALERT";
+  "sportomatic-web/admin/schedule/CLOSE_EVENT_ERROR_ALERT";
 export const OPEN_CANCEL_EVENT_ALERT =
-  "sportomatic-web/institution/schedule/OPEN_CANCEL_EVENT_ALERT";
+  "sportomatic-web/admin/schedule/OPEN_CANCEL_EVENT_ALERT";
 export const CLOSE_CANCEL_EVENT_ALERT =
-  "sportomatic-web/institution/schedule/CLOSE_CANCEL_EVENT_ALERT";
+  "sportomatic-web/admin/schedule/CLOSE_CANCEL_EVENT_ALERT";
 export const OPEN_UNCANCEL_EVENT_ALERT =
-  "sportomatic-web/institution/schedule/OPEN_UNCANCEL_EVENT_ALERT";
+  "sportomatic-web/admin/schedule/OPEN_UNCANCEL_EVENT_ALERT";
 export const CLOSE_UNCANCEL_EVENT_ALERT =
-  "sportomatic-web/institution/schedule/CLOSE_UNCANCEL_EVENT_ALERT";
+  "sportomatic-web/admin/schedule/CLOSE_UNCANCEL_EVENT_ALERT";
 export const UPDATE_CURRENT_VIEW =
-  "sportomatic-web/institution/schedule/UPDATE_CURRENT_VIEW";
+  "sportomatic-web/admin/schedule/UPDATE_CURRENT_VIEW";
 export const REQUEST_COACHES = "sportomatic-web/admin/schedule/REQUEST_COACHES";
 export const RECEIVE_COACHES = "sportomatic-web/admin/schedule/RECEIVE_COACHES";
 export const ERROR_LOADING_COACHES =
@@ -55,30 +53,28 @@ export const RECEIVE_MANAGERS =
   "sportomatic-web/admin/schedule/RECEIVE_MANAGERS";
 export const ERROR_LOADING_MANAGERS =
   "sportomatic-web/admin/schedule/ERROR_LOADING_MANAGERS";
-export const REQUEST_TEAMS =
-  "sportomatic-web/institution/schedule/REQUEST_TEAMS";
-export const RECEIVE_TEAMS =
-  "sportomatic-web/institution/schedule/RECEIVE_TEAMS";
+export const REQUEST_TEAMS = "sportomatic-web/admin/schedule/REQUEST_TEAMS";
+export const RECEIVE_TEAMS = "sportomatic-web/admin/schedule/RECEIVE_TEAMS";
 export const ERROR_LOADING_TEAMS =
-  "sportomatic-web/institution/schedule/ERROR_LOADING_TEAMS";
+  "sportomatic-web/admin/schedule/ERROR_LOADING_TEAMS";
 export const REQUEST_CANCEL_EVENT =
-  "sportomatic-web/institution/schedule/REQUEST_CANCEL_EVENT";
+  "sportomatic-web/admin/schedule/REQUEST_CANCEL_EVENT";
 export const RECEIVE_CANCEL_EVENT =
-  "sportomatic-web/institution/schedule/RECEIVE_CANCEL_EVENT";
+  "sportomatic-web/admin/schedule/RECEIVE_CANCEL_EVENT";
 export const ERROR_CANCELLING_EVENT =
-  "sportomatic-web/institution/schedule/ERROR_CANCELLING_EVENT";
+  "sportomatic-web/admin/schedule/ERROR_CANCELLING_EVENT";
 export const REQUEST_UNCANCEL_EVENT =
-  "sportomatic-web/institution/schedule/REQUEST_UNCANCEL_EVENT";
+  "sportomatic-web/admin/schedule/REQUEST_UNCANCEL_EVENT";
 export const RECEIVE_UNCANCEL_EVENT =
-  "sportomatic-web/institution/schedule/RECEIVE_UNCANCEL_EVENT";
+  "sportomatic-web/admin/schedule/RECEIVE_UNCANCEL_EVENT";
 export const ERROR_UNCANCELLING_EVENT =
-  "sportomatic-web/institution/schedule/ERROR_UNCANCELLING_EVENT";
+  "sportomatic-web/admin/schedule/ERROR_UNCANCELLING_EVENT";
 export const REQUEST_CREATION_DATE =
-  "sportomatic-web/institution/schedule/REQUEST_CREATION_DATE";
+  "sportomatic-web/admin/schedule/REQUEST_CREATION_DATE";
 export const RECEIVE_CREATION_DATE =
-  "sportomatic-web/institution/schedule/RECEIVE_CREATION_DATE";
+  "sportomatic-web/admin/schedule/RECEIVE_CREATION_DATE";
 export const ERROR_FETCHING_CREATION_DATE =
-  "sportomatic-web/institution/schedule/ERROR_FETCHING_CREATION_DATE";
+  "sportomatic-web/admin/schedule/ERROR_FETCHING_CREATION_DATE";
 
 // Reducers
 

@@ -5,7 +5,7 @@ import sportomaticPicture from "./images/sportomatic.jpg";
 // Actions
 
 export const TOGGLE_SIDE_MENU =
-  "sportomatic-web/institution/settings/TOGGLE_SIDE_MENU";
+  "sportomatic-web/admin/settings/TOGGLE_SIDE_MENU";
 
 // Reducers
 

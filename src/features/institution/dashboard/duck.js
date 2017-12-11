@@ -4,7 +4,7 @@ import { createStructuredSelector } from "reselect";
 // Actions
 
 export const TOGGLE_SIDE_MENU =
-  "sportomatic-web/institution/dashboard/TOGGLE_SIDE_MENU";
+  "sportomatic-web/admin/dashboard/TOGGLE_SIDE_MENU";
 
 // Reducers
 

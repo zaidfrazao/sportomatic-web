@@ -4,14 +4,14 @@ import _ from "lodash";
 import { SportomaticFirebaseAPI } from "../../../api/sportmatic-firebase-api";
 // Actions
 
-export const REQUEST_STAFF = "sportomatic-web/institution/wages/REQUEST_STAFF";
-export const RECEIVE_STAFF = "sportomatic-web/institution/wages/RECEIVE_STAFF";
+export const REQUEST_STAFF = "sportomatic-web/admin/wages/REQUEST_STAFF";
+export const RECEIVE_STAFF = "sportomatic-web/admin/wages/RECEIVE_STAFF";
 export const ERROR_LOADING_STAFF =
-  "sportomatic-web/institution/wages/ERROR_LOADING_STAFF";
-export const REQUEST_WAGES = "sportomatic-web/institution/wages/REQUEST_WAGES";
-export const RECEIVE_WAGES = "sportomatic-web/institution/wages/RECEIVE_WAGES";
+  "sportomatic-web/admin/wages/ERROR_LOADING_STAFF";
+export const REQUEST_WAGES = "sportomatic-web/admin/wages/REQUEST_WAGES";
+export const RECEIVE_WAGES = "sportomatic-web/admin/wages/RECEIVE_WAGES";
 export const ERROR_LOADING_WAGES =
-  "sportomatic-web/institution/wages/ERROR_LOADING_WAGES";
+  "sportomatic-web/admin/wages/ERROR_LOADING_WAGES";
 
 // Reducers
 

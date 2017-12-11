@@ -5,35 +5,28 @@ import _ from "lodash";
 
 // Actions
 
-export const UPDATE_TAB = "sportomatic-web/institution/hours/UPDATE_TAB";
-export const REQUEST_STAFF = "sportomatic-web/institution/hours/REQUEST_STAFF";
-export const RECEIVE_STAFF = "sportomatic-web/institution/hours/RECEIVE_STAFF";
+export const UPDATE_TAB = "sportomatic-web/admin/hours/UPDATE_TAB";
+export const REQUEST_STAFF = "sportomatic-web/admin/hours/REQUEST_STAFF";
+export const RECEIVE_STAFF = "sportomatic-web/admin/hours/RECEIVE_STAFF";
 export const ERROR_LOADING_STAFF =
-  "sportomatic-web/institution/hours/ERROR_LOADING_STAFF";
-export const REQUEST_EVENTS =
-  "sportomatic-web/institution/hours/REQUEST_EVENTS";
-export const RECEIVE_EVENTS =
-  "sportomatic-web/institution/hours/RECEIVE_EVENTS";
+  "sportomatic-web/admin/hours/ERROR_LOADING_STAFF";
+export const REQUEST_EVENTS = "sportomatic-web/admin/hours/REQUEST_EVENTS";
+export const RECEIVE_EVENTS = "sportomatic-web/admin/hours/RECEIVE_EVENTS";
 export const ERROR_LOADING_EVENTS =
-  "sportomatic-web/institution/hours/ERROR_LOADING_EVENTS";
-export const REQUEST_SIGN_IN =
-  "sportomatic-web/institution/hours/REQUEST_SIGN_IN";
-export const RECEIVE_SIGN_IN =
-  "sportomatic-web/institution/hours/RECEIVE_SIGN_IN";
-export const ERROR_SIGNING_IN =
-  "sportomatic-web/institution/hours/ERROR_SIGNING_IN";
-export const REQUEST_SIGN_OUT =
-  "sportomatic-web/institution/hours/REQUEST_SIGN_OUT";
-export const RECEIVE_SIGN_OUT =
-  "sportomatic-web/institution/hours/RECEIVE_SIGN_OUT";
+  "sportomatic-web/admin/hours/ERROR_LOADING_EVENTS";
+export const REQUEST_SIGN_IN = "sportomatic-web/admin/hours/REQUEST_SIGN_IN";
+export const RECEIVE_SIGN_IN = "sportomatic-web/admin/hours/RECEIVE_SIGN_IN";
+export const ERROR_SIGNING_IN = "sportomatic-web/admin/hours/ERROR_SIGNING_IN";
+export const REQUEST_SIGN_OUT = "sportomatic-web/admin/hours/REQUEST_SIGN_OUT";
+export const RECEIVE_SIGN_OUT = "sportomatic-web/admin/hours/RECEIVE_SIGN_OUT";
 export const ERROR_SIGNING_OUT =
-  "sportomatic-web/institution/hours/ERROR_SIGNING_OUT";
+  "sportomatic-web/admin/hours/ERROR_SIGNING_OUT";
 export const REQUEST_APPROVE_HOURS =
-  "sportomatic-web/institution/hours/REQUEST_APPROVE_HOURS";
+  "sportomatic-web/admin/hours/REQUEST_APPROVE_HOURS";
 export const RECEIVE_APPROVE_HOURS =
-  "sportomatic-web/institution/hours/RECEIVE_APPROVE_HOURS";
+  "sportomatic-web/admin/hours/RECEIVE_APPROVE_HOURS";
 export const ERROR_APPROVING_HOURS =
-  "sportomatic-web/institution/hours/ERROR_APPROVING_HOURS";
+  "sportomatic-web/admin/hours/ERROR_APPROVING_HOURS";
 
 // Reducers
 

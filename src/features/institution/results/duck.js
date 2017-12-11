@@ -12,19 +12,15 @@ import {
 
 // Actions
 
-export const UPDATE_TAB = "sportomatic-web/institution/results/UPDATE_TAB";
-export const REQUEST_TEAMS =
-  "sportomatic-web/institution/results/REQUEST_TEAMS";
-export const RECEIVE_TEAMS =
-  "sportomatic-web/institution/results/RECEIVE_TEAMS";
+export const UPDATE_TAB = "sportomatic-web/admin/results/UPDATE_TAB";
+export const REQUEST_TEAMS = "sportomatic-web/admin/results/REQUEST_TEAMS";
+export const RECEIVE_TEAMS = "sportomatic-web/admin/results/RECEIVE_TEAMS";
 export const ERROR_LOADING_TEAMS =
-  "sportomatic-web/institution/results/ERROR_LOADING_TEAMS";
-export const REQUEST_EVENTS =
-  "sportomatic-web/institution/results/REQUEST_EVENTS";
-export const RECEIVE_EVENTS =
-  "sportomatic-web/institution/results/RECEIVE_EVENTS";
+  "sportomatic-web/admin/results/ERROR_LOADING_TEAMS";
+export const REQUEST_EVENTS = "sportomatic-web/admin/results/REQUEST_EVENTS";
+export const RECEIVE_EVENTS = "sportomatic-web/admin/results/RECEIVE_EVENTS";
 export const ERROR_LOADING_EVENTS =
-  "sportomatic-web/institution/results/ERROR_LOADING_EVENTS";
+  "sportomatic-web/admin/results/ERROR_LOADING_EVENTS";
 
 // Reducers
 
@@ -163,17 +159,18 @@ export function errorLoadingTeams(error: ErrorAlias) {
 export function loadTeams(institutionID: string) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestTeams());
-    const teamsRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/teams`);
 
-    return teamsRef.on("value", snapshot => {
-      const teams = snapshot.val();
-      if (teams === null) {
-        dispatch(receiveTeams({}));
-      } else {
-        dispatch(receiveTeams(teams));
-      }
+    const teamsRef = firebase
+      .firestore()
+      .collection("teams")
+      .where("institutionID", "==", institutionID);
+
+    return teamsRef.onSnapshot(querySnapshot => {
+      let teams = {};
+      querySnapshot.forEach(doc => {
+        teams[doc.id] = doc.data();
+      });
+      dispatch(receiveTeams(teams));
     });
   };
 }
