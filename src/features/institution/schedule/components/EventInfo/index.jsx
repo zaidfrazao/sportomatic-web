@@ -7,6 +7,7 @@ import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
+import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
 import LeaderboardAd from "../../../../../components/LeaderboardAd";
 import BannerAd from "../../../../../components/BannerAd";
@@ -236,7 +237,7 @@ class EventInfo extends Component {
             className={classes.contentWrapper}
           >
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <div className={classes.section}>
+              <Paper className={classes.section}>
                 <Typography
                   className={classes.heading}
                   type="title"
@@ -282,11 +283,11 @@ class EventInfo extends Component {
                     />
                   </ListItem>
                 </List>
-              </div>
+              </Paper>
             </Grid>
             {isCompetitive && (
               <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <div className={classes.section}>
+                <Paper className={classes.section}>
                   <Typography
                     className={classes.heading}
                     type="title"
@@ -312,11 +313,11 @@ class EventInfo extends Component {
                       />
                     </ListItem>
                   </List>
-                </div>
+                </Paper>
               </Grid>
             )}
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <div className={classes.section}>
+              <Paper className={classes.section}>
                 <Typography
                   className={classes.heading}
                   type="title"
@@ -333,10 +334,10 @@ class EventInfo extends Component {
                     </ListItem>
                   )}
                 </List>
-              </div>
+              </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <div className={classes.section}>
+              <Paper className={classes.section}>
                 <Typography
                   className={classes.heading}
                   type="title"
@@ -353,10 +354,10 @@ class EventInfo extends Component {
                     </ListItem>
                   )}
                 </List>
-              </div>
+              </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <div className={classes.section}>
+              <Paper className={classes.section}>
                 <Typography
                   className={classes.heading}
                   type="title"
@@ -373,10 +374,10 @@ class EventInfo extends Component {
                     </ListItem>
                   )}
                 </List>
-              </div>
+              </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <div className={classes.section}>
+              <Paper className={classes.section}>
                 <Typography
                   className={classes.heading}
                   type="title"
@@ -403,7 +404,7 @@ class EventInfo extends Component {
                     </Typography>
                   )}
                 </div>
-              </div>
+              </Paper>
             </Grid>
           </Grid>
         </div>
