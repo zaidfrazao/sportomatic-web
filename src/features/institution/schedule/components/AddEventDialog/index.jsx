@@ -1,33 +1,31 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
-import Button from "material-ui/Button";
-import Dialog from "material-ui/Dialog";
-import Grid from "material-ui/Grid";
-import TextField from "material-ui/TextField";
+import _ from "lodash";
 import AppBar from "material-ui/AppBar";
-import Toolbar from "material-ui/Toolbar";
-import IconButton from "material-ui/IconButton";
-import Typography from "material-ui/Typography";
+import Avatar from "material-ui/Avatar";
+import Button from "material-ui/Button";
+import Checkbox from "material-ui/Checkbox";
+import { CircularProgress } from "material-ui/Progress";
 import CloseIcon from "material-ui-icons/Close";
-import Slide from "material-ui/transitions/Slide";
-import Input, { InputLabel } from "material-ui/Input";
-import { MenuItem } from "material-ui/Menu";
-import Radio, { RadioGroup } from "material-ui/Radio";
+import Dialog from "material-ui/Dialog";
 import { FormLabel, FormControl, FormControlLabel } from "material-ui/Form";
-import Select from "material-ui/Select";
+import { grey } from "material-ui/colors";
+import Grid from "material-ui/Grid";
+import IconButton from "material-ui/IconButton";
+import Input, { InputLabel } from "material-ui/Input";
 import List, {
   ListItem,
   ListItemSecondaryAction,
   ListItemText
 } from "material-ui/List";
-import Checkbox from "material-ui/Checkbox";
-import Avatar from "material-ui/Avatar";
-import { CircularProgress } from "material-ui/Progress";
+import { MenuItem } from "material-ui/Menu";
+import Radio, { RadioGroup } from "material-ui/Radio";
+import Select from "material-ui/Select";
+import Slide from "material-ui/transitions/Slide";
 import Switch from "material-ui/Switch";
-
-import _ from "lodash";
+import TextField from "material-ui/TextField";
+import Toolbar from "material-ui/Toolbar";
+import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
 
 const styles = {
   appBar: {
@@ -36,18 +34,9 @@ const styles = {
   flex: {
     flex: 1
   },
-  mainContent: {
-    height: "100%",
-    overflow: "auto"
-  },
-  titleWrapper: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  title: {
-    margin: 24,
-    fontSize: "1.4rem"
+  formControl: {
+    width: "80%",
+    margin: "24px 10%"
   },
   heading: {
     fontWeight: "normal",
@@ -59,20 +48,29 @@ const styles = {
     backgroundColor: grey[300],
     color: grey[700]
   },
-  formControl: {
-    width: "80%",
-    margin: "24px 10%"
+  loaderWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  mainContent: {
+    height: "100%",
+    overflow: "auto"
+  },
+  section: {
+    backgroundColor: grey[100]
   },
   subheading: {
     width: "100%",
     textAlign: "center",
     margin: "24px 0"
   },
-  section: {
-    backgroundColor: grey[100]
+  title: {
+    margin: 24,
+    fontSize: "1.4rem"
   },
-  loaderWrapper: {
-    flexGrow: 1,
+  titleWrapper: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
@@ -113,7 +111,8 @@ class AddEventDialog extends Component {
   createTeamsList() {
     const { classes, teams } = this.props;
     const { selectedTeams } = this.state;
-    const listItems = _.toPairs(teams).map(([id, info]) => {
+
+    const listItems = _.toPairs(teams).map(([id, team]) => {
       return (
         <ListItem
           key={id}
@@ -122,10 +121,7 @@ class AddEventDialog extends Component {
           className={classes.listItem}
           onClick={() => this.handleToggle(id, "TEAM")}
         >
-          <ListItemText
-            primary={info.metadata.name}
-            secondary={info.metadata.sport}
-          />
+          <ListItemText primary={team.info.name} secondary={team.info.sport} />
           <ListItemSecondaryAction>
             <Checkbox
               onClick={() => this.handleToggle(id, "TEAM")}
@@ -155,7 +151,8 @@ class AddEventDialog extends Component {
   createCoachesList() {
     const { classes, coaches } = this.props;
     const { selectedCoaches } = this.state;
-    const listItems = _.toPairs(coaches).map(([id, info]) => {
+
+    const listItems = _.toPairs(coaches).map(([id, coach]) => {
       return (
         <ListItem
           key={id}
@@ -165,12 +162,10 @@ class AddEventDialog extends Component {
           onClick={() => this.handleToggle(id, "COACH")}
         >
           <Avatar
-            alt={`${info.metadata.name} ${info.metadata.surname}`}
-            src={info.metadata.profilePictureURL}
+            alt={`${coach.info.name} ${coach.info.surname}`}
+            src={coach.info.profilePictureURL}
           />
-          <ListItemText
-            primary={`${info.metadata.name} ${info.metadata.surname}`}
-          />
+          <ListItemText primary={`${coach.info.name} ${coach.info.surname}`} />
           <ListItemSecondaryAction>
             <Checkbox
               onClick={() => this.handleToggle(id, "COACH")}
@@ -200,7 +195,8 @@ class AddEventDialog extends Component {
   createManagersList() {
     const { classes, managers } = this.props;
     const { selectedManagers } = this.state;
-    const listItems = _.toPairs(managers).map(([id, info]) => {
+
+    const listItems = _.toPairs(managers).map(([id, manager]) => {
       return (
         <ListItem
           key={id}
@@ -210,11 +206,11 @@ class AddEventDialog extends Component {
           onClick={() => this.handleToggle(id, "MANAGER")}
         >
           <Avatar
-            alt={`${info.metadata.name} ${info.metadata.surname}`}
-            src={info.metadata.profilePictureURL}
+            alt={`${manager.info.name} ${manager.info.surname}`}
+            src={manager.info.profilePictureURL}
           />
           <ListItemText
-            primary={`${info.metadata.name} ${info.metadata.surname}`}
+            primary={`${manager.info.name} ${manager.info.surname}`}
           />
           <ListItemSecondaryAction>
             <Checkbox
@@ -254,7 +250,7 @@ class AddEventDialog extends Component {
 
     let newTitle = "";
     if (selectedTeams.length === 1) {
-      newTitle = teams[selectedTeams[0]].metadata.name + " ";
+      newTitle = teams[selectedTeams[0]].info.name + " ";
       if (update === "type") {
         if (value === "OTHER") {
           newTitle = newTitle + otherEventType;
@@ -476,23 +472,29 @@ class AddEventDialog extends Component {
                   eventType === "Match" || isOtherEventTypeCompetitive;
                 const recurrencePattern = {
                   frequency,
-                  numberOfEvents
+                  numberOfEvents: parseInt(numberOfEvents, 10)
                 };
 
-                const eventInfo = {
-                  title,
+                const requiredInfo = {
                   isCompetitive,
-                  date,
-                  startTime,
-                  endTime,
-                  type: eventType,
-                  additionalInfo: {
-                    venue,
-                    opponents,
-                    homeAway,
-                    notes
+                  title,
+                  status: "ACTIVE",
+                  times: {
+                    end: new Date(`${date}T${endTime}:00`),
+                    start: new Date(`${date}T${startTime}:00`)
+                  },
+                  type: eventType
+                };
+                const optionalInfo = {
+                  homeAway,
+                  notes,
+                  venue,
+                  opponents: {
+                    institution: opponents,
+                    isSignedUp: false
                   }
                 };
+
                 if (hasTitleError || hasOtherEventTypeError || hasDateError) {
                   let errorType = "TITLE";
                   if (hasOtherEventTypeError) errorType = "EVENT_TYPE";
@@ -501,21 +503,38 @@ class AddEventDialog extends Component {
                 } else {
                   addEvent(
                     institutionID,
-                    eventInfo,
+                    requiredInfo,
+                    optionalInfo,
                     recurrencePattern,
+                    _.fromPairs(selectedTeams.map(teamID => [teamID, true])),
                     _.fromPairs(
-                      selectedTeams.map(teamID => [teamID, teams[teamID]])
-                    ),
-                    _.fromPairs(
-                      selectedManagers.map(managerID => [
-                        managerID,
-                        managers[managerID]
-                      ])
+                      selectedManagers.map(managerID => [managerID, true])
                     ),
                     _.fromPairs(
                       selectedCoaches.map(coachID => [
                         coachID,
-                        coaches[coachID]
+                        {
+                          attendance: {
+                            didAttend: true,
+                            hasSubstitute: false,
+                            willAttend: true
+                          },
+                          absenteeism: {
+                            rating: "GOOD",
+                            reason: ""
+                          },
+                          hours: {
+                            status: "AWAITING_SIGN_IN",
+                            times: {
+                              signIn: startTime,
+                              signOut: endTime
+                            }
+                          },
+                          substitute: {
+                            isSubstitute: false,
+                            subbingFor: ""
+                          }
+                        }
                       ])
                     )
                   );
@@ -858,9 +877,5 @@ class AddEventDialog extends Component {
     );
   }
 }
-
-AddEventDialog.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(AddEventDialog);

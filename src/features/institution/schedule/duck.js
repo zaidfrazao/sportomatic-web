@@ -3,78 +3,48 @@ import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
 import _ from "lodash";
 
+const NAMESPACE = "sportomatic-web/admin/schedule";
+
 // Actions
 
-export const OPEN_ADD_EVENT_DIALOG =
-  "sportomatic-web/admin/schedule/OPEN_ADD_EVENT_DIALOG";
-export const CLOSE_ADD_EVENT_DIALOG =
-  "sportomatic-web/admin/schedule/CLOSE_ADD_EVENT_DIALOG";
-export const REQUEST_EVENTS = "sportomatic-web/admin/schedule/REQUEST_EVENTS";
-export const RECEIVE_EVENTS = "sportomatic-web/admin/schedule/RECEIVE_EVENTS";
-export const ERROR_LOADING_EVENTS =
-  "sportomatic-web/admin/schedule/ERROR_LOADING_EVENTS";
-export const REQUEST_ADD_EVENT =
-  "sportomatic-web/admin/schedule/REQUEST_ADD_EVENT";
-export const RECEIVE_ADD_EVENT =
-  "sportomatic-web/admin/schedule/RECEIVE_ADD_EVENT";
-export const ERROR_ADDING_EVENT =
-  "sportomatic-web/admin/schedule/ERROR_ADDING_EVENT";
-export const REQUEST_EDIT_EVENT =
-  "sportomatic-web/admin/schedule/REQUEST_EDIT_EVENT";
-export const RECEIVE_EDIT_EVENT =
-  "sportomatic-web/admin/schedule/RECEIVE_EDIT_EVENT";
-export const ERROR_EDITING_EVENT =
-  "sportomatic-web/admin/schedule/ERROR_EDITING_EVENT";
-export const OPEN_EDIT_EVENT_DIALOG =
-  "sportomatic-web/admin/schedule/OPEN_EDIT_EVENT_DIALOG";
-export const CLOSE_EDIT_EVENT_DIALOG =
-  "sportomatic-web/admin/schedule/CLOSE_EDIT_EVENT_DIALOG";
-export const OPEN_EVENT_ERROR_ALERT =
-  "sportomatic-web/admin/schedule/OPEN_EVENT_ERROR_ALERT";
-export const CLOSE_EVENT_ERROR_ALERT =
-  "sportomatic-web/admin/schedule/CLOSE_EVENT_ERROR_ALERT";
-export const OPEN_CANCEL_EVENT_ALERT =
-  "sportomatic-web/admin/schedule/OPEN_CANCEL_EVENT_ALERT";
-export const CLOSE_CANCEL_EVENT_ALERT =
-  "sportomatic-web/admin/schedule/CLOSE_CANCEL_EVENT_ALERT";
-export const OPEN_UNCANCEL_EVENT_ALERT =
-  "sportomatic-web/admin/schedule/OPEN_UNCANCEL_EVENT_ALERT";
-export const CLOSE_UNCANCEL_EVENT_ALERT =
-  "sportomatic-web/admin/schedule/CLOSE_UNCANCEL_EVENT_ALERT";
-export const UPDATE_CURRENT_VIEW =
-  "sportomatic-web/admin/schedule/UPDATE_CURRENT_VIEW";
-export const REQUEST_COACHES = "sportomatic-web/admin/schedule/REQUEST_COACHES";
-export const RECEIVE_COACHES = "sportomatic-web/admin/schedule/RECEIVE_COACHES";
-export const ERROR_LOADING_COACHES =
-  "sportomatic-web/admin/schedule/ERROR_LOADING_COACHES";
-export const REQUEST_MANAGERS =
-  "sportomatic-web/admin/schedule/REQUEST_MANAGERS";
-export const RECEIVE_MANAGERS =
-  "sportomatic-web/admin/schedule/RECEIVE_MANAGERS";
-export const ERROR_LOADING_MANAGERS =
-  "sportomatic-web/admin/schedule/ERROR_LOADING_MANAGERS";
-export const REQUEST_TEAMS = "sportomatic-web/admin/schedule/REQUEST_TEAMS";
-export const RECEIVE_TEAMS = "sportomatic-web/admin/schedule/RECEIVE_TEAMS";
-export const ERROR_LOADING_TEAMS =
-  "sportomatic-web/admin/schedule/ERROR_LOADING_TEAMS";
-export const REQUEST_CANCEL_EVENT =
-  "sportomatic-web/admin/schedule/REQUEST_CANCEL_EVENT";
-export const RECEIVE_CANCEL_EVENT =
-  "sportomatic-web/admin/schedule/RECEIVE_CANCEL_EVENT";
-export const ERROR_CANCELLING_EVENT =
-  "sportomatic-web/admin/schedule/ERROR_CANCELLING_EVENT";
-export const REQUEST_UNCANCEL_EVENT =
-  "sportomatic-web/admin/schedule/REQUEST_UNCANCEL_EVENT";
-export const RECEIVE_UNCANCEL_EVENT =
-  "sportomatic-web/admin/schedule/RECEIVE_UNCANCEL_EVENT";
-export const ERROR_UNCANCELLING_EVENT =
-  "sportomatic-web/admin/schedule/ERROR_UNCANCELLING_EVENT";
-export const REQUEST_CREATION_DATE =
-  "sportomatic-web/admin/schedule/REQUEST_CREATION_DATE";
-export const RECEIVE_CREATION_DATE =
-  "sportomatic-web/admin/schedule/RECEIVE_CREATION_DATE";
-export const ERROR_FETCHING_CREATION_DATE =
-  "sportomatic-web/admin/schedule/ERROR_FETCHING_CREATION_DATE";
+export const OPEN_ADD_EVENT_DIALOG = `${NAMESPACE}/OPEN_ADD_EVENT_DIALOG`;
+export const CLOSE_ADD_EVENT_DIALOG = `${NAMESPACE}/CLOSE_ADD_EVENT_DIALOG`;
+export const REQUEST_EVENTS = `${NAMESPACE}/REQUEST_EVENTS`;
+export const RECEIVE_EVENTS = `${NAMESPACE}/RECEIVE_EVENTS`;
+export const ERROR_LOADING_EVENTS = `${NAMESPACE}/ERROR_LOADING_EVENTS`;
+export const REQUEST_ADD_EVENT = `${NAMESPACE}/REQUEST_ADD_EVENT`;
+export const RECEIVE_ADD_EVENT = `${NAMESPACE}/RECEIVE_ADD_EVENT`;
+export const ERROR_ADDING_EVENT = `${NAMESPACE}/ERROR_ADDING_EVENT`;
+export const REQUEST_EDIT_EVENT = `${NAMESPACE}/REQUEST_EDIT_EVENT`;
+export const RECEIVE_EDIT_EVENT = `${NAMESPACE}/RECEIVE_EDIT_EVENT`;
+export const ERROR_EDITING_EVENT = `${NAMESPACE}/ERROR_EDITING_EVENT`;
+export const OPEN_EDIT_EVENT_DIALOG = `${NAMESPACE}/OPEN_EDIT_EVENT_DIALOG`;
+export const CLOSE_EDIT_EVENT_DIALOG = `${NAMESPACE}/CLOSE_EDIT_EVENT_DIALOG`;
+export const OPEN_EVENT_ERROR_ALERT = `${NAMESPACE}/OPEN_EVENT_ERROR_ALERT`;
+export const CLOSE_EVENT_ERROR_ALERT = `${NAMESPACE}/CLOSE_EVENT_ERROR_ALERT`;
+export const OPEN_CANCEL_EVENT_ALERT = `${NAMESPACE}/OPEN_CANCEL_EVENT_ALERT`;
+export const CLOSE_CANCEL_EVENT_ALERT = `${NAMESPACE}/CLOSE_CANCEL_EVENT_ALERT`;
+export const OPEN_UNCANCEL_EVENT_ALERT = `${NAMESPACE}/OPEN_UNCANCEL_EVENT_ALERT`;
+export const CLOSE_UNCANCEL_EVENT_ALERT = `${NAMESPACE}/CLOSE_UNCANCEL_EVENT_ALERT`;
+export const UPDATE_CURRENT_VIEW = `${NAMESPACE}/UPDATE_CURRENT_VIEW`;
+export const REQUEST_COACHES = `${NAMESPACE}/REQUEST_COACHES`;
+export const RECEIVE_COACHES = `${NAMESPACE}/RECEIVE_COACHES`;
+export const ERROR_LOADING_COACHES = `${NAMESPACE}/ERROR_LOADING_COACHES`;
+export const REQUEST_MANAGERS = `${NAMESPACE}/REQUEST_MANAGERS`;
+export const RECEIVE_MANAGERS = `${NAMESPACE}/RECEIVE_MANAGERS`;
+export const ERROR_LOADING_MANAGERS = `${NAMESPACE}/ERROR_LOADING_MANAGERS`;
+export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
+export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
+export const ERROR_LOADING_TEAMS = `${NAMESPACE}/ERROR_LOADING_TEAMS`;
+export const REQUEST_CANCEL_EVENT = `${NAMESPACE}/REQUEST_CANCEL_EVENT`;
+export const RECEIVE_CANCEL_EVENT = `${NAMESPACE}/RECEIVE_CANCEL_EVENT`;
+export const ERROR_CANCELLING_EVENT = `${NAMESPACE}/ERROR_CANCELLING_EVENT`;
+export const REQUEST_UNCANCEL_EVENT = `${NAMESPACE}/REQUEST_UNCANCEL_EVENT`;
+export const RECEIVE_UNCANCEL_EVENT = `${NAMESPACE}/RECEIVE_UNCANCEL_EVENT`;
+export const ERROR_UNCANCELLING_EVENT = `${NAMESPACE}/ERROR_UNCANCELLING_EVENT`;
+export const REQUEST_CREATION_DATE = `${NAMESPACE}/REQUEST_CREATION_DATE`;
+export const RECEIVE_CREATION_DATE = `${NAMESPACE}/RECEIVE_CREATION_DATE`;
+export const ERROR_FETCHING_CREATION_DATE = `${NAMESPACE}/ERROR_FETCHING_CREATION_DATE`;
 
 // Reducers
 
@@ -209,7 +179,11 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 export const loadingStatusInitialState = {
   isAddEventDialogLoading: false,
   isEditEventDialogLoading: false,
-  isEventsLoading: false
+  isEventsLoading: false,
+  isCreationDateLoading: false,
+  isTeamsLoading: false,
+  isCoachesLoading: false,
+  isManagersLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -236,40 +210,60 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isEditEventDialogLoading: false
       };
-    case REQUEST_TEAMS:
     case REQUEST_COACHES:
+      return {
+        ...state,
+        isCoachesLoading: true
+      };
+    case RECEIVE_COACHES:
+    case ERROR_LOADING_COACHES:
+      return {
+        ...state,
+        isCoachesLoading: false
+      };
     case REQUEST_MANAGERS:
       return {
         ...state,
-        isAddEventDialogLoading: true,
-        isEditEventDialogLoading: true,
-        isEventsLoading: true
+        isManagersLoading: true
       };
-    case RECEIVE_TEAMS:
-    case RECEIVE_COACHES:
     case RECEIVE_MANAGERS:
-    case ERROR_LOADING_TEAMS:
-    case ERROR_LOADING_COACHES:
     case ERROR_LOADING_MANAGERS:
       return {
         ...state,
-        isAddEventDialogLoading: false,
-        isEditEventDialogLoading: false,
-        isEventsLoading: false
+        isManagersLoading: false
       };
-    case REQUEST_CREATION_DATE:
+    case REQUEST_TEAMS:
+      return {
+        ...state,
+        isTeamsLoading: true
+      };
+    case RECEIVE_TEAMS:
+    case ERROR_LOADING_TEAMS:
+      return {
+        ...state,
+        isTeamsLoading: false
+      };
     case REQUEST_EVENTS:
       return {
         ...state,
         isEventsLoading: true
       };
-    case RECEIVE_CREATION_DATE:
-    case ERROR_FETCHING_CREATION_DATE:
     case ERROR_LOADING_EVENTS:
     case RECEIVE_EVENTS:
       return {
         ...state,
         isEventsLoading: false
+      };
+    case REQUEST_CREATION_DATE:
+      return {
+        ...state,
+        isCreationDateLoading: true
+      };
+    case RECEIVE_CREATION_DATE:
+    case ERROR_FETCHING_CREATION_DATE:
+      return {
+        ...state,
+        isCreationDateLoading: false
       };
     default:
       return state;
@@ -551,9 +545,18 @@ export function getCoachUpdates(
   );
 }
 
+export function format2Digits(number) {
+  if (number < 10) {
+    return `0${number}`;
+  } else {
+    return `${number}`;
+  }
+}
+
 export function addEvent(
   institutionID,
-  eventInfo,
+  requiredInfo,
+  optionalInfo,
   recurrencePattern,
   teams,
   managers,
@@ -561,51 +564,15 @@ export function addEvent(
 ) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestAddEvent());
-
-    // Distill required info from coaches & managers
-    const eventCoaches = _.fromPairs(
-      _.toPairs(coaches).map(([coachID, coachInfo]) => {
-        return [
-          coachID,
-          {
-            name: coachInfo.metadata.name,
-            surname: coachInfo.metadata.surname,
-            profilePictureURL: coachInfo.metadata.profilePictureURL,
-            phoneNumber: coachInfo.metadata.phoneNumber,
-            hours: {
-              status: "AWAITING_SIGN_IN",
-              type: coachInfo.paymentDefaults.type,
-              standardHourlyRate: coachInfo.paymentDefaults.standardHourlyRate,
-              overtimeHourlyRate: coachInfo.paymentDefaults.overtimeHourlyRate
-            }
-          }
-        ];
-      })
-    );
-    const eventManagers = _.fromPairs(
-      _.toPairs(managers).map(([managerID, managerInfo]) => {
-        return [
-          managerID,
-          {
-            name: managerInfo.metadata.name,
-            surname: managerInfo.metadata.surname,
-            profilePictureURL: managerInfo.metadata.profilePictureURL,
-            phoneNumber: managerInfo.metadata.phoneNumber
-          }
-        ];
-      })
-    );
+    const db = firebase.firestore();
 
     // Set up recurring events
     let instances = [];
     let eventsToCreate = [];
     for (let i = 0; i < recurrencePattern.numberOfEvents; i++) {
-      const newEventID = firebase
-        .database()
-        .ref(`institution/${institutionID}/private/events`)
-        .push().key;
+      const newEventRef = db.collection("events").doc();
 
-      let date = new Date(eventInfo.date);
+      let date = new Date(requiredInfo.times.start);
       if (recurrencePattern.frequency === "WEEKLY") {
         date = new Date(
           date.getFullYear(),
@@ -619,66 +586,56 @@ export function addEvent(
           date.getDate()
         );
       }
-      const year = date.toISOString().slice(0, 4);
-      const month = date.toISOString().slice(5, 7);
-      date.setHours(date.getHours() + 2);
-      instances.push({ date: date.toISOString().slice(0, 10), id: newEventID });
-      date.setHours(date.getHours() + 2);
+      instances.push({ date, id: newEventRef._key.path.segments[1] });
       eventsToCreate.push({
-        id: newEventID,
-        date: date.toISOString().slice(0, 10),
-        year,
-        month
+        ref: newEventRef,
+        date
       });
     }
 
     // Create events
-    let updates = {};
-    let managerUpdates = {};
-    let coachUpdates = {};
+    let batch = db.batch();
     for (let i = 0; i < eventsToCreate.length; i++) {
+      let eventDate = eventsToCreate[i].date;
+      const year = eventDate.getFullYear();
+      const month = format2Digits(eventDate.getMonth() + 1);
+      const day = format2Digits(eventDate.getDate());
+      const start = {
+        hours: format2Digits(requiredInfo.times.start.getHours()),
+        minutes: format2Digits(requiredInfo.times.start.getMinutes())
+      };
+      const end = {
+        hours: format2Digits(requiredInfo.times.end.getHours()),
+        minutes: format2Digits(requiredInfo.times.end.getMinutes())
+      };
+      const newStart = `${year}-${month}-${day}T${start.hours}:${start.minutes}:00`;
+      const newEnd = `${year}-${month}-${day}T${end.hours}:${end.minutes}:00`;
+
       const newEventInfo = {
-        status: "ACTIVE",
-        metadata: { ...eventInfo, date: eventsToCreate[i].date },
+        institutionID,
+        requiredInfo: {
+          ...requiredInfo,
+          times: {
+            end: new Date(newEnd),
+            start: new Date(newStart)
+          }
+        },
+        optionalInfo,
+        teams,
+        coaches,
+        managers,
         recurrencePattern: {
           ...recurrencePattern,
           instances
-        },
-        teams,
-        coaches: eventCoaches,
-        managers: eventManagers
+        }
       };
-      managerUpdates = getManagerUpdates(
-        institutionID,
-        managers,
-        eventsToCreate[i].year,
-        eventsToCreate[i].month,
-        eventsToCreate[i].id,
-        newEventInfo
-      );
-      coachUpdates = getCoachUpdates(
-        institutionID,
-        coaches,
-        eventsToCreate[i].year,
-        eventsToCreate[i].month,
-        eventsToCreate[i].id,
-        newEventInfo
-      );
-      updates = {
-        ...updates,
-        [`institution/${institutionID}/private/events/${eventsToCreate[i]
-          .year}/${eventsToCreate[i].month}/${eventsToCreate[i]
-          .id}`]: newEventInfo,
-        ...coachUpdates,
-        ...managerUpdates
-      };
+
+      batch.set(eventsToCreate[i].ref, newEventInfo);
     }
 
     // Save events to database
-    return firebase
-      .database()
-      .ref()
-      .update(updates)
+    return batch
+      .commit()
       .then(() => dispatch(receiveAddEvent()))
       .catch(error => dispatch(errorAddingEvent(error)));
   };

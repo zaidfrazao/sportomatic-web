@@ -1,37 +1,20 @@
 import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
-import { Route } from "react-router-dom";
+import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
+import { grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Paper from "material-ui/Paper";
+import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
-import LeaderboardAd from "../../../../../components/LeaderboardAd";
+import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
-import _ from "lodash";
+import LeaderboardAd from "../../../../../components/LeaderboardAd";
 
 const styles = {
-  contentWrapper: {
-    "@media (min-width: 1200px)": {
-      width: 1200,
-      margin: "0 auto"
-    }
-  },
-  root: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column"
-  },
-  wrapper: {
-    flexGrow: 1,
-    overflow: "auto",
-    padding: 24
-  },
   adWrapper: {
     width: "100%",
     height: "100%",
@@ -40,11 +23,16 @@ const styles = {
     justifyContent: "center",
     margin: "24px 0"
   },
-  section: {
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[200]}`,
-    height: "100%",
-    width: "100%"
+  button: {
+    "@media (max-width: 960px)": {
+      width: "100%"
+    }
+  },
+  contentWrapper: {
+    "@media (min-width: 1200px)": {
+      width: 1200,
+      margin: "0 auto"
+    }
   },
   heading: {
     fontWeight: "normal",
@@ -62,6 +50,23 @@ const styles = {
     width: "calc(100% - 48px)",
     textAlign: "center"
   },
+  noItems: {
+    textAlign: "center"
+  },
+  notes: {
+    padding: 24
+  },
+  notesWrapper: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexGrow: 1
+  },
+  picture: {
+    backgroundColor: grey[300],
+    width: 300,
+    height: "auto"
+  },
   pictureWrapper: {
     width: "100%",
     height: "100%",
@@ -70,39 +75,47 @@ const styles = {
     alignItems: "center",
     justifyContent: "center"
   },
-  picture: {
-    backgroundColor: grey[300],
-    width: 300,
-    height: "auto"
-  },
-  button: {
-    "@media (max-width: 960px)": {
-      width: "100%"
-    }
-  },
-  noItems: {
-    textAlign: "center"
-  },
-  notesWrapper: {
+  root: {
+    height: "100%",
+    width: "100%",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexGrow: 1
+    flexDirection: "column"
   },
-  notes: {
+  section: {
+    backgroundColor: grey[50],
+    border: `1px solid ${grey[200]}`,
+    height: "100%",
+    width: "100%"
+  },
+  wrapper: {
+    flexGrow: 1,
+    overflow: "auto",
     padding: 24
   }
 };
 
 class EventInfo extends Component {
   getListItems() {
-    const { coaches, managers, teams, info, isLoading } = this.props;
+    const {
+      coaches,
+      managers,
+      teams,
+      info,
+      isInfoLoading,
+      isTeamsLoading,
+      isManagersLoading,
+      isCoachesLoading
+    } = this.props;
+
+    console.log(this.props);
 
     let eventTeams = [];
     let eventCoaches = [];
     let eventManagers = [];
 
-    !isLoading &&
+    !isTeamsLoading &&
+      !isInfoLoading &&
+      info &&
       _.toPairs(info.teams).map(([id, isTeam]) => {
         if (isTeam) {
           eventTeams.push(
@@ -125,7 +138,9 @@ class EventInfo extends Component {
           );
         }
       });
-    !isLoading &&
+    !isCoachesLoading &&
+      !isInfoLoading &&
+      info &&
       _.toPairs(info.coaches).map(([id, coachEventInfo]) => {
         const coachInfo = coaches[id].info;
         eventCoaches.push(
@@ -148,7 +163,9 @@ class EventInfo extends Component {
           />
         );
       });
-    !isLoading &&
+    !isManagersLoading &&
+      !isInfoLoading &&
+      info &&
       _.toPairs(info.managers).map(([id, managerEventInfo]) => {
         const managerInfo = managers[id].info;
         eventManagers.push(
@@ -180,10 +197,14 @@ class EventInfo extends Component {
   }
 
   render() {
-    const { classes, isMobile, isTablet } = this.props;
-    const { title, type, times, isCompetitive } = this.props.info.requiredInfo;
-    const { status, optionalInfo } = this.props.info;
+    const { classes, isMobile, isTablet, info } = this.props;
     const { updateView } = this.props.actions;
+    const {
+      isInfoLoading,
+      isCoachesLoading,
+      isManagersLoading,
+      isTeamsLoading
+    } = this.props;
 
     const dateOptions = {
       weekday: "long",
@@ -203,17 +224,25 @@ class EventInfo extends Component {
 
     return (
       <div className={classes.root}>
-        <AppBar position="static" color="default">
-          {status === "CANCELLED" ? (
+        {isInfoLoading || !info ? (
+          <AppBar position="static" color="default">
             <Typography className={classes.name} type="title" component="h2">
-              {title} - [Cancelled]
+              Loading...
             </Typography>
-          ) : (
-            <Typography className={classes.name} type="title" component="h2">
-              {title}
-            </Typography>
-          )}
-        </AppBar>
+          </AppBar>
+        ) : (
+          <AppBar position="static" color="default">
+            {info.status === "CANCELLED" ? (
+              <Typography className={classes.name} type="title" component="h2">
+                {info.requiredInfo.title} - [Cancelled]
+              </Typography>
+            ) : (
+              <Typography className={classes.name} type="title" component="h2">
+                {info.requiredInfo.title}
+              </Typography>
+            )}
+          </AppBar>
+        )}
         <div className={classes.wrapper}>
           <Route
             render={({ history }) => (
@@ -249,73 +278,98 @@ class EventInfo extends Component {
                   <ListItem>
                     <ListItemText
                       primary="Date"
-                      secondary={times.start.toLocaleDateString(
-                        "en-US",
-                        dateOptions
-                      )}
+                      secondary={
+                        isInfoLoading || !info
+                          ? "Loading..."
+                          : info.requiredInfo.times.start.toLocaleDateString(
+                              "en-US",
+                              dateOptions
+                            )
+                      }
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemText
                       primary="Starts at"
-                      secondary={times.start.toLocaleTimeString(
-                        "en-US",
-                        timeOptions
-                      )}
+                      secondary={
+                        isInfoLoading || !info
+                          ? "Loading..."
+                          : info.requiredInfo.times.start.toLocaleTimeString(
+                              "en-US",
+                              timeOptions
+                            )
+                      }
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemText
-                      primary="Ends as"
-                      secondary={times.end.toLocaleTimeString(
-                        "en-US",
-                        timeOptions
-                      )}
+                      primary="Ends at"
+                      secondary={
+                        isInfoLoading || !info
+                          ? "Loading..."
+                          : info.requiredInfo.times.end.toLocaleTimeString(
+                              "en-US",
+                              timeOptions
+                            )
+                      }
                     />
                   </ListItem>
                   <ListItem>
-                    <ListItemText primary="Event type" secondary={type} />
+                    <ListItemText
+                      primary="Event type"
+                      secondary={
+                        isInfoLoading || !info
+                          ? "Loading..."
+                          : info.requiredInfo.type
+                      }
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemText
                       primary="Venue"
-                      secondary={optionalInfo.venue}
+                      secondary={
+                        isInfoLoading || !info
+                          ? "Loading..."
+                          : info.optionalInfo.venue
+                      }
                     />
                   </ListItem>
                 </List>
               </Paper>
             </Grid>
-            {isCompetitive && (
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Match Info
-                  </Typography>
-                  <List>
-                    <ListItem>
-                      <ListItemText
-                        primary="Home / Away"
-                        secondary={
-                          optionalInfo.homeAway === "UNKNOWN"
-                            ? "Not yet specified"
-                            : _.capitalize(optionalInfo.homeAway)
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText
-                        primary="Opponents"
-                        secondary={optionalInfo.opponents.institution}
-                      />
-                    </ListItem>
-                  </List>
-                </Paper>
-              </Grid>
-            )}
+            {!isInfoLoading &&
+              info &&
+              info.requiredInfo.isCompetitive && (
+                <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                  <Paper className={classes.section}>
+                    <Typography
+                      className={classes.heading}
+                      type="title"
+                      component="h3"
+                    >
+                      Match Info
+                    </Typography>
+                    <List>
+                      <ListItem>
+                        <ListItemText
+                          primary="Home / Away"
+                          secondary={
+                            info.optionalInfo.homeAway === "UNKNOWN"
+                              ? "Not yet specified"
+                              : _.capitalize(info.optionalInfo.homeAway)
+                          }
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText
+                          primary="Opponents"
+                          secondary={info.optionalInfo.opponents.institution}
+                        />
+                      </ListItem>
+                    </List>
+                  </Paper>
+                </Grid>
+              )}
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
               <Paper className={classes.section}>
                 <Typography
@@ -325,15 +379,23 @@ class EventInfo extends Component {
                 >
                   Teams
                 </Typography>
-                <List>
-                  {teams.length > 0 ? (
-                    teams
-                  ) : (
+                {isTeamsLoading || !info ? (
+                  <List>
                     <ListItem className={classes.noItems}>
-                      <ListItemText primary="No teams" />
+                      <ListItemText primary="Loading..." />
                     </ListItem>
-                  )}
-                </List>
+                  </List>
+                ) : (
+                  <List>
+                    {teams.length > 0 ? (
+                      teams
+                    ) : (
+                      <ListItem className={classes.noItems}>
+                        <ListItemText primary="No teams" />
+                      </ListItem>
+                    )}
+                  </List>
+                )}
               </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
@@ -345,15 +407,23 @@ class EventInfo extends Component {
                 >
                   Managers
                 </Typography>
-                <List>
-                  {managers.length > 0 ? (
-                    managers
-                  ) : (
+                {isManagersLoading || !info ? (
+                  <List>
                     <ListItem className={classes.noItems}>
-                      <ListItemText primary="No managers" />
+                      <ListItemText primary="Loading..." />
                     </ListItem>
-                  )}
-                </List>
+                  </List>
+                ) : (
+                  <List>
+                    {managers.length > 0 ? (
+                      managers
+                    ) : (
+                      <ListItem className={classes.noItems}>
+                        <ListItemText primary="No managers" />
+                      </ListItem>
+                    )}
+                  </List>
+                )}
               </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
@@ -365,15 +435,23 @@ class EventInfo extends Component {
                 >
                   Coaches
                 </Typography>
-                <List>
-                  {coaches.length > 0 ? (
-                    coaches
-                  ) : (
+                {isCoachesLoading || !info ? (
+                  <List>
                     <ListItem className={classes.noItems}>
-                      <ListItemText primary="No coaches" />
+                      <ListItemText primary="Loading..." />
                     </ListItem>
-                  )}
-                </List>
+                  </List>
+                ) : (
+                  <List>
+                    {coaches.length > 0 ? (
+                      coaches
+                    ) : (
+                      <ListItem className={classes.noItems}>
+                        <ListItemText primary="No coaches" />
+                      </ListItem>
+                    )}
+                  </List>
+                )}
               </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
@@ -385,25 +463,37 @@ class EventInfo extends Component {
                 >
                   Notes
                 </Typography>
-                <div className={classes.notesWrapper}>
-                  {optionalInfo.notes === "" ? (
+                {isInfoLoading || !info ? (
+                  <div className={classes.notesWrapper}>
                     <Typography
                       className={classes.notes}
                       type="body2"
                       component="p"
                     >
-                      No notes
+                      Loading...
                     </Typography>
-                  ) : (
-                    <Typography
-                      className={classes.notes}
-                      type="body2"
-                      component="p"
-                    >
-                      {optionalInfo.notes}
-                    </Typography>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <div className={classes.notesWrapper}>
+                    {info.optionalInfo.notes === "" ? (
+                      <Typography
+                        className={classes.notes}
+                        type="body2"
+                        component="p"
+                      >
+                        No notes
+                      </Typography>
+                    ) : (
+                      <Typography
+                        className={classes.notes}
+                        type="body2"
+                        component="p"
+                      >
+                        {info.optionalInfo.notes}
+                      </Typography>
+                    )}
+                  </div>
+                )}
               </Paper>
             </Grid>
           </Grid>

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import { Calendar as ReactCalendar } from "react-calendar";
+import { CircularProgress } from "material-ui/Progress";
 import classNames from "classnames";
 import EventIcon from "material-ui-icons/FiberManualRecord";
 import { grey, lightBlue, orange } from "material-ui/colors";
@@ -172,6 +173,12 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     width: "100%"
+  },
+  loadingWrapper: {
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 
@@ -193,7 +200,8 @@ class Calendar extends Component {
       isTablet,
       events,
       institutionID,
-      isLoading,
+      isEventsLoading,
+      isMinDateLoading,
       minDate
     } = this.props;
     const {
@@ -236,10 +244,11 @@ class Calendar extends Component {
       dateSelectedObject.getDate(),
       dateSelectedObject.getHours() + 2
     );
-    let prevDisabled = false;
+    let prevDisabled = isMinDateLoading;
     if (this.compareDates(minDate, prevDate) === +1) {
       prevDisabled = true;
     }
+    const nextDisabled = isMinDateLoading;
 
     return (
       <Paper className={classes.root}>
@@ -286,6 +295,7 @@ class Calendar extends Component {
             <Route
               render={({ history }) => (
                 <IconButton
+                  disabled={nextDisabled}
                   onClick={() => {
                     const date = new Date(dateSelected);
                     const ISOdate = new Date(
@@ -299,7 +309,11 @@ class Calendar extends Component {
                     history.push(`/admin/schedule/${ISOdate}`);
                   }}
                 >
-                  <NextIcon className={classes.arrow} />
+                  <NextIcon
+                    className={
+                      nextDisabled ? classes.disabledButton : classes.arrow
+                    }
+                  />
                 </IconButton>
               )}
             />
@@ -309,93 +323,107 @@ class Calendar extends Component {
           <div className={classes.desktopCalendar}>
             <div className={classes.bumper} />
             <Route
-              render={({ history }) => (
-                <ReactCalendar
-                  tileContent={({ date, view }) => {
-                    date.setHours(2);
-                    const eventDate = dates[date.toDateString()];
-                    if (eventDate) {
-                      if (
-                        eventDate.hasCompetitive &&
-                        eventDate.hasNonCompetitive
-                      ) {
-                        return (
-                          <div>
-                            <EventIcon className={classes.competitiveEvent} />
-                            <EventIcon
-                              className={classes.nonCompetitiveEvent}
-                            />
-                          </div>
-                        );
-                      } else if (eventDate.hasCompetitive) {
-                        return (
-                          <div>
-                            <EventIcon className={classes.competitiveEvent} />
-                          </div>
-                        );
-                      } else if (eventDate.hasNonCompetitive) {
-                        return (
-                          <div>
-                            <EventIcon
-                              className={classes.nonCompetitiveEvent}
-                            />
-                          </div>
-                        );
-                      }
-                    }
-                  }}
-                  tileClassName={({ date, view }) => {
-                    let tileClasses = [];
+              render={({ history }) => {
+                if (isEventsLoading || isMinDateLoading) {
+                  return (
+                    <div className={classes.loadingWrapper}>
+                      <CircularProgress />
+                    </div>
+                  );
+                } else {
+                  return (
+                    <ReactCalendar
+                      tileContent={({ date, view }) => {
+                        date.setHours(2);
+                        const eventDate = dates[date.toDateString()];
+                        if (eventDate) {
+                          if (
+                            eventDate.hasCompetitive &&
+                            eventDate.hasNonCompetitive
+                          ) {
+                            return (
+                              <div>
+                                <EventIcon
+                                  className={classes.competitiveEvent}
+                                />
+                                <EventIcon
+                                  className={classes.nonCompetitiveEvent}
+                                />
+                              </div>
+                            );
+                          } else if (eventDate.hasCompetitive) {
+                            return (
+                              <div>
+                                <EventIcon
+                                  className={classes.competitiveEvent}
+                                />
+                              </div>
+                            );
+                          } else if (eventDate.hasNonCompetitive) {
+                            return (
+                              <div>
+                                <EventIcon
+                                  className={classes.nonCompetitiveEvent}
+                                />
+                              </div>
+                            );
+                          }
+                        }
+                      }}
+                      tileClassName={({ date, view }) => {
+                        let tileClasses = [];
 
-                    if (date >= minDate) {
-                      if (date.toDateString() === formattedDateSelected) {
-                        tileClasses.push(classes.selectedTile);
-                      } else if (date.toDateString() === currentDate) {
-                        tileClasses.push(classes.todayTile);
-                      } else if (dates[date.toDateString()]) {
-                        tileClasses.push(classes.eventTile);
-                      } else {
-                        tileClasses.push(classes.normalTile);
-                      }
-                    } else {
-                      tileClasses.push(classes.disabledDate);
-                    }
+                        if (date >= minDate) {
+                          if (date.toDateString() === formattedDateSelected) {
+                            tileClasses.push(classes.selectedTile);
+                          } else if (date.toDateString() === currentDate) {
+                            tileClasses.push(classes.todayTile);
+                          } else if (dates[date.toDateString()]) {
+                            tileClasses.push(classes.eventTile);
+                          } else {
+                            tileClasses.push(classes.normalTile);
+                          }
+                        } else {
+                          tileClasses.push(classes.disabledDate);
+                        }
 
-                    if (date.getDay() === 6 || date.getDay() === 0) {
-                      tileClasses.push(classes.weekendTile);
-                    }
+                        if (date.getDay() === 6 || date.getDay() === 0) {
+                          tileClasses.push(classes.weekendTile);
+                        }
 
-                    return classNames(...tileClasses);
-                  }}
-                  className={classes.calendar}
-                  value={new Date(dateSelected)}
-                  minDate={minDate}
-                  showNavigation={false}
-                  onChange={date => {
-                    const ISOdate = new Date(
-                      date.getFullYear(),
-                      date.getMonth(),
-                      date.getDate(),
-                      date.getHours() + 2
-                    )
-                      .toISOString()
-                      .slice(0, 10);
-                    history.push(`/admin/schedule/${ISOdate}`);
-                    updateView("EVENTS_LIST");
-                  }}
-                  nextLabel={<NextIcon />}
-                  prevLabel={<PreviousIcon />}
-                  next2Label={<Next2Icon />}
-                  prev2Label={<Previous2Icon />}
-                />
-              )}
+                        return classNames(...tileClasses);
+                      }}
+                      className={classes.calendar}
+                      value={new Date(dateSelected)}
+                      minDate={minDate}
+                      showNavigation={false}
+                      onChange={date => {
+                        const ISOdate = new Date(
+                          date.getFullYear(),
+                          date.getMonth(),
+                          date.getDate(),
+                          date.getHours() + 2
+                        )
+                          .toISOString()
+                          .slice(0, 10);
+                        history.push(`/admin/schedule/${ISOdate}`);
+                        updateView("EVENTS_LIST");
+                      }}
+                      nextLabel={<NextIcon />}
+                      prevLabel={<PreviousIcon />}
+                      next2Label={<Next2Icon />}
+                      prev2Label={<Previous2Icon />}
+                    />
+                  );
+                }
+              }}
             />
           </div>
           <div className={classes.desktopEventsList}>
             <EventsList
               isTablet={isTablet}
               dateSelected={dateSelected}
-              isLoading={isLoading}
+              isLoading={isEventsLoading || isMinDateLoading}
               events={events}
               institutionID={institutionID}
               actions={{
@@ -419,7 +447,8 @@ class Calendar extends Component {
       events,
       institutionID,
       currentView,
-      isLoading,
+      isEventsLoading,
+      isMinDateLoading,
       minDate
     } = this.props;
     const {
@@ -477,10 +506,11 @@ class Calendar extends Component {
       );
     }
 
-    let prevDisabled = false;
+    let prevDisabled = isMinDateLoading;
     if (this.compareDates(minDate, prevDate) === +1) {
       prevDisabled = true;
     }
+    const nextDisabled = isMinDateLoading;
 
     return (
       <div className={classes.root}>
@@ -545,6 +575,7 @@ class Calendar extends Component {
             <Route
               render={({ history }) => (
                 <IconButton
+                  disabled={nextDisabled}
                   onClick={() => {
                     const date = new Date(dateSelected);
                     let ISOdate = new Date();
@@ -571,7 +602,11 @@ class Calendar extends Component {
                     history.push(`/admin/schedule/${ISOdate}`);
                   }}
                 >
-                  <NextIcon className={classes.arrow} />
+                  <NextIcon
+                    className={
+                      nextDisabled ? classes.disabledButton : classes.arrow
+                    }
+                  />
                 </IconButton>
               )}
             />
@@ -582,86 +617,100 @@ class Calendar extends Component {
             <div>
               <div className={classes.bumper} />
               <Route
-                render={({ history }) => (
-                  <ReactCalendar
-                    tileContent={({ date, view }) => {
-                      date.setHours(2);
-                      const eventDate = dates[date.toDateString()];
-                      if (eventDate) {
-                        if (
-                          eventDate.hasCompetitive &&
-                          eventDate.hasNonCompetitive
-                        ) {
-                          return (
-                            <div>
-                              <EventIcon className={classes.competitiveEvent} />
-                              <EventIcon
-                                className={classes.nonCompetitiveEvent}
-                              />
-                            </div>
-                          );
-                        } else if (eventDate.hasCompetitive) {
-                          return (
-                            <div>
-                              <EventIcon className={classes.competitiveEvent} />
-                            </div>
-                          );
-                        } else if (eventDate.hasNonCompetitive) {
-                          return (
-                            <div>
-                              <EventIcon
-                                className={classes.nonCompetitiveEvent}
-                              />
-                            </div>
-                          );
-                        }
-                      }
-                    }}
-                    tileClassName={({ date, view }) => {
-                      let tileClasses = [];
+                render={({ history }) => {
+                  if (isEventsLoading || isMinDateLoading) {
+                    return (
+                      <div className={classes.loadingWrapper}>
+                        <CircularProgress />
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <ReactCalendar
+                        tileContent={({ date, view }) => {
+                          date.setHours(2);
+                          const eventDate = dates[date.toDateString()];
+                          if (eventDate) {
+                            if (
+                              eventDate.hasCompetitive &&
+                              eventDate.hasNonCompetitive
+                            ) {
+                              return (
+                                <div>
+                                  <EventIcon
+                                    className={classes.competitiveEvent}
+                                  />
+                                  <EventIcon
+                                    className={classes.nonCompetitiveEvent}
+                                  />
+                                </div>
+                              );
+                            } else if (eventDate.hasCompetitive) {
+                              return (
+                                <div>
+                                  <EventIcon
+                                    className={classes.competitiveEvent}
+                                  />
+                                </div>
+                              );
+                            } else if (eventDate.hasNonCompetitive) {
+                              return (
+                                <div>
+                                  <EventIcon
+                                    className={classes.nonCompetitiveEvent}
+                                  />
+                                </div>
+                              );
+                            }
+                          }
+                        }}
+                        tileClassName={({ date, view }) => {
+                          let tileClasses = [];
 
-                      if (date > minDate) {
-                        if (date.toDateString() === formattedDateSelected) {
-                          tileClasses.push(classes.selectedTile);
-                        } else if (date.toDateString() === currentDate) {
-                          tileClasses.push(classes.todayTile);
-                        } else if (dates[date.toDateString()]) {
-                          tileClasses.push(classes.eventTile);
-                        } else {
-                          tileClasses.push(classes.normalTile);
-                        }
-                      } else {
-                        tileClasses.push(classes.disabledDate);
-                      }
+                          if (date > minDate) {
+                            if (date.toDateString() === formattedDateSelected) {
+                              tileClasses.push(classes.selectedTile);
+                            } else if (date.toDateString() === currentDate) {
+                              tileClasses.push(classes.todayTile);
+                            } else if (dates[date.toDateString()]) {
+                              tileClasses.push(classes.eventTile);
+                            } else {
+                              tileClasses.push(classes.normalTile);
+                            }
+                          } else {
+                            tileClasses.push(classes.disabledDate);
+                          }
 
-                      if (date.getDay() === 6 || date.getDay() === 0) {
-                        tileClasses.push(classes.weekendTile);
-                      }
+                          if (date.getDay() === 6 || date.getDay() === 0) {
+                            tileClasses.push(classes.weekendTile);
+                          }
 
-                      return classNames(...tileClasses);
-                    }}
-                    className={classes.calendar}
-                    value={new Date(dateSelected)}
-                    minDate={minDate}
-                    showNavigation={false}
-                    onChange={date => {
-                      const ISOdate = new Date(
-                        date.getFullYear(),
-                        date.getMonth(),
-                        date.getDate(),
-                        date.getHours() + 2
-                      )
-                        .toISOString()
-                        .slice(0, 10);
-                      history.push(`/admin/schedule/${ISOdate}`);
-                      updateView("EVENTS_LIST");
-                    }}
-                    nextLabel={<NextIcon />}
-                    prevLabel={<PreviousIcon />}
-                    next2Label={<Next2Icon />}
-                    prev2Label={<Previous2Icon />}
-                  />
-                )}
+                          return classNames(...tileClasses);
+                        }}
+                        className={classes.calendar}
+                        value={new Date(dateSelected)}
+                        minDate={minDate}
+                        showNavigation={false}
+                        onChange={date => {
+                          const ISOdate = new Date(
+                            date.getFullYear(),
+                            date.getMonth(),
+                            date.getDate(),
+                            date.getHours() + 2
+                          )
+                            .toISOString()
+                            .slice(0, 10);
+                          history.push(`/admin/schedule/${ISOdate}`);
+                          updateView("EVENTS_LIST");
+                        }}
+                        nextLabel={<NextIcon />}
+                        prevLabel={<PreviousIcon />}
+                        next2Label={<Next2Icon />}
+                        prev2Label={<Previous2Icon />}
+                      />
+                    );
+                  }
+                }}
               />
             </div>
           ) : (
@@ -671,7 +720,7 @@ class Calendar extends Component {
                 dateSelected={dateSelected}
                 events={events}
                 institutionID={institutionID}
-                isLoading={isLoading}
+                isLoading={isEventsLoading || isMinDateLoading}
                 actions={{
                   updateView,
                   openCancelEventAlert,

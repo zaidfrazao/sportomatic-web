@@ -1,26 +1,58 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
-import { withStyles } from "material-ui/styles";
-import { lightBlue, orange } from "material-ui/colors";
-import { CircularProgress } from "material-ui/Progress";
 import AddIcon from "material-ui-icons/Add";
 import Button from "material-ui/Button";
 import EditIcon from "material-ui-icons/Edit";
-import LeaderboardAd from "../../../components/LeaderboardAd";
-import BannerAd from "../../../components/BannerAd";
-import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
-import Calendar from "./components/Calendar";
-import EventInfo from "./components/EventInfo";
+import { lightBlue, orange } from "material-ui/colors";
+import { Redirect } from "react-router-dom";
+import { withStyles } from "material-ui/styles";
 import AddEventDialog from "./components/AddEventDialog";
-import EditEventDialog from "./components/EditEventDialog";
-import NotificationModal from "../../../components/NotificationModal";
+import BannerAd from "../../../components/BannerAd";
+import Calendar from "./components/Calendar";
 import DecisionModal from "../../../components/DecisionModal";
+import EditEventDialog from "./components/EditEventDialog";
+import EventInfo from "./components/EventInfo";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
+import LeaderboardAd from "../../../components/LeaderboardAd";
+import NotificationModal from "../../../components/NotificationModal";
 
 const styles = theme => ({
+  adWrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center"
+  },
+  button: {
+    margin: theme.spacing.unit,
+    position: "fixed",
+    bottom: 24,
+    right: 24,
+    zIndex: 1
+  },
   competitiveEvent: {
     width: 12,
     height: 12,
     color: orange[500]
+  },
+  contentWrapper: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
+  },
+  desktopCalendar: {
+    width: "60%"
+  },
+  desktopEventsList: {
+    width: "40%",
+    height: "100%"
+  },
+  eventsListWrapper: {
+    height: "calc(100% - 98px)"
+  },
+  loaderWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   },
   nonCompetitiveEvent: {
     width: 12,
@@ -33,51 +65,34 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column"
   },
-  adWrapper: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center"
-  },
-  desktopCalendar: {
-    width: "60%"
-  },
-  desktopEventsList: {
-    width: "40%",
-    height: "100%"
-  },
   tabletEventsListWrapper: {
     height: "100%"
-  },
-  eventsListWrapper: {
-    height: "calc(100% - 98px)"
-  },
-  button: {
-    margin: theme.spacing.unit,
-    position: "fixed",
-    bottom: 24,
-    right: 24,
-    zIndex: 1
-  },
-  loaderWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  contentWrapper: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column"
   }
 });
 
 class ScheduleLayout extends Component {
   componentWillMount() {
     const { userID } = this.props;
-    const { loadEvents } = this.props.actions;
+    const {
+      loadEvents,
+      fetchCreationDate,
+      loadCoaches,
+      loadManagers,
+      loadTeams,
+      updateView
+    } = this.props.actions;
+    const { eventID } = this.props.match.params;
 
     if (userID !== "") {
+      loadCoaches(userID);
+      loadManagers(userID);
       loadEvents(userID);
+      loadTeams(userID);
+      fetchCreationDate(userID);
+    }
+
+    if (eventID) {
+      updateView("EVENT_INFO");
     }
   }
 
@@ -98,6 +113,19 @@ class ScheduleLayout extends Component {
       loadTeams(nextProps.userID);
       fetchCreationDate(nextProps.userID);
     }
+  }
+
+  createAd() {
+    const { isMobile, isTablet } = this.props;
+
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
+    return ad;
   }
 
   renderView() {
@@ -124,8 +152,6 @@ class ScheduleLayout extends Component {
       closeAddEventDialog,
       openEditEventDialog,
       closeEditEventDialog,
-      loadTeams,
-      loadStaff,
       addEvent,
       openEventErrorAlert,
       closeEventErrorAlert,
@@ -140,7 +166,11 @@ class ScheduleLayout extends Component {
     const {
       isEventsLoading,
       isAddEventDialogLoading,
-      isEditEventDialogLoading
+      isEditEventDialogLoading,
+      isCreationDateLoading,
+      isCoachesLoading,
+      isManagersLoading,
+      isTeamsLoading
     } = this.props.loadingStatus;
     const {
       isAddEventDialogOpen,
@@ -151,7 +181,6 @@ class ScheduleLayout extends Component {
     } = this.props.dialogs;
 
     const currentDate = new Date(Date.now());
-
     if (!dateSelected) {
       return (
         <Redirect
@@ -179,39 +208,30 @@ class ScheduleLayout extends Component {
         "Please specify a name for your custom event type.";
     }
 
-    let ad = <LeaderboardAd />;
-    if (isMobile) {
-      ad = <LargeMobileBannerAd />;
-    } else if (isTablet) {
-      ad = <BannerAd />;
-    }
+    const ad = this.createAd();
 
     if (currentView === "EVENT_INFO") {
       return (
         <div className={classes.contentWrapper}>
-          {isEventsLoading ? (
-            <div className={classes.loaderWrapper}>
-              <CircularProgress />
-            </div>
-          ) : (
-            <EventInfo
-              coaches={coaches}
-              managers={managers}
-              teams={teams}
-              info={events[eventID]}
-              isMobile={isMobile}
-              isTablet={isTablet}
-              actions={{ updateView }}
-            />
-          )}
+          <EventInfo
+            coaches={coaches}
+            managers={managers}
+            teams={teams}
+            info={events[eventID]}
+            isInfoLoading={isEventsLoading}
+            isCoachesLoading={isCoachesLoading}
+            isManagersLoading={isManagersLoading}
+            isTeamsLoading={isTeamsLoading}
+            isMobile={isMobile}
+            isTablet={isTablet}
+            actions={{ updateView }}
+          />
           <Button
             fab
             color="accent"
             aria-label="edit event"
             className={classes.button}
             onClick={() => {
-              loadTeams(userID);
-              loadStaff(userID);
               openEditEventDialog();
             }}
           >
@@ -256,7 +276,8 @@ class ScheduleLayout extends Component {
             isTablet={isTablet}
             institutionID={userID}
             currentView={currentView}
-            isLoading={isEventsLoading}
+            isEventsLoading={isEventsLoading}
+            isMinDateLoading={isCreationDateLoading}
             actions={{
               updateView,
               openCancelEventAlert,
@@ -270,30 +291,26 @@ class ScheduleLayout extends Component {
             aria-label="add event"
             className={classes.button}
             onClick={() => {
-              loadTeams(userID);
-              loadStaff(userID);
               openAddEventDialog();
             }}
           >
             <AddIcon />
           </Button>
-          {false && (
-            <AddEventDialog
-              isOpen={isAddEventDialogOpen}
-              isLoading={isAddEventDialogLoading}
-              minDate={currentDate.toISOString().slice(0, 10)}
-              initialDate={dateSelected}
-              institutionID={userID}
-              teams={teams}
-              coaches={coaches}
-              managers={managers}
-              actions={{
-                handleClose: closeAddEventDialog,
-                addEvent,
-                openEventErrorAlert
-              }}
-            />
-          )}
+          <AddEventDialog
+            isOpen={isAddEventDialogOpen}
+            isLoading={isAddEventDialogLoading}
+            minDate={currentDate.toISOString().slice(0, 10)}
+            initialDate={dateSelected}
+            institutionID={userID}
+            teams={teams}
+            coaches={coaches}
+            managers={managers}
+            actions={{
+              handleClose: closeAddEventDialog,
+              addEvent,
+              openEventErrorAlert
+            }}
+          />
           <DecisionModal
             isOpen={isCancelEventAlertOpen}
             handleYesClick={() => {
