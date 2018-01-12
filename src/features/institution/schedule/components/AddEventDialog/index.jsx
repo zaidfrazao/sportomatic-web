@@ -85,7 +85,10 @@ class AddEventDialog extends Component {
     startTime: "12:00",
     endTime: "13:00",
     venue: "To be specified",
-    opponents: "To be specified",
+    opponents: {
+      institution: "To be specified",
+      isSignedUp: false
+    },
     homeAway: "UNKNOWN",
     frequency: "ONCE",
     numberOfEvents: "1",
@@ -280,6 +283,10 @@ class AddEventDialog extends Component {
       }
     }
 
+    if (update === "opponents") {
+      newTitle = newTitle + " vs " + value;
+    }
+
     this.setState({ title: newTitle });
   }
 
@@ -310,7 +317,16 @@ class AddEventDialog extends Component {
       default:
         break;
     }
-    this.setState({ [name]: event.target.value });
+    if (name === "opponents") {
+      this.setState({
+        [name]: {
+          institution: event.target.value,
+          isSignedUp: false
+        }
+      });
+    } else {
+      this.setState({ [name]: event.target.value });
+    }
   };
 
   handleToggle = (value, type) => {
@@ -480,10 +496,7 @@ class AddEventDialog extends Component {
                   homeAway,
                   notes,
                   venue,
-                  opponents: {
-                    institution: opponents,
-                    isSignedUp: false
-                  }
+                  opponents
                 };
 
                 if (hasTitleError || hasOtherEventTypeError || hasDateError) {
@@ -755,7 +768,7 @@ class AddEventDialog extends Component {
                         <TextField
                           id="opponents"
                           label="Opponents"
-                          value={opponents}
+                          value={opponents.institution}
                           onChange={this.handleChange("opponents")}
                           InputLabelProps={{
                             shrink: true
@@ -787,6 +800,11 @@ class AddEventDialog extends Component {
                             value="AWAY"
                             control={<Radio />}
                             label="Away"
+                          />
+                          <FormControlLabel
+                            value="NEUTRAL"
+                            control={<Radio />}
+                            label="Neutral"
                           />
                         </RadioGroup>
                       </FormControl>

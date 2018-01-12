@@ -620,10 +620,7 @@ class EditEventDialog extends Component {
                     homeAway,
                     notes,
                     venue,
-                    opponents: {
-                      institution: opponents,
-                      isSignedUp: false
-                    }
+                    opponents
                   };
 
                   if (hasTitleError || hasOtherEventTypeError || hasDateError) {
