@@ -468,13 +468,15 @@ export function errorLoadingEvents(error: { code: string, message: string }) {
   };
 }
 
-export function loadEvents(institutionID) {
+export function loadEvents(institutionID, minDate, maxDate) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestEvents());
     const eventsRef = firebase
       .firestore()
       .collection("events")
-      .where("institutionID", "==", institutionID);
+      .where("institutionID", "==", institutionID)
+      .where("requiredInfo.times.start", ">", minDate)
+      .where("requiredInfo.times.start", "<", maxDate);
 
     return eventsRef.onSnapshot(querySnapshot => {
       let events = {};

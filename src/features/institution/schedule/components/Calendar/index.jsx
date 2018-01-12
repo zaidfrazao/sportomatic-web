@@ -349,6 +349,7 @@ class Calendar extends Component {
                 } else {
                   return (
                     <ReactCalendar
+                      showNeighboringMonth={false}
                       tileContent={({ date, view }) => {
                         date.setHours(2);
                         const eventDate = dates[date.toDateString()];
@@ -678,6 +679,7 @@ class Calendar extends Component {
                   } else {
                     return (
                       <ReactCalendar
+                        showNeighboringMonth={false}
                         tileContent={({ date, view }) => {
                           date.setHours(2);
                           const eventDate = dates[date.toDateString()];

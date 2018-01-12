@@ -87,12 +87,24 @@ class ScheduleLayout extends Component {
       loadTeams,
       updateView
     } = this.props.actions;
-    const { eventID } = this.props.match.params;
+    const { eventID, dateSelected } = this.props.match.params;
+
+    const selectedDateObject = new Date(dateSelected);
+    const minDate = new Date(
+      selectedDateObject.getFullYear(),
+      selectedDateObject.getMonth(),
+      1
+    );
+    const maxDate = new Date(
+      selectedDateObject.getFullYear(),
+      selectedDateObject.getMonth() + 1,
+      0
+    );
 
     if (userID !== "") {
       loadCoaches(userID);
       loadManagers(userID);
-      loadEvents(userID);
+      loadEvents(userID, minDate, maxDate);
       loadTeams(userID);
       fetchCreationDate(userID);
     }
@@ -104,6 +116,7 @@ class ScheduleLayout extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { userID, events, teams } = this.props;
+    const { dateSelected } = this.props.match.params;
     const {
       loadEvents,
       fetchCreationDate,
@@ -112,10 +125,45 @@ class ScheduleLayout extends Component {
       loadTeams
     } = this.props.actions;
 
+    if (dateSelected !== nextProps.match.params.dateSelected) {
+      const newSelectedDateObject = new Date(
+        nextProps.match.params.dateSelected
+      );
+      const oldSelectedDateObject = new Date(dateSelected);
+
+      if (
+        newSelectedDateObject.getMonth() !== oldSelectedDateObject.getMonth()
+      ) {
+        const minDate = new Date(
+          newSelectedDateObject.getFullYear(),
+          newSelectedDateObject.getMonth(),
+          1
+        );
+        const maxDate = new Date(
+          newSelectedDateObject.getFullYear(),
+          newSelectedDateObject.getMonth() + 1,
+          0
+        );
+        loadEvents(nextProps.userID, minDate, maxDate);
+      }
+    }
+
     if (userID !== nextProps.userID) {
+      const selectedDateObject = new Date(dateSelected);
+      const minDate = new Date(
+        selectedDateObject.getFullYear(),
+        selectedDateObject.getMonth(),
+        1
+      );
+      const maxDate = new Date(
+        selectedDateObject.getFullYear(),
+        selectedDateObject.getMonth() + 1,
+        0
+      );
+
       loadCoaches(nextProps.userID);
       loadManagers(nextProps.userID);
-      loadEvents(nextProps.userID);
+      loadEvents(nextProps.userID, minDate, maxDate);
       loadTeams(nextProps.userID);
       fetchCreationDate(nextProps.userID);
     }
