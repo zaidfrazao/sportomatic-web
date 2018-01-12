@@ -3,7 +3,7 @@ import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
-import { grey } from "material-ui/colors";
+import { grey, lightBlue, orange } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Paper from "material-ui/Paper";
@@ -23,10 +23,20 @@ const styles = {
     justifyContent: "center",
     margin: "24px 0"
   },
+  appBar: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+  },
   button: {
     "@media (max-width: 960px)": {
       width: "100%"
     }
+  },
+  competitiveEvent: {
+    backgroundColor: orange[500],
+    marginLeft: 16
   },
   contentWrapper: {
     "@media (min-width: 1200px)": {
@@ -46,12 +56,15 @@ const styles = {
     borderBottom: `1px solid ${grey[200]}`
   },
   name: {
-    margin: 24,
-    width: "calc(100% - 48px)",
-    textAlign: "center"
+    margin: "24px 16px",
+    textAlign: "left"
   },
   noItems: {
     textAlign: "center"
+  },
+  nonCompetitiveEvent: {
+    backgroundColor: lightBlue[500],
+    marginLeft: 16
   },
   notes: {
     padding: 24
@@ -106,8 +119,6 @@ class EventInfo extends Component {
       isManagersLoading,
       isCoachesLoading
     } = this.props;
-
-    console.log(this.props);
 
     let eventTeams = [];
     let eventCoaches = [];
@@ -225,13 +236,20 @@ class EventInfo extends Component {
     return (
       <div className={classes.root}>
         {isInfoLoading || !info ? (
-          <AppBar position="static" color="default">
+          <AppBar position="static" color="default" className={classes.appBar}>
             <Typography className={classes.name} type="title" component="h2">
               Loading...
             </Typography>
           </AppBar>
         ) : (
-          <AppBar position="static" color="default">
+          <AppBar position="static" color="default" className={classes.appBar}>
+            <Avatar
+              className={
+                info.requiredInfo.isCompetitive
+                  ? classes.competitiveEvent
+                  : classes.nonCompetitiveEvent
+              }
+            />
             {info.status === "CANCELLED" ? (
               <Typography className={classes.name} type="title" component="h2">
                 {info.requiredInfo.title} - [Cancelled]
@@ -347,7 +365,7 @@ class EventInfo extends Component {
                       type="title"
                       component="h3"
                     >
-                      Match Info
+                      Competitive Info
                     </Typography>
                     <List>
                       <ListItem>
