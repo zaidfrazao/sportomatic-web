@@ -108,11 +108,7 @@ class EventsList extends Component {
       institutionID,
       isLoading
     } = this.props;
-    const {
-      openCancelEventAlert,
-      openUncancelEventAlert,
-      updateView
-    } = this.props.actions;
+    const { updateView } = this.props.actions;
 
     const allEvents = this.getFullSortedEventsList(events);
     const options = { hour12: true, hour: "2-digit", minute: "2-digit" };
@@ -127,9 +123,6 @@ class EventsList extends Component {
         return eventInfo.requiredInfo.status === "ACTIVE";
       })
       .map(eventInfo => {
-        const eventDate = new Date(eventInfo.requiredInfo.times.start);
-        const currentDate = new Date(Date.now());
-        const showCancelButton = eventDate > currentDate;
         const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
           "en-US",
           options
@@ -163,26 +156,6 @@ class EventsList extends Component {
                     primary={eventInfo.requiredInfo.title}
                     secondary={`${eventStartTime} - ${eventEndTime}`}
                   />
-                  {showCancelButton && (
-                    <ListItemSecondaryAction>
-                      <Tooltip title="Cancel" placement="left">
-                        <IconButton
-                          aria-label="cancel event"
-                          onClick={() =>
-                            openCancelEventAlert(
-                              institutionID,
-                              eventInfo.id,
-                              _.keys(eventInfo.managers),
-                              _.keys(eventInfo.coaches),
-                              dateSelected.slice(0, 4),
-                              dateSelected.slice(5, 7)
-                            )}
-                        >
-                          <CancelIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </ListItemSecondaryAction>
-                  )}
                 </ListItem>
               );
             }}
@@ -200,9 +173,6 @@ class EventsList extends Component {
         return eventInfo.requiredInfo.status === "ACTIVE";
       })
       .map(eventInfo => {
-        const eventDate = new Date(eventInfo.requiredInfo.times.start);
-        const currentDate = new Date(Date.now());
-        const showCancelButton = eventDate > currentDate;
         const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
           "en-US",
           options
@@ -236,26 +206,6 @@ class EventsList extends Component {
                     primary={eventInfo.requiredInfo.title}
                     secondary={`${eventStartTime} - ${eventEndTime}`}
                   />
-                  {showCancelButton && (
-                    <ListItemSecondaryAction>
-                      <Tooltip title="Cancel" placement="left">
-                        <IconButton
-                          aria-label="cancel event"
-                          onClick={() =>
-                            openCancelEventAlert(
-                              institutionID,
-                              eventInfo.id,
-                              _.keys(eventInfo.managers),
-                              _.keys(eventInfo.coaches),
-                              dateSelected.slice(0, 4),
-                              dateSelected.slice(5, 7)
-                            )}
-                        >
-                          <CancelIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </ListItemSecondaryAction>
-                  )}
                 </ListItem>
               );
             }}
@@ -273,9 +223,6 @@ class EventsList extends Component {
         return eventInfo.requiredInfo.status === "ACTIVE";
       })
       .map(eventInfo => {
-        const eventDate = new Date(eventInfo.requiredInfo.times.start);
-        const currentDate = new Date(Date.now());
-        const showCancelButton = eventDate > currentDate;
         const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
           "en-US",
           options
@@ -309,26 +256,6 @@ class EventsList extends Component {
                     primary={eventInfo.requiredInfo.title}
                     secondary={`${eventStartTime} - ${eventEndTime}`}
                   />
-                  {showCancelButton && (
-                    <ListItemSecondaryAction>
-                      <Tooltip title="Cancel" placement="left">
-                        <IconButton
-                          aria-label="cancel event"
-                          onClick={() =>
-                            openCancelEventAlert(
-                              institutionID,
-                              eventInfo.id,
-                              _.keys(eventInfo.managers),
-                              _.keys(eventInfo.coaches),
-                              dateSelected.slice(0, 4),
-                              dateSelected.slice(5, 7)
-                            )}
-                        >
-                          <CancelIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </ListItemSecondaryAction>
-                  )}
                 </ListItem>
               );
             }}
@@ -341,9 +268,6 @@ class EventsList extends Component {
         return eventInfo.requiredInfo.status === "CANCELLED";
       })
       .map(eventInfo => {
-        const eventDate = new Date(eventInfo.requiredInfo.times.start);
-        const currentDate = new Date(Date.now());
-        const showCancelButton = eventDate > currentDate;
         const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
           "en-US",
           options
@@ -377,26 +301,6 @@ class EventsList extends Component {
                     primary={eventInfo.requiredInfo.title}
                     secondary={`${eventStartTime} - ${eventEndTime}`}
                   />
-                  {showCancelButton && (
-                    <ListItemSecondaryAction>
-                      <Tooltip title="Uncancel" placement="left">
-                        <IconButton
-                          aria-label="uncancel event"
-                          onClick={() =>
-                            openUncancelEventAlert(
-                              institutionID,
-                              eventInfo.id,
-                              _.keys(eventInfo.managers),
-                              _.keys(eventInfo.coaches),
-                              dateSelected.slice(0, 4),
-                              dateSelected.slice(5, 7)
-                            )}
-                        >
-                          <UncancelIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </ListItemSecondaryAction>
-                  )}
                 </ListItem>
               );
             }}

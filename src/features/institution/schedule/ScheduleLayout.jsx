@@ -1,8 +1,5 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import AddIcon from "material-ui-icons/Add";
-import Button from "material-ui/Button";
-import EditIcon from "material-ui-icons/Edit";
 import { lightBlue, orange } from "material-ui/colors";
 import { Redirect } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
@@ -309,19 +306,13 @@ class ScheduleLayout extends Component {
             isTeamsLoading={isTeamsLoading}
             isMobile={isMobile}
             isTablet={isTablet}
-            actions={{ updateView }}
-          />
-          <Button
-            fab
-            color="accent"
-            aria-label="edit event"
-            className={classes.button}
-            onClick={() => {
-              openEditEventDialog();
+            actions={{
+              updateView,
+              editEvent: openEditEventDialog,
+              cancelEvent: openCancelEventAlert,
+              uncancelEvent: openUncancelEventAlert
             }}
-          >
-            <EditIcon />
-          </Button>
+          />
           <EditEventDialog
             isOpen={isEditEventDialogOpen}
             isLoading={isEditEventDialogLoading}
@@ -345,6 +336,26 @@ class ScheduleLayout extends Component {
             heading={eventErrorAlertHeading}
             message={eventErrorAlertMessage}
           />
+          <DecisionModal
+            isOpen={isCancelEventAlertOpen}
+            handleYesClick={() => {
+              cancelEvent(eventID);
+              closeCancelEventAlert();
+            }}
+            handleNoClick={closeCancelEventAlert}
+            heading="Cancel Event"
+            message="Are you sure you want to cancel this event?"
+          />
+          <DecisionModal
+            isOpen={isUncancelEventAlertOpen}
+            handleYesClick={() => {
+              uncancelEvent(eventID);
+              closeUncancelEventAlert();
+            }}
+            handleNoClick={closeUncancelEventAlert}
+            heading="Uncancel Event"
+            message="Are you sure you want to uncancel this event?"
+          />
         </div>
       );
     } else {
@@ -356,6 +367,7 @@ class ScheduleLayout extends Component {
             divisions={_.keys(this.state.divisions)}
             ageGroups={_.keys(this.state.ageGroups)}
             applyFilters={applyFilters}
+            addEvent={openAddEventDialog}
           />
           {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
           <Calendar
@@ -370,22 +382,9 @@ class ScheduleLayout extends Component {
             isMinDateLoading={isCreationDateLoading}
             actions={{
               updateView,
-              openCancelEventAlert,
-              openUncancelEventAlert,
               cancelEvent
             }}
           />
-          <Button
-            fab
-            color="accent"
-            aria-label="add event"
-            className={classes.button}
-            onClick={() => {
-              openAddEventDialog();
-            }}
-          >
-            <AddIcon />
-          </Button>
           <AddEventDialog
             isOpen={isAddEventDialogOpen}
             isLoading={isAddEventDialogLoading}
@@ -400,40 +399,6 @@ class ScheduleLayout extends Component {
               addEvent,
               openEventErrorAlert
             }}
-          />
-          <DecisionModal
-            isOpen={isCancelEventAlertOpen}
-            handleYesClick={() => {
-              cancelEvent(
-                selectedEventInfo.institutionID,
-                selectedEventInfo.eventID,
-                selectedEventInfo.managerIDs,
-                selectedEventInfo.coachIDs,
-                selectedEventInfo.year,
-                selectedEventInfo.month
-              );
-              closeCancelEventAlert();
-            }}
-            handleNoClick={closeCancelEventAlert}
-            heading="Cancel Event"
-            message="Are you sure you want to cancel this event?"
-          />
-          <DecisionModal
-            isOpen={isUncancelEventAlertOpen}
-            handleYesClick={() => {
-              uncancelEvent(
-                selectedEventInfo.institutionID,
-                selectedEventInfo.eventID,
-                selectedEventInfo.managerIDs,
-                selectedEventInfo.coachIDs,
-                selectedEventInfo.year,
-                selectedEventInfo.month
-              );
-              closeUncancelEventAlert();
-            }}
-            handleNoClick={closeUncancelEventAlert}
-            heading="Uncancel Event"
-            message="Are you sure you want to uncancel this event?"
           />
           <NotificationModal
             isOpen={isEventErrorAlertOpen}

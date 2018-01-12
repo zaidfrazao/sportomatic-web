@@ -52,15 +52,7 @@ export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const uiConfigInitialState = {
   currentView: "SCHEDULE",
   errorType: "NONE",
-  minDate: new Date(2017, 1, 1),
-  selectedEventInfo: {
-    institutionID: "",
-    eventID: "",
-    managerIDs: [],
-    coachIDs: [],
-    year: "",
-    month: ""
-  }
+  minDate: new Date(2017, 1, 1)
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -84,20 +76,6 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
       return {
         ...state,
         errorType: "LOADING"
-      };
-    case OPEN_CANCEL_EVENT_ALERT:
-      return {
-        ...state,
-        selectedEventInfo: {
-          ...action.payload
-        }
-      };
-    case OPEN_UNCANCEL_EVENT_ALERT:
-      return {
-        ...state,
-        selectedEventInfo: {
-          ...action.payload
-        }
       };
     default:
       return state;
@@ -412,24 +390,9 @@ export function closeEditEventDialog() {
   };
 }
 
-export function openCancelEventAlert(
-  institutionID,
-  eventID,
-  managerIDs,
-  coachIDs,
-  year,
-  month
-) {
+export function openCancelEventAlert() {
   return {
-    type: OPEN_CANCEL_EVENT_ALERT,
-    payload: {
-      institutionID,
-      eventID,
-      managerIDs,
-      coachIDs,
-      year,
-      month
-    }
+    type: OPEN_CANCEL_EVENT_ALERT
   };
 }
 
@@ -439,24 +402,9 @@ export function closeCancelEventAlert() {
   };
 }
 
-export function openUncancelEventAlert(
-  institutionID,
-  eventID,
-  managerIDs,
-  coachIDs,
-  year,
-  month
-) {
+export function openUncancelEventAlert() {
   return {
-    type: OPEN_UNCANCEL_EVENT_ALERT,
-    payload: {
-      institutionID,
-      eventID,
-      managerIDs,
-      coachIDs,
-      year,
-      month
-    }
+    type: OPEN_UNCANCEL_EVENT_ALERT
   };
 }
 
@@ -954,75 +902,31 @@ export function errorUncancellingEvent(error: {
   };
 }
 
-export function cancelEvent(
-  institutionID,
-  eventID,
-  managerIDs,
-  coachIDs,
-  year,
-  month
-) {
+export function cancelEvent(eventID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestCancelEvent());
-    const managerUpdates = _.fromPairs(
-      managerIDs.map(id => [
-        `manager/private/${id}/institutions/${institutionID}/events/${year}/${month}/${eventID}/status`,
-        "CANCELLED"
-      ])
-    );
-    const coachUpdates = _.fromPairs(
-      coachIDs.map(id => [
-        `coach/private/${id}/institutions/${institutionID}/events/${year}/${month}/${eventID}/status`,
-        "CANCELLED"
-      ])
-    );
-    const updates = {
-      [`institution/${institutionID}/private/events/${year}/${month}/${eventID}/status`]: "CANCELLED",
-      ...managerUpdates,
-      ...coachUpdates
-    };
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
 
-    return firebase
-      .database()
-      .ref()
-      .update(updates)
+    return eventRef
+      .update({
+        "requiredInfo.status": "CANCELLED"
+      })
       .then(() => dispatch(receiveCancelEvent()))
       .catch(error => dispatch(errorCancellingEvent(error)));
   };
 }
 
-export function uncancelEvent(
-  institutionID,
-  eventID,
-  managerIDs,
-  coachIDs,
-  year,
-  month
-) {
+export function uncancelEvent(eventID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestUncancelEvent());
-    const managerUpdates = _.fromPairs(
-      managerIDs.map(id => [
-        `manager/private/${id}/institutions/${institutionID}/events/${year}/${month}/${eventID}/status`,
-        "ACTIVE"
-      ])
-    );
-    const coachUpdates = _.fromPairs(
-      coachIDs.map(id => [
-        `coach/private/${id}/institutions/${institutionID}/events/${year}/${month}/${eventID}/status`,
-        "ACTIVE"
-      ])
-    );
-    const updates = {
-      [`institution/${institutionID}/private/events/${year}/${month}/${eventID}/status`]: "ACTIVE",
-      ...managerUpdates,
-      ...coachUpdates
-    };
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
 
-    return firebase
-      .database()
-      .ref()
-      .update(updates)
+    return eventRef
+      .update({
+        "requiredInfo.status": "ACTIVE"
+      })
       .then(() => dispatch(receiveUncancelEvent()))
       .catch(error => dispatch(errorUncancellingEvent(error)));
   };

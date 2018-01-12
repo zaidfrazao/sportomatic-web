@@ -2,13 +2,19 @@ import React, { Component } from "react";
 import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
-import Button from "material-ui/Button";
+import BackIcon from "material-ui-icons/ArrowBack";
+import CancelIcon from "material-ui-icons/Cancel";
+import EditIcon from "material-ui-icons/Edit";
 import { grey, lightBlue, orange, red } from "material-ui/colors";
 import Grid from "material-ui/Grid";
+import IconButton from "material-ui/IconButton";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Paper from "material-ui/Paper";
 import { Route } from "react-router-dom";
+import Toolbar from "material-ui/Toolbar";
+import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
+import UncancelIcon from "material-ui-icons/Undo";
 import WarningIcon from "material-ui-icons/Warning";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../../components/BannerAd";
@@ -16,6 +22,9 @@ import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../../components/LeaderboardAd";
 
 const styles = {
+  actionsBar: {
+    backgroundColor: grey[200]
+  },
   adWrapper: {
     width: "100%",
     height: "100%",
@@ -56,6 +65,9 @@ const styles = {
       margin: "0 auto"
     }
   },
+  flexGrow: {
+    flexGrow: 1
+  },
   heading: {
     fontWeight: "normal",
     fontSize: "1.2rem",
@@ -87,6 +99,12 @@ const styles = {
     justifyContent: "center",
     flexGrow: 1
   },
+  outerWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    overflow: "auto"
+  },
   picture: {
     backgroundColor: grey[300],
     width: 300,
@@ -116,8 +134,6 @@ const styles = {
     color: red[500]
   },
   wrapper: {
-    flexGrow: 1,
-    overflow: "auto",
     padding: 24
   }
 };
@@ -224,7 +240,12 @@ class EventInfo extends Component {
 
   render() {
     const { classes, isMobile, isTablet, info } = this.props;
-    const { updateView } = this.props.actions;
+    const {
+      updateView,
+      editEvent,
+      cancelEvent,
+      uncancelEvent
+    } = this.props.actions;
     const {
       isInfoLoading,
       isCoachesLoading,
@@ -247,6 +268,46 @@ class EventInfo extends Component {
     }
 
     const { coaches, managers, teams } = this.getListItems();
+    let showCancelButton = false;
+
+    if (info) {
+      const eventDate = new Date(info.requiredInfo.times.start);
+      const currentDate = new Date(Date.now());
+      showCancelButton = eventDate > currentDate;
+    }
+
+    let cancelButton = <div />;
+    if (showCancelButton) {
+      if (info.requiredInfo.status === "CANCELLED") {
+        cancelButton = (
+          <Tooltip title="Uncancel event" placement="bottom">
+            <IconButton
+              aria-label="uncancel event"
+              onClick={() => uncancelEvent()}
+            >
+              <UncancelIcon />
+            </IconButton>
+          </Tooltip>
+        );
+      } else {
+        cancelButton = (
+          <Tooltip title="Cancel event" placement="bottom">
+            <IconButton
+              disabled={
+                isInfoLoading ||
+                isCoachesLoading ||
+                isManagersLoading ||
+                isTeamsLoading
+              }
+              aria-label="cancel event"
+              onClick={() => cancelEvent()}
+            >
+              <CancelIcon />
+            </IconButton>
+          </Tooltip>
+        );
+      }
+    }
 
     return (
       <div className={classes.root}>
@@ -270,273 +331,294 @@ class EventInfo extends Component {
             </Typography>
           </AppBar>
         )}
-        <div className={classes.wrapper}>
-          <Route
-            render={({ history }) => (
-              <Button
-                raised
-                className={classes.button}
-                onClick={() => {
-                  history.goBack();
-                  updateView("EVENTS_LIST");
-                }}
+        <div className={classes.outerWrapper}>
+          <Toolbar className={classes.actionsBar}>
+            <Route
+              render={({ history }) => (
+                <Tooltip title="Back" placement="bottom">
+                  <IconButton
+                    aria-label="back"
+                    onClick={() => {
+                      history.goBack();
+                      updateView("EVENTS_LIST");
+                    }}
+                  >
+                    <BackIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+            />
+            <div className={classes.flexGrow} />
+            {showCancelButton && cancelButton}
+            <Tooltip title="Edit event" placement="bottom">
+              <IconButton
+                disabled={
+                  isInfoLoading ||
+                  isCoachesLoading ||
+                  isManagersLoading ||
+                  isTeamsLoading
+                }
+                aria-label="edit event"
+                onClick={() => editEvent()}
               >
-                Back
-              </Button>
-            )}
-          />
-          <div className={classes.adWrapper}>{ad}</div>
-          {info &&
-            info.requiredInfo.status === "CANCELLED" && (
-              <div className={classes.cancelledEvent}>
-                <WarningIcon className={classes.warningIcon} />
-                <Typography
-                  className={classes.cancelledText}
-                  type="subtitle"
-                  component="h3"
-                >
-                  This event has been cancelled.
-                </Typography>
-              </div>
-            )}
-          <Grid
-            container
-            direction="row"
-            align="stretch"
-            className={classes.contentWrapper}
-          >
-            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <Paper className={classes.section}>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Details
-                </Typography>
-                <List>
-                  <ListItem>
-                    <ListItemText
-                      primary="Date"
-                      secondary={
-                        isInfoLoading || !info
-                          ? "Loading..."
-                          : info.requiredInfo.times.start.toLocaleDateString(
-                              "en-US",
-                              dateOptions
-                            )
-                      }
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary="Starts at"
-                      secondary={
-                        isInfoLoading || !info
-                          ? "Loading..."
-                          : info.requiredInfo.times.start.toLocaleTimeString(
-                              "en-US",
-                              timeOptions
-                            )
-                      }
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary="Ends at"
-                      secondary={
-                        isInfoLoading || !info
-                          ? "Loading..."
-                          : info.requiredInfo.times.end.toLocaleTimeString(
-                              "en-US",
-                              timeOptions
-                            )
-                      }
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary="Event type"
-                      secondary={
-                        isInfoLoading || !info
-                          ? "Loading..."
-                          : info.requiredInfo.type
-                      }
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary="Venue"
-                      secondary={
-                        isInfoLoading || !info
-                          ? "Loading..."
-                          : info.optionalInfo.venue
-                      }
-                    />
-                  </ListItem>
-                </List>
-              </Paper>
-            </Grid>
-            {!isInfoLoading &&
-              info &&
-              info.requiredInfo.isCompetitive && (
-                <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                  <Paper className={classes.section}>
-                    <Typography
-                      className={classes.heading}
-                      type="title"
-                      component="h3"
-                    >
-                      Competitive Info
-                    </Typography>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          </Toolbar>
+          <div className={classes.wrapper}>
+            <div className={classes.adWrapper}>{ad}</div>
+            {info &&
+              info.requiredInfo.status === "CANCELLED" && (
+                <div className={classes.cancelledEvent}>
+                  <WarningIcon className={classes.warningIcon} />
+                  <Typography
+                    className={classes.cancelledText}
+                    type="subtitle"
+                    component="h3"
+                  >
+                    This event has been cancelled.
+                  </Typography>
+                </div>
+              )}
+            <Grid
+              container
+              direction="row"
+              align="stretch"
+              className={classes.contentWrapper}
+            >
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <Paper className={classes.section}>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Details
+                  </Typography>
+                  <List>
+                    <ListItem>
+                      <ListItemText
+                        primary="Date"
+                        secondary={
+                          isInfoLoading || !info
+                            ? "Loading..."
+                            : info.requiredInfo.times.start.toLocaleDateString(
+                                "en-US",
+                                dateOptions
+                              )
+                        }
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        primary="Starts at"
+                        secondary={
+                          isInfoLoading || !info
+                            ? "Loading..."
+                            : info.requiredInfo.times.start.toLocaleTimeString(
+                                "en-US",
+                                timeOptions
+                              )
+                        }
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        primary="Ends at"
+                        secondary={
+                          isInfoLoading || !info
+                            ? "Loading..."
+                            : info.requiredInfo.times.end.toLocaleTimeString(
+                                "en-US",
+                                timeOptions
+                              )
+                        }
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        primary="Event type"
+                        secondary={
+                          isInfoLoading || !info
+                            ? "Loading..."
+                            : info.requiredInfo.type
+                        }
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        primary="Venue"
+                        secondary={
+                          isInfoLoading || !info
+                            ? "Loading..."
+                            : info.optionalInfo.venue
+                        }
+                      />
+                    </ListItem>
+                  </List>
+                </Paper>
+              </Grid>
+              {!isInfoLoading &&
+                info &&
+                info.requiredInfo.isCompetitive && (
+                  <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                    <Paper className={classes.section}>
+                      <Typography
+                        className={classes.heading}
+                        type="title"
+                        component="h3"
+                      >
+                        Competitive Info
+                      </Typography>
+                      <List>
+                        <ListItem>
+                          <ListItemText
+                            primary="Home / Away"
+                            secondary={
+                              info.optionalInfo.homeAway === "UNKNOWN"
+                                ? "Not yet specified"
+                                : _.capitalize(info.optionalInfo.homeAway)
+                            }
+                          />
+                        </ListItem>
+                        <ListItem>
+                          <ListItemText
+                            primary="Opponents"
+                            secondary={info.optionalInfo.opponents.institution}
+                          />
+                        </ListItem>
+                      </List>
+                    </Paper>
+                  </Grid>
+                )}
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <Paper className={classes.section}>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Teams
+                  </Typography>
+                  {isTeamsLoading || !info ? (
                     <List>
-                      <ListItem>
-                        <ListItemText
-                          primary="Home / Away"
-                          secondary={
-                            info.optionalInfo.homeAway === "UNKNOWN"
-                              ? "Not yet specified"
-                              : _.capitalize(info.optionalInfo.homeAway)
-                          }
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary="Opponents"
-                          secondary={info.optionalInfo.opponents.institution}
-                        />
+                      <ListItem className={classes.noItems}>
+                        <ListItemText primary="Loading..." />
                       </ListItem>
                     </List>
-                  </Paper>
-                </Grid>
-              )}
-            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <Paper className={classes.section}>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Teams
-                </Typography>
-                {isTeamsLoading || !info ? (
-                  <List>
-                    <ListItem className={classes.noItems}>
-                      <ListItemText primary="Loading..." />
-                    </ListItem>
-                  </List>
-                ) : (
-                  <List>
-                    {teams.length > 0 ? (
-                      teams
-                    ) : (
+                  ) : (
+                    <List>
+                      {teams.length > 0 ? (
+                        teams
+                      ) : (
+                        <ListItem className={classes.noItems}>
+                          <ListItemText primary="No teams" />
+                        </ListItem>
+                      )}
+                    </List>
+                  )}
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <Paper className={classes.section}>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Managers
+                  </Typography>
+                  {isManagersLoading || !info ? (
+                    <List>
                       <ListItem className={classes.noItems}>
-                        <ListItemText primary="No teams" />
+                        <ListItemText primary="Loading..." />
                       </ListItem>
-                    )}
-                  </List>
-                )}
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <Paper className={classes.section}>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Managers
-                </Typography>
-                {isManagersLoading || !info ? (
-                  <List>
-                    <ListItem className={classes.noItems}>
-                      <ListItemText primary="Loading..." />
-                    </ListItem>
-                  </List>
-                ) : (
-                  <List>
-                    {managers.length > 0 ? (
-                      managers
-                    ) : (
+                    </List>
+                  ) : (
+                    <List>
+                      {managers.length > 0 ? (
+                        managers
+                      ) : (
+                        <ListItem className={classes.noItems}>
+                          <ListItemText primary="No managers" />
+                        </ListItem>
+                      )}
+                    </List>
+                  )}
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <Paper className={classes.section}>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Coaches
+                  </Typography>
+                  {isCoachesLoading || !info ? (
+                    <List>
                       <ListItem className={classes.noItems}>
-                        <ListItemText primary="No managers" />
+                        <ListItemText primary="Loading..." />
                       </ListItem>
-                    )}
-                  </List>
-                )}
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <Paper className={classes.section}>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Coaches
-                </Typography>
-                {isCoachesLoading || !info ? (
-                  <List>
-                    <ListItem className={classes.noItems}>
-                      <ListItemText primary="Loading..." />
-                    </ListItem>
-                  </List>
-                ) : (
-                  <List>
-                    {coaches.length > 0 ? (
-                      coaches
-                    ) : (
-                      <ListItem className={classes.noItems}>
-                        <ListItemText primary="No coaches" />
-                      </ListItem>
-                    )}
-                  </List>
-                )}
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <Paper className={classes.section}>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Notes
-                </Typography>
-                {isInfoLoading || !info ? (
-                  <div className={classes.notesWrapper}>
-                    <Typography
-                      className={classes.notes}
-                      type="body2"
-                      component="p"
-                    >
-                      Loading...
-                    </Typography>
-                  </div>
-                ) : (
-                  <div className={classes.notesWrapper}>
-                    {info.optionalInfo.notes === "" ? (
+                    </List>
+                  ) : (
+                    <List>
+                      {coaches.length > 0 ? (
+                        coaches
+                      ) : (
+                        <ListItem className={classes.noItems}>
+                          <ListItemText primary="No coaches" />
+                        </ListItem>
+                      )}
+                    </List>
+                  )}
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <Paper className={classes.section}>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Notes
+                  </Typography>
+                  {isInfoLoading || !info ? (
+                    <div className={classes.notesWrapper}>
                       <Typography
                         className={classes.notes}
                         type="body2"
                         component="p"
                       >
-                        No notes
+                        Loading...
                       </Typography>
-                    ) : (
-                      <Typography
-                        className={classes.notes}
-                        type="body2"
-                        component="p"
-                      >
-                        {info.optionalInfo.notes}
-                      </Typography>
-                    )}
-                  </div>
-                )}
-              </Paper>
+                    </div>
+                  ) : (
+                    <div className={classes.notesWrapper}>
+                      {info.optionalInfo.notes === "" ? (
+                        <Typography
+                          className={classes.notes}
+                          type="body2"
+                          component="p"
+                        >
+                          No notes
+                        </Typography>
+                      ) : (
+                        <Typography
+                          className={classes.notes}
+                          type="body2"
+                          component="p"
+                        >
+                          {info.optionalInfo.notes}
+                        </Typography>
+                      )}
+                    </div>
+                  )}
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
+          </div>
         </div>
       </div>
     );

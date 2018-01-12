@@ -457,12 +457,7 @@ class Calendar extends Component {
       isMinDateLoading,
       minDate
     } = this.props;
-    const {
-      updateView,
-      openCancelEventAlert,
-      openUncancelEventAlert,
-      cancelEvent
-    } = this.props.actions;
+    const { updateView, cancelEvent } = this.props.actions;
 
     let dates = {};
     _.values(events).map(eventInfo => {
@@ -729,8 +724,6 @@ class Calendar extends Component {
                 isLoading={isEventsLoading || isMinDateLoading}
                 actions={{
                   updateView,
-                  openCancelEventAlert,
-                  openUncancelEventAlert,
                   cancelEvent
                 }}
               />

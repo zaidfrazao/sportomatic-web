@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import AddIcon from "material-ui-icons/Add";
 import Button from "material-ui/Button";
 import Chip from "material-ui/Chip";
 import Dialog, {
@@ -113,7 +114,8 @@ class FiltersToolbar extends Component {
       sports,
       divisions,
       ageGroups,
-      applyFilters
+      applyFilters,
+      addEvent
     } = this.props;
     const {
       searchText,
@@ -209,12 +211,17 @@ class FiltersToolbar extends Component {
               )}
             </div>
           )}
-          <Tooltip title="Filter report" placement="bottom">
+          <Tooltip title="Filter events" placement="bottom">
             <IconButton
-              aria-label="filter report"
+              aria-label="filter events"
               onClick={() => this.toggleDialog()}
             >
               <FilterIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Add new event" placement="bottom">
+            <IconButton aria-label="add new event" onClick={() => addEvent()}>
+              <AddIcon />
             </IconButton>
           </Tooltip>
         </Toolbar>
