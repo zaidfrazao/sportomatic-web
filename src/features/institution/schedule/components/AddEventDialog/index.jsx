@@ -8,7 +8,7 @@ import { CircularProgress } from "material-ui/Progress";
 import CloseIcon from "material-ui-icons/Close";
 import Dialog from "material-ui/Dialog";
 import { FormLabel, FormControl, FormControlLabel } from "material-ui/Form";
-import { grey } from "material-ui/colors";
+import { grey, lightBlue, orange } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import IconButton from "material-ui/IconButton";
 import Input, { InputLabel } from "material-ui/Input";
@@ -30,6 +30,10 @@ import { withStyles } from "material-ui/styles";
 const styles = {
   appBar: {
     position: "relative"
+  },
+  competitiveEvent: {
+    backgroundColor: orange[500],
+    marginLeft: 20
   },
   flex: {
     flex: 1
@@ -57,6 +61,10 @@ const styles = {
   mainContent: {
     height: "100%",
     overflow: "auto"
+  },
+  nonCompetitiveEvent: {
+    backgroundColor: lightBlue[500],
+    marginLeft: 20
   },
   section: {
     backgroundColor: grey[100]
@@ -476,7 +484,13 @@ class AddEventDialog extends Component {
                 }
                 eventType = _.capitalize(type);
                 const isCompetitive =
-                  eventType === "Match" || isOtherEventTypeCompetitive;
+                  eventType === "Match" ||
+                  "Meeting" ||
+                  "Gala" ||
+                  "Scrim" ||
+                  "Exhibition" ||
+                  "Friendly" ||
+                  isOtherEventTypeCompetitive;
                 const recurrencePattern = {
                   frequency,
                   numberOfEvents: parseInt(numberOfEvents, 10)
@@ -564,6 +578,19 @@ class AddEventDialog extends Component {
               xl={12}
               className={classes.titleWrapper}
             >
+              <Avatar
+                className={
+                  type === "MATCH" ||
+                  type === "MEETING" ||
+                  type === "GALA" ||
+                  type === "SCRIM" ||
+                  type === "EXHIBITION" ||
+                  type === "FRIENDLY" ||
+                  (type === "OTHER" && isOtherEventTypeCompetitive)
+                    ? classes.competitiveEvent
+                    : classes.nonCompetitiveEvent
+                }
+              />
               <TextField
                 label="Event title"
                 value={title}
@@ -613,13 +640,25 @@ class AddEventDialog extends Component {
                 <FormControl className={classes.formControl}>
                   <InputLabel htmlFor="type">Type</InputLabel>
                   <Select
+                    native
                     value={type}
                     onChange={this.handleChange("type")}
                     input={<Input id="type" />}
                   >
-                    <MenuItem value="PRACTICE">Practice</MenuItem>
-                    <MenuItem value="MATCH">Match</MenuItem>
-                    <MenuItem value="OTHER">Other</MenuItem>
+                    <optgroup label="Non-competitive">
+                      <option value="PRACTICE">Practice</option>
+                      <option value="TRAINING">Training</option>
+                      <option value="GYM">Gym</option>
+                    </optgroup>
+                    <optgroup label="Competitive">
+                      <option value="MATCH">Match</option>
+                      <option value="MEETING">Meeting</option>
+                      <option value="GALA">Gala</option>
+                      <option value="SCRIM">Scrim</option>
+                      <option value="EXHIBITION">Exhibition</option>
+                      <option value="FRIENDLY">Friendly</option>
+                    </optgroup>
+                    <option value="OTHER">Other</option>
                   </Select>
                 </FormControl>
                 {type === "OTHER" && (
@@ -629,7 +668,7 @@ class AddEventDialog extends Component {
                         id="other-event-type"
                         label="Event type name"
                         value={otherEventType}
-                        placeholder="E.g. Gym Session, Sports Day, Meeting"
+                        placeholder="E.g. Sports Day, Clinic, etc."
                         error={hasOtherEventTypeError}
                         helperText={
                           hasOtherEventTypeError
@@ -761,6 +800,11 @@ class AddEventDialog extends Component {
                   />
                 </FormControl>
                 {(type === "MATCH" ||
+                  type === "MEETING" ||
+                  type === "SCRIM" ||
+                  type === "GALA" ||
+                  type === "EXHIBITION" ||
+                  type === "FRIENDLY" ||
                   (type === "OTHER" && isOtherEventTypeCompetitive)) &&
                   frequency === "ONCE" && (
                     <div>
