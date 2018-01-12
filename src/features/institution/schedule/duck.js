@@ -46,6 +46,7 @@ export const REQUEST_CREATION_DATE = `${NAMESPACE}/REQUEST_CREATION_DATE`;
 export const RECEIVE_CREATION_DATE = `${NAMESPACE}/RECEIVE_CREATION_DATE`;
 export const ERROR_FETCHING_CREATION_DATE = `${NAMESPACE}/ERROR_FETCHING_CREATION_DATE`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
+export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
 
 // Reducers
 
@@ -159,13 +160,22 @@ export const filtersInitialState = {
   eventType: "All",
   sport: "All",
   division: "All",
-  ageGroup: "All"
+  ageGroup: "All",
+  searchText: ""
 };
 
 function filterReducer(state = filtersInitialState, action = {}) {
   switch (action.type) {
     case APPLY_FILTERS:
-      return action.payload;
+      return {
+        ...state,
+        ...action.payload
+      };
+    case UPDATE_SEARCH:
+      return {
+        ...state,
+        searchText: action.payload.searchText
+      };
     default:
       return state;
   }
@@ -354,6 +364,15 @@ export function applyFilters(eventType, sport, division, ageGroup) {
   };
 }
 
+export function updateSearch(searchText) {
+  return {
+    type: UPDATE_SEARCH,
+    payload: {
+      searchText
+    }
+  };
+}
+
 export function updateView(newView) {
   return {
     type: UPDATE_CURRENT_VIEW,
@@ -487,42 +506,6 @@ export function errorAddingEvent(error: { code: string, message: string }) {
       error
     }
   };
-}
-
-export function getManagerUpdates(
-  institutionID,
-  managers,
-  year,
-  month,
-  newEventID,
-  newEventInfo
-) {
-  return _.fromPairs(
-    _.toPairs(managers).map(([managerID, managerInfo]) => {
-      return [
-        `manager/${managerID}/private/institutions/${institutionID}/events/${year}/${month}/${newEventID}`,
-        newEventInfo
-      ];
-    })
-  );
-}
-
-export function getCoachUpdates(
-  institutionID,
-  coaches,
-  year,
-  month,
-  newEventID,
-  newEventInfo
-) {
-  return _.fromPairs(
-    _.toPairs(coaches).map(([coachID, coachInfo]) => {
-      return [
-        `coach/${coachID}/private/institutions/${institutionID}/events/${year}/${month}/${newEventID}`,
-        newEventInfo
-      ];
-    })
-  );
 }
 
 export function format2Digits(number) {

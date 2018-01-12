@@ -45,7 +45,8 @@ const styles = {
     }
   },
   cancelledText: {
-    color: red[500]
+    color: red[500],
+    textAlign: "center"
   },
   cancelledEvent: {
     width: "100%",

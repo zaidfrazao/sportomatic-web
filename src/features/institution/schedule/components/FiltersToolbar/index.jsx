@@ -66,8 +66,25 @@ class FiltersToolbar extends Component {
     confirmedAgeGroup: "All"
   };
 
+  componentWillMount() {
+    const { initialFilters } = this.props;
+    this.setState({
+      searchText: initialFilters.searchText,
+      selectedEventType: initialFilters.eventType,
+      selectedSport: initialFilters.sport,
+      selectedDivision: initialFilters.division,
+      selectedAgeGroup: initialFilters.ageGroup,
+      confirmedEventType: initialFilters.eventType,
+      confirmedSport: initialFilters.sport,
+      confirmedDivision: initialFilters.division,
+      confirmedAgeGroup: initialFilters.ageGroup
+    });
+  }
+
   handleChange = name => event => {
+    const { updateSearch } = this.props;
     this.setState({ [name]: event.target.value });
+    if (name === "searchText") updateSearch(event.target.value);
   };
 
   handleDeleteFilter(name) {

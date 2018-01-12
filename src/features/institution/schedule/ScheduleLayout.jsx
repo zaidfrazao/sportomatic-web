@@ -177,18 +177,52 @@ class ScheduleLayout extends Component {
   }
 
   filterEvents() {
-    const { eventType, sport, division, ageGroup } = this.props.filters;
-    const { events, teams } = this.props;
+    const {
+      eventType,
+      sport,
+      division,
+      ageGroup,
+      searchText
+    } = this.props.filters;
+    const { events, teams, coaches, managers } = this.props;
 
     return _.fromPairs(
       _.toPairs(events).filter(([id, info]) => {
         let allowThroughFilter = true;
+        let titleMatch = true;
+        let coachMatch = true;
+        let managerMatch = true;
+
+        if (searchText !== "") {
+          const eventTitle = _.lowerCase(info.requiredInfo.title);
+          titleMatch = eventTitle.includes(_.lowerCase(searchText));
+        }
 
         if (eventType !== "All") {
           allowThroughFilter =
             allowThroughFilter && info.requiredInfo.type === eventType;
         }
         _.keys(info.teams).map(teamID => {
+          if (teams[teamID] && searchText !== "") {
+            const teamCoaches = _.keys(teams[teamID].coaches);
+            const teamManagers = _.keys(teams[teamID].managers);
+            teamCoaches.map(coachID => {
+              const coachName = `${_.lowerCase(
+                coaches[coachID].info.name
+              )} ${_.lowerCase(coaches[coachID].info.surname)}`;
+              coachMatch =
+                coachMatch && coachName.includes(_.lowerCase(searchText));
+            });
+            teamManagers.map(managerID => {
+              const managerName = `${_.lowerCase(
+                managers[managerID].info.name
+              )} ${_.lowerCase(managers[managerID].info.surname)}`;
+              managerMatch =
+                managerMatch && managerName.includes(_.lowerCase(searchText));
+            });
+            if (teamCoaches.length === 0) coachMatch = false;
+            if (teamManagers.length === 0) managerMatch = false;
+          }
           if (teams[teamID] && sport !== "All") {
             allowThroughFilter =
               allowThroughFilter && teams[teamID].info.sport === sport;
@@ -202,6 +236,9 @@ class ScheduleLayout extends Component {
               allowThroughFilter && teams[teamID].info.ageGroup === ageGroup;
           }
         });
+
+        allowThroughFilter =
+          allowThroughFilter && (titleMatch || coachMatch || managerMatch);
 
         return allowThroughFilter;
       })
@@ -217,15 +254,11 @@ class ScheduleLayout extends Component {
       teams,
       coaches,
       managers,
-      events
+      events,
+      filters
     } = this.props;
     const { dateSelected, eventID } = this.props.match.params;
-    const {
-      currentView,
-      errorType,
-      selectedEventInfo,
-      minDate
-    } = this.props.uiConfig;
+    const { currentView, errorType, minDate } = this.props.uiConfig;
     const {
       updateView,
       openAddEventDialog,
@@ -242,7 +275,8 @@ class ScheduleLayout extends Component {
       cancelEvent,
       uncancelEvent,
       editEvent,
-      applyFilters
+      applyFilters,
+      updateSearch
     } = this.props.actions;
     const {
       isEventsLoading,
@@ -366,8 +400,10 @@ class ScheduleLayout extends Component {
             sports={_.keys(this.state.sports)}
             divisions={_.keys(this.state.divisions)}
             ageGroups={_.keys(this.state.ageGroups)}
+            initialFilters={filters}
             applyFilters={applyFilters}
             addEvent={openAddEventDialog}
+            updateSearch={updateSearch}
           />
           {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
           <Calendar
