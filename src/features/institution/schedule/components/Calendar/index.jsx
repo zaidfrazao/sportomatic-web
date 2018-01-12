@@ -241,12 +241,14 @@ class Calendar extends Component {
     const prevDate = new Date(
       dateSelectedObject.getFullYear(),
       dateSelectedObject.getMonth() - 1,
-      dateSelectedObject.getDate(),
-      dateSelectedObject.getHours() + 2
+      1
     );
     let prevDisabled = isMinDateLoading;
     if (this.compareDates(minDate, prevDate) === +1) {
-      prevDisabled = true;
+      prevDate.setDate(minDate.getDate());
+      if (this.compareDates(minDate, prevDate) === +1) {
+        prevDisabled = true;
+      }
     }
     const nextDisabled = isMinDateLoading;
 
@@ -260,14 +262,19 @@ class Calendar extends Component {
                   disabled={prevDisabled}
                   onClick={() => {
                     const date = new Date(dateSelected);
-                    const ISOdate = new Date(
+                    let newDate = new Date(
                       date.getFullYear(),
                       date.getMonth() - 1,
-                      date.getDate(),
-                      date.getHours() + 2
-                    )
-                      .toISOString()
-                      .slice(0, 10);
+                      2
+                    );
+                    if (this.compareDates(minDate, newDate) === +1) {
+                      newDate = new Date(
+                        minDate.getFullYear(),
+                        minDate.getMonth(),
+                        minDate.getDate() + 1
+                      );
+                    }
+                    const ISOdate = newDate.toISOString().slice(0, 10);
                     history.push(`/admin/schedule/${ISOdate}`);
                   }}
                 >
@@ -301,8 +308,7 @@ class Calendar extends Component {
                     const ISOdate = new Date(
                       date.getFullYear(),
                       date.getMonth() + 1,
-                      date.getDate(),
-                      date.getHours() + 2
+                      2
                     )
                       .toISOString()
                       .slice(0, 10);
