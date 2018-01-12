@@ -18,6 +18,12 @@ import Typography from "material-ui/Typography";
 import _ from "lodash";
 
 const styles = theme => ({
+  cancelledHeading: {
+    padding: 12.5,
+    backgroundColor: red[900],
+    fontWeight: "normal",
+    color: grey[50]
+  },
   competitiveEvent: {
     backgroundColor: orange[500]
   },
@@ -61,9 +67,6 @@ const styles = theme => ({
   },
   backButton: {
     margin: 24
-  },
-  canceledEvent: {
-    backgroundColor: red[200]
   }
 });
 
@@ -120,6 +123,9 @@ class EventsList extends Component {
         const isMorningEvent = startHour < 12;
         return isMorningEvent;
       })
+      .filter(eventInfo => {
+        return eventInfo.requiredInfo.status === "ACTIVE";
+      })
       .map(eventInfo => {
         const eventDate = new Date(eventInfo.requiredInfo.times.start);
         const currentDate = new Date(Date.now());
@@ -136,96 +142,49 @@ class EventsList extends Component {
           <Route
             key={eventInfo.id}
             render={({ history }) => {
-              if (eventInfo.status === "CANCELLED") {
-                return (
-                  <ListItem
-                    button
-                    className={classes.canceledEvent}
-                    onClick={() => {
-                      history.push(
-                        `/admin/schedule/${dateSelected}/${eventInfo.id}`
-                      );
-                      updateView("EVENT_INFO");
-                    }}
-                  >
-                    <Avatar
-                      className={
-                        eventInfo.requiredInfo.isCompetitive
-                          ? classes.competitiveEvent
-                          : classes.nonCompetitiveEvent
-                      }
-                    />
-                    <ListItemText
-                      primary={eventInfo.requiredInfo.title + " [Cancelled]"}
-                      secondary={`${eventStartTime} - ${eventEndTime}`}
-                    />
-                    {showCancelButton && (
-                      <ListItemSecondaryAction>
-                        <Tooltip title="Uncancel" placement="left">
-                          <IconButton
-                            aria-label="uncancel event"
-                            onClick={() =>
-                              openUncancelEventAlert(
-                                institutionID,
-                                eventInfo.id,
-                                _.keys(eventInfo.managers),
-                                _.keys(eventInfo.coaches),
-                                dateSelected.slice(0, 4),
-                                dateSelected.slice(5, 7)
-                              )}
-                          >
-                            <UncancelIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </ListItemSecondaryAction>
-                    )}
-                  </ListItem>
-                );
-              } else {
-                return (
-                  <ListItem
-                    button
-                    onClick={() => {
-                      history.push(
-                        `/admin/schedule/${dateSelected}/${eventInfo.id}`
-                      );
-                      updateView("EVENT_INFO");
-                    }}
-                  >
-                    <Avatar
-                      className={
-                        eventInfo.requiredInfo.isCompetitive
-                          ? classes.competitiveEvent
-                          : classes.nonCompetitiveEvent
-                      }
-                    />
-                    <ListItemText
-                      primary={eventInfo.requiredInfo.title}
-                      secondary={`${eventStartTime} - ${eventEndTime}`}
-                    />
-                    {showCancelButton && (
-                      <ListItemSecondaryAction>
-                        <Tooltip title="Cancel" placement="left">
-                          <IconButton
-                            aria-label="cancel event"
-                            onClick={() =>
-                              openCancelEventAlert(
-                                institutionID,
-                                eventInfo.id,
-                                _.keys(eventInfo.managers),
-                                _.keys(eventInfo.coaches),
-                                dateSelected.slice(0, 4),
-                                dateSelected.slice(5, 7)
-                              )}
-                          >
-                            <CancelIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </ListItemSecondaryAction>
-                    )}
-                  </ListItem>
-                );
-              }
+              return (
+                <ListItem
+                  button
+                  onClick={() => {
+                    history.push(
+                      `/admin/schedule/${dateSelected}/${eventInfo.id}`
+                    );
+                    updateView("EVENT_INFO");
+                  }}
+                >
+                  <Avatar
+                    className={
+                      eventInfo.requiredInfo.isCompetitive
+                        ? classes.competitiveEvent
+                        : classes.nonCompetitiveEvent
+                    }
+                  />
+                  <ListItemText
+                    primary={eventInfo.requiredInfo.title}
+                    secondary={`${eventStartTime} - ${eventEndTime}`}
+                  />
+                  {showCancelButton && (
+                    <ListItemSecondaryAction>
+                      <Tooltip title="Cancel" placement="left">
+                        <IconButton
+                          aria-label="cancel event"
+                          onClick={() =>
+                            openCancelEventAlert(
+                              institutionID,
+                              eventInfo.id,
+                              _.keys(eventInfo.managers),
+                              _.keys(eventInfo.coaches),
+                              dateSelected.slice(0, 4),
+                              dateSelected.slice(5, 7)
+                            )}
+                        >
+                          <CancelIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </ListItemSecondaryAction>
+                  )}
+                </ListItem>
+              );
             }}
           />
         );
@@ -237,123 +196,8 @@ class EventsList extends Component {
         const isAfternoonEvent = startHour >= 12 && startHour < 18;
         return isAfternoonEvent;
       })
-      .map(eventInfo => {
-        const eventDate = new Date(eventInfo.requiredInfo.times.start);
-        const currentDate = new Date(Date.now());
-        const showCancelButton = eventDate > currentDate;
-        const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
-          "en-US",
-          options
-        );
-        const eventEndTime = eventInfo.requiredInfo.times.end.toLocaleTimeString(
-          "en-US",
-          options
-        );
-        return (
-          <Route
-            key={eventInfo.id}
-            render={({ history }) => {
-              if (eventInfo.status === "CANCELLED") {
-                return (
-                  <ListItem
-                    button
-                    className={classes.canceledEvent}
-                    onClick={() => {
-                      history.push(
-                        `/admin/schedule/${dateSelected}/${eventInfo.id}`
-                      );
-                      updateView("EVENT_INFO");
-                    }}
-                  >
-                    <Avatar
-                      className={
-                        eventInfo.requiredInfo.isCompetitive
-                          ? classes.competitiveEvent
-                          : classes.nonCompetitiveEvent
-                      }
-                    />
-                    <ListItemText
-                      primary={eventInfo.requiredInfo.title + " [Cancelled]"}
-                      secondary={`${eventStartTime} - ${eventEndTime}`}
-                    />
-                    {showCancelButton && (
-                      <ListItemSecondaryAction>
-                        <Tooltip
-                          title="Uncancel"
-                          placement="left"
-                          onClick={() =>
-                            openUncancelEventAlert(
-                              institutionID,
-                              eventInfo.id,
-                              _.keys(eventInfo.managers),
-                              _.keys(eventInfo.coaches),
-                              dateSelected.slice(0, 4),
-                              dateSelected.slice(5, 7)
-                            )}
-                        >
-                          <IconButton aria-label="uncancel event">
-                            <UncancelIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </ListItemSecondaryAction>
-                    )}
-                  </ListItem>
-                );
-              } else {
-                return (
-                  <ListItem
-                    button
-                    onClick={() => {
-                      history.push(
-                        `/admin/schedule/${dateSelected}/${eventInfo.id}`
-                      );
-                      updateView("EVENT_INFO");
-                    }}
-                  >
-                    <Avatar
-                      className={
-                        eventInfo.requiredInfo.isCompetitive
-                          ? classes.competitiveEvent
-                          : classes.nonCompetitiveEvent
-                      }
-                    />
-                    <ListItemText
-                      primary={eventInfo.requiredInfo.title}
-                      secondary={`${eventStartTime} - ${eventEndTime}`}
-                    />
-                    {showCancelButton && (
-                      <ListItemSecondaryAction>
-                        <Tooltip title="Cancel" placement="left">
-                          <IconButton
-                            aria-label="cancel event"
-                            onClick={() =>
-                              openCancelEventAlert(
-                                institutionID,
-                                eventInfo.id,
-                                _.keys(eventInfo.managers),
-                                _.keys(eventInfo.coaches),
-                                dateSelected.slice(0, 4),
-                                dateSelected.slice(5, 7)
-                              )}
-                          >
-                            <CancelIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </ListItemSecondaryAction>
-                    )}
-                  </ListItem>
-                );
-              }
-            }}
-          />
-        );
-      });
-
-    const eveningEvents = allEvents
       .filter(eventInfo => {
-        const startHour = eventInfo.requiredInfo.times.start.getHours();
-        const isEveningEvent = startHour >= 18;
-        return isEveningEvent;
+        return eventInfo.requiredInfo.status === "ACTIVE";
       })
       .map(eventInfo => {
         const eventDate = new Date(eventInfo.requiredInfo.times.start);
@@ -371,96 +215,190 @@ class EventsList extends Component {
           <Route
             key={eventInfo.id}
             render={({ history }) => {
-              if (eventInfo.status === "CANCELLED") {
-                return (
-                  <ListItem
-                    button
-                    className={classes.canceledEvent}
-                    onClick={() => {
-                      history.push(
-                        `/admin/schedule/${dateSelected}/${eventInfo.id}`
-                      );
-                      updateView("EVENT_INFO");
-                    }}
-                  >
-                    <Avatar
-                      className={
-                        eventInfo.requiredInfo.isCompetitive
-                          ? classes.competitiveEvent
-                          : classes.nonCompetitiveEvent
-                      }
-                    />
-                    <ListItemText
-                      primary={eventInfo.requiredInfo.title + " [Cancelled]"}
-                      secondary={`${eventStartTime} - ${eventEndTime}`}
-                    />
-                    {showCancelButton && (
-                      <ListItemSecondaryAction>
-                        <Tooltip title="Uncancel" placement="left">
-                          <IconButton
-                            aria-label="uncancel event"
-                            onClick={() =>
-                              openUncancelEventAlert(
-                                institutionID,
-                                eventInfo.id,
-                                _.keys(eventInfo.managers),
-                                _.keys(eventInfo.coaches),
-                                dateSelected.slice(0, 4),
-                                dateSelected.slice(5, 7)
-                              )}
-                          >
-                            <UncancelIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </ListItemSecondaryAction>
-                    )}
-                  </ListItem>
-                );
-              } else {
-                return (
-                  <ListItem
-                    button
-                    onClick={() => {
-                      history.push(
-                        `/admin/schedule/${dateSelected}/${eventInfo.id}`
-                      );
-                      updateView("EVENT_INFO");
-                    }}
-                  >
-                    <Avatar
-                      className={
-                        eventInfo.requiredInfo.isCompetitive
-                          ? classes.competitiveEvent
-                          : classes.nonCompetitiveEvent
-                      }
-                    />
-                    <ListItemText
-                      primary={eventInfo.requiredInfo.title}
-                      secondary={`${eventStartTime} - ${eventEndTime}`}
-                    />
-                    {showCancelButton && (
-                      <ListItemSecondaryAction>
-                        <Tooltip title="Cancel" placement="left">
-                          <IconButton
-                            aria-label="cancel event"
-                            onClick={() =>
-                              openCancelEventAlert(
-                                institutionID,
-                                eventInfo.id,
-                                _.keys(eventInfo.managers),
-                                _.keys(eventInfo.coaches),
-                                dateSelected.slice(0, 4),
-                                dateSelected.slice(5, 7)
-                              )}
-                          >
-                            <CancelIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </ListItemSecondaryAction>
-                    )}
-                  </ListItem>
-                );
-              }
+              return (
+                <ListItem
+                  button
+                  onClick={() => {
+                    history.push(
+                      `/admin/schedule/${dateSelected}/${eventInfo.id}`
+                    );
+                    updateView("EVENT_INFO");
+                  }}
+                >
+                  <Avatar
+                    className={
+                      eventInfo.requiredInfo.isCompetitive
+                        ? classes.competitiveEvent
+                        : classes.nonCompetitiveEvent
+                    }
+                  />
+                  <ListItemText
+                    primary={eventInfo.requiredInfo.title}
+                    secondary={`${eventStartTime} - ${eventEndTime}`}
+                  />
+                  {showCancelButton && (
+                    <ListItemSecondaryAction>
+                      <Tooltip title="Cancel" placement="left">
+                        <IconButton
+                          aria-label="cancel event"
+                          onClick={() =>
+                            openCancelEventAlert(
+                              institutionID,
+                              eventInfo.id,
+                              _.keys(eventInfo.managers),
+                              _.keys(eventInfo.coaches),
+                              dateSelected.slice(0, 4),
+                              dateSelected.slice(5, 7)
+                            )}
+                        >
+                          <CancelIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </ListItemSecondaryAction>
+                  )}
+                </ListItem>
+              );
+            }}
+          />
+        );
+      });
+
+    const eveningEvents = allEvents
+      .filter(eventInfo => {
+        const startHour = eventInfo.requiredInfo.times.start.getHours();
+        const isEveningEvent = startHour >= 18;
+        return isEveningEvent;
+      })
+      .filter(eventInfo => {
+        return eventInfo.requiredInfo.status === "ACTIVE";
+      })
+      .map(eventInfo => {
+        const eventDate = new Date(eventInfo.requiredInfo.times.start);
+        const currentDate = new Date(Date.now());
+        const showCancelButton = eventDate > currentDate;
+        const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
+          "en-US",
+          options
+        );
+        const eventEndTime = eventInfo.requiredInfo.times.end.toLocaleTimeString(
+          "en-US",
+          options
+        );
+        return (
+          <Route
+            key={eventInfo.id}
+            render={({ history }) => {
+              return (
+                <ListItem
+                  button
+                  onClick={() => {
+                    history.push(
+                      `/admin/schedule/${dateSelected}/${eventInfo.id}`
+                    );
+                    updateView("EVENT_INFO");
+                  }}
+                >
+                  <Avatar
+                    className={
+                      eventInfo.requiredInfo.isCompetitive
+                        ? classes.competitiveEvent
+                        : classes.nonCompetitiveEvent
+                    }
+                  />
+                  <ListItemText
+                    primary={eventInfo.requiredInfo.title}
+                    secondary={`${eventStartTime} - ${eventEndTime}`}
+                  />
+                  {showCancelButton && (
+                    <ListItemSecondaryAction>
+                      <Tooltip title="Cancel" placement="left">
+                        <IconButton
+                          aria-label="cancel event"
+                          onClick={() =>
+                            openCancelEventAlert(
+                              institutionID,
+                              eventInfo.id,
+                              _.keys(eventInfo.managers),
+                              _.keys(eventInfo.coaches),
+                              dateSelected.slice(0, 4),
+                              dateSelected.slice(5, 7)
+                            )}
+                        >
+                          <CancelIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </ListItemSecondaryAction>
+                  )}
+                </ListItem>
+              );
+            }}
+          />
+        );
+      });
+
+    const cancelledEvents = allEvents
+      .filter(eventInfo => {
+        return eventInfo.requiredInfo.status === "CANCELLED";
+      })
+      .map(eventInfo => {
+        const eventDate = new Date(eventInfo.requiredInfo.times.start);
+        const currentDate = new Date(Date.now());
+        const showCancelButton = eventDate > currentDate;
+        const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
+          "en-US",
+          options
+        );
+        const eventEndTime = eventInfo.requiredInfo.times.end.toLocaleTimeString(
+          "en-US",
+          options
+        );
+        return (
+          <Route
+            key={eventInfo.id}
+            render={({ history }) => {
+              return (
+                <ListItem
+                  button
+                  onClick={() => {
+                    history.push(
+                      `/admin/schedule/${dateSelected}/${eventInfo.id}`
+                    );
+                    updateView("EVENT_INFO");
+                  }}
+                >
+                  <Avatar
+                    className={
+                      eventInfo.requiredInfo.isCompetitive
+                        ? classes.competitiveEvent
+                        : classes.nonCompetitiveEvent
+                    }
+                  />
+                  <ListItemText
+                    primary={eventInfo.requiredInfo.title}
+                    secondary={`${eventStartTime} - ${eventEndTime}`}
+                  />
+                  {showCancelButton && (
+                    <ListItemSecondaryAction>
+                      <Tooltip title="Uncancel" placement="left">
+                        <IconButton
+                          aria-label="uncancel event"
+                          onClick={() =>
+                            openUncancelEventAlert(
+                              institutionID,
+                              eventInfo.id,
+                              _.keys(eventInfo.managers),
+                              _.keys(eventInfo.coaches),
+                              dateSelected.slice(0, 4),
+                              dateSelected.slice(5, 7)
+                            )}
+                        >
+                          <UncancelIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </ListItemSecondaryAction>
+                  )}
+                </ListItem>
+              );
             }}
           />
         );
@@ -532,6 +470,22 @@ class EventsList extends Component {
               ) : (
                 <ListItem>
                   <ListItemText primary="No evening events" />
+                </ListItem>
+              )}
+            </List>
+            <Typography
+              component="h3"
+              type="body2"
+              className={classes.cancelledHeading}
+            >
+              Cancelled Events
+            </Typography>
+            <List>
+              {cancelledEvents.length > 0 ? (
+                cancelledEvents
+              ) : (
+                <ListItem>
+                  <ListItemText primary="No cancelled events" />
                 </ListItem>
               )}
             </List>

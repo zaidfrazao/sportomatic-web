@@ -3,12 +3,13 @@ import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
-import { grey, lightBlue, orange } from "material-ui/colors";
+import { grey, lightBlue, orange, red } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Paper from "material-ui/Paper";
 import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
+import WarningIcon from "material-ui-icons/Warning";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
@@ -33,6 +34,17 @@ const styles = {
     "@media (max-width: 960px)": {
       width: "100%"
     }
+  },
+  cancelledText: {
+    color: red[500]
+  },
+  cancelledEvent: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 24
   },
   competitiveEvent: {
     backgroundColor: orange[500],
@@ -99,6 +111,9 @@ const styles = {
     border: `1px solid ${grey[200]}`,
     height: "100%",
     width: "100%"
+  },
+  warningIcon: {
+    color: red[500]
   },
   wrapper: {
     flexGrow: 1,
@@ -250,15 +265,9 @@ class EventInfo extends Component {
                   : classes.nonCompetitiveEvent
               }
             />
-            {info.status === "CANCELLED" ? (
-              <Typography className={classes.name} type="title" component="h2">
-                {info.requiredInfo.title} - [Cancelled]
-              </Typography>
-            ) : (
-              <Typography className={classes.name} type="title" component="h2">
-                {info.requiredInfo.title}
-              </Typography>
-            )}
+            <Typography className={classes.name} type="title" component="h2">
+              {info.requiredInfo.title}
+            </Typography>
           </AppBar>
         )}
         <div className={classes.wrapper}>
@@ -277,6 +286,19 @@ class EventInfo extends Component {
             )}
           />
           <div className={classes.adWrapper}>{ad}</div>
+          {info &&
+            info.requiredInfo.status === "CANCELLED" && (
+              <div className={classes.cancelledEvent}>
+                <WarningIcon className={classes.warningIcon} />
+                <Typography
+                  className={classes.cancelledText}
+                  type="subtitle"
+                  component="h3"
+                >
+                  This event has been cancelled.
+                </Typography>
+              </div>
+            )}
           <Grid
             container
             direction="row"
