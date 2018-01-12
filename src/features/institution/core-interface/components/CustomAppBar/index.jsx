@@ -4,7 +4,6 @@ import { grey } from "material-ui/colors";
 import { Route } from "react-router-dom";
 import classNames from "classnames";
 import AppBar from "material-ui/AppBar";
-import Grid from "material-ui/Grid";
 import IconButton from "material-ui/IconButton";
 import MenuIcon from "material-ui-icons/Menu";
 import AppBarMenuIcon from "material-ui-icons/MoreVert";
@@ -14,6 +13,7 @@ import Menu, { MenuItem } from "material-ui/Menu";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
+import NotificationsTray from "./components/NotificationsTray";
 
 const drawerWidth = 240;
 
@@ -50,6 +50,9 @@ const styles = theme => ({
   desktopIcons: {
     display: "flex",
     alignItems: "center"
+  },
+  flexGrow: {
+    flexGrow: 1
   }
 });
 
@@ -75,6 +78,51 @@ class CustomAppBar extends Component {
       openSettingsAlert
     } = this.props.actions;
 
+    const notifications = [
+      {
+        body: "Match on 30 Nov 2017 at 1:00 pm.",
+        feature: "SCHEDULE",
+        isRead: false,
+        title: "New event"
+      },
+      {
+        body: "Steve was signed in at 12:22 pm.",
+        feature: "HOURS",
+        isRead: false,
+        title: "Coach signed in"
+      },
+      {
+        body: "Steve earned R350.00.",
+        feature: "WAGES",
+        isRead: false,
+        title: "Wages approved"
+      },
+      {
+        body: "The U/14 A Rugby Boys team won 23 - 10.",
+        feature: "RESULTS",
+        isRead: false,
+        title: "Results approved"
+      },
+      {
+        body: "Lucy Stein wants to join your institution.",
+        feature: "PEOPLE",
+        isRead: false,
+        title: "Staff request"
+      },
+      {
+        body: "U/14 A Rugby Boys name changed to The Vipers",
+        feature: "TEAMS",
+        isRead: false,
+        title: "Team modified"
+      },
+      {
+        body: "U/12 B Cricket Practice on Thurs, 30 Nov 2017 canceled.",
+        feature: "SCHEDULE",
+        isRead: false,
+        title: "Event canceled"
+      }
+    ];
+
     return (
       <AppBar
         className={classNames(
@@ -83,92 +131,84 @@ class CustomAppBar extends Component {
         )}
       >
         <Toolbar disableGutters={!isSideMenuOpen}>
-          <Grid container justify="space-between" align="center">
-            <Grid item>
-              <Grid container direction="row" align="center">
+          <IconButton
+            color="contrast"
+            aria-label="open drawer"
+            onClick={() => toggleSideMenu()}
+            className={classNames(
+              classes.menuButton,
+              isSideMenuOpen && classes.hide
+            )}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            type="title"
+            color="inherit"
+            noWrap
+            className={classNames(isMobile && classes.mobileTitle)}
+          >
+            {title}
+          </Typography>
+          <div className={classes.flexGrow} />
+          <Route
+            render={({ history }) => (
+              <Tooltip title="Settings" placement="bottom">
                 <IconButton
                   color="contrast"
-                  aria-label="open drawer"
-                  onClick={() => toggleSideMenu()}
-                  className={classNames(
-                    classes.menuButton,
-                    isSideMenuOpen && classes.hide
-                  )}
+                  aria-label="edit settings"
+                  onClick={() => openSettingsAlert()}
                 >
-                  <MenuIcon />
+                  <SettingsIcon />
                 </IconButton>
-                <Typography
-                  type="title"
-                  color="inherit"
-                  noWrap
-                  className={classNames(isMobile && classes.mobileTitle)}
+              </Tooltip>
+            )}
+          />
+          <NotificationsTray notifications={notifications} />
+          {isMobile ? (
+            <div>
+              <Tooltip title="Options" placement="bottom">
+                <IconButton
+                  color="contrast"
+                  aria-label="app bar menu"
+                  onClick={this.handleClick}
                 >
-                  {title}
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid item className={classes.rightButtons}>
-              <Grid container justify="space-around" align="center">
-                <Route
-                  render={({ history }) => (
-                    <Tooltip title="Settings" placement="bottom">
-                      <IconButton
-                        color="contrast"
-                        aria-label="edit settings"
-                        onClick={() => openSettingsAlert()}
-                      >
-                        <SettingsIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                />
-                {isMobile ? (
-                  <div>
-                    <Tooltip title="Options" placement="bottom">
-                      <IconButton
-                        color="contrast"
-                        aria-label="app bar menu"
-                        onClick={this.handleClick}
-                      >
-                        <AppBarMenuIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Menu
-                      id="simple-menu"
-                      anchorEl={this.state.anchorEl}
-                      open={this.state.open}
-                      onRequestClose={this.handleRequestClose}
+                  <AppBarMenuIcon />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                id="simple-menu"
+                anchorEl={this.state.anchorEl}
+                open={this.state.open}
+                onRequestClose={this.handleRequestClose}
+              >
+                <MenuItem
+                  onClick={() => {
+                    this.handleRequestClose();
+                    openLogOutModal();
+                  }}
+                >
+                  Logout
+                </MenuItem>
+              </Menu>
+            </div>
+          ) : (
+            <div className={classes.desktopIcons}>
+              <Route
+                render={({ history }) => (
+                  <Tooltip title="Log out" placement="bottom">
+                    <IconButton
+                      color="contrast"
+                      aria-label="log out"
+                      onClick={() => openLogOutModal()}
                     >
-                      <MenuItem
-                        onClick={() => {
-                          this.handleRequestClose();
-                          openLogOutModal();
-                        }}
-                      >
-                        Logout
-                      </MenuItem>
-                    </Menu>
-                  </div>
-                ) : (
-                  <div className={classes.desktopIcons}>
-                    <Route
-                      render={({ history }) => (
-                        <Tooltip title="Log out" placement="bottom">
-                          <IconButton
-                            color="contrast"
-                            aria-label="log out"
-                            onClick={() => openLogOutModal()}
-                          >
-                            <LogOutIcon />
-                          </IconButton>
-                        </Tooltip>
-                      )}
-                    />
-                  </div>
+                      <LogOutIcon />
+                    </IconButton>
+                  </Tooltip>
                 )}
-              </Grid>
-            </Grid>
-          </Grid>
+              />
+            </div>
+          )}
         </Toolbar>
       </AppBar>
     );
