@@ -664,7 +664,9 @@ export function errorEditingEvent(error: { code: string, message: string }) {
 
 export function editEvent(
   institutionID,
-  eventInfo,
+  eventID,
+  requiredInfo,
+  optionalInfo,
   recurrencePattern,
   teams,
   managers,
@@ -673,117 +675,74 @@ export function editEvent(
 ) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestEditEvent());
-
-    // Distill required info from coaches & managers
-    const eventCoaches = _.fromPairs(
-      _.toPairs(coaches).map(([coachID, coachInfo]) => {
-        return [
-          coachID,
-          {
-            name: coachInfo.metadata.name,
-            surname: coachInfo.metadata.surname,
-            profilePictureURL: coachInfo.metadata.profilePictureURL,
-            phoneNumber: coachInfo.metadata.phoneNumber,
-            hours: {
-              status: "AWAITING_SIGN_IN",
-              type: coachInfo.paymentDefaults.type,
-              standardHourlyRate: coachInfo.paymentDefaults.standardHourlyRate,
-              overtimeHourlyRate: coachInfo.paymentDefaults.overtimeHourlyRate
-            }
-          }
-        ];
-      })
-    );
-    const eventManagers = _.fromPairs(
-      _.toPairs(managers).map(([managerID, managerInfo]) => {
-        return [
-          managerID,
-          {
-            name: managerInfo.metadata.name,
-            surname: managerInfo.metadata.surname,
-            profilePictureURL: managerInfo.metadata.profilePictureURL,
-            phoneNumber: managerInfo.metadata.phoneNumber
-          }
-        ];
-      })
-    );
+    const db = firebase.firestore();
 
     // Set up recurring events
     let instances = recurrencePattern.instances;
     let eventsToEdit = [];
 
     if (shouldEditAllEvents) {
-      let currentDate = new Date(Date.now());
-      currentDate.setHours(currentDate.getHours() + 2);
-      currentDate = currentDate.toISOString().slice(0, 10);
+      const currentDate = new Date(Date.now());
       for (let i = 0; i < recurrencePattern.instances.length; i++) {
         if (instances[i].date >= currentDate) {
           const date = instances[i].date;
-          const year = date.slice(0, 4);
-          const month = date.slice(5, 7);
           eventsToEdit.push({
-            id: instances[i].id,
-            date,
-            year,
-            month
+            ref: db.collection("events").doc(instances[i].id),
+            date
           });
         }
       }
     } else {
-      const date = eventInfo.date;
-      const year = date.slice(0, 4);
-      const month = date.slice(5, 7);
+      const date = requiredInfo.times.start;
       eventsToEdit.push({
-        id: eventInfo.id,
-        date,
-        year,
-        month
+        ref: db.collection("events").doc(eventID),
+        date
       });
     }
 
-    // Create events
-    let updates = {};
-    let managerUpdates = {};
-    let coachUpdates = {};
+    // Edit events
+    let batch = db.batch();
     for (let i = 0; i < eventsToEdit.length; i++) {
+      let eventDate = eventsToEdit[i].date;
+      const year = eventDate.getFullYear();
+      const month = format2Digits(eventDate.getMonth() + 1);
+      const day = format2Digits(eventDate.getDate());
+      const start = {
+        hours: format2Digits(requiredInfo.times.start.getHours()),
+        minutes: format2Digits(requiredInfo.times.start.getMinutes())
+      };
+      const end = {
+        hours: format2Digits(requiredInfo.times.end.getHours()),
+        minutes: format2Digits(requiredInfo.times.end.getMinutes())
+      };
+      const newStart = `${year}-${month}-${day}T${start.hours}:${start.minutes}:00`;
+      const newEnd = `${year}-${month}-${day}T${end.hours}:${end.minutes}:00`;
+
       const newEventInfo = {
-        status: "ACTIVE",
-        metadata: { ...eventInfo, date: eventsToEdit[i].date },
-        recurrencePattern,
+        institutionID,
+        requiredInfo: {
+          ...requiredInfo,
+          times: {
+            end: new Date(newEnd),
+            start: new Date(newStart)
+          }
+        },
+        optionalInfo,
         teams,
-        coaches: eventCoaches,
-        managers: eventManagers
-      };
-      managerUpdates = getManagerUpdates(
-        institutionID,
-        managers,
-        eventsToEdit[i].year,
-        eventsToEdit[i].month,
-        eventsToEdit[i].id,
-        newEventInfo
-      );
-      coachUpdates = getCoachUpdates(
-        institutionID,
         coaches,
-        eventsToEdit[i].year,
-        eventsToEdit[i].month,
-        eventsToEdit[i].id,
-        newEventInfo
-      );
-      updates = {
-        ...updates,
-        [`institution/${institutionID}/private/events/${eventsToEdit[i]
-          .year}/${eventsToEdit[i].month}/${eventsToEdit[i].id}`]: newEventInfo,
-        ...coachUpdates,
-        ...managerUpdates
+        managers,
+        recurrencePattern: {
+          ...recurrencePattern,
+          instances
+        }
       };
+
+      batch.set(eventsToEdit[i].ref, newEventInfo);
     }
 
     // Save events to database
-    return firebase
-      .database()
-      .ref()
-      .update(updates)
+    return batch
+      .commit()
       .then(() => dispatch(receiveEditEvent()))
       .catch(error => dispatch(errorEditingEvent(error)));
   };

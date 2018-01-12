@@ -1,37 +1,35 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
+import _ from "lodash";
+import AppBar from "material-ui/AppBar";
+import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
+import Checkbox from "material-ui/Checkbox";
+import { CircularProgress } from "material-ui/Progress";
+import CloseIcon from "material-ui-icons/Close";
 import Dialog, {
   DialogActions,
   DialogContent,
   DialogTitle
 } from "material-ui/Dialog";
-import Grid from "material-ui/Grid";
-import TextField from "material-ui/TextField";
-import AppBar from "material-ui/AppBar";
-import Toolbar from "material-ui/Toolbar";
-import IconButton from "material-ui/IconButton";
-import Typography from "material-ui/Typography";
-import CloseIcon from "material-ui-icons/Close";
-import Slide from "material-ui/transitions/Slide";
-import Input, { InputLabel } from "material-ui/Input";
-import { MenuItem } from "material-ui/Menu";
-import Radio, { RadioGroup } from "material-ui/Radio";
 import { FormLabel, FormControl, FormControlLabel } from "material-ui/Form";
-import Select from "material-ui/Select";
+import { grey } from "material-ui/colors";
+import Grid from "material-ui/Grid";
+import IconButton from "material-ui/IconButton";
+import Input, { InputLabel } from "material-ui/Input";
 import List, {
   ListItem,
   ListItemSecondaryAction,
   ListItemText
 } from "material-ui/List";
-import Checkbox from "material-ui/Checkbox";
-import Avatar from "material-ui/Avatar";
-import { CircularProgress } from "material-ui/Progress";
+import { MenuItem } from "material-ui/Menu";
+import Radio, { RadioGroup } from "material-ui/Radio";
+import Select from "material-ui/Select";
+import Slide from "material-ui/transitions/Slide";
 import Switch from "material-ui/Switch";
-
-import _ from "lodash";
+import TextField from "material-ui/TextField";
+import Toolbar from "material-ui/Toolbar";
+import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
 
 const styles = {
   appBar: {
@@ -40,18 +38,9 @@ const styles = {
   flex: {
     flex: 1
   },
-  mainContent: {
-    height: "100%",
-    overflow: "auto"
-  },
-  titleWrapper: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  title: {
-    margin: 24,
-    fontSize: "1.4rem"
+  formControl: {
+    width: "80%",
+    margin: "24px 10%"
   },
   heading: {
     fontWeight: "normal",
@@ -63,20 +52,29 @@ const styles = {
     backgroundColor: grey[300],
     color: grey[700]
   },
-  formControl: {
-    width: "80%",
-    margin: "24px 10%"
+  loaderWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  mainContent: {
+    height: "100%",
+    overflow: "auto"
+  },
+  section: {
+    backgroundColor: grey[100]
   },
   subheading: {
     width: "100%",
     textAlign: "center",
     margin: "24px 0"
   },
-  section: {
-    backgroundColor: grey[100]
+  title: {
+    margin: 24,
+    fontSize: "1.4rem"
   },
-  loaderWrapper: {
-    flexGrow: 1,
+  titleWrapper: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
@@ -91,7 +89,10 @@ class EditEventDialog extends Component {
     startTime: "12:00",
     endTime: "13:00",
     venue: "To be specified",
-    opponents: "To be specified",
+    opponents: {
+      institution: "To be specified",
+      isSignedUp: false
+    },
     homeAway: "UNKNOWN",
     frequency: "ONCE",
     numberOfEvents: "1",
@@ -109,46 +110,9 @@ class EditEventDialog extends Component {
   componentWillMount() {
     const { initialEventInfo, initialDate, isOpen } = this.props;
 
-    let type = initialEventInfo.metadata.type;
-    let otherEventType = "";
-    let isOtherEventTypeCompetitive = false;
-    if (type === "Practice") {
-      type = "PRACTICE";
-    } else if (type === "Match") {
-      type = "MATCH";
-    } else {
-      otherEventType = initialEventInfo.metadata.type;
-      isOtherEventTypeCompetitive = initialEventInfo.metadata.isCompetitive;
-      type = "OTHER";
-    }
-
-    this.setState({
-      date: initialDate,
-      title: initialEventInfo.metadata.title,
-      type: type,
-      startTime: initialEventInfo.metadata.startTime,
-      endTime: initialEventInfo.metadata.endTime,
-      venue: initialEventInfo.metadata.additionalInfo.venue,
-      opponents: initialEventInfo.metadata.additionalInfo.opponents,
-      homeAway: initialEventInfo.metadata.additionalInfo.homeAway,
-      frequency: initialEventInfo.recurrencePattern.frequency,
-      numberOfEvents: initialEventInfo.recurrencePattern.numberOfEvents,
-      otherEventType: otherEventType,
-      notes: initialEventInfo.metadata.additionalInfo.notes,
-      isOtherEventTypeCompetitive: isOtherEventTypeCompetitive,
-      selectedTeams: _.keys(initialEventInfo.teams),
-      selectedManagers: _.keys(initialEventInfo.managers),
-      selectedCoaches: _.keys(initialEventInfo.coaches),
-      isRecurringEventModalOpen:
-        initialEventInfo.recurrencePattern.frequency !== "ONCE" && isOpen
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { initialEventInfo, initialDate, isOpen } = nextProps;
-
-    if (this.props.initialEventInfo !== initialEventInfo) {
-      let type = initialEventInfo.metadata.type;
+    if (initialEventInfo) {
+      const timeOptions = { hour12: false, hour: "2-digit", minute: "2-digit" };
+      let type = initialEventInfo.requiredInfo.type;
       let otherEventType = "";
       let isOtherEventTypeCompetitive = false;
       if (type === "Practice") {
@@ -156,24 +120,79 @@ class EditEventDialog extends Component {
       } else if (type === "Match") {
         type = "MATCH";
       } else {
-        otherEventType = initialEventInfo.metadata.type;
-        isOtherEventTypeCompetitive = initialEventInfo.metadata.isCompetitive;
+        otherEventType = initialEventInfo.requiredInfo.type;
+        isOtherEventTypeCompetitive =
+          initialEventInfo.requiredInfo.isCompetitive;
         type = "OTHER";
       }
 
       this.setState({
         date: initialDate,
-        title: initialEventInfo.metadata.title,
+        title: initialEventInfo.requiredInfo.title,
         type: type,
-        startTime: initialEventInfo.metadata.startTime,
-        endTime: initialEventInfo.metadata.endTime,
-        venue: initialEventInfo.metadata.additionalInfo.venue,
-        opponents: initialEventInfo.metadata.additionalInfo.opponents,
-        homeAway: initialEventInfo.metadata.additionalInfo.homeAway,
+        startTime: initialEventInfo.requiredInfo.times.start.toLocaleTimeString(
+          "en-US",
+          timeOptions
+        ),
+        endTime: initialEventInfo.requiredInfo.times.end.toLocaleTimeString(
+          "en-US",
+          timeOptions
+        ),
+        venue: initialEventInfo.optionalInfo.venue,
+        opponents: initialEventInfo.optionalInfo.opponents,
+        homeAway: initialEventInfo.optionalInfo.homeAway,
         frequency: initialEventInfo.recurrencePattern.frequency,
         numberOfEvents: initialEventInfo.recurrencePattern.numberOfEvents,
         otherEventType: otherEventType,
-        notes: initialEventInfo.metadata.additionalInfo.notes,
+        notes: initialEventInfo.optionalInfo.notes,
+        isOtherEventTypeCompetitive: isOtherEventTypeCompetitive,
+        selectedTeams: _.keys(initialEventInfo.teams),
+        selectedManagers: _.keys(initialEventInfo.managers),
+        selectedCoaches: _.keys(initialEventInfo.coaches),
+        isRecurringEventModalOpen:
+          initialEventInfo.recurrencePattern.frequency !== "ONCE" && isOpen
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { initialEventInfo, initialDate, isOpen } = nextProps;
+
+    if (this.props.initialEventInfo !== initialEventInfo) {
+      const timeOptions = { hour12: false, hour: "2-digit", minute: "2-digit" };
+      let type = initialEventInfo.requiredInfo.type;
+      let otherEventType = "";
+      let isOtherEventTypeCompetitive = false;
+      if (type === "Practice") {
+        type = "PRACTICE";
+      } else if (type === "Match") {
+        type = "MATCH";
+      } else {
+        otherEventType = initialEventInfo.requiredInfo.type;
+        isOtherEventTypeCompetitive =
+          initialEventInfo.requiredInfo.isCompetitive;
+        type = "OTHER";
+      }
+
+      this.setState({
+        date: initialDate,
+        title: initialEventInfo.requiredInfo.title,
+        type: type,
+        startTime: initialEventInfo.requiredInfo.times.start.toLocaleTimeString(
+          "en-US",
+          timeOptions
+        ),
+        endTime: initialEventInfo.requiredInfo.times.end.toLocaleTimeString(
+          "en-US",
+          timeOptions
+        ),
+        venue: initialEventInfo.optionalInfo.venue,
+        opponents: initialEventInfo.optionalInfo.opponents,
+        homeAway: initialEventInfo.optionalInfo.homeAway,
+        frequency: initialEventInfo.recurrencePattern.frequency,
+        numberOfEvents: initialEventInfo.recurrencePattern.numberOfEvents,
+        otherEventType: otherEventType,
+        notes: initialEventInfo.optionalInfo.notes,
         isOtherEventTypeCompetitive: isOtherEventTypeCompetitive,
         selectedTeams: _.keys(initialEventInfo.teams),
         selectedManagers: _.keys(initialEventInfo.managers),
@@ -199,7 +218,7 @@ class EditEventDialog extends Component {
   createTeamsList() {
     const { classes, teams } = this.props;
     const { selectedTeams } = this.state;
-    const listItems = _.toPairs(teams).map(([id, info]) => {
+    const listItems = _.toPairs(teams).map(([id, team]) => {
       return (
         <ListItem
           key={id}
@@ -208,10 +227,7 @@ class EditEventDialog extends Component {
           className={classes.listItem}
           onClick={() => this.handleToggle(id, "TEAM")}
         >
-          <ListItemText
-            primary={info.metadata.name}
-            secondary={info.metadata.sport}
-          />
+          <ListItemText primary={team.info.name} secondary={team.info.sport} />
           <ListItemSecondaryAction>
             <Checkbox
               onClick={() => this.handleToggle(id, "TEAM")}
@@ -241,7 +257,7 @@ class EditEventDialog extends Component {
   createCoachesList() {
     const { classes, coaches } = this.props;
     const { selectedCoaches } = this.state;
-    const listItems = _.toPairs(coaches).map(([id, info]) => {
+    const listItems = _.toPairs(coaches).map(([id, coach]) => {
       return (
         <ListItem
           key={id}
@@ -251,12 +267,10 @@ class EditEventDialog extends Component {
           onClick={() => this.handleToggle(id, "COACH")}
         >
           <Avatar
-            alt={`${info.metadata.name} ${info.metadata.surname}`}
-            src={info.metadata.profilePictureURL}
+            alt={`${coach.info.name} ${coach.info.surname}`}
+            src={coach.info.profilePictureURL}
           />
-          <ListItemText
-            primary={`${info.metadata.name} ${info.metadata.surname}`}
-          />
+          <ListItemText primary={`${coach.info.name} ${coach.info.surname}`} />
           <ListItemSecondaryAction>
             <Checkbox
               onClick={() => this.handleToggle(id, "COACH")}
@@ -286,7 +300,7 @@ class EditEventDialog extends Component {
   createManagersList() {
     const { classes, managers } = this.props;
     const { selectedManagers } = this.state;
-    const listItems = _.toPairs(managers).map(([id, info]) => {
+    const listItems = _.toPairs(managers).map(([id, manager]) => {
       return (
         <ListItem
           key={id}
@@ -296,11 +310,11 @@ class EditEventDialog extends Component {
           onClick={() => this.handleToggle(id, "MANAGER")}
         >
           <Avatar
-            alt={`${info.metadata.name} ${info.metadata.surname}`}
-            src={info.metadata.profilePictureURL}
+            alt={`${manager.info.name} ${manager.info.surname}`}
+            src={manager.info.profilePictureURL}
           />
           <ListItemText
-            primary={`${info.metadata.name} ${info.metadata.surname}`}
+            primary={`${manager.info.name} ${manager.info.surname}`}
           />
           <ListItemSecondaryAction>
             <Checkbox
@@ -340,7 +354,7 @@ class EditEventDialog extends Component {
 
     let newTitle = "";
     if (selectedTeams.length === 1) {
-      newTitle = teams[selectedTeams[0]].metadata.name + " ";
+      newTitle = teams[selectedTeams[0]].info.name + " ";
       if (update === "type") {
         if (value === "OTHER") {
           newTitle = newTitle + otherEventType;
@@ -370,12 +384,19 @@ class EditEventDialog extends Component {
       }
     }
 
+    if (update === "opponents") {
+      newTitle = newTitle + " vs " + value;
+    }
+
     this.setState({ title: newTitle });
   }
 
   handleChange = name => event => {
     const { selectedTeams, startTime, endTime } = this.state;
     switch (name) {
+      case "opponents":
+        this.setNewAutomatedTitle(selectedTeams, name, event.target.value);
+        break;
       case "type":
         this.setNewAutomatedTitle(selectedTeams, name, event.target.value);
         break;
@@ -400,7 +421,17 @@ class EditEventDialog extends Component {
       default:
         break;
     }
-    this.setState({ [name]: event.target.value });
+
+    if (name === "opponents") {
+      this.setState({
+        [name]: {
+          institution: event.target.value,
+          isSignedUp: false
+        }
+      });
+    } else {
+      this.setState({ [name]: event.target.value });
+    }
   };
 
   handleToggle = (value, type) => {
@@ -506,9 +537,6 @@ class EditEventDialog extends Component {
       isOpen,
       isLoading,
       minDate,
-      teams,
-      coaches,
-      managers,
       institutionID,
       initialEventID,
       initialEventInfo
@@ -578,21 +606,26 @@ class EditEventDialog extends Component {
                     eventType === "Match" || isOtherEventTypeCompetitive;
                   const recurrencePattern = initialEventInfo.recurrencePattern;
 
-                  const eventInfo = {
-                    id: initialEventID,
-                    title,
+                  const requiredInfo = {
                     isCompetitive,
-                    date,
-                    startTime,
-                    endTime,
-                    type: eventType,
-                    additionalInfo: {
-                      venue,
-                      opponents,
-                      homeAway,
-                      notes
+                    title,
+                    status: "ACTIVE",
+                    times: {
+                      end: new Date(`${date}T${endTime}:00`),
+                      start: new Date(`${date}T${startTime}:00`)
+                    },
+                    type: eventType
+                  };
+                  const optionalInfo = {
+                    homeAway,
+                    notes,
+                    venue,
+                    opponents: {
+                      institution: opponents,
+                      isSignedUp: false
                     }
                   };
+
                   if (hasTitleError || hasOtherEventTypeError || hasDateError) {
                     let errorType = "TITLE";
                     if (hasOtherEventTypeError) errorType = "EVENT_TYPE";
@@ -601,21 +634,18 @@ class EditEventDialog extends Component {
                   } else {
                     editEvent(
                       institutionID,
-                      eventInfo,
+                      initialEventID,
+                      requiredInfo,
+                      optionalInfo,
                       recurrencePattern,
+                      _.fromPairs(selectedTeams.map(teamID => [teamID, true])),
                       _.fromPairs(
-                        selectedTeams.map(teamID => [teamID, teams[teamID]])
-                      ),
-                      _.fromPairs(
-                        selectedManagers.map(managerID => [
-                          managerID,
-                          managers[managerID]
-                        ])
+                        selectedManagers.map(managerID => [managerID, true])
                       ),
                       _.fromPairs(
                         selectedCoaches.map(coachID => [
                           coachID,
-                          coaches[coachID]
+                          initialEventInfo.coaches[coachID]
                         ])
                       ),
                       shouldEditAllEvents
@@ -818,7 +848,7 @@ class EditEventDialog extends Component {
                           <TextField
                             id="opponents"
                             label="Opponents"
-                            value={opponents}
+                            value={opponents.institution}
                             onChange={this.handleChange("opponents")}
                             InputLabelProps={{
                               shrink: true
@@ -850,6 +880,11 @@ class EditEventDialog extends Component {
                               value="AWAY"
                               control={<Radio />}
                               label="Away"
+                            />
+                            <FormControlLabel
+                              value="NEUTRAL"
+                              control={<Radio />}
+                              label="Neutral"
                             />
                           </RadioGroup>
                         </FormControl>
@@ -948,9 +983,5 @@ class EditEventDialog extends Component {
     );
   }
 }
-
-EditEventDialog.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(EditEventDialog);

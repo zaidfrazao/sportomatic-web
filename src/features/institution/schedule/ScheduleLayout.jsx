@@ -237,25 +237,23 @@ class ScheduleLayout extends Component {
           >
             <EditIcon />
           </Button>
-          {false && (
-            <EditEventDialog
-              isOpen={isEditEventDialogOpen}
-              isLoading={isEditEventDialogLoading}
-              minDate={currentDate.toISOString().slice(0, 10)}
-              initialDate={dateSelected}
-              teams={teams}
-              coaches={coaches}
-              managers={managers}
-              initialEventInfo={events[eventID]}
-              initialEventID={eventID}
-              institutionID={userID}
-              actions={{
-                handleClose: closeEditEventDialog,
-                editEvent,
-                openEventErrorAlert
-              }}
-            />
-          )}
+          <EditEventDialog
+            isOpen={isEditEventDialogOpen}
+            isLoading={isEditEventDialogLoading}
+            minDate={currentDate.toISOString().slice(0, 10)}
+            initialDate={dateSelected}
+            teams={teams}
+            coaches={coaches}
+            managers={managers}
+            initialEventInfo={events[eventID]}
+            initialEventID={eventID}
+            institutionID={userID}
+            actions={{
+              handleClose: closeEditEventDialog,
+              editEvent,
+              openEventErrorAlert
+            }}
+          />
           <NotificationModal
             isOpen={isEventErrorAlertOpen}
             handleOkClick={closeEventErrorAlert}

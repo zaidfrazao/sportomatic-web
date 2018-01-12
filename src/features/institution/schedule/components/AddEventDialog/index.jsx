@@ -397,16 +397,7 @@ class AddEventDialog extends Component {
   };
 
   render() {
-    const {
-      classes,
-      isOpen,
-      isLoading,
-      minDate,
-      teams,
-      coaches,
-      managers,
-      institutionID
-    } = this.props;
+    const { classes, isOpen, isLoading, minDate, institutionID } = this.props;
     const {
       handleClose,
       addEvent,
