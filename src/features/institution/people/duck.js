@@ -2,6 +2,8 @@ import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
 import { TeamAlias } from "../../../models/aliases";
+import _ from "lodash";
+
 // Actions
 
 export const UPDATE_TAB = "sportomatic-web/admin/people/UPDATE_TAB";
@@ -27,6 +29,8 @@ export const RECEIVE_MANAGER_REQUESTS =
   "sportomatic-web/admin/people/RECEIVE_MANAGER_REQUESTS";
 export const REQUEST_TEAMS = "sportomatic-web/admin/people/REQUEST_TEAMS";
 export const RECEIVE_TEAMS = "sportomatic-web/admin/people/RECEIVE_TEAMS";
+export const REQUEST_STAFF = "sportomatic-web/admin/people/REQUEST_STAFF";
+export const RECEIVE_STAFF = "sportomatic-web/admin/people/RECEIVE_STAFF";
 
 // Reducers
 
@@ -223,6 +227,21 @@ export function closeEditPersonDialog() {
   };
 }
 
+export function requestStaff() {
+  return {
+    type: REQUEST_STAFF
+  };
+}
+
+export function receiveStaff(filteredStaff) {
+  return {
+    type: RECEIVE_STAFF,
+    payload: {
+      filteredStaff
+    }
+  };
+}
+
 export function requestCoaches() {
   return {
     type: REQUEST_COACHES
@@ -398,5 +417,32 @@ export function loadTeams(institutionID) {
       });
       dispatch(receiveTeams(teams));
     });
+  };
+}
+
+export function performFilter(userType, sport) {
+  return function(dispatch: DispatchAlias) {
+    let filteredStaff = staff;
+    if (userType !== "") {
+      filteredStaff = _.fromPairs(
+        _.toPairs(filteredStaff).filter(
+          keyValuePairs => keyValuePairs[1].metadata.type === userType
+        )
+      );
+    }
+
+    if (sport !== "") {
+      filteredStaff = _.fromPairs(
+        _.toPairs(filteredStaff).filter(
+          keyValuePairs => keyValuePairs[1].preferredSports === sport
+        )
+      );
+    }
+
+    if (filteredStaff === null) {
+      dispatch(receiveStaff({}));
+    } else {
+      dispatch(receiveStaff(filteredStaff));
+    }
   };
 }

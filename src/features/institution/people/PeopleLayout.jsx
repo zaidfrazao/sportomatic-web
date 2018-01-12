@@ -13,6 +13,7 @@ import NotificationModal from "../../../components/NotificationModal";
 import PeopleList from "./components/PeopleList";
 import RequestsList from "./components/RequestsList";
 import PersonInfo from "./components/PersonInfo";
+import FiltersToolbar from "./components/FiltersToolbar";
 
 const styles = theme => ({
   adWrapper: {
@@ -218,7 +219,8 @@ class PeopleLayout extends Component {
       openEditPersonDialog,
       closeEditPersonDialog,
       openDeletePersonAlert,
-      closeDeletePersonAlert
+      closeDeletePersonAlert,
+      performFilter
     } = this.props.actions;
     const {
       isDeletPersonAlertOpen,
@@ -285,6 +287,13 @@ class PeopleLayout extends Component {
                     : classes.staffTabNoCards
                 }
               >
+                <FiltersToolbar
+                  isMobile={isMobile}
+                  types={["Coach", "Manager"]}
+                  sports={["Cricket", "Rugby", "Soccer"]}
+                  applyFilter={performFilter}
+                />
+
                 <div className={classes.adWrapper}>{ad}</div>
                 {isStaffLoading ? (
                   <div className={classes.loaderWrapper}>
