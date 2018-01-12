@@ -301,6 +301,9 @@ class AddEventDialog extends Component {
   handleChange = name => event => {
     const { selectedTeams, startTime, endTime } = this.state;
     switch (name) {
+      case "opponents":
+        this.setNewAutomatedTitle(selectedTeams, name, event.target.value);
+        break;
       case "type":
         this.setNewAutomatedTitle(selectedTeams, name, event.target.value);
         break;
@@ -485,11 +488,11 @@ class AddEventDialog extends Component {
                 eventType = _.capitalize(type);
                 const isCompetitive =
                   eventType === "Match" ||
-                  "Meeting" ||
-                  "Gala" ||
-                  "Scrim" ||
-                  "Exhibition" ||
-                  "Friendly" ||
+                  eventType === "Meeting" ||
+                  eventType === "Gala" ||
+                  eventType === "Scrim" ||
+                  eventType === "Exhibition" ||
+                  eventType === "Friendly" ||
                   isOtherEventTypeCompetitive;
                 const recurrencePattern = {
                   frequency,

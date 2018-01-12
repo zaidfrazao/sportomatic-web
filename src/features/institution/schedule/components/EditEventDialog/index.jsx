@@ -124,8 +124,22 @@ class EditEventDialog extends Component {
       let isOtherEventTypeCompetitive = false;
       if (type === "Practice") {
         type = "PRACTICE";
+      } else if (type === "Training") {
+        type = "TRAINING";
+      } else if (type === "Gym") {
+        type = "GYM";
       } else if (type === "Match") {
         type = "MATCH";
+      } else if (type === "Meeting") {
+        type = "MEETING";
+      } else if (type === "Gala") {
+        type = "GALA";
+      } else if (type === "Scrim") {
+        type = "SCRIM";
+      } else if (type === "Exhibition") {
+        type = "EXHIBITION";
+      } else if (type === "Friendly") {
+        type = "FRIENDLY";
       } else {
         otherEventType = initialEventInfo.requiredInfo.type;
         isOtherEventTypeCompetitive =
@@ -172,8 +186,22 @@ class EditEventDialog extends Component {
       let isOtherEventTypeCompetitive = false;
       if (type === "Practice") {
         type = "PRACTICE";
+      } else if (type === "Training") {
+        type = "TRAINING";
+      } else if (type === "Gym") {
+        type = "GYM";
       } else if (type === "Match") {
         type = "MATCH";
+      } else if (type === "Meeting") {
+        type = "MEETING";
+      } else if (type === "Gala") {
+        type = "GALA";
+      } else if (type === "Scrim") {
+        type = "SCRIM";
+      } else if (type === "Exhibition") {
+        type = "EXHIBITION";
+      } else if (type === "Friendly") {
+        type = "FRIENDLY";
       } else {
         otherEventType = initialEventInfo.requiredInfo.type;
         isOtherEventTypeCompetitive =
@@ -611,11 +639,11 @@ class EditEventDialog extends Component {
                   }
                   const isCompetitive =
                     eventType === "Match" ||
-                    "Meeting" ||
-                    "Gala" ||
-                    "Scrim" ||
-                    "Exhibition" ||
-                    "Friendly" ||
+                    eventType === "Meeting" ||
+                    eventType === "Gala" ||
+                    eventType === "Scrim" ||
+                    eventType === "Exhibition" ||
+                    eventType === "Friendly" ||
                     isOtherEventTypeCompetitive;
                   const recurrencePattern = initialEventInfo.recurrencePattern;
 
