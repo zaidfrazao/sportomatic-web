@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
-import _ from "lodash";
 
 const NAMESPACE = "sportomatic-web/admin/schedule";
 

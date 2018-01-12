@@ -4,7 +4,7 @@ import { Calendar as ReactCalendar } from "react-calendar";
 import { CircularProgress } from "material-ui/Progress";
 import classNames from "classnames";
 import EventIcon from "material-ui-icons/FiberManualRecord";
-import { grey, lightBlue, orange } from "material-ui/colors";
+import { grey, lightBlue, orange, red } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import NextIcon from "material-ui-icons/ArrowForward";
 import Next2Icon from "material-ui-icons/LastPage";
@@ -16,6 +16,11 @@ import { withStyles } from "material-ui/styles";
 import EventsList from "../EventsList";
 
 const styles = theme => ({
+  cancelledEvent: {
+    width: 12,
+    height: 12,
+    color: red[500]
+  },
   competitiveEvent: {
     width: 12,
     height: 12,
@@ -214,6 +219,7 @@ class Calendar extends Component {
     let dates = {};
     _.values(events).map(eventInfo => {
       const isCompetitive = eventInfo.requiredInfo.isCompetitive;
+      const isCancelled = eventInfo.requiredInfo.status === "CANCELLED";
       const eventDate = eventInfo.requiredInfo.times.start.toDateString();
 
       if (dates[eventDate]) {
@@ -222,10 +228,14 @@ class Calendar extends Component {
         } else {
           dates[eventDate].hasNonCompetitive = true;
         }
+        if (isCancelled) {
+          dates[eventDate].hasCancelled = true;
+        }
       } else {
         dates[eventDate] = {
           hasCompetitive: isCompetitive,
-          hasNonCompetitive: !isCompetitive
+          hasNonCompetitive: !isCompetitive,
+          hasCancelled: isCancelled
         };
       }
     });
@@ -345,6 +355,22 @@ class Calendar extends Component {
                         if (eventDate) {
                           if (
                             eventDate.hasCompetitive &&
+                            eventDate.hasNonCompetitive &&
+                            eventDate.hasCancelled
+                          ) {
+                            return (
+                              <div>
+                                <EventIcon
+                                  className={classes.competitiveEvent}
+                                />
+                                <EventIcon
+                                  className={classes.nonCompetitiveEvent}
+                                />
+                                <EventIcon className={classes.cancelledEvent} />
+                              </div>
+                            );
+                          } else if (
+                            eventDate.hasCompetitive &&
                             eventDate.hasNonCompetitive
                           ) {
                             return (
@@ -355,6 +381,30 @@ class Calendar extends Component {
                                 <EventIcon
                                   className={classes.nonCompetitiveEvent}
                                 />
+                              </div>
+                            );
+                          } else if (
+                            eventDate.hasCompetitive &&
+                            eventDate.hasCancelled
+                          ) {
+                            return (
+                              <div>
+                                <EventIcon
+                                  className={classes.competitiveEvent}
+                                />
+                                <EventIcon className={classes.cancelledEvent} />
+                              </div>
+                            );
+                          } else if (
+                            eventDate.hasNonCompetitive &&
+                            eventDate.hasCancelled
+                          ) {
+                            return (
+                              <div>
+                                <EventIcon
+                                  className={classes.nonCompetitiveEvent}
+                                />
+                                <EventIcon className={classes.cancelledEvent} />
                               </div>
                             );
                           } else if (eventDate.hasCompetitive) {
