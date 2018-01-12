@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import _ from "lodash";
 import AddIcon from "material-ui-icons/Add";
 import Button from "material-ui/Button";
 import EditIcon from "material-ui-icons/Edit";
@@ -11,6 +12,7 @@ import Calendar from "./components/Calendar";
 import DecisionModal from "../../../components/DecisionModal";
 import EditEventDialog from "./components/EditEventDialog";
 import EventInfo from "./components/EventInfo";
+import FiltersToolbar from "./components/FiltersToolbar";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 import NotificationModal from "../../../components/NotificationModal";
@@ -71,6 +73,13 @@ const styles = theme => ({
 });
 
 class ScheduleLayout extends Component {
+  state = {
+    eventTypes: {},
+    sports: {},
+    divisions: {},
+    ageGroups: {}
+  };
+
   componentWillMount() {
     const { userID } = this.props;
     const {
@@ -97,7 +106,7 @@ class ScheduleLayout extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID } = this.props;
+    const { userID, events, teams } = this.props;
     const {
       loadEvents,
       fetchCreationDate,
@@ -113,6 +122,48 @@ class ScheduleLayout extends Component {
       loadTeams(nextProps.userID);
       fetchCreationDate(nextProps.userID);
     }
+
+    let eventTypes = this.state.eventTypes;
+    let sports = this.state.sports;
+    let divisions = this.state.divisions;
+    let ageGroups = this.state.ageGroups;
+
+    if (events !== nextProps.events) {
+      eventTypes = {};
+      _.toPairs(nextProps.events).map(([id, info]) => {
+        eventTypes = {
+          ...eventTypes,
+          [info.requiredInfo.type]: true
+        };
+      });
+    }
+
+    if (teams !== nextProps.teams) {
+      sports = {};
+      divisions = {};
+      ageGroups = {};
+      _.toPairs(nextProps.teams).map(([id, info]) => {
+        sports = {
+          ...sports,
+          [info.info.sport]: true
+        };
+        divisions = {
+          ...divisions,
+          [info.info.division]: true
+        };
+        ageGroups = {
+          ...ageGroups,
+          [info.info.ageGroup]: true
+        };
+      });
+    }
+
+    this.setState({
+      eventTypes,
+      sports,
+      divisions,
+      ageGroups
+    });
   }
 
   createAd() {
@@ -126,6 +177,38 @@ class ScheduleLayout extends Component {
     }
 
     return ad;
+  }
+
+  filterEvents() {
+    const { eventType, sport, division, ageGroup } = this.props.filters;
+    const { events, teams } = this.props;
+
+    return _.fromPairs(
+      _.toPairs(events).filter(([id, info]) => {
+        let allowThroughFilter = true;
+
+        if (eventType !== "All") {
+          allowThroughFilter =
+            allowThroughFilter && info.requiredInfo.type === eventType;
+        }
+        _.keys(info.teams).map(teamID => {
+          if (teams[teamID] && sport !== "All") {
+            allowThroughFilter =
+              allowThroughFilter && teams[teamID].info.sport === sport;
+          }
+          if (teams[teamID] && division !== "All") {
+            allowThroughFilter =
+              allowThroughFilter && teams[teamID].info.division === division;
+          }
+          if (teams[teamID] && ageGroup !== "All") {
+            allowThroughFilter =
+              allowThroughFilter && teams[teamID].info.ageGroup === ageGroup;
+          }
+        });
+
+        return allowThroughFilter;
+      })
+    );
   }
 
   renderView() {
@@ -161,7 +244,8 @@ class ScheduleLayout extends Component {
       closeUncancelEventAlert,
       cancelEvent,
       uncancelEvent,
-      editEvent
+      editEvent,
+      applyFilters
     } = this.props.actions;
     const {
       isEventsLoading,
@@ -209,6 +293,7 @@ class ScheduleLayout extends Component {
     }
 
     const ad = this.createAd();
+    const filteredEvents = this.filterEvents();
 
     if (currentView === "EVENT_INFO") {
       return (
@@ -265,9 +350,16 @@ class ScheduleLayout extends Component {
     } else {
       return (
         <div className={classes.contentWrapper}>
+          <FiltersToolbar
+            eventTypes={_.keys(this.state.eventTypes)}
+            sports={_.keys(this.state.sports)}
+            divisions={_.keys(this.state.divisions)}
+            ageGroups={_.keys(this.state.ageGroups)}
+            applyFilters={applyFilters}
+          />
           {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
           <Calendar
-            events={events}
+            events={filteredEvents}
             minDate={minDate}
             dateSelected={dateSelected}
             isMobile={isMobile}

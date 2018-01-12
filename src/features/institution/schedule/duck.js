@@ -45,6 +45,7 @@ export const ERROR_UNCANCELLING_EVENT = `${NAMESPACE}/ERROR_UNCANCELLING_EVENT`;
 export const REQUEST_CREATION_DATE = `${NAMESPACE}/REQUEST_CREATION_DATE`;
 export const RECEIVE_CREATION_DATE = `${NAMESPACE}/RECEIVE_CREATION_DATE`;
 export const ERROR_FETCHING_CREATION_DATE = `${NAMESPACE}/ERROR_FETCHING_CREATION_DATE`;
+export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 
 // Reducers
 
@@ -171,6 +172,22 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
         ...state,
         isEventErrorAlertOpen: false
       };
+    default:
+      return state;
+  }
+}
+
+export const filtersInitialState = {
+  eventType: "All",
+  sport: "All",
+  division: "All",
+  ageGroup: "All"
+};
+
+function filterReducer(state = filtersInitialState, action = {}) {
+  switch (action.type) {
+    case APPLY_FILTERS:
+      return action.payload;
     default:
       return state;
   }
@@ -319,7 +336,8 @@ export const scheduleReducer = combineReducers({
   loadingStatus: loadingStatusReducer,
   teams: teamsReducer,
   coaches: coachesReducer,
-  managers: managersReducer
+  managers: managersReducer,
+  filters: filterReducer
 });
 
 // Selectors
@@ -331,6 +349,7 @@ const loadingStatus = state => state.institution.schedule.loadingStatus;
 const teams = state => state.institution.schedule.teams;
 const coaches = state => state.institution.schedule.coaches;
 const managers = state => state.institution.schedule.managers;
+const filters = state => state.institution.schedule.filters;
 
 export const selector = createStructuredSelector({
   uiConfig,
@@ -339,10 +358,23 @@ export const selector = createStructuredSelector({
   loadingStatus,
   teams,
   coaches,
-  managers
+  managers,
+  filters
 });
 
 // Action Creators
+
+export function applyFilters(eventType, sport, division, ageGroup) {
+  return {
+    type: APPLY_FILTERS,
+    payload: {
+      eventType,
+      sport,
+      division,
+      ageGroup
+    }
+  };
+}
 
 export function updateView(newView) {
   return {
