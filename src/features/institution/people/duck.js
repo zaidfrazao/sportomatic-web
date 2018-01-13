@@ -49,8 +49,7 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 export const filtersInitialState = {
   sport: "All",
   type: "All",
-  searchText: "",
-  showRemovedPeople: false
+  searchText: ""
 };
 
 function filterReducer(state = filtersInitialState, action = {}) {
@@ -226,11 +225,10 @@ export const selector = createStructuredSelector({
 
 // Action Creators
 
-export function applyFilters(showRemovedPeople, sport, type) {
+export function applyFilters(sport, type) {
   return {
     type: APPLY_FILTERS,
     payload: {
-      showRemovedPeople,
       sport,
       type
     }

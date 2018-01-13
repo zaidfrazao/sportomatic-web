@@ -8,14 +8,13 @@ import Dialog, {
   DialogTitle
 } from "material-ui/Dialog";
 import FilterIcon from "material-ui-icons/FilterList";
-import { FormControl, FormControlLabel } from "material-ui/Form";
+import { FormControl } from "material-ui/Form";
 import { grey } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
 import SearchIcon from "material-ui-icons/Search";
 import Select from "material-ui/Select";
-import Switch from "material-ui/Switch";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import { withStyles } from "material-ui/styles";
@@ -57,8 +56,6 @@ class FiltersToolbar extends Component {
   state = {
     isOpen: false,
     searchText: "",
-    selectedShowDeletedTeams: false,
-    confirmedShowDeletedTeams: false,
     selectedGender: "All",
     selectedSport: "All",
     selectedDivision: "All",
@@ -72,8 +69,6 @@ class FiltersToolbar extends Component {
   componentWillMount() {
     const { initialFilters } = this.props;
     this.setState({
-      selectedShowRemovedPeople: initialFilters.showRemovedPeople,
-      confirmedShowRemovedPeople: initialFilters.showRemovedPeople,
       searchText: initialFilters.searchText,
       selectedSport: initialFilters.sport,
       selectedType: initialFilters.type,
@@ -98,7 +93,6 @@ class FiltersToolbar extends Component {
   handleUpdate() {
     this.setState({
       isOpen: false,
-      confirmedShowRemovedPeople: this.state.selectedShowRemovedPeople,
       confirmedSport: this.state.selectedSport,
       confirmedAgeGroup: this.state.selectedType
     });
@@ -107,7 +101,6 @@ class FiltersToolbar extends Component {
   toggleDialog() {
     this.setState({
       isOpen: !this.state.isOpen,
-      selectedShowRemovedPeople: this.state.selectedShowRemovedPeople,
       selectedSport: this.state.selectedSport,
       selectedType: this.state.selectedType
     });
@@ -116,8 +109,7 @@ class FiltersToolbar extends Component {
   resetFilters() {
     this.setState({
       selectedSport: "All",
-      selectedType: "All",
-      selectedShowRemovedPeople: false
+      selectedType: "All"
     });
   }
 
@@ -136,9 +128,7 @@ class FiltersToolbar extends Component {
       confirmedType,
       selectedSport,
       selectedType,
-      isOpen,
-      selectedShowRemovedPeople,
-      confirmedShowRemovedPeople
+      isOpen
     } = this.state;
 
     return (
@@ -165,11 +155,7 @@ class FiltersToolbar extends Component {
                   label={confirmedSport}
                   onRequestDelete={() => {
                     this.handleDeleteFilter("Sport");
-                    applyFilters(
-                      confirmedShowRemovedPeople,
-                      "All",
-                      confirmedType
-                    );
+                    applyFilters("All", confirmedType);
                   }}
                   className={classes.chip}
                 />
@@ -179,11 +165,7 @@ class FiltersToolbar extends Component {
                   label={confirmedType}
                   onRequestDelete={() => {
                     this.handleDeleteFilter("Type");
-                    applyFilters(
-                      confirmedShowRemovedPeople,
-                      confirmedSport,
-                      "All"
-                    );
+                    applyFilters(confirmedSport, "All");
                   }}
                   className={classes.chip}
                 />
@@ -242,16 +224,6 @@ class FiltersToolbar extends Component {
                   })}
                 </Select>
               </FormControl>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={selectedShowRemovedPeople}
-                    onChange={(event, checked) =>
-                      this.setState({ selectedShowRemovedPeople: checked })}
-                  />
-                }
-                label="Show Removed People"
-              />
             </form>
           </DialogContent>
           <DialogActions>
@@ -267,16 +239,8 @@ class FiltersToolbar extends Component {
             <Button
               color="primary"
               onClick={() => {
-                this.handleUpdate(
-                  selectedShowRemovedPeople,
-                  selectedSport,
-                  selectedType
-                );
-                applyFilters(
-                  selectedShowRemovedPeople,
-                  selectedSport,
-                  selectedType
-                );
+                this.handleUpdate(selectedSport, selectedType);
+                applyFilters(selectedSport, selectedType);
               }}
             >
               Update

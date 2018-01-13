@@ -74,8 +74,7 @@ const styles = theme => ({
 class PeopleLayout extends Component {
   state = {
     sports: {},
-    types: { Admin: true, Coach: true, Manager: true },
-    showRemovedPeople: false
+    types: { Admin: true, Coach: true, Manager: true }
   };
 
   componentWillMount() {
@@ -306,8 +305,8 @@ class PeopleLayout extends Component {
     });
   }
 
-  filterPeople(staff, isRequests) {
-    const { sport, type, searchText, showRemovedPeople } = this.props.filters;
+  filterPeople(staff) {
+    const { sport, type, searchText } = this.props.filters;
     const { teams, userID } = this.props;
 
     return _.fromPairs(
@@ -315,10 +314,6 @@ class PeopleLayout extends Component {
         let allowThroughFilter = true;
         let nameMatch = true;
         let teamMatch = true;
-
-        if (personInfo.metadata.status === "DELETED" && !showRemovedPeople) {
-          allowThroughFilter = false;
-        }
 
         if (searchText !== "") {
           nameMatch =
@@ -345,37 +340,18 @@ class PeopleLayout extends Component {
             allowThroughFilter && personInfo.info.sports[sport];
         }
         if (type !== "All") {
-          if (isRequests) {
-            if (type === "Admin") {
-              allowThroughFilter =
-                allowThroughFilter &&
-                personInfo.institutions[userID].adminStatus ===
-                  "AWAITING_APPROVAL";
-            } else if (type === "Coach") {
-              allowThroughFilter =
-                allowThroughFilter &&
-                personInfo.institutions[userID].coachStatus ===
-                  "AWAITING_APPROVAL";
-            } else if (type === "Manager") {
-              allowThroughFilter =
-                allowThroughFilter &&
-                personInfo.institutions[userID].managerStatus ===
-                  "AWAITING_APPROVAL";
-            }
-          } else {
-            if (type === "Admin") {
-              allowThroughFilter =
-                allowThroughFilter &&
-                personInfo.institutions[userID].adminStatus === "APPROVED";
-            } else if (type === "Coach") {
-              allowThroughFilter =
-                allowThroughFilter &&
-                personInfo.institutions[userID].coachStatus === "APPROVED";
-            } else if (type === "Manager") {
-              allowThroughFilter =
-                allowThroughFilter &&
-                personInfo.institutions[userID].managerStatus === "APPROVED";
-            }
+          if (type === "Admin") {
+            allowThroughFilter =
+              allowThroughFilter &&
+              personInfo.institutions[userID].adminStatus === "APPROVED";
+          } else if (type === "Coach") {
+            allowThroughFilter =
+              allowThroughFilter &&
+              personInfo.institutions[userID].coachStatus === "APPROVED";
+          } else if (type === "Manager") {
+            allowThroughFilter =
+              allowThroughFilter &&
+              personInfo.institutions[userID].managerStatus === "APPROVED";
           }
         }
 
@@ -421,9 +397,7 @@ class PeopleLayout extends Component {
     const staffCardsInfo = this.getStaffCardsInfo(
       this.filterPeople(staff, false)
     );
-    const requestsCardsInfo = this.getRequestsCardsInfo(
-      this.filterPeople(requests, true)
-    );
+    const requestsCardsInfo = this.getRequestsCardsInfo(requests);
     const ad = this.createAd();
     const type = this.getType();
 
@@ -495,7 +469,6 @@ class PeopleLayout extends Component {
                 <FiltersToolbar
                   sports={_.keys(this.state.sports)}
                   types={_.keys(this.state.types)}
-                  showRemovedPeople={this.state.showRemovedPeople}
                   initialFilters={filters}
                   applyFilters={applyFilters}
                   addPerson={openAddPersonDialog}
@@ -522,15 +495,6 @@ class PeopleLayout extends Component {
                     : classes.staffTabNoCards
                 }
               >
-                <FiltersToolbar
-                  sports={_.keys(this.state.sports)}
-                  types={_.keys(this.state.types)}
-                  showRemovedPeople={this.state.showRemovedPeople}
-                  initialFilters={filters}
-                  applyFilters={applyFilters}
-                  addPerson={openAddPersonDialog}
-                  updateSearch={updateSearch}
-                />
                 <div className={classes.adWrapper}>{ad}</div>
                 {isCoachesLoading || isManagersLoading ? (
                   <div className={classes.loaderWrapper}>
