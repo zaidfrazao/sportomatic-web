@@ -4,40 +4,31 @@ import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
 import { SportomaticFirebaseAPI } from "../../../api/sportmatic-firebase-api";
 
+const NAMESPACE = "sportomatic-web/admin/teams";
+
 // Actions
 
-export const OPEN_ADD_TEAM_DIALOG =
-  "sportomatic-web/admin/teams/OPEN_ADD_TEAM_DIALOG";
-export const CLOSE_ADD_TEAM_DIALOG =
-  "sportomatic-web/admin/teams/CLOSE_ADD_TEAM_DIALOG";
-export const REQUEST_COACHES = "sportomatic-web/admin/teams/REQUEST_COACHES";
-export const RECEIVE_COACHES = "sportomatic-web/admin/teams/RECEIVE_COACHES";
-export const ERROR_LOADING_COACHES =
-  "sportomatic-web/admin/teams/ERROR_LOADING_COACHES";
-export const REQUEST_MANAGERS = "sportomatic-web/admin/teams/REQUEST_MANAGERS";
-export const RECEIVE_MANAGERS = "sportomatic-web/admin/teams/RECEIVE_MANAGERS";
-export const ERROR_LOADING_MANAGERS =
-  "sportomatic-web/admin/teams/ERROR_LOADING_MANAGERS";
-export const REQUEST_OPTIONS = "sportomatic-web/admin/teams/REQUEST_OPTIONS";
-export const RECEIVE_OPTIONS = "sportomatic-web/admin/teams/RECEIVE_OPTIONS";
-export const ERROR_LOADING_OPTIONS =
-  "sportomatic-web/admin/teams/ERROR_LOADING_OPTIONS";
-export const REQUEST_ADD_TEAM = "sportomatic-web/admin/teams/REQUEST_ADD_TEAM";
-export const RECEIVE_ADD_TEAM = "sportomatic-web/admin/teams/RECEIVE_ADD_TEAM";
-export const ERROR_ADDING_TEAM =
-  "sportomatic-web/admin/teams/ERROR_ADDING_TEAM";
-export const REQUEST_TEAMS = "sportomatic-web/admin/teams/REQUEST_TEAMS";
-export const RECEIVE_TEAMS = "sportomatic-web/admin/teams/RECEIVE_TEAMS";
-export const ERROR_LOADING_TEAMS =
-  "sportomatic-web/admin/teams/ERROR_LOADING_TEAMS";
-export const OPEN_EDIT_TEAM_ALERT =
-  "sportomatic-web/admin/teams/OPEN_EDIT_TEAM_ALERT";
-export const CLOSE_EDIT_TEAM_ALERT =
-  "sportomatic-web/admin/teams/CLOSE_EDIT_TEAM_ALERT";
-export const OPEN_DELETE_TEAM_ALERT =
-  "sportomatic-web/admin/teams/OPEN_DELETE_TEAM_ALERT";
-export const CLOSE_DELETE_TEAM_ALERT =
-  "sportomatic-web/admin/teams/CLOSE_DELETE_TEAM_ALERT";
+export const OPEN_ADD_TEAM_DIALOG = `${NAMESPACE}/OPEN_ADD_TEAM_DIALOG`;
+export const CLOSE_ADD_TEAM_DIALOG = `${NAMESPACE}/CLOSE_ADD_TEAM_DIALOG`;
+export const REQUEST_COACHES = `${NAMESPACE}/REQUEST_COACHES`;
+export const RECEIVE_COACHES = `${NAMESPACE}/RECEIVE_COACHES`;
+export const ERROR_LOADING_COACHES = `${NAMESPACE}/ERROR_LOADING_COACHES`;
+export const REQUEST_MANAGERS = `${NAMESPACE}/REQUEST_MANAGERS`;
+export const RECEIVE_MANAGERS = `${NAMESPACE}/RECEIVE_MANAGERS`;
+export const ERROR_LOADING_MANAGERS = `${NAMESPACE}/ERROR_LOADING_MANAGERS`;
+export const REQUEST_OPTIONS = `${NAMESPACE}/REQUEST_OPTIONS`;
+export const RECEIVE_OPTIONS = `${NAMESPACE}/RECEIVE_OPTIONS`;
+export const ERROR_LOADING_OPTIONS = `${NAMESPACE}/ERROR_LOADING_OPTIONS`;
+export const REQUEST_ADD_TEAM = `${NAMESPACE}/REQUEST_ADD_TEAM`;
+export const RECEIVE_ADD_TEAM = `${NAMESPACE}/RECEIVE_ADD_TEAM`;
+export const ERROR_ADDING_TEAM = `${NAMESPACE}/ERROR_ADDING_TEAM`;
+export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
+export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
+export const ERROR_LOADING_TEAMS = `${NAMESPACE}/ERROR_LOADING_TEAMS`;
+export const OPEN_EDIT_TEAM_ALERT = `${NAMESPACE}/OPEN_EDIT_TEAM_ALERT`;
+export const CLOSE_EDIT_TEAM_ALERT = `${NAMESPACE}/CLOSE_EDIT_TEAM_ALERT`;
+export const OPEN_DELETE_TEAM_ALERT = `${NAMESPACE}/OPEN_DELETE_TEAM_ALERT`;
+export const CLOSE_DELETE_TEAM_ALERT = `${NAMESPACE}/CLOSE_DELETE_TEAM_ALERT`;
 
 // Reducers
 
@@ -110,43 +101,68 @@ function optionsReducer(state = optionsInitialState, action = {}) {
 
 export const loadingStatusInitialState = {
   isAddTeamDialogLoading: false,
-  isTeamsLoading: false
+  isTeamsLoading: false,
+  isOptionsLoading: false,
+  isManagersLoading: false,
+  isCoachesLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
     case REQUEST_ADD_TEAM:
-    case REQUEST_OPTIONS:
       return {
         ...state,
         isAddTeamDialogLoading: true
       };
     case ERROR_ADDING_TEAM:
     case RECEIVE_ADD_TEAM:
+      return {
+        ...state,
+        isAddTeamDialogLoading: false
+      };
+    case REQUEST_OPTIONS:
+      return {
+        ...state,
+        isOptionsLoading: true
+      };
     case ERROR_LOADING_OPTIONS:
     case RECEIVE_OPTIONS:
       return {
         ...state,
-        isAddTeamDialogLoading: false
+        isOptionsLoading: false
       };
-    case REQUEST_COACHES:
-    case REQUEST_MANAGERS:
     case REQUEST_TEAMS:
       return {
         ...state,
-        isTeamsLoading: true,
-        isAddTeamDialogLoading: true
+        isTeamsLoading: true
       };
-    case RECEIVE_COACHES:
-    case ERROR_LOADING_COACHES:
-    case RECEIVE_MANAGERS:
-    case ERROR_LOADING_MANAGERS:
     case ERROR_LOADING_TEAMS:
     case RECEIVE_TEAMS:
       return {
         ...state,
-        isTeamsLoading: false,
-        isAddTeamDialogLoading: false
+        isTeamsLoading: false
+      };
+    case REQUEST_COACHES:
+      return {
+        ...state,
+        isCoachesLoading: true
+      };
+    case RECEIVE_COACHES:
+    case ERROR_LOADING_COACHES:
+      return {
+        ...state,
+        isCoachesLoading: false
+      };
+    case REQUEST_MANAGERS:
+      return {
+        ...state,
+        isManagersLoading: true
+      };
+    case RECEIVE_MANAGERS:
+    case ERROR_LOADING_MANAGERS:
+      return {
+        ...state,
+        isManagersLoading: false
       };
     default:
       return state;

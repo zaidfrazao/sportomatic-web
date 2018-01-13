@@ -120,7 +120,12 @@ class TeamsLayout extends Component {
       isEditTeamAlertOpen,
       isDeleteTeamAlertOpen
     } = this.props.dialogs;
-    const { isAddTeamDialogLoading, isTeamsLoading } = this.props.loadingStatus;
+    const {
+      isAddTeamDialogLoading,
+      isTeamsLoading,
+      isManagersLoading,
+      isCoachesLoading
+    } = this.props.loadingStatus;
     const {
       openAddTeamDialog,
       closeAddTeamDialog,
@@ -139,10 +144,12 @@ class TeamsLayout extends Component {
 
     return (
       <div className={classes.root}>
-        {teamID && teams[teamID] ? (
+        {teamID ? (
           <div className={classes.infoWrapper}>
             <TeamInfo
-              isLoading={isTeamsLoading}
+              isTeamsLoading={isTeamsLoading}
+              isCoachesLoading={isCoachesLoading}
+              isManagersLoading={isManagersLoading}
               coaches={coaches}
               managers={managers}
               info={teams[teamID]}

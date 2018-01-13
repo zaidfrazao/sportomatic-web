@@ -95,12 +95,19 @@ class TeamInfo extends Component {
   }
 
   getListItems() {
-    const { coaches, managers, info, isLoading } = this.props;
+    const {
+      coaches,
+      managers,
+      info,
+      isCoachesLoading,
+      isManagersLoading
+    } = this.props;
 
     let eventCoaches = [];
     let eventManagers = [];
 
-    !isLoading &&
+    !isCoachesLoading &&
+      info &&
       _.toPairs(info.coaches).map(([id, coachEventInfo]) => {
         const coachInfo = coaches[id].info;
         eventCoaches.push(
@@ -123,7 +130,8 @@ class TeamInfo extends Component {
           />
         );
       });
-    !isLoading &&
+    !isManagersLoading &&
+      info &&
       _.toPairs(info.managers).map(([id, managerEventInfo]) => {
         const managerInfo = managers[id].info;
         eventManagers.push(
@@ -153,12 +161,8 @@ class TeamInfo extends Component {
     };
   }
 
-  render() {
-    const { classes, isMobile, isTablet } = this.props;
-    const { name, sport, division, ageGroup, gender } = this.props.info.info;
-
-    let formattedGender = this.formatGender(gender, ageGroup);
-    let formattedAgeGroup = this.formatAgeGroup(ageGroup);
+  createAd() {
+    const { isMobile, isTablet } = this.props;
 
     let ad = <LeaderboardAd />;
     if (isMobile) {
@@ -167,14 +171,49 @@ class TeamInfo extends Component {
       ad = <BannerAd />;
     }
 
+    return ad;
+  }
+
+  render() {
+    const { classes } = this.props;
+    const { isTeamsLoading, isCoachesLoading, isManagersLoading } = this.props;
+
+    let name = "";
+    let sport = "";
+    let division = "";
+    let ageGroup = "";
+    let gender = "";
+
+    if (this.props.info) {
+      name = this.props.info.info.name;
+      sport = this.props.info.info.sport;
+      division = this.props.info.info.division;
+      ageGroup = this.props.info.info.ageGroup;
+      gender = this.props.info.info.gender;
+    }
+
+    let formattedGender = "Loading...";
+    let formattedAgeGroup = "Loading...";
+    if (!isTeamsLoading) {
+      formattedGender = this.formatGender(gender, ageGroup);
+      formattedAgeGroup = this.formatAgeGroup(ageGroup);
+    }
+
+    const ad = this.createAd();
     const { coaches, managers } = this.getListItems();
 
     return (
       <div className={classes.root}>
         <AppBar position="static" color="default">
-          <Typography className={classes.name} type="title" component="h2">
-            {`${name}`}
-          </Typography>
+          {isTeamsLoading ? (
+            <Typography className={classes.name} type="title" component="h2">
+              Loading...
+            </Typography>
+          ) : (
+            <Typography className={classes.name} type="title" component="h2">
+              {name}
+            </Typography>
+          )}
         </AppBar>
         <div className={classes.wrapper}>
           <Route
@@ -206,21 +245,31 @@ class TeamInfo extends Component {
                 </Typography>
                 <List>
                   <ListItem>
-                    <ListItemText primary="Sport" secondary={sport} />
+                    <ListItemText
+                      primary="Sport"
+                      secondary={isTeamsLoading ? "Loading..." : sport}
+                    />
                   </ListItem>
                   <ListItem>
-                    <ListItemText primary="Division" secondary={division} />
+                    <ListItemText
+                      primary="Division"
+                      secondary={isTeamsLoading ? "Loading..." : division}
+                    />
                   </ListItem>
                   <ListItem>
                     <ListItemText
                       primary="Age Group"
-                      secondary={formattedAgeGroup}
+                      secondary={
+                        isTeamsLoading ? "Loading..." : formattedAgeGroup
+                      }
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemText
                       primary="Gender"
-                      secondary={formattedGender}
+                      secondary={
+                        isTeamsLoading ? "Loading..." : formattedGender
+                      }
                     />
                   </ListItem>
                 </List>
@@ -235,15 +284,23 @@ class TeamInfo extends Component {
                 >
                   Managers
                 </Typography>
-                <List>
-                  {managers.length > 0 ? (
-                    managers
-                  ) : (
+                {isManagersLoading ? (
+                  <List>
                     <ListItem className={classes.noItems}>
-                      <ListItemText primary="No managers" />
+                      <ListItemText primary="Loading..." />
                     </ListItem>
-                  )}
-                </List>
+                  </List>
+                ) : (
+                  <List>
+                    {managers.length > 0 ? (
+                      managers
+                    ) : (
+                      <ListItem className={classes.noItems}>
+                        <ListItemText primary="No managers" />
+                      </ListItem>
+                    )}
+                  </List>
+                )}
               </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
@@ -255,15 +312,23 @@ class TeamInfo extends Component {
                 >
                   Coaches
                 </Typography>
-                <List>
-                  {coaches.length > 0 ? (
-                    coaches
-                  ) : (
+                {isCoachesLoading ? (
+                  <List>
                     <ListItem className={classes.noItems}>
-                      <ListItemText primary="No coaches" />
+                      <ListItemText primary="Loading..." />
                     </ListItem>
-                  )}
-                </List>
+                  </List>
+                ) : (
+                  <List>
+                    {coaches.length > 0 ? (
+                      coaches
+                    ) : (
+                      <ListItem className={classes.noItems}>
+                        <ListItemText primary="No coaches" />
+                      </ListItem>
+                    )}
+                  </List>
+                )}
               </Paper>
             </Grid>
           </Grid>
