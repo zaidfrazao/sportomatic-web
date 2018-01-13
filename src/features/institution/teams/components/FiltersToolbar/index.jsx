@@ -8,13 +8,14 @@ import Dialog, {
   DialogTitle
 } from "material-ui/Dialog";
 import FilterIcon from "material-ui-icons/FilterList";
-import { FormControl } from "material-ui/Form";
+import { FormControl, FormControlLabel } from "material-ui/Form";
 import { grey } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
 import SearchIcon from "material-ui-icons/Search";
 import Select from "material-ui/Select";
+import Switch from "material-ui/Switch";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import { withStyles } from "material-ui/styles";
@@ -56,6 +57,8 @@ class FiltersToolbar extends Component {
   state = {
     isOpen: false,
     searchText: "",
+    selectedShowDeletedTeams: false,
+    confirmedShowDeletedTeams: false,
     selectedGender: "All",
     selectedSport: "All",
     selectedDivision: "All",
@@ -69,6 +72,7 @@ class FiltersToolbar extends Component {
   componentWillMount() {
     const { initialFilters } = this.props;
     this.setState({
+      selectedShowDeletedTeams: initialFilters.showDeletedTeams,
       searchText: initialFilters.searchText,
       selectedGender: initialFilters.gender,
       selectedSport: initialFilters.sport,
@@ -97,6 +101,7 @@ class FiltersToolbar extends Component {
   handleUpdate() {
     this.setState({
       isOpen: false,
+      confirmedShowDeletedTeams: this.state.selectedShowDeletedTeams,
       confirmedGender: this.state.selectedGender,
       confirmedSport: this.state.selectedSport,
       confirmedDivision: this.state.selectedDivision,
@@ -107,6 +112,7 @@ class FiltersToolbar extends Component {
   toggleDialog() {
     this.setState({
       isOpen: !this.state.isOpen,
+      selectedShowDeletedTeams: this.state.selectedShowDeletedTeams,
       selectedGender: this.state.selectedGender,
       selectedSport: this.state.selectedSport,
       selectedDivision: this.state.selectedDivision,
@@ -119,7 +125,8 @@ class FiltersToolbar extends Component {
       selectedGender: "All",
       selectedSport: "All",
       selectedDivision: "All",
-      selectedAgeGroup: "All"
+      selectedAgeGroup: "All",
+      selectedShowDeletedTeams: false
     });
   }
 
@@ -159,7 +166,9 @@ class FiltersToolbar extends Component {
       selectedSport,
       selectedDivision,
       selectedAgeGroup,
-      isOpen
+      isOpen,
+      selectedShowDeletedTeams,
+      confirmedShowDeletedTeams
     } = this.state;
 
     return (
@@ -183,10 +192,11 @@ class FiltersToolbar extends Component {
             <div className={classes.settingChips}>
               {confirmedGender !== "All" && (
                 <Chip
-                  label={confirmedGender}
+                  label={this.formatGender(confirmedGender)}
                   onRequestDelete={() => {
                     this.handleDeleteFilter("Gender");
                     applyFilters(
+                      confirmedShowDeletedTeams,
                       "All",
                       confirmedSport,
                       confirmedDivision,
@@ -202,6 +212,7 @@ class FiltersToolbar extends Component {
                   onRequestDelete={() => {
                     this.handleDeleteFilter("Sport");
                     applyFilters(
+                      confirmedShowDeletedTeams,
                       confirmedGender,
                       "All",
                       confirmedDivision,
@@ -217,6 +228,7 @@ class FiltersToolbar extends Component {
                   onRequestDelete={() => {
                     this.handleDeleteFilter("Division");
                     applyFilters(
+                      confirmedShowDeletedTeams,
                       confirmedGender,
                       confirmedSport,
                       "All",
@@ -228,10 +240,11 @@ class FiltersToolbar extends Component {
               )}
               {confirmedAgeGroup !== "All" && (
                 <Chip
-                  label={confirmedAgeGroup}
+                  label={this.formatAgeGroup(confirmedAgeGroup)}
                   onRequestDelete={() => {
                     this.handleDeleteFilter("AgeGroup");
                     applyFilters(
+                      confirmedShowDeletedTeams,
                       confirmedGender,
                       confirmedSport,
                       confirmedDivision,
@@ -329,6 +342,16 @@ class FiltersToolbar extends Component {
                   })}
                 </Select>
               </FormControl>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={selectedShowDeletedTeams}
+                    onChange={(event, checked) =>
+                      this.setState({ selectedShowDeletedTeams: checked })}
+                  />
+                }
+                label="Show Deleted Teams"
+              />
             </form>
           </DialogContent>
           <DialogActions>
@@ -345,12 +368,14 @@ class FiltersToolbar extends Component {
               color="primary"
               onClick={() => {
                 this.handleUpdate(
+                  selectedShowDeletedTeams,
                   selectedGender,
                   selectedSport,
                   selectedDivision,
                   selectedAgeGroup
                 );
                 applyFilters(
+                  selectedShowDeletedTeams,
                   selectedGender,
                   selectedSport,
                   selectedDivision,

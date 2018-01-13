@@ -59,7 +59,8 @@ class TeamsLayout extends Component {
     genders: {},
     sports: {},
     divisions: {},
-    ageGroups: {}
+    ageGroups: {},
+    showDeletedTeams: false
   };
 
   componentWillMount() {
@@ -134,16 +135,87 @@ class TeamsLayout extends Component {
     return ad;
   }
 
-  getTeamsList() {
-    const { teams } = this.props;
-
+  getTeamsList(teams) {
     return _.toPairs(teams).map(keyValuePair => {
       return {
         id: keyValuePair[0],
         name: keyValuePair[1].info.name,
-        sport: keyValuePair[1].info.sport
+        sport: keyValuePair[1].info.sport,
+        status: keyValuePair[1].status
       };
     });
+  }
+
+  filterTeams() {
+    const {
+      gender,
+      sport,
+      division,
+      ageGroup,
+      searchText,
+      showDeletedTeams
+    } = this.props.filters;
+    const { teams, coaches, managers } = this.props;
+
+    return _.fromPairs(
+      _.toPairs(teams).filter(([teamID, teamInfo]) => {
+        let allowThroughFilter = true;
+        let titleMatch = true;
+        let coachMatch = true;
+        let managerMatch = true;
+
+        if (teamInfo.status === "DELETED" && !showDeletedTeams) {
+          allowThroughFilter = false;
+        }
+
+        if (searchText !== "") {
+          const teamName = _.lowerCase(teamInfo.info.name);
+          const teamCoaches = _.keys(teamInfo.coaches);
+          const teamManagers = _.keys(teamInfo.managers);
+
+          teamCoaches.map(coachID => {
+            const coachName = `${_.lowerCase(
+              coaches[coachID].info.name
+            )} ${_.lowerCase(coaches[coachID].info.surname)}`;
+            coachMatch =
+              coachMatch && coachName.includes(_.lowerCase(searchText));
+          });
+          teamManagers.map(managerID => {
+            const managerName = `${_.lowerCase(
+              managers[managerID].info.name
+            )} ${_.lowerCase(managers[managerID].info.surname)}`;
+            managerMatch =
+              managerMatch && managerName.includes(_.lowerCase(searchText));
+          });
+
+          if (teamCoaches.length === 0) coachMatch = false;
+          if (teamManagers.length === 0) managerMatch = false;
+          titleMatch = teamName.includes(_.lowerCase(searchText));
+        }
+
+        if (gender !== "All") {
+          allowThroughFilter =
+            allowThroughFilter && teamInfo.info.gender === gender;
+        }
+        if (sport !== "All") {
+          allowThroughFilter =
+            allowThroughFilter && teamInfo.info.sport === sport;
+        }
+        if (division !== "All") {
+          allowThroughFilter =
+            allowThroughFilter && teamInfo.info.division === division;
+        }
+        if (ageGroup !== "All") {
+          allowThroughFilter =
+            allowThroughFilter && teamInfo.info.ageGroup === ageGroup;
+        }
+
+        allowThroughFilter =
+          allowThroughFilter && (titleMatch || coachMatch || managerMatch);
+
+        return allowThroughFilter;
+      })
+    );
   }
 
   render() {
@@ -172,8 +244,6 @@ class TeamsLayout extends Component {
     const {
       openAddTeamDialog,
       closeAddTeamDialog,
-      loadStaff,
-      loadOptions,
       addTeam,
       openEditTeamAlert,
       closeEditTeamAlert,
@@ -184,8 +254,8 @@ class TeamsLayout extends Component {
     } = this.props.actions;
     const { teamID } = this.props.match.params;
 
-    const teamsList = this.getTeamsList();
     const ad = this.createAd();
+    const filteredTeams = this.getTeamsList(this.filterTeams());
 
     return (
       <div className={classes.root}>
@@ -214,7 +284,7 @@ class TeamsLayout extends Component {
         ) : (
           <div
             className={
-              teamsList.length > 0 ? classes.teamCards : classes.teamNoCards
+              filteredTeams.length > 0 ? classes.teamCards : classes.teamNoCards
             }
           >
             <FiltersToolbar
@@ -222,6 +292,7 @@ class TeamsLayout extends Component {
               sports={_.keys(this.state.sports)}
               divisions={_.keys(this.state.divisions)}
               ageGroups={_.keys(this.state.ageGroups)}
+              showDeletedTeams={this.state.showDeletedTeams}
               initialFilters={filters}
               applyFilters={applyFilters}
               addTeam={openAddTeamDialog}
@@ -233,7 +304,10 @@ class TeamsLayout extends Component {
                 <CircularProgress />
               </div>
             ) : (
-              <TeamsList teams={teamsList} actions={{ openDeleteTeamAlert }} />
+              <TeamsList
+                teams={filteredTeams}
+                actions={{ openDeleteTeamAlert }}
+              />
             )}
             <NotificationModal
               isOpen={isDeleteTeamAlertOpen}

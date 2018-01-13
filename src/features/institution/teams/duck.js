@@ -106,7 +106,8 @@ export const filtersInitialState = {
   sport: "All",
   division: "All",
   ageGroup: "All",
-  searchText: ""
+  searchText: "",
+  showDeletedTeams: false
 };
 
 function filterReducer(state = filtersInitialState, action = {}) {
@@ -264,10 +265,17 @@ export const selector = createStructuredSelector({
 
 // Action Creators
 
-export function applyFilters(gender, sport, division, ageGroup) {
+export function applyFilters(
+  showDeletedTeams,
+  gender,
+  sport,
+  division,
+  ageGroup
+) {
   return {
     type: APPLY_FILTERS,
     payload: {
+      showDeletedTeams,
       gender,
       sport,
       division,

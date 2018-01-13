@@ -279,7 +279,7 @@ class TeamInfo extends Component {
             <div className={classes.adWrapper}>{ad}</div>
             {info &&
               info.status === "DELETED" && (
-                <div className={classes.deletedEvent}>
+                <div className={classes.deletedTeam}>
                   <WarningIcon className={classes.warningIcon} />
                   <Typography
                     className={classes.deletedText}

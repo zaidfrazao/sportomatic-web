@@ -2,15 +2,25 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import { Route } from "react-router-dom";
-import { grey } from "material-ui/colors";
+import { grey, red } from "material-ui/colors";
 import Card, { CardActions, CardContent } from "material-ui/Card";
 import Button from "material-ui/Button";
 import DeleteIcon from "material-ui-icons/Delete";
 import IconButton from "material-ui/IconButton";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
+import WarningIcon from "material-ui-icons/Warning";
 
 const styles = theme => ({
+  avatar: {
+    backgroundColor: grey[500],
+    width: 72,
+    height: 72
+  },
+  buttons: {
+    display: "flex",
+    justifyContent: "space-between"
+  },
   card: {
     height: "100%",
     display: "flex",
@@ -21,25 +31,15 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column"
   },
-  title: {
+  deletedTeam: {
     marginBottom: 16,
     fontSize: 14,
-    color: theme.palette.text.secondary
-  },
-  subheading: {
-    margin: 12,
-    color: theme.palette.text.secondary
-  },
-  avatar: {
-    backgroundColor: grey[500],
-    width: 72,
-    height: 72
-  },
-  buttons: {
+    color: red[500],
     display: "flex",
-    justifyContent: "space-between"
+    flexDirection: "row",
+    alignItems: "center"
   },
-  viewButton: {
+  flexGrow: {
     flexGrow: 1
   },
   name: {
@@ -50,19 +50,49 @@ const styles = theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
+  },
+  subheading: {
+    margin: 12,
+    color: theme.palette.text.secondary
+  },
+  title: {
+    marginBottom: 16,
+    fontSize: 14,
+    color: theme.palette.text.secondary
+  },
+  titleWrapper: {
+    display: "flex",
+    flexDirection: "row"
+  },
+  viewButton: {
+    flexGrow: 1
+  },
+  warningIcon: {
+    width: 14,
+    height: 14,
+    color: red[500]
   }
 });
 
 class TeamCard extends Component {
   render() {
-    const { classes, sport, name, id } = this.props;
+    const { classes, sport, name, id, status } = this.props;
     const { deleteTeam } = this.props.actions;
+
     return (
       <Card className={classes.card}>
         <CardContent className={classes.cardContent}>
-          <Typography type="body1" className={classes.title}>
-            {sport}
-          </Typography>
+          <div className={classes.titleWrapper}>
+            <Typography type="body1" className={classes.title}>
+              {sport}
+            </Typography>
+            <div className={classes.flexGrow} />
+            {status === "DELETED" && (
+              <Typography type="body1" className={classes.deletedTeam}>
+                Deleted <WarningIcon />
+              </Typography>
+            )}
+          </div>
           <Typography type="headline" component="h2" className={classes.name}>
             {name}
           </Typography>
