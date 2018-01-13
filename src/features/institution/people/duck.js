@@ -4,33 +4,29 @@ import firebase from "firebase";
 import { TeamAlias } from "../../../models/aliases";
 import _ from "lodash";
 
+const NAMESPACE = "sportomatic-web/admin/people";
+
 // Actions
 
-export const UPDATE_TAB = "sportomatic-web/admin/people/UPDATE_TAB";
-export const OPEN_DELETE_PERSON_ALERT =
-  "sportomatic-web/admin/people/OPEN_DELETE_PERSON_ALERT";
-export const CLOSE_DELETE_PERSON_ALERT =
-  "sportomatic-web/admin/people/CLOSE_DELETE_PERSON_ALERT";
-export const OPEN_EDIT_PERSON_DIALOG =
-  "sportomatic-web/admin/people/OPEN_EDIT_PERSON_DIALOG";
-export const CLOSE_EDIT_PERSON_DIALOG =
-  "sportomatic-web/admin/people/CLOSE_EDIT_PERSON_DIALOG";
-export const REQUEST_COACHES = "sportomatic-web/admin/people/REQUEST_COACHES";
-export const RECEIVE_COACHES = "sportomatic-web/admin/people/RECEIVE_COACHES";
-export const REQUEST_MANAGERS = "sportomatic-web/admin/people/REQUEST_MANAGERS";
-export const RECEIVE_MANAGERS = "sportomatic-web/admin/people/RECEIVE_MANAGERS";
-export const REQUEST_COACH_REQUESTS =
-  "sportomatic-web/admin/people/REQUEST_COACH_REQUESTS";
-export const RECEIVE_COACH_REQUESTS =
-  "sportomatic-web/admin/people/RECEIVE_COACH_REQUESTS";
-export const REQUEST_MANAGER_REQUESTS =
-  "sportomatic-web/admin/people/REQUEST_MANAGER_REQUESTS";
-export const RECEIVE_MANAGER_REQUESTS =
-  "sportomatic-web/admin/people/RECEIVE_MANAGER_REQUESTS";
-export const REQUEST_TEAMS = "sportomatic-web/admin/people/REQUEST_TEAMS";
-export const RECEIVE_TEAMS = "sportomatic-web/admin/people/RECEIVE_TEAMS";
-export const REQUEST_STAFF = "sportomatic-web/admin/people/REQUEST_STAFF";
-export const RECEIVE_STAFF = "sportomatic-web/admin/people/RECEIVE_STAFF";
+export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
+export const OPEN_DELETE_PERSON_ALERT = `${NAMESPACE}/OPEN_DELETE_PERSON_ALERT`;
+export const CLOSE_DELETE_PERSON_ALERT = `${NAMESPACE}/CLOSE_DELETE_PERSON_ALERT`;
+export const OPEN_EDIT_PERSON_DIALOG = `${NAMESPACE}/OPEN_EDIT_PERSON_DIALOG`;
+export const CLOSE_EDIT_PERSON_DIALOG = `${NAMESPACE}/CLOSE_EDIT_PERSON_DIALOG`;
+export const REQUEST_COACHES = `${NAMESPACE}/REQUEST_COACHES`;
+export const RECEIVE_COACHES = `${NAMESPACE}/RECEIVE_COACHES`;
+export const REQUEST_MANAGERS = `${NAMESPACE}/REQUEST_MANAGERS`;
+export const RECEIVE_MANAGERS = `${NAMESPACE}/RECEIVE_MANAGERS`;
+export const REQUEST_COACH_REQUESTS = `${NAMESPACE}/REQUEST_COACH_REQUESTS`;
+export const RECEIVE_COACH_REQUESTS = `${NAMESPACE}/RECEIVE_COACH_REQUESTS`;
+export const REQUEST_MANAGER_REQUESTS = `${NAMESPACE}/REQUEST_MANAGER_REQUESTS`;
+export const RECEIVE_MANAGER_REQUESTS = `${NAMESPACE}/RECEIVE_MANAGER_REQUESTS`;
+export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
+export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
+export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
+export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
+export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
+export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
 
 // Reducers
 
@@ -44,6 +40,30 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
       return {
         ...state,
         currentTab: action.payload.newTab
+      };
+    default:
+      return state;
+  }
+}
+
+export const filtersInitialState = {
+  sport: "All",
+  type: "All",
+  searchText: "",
+  showRemovedPeople: false
+};
+
+function filterReducer(state = filtersInitialState, action = {}) {
+  switch (action.type) {
+    case APPLY_FILTERS:
+      return {
+        ...state,
+        ...action.payload
+      };
+    case UPDATE_SEARCH:
+      return {
+        ...state,
+        searchText: action.payload.searchText
       };
     default:
       return state;
@@ -180,7 +200,8 @@ export const peopleReducer = combineReducers({
   dialogs: dialogsReducer,
   loadingStatus: loadingStatusListReducer,
   teams: teamsReducer,
-  requests: requestsReducer
+  requests: requestsReducer,
+  filters: filterReducer
 });
 
 // Selectors
@@ -191,6 +212,7 @@ const requests = state => state.institution.people.requests;
 const teams = state => state.institution.people.teams;
 const dialogs = state => state.institution.people.dialogs;
 const loadingStatus = state => state.institution.people.loadingStatus;
+const filters = state => state.institution.people.filters;
 
 export const selector = createStructuredSelector({
   uiConfig,
@@ -198,10 +220,31 @@ export const selector = createStructuredSelector({
   dialogs,
   loadingStatus,
   teams,
-  requests
+  requests,
+  filters
 });
 
 // Action Creators
+
+export function applyFilters(showRemovedPeople, sport, type) {
+  return {
+    type: APPLY_FILTERS,
+    payload: {
+      showRemovedPeople,
+      sport,
+      type
+    }
+  };
+}
+
+export function updateSearch(searchText) {
+  return {
+    type: UPDATE_SEARCH,
+    payload: {
+      searchText
+    }
+  };
+}
 
 export function updateTab(newTab) {
   return {

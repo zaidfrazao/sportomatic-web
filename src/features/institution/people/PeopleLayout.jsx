@@ -72,6 +72,12 @@ const styles = theme => ({
 });
 
 class PeopleLayout extends Component {
+  state = {
+    sports: {},
+    types: { Admin: true, Coach: true, Manager: true },
+    showRemovedPeople: false
+  };
+
   componentWillMount() {
     const { userID } = this.props;
     const {
@@ -92,7 +98,7 @@ class PeopleLayout extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID } = this.props;
+    const { userID, teams } = this.props;
     const {
       loadCoaches,
       loadManagers,
@@ -101,6 +107,18 @@ class PeopleLayout extends Component {
       loadManagerRequests
     } = this.props.actions;
 
+    let sports = this.state.sports;
+
+    if (teams !== nextProps.teams) {
+      sports = {};
+      _.toPairs(nextProps.teams).map(([id, info]) => {
+        sports = {
+          ...sports,
+          [info.info.sport]: true
+        };
+      });
+    }
+
     if (userID !== nextProps.userID) {
       loadCoaches(nextProps.userID);
       loadManagers(nextProps.userID);
@@ -108,6 +126,10 @@ class PeopleLayout extends Component {
       loadManagerRequests(nextProps.userID);
       loadTeams(nextProps.userID);
     }
+
+    this.setState({
+      sports
+    });
   }
 
   createAd() {
@@ -154,7 +176,7 @@ class PeopleLayout extends Component {
         staff[personID].institutions[userID].adminStatus === "APPROVED" &&
         staff[personID].institutions[userID].managerStatus === "APPROVED"
       ) {
-        type = "Admin / Coach";
+        type = "Admin / Manager";
       }
       if (
         staff[personID].institutions[userID].adminStatus === "APPROVED" &&
@@ -168,8 +190,8 @@ class PeopleLayout extends Component {
     return type;
   }
 
-  getStaffCardsInfo() {
-    const { staff, userID } = this.props;
+  getStaffCardsInfo(staff) {
+    const { userID } = this.props;
 
     return _.values(
       _.mapValues(staff, (value, key) => {
@@ -199,7 +221,7 @@ class PeopleLayout extends Component {
           value.institutions[userID].adminStatus === "APPROVED" &&
           value.institutions[userID].managerStatus === "APPROVED"
         ) {
-          type = "Admin / Coach";
+          type = "Admin / Manager";
         }
         if (
           value.institutions[userID].adminStatus === "APPROVED" &&
@@ -226,8 +248,8 @@ class PeopleLayout extends Component {
     });
   }
 
-  getRequestsCardsInfo() {
-    const { requests, userID } = this.props;
+  getRequestsCardsInfo(requests) {
+    const { userID } = this.props;
 
     return _.values(
       _.mapValues(requests, (value, key) => {
@@ -257,7 +279,7 @@ class PeopleLayout extends Component {
           value.institutions[userID].adminStatus === "AWAITING_APPROVAL" &&
           value.institutions[userID].managerStatus === "AWAITING_APPROVAL"
         ) {
-          type = "Admin and Coach";
+          type = "Admin and Manager";
         }
         if (
           value.institutions[userID].adminStatus === "AWAITING_APPROVAL" &&
@@ -284,8 +306,96 @@ class PeopleLayout extends Component {
     });
   }
 
+  filterPeople(staff, isRequests) {
+    const { sport, type, searchText, showRemovedPeople } = this.props.filters;
+    const { teams, userID } = this.props;
+
+    return _.fromPairs(
+      _.toPairs(staff).filter(([staffID, personInfo]) => {
+        let allowThroughFilter = true;
+        let nameMatch = true;
+        let teamMatch = true;
+
+        if (personInfo.metadata.status === "DELETED" && !showRemovedPeople) {
+          allowThroughFilter = false;
+        }
+
+        if (searchText !== "") {
+          nameMatch =
+            nameMatch &&
+            _.toLower(
+              `${personInfo.info.name} ${personInfo.info.surname}`
+            ).includes(_.toLower(searchText));
+          _.toPairs(teams).map(([teamID, teamInfo]) => {
+            const teamCoaches = _.keys(teamInfo.coaches);
+            const teamManagers = _.keys(teamInfo.managers);
+            if (
+              teamCoaches.includes(staffID) ||
+              teamManagers.includes(staffID)
+            ) {
+              teamMatch = _.toLower(teamInfo.info.name).includes(
+                _.toLower(searchText)
+              );
+            }
+          });
+        }
+
+        if (sport !== "All") {
+          allowThroughFilter =
+            allowThroughFilter && personInfo.info.sports[sport];
+        }
+        if (type !== "All") {
+          if (isRequests) {
+            if (type === "Admin") {
+              allowThroughFilter =
+                allowThroughFilter &&
+                personInfo.institutions[userID].adminStatus ===
+                  "AWAITING_APPROVAL";
+            } else if (type === "Coach") {
+              allowThroughFilter =
+                allowThroughFilter &&
+                personInfo.institutions[userID].coachStatus ===
+                  "AWAITING_APPROVAL";
+            } else if (type === "Manager") {
+              allowThroughFilter =
+                allowThroughFilter &&
+                personInfo.institutions[userID].managerStatus ===
+                  "AWAITING_APPROVAL";
+            }
+          } else {
+            if (type === "Admin") {
+              allowThroughFilter =
+                allowThroughFilter &&
+                personInfo.institutions[userID].adminStatus === "APPROVED";
+            } else if (type === "Coach") {
+              allowThroughFilter =
+                allowThroughFilter &&
+                personInfo.institutions[userID].coachStatus === "APPROVED";
+            } else if (type === "Manager") {
+              allowThroughFilter =
+                allowThroughFilter &&
+                personInfo.institutions[userID].managerStatus === "APPROVED";
+            }
+          }
+        }
+
+        allowThroughFilter = allowThroughFilter && (teamMatch || nameMatch);
+
+        return allowThroughFilter;
+      })
+    );
+  }
+
   render() {
-    const { classes, staff, teams, isMobile, isTablet } = this.props;
+    const {
+      classes,
+      staff,
+      requests,
+      teams,
+      isMobile,
+      isTablet,
+      filters
+    } = this.props;
     const { currentTab } = this.props.uiConfig;
     const {
       isCoachesLoading,
@@ -298,7 +408,9 @@ class PeopleLayout extends Component {
       closeEditPersonDialog,
       openDeletePersonAlert,
       closeDeletePersonAlert,
-      performFilter
+      openAddPersonDialog,
+      applyFilters,
+      updateSearch
     } = this.props.actions;
     const {
       isDeletPersonAlertOpen,
@@ -306,8 +418,12 @@ class PeopleLayout extends Component {
     } = this.props.dialogs;
     const { personID } = this.props.match.params;
 
-    const staffCardsInfo = this.getStaffCardsInfo();
-    const requestsCardsInfo = this.getRequestsCardsInfo();
+    const staffCardsInfo = this.getStaffCardsInfo(
+      this.filterPeople(staff, false)
+    );
+    const requestsCardsInfo = this.getRequestsCardsInfo(
+      this.filterPeople(requests, true)
+    );
     const ad = this.createAd();
     const type = this.getType();
 
@@ -377,10 +493,13 @@ class PeopleLayout extends Component {
                 }
               >
                 <FiltersToolbar
-                  isMobile={isMobile}
-                  types={["Admin", "Coach", "Manager"]}
-                  sports={["Cricket", "Rugby", "Soccer"]}
-                  applyFilter={performFilter}
+                  sports={_.keys(this.state.sports)}
+                  types={_.keys(this.state.types)}
+                  showRemovedPeople={this.state.showRemovedPeople}
+                  initialFilters={filters}
+                  applyFilters={applyFilters}
+                  addPerson={openAddPersonDialog}
+                  updateSearch={updateSearch}
                 />
                 <div className={classes.adWrapper}>{ad}</div>
                 {isCoachesLoading || isManagersLoading ? (
@@ -404,10 +523,13 @@ class PeopleLayout extends Component {
                 }
               >
                 <FiltersToolbar
-                  isMobile={isMobile}
-                  types={["Admin", "Coach", "Manager"]}
-                  sports={["Cricket", "Rugby", "Soccer"]}
-                  applyFilter={performFilter}
+                  sports={_.keys(this.state.sports)}
+                  types={_.keys(this.state.types)}
+                  showRemovedPeople={this.state.showRemovedPeople}
+                  initialFilters={filters}
+                  applyFilters={applyFilters}
+                  addPerson={openAddPersonDialog}
+                  updateSearch={updateSearch}
                 />
                 <div className={classes.adWrapper}>{ad}</div>
                 {isCoachesLoading || isManagersLoading ? (

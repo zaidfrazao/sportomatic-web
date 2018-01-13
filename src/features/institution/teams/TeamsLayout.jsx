@@ -170,28 +170,28 @@ class TeamsLayout extends Component {
         }
 
         if (searchText !== "") {
-          const teamName = _.lowerCase(teamInfo.info.name);
+          const teamName = _.toLower(teamInfo.info.name);
           const teamCoaches = _.keys(teamInfo.coaches);
           const teamManagers = _.keys(teamInfo.managers);
 
           teamCoaches.map(coachID => {
-            const coachName = `${_.lowerCase(
+            const coachName = `${_.toLower(
               coaches[coachID].info.name
-            )} ${_.lowerCase(coaches[coachID].info.surname)}`;
+            )} ${_.toLower(coaches[coachID].info.surname)}`;
             coachMatch =
-              coachMatch && coachName.includes(_.lowerCase(searchText));
+              coachMatch && coachName.includes(_.toLower(searchText));
           });
           teamManagers.map(managerID => {
-            const managerName = `${_.lowerCase(
+            const managerName = `${_.toLower(
               managers[managerID].info.name
-            )} ${_.lowerCase(managers[managerID].info.surname)}`;
+            )} ${_.toLower(managers[managerID].info.surname)}`;
             managerMatch =
-              managerMatch && managerName.includes(_.lowerCase(searchText));
+              managerMatch && managerName.includes(_.toLower(searchText));
           });
 
           if (teamCoaches.length === 0) coachMatch = false;
           if (teamManagers.length === 0) managerMatch = false;
-          titleMatch = teamName.includes(_.lowerCase(searchText));
+          titleMatch = teamName.includes(_.toLower(searchText));
         }
 
         if (gender !== "All") {

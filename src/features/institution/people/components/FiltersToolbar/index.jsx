@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import AddIcon from "material-ui-icons/Add";
 import Button from "material-ui/Button";
 import Chip from "material-ui/Chip";
 import Dialog, {
@@ -7,13 +8,14 @@ import Dialog, {
   DialogTitle
 } from "material-ui/Dialog";
 import FilterIcon from "material-ui-icons/FilterList";
-import { FormControl } from "material-ui/Form";
+import { FormControl, FormControlLabel } from "material-ui/Form";
 import { grey } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
 import SearchIcon from "material-ui-icons/Search";
 import Select from "material-ui/Select";
+import Switch from "material-ui/Switch";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import { withStyles } from "material-ui/styles";
@@ -55,52 +57,88 @@ class FiltersToolbar extends Component {
   state = {
     isOpen: false,
     searchText: "",
-    selectedType: "All",
+    selectedShowDeletedTeams: false,
+    confirmedShowDeletedTeams: false,
+    selectedGender: "All",
     selectedSport: "All",
-    confirmedType: "All",
-    confirmedSport: "All"
+    selectedDivision: "All",
+    selectedAgeGroup: "All",
+    confirmedGender: "All",
+    confirmedSport: "All",
+    confirmedDivision: "All",
+    confirmedAgeGroup: "All"
   };
 
+  componentWillMount() {
+    const { initialFilters } = this.props;
+    this.setState({
+      selectedShowRemovedPeople: initialFilters.showRemovedPeople,
+      confirmedShowRemovedPeople: initialFilters.showRemovedPeople,
+      searchText: initialFilters.searchText,
+      selectedSport: initialFilters.sport,
+      selectedType: initialFilters.type,
+      confirmedSport: initialFilters.sport,
+      confirmedType: initialFilters.type
+    });
+  }
+
   handleChange = name => event => {
+    const { updateSearch } = this.props;
     this.setState({ [name]: event.target.value });
+    if (name === "searchText") updateSearch(event.target.value);
   };
 
   handleDeleteFilter(name) {
-    this.setState({ [name]: "All" });
+    this.setState({
+      [`selected${name}`]: "All",
+      [`confirmed${name}`]: "All"
+    });
   }
 
   handleUpdate() {
     this.setState({
       isOpen: false,
-      confirmedType: this.state.selectedType,
-      confirmedSport: this.state.selectedSport
+      confirmedShowRemovedPeople: this.state.selectedShowRemovedPeople,
+      confirmedSport: this.state.selectedSport,
+      confirmedAgeGroup: this.state.selectedType
     });
   }
 
   toggleDialog() {
     this.setState({
       isOpen: !this.state.isOpen,
-      selectedType: this.state.selectedType,
-      selectedSport: this.state.selectedSport
+      selectedShowRemovedPeople: this.state.selectedShowRemovedPeople,
+      selectedSport: this.state.selectedSport,
+      selectedType: this.state.selectedType
     });
   }
 
   resetFilters() {
     this.setState({
+      selectedSport: "All",
       selectedType: "All",
-      selectedSport: "All"
+      selectedShowRemovedPeople: false
     });
   }
 
   render() {
-    const { classes, isMobile, types, sports, applyFilter } = this.props;
+    const {
+      classes,
+      isMobile,
+      sports,
+      types,
+      applyFilters,
+      addPerson
+    } = this.props;
     const {
       searchText,
-      confirmedType,
       confirmedSport,
-      selectedType,
+      confirmedType,
       selectedSport,
-      isOpen
+      selectedType,
+      isOpen,
+      selectedShowRemovedPeople,
+      confirmedShowRemovedPeople
     } = this.state;
 
     return (
@@ -111,6 +149,7 @@ class FiltersToolbar extends Component {
               id="search"
               value={searchText}
               onChange={this.handleChange("searchText")}
+              placeholder="Search by person or team"
               startAdornment={
                 <InputAdornment position="start">
                   <SearchIcon className={classes.searchIcon} />
@@ -121,30 +160,47 @@ class FiltersToolbar extends Component {
           <div className={classes.flexGrow} />
           {!isMobile && (
             <div className={classes.settingChips}>
-              {confirmedType !== "All" && (
-                <Chip
-                  label={confirmedType}
-                  onRequestDelete={() =>
-                    this.handleDeleteFilter("confirmedType")}
-                  className={classes.chip}
-                />
-              )}
               {confirmedSport !== "All" && (
                 <Chip
                   label={confirmedSport}
-                  onRequestDelete={() =>
-                    this.handleDeleteFilter("confirmedSport")}
+                  onRequestDelete={() => {
+                    this.handleDeleteFilter("Sport");
+                    applyFilters(
+                      confirmedShowRemovedPeople,
+                      "All",
+                      confirmedType
+                    );
+                  }}
+                  className={classes.chip}
+                />
+              )}
+              {confirmedType !== "All" && (
+                <Chip
+                  label={confirmedType}
+                  onRequestDelete={() => {
+                    this.handleDeleteFilter("Type");
+                    applyFilters(
+                      confirmedShowRemovedPeople,
+                      confirmedSport,
+                      "All"
+                    );
+                  }}
                   className={classes.chip}
                 />
               )}
             </div>
           )}
-          <Tooltip title="Filter report" placement="bottom">
+          <Tooltip title="Filter people" placement="bottom">
             <IconButton
-              aria-label="filter report"
+              aria-label="filter people"
               onClick={() => this.toggleDialog()}
             >
               <FilterIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Add new person" placement="bottom">
+            <IconButton aria-label="add new person" onClick={() => addPerson()}>
+              <AddIcon />
             </IconButton>
           </Tooltip>
         </Toolbar>
@@ -153,24 +209,7 @@ class FiltersToolbar extends Component {
           <DialogContent>
             <form className={classes.container} autoComplete="off">
               <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="type">Type</InputLabel>
-                <Select
-                  value={selectedType}
-                  onChange={this.handleChange("selectedType")}
-                  input={<Input id="type" />}
-                >
-                  <MenuItem value="All">All</MenuItem>
-                  {types.map(item => {
-                    return (
-                      <MenuItem key={item} value={item}>
-                        {item}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="sport">Sports</InputLabel>
+                <InputLabel htmlFor="sport">Sport</InputLabel>
                 <Select
                   value={selectedSport}
                   onChange={this.handleChange("selectedSport")}
@@ -186,6 +225,33 @@ class FiltersToolbar extends Component {
                   })}
                 </Select>
               </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="type">Types</InputLabel>
+                <Select
+                  value={selectedType}
+                  onChange={this.handleChange("selectedType")}
+                  input={<Input id="type" />}
+                >
+                  <MenuItem value="All">All</MenuItem>
+                  {types.map(item => {
+                    return (
+                      <MenuItem key={item} value={item}>
+                        {item}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={selectedShowRemovedPeople}
+                    onChange={(event, checked) =>
+                      this.setState({ selectedShowRemovedPeople: checked })}
+                  />
+                }
+                label="Show Removed People"
+              />
             </form>
           </DialogContent>
           <DialogActions>
@@ -194,7 +260,6 @@ class FiltersToolbar extends Component {
               color="accent"
               onClick={() => {
                 this.resetFilters();
-                applyFilter("All", "All");
               }}
             >
               Reset
@@ -202,8 +267,16 @@ class FiltersToolbar extends Component {
             <Button
               color="primary"
               onClick={() => {
-                this.handleUpdate(selectedType, selectedSport);
-                applyFilter(selectedType, selectedSport);
+                this.handleUpdate(
+                  selectedShowRemovedPeople,
+                  selectedSport,
+                  selectedType
+                );
+                applyFilters(
+                  selectedShowRemovedPeople,
+                  selectedSport,
+                  selectedType
+                );
               }}
             >
               Update

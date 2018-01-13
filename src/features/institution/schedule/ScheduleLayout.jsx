@@ -246,8 +246,8 @@ class ScheduleLayout extends Component {
         let managerMatch = true;
 
         if (searchText !== "") {
-          const eventTitle = _.lowerCase(info.requiredInfo.title);
-          titleMatch = eventTitle.includes(_.lowerCase(searchText));
+          const eventTitle = _.toLower(info.requiredInfo.title);
+          titleMatch = eventTitle.includes(_.toLower(searchText));
         }
 
         if (eventType !== "All") {
@@ -259,18 +259,18 @@ class ScheduleLayout extends Component {
             const teamCoaches = _.keys(teams[teamID].coaches);
             const teamManagers = _.keys(teams[teamID].managers);
             teamCoaches.map(coachID => {
-              const coachName = `${_.lowerCase(
+              const coachName = `${_.toLower(
                 coaches[coachID].info.name
-              )} ${_.lowerCase(coaches[coachID].info.surname)}`;
+              )} ${_.toLower(coaches[coachID].info.surname)}`;
               coachMatch =
-                coachMatch && coachName.includes(_.lowerCase(searchText));
+                coachMatch && coachName.includes(_.toLower(searchText));
             });
             teamManagers.map(managerID => {
-              const managerName = `${_.lowerCase(
+              const managerName = `${_.toLower(
                 managers[managerID].info.name
-              )} ${_.lowerCase(managers[managerID].info.surname)}`;
+              )} ${_.toLower(managers[managerID].info.surname)}`;
               managerMatch =
-                managerMatch && managerName.includes(_.lowerCase(searchText));
+                managerMatch && managerName.includes(_.toLower(searchText));
             });
             if (teamCoaches.length === 0) coachMatch = false;
             if (teamManagers.length === 0) managerMatch = false;
