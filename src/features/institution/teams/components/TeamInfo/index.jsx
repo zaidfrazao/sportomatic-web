@@ -2,19 +2,27 @@ import React, { Component } from "react";
 import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
-import Button from "material-ui/Button";
-import { grey } from "material-ui/colors";
+import BackIcon from "material-ui-icons/ArrowBack";
+import EditIcon from "material-ui-icons/Edit";
+import { grey, red } from "material-ui/colors";
 import Grid from "material-ui/Grid";
+import IconButton from "material-ui/IconButton";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Paper from "material-ui/Paper";
 import { Route } from "react-router-dom";
+import Toolbar from "material-ui/Toolbar";
+import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
+import WarningIcon from "material-ui-icons/Warning";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../../components/LeaderboardAd";
 
 const styles = {
+  actionsBar: {
+    backgroundColor: grey[200]
+  },
   adWrapper: {
     width: "100%",
     display: "flex",
@@ -32,6 +40,21 @@ const styles = {
       width: 1200,
       margin: "0 auto"
     }
+  },
+  deletedTeam: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 24
+  },
+  deletedText: {
+    color: red[500],
+    textAlign: "center"
+  },
+  flexGrow: {
+    flexGrow: 1
   },
   heading: {
     fontWeight: "normal",
@@ -52,6 +75,12 @@ const styles = {
   noItems: {
     textAlign: "center"
   },
+  outerWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    overflow: "auto"
+  },
   root: {
     height: "100%",
     width: "100%",
@@ -64,9 +93,10 @@ const styles = {
     height: "100%",
     width: "100%"
   },
+  warningIcon: {
+    color: red[500]
+  },
   wrapper: {
-    flexGrow: 1,
-    overflow: "auto",
     padding: 24
   }
 };
@@ -175,8 +205,9 @@ class TeamInfo extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, info } = this.props;
     const { isTeamsLoading, isCoachesLoading, isManagersLoading } = this.props;
+    const { editTeam } = this.props.actions;
 
     let name = "";
     let sport = "";
@@ -184,12 +215,12 @@ class TeamInfo extends Component {
     let ageGroup = "";
     let gender = "";
 
-    if (this.props.info) {
-      name = this.props.info.info.name;
-      sport = this.props.info.info.sport;
-      division = this.props.info.info.division;
-      ageGroup = this.props.info.info.ageGroup;
-      gender = this.props.info.info.gender;
+    if (info) {
+      name = info.info.name;
+      sport = info.info.sport;
+      division = info.info.division;
+      ageGroup = info.info.ageGroup;
+      gender = info.info.gender;
     }
 
     let formattedGender = "Loading...";
@@ -215,123 +246,155 @@ class TeamInfo extends Component {
             </Typography>
           )}
         </AppBar>
-        <div className={classes.wrapper}>
-          <Route
-            render={({ history }) => (
-              <Button
-                raised
-                className={classes.button}
-                onClick={() => history.goBack()}
+        <div className={classes.outerWrapper}>
+          <Toolbar className={classes.actionsBar}>
+            <Route
+              render={({ history }) => (
+                <Tooltip title="Back" placement="bottom">
+                  <IconButton
+                    aria-label="back"
+                    onClick={() => {
+                      history.goBack();
+                    }}
+                  >
+                    <BackIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+            />
+            <div className={classes.flexGrow} />
+            <Tooltip title="Edit team" placement="bottom">
+              <IconButton
+                disabled={
+                  isCoachesLoading || isManagersLoading || isTeamsLoading
+                }
+                aria-label="edit team"
+                onClick={() => editTeam()}
               >
-                Back
-              </Button>
-            )}
-          />
-          <div className={classes.adWrapper}>{ad}</div>
-          <Grid
-            container
-            direction="row"
-            align="stretch"
-            className={classes.contentWrapper}
-          >
-            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <Paper className={classes.section}>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Details
-                </Typography>
-                <List>
-                  <ListItem>
-                    <ListItemText
-                      primary="Sport"
-                      secondary={isTeamsLoading ? "Loading..." : sport}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary="Division"
-                      secondary={isTeamsLoading ? "Loading..." : division}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary="Age Group"
-                      secondary={
-                        isTeamsLoading ? "Loading..." : formattedAgeGroup
-                      }
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary="Gender"
-                      secondary={
-                        isTeamsLoading ? "Loading..." : formattedGender
-                      }
-                    />
-                  </ListItem>
-                </List>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <Paper className={classes.section}>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Managers
-                </Typography>
-                {isManagersLoading ? (
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          </Toolbar>
+          <div className={classes.wrapper}>
+            <div className={classes.adWrapper}>{ad}</div>
+            {info &&
+              info.status === "DELETED" && (
+                <div className={classes.deletedEvent}>
+                  <WarningIcon className={classes.warningIcon} />
+                  <Typography
+                    className={classes.deletedText}
+                    type="subtitle"
+                    component="h3"
+                  >
+                    This team has been deleted.
+                  </Typography>
+                </div>
+              )}
+            <Grid
+              container
+              direction="row"
+              align="stretch"
+              className={classes.contentWrapper}
+            >
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <Paper className={classes.section}>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Details
+                  </Typography>
                   <List>
-                    <ListItem className={classes.noItems}>
-                      <ListItemText primary="Loading..." />
+                    <ListItem>
+                      <ListItemText
+                        primary="Sport"
+                        secondary={isTeamsLoading ? "Loading..." : sport}
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        primary="Division"
+                        secondary={isTeamsLoading ? "Loading..." : division}
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        primary="Age Group"
+                        secondary={
+                          isTeamsLoading ? "Loading..." : formattedAgeGroup
+                        }
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        primary="Gender"
+                        secondary={
+                          isTeamsLoading ? "Loading..." : formattedGender
+                        }
+                      />
                     </ListItem>
                   </List>
-                ) : (
-                  <List>
-                    {managers.length > 0 ? (
-                      managers
-                    ) : (
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <Paper className={classes.section}>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Managers
+                  </Typography>
+                  {isManagersLoading ? (
+                    <List>
                       <ListItem className={classes.noItems}>
-                        <ListItemText primary="No managers" />
+                        <ListItemText primary="Loading..." />
                       </ListItem>
-                    )}
-                  </List>
-                )}
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-              <Paper className={classes.section}>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Coaches
-                </Typography>
-                {isCoachesLoading ? (
-                  <List>
-                    <ListItem className={classes.noItems}>
-                      <ListItemText primary="Loading..." />
-                    </ListItem>
-                  </List>
-                ) : (
-                  <List>
-                    {coaches.length > 0 ? (
-                      coaches
-                    ) : (
+                    </List>
+                  ) : (
+                    <List>
+                      {managers.length > 0 ? (
+                        managers
+                      ) : (
+                        <ListItem className={classes.noItems}>
+                          <ListItemText primary="No managers" />
+                        </ListItem>
+                      )}
+                    </List>
+                  )}
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <Paper className={classes.section}>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Coaches
+                  </Typography>
+                  {isCoachesLoading ? (
+                    <List>
                       <ListItem className={classes.noItems}>
-                        <ListItemText primary="No coaches" />
+                        <ListItemText primary="Loading..." />
                       </ListItem>
-                    )}
-                  </List>
-                )}
-              </Paper>
+                    </List>
+                  ) : (
+                    <List>
+                      {coaches.length > 0 ? (
+                        coaches
+                      ) : (
+                        <ListItem className={classes.noItems}>
+                          <ListItemText primary="No coaches" />
+                        </ListItem>
+                      )}
+                    </List>
+                  )}
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
+          </div>
         </div>
       </div>
     );

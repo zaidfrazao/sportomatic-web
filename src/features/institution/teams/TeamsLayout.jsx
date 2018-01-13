@@ -155,16 +155,10 @@ class TeamsLayout extends Component {
               info={teams[teamID]}
               isMobile={isMobile}
               isTablet={isTablet}
+              actions={{
+                editTeam: openEditTeamAlert
+              }}
             />
-            <Button
-              fab
-              color="accent"
-              aria-label="edit team"
-              className={classes.button}
-              onClick={() => openEditTeamAlert()}
-            >
-              <EditIcon />
-            </Button>
             <NotificationModal
               isOpen={isEditTeamAlertOpen}
               handleOkClick={closeEditTeamAlert}
