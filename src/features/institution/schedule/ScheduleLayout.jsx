@@ -151,7 +151,7 @@ class ScheduleLayout extends Component {
     }
 
     if (userID !== nextProps.userID) {
-      if (nextProps.dateSelected) {
+      if (nextProps.match.params.dateSelected) {
         const selectedDateObject = new Date(dateSelected);
         const minDate = new Date(
           selectedDateObject.getFullYear(),
