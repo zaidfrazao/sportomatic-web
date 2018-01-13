@@ -21,11 +21,14 @@ export const ERROR_LOADING_OPTIONS = `${NAMESPACE}/ERROR_LOADING_OPTIONS`;
 export const REQUEST_ADD_TEAM = `${NAMESPACE}/REQUEST_ADD_TEAM`;
 export const RECEIVE_ADD_TEAM = `${NAMESPACE}/RECEIVE_ADD_TEAM`;
 export const ERROR_ADDING_TEAM = `${NAMESPACE}/ERROR_ADDING_TEAM`;
+export const REQUEST_EDIT_TEAM = `${NAMESPACE}/REQUEST_EDIT_TEAM`;
+export const RECEIVE_EDIT_TEAM = `${NAMESPACE}/RECEIVE_EDIT_TEAM`;
+export const ERROR_EDITTING_TEAM = `${NAMESPACE}/ERROR_EDITTING_TEAM`;
 export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
 export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
 export const ERROR_LOADING_TEAMS = `${NAMESPACE}/ERROR_LOADING_TEAMS`;
-export const OPEN_EDIT_TEAM_ALERT = `${NAMESPACE}/OPEN_EDIT_TEAM_ALERT`;
-export const CLOSE_EDIT_TEAM_ALERT = `${NAMESPACE}/CLOSE_EDIT_TEAM_ALERT`;
+export const OPEN_EDIT_TEAM_DIALOG = `${NAMESPACE}/OPEN_EDIT_TEAM_DIALOG`;
+export const CLOSE_EDIT_TEAM_DIALOG = `${NAMESPACE}/CLOSE_EDIT_TEAM_DIALOG`;
 export const OPEN_DELETE_TEAM_ALERT = `${NAMESPACE}/OPEN_DELETE_TEAM_ALERT`;
 export const CLOSE_DELETE_TEAM_ALERT = `${NAMESPACE}/CLOSE_DELETE_TEAM_ALERT`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
@@ -46,6 +49,7 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         errorType: action.payload.errorType
       };
+    case ERROR_EDITTING_TEAM:
     case ERROR_ADDING_TEAM:
       return {
         ...state,
@@ -59,7 +63,7 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 export const dialogsInitialState = {
   isAddTeamDialogOpen: false,
   isErrorAddingTeamAlertOpen: false,
-  isEditTeamAlertOpen: false,
+  isEditTeamDialogOpen: false,
   isDeleteTeamAlertOpen: false,
   isTeamErrorAlertOpen: false
 };
@@ -91,17 +95,24 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
       return {
         ...state,
         isAddTeamDialogOpen: false,
-        isErrorAddingTeamAlertOpen: true
+        isTeamErrorAlertOpen: true
       };
-    case OPEN_EDIT_TEAM_ALERT:
+    case OPEN_EDIT_TEAM_DIALOG:
       return {
         ...state,
-        isEditTeamAlertOpen: true
+        isEditTeamDialogOpen: true
       };
-    case CLOSE_EDIT_TEAM_ALERT:
+    case RECEIVE_EDIT_TEAM:
+    case CLOSE_EDIT_TEAM_DIALOG:
       return {
         ...state,
-        isEditTeamAlertOpen: false
+        isEditTeamDialogOpen: false
+      };
+    case ERROR_EDITTING_TEAM:
+      return {
+        ...state,
+        isEditTeamDialogOpen: false,
+        isTeamErrorAlertOpen: true
       };
     case OPEN_DELETE_TEAM_ALERT:
       return {
@@ -162,6 +173,7 @@ function filterReducer(state = filtersInitialState, action = {}) {
 
 export const loadingStatusInitialState = {
   isAddTeamDialogLoading: false,
+  isEditTeamDialogLoading: false,
   isTeamsLoading: false,
   isOptionsLoading: false,
   isManagersLoading: false,
@@ -180,6 +192,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isAddTeamDialogLoading: false
+      };
+    case REQUEST_EDIT_TEAM:
+      return {
+        ...state,
+        isEditTeamDialogLoading: true
+      };
+    case ERROR_EDITTING_TEAM:
+    case RECEIVE_EDIT_TEAM:
+      return {
+        ...state,
+        isEditTeamDialogLoading: false
       };
     case REQUEST_OPTIONS:
       return {
@@ -344,15 +367,15 @@ export function updateSearch(searchText) {
   };
 }
 
-export function openEditTeamAlert() {
+export function openEditTeamDialog() {
   return {
-    type: OPEN_EDIT_TEAM_ALERT
+    type: OPEN_EDIT_TEAM_DIALOG
   };
 }
 
-export function closeEditTeamAlert() {
+export function closeEditTeamDialog() {
   return {
-    type: CLOSE_EDIT_TEAM_ALERT
+    type: CLOSE_EDIT_TEAM_DIALOG
   };
 }
 
@@ -608,5 +631,44 @@ export function addTeam(institutionID, info, managers, coaches) {
       })
       .then(() => dispatch(receiveAddTeam()))
       .catch(error => dispatch(errorAddingTeam(error)));
+  };
+}
+
+export function requestEditTeam() {
+  return {
+    type: REQUEST_EDIT_TEAM
+  };
+}
+
+export function receiveEditTeam() {
+  return {
+    type: RECEIVE_EDIT_TEAM
+  };
+}
+
+export function errorEdittingTeam(error: { code: string, message: string }) {
+  return {
+    type: ERROR_EDITTING_TEAM,
+    payload: {
+      error
+    }
+  };
+}
+
+export function editTeam(institutionID, teamID, info, managers, coaches) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEditTeam());
+    const db = firebase.firestore();
+    const teamRef = db.collection("teams").doc(teamID);
+
+    return teamRef
+      .set({
+        coaches,
+        info,
+        institutionID,
+        managers
+      })
+      .then(() => dispatch(receiveEditTeam()))
+      .catch(error => dispatch(errorEdittingTeam(error)));
   };
 }

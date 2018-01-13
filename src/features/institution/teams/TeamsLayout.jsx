@@ -4,6 +4,7 @@ import { CircularProgress } from "material-ui/Progress";
 import { withStyles } from "material-ui/styles";
 import AddTeamDialog from "./components/AddTeamDialog";
 import BannerAd from "../../../components/BannerAd";
+import EditTeamDialog from "./components/EditTeamDialog";
 import FiltersToolbar from "./components/FiltersToolbar";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
@@ -232,12 +233,13 @@ class TeamsLayout extends Component {
     } = this.props;
     const {
       isAddTeamDialogOpen,
-      isEditTeamAlertOpen,
+      isEditTeamDialogOpen,
       isDeleteTeamAlertOpen,
       isTeamErrorAlertOpen
     } = this.props.dialogs;
     const {
       isAddTeamDialogLoading,
+      isEditTeamDialogLoading,
       isTeamsLoading,
       isManagersLoading,
       isCoachesLoading,
@@ -247,15 +249,16 @@ class TeamsLayout extends Component {
       openAddTeamDialog,
       closeAddTeamDialog,
       addTeam,
-      openEditTeamAlert,
-      closeEditTeamAlert,
+      openEditTeamDialog,
+      closeEditTeamDialog,
       openDeleteTeamAlert,
       closeDeleteTeamAlert,
       applyFilters,
       updateSearch,
       loadOptions,
       openTeamErrorAlert,
-      closeTeamErrorAlert
+      closeTeamErrorAlert,
+      editTeam
     } = this.props.actions;
     const { errorType } = this.props.uiConfig;
     const { teamID } = this.props.match.params;
@@ -286,14 +289,31 @@ class TeamsLayout extends Component {
               isMobile={isMobile}
               isTablet={isTablet}
               actions={{
-                editTeam: openEditTeamAlert
+                editTeam: () => {
+                  openEditTeamDialog();
+                  loadOptions(userID);
+                }
               }}
             />
-            <NotificationModal
-              isOpen={isEditTeamAlertOpen}
-              handleOkClick={closeEditTeamAlert}
-              heading="Unavailable in Beta"
-              message="The ability to edit teams is unavailable in this version of the beta."
+            <EditTeamDialog
+              isOpen={isEditTeamDialogOpen}
+              isLoading={
+                isEditTeamDialogLoading ||
+                isOptionsLoading ||
+                isCoachesLoading ||
+                isManagersLoading
+              }
+              teamID={teamID}
+              initialTeamInfo={teams[teamID]}
+              institutionID={userID}
+              options={options}
+              coaches={coaches}
+              managers={managers}
+              actions={{
+                handleClose: closeEditTeamDialog,
+                editTeam,
+                openTeamErrorAlert
+              }}
             />
           </div>
         ) : (
