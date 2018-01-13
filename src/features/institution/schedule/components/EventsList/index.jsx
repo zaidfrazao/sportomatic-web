@@ -4,16 +4,8 @@ import { CircularProgress } from "material-ui/Progress";
 import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import { grey, lightBlue, orange, red } from "material-ui/colors";
-import List, {
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText
-} from "material-ui/List";
+import List, { ListItem, ListItemText } from "material-ui/List";
 import Button from "material-ui/Button";
-import CancelIcon from "material-ui-icons/Cancel";
-import UncancelIcon from "material-ui-icons/Undo";
-import IconButton from "material-ui/IconButton";
-import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import _ from "lodash";
 
@@ -100,14 +92,7 @@ class EventsList extends Component {
   }
 
   render() {
-    const {
-      classes,
-      dateSelected,
-      isTablet,
-      events,
-      institutionID,
-      isLoading
-    } = this.props;
+    const { classes, dateSelected, isTablet, events, isLoading } = this.props;
     const { updateView } = this.props.actions;
 
     const allEvents = this.getFullSortedEventsList(events);
