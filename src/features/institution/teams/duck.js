@@ -29,6 +29,8 @@ export const OPEN_EDIT_TEAM_ALERT = `${NAMESPACE}/OPEN_EDIT_TEAM_ALERT`;
 export const CLOSE_EDIT_TEAM_ALERT = `${NAMESPACE}/CLOSE_EDIT_TEAM_ALERT`;
 export const OPEN_DELETE_TEAM_ALERT = `${NAMESPACE}/OPEN_DELETE_TEAM_ALERT`;
 export const CLOSE_DELETE_TEAM_ALERT = `${NAMESPACE}/CLOSE_DELETE_TEAM_ALERT`;
+export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
+export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
 
 // Reducers
 
@@ -94,6 +96,31 @@ function optionsReducer(state = optionsInitialState, action = {}) {
   switch (action.type) {
     case RECEIVE_OPTIONS:
       return action.payload;
+    default:
+      return state;
+  }
+}
+
+export const filtersInitialState = {
+  gender: "All",
+  sport: "All",
+  division: "All",
+  ageGroup: "All",
+  searchText: ""
+};
+
+function filterReducer(state = filtersInitialState, action = {}) {
+  switch (action.type) {
+    case APPLY_FILTERS:
+      return {
+        ...state,
+        ...action.payload
+      };
+    case UPDATE_SEARCH:
+      return {
+        ...state,
+        searchText: action.payload.searchText
+      };
     default:
       return state;
   }
@@ -211,7 +238,8 @@ export const teamsReducer = combineReducers({
   options: optionsReducer,
   coaches: coachesReducer,
   managers: managersReducer,
-  loadingStatus: loadingStatusReducer
+  loadingStatus: loadingStatusReducer,
+  filters: filterReducer
 });
 
 // Selectors
@@ -222,6 +250,7 @@ const options = state => state.institution.teams.options;
 const coaches = state => state.institution.teams.coaches;
 const managers = state => state.institution.teams.managers;
 const loadingStatus = state => state.institution.teams.loadingStatus;
+const filters = state => state.institution.teams.filters;
 
 export const selector = createStructuredSelector({
   dialogs,
@@ -229,10 +258,32 @@ export const selector = createStructuredSelector({
   options,
   coaches,
   managers,
-  loadingStatus
+  loadingStatus,
+  filters
 });
 
 // Action Creators
+
+export function applyFilters(gender, sport, division, ageGroup) {
+  return {
+    type: APPLY_FILTERS,
+    payload: {
+      gender,
+      sport,
+      division,
+      ageGroup
+    }
+  };
+}
+
+export function updateSearch(searchText) {
+  return {
+    type: UPDATE_SEARCH,
+    payload: {
+      searchText
+    }
+  };
+}
 
 export function openEditTeamAlert() {
   return {

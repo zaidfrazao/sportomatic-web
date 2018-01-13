@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import AddIcon from "material-ui-icons/Add";
-import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
-import EditIcon from "material-ui-icons/Edit";
 import { withStyles } from "material-ui/styles";
 import AddTeamDialog from "./components/AddTeamDialog";
 import BannerAd from "../../../components/BannerAd";
+import FiltersToolbar from "./components/FiltersToolbar";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 import NotificationModal from "../../../components/NotificationModal";
@@ -57,6 +55,13 @@ const styles = theme => ({
 });
 
 class TeamsLayout extends Component {
+  state = {
+    genders: {},
+    sports: {},
+    divisions: {},
+    ageGroups: {}
+  };
+
   componentWillMount() {
     const { userID } = this.props;
     const { loadTeams, loadCoaches, loadManagers } = this.props.actions;
@@ -69,7 +74,7 @@ class TeamsLayout extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID } = this.props;
+    const { userID, teams } = this.props;
     const { loadTeams, loadCoaches, loadManagers } = this.props.actions;
 
     if (userID !== nextProps.userID) {
@@ -77,6 +82,43 @@ class TeamsLayout extends Component {
       loadCoaches(nextProps.userID);
       loadManagers(nextProps.userID);
     }
+
+    let genders = this.state.genders;
+    let sports = this.state.sports;
+    let divisions = this.state.divisions;
+    let ageGroups = this.state.ageGroups;
+
+    if (teams !== nextProps.teams) {
+      genders = {};
+      sports = {};
+      divisions = {};
+      ageGroups = {};
+      _.toPairs(nextProps.teams).map(([id, info]) => {
+        genders = {
+          ...genders,
+          [info.info.gender]: true
+        };
+        sports = {
+          ...sports,
+          [info.info.sport]: true
+        };
+        divisions = {
+          ...divisions,
+          [info.info.division]: true
+        };
+        ageGroups = {
+          ...ageGroups,
+          [info.info.ageGroup]: true
+        };
+      });
+    }
+
+    this.setState({
+      genders,
+      sports,
+      divisions,
+      ageGroups
+    });
   }
 
   createAd() {
@@ -113,7 +155,8 @@ class TeamsLayout extends Component {
       managers,
       userID,
       isMobile,
-      isTablet
+      isTablet,
+      filters
     } = this.props;
     const {
       isAddTeamDialogOpen,
@@ -135,7 +178,9 @@ class TeamsLayout extends Component {
       openEditTeamAlert,
       closeEditTeamAlert,
       openDeleteTeamAlert,
-      closeDeleteTeamAlert
+      closeDeleteTeamAlert,
+      applyFilters,
+      updateSearch
     } = this.props.actions;
     const { teamID } = this.props.match.params;
 
@@ -172,6 +217,16 @@ class TeamsLayout extends Component {
               teamsList.length > 0 ? classes.teamCards : classes.teamNoCards
             }
           >
+            <FiltersToolbar
+              genders={_.keys(this.state.genders)}
+              sports={_.keys(this.state.sports)}
+              divisions={_.keys(this.state.divisions)}
+              ageGroups={_.keys(this.state.ageGroups)}
+              initialFilters={filters}
+              applyFilters={applyFilters}
+              addTeam={openAddTeamDialog}
+              updateSearch={updateSearch}
+            />
             <div className={classes.adWrapper}>{ad}</div>
             {isTeamsLoading ? (
               <div className={classes.loaderWrapper}>
@@ -180,19 +235,6 @@ class TeamsLayout extends Component {
             ) : (
               <TeamsList teams={teamsList} actions={{ openDeleteTeamAlert }} />
             )}
-            <Button
-              fab
-              color="accent"
-              aria-label="add team"
-              className={classes.button}
-              onClick={() => {
-                loadOptions(userID);
-                loadStaff(userID);
-                openAddTeamDialog();
-              }}
-            >
-              <AddIcon />
-            </Button>
             <NotificationModal
               isOpen={isDeleteTeamAlertOpen}
               handleOkClick={closeDeleteTeamAlert}
