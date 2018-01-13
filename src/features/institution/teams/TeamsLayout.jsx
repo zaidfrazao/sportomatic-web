@@ -233,13 +233,15 @@ class TeamsLayout extends Component {
     const {
       isAddTeamDialogOpen,
       isEditTeamAlertOpen,
-      isDeleteTeamAlertOpen
+      isDeleteTeamAlertOpen,
+      isTeamErrorAlertOpen
     } = this.props.dialogs;
     const {
       isAddTeamDialogLoading,
       isTeamsLoading,
       isManagersLoading,
-      isCoachesLoading
+      isCoachesLoading,
+      isOptionsLoading
     } = this.props.loadingStatus;
     const {
       openAddTeamDialog,
@@ -250,12 +252,25 @@ class TeamsLayout extends Component {
       openDeleteTeamAlert,
       closeDeleteTeamAlert,
       applyFilters,
-      updateSearch
+      updateSearch,
+      loadOptions,
+      openTeamErrorAlert,
+      closeTeamErrorAlert
     } = this.props.actions;
+    const { errorType } = this.props.uiConfig;
     const { teamID } = this.props.match.params;
 
     const ad = this.createAd();
     const filteredTeams = this.getTeamsList(this.filterTeams());
+
+    let teamErrorAlertHeading = "Team Name Required";
+    let teamErrorAlertMessage =
+      "You need to specify a name for this team before saving it.";
+    if (errorType === "LOADING") {
+      teamErrorAlertHeading = "Network Issue";
+      teamErrorAlertMessage =
+        "You have lost your connection to the internet. Please check your connectivity and try again.";
+    }
 
     return (
       <div className={classes.root}>
@@ -295,7 +310,10 @@ class TeamsLayout extends Component {
               showDeletedTeams={this.state.showDeletedTeams}
               initialFilters={filters}
               applyFilters={applyFilters}
-              addTeam={openAddTeamDialog}
+              addTeam={() => {
+                openAddTeamDialog();
+                loadOptions(userID);
+              }}
               updateSearch={updateSearch}
             />
             <div className={classes.adWrapper}>{ad}</div>
@@ -317,17 +335,30 @@ class TeamsLayout extends Component {
             />
           </div>
         )}
-        {false && (
-          <AddTeamDialog
-            isOpen={isAddTeamDialogOpen}
-            isLoading={isAddTeamDialogLoading}
-            institutionID={userID}
-            options={options}
-            coaches={coaches}
-            managers={managers}
-            actions={{ handleClose: closeAddTeamDialog, addTeam }}
-          />
-        )}
+        <AddTeamDialog
+          isOpen={isAddTeamDialogOpen}
+          isLoading={
+            isAddTeamDialogLoading ||
+            isOptionsLoading ||
+            isCoachesLoading ||
+            isManagersLoading
+          }
+          institutionID={userID}
+          options={options}
+          coaches={coaches}
+          managers={managers}
+          actions={{
+            handleClose: closeAddTeamDialog,
+            addTeam,
+            openTeamErrorAlert
+          }}
+        />
+        <NotificationModal
+          isOpen={isTeamErrorAlertOpen}
+          handleOkClick={closeTeamErrorAlert}
+          heading={teamErrorAlertHeading}
+          message={teamErrorAlertMessage}
+        />
       </div>
     );
   }

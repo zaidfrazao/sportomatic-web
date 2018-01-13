@@ -196,8 +196,9 @@ class AddTeamDialog extends Component {
 
   getRelevantCoaches(sport) {
     const { classes, coaches } = this.props;
+
     const listItems = _.toPairs(coaches)
-      .filter(coach => coach[1].preferredSports[sport])
+      .filter(coach => coach[1].info.sports[sport])
       .map(coach => {
         const id = coach[0];
         const info = coach[1];
@@ -210,12 +211,10 @@ class AddTeamDialog extends Component {
             onClick={() => this.handleToggle(id, "COACH")}
           >
             <Avatar
-              alt={`${info.metadata.name} ${info.metadata.surname}`}
-              src={info.metadata.profilePictureURL}
+              alt={`${info.info.name} ${info.info.surname}`}
+              src={info.info.profilePictureURL}
             />
-            <ListItemText
-              primary={`${info.metadata.name} ${info.metadata.surname}`}
-            />
+            <ListItemText primary={`${info.info.name} ${info.info.surname}`} />
             <ListItemSecondaryAction>
               <Checkbox
                 onClick={() => this.handleToggle(id, "COACH")}
@@ -244,8 +243,9 @@ class AddTeamDialog extends Component {
 
   getRelevantManagers(sport) {
     const { classes, managers } = this.props;
+
     const listItems = _.toPairs(managers)
-      .filter(manager => manager[1].preferredSports[sport])
+      .filter(manager => manager[1].info.sports[sport])
       .map(manager => {
         const id = manager[0];
         const info = manager[1];
@@ -258,12 +258,10 @@ class AddTeamDialog extends Component {
             onClick={() => this.handleToggle(id, "MANAGER")}
           >
             <Avatar
-              alt={`${info.metadata.name} ${info.metadata.surname}`}
-              src={info.metadata.profilePictureURL}
+              alt={`${info.info.name} ${info.info.surname}`}
+              src={info.info.profilePictureURL}
             />
-            <ListItemText
-              primary={`${info.metadata.name} ${info.metadata.surname}`}
-            />
+            <ListItemText primary={`${info.info.name} ${info.info.surname}`} />
             <ListItemSecondaryAction>
               <Checkbox
                 onClick={() => this.handleToggle(id, "MANAGER")}
@@ -317,15 +315,8 @@ class AddTeamDialog extends Component {
   };
 
   render() {
-    const {
-      classes,
-      isOpen,
-      isLoading,
-      institutionID,
-      coaches,
-      managers
-    } = this.props;
-    const { handleClose, addTeam } = this.props.actions;
+    const { classes, isOpen, isLoading, institutionID } = this.props;
+    const { handleClose, addTeam, openTeamErrorAlert } = this.props.actions;
     const { ageGroups, divisions, sports, genderType } = this.props.options;
     const {
       ageGroup,
@@ -336,9 +327,16 @@ class AddTeamDialog extends Component {
       selectedCoaches,
       selectedManagers
     } = this.state;
-    const genderOptions = this.setGenderOptions(ageGroup, genderType);
-    const relevantCoaches = this.getRelevantCoaches(sport);
-    const relevantManagers = this.getRelevantManagers(sport);
+
+    let genderOptions = <div />;
+    let relevantCoaches = <div />;
+    let relevantManagers = <div />;
+
+    if (!isLoading) {
+      genderOptions = this.setGenderOptions(ageGroup, genderType);
+      relevantCoaches = this.getRelevantCoaches(sport);
+      relevantManagers = this.getRelevantManagers(sport);
+    }
 
     return (
       <Dialog
@@ -363,33 +361,27 @@ class AddTeamDialog extends Component {
               disabled={isLoading}
               color="contrast"
               onClick={() => {
-                if (
-                  teamName.length === 0 ||
-                  selectedManagers.length === 0 ||
-                  selectedCoaches.length === 0
-                ) {
-                  console.log("ERROR");
+                if (teamName.length === 0) {
+                  openTeamErrorAlert("TITLE");
                 } else {
                   addTeam(
                     institutionID,
                     {
                       ageGroup,
                       division,
-                      sport: sports[sport],
+                      sport,
                       gender,
                       name: teamName
                     },
                     _.fromPairs(
-                      selectedManagers.map(managerID => [
-                        managerID,
-                        managers[managerID]
-                      ])
+                      selectedManagers.map(id => {
+                        return [id, true];
+                      })
                     ),
                     _.fromPairs(
-                      selectedCoaches.map(coachID => [
-                        coachID,
-                        coaches[coachID]
-                      ])
+                      selectedCoaches.map(id => {
+                        return [id, true];
+                      })
                     )
                   );
                 }

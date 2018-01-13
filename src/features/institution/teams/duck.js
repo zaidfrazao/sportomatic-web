@@ -2,7 +2,6 @@ import _ from "lodash";
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
-import { SportomaticFirebaseAPI } from "../../../api/sportmatic-firebase-api";
 
 const NAMESPACE = "sportomatic-web/admin/teams";
 
@@ -31,18 +30,52 @@ export const OPEN_DELETE_TEAM_ALERT = `${NAMESPACE}/OPEN_DELETE_TEAM_ALERT`;
 export const CLOSE_DELETE_TEAM_ALERT = `${NAMESPACE}/CLOSE_DELETE_TEAM_ALERT`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
+export const OPEN_TEAM_ERROR_ALERT = `${NAMESPACE}/OPEN_TEAM_ERROR_ALERT`;
+export const CLOSE_TEAM_ERROR_ALERT = `${NAMESPACE}/CLOSE_TEAM_ERROR_ALERT`;
 
 // Reducers
+
+export const uiConfigInitialState = {
+  errorType: "NONE"
+};
+
+function uiConfigReducer(state = uiConfigInitialState, action = {}) {
+  switch (action.type) {
+    case OPEN_TEAM_ERROR_ALERT:
+      return {
+        ...state,
+        errorType: action.payload.errorType
+      };
+    case ERROR_ADDING_TEAM:
+      return {
+        ...state,
+        errorType: "LOADING"
+      };
+    default:
+      return state;
+  }
+}
 
 export const dialogsInitialState = {
   isAddTeamDialogOpen: false,
   isErrorAddingTeamAlertOpen: false,
   isEditTeamAlertOpen: false,
-  isDeleteTeamAlertOpen: false
+  isDeleteTeamAlertOpen: false,
+  isTeamErrorAlertOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
+    case OPEN_TEAM_ERROR_ALERT:
+      return {
+        ...state,
+        isTeamErrorAlertOpen: true
+      };
+    case CLOSE_TEAM_ERROR_ALERT:
+      return {
+        ...state,
+        isTeamErrorAlertOpen: false
+      };
     case OPEN_ADD_TEAM_DIALOG:
       return {
         ...state,
@@ -88,7 +121,7 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 export const optionsInitialState = {
   ageGroups: { "12": "U/12" },
   divisions: { A: "A" },
-  sports: { "-Kcb7s4Qhl4H4W0sTxA-": "Athletics" },
+  sports: { Athletics: true },
   genderType: "MIXED"
 };
 
@@ -240,7 +273,8 @@ export const teamsReducer = combineReducers({
   coaches: coachesReducer,
   managers: managersReducer,
   loadingStatus: loadingStatusReducer,
-  filters: filterReducer
+  filters: filterReducer,
+  uiConfig: uiConfigReducer
 });
 
 // Selectors
@@ -252,6 +286,7 @@ const coaches = state => state.institution.teams.coaches;
 const managers = state => state.institution.teams.managers;
 const loadingStatus = state => state.institution.teams.loadingStatus;
 const filters = state => state.institution.teams.filters;
+const uiConfig = state => state.institution.teams.uiConfig;
 
 export const selector = createStructuredSelector({
   dialogs,
@@ -260,10 +295,26 @@ export const selector = createStructuredSelector({
   coaches,
   managers,
   loadingStatus,
-  filters
+  filters,
+  uiConfig
 });
 
 // Action Creators
+
+export function openTeamErrorAlert(errorType) {
+  return {
+    type: OPEN_TEAM_ERROR_ALERT,
+    payload: {
+      errorType
+    }
+  };
+}
+
+export function closeTeamErrorAlert() {
+  return {
+    type: CLOSE_TEAM_ERROR_ALERT
+  };
+}
 
 export function applyFilters(
   showDeletedTeams,
@@ -466,7 +517,7 @@ export function requestOptions() {
 
 export function receiveOptions(institutionInfo) {
   const ageGroups = _.fromPairs(
-    institutionInfo.metadata.ageGroups.map(ageGroup => {
+    institutionInfo.ageGroups.map(ageGroup => {
       if (typeof ageGroup === "number") {
         return [ageGroup, `U/${ageGroup}`];
       } else {
@@ -475,15 +526,12 @@ export function receiveOptions(institutionInfo) {
     })
   );
   const divisions = _.fromPairs(
-    institutionInfo.metadata.divisions.map(division => [division, division])
+    institutionInfo.divisions.map(division => [division, division])
   );
   const sports = _.fromPairs(
-    _.toPairs(institutionInfo.sportsOffered).map(keyValuePair => [
-      keyValuePair[0],
-      keyValuePair[1].name
-    ])
+    institutionInfo.sports.map(sport => [sport, sport])
   );
-  const genderType = institutionInfo.metadata.gender;
+  const genderType = institutionInfo.gender;
 
   return {
     type: RECEIVE_OPTIONS,
@@ -508,13 +556,18 @@ export function errorLoadingOptions(error: { code: string, message: string }) {
 export function loadOptions(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestOptions());
-    return SportomaticFirebaseAPI.getTeamOptions(institutionID)
-      .then(options => {
-        dispatch(receiveOptions(options));
+    const institutionRef = firebase
+      .firestore()
+      .collection("institutions")
+      .doc(institutionID);
+
+    return institutionRef
+      .get()
+      .then(doc => {
+        const institutionInfo = doc.data();
+        dispatch(receiveOptions(institutionInfo.info));
       })
-      .catch(err => {
-        dispatch(errorLoadingOptions(err));
-      });
+      .catch(error => dispatch(errorLoadingOptions(error)));
   };
 }
 
@@ -539,69 +592,21 @@ export function errorAddingTeam(error: { code: string, message: string }) {
   };
 }
 
-export function addTeam(institutionID, teamInfo, managers, coaches) {
+export function addTeam(institutionID, info, managers, coaches) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestAddTeam());
-    return SportomaticFirebaseAPI.getNewTeamID(institutionID)
-      .then(newTeamID => {
-        const newTeamInfo = {
-          status: "ACTIVE",
-          metadata: { ...teamInfo },
-          coaches,
-          managers
-        };
-        const managerUpdates = _.fromPairs(
-          _.toPairs(managers).map(([managerID, managerInfo]) => {
-            return [
-              `manager/${managerID}/private/institutions/${institutionID}/teams/${newTeamID}`,
-              newTeamInfo
-            ];
-          })
-        );
-        const managerStaffUpdates = _.fromPairs(
-          _.toPairs(managers).map(([managerID, managerInfo]) => {
-            return [
-              `institution/${institutionID}/private/staff/${managerID}/teams/${newTeamID}`,
-              {
-                status: newTeamInfo.status,
-                name: newTeamInfo.metadata.name,
-                sport: newTeamInfo.metadata.sport
-              }
-            ];
-          })
-        );
-        const coachUpdates = _.fromPairs(
-          _.toPairs(coaches).map(([coachID, coachInfo]) => {
-            return [
-              `coach/${coachID}/private/institutions/${institutionID}/teams/${newTeamID}`,
-              newTeamInfo
-            ];
-          })
-        );
-        const coachStaffUpdates = _.fromPairs(
-          _.toPairs(coaches).map(([coachID, coachInfo]) => {
-            return [
-              `institution/${institutionID}/private/staff/${coachID}/teams/${newTeamID}`,
-              {
-                status: newTeamInfo.status,
-                name: newTeamInfo.metadata.name,
-                sport: newTeamInfo.metadata.sport
-              }
-            ];
-          })
-        );
-        const updates = {
-          [`institution/${institutionID}/private/teams/${newTeamID}`]: newTeamInfo,
-          ...coachUpdates,
-          ...coachStaffUpdates,
-          ...managerUpdates,
-          ...managerStaffUpdates
-        };
+    const db = firebase.firestore();
 
-        return SportomaticFirebaseAPI.addTeam(updates)
-          .then(() => dispatch(receiveAddTeam()))
-          .catch(error => dispatch(errorAddingTeam(error)));
+    return db
+      .collection("teams")
+      .add({
+        coaches,
+        info,
+        institutionID,
+        managers,
+        status: "ACTIVE"
       })
-      .catch(error => errorAddingTeam(error));
+      .then(() => dispatch(receiveAddTeam()))
+      .catch(error => dispatch(errorAddingTeam(error)));
   };
 }
