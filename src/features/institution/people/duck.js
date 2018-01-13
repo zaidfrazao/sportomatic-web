@@ -129,7 +129,8 @@ function teamsReducer(state = {}, action = {}) {
 }
 
 export const loadingStatusInitialState = {
-  isStaffLoading: false,
+  isCoachesLoading: false,
+  isManagersLoading: false,
   isTeamsLoading: false
 };
 
@@ -139,16 +140,24 @@ function loadingStatusListReducer(
 ) {
   switch (action.type) {
     case REQUEST_COACHES:
+      return {
+        ...state,
+        isCoachesLoading: true
+      };
     case REQUEST_MANAGERS:
       return {
         ...state,
-        isStaffLoading: true
+        isManagersLoading: true
       };
     case RECEIVE_COACHES:
+      return {
+        ...state,
+        isCoachesLoading: false
+      };
     case RECEIVE_MANAGERS:
       return {
         ...state,
-        isStaffLoading: false
+        isManagersLoading: false
       };
     case REQUEST_TEAMS:
       return {

@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import AppBar from "material-ui/AppBar";
-import Button from "material-ui/Button";
+import Badge from "material-ui/Badge";
 import { CircularProgress } from "material-ui/Progress";
-import EditIcon from "material-ui-icons/Edit";
 import Tabs, { Tab } from "material-ui/Tabs";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../components/BannerAd";
@@ -61,6 +60,9 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     overflow: "auto"
+  },
+  tabs: {
+    height: 72
   },
   tabsWrapper: {
     height: "100%",
@@ -127,11 +129,39 @@ class PeopleLayout extends Component {
 
     let type = "";
     if (personID && staff[personID]) {
+      if (staff[personID].institutions[userID].adminStatus === "APPROVED") {
+        type = "Admin";
+      }
       if (staff[personID].institutions[userID].managerStatus === "APPROVED") {
         type = "Manager";
       }
       if (staff[personID].institutions[userID].coachStatus === "APPROVED") {
         type = "Coach";
+      }
+      if (
+        staff[personID].institutions[userID].adminStatus === "APPROVED" &&
+        staff[personID].institutions[userID].coachStatus === "APPROVED"
+      ) {
+        type = "Admin / Coach";
+      }
+      if (
+        staff[personID].institutions[userID].coachStatus === "APPROVED" &&
+        staff[personID].institutions[userID].managerStatus === "APPROVED"
+      ) {
+        type = "Manager / Coach";
+      }
+      if (
+        staff[personID].institutions[userID].adminStatus === "APPROVED" &&
+        staff[personID].institutions[userID].managerStatus === "APPROVED"
+      ) {
+        type = "Admin / Coach";
+      }
+      if (
+        staff[personID].institutions[userID].adminStatus === "APPROVED" &&
+        staff[personID].institutions[userID].coachStatus === "APPROVED" &&
+        staff[personID].institutions[userID].managerStatus === "APPROVED"
+      ) {
+        type = "Admin / Coach / Manager";
       }
     }
 
@@ -144,6 +174,9 @@ class PeopleLayout extends Component {
     return _.values(
       _.mapValues(staff, (value, key) => {
         let type = "";
+        if (value.institutions[userID].adminStatus === "APPROVED") {
+          type = "Admin";
+        }
         if (value.institutions[userID].managerStatus === "APPROVED") {
           type = "Manager";
         }
@@ -151,10 +184,29 @@ class PeopleLayout extends Component {
           type = "Coach";
         }
         if (
+          value.institutions[userID].adminStatus === "APPROVED" &&
+          value.institutions[userID].coachStatus === "APPROVED"
+        ) {
+          type = "Admin / Coach";
+        }
+        if (
           value.institutions[userID].coachStatus === "APPROVED" &&
           value.institutions[userID].managerStatus === "APPROVED"
         ) {
           type = "Manager / Coach";
+        }
+        if (
+          value.institutions[userID].adminStatus === "APPROVED" &&
+          value.institutions[userID].managerStatus === "APPROVED"
+        ) {
+          type = "Admin / Coach";
+        }
+        if (
+          value.institutions[userID].adminStatus === "APPROVED" &&
+          value.institutions[userID].coachStatus === "APPROVED" &&
+          value.institutions[userID].managerStatus === "APPROVED"
+        ) {
+          type = "Admin / Coach / Manager";
         }
         return {
           ...value,
@@ -180,6 +232,9 @@ class PeopleLayout extends Component {
     return _.values(
       _.mapValues(requests, (value, key) => {
         let type = "";
+        if (value.institutions[userID].adminStatus === "AWAITING_APPROVAL") {
+          type = "Admin";
+        }
         if (value.institutions[userID].managerStatus === "AWAITING_APPROVAL") {
           type = "Manager";
         }
@@ -187,10 +242,29 @@ class PeopleLayout extends Component {
           type = "Coach";
         }
         if (
+          value.institutions[userID].adminStatus === "AWAITING_APPROVAL" &&
+          value.institutions[userID].coachStatus === "AWAITING_APPROVAL"
+        ) {
+          type = "Admin and Coach";
+        }
+        if (
           value.institutions[userID].coachStatus === "AWAITING_APPROVAL" &&
           value.institutions[userID].managerStatus === "AWAITING_APPROVAL"
         ) {
-          type = "Manager / Coach";
+          type = "Manager and Coach";
+        }
+        if (
+          value.institutions[userID].adminStatus === "AWAITING_APPROVAL" &&
+          value.institutions[userID].managerStatus === "AWAITING_APPROVAL"
+        ) {
+          type = "Admin and Coach";
+        }
+        if (
+          value.institutions[userID].adminStatus === "AWAITING_APPROVAL" &&
+          value.institutions[userID].coachStatus === "AWAITING_APPROVAL" &&
+          value.institutions[userID].managerStatus === "AWAITING_APPROVAL"
+        ) {
+          type = "Admin, Coach and Manager";
         }
         return {
           ...value,
@@ -211,9 +285,13 @@ class PeopleLayout extends Component {
   }
 
   render() {
-    const { classes, staff, teams, isMobile, isTablet, userID } = this.props;
+    const { classes, staff, teams, isMobile, isTablet } = this.props;
     const { currentTab } = this.props.uiConfig;
-    const { isStaffLoading, isTeamsLoading } = this.props.loadingStatus;
+    const {
+      isCoachesLoading,
+      isManagersLoading,
+      isTeamsLoading
+    } = this.props.loadingStatus;
     const {
       updateTab,
       openEditPersonDialog,
@@ -235,29 +313,21 @@ class PeopleLayout extends Component {
 
     return (
       <div className={classes.root}>
-        {personID && staff[personID] ? (
+        {personID ? (
           <div className={classes.infoWrapper}>
             <PersonInfo
               type={type}
               teams={teams}
               personID={personID}
               info={staff[personID]}
-              paymentDefaults={
-                staff[personID].institutions[userID].paymentDefaults
-              }
-              isLoading={isTeamsLoading}
+              isStaffLoading={isCoachesLoading || isManagersLoading}
+              isTeamsLoading={isTeamsLoading}
               isMobile={isMobile}
               isTablet={isTablet}
+              actions={{
+                editPersonInfo: () => openEditPersonDialog()
+              }}
             />
-            <Button
-              fab
-              color="accent"
-              aria-label="edit event"
-              className={classes.button}
-              onClick={() => openEditPersonDialog()}
-            >
-              <EditIcon />
-            </Button>
             <NotificationModal
               isOpen={isEditPersonDialogOpen}
               handleOkClick={closeEditPersonDialog}
@@ -275,8 +345,27 @@ class PeopleLayout extends Component {
                 textColor="primary"
                 centered
               >
-                <Tab label="Staff" value="STAFF" />
-                <Tab label="Requests" value="REQUESTS" />
+                <Tab label="Staff" value="STAFF" className={classes.tabs} />
+                {requestsCardsInfo.length > 0 ? (
+                  <Tab
+                    label={
+                      <Badge
+                        badgeContent={requestsCardsInfo.length}
+                        color="accent"
+                      >
+                        Requests
+                      </Badge>
+                    }
+                    value="REQUESTS"
+                    className={classes.tabs}
+                  />
+                ) : (
+                  <Tab
+                    label="Requests"
+                    value="REQUESTS"
+                    className={classes.tabs}
+                  />
+                )}
               </Tabs>
             </AppBar>
             {currentTab === "STAFF" && (
@@ -289,13 +378,12 @@ class PeopleLayout extends Component {
               >
                 <FiltersToolbar
                   isMobile={isMobile}
-                  types={["Coach", "Manager"]}
+                  types={["Admin", "Coach", "Manager"]}
                   sports={["Cricket", "Rugby", "Soccer"]}
                   applyFilter={performFilter}
                 />
-
                 <div className={classes.adWrapper}>{ad}</div>
-                {isStaffLoading ? (
+                {isCoachesLoading || isManagersLoading ? (
                   <div className={classes.loaderWrapper}>
                     <CircularProgress />
                   </div>
@@ -310,13 +398,19 @@ class PeopleLayout extends Component {
             {currentTab === "REQUESTS" && (
               <div
                 className={
-                  staffCardsInfo.length > 0
+                  requestsCardsInfo.length > 0
                     ? classes.staffTab
                     : classes.staffTabNoCards
                 }
               >
+                <FiltersToolbar
+                  isMobile={isMobile}
+                  types={["Admin", "Coach", "Manager"]}
+                  sports={["Cricket", "Rugby", "Soccer"]}
+                  applyFilter={performFilter}
+                />
                 <div className={classes.adWrapper}>{ad}</div>
-                {isStaffLoading ? (
+                {isCoachesLoading || isManagersLoading ? (
                   <div className={classes.loaderWrapper}>
                     <CircularProgress />
                   </div>

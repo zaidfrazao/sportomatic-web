@@ -28,7 +28,6 @@ const styles = {
 class PersonCard extends Component {
   render() {
     const { classes, name, surname, profilePictureURL, type, id } = this.props;
-    const { openDeletePersonAlert } = this.props.actions;
 
     return (
       <div>
@@ -56,16 +55,6 @@ class PersonCard extends Component {
                 </Button>
               )}
             />
-            <div>
-              <Tooltip title="Remove person" placement="bottom">
-                <IconButton
-                  aria-label="Remove person"
-                  onClick={() => openDeletePersonAlert()}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
-            </div>
           </CardActions>
         </Card>
       </div>

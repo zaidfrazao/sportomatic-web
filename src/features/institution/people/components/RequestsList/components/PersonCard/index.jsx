@@ -37,7 +37,7 @@ class PersonCard extends Component {
             <Typography type="headline" component="h2">
               {`${name} ${surname}`}
             </Typography>
-            <Typography component="p">{type}</Typography>
+            <Typography component="p">Applying to be a {type}</Typography>
           </CardContent>
           <CardActions className={classes.buttons}>
             <Button dense color="primary" className={classes.button}>
