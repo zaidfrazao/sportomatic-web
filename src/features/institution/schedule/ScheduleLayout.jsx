@@ -89,22 +89,24 @@ class ScheduleLayout extends Component {
     } = this.props.actions;
     const { eventID, dateSelected } = this.props.match.params;
 
-    const selectedDateObject = new Date(dateSelected);
-    const minDate = new Date(
-      selectedDateObject.getFullYear(),
-      selectedDateObject.getMonth(),
-      1
-    );
-    const maxDate = new Date(
-      selectedDateObject.getFullYear(),
-      selectedDateObject.getMonth() + 1,
-      0
-    );
+    if (dateSelected && userID !== "") {
+      const selectedDateObject = new Date(dateSelected);
+      const minDate = new Date(
+        selectedDateObject.getFullYear(),
+        selectedDateObject.getMonth(),
+        1
+      );
+      const maxDate = new Date(
+        selectedDateObject.getFullYear(),
+        selectedDateObject.getMonth() + 1,
+        0
+      );
+      loadEvents(userID, minDate, maxDate);
+    }
 
     if (userID !== "") {
       loadCoaches(userID);
       loadManagers(userID);
-      loadEvents(userID, minDate, maxDate);
       loadTeams(userID);
       fetchCreationDate(userID);
     }
@@ -149,21 +151,23 @@ class ScheduleLayout extends Component {
     }
 
     if (userID !== nextProps.userID) {
-      const selectedDateObject = new Date(dateSelected);
-      const minDate = new Date(
-        selectedDateObject.getFullYear(),
-        selectedDateObject.getMonth(),
-        1
-      );
-      const maxDate = new Date(
-        selectedDateObject.getFullYear(),
-        selectedDateObject.getMonth() + 1,
-        0
-      );
+      if (nextProps.dateSelected) {
+        const selectedDateObject = new Date(dateSelected);
+        const minDate = new Date(
+          selectedDateObject.getFullYear(),
+          selectedDateObject.getMonth(),
+          1
+        );
+        const maxDate = new Date(
+          selectedDateObject.getFullYear(),
+          selectedDateObject.getMonth() + 1,
+          0
+        );
+        loadEvents(nextProps.userID, minDate, maxDate);
+      }
 
       loadCoaches(nextProps.userID);
       loadManagers(nextProps.userID);
-      loadEvents(nextProps.userID, minDate, maxDate);
       loadTeams(nextProps.userID);
       fetchCreationDate(nextProps.userID);
     }
