@@ -1,6 +1,5 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
-import sportomaticPicture from "./images/sportomatic.jpg";
 
 // Actions
 
@@ -35,7 +34,7 @@ export const accountInfoInitialState = {
   physicalAddress: "63 Alexandra Street, Florida",
   institutionType: "Sports Academy",
   genders: "Mixed",
-  emblemURL: sportomaticPicture,
+  emblemURL: "",
   sports: [
     { name: "Athletics", numberOfTeams: 3 },
     { name: "Cricket", numberOfTeams: 1 },
