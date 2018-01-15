@@ -130,9 +130,9 @@ class FiltersToolbar extends Component {
     });
   }
 
-  formatGender(gender, ageGroup) {
+  formatGender(gender) {
     let formattedGender = "Mixed";
-    if (ageGroup !== "Open" && gender === "MALE") {
+    if (gender === "MALE") {
       formattedGender = "Men / Boys";
     } else if (gender === "FEMALE") {
       formattedGender = "Women / Girls";

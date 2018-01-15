@@ -60,10 +60,12 @@ class FiltersToolbar extends Component {
     selectedSport: "All",
     selectedDivision: "All",
     selectedAgeGroup: "All",
+    selectedGender: "All",
     confirmedEventType: "All",
     confirmedSport: "All",
     confirmedDivision: "All",
-    confirmedAgeGroup: "All"
+    confirmedAgeGroup: "All",
+    confirmedGender: "All"
   };
 
   componentWillMount() {
@@ -77,7 +79,8 @@ class FiltersToolbar extends Component {
       confirmedEventType: initialFilters.eventType,
       confirmedSport: initialFilters.sport,
       confirmedDivision: initialFilters.division,
-      confirmedAgeGroup: initialFilters.ageGroup
+      confirmedAgeGroup: initialFilters.ageGroup,
+      confirmedGender: initialFilters.gender
     });
   }
 
@@ -100,7 +103,8 @@ class FiltersToolbar extends Component {
       confirmedEventType: this.state.selectedEventType,
       confirmedSport: this.state.selectedSport,
       confirmedDivision: this.state.selectedDivision,
-      confirmedAgeGroup: this.state.selectedAgeGroup
+      confirmedAgeGroup: this.state.selectedAgeGroup,
+      confirmedGender: this.state.selectedGender
     });
   }
 
@@ -110,7 +114,8 @@ class FiltersToolbar extends Component {
       selectedEventType: this.state.selectedEventType,
       selectedSport: this.state.selectedSport,
       selectedDivision: this.state.selectedDivision,
-      selectedAgeGroup: this.state.selectedAgeGroup
+      selectedAgeGroup: this.state.selectedAgeGroup,
+      selectedGender: this.state.selectedGender
     });
   }
 
@@ -119,8 +124,24 @@ class FiltersToolbar extends Component {
       selectedEventType: "All",
       selectedSport: "All",
       selectedDivision: "All",
-      selectedAgeGroup: "All"
+      selectedAgeGroup: "All",
+      selectedGender: "All"
     });
+  }
+
+  formatGender(gender) {
+    let formattedGender = "Mixed";
+    if (gender === "MALE") {
+      formattedGender = "Men / Boys";
+    } else if (gender === "FEMALE") {
+      formattedGender = "Women / Girls";
+    }
+
+    return formattedGender;
+  }
+
+  formatAgeGroup(ageGroup) {
+    return ageGroup !== "Open" ? `U/${ageGroup}` : ageGroup;
   }
 
   render() {
@@ -131,6 +152,7 @@ class FiltersToolbar extends Component {
       sports,
       divisions,
       ageGroups,
+      genders,
       applyFilters,
       addEvent
     } = this.props;
@@ -140,10 +162,12 @@ class FiltersToolbar extends Component {
       confirmedSport,
       confirmedDivision,
       confirmedAgeGroup,
+      confirmedGender,
       selectedEventType,
       selectedSport,
       selectedDivision,
       selectedAgeGroup,
+      selectedGender,
       isOpen
     } = this.state;
 
@@ -175,7 +199,8 @@ class FiltersToolbar extends Component {
                       "All",
                       confirmedSport,
                       confirmedDivision,
-                      confirmedAgeGroup
+                      confirmedAgeGroup,
+                      confirmedGender
                     );
                   }}
                   className={classes.chip}
@@ -190,7 +215,8 @@ class FiltersToolbar extends Component {
                       confirmedEventType,
                       "All",
                       confirmedDivision,
-                      confirmedAgeGroup
+                      confirmedAgeGroup,
+                      confirmedGender
                     );
                   }}
                   className={classes.chip}
@@ -205,7 +231,8 @@ class FiltersToolbar extends Component {
                       confirmedEventType,
                       confirmedSport,
                       "All",
-                      confirmedAgeGroup
+                      confirmedAgeGroup,
+                      confirmedGender
                     );
                   }}
                   className={classes.chip}
@@ -213,13 +240,30 @@ class FiltersToolbar extends Component {
               )}
               {confirmedAgeGroup !== "All" && (
                 <Chip
-                  label={confirmedAgeGroup}
+                  label={this.formatAgeGroup(confirmedAgeGroup)}
                   onRequestDelete={() => {
                     this.handleDeleteFilter("AgeGroup");
                     applyFilters(
                       confirmedEventType,
                       confirmedSport,
                       confirmedDivision,
+                      "All",
+                      confirmedGender
+                    );
+                  }}
+                  className={classes.chip}
+                />
+              )}
+              {confirmedGender !== "All" && (
+                <Chip
+                  label={this.formatGender(confirmedGender)}
+                  onRequestDelete={() => {
+                    this.handleDeleteFilter("Gender");
+                    applyFilters(
+                      confirmedEventType,
+                      confirmedSport,
+                      confirmedDivision,
+                      confirmedAgeGroup,
                       "All"
                     );
                   }}
@@ -308,7 +352,24 @@ class FiltersToolbar extends Component {
                   {ageGroups.map(item => {
                     return (
                       <MenuItem key={item} value={item}>
-                        {item}
+                        {this.formatAgeGroup(item)}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="gender">Gender</InputLabel>
+                <Select
+                  value={selectedGender}
+                  onChange={this.handleChange("selectedGender")}
+                  input={<Input id="gender" />}
+                >
+                  <MenuItem value="All">All</MenuItem>
+                  {genders.map(item => {
+                    return (
+                      <MenuItem key={item} value={item}>
+                        {this.formatGender(item)}
                       </MenuItem>
                     );
                   })}
@@ -333,13 +394,15 @@ class FiltersToolbar extends Component {
                   selectedEventType,
                   selectedSport,
                   selectedDivision,
-                  selectedAgeGroup
+                  selectedAgeGroup,
+                  selectedGender
                 );
                 applyFilters(
                   selectedEventType,
                   selectedSport,
                   selectedDivision,
-                  selectedAgeGroup
+                  selectedAgeGroup,
+                  selectedGender
                 );
               }}
             >

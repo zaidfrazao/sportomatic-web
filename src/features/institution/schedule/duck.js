@@ -160,6 +160,7 @@ export const filtersInitialState = {
   sport: "All",
   division: "All",
   ageGroup: "All",
+  gender: "All",
   searchText: ""
 };
 
@@ -351,14 +352,15 @@ export const selector = createStructuredSelector({
 
 // Action Creators
 
-export function applyFilters(eventType, sport, division, ageGroup) {
+export function applyFilters(eventType, sport, division, ageGroup, gender) {
   return {
     type: APPLY_FILTERS,
     payload: {
       eventType,
       sport,
       division,
-      ageGroup
+      ageGroup,
+      gender
     }
   };
 }

@@ -71,6 +71,7 @@ const styles = theme => ({
 
 class ScheduleLayout extends Component {
   state = {
+    genders: {},
     eventTypes: {},
     sports: {},
     divisions: {},
@@ -172,6 +173,7 @@ class ScheduleLayout extends Component {
       fetchCreationDate(nextProps.userID);
     }
 
+    let genders = this.state.genders;
     let eventTypes = this.state.eventTypes;
     let sports = this.state.sports;
     let divisions = this.state.divisions;
@@ -188,10 +190,15 @@ class ScheduleLayout extends Component {
     }
 
     if (teams !== nextProps.teams) {
+      genders = {};
       sports = {};
       divisions = {};
       ageGroups = {};
       _.toPairs(nextProps.teams).map(([id, info]) => {
+        genders = {
+          ...genders,
+          [info.info.gender]: true
+        };
         sports = {
           ...sports,
           [info.info.sport]: true
@@ -208,6 +215,7 @@ class ScheduleLayout extends Component {
     }
 
     this.setState({
+      genders,
       eventTypes,
       sports,
       divisions,
@@ -234,6 +242,7 @@ class ScheduleLayout extends Component {
       sport,
       division,
       ageGroup,
+      gender,
       searchText
     } = this.props.filters;
     const { events, teams, coaches, managers } = this.props;
@@ -286,6 +295,10 @@ class ScheduleLayout extends Component {
           if (teams[teamID] && ageGroup !== "All") {
             allowThroughFilter =
               allowThroughFilter && teams[teamID].info.ageGroup === ageGroup;
+          }
+          if (teams[teamID] && gender !== "All") {
+            allowThroughFilter =
+              allowThroughFilter && teams[teamID].info.gender === gender;
           }
         });
 
@@ -452,6 +465,7 @@ class ScheduleLayout extends Component {
             sports={_.keys(this.state.sports)}
             divisions={_.keys(this.state.divisions)}
             ageGroups={_.keys(this.state.ageGroups)}
+            genders={_.keys(this.state.genders)}
             initialFilters={filters}
             applyFilters={applyFilters}
             addEvent={openAddEventDialog}
