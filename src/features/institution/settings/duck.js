@@ -3,8 +3,9 @@ import { createStructuredSelector } from "reselect";
 
 // Actions
 
-export const TOGGLE_SIDE_MENU =
-  "sportomatic-web/admin/settings/TOGGLE_SIDE_MENU";
+const NAMESPACE = "sportomatic-web/admin/settings";
+
+export const TOGGLE_SIDE_MENU = `${NAMESPACE}/TOGGLE_SIDE_MENU`;
 
 // Reducers
 

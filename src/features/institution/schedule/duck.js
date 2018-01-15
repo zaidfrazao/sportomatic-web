@@ -2,9 +2,9 @@ import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
 
-const NAMESPACE = "sportomatic-web/admin/schedule";
-
 // Actions
+
+const NAMESPACE = "sportomatic-web/admin/schedule";
 
 export const OPEN_ADD_EVENT_DIALOG = `${NAMESPACE}/OPEN_ADD_EVENT_DIALOG`;
 export const CLOSE_ADD_EVENT_DIALOG = `${NAMESPACE}/CLOSE_ADD_EVENT_DIALOG`;

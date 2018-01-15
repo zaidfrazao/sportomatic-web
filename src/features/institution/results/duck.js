@@ -12,15 +12,15 @@ import {
 
 // Actions
 
-export const UPDATE_TAB = "sportomatic-web/admin/results/UPDATE_TAB";
-export const REQUEST_TEAMS = "sportomatic-web/admin/results/REQUEST_TEAMS";
-export const RECEIVE_TEAMS = "sportomatic-web/admin/results/RECEIVE_TEAMS";
-export const ERROR_LOADING_TEAMS =
-  "sportomatic-web/admin/results/ERROR_LOADING_TEAMS";
-export const REQUEST_EVENTS = "sportomatic-web/admin/results/REQUEST_EVENTS";
-export const RECEIVE_EVENTS = "sportomatic-web/admin/results/RECEIVE_EVENTS";
-export const ERROR_LOADING_EVENTS =
-  "sportomatic-web/admin/results/ERROR_LOADING_EVENTS";
+const NAMESPACE = "sportomatic-web/admin/results";
+
+export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
+export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
+export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
+export const ERROR_LOADING_TEAMS = `${NAMESPACE}/ERROR_LOADING_TEAMS`;
+export const REQUEST_EVENTS = `${NAMESPACE}/REQUEST_EVENTS`;
+export const RECEIVE_EVENTS = `${NAMESPACE}/RECEIVE_EVENTS`;
+export const ERROR_LOADING_EVENTS = `${NAMESPACE}/ERROR_LOADING_EVENTS`;
 
 // Reducers
 

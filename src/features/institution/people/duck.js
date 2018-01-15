@@ -4,9 +4,9 @@ import firebase from "firebase";
 import { TeamAlias } from "../../../models/aliases";
 import _ from "lodash";
 
-const NAMESPACE = "sportomatic-web/admin/people";
-
 // Actions
+
+const NAMESPACE = "sportomatic-web/admin/people";
 
 export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
 export const OPEN_DELETE_PERSON_ALERT = `${NAMESPACE}/OPEN_DELETE_PERSON_ALERT`;

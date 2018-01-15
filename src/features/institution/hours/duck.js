@@ -5,28 +5,24 @@ import _ from "lodash";
 
 // Actions
 
-export const UPDATE_TAB = "sportomatic-web/admin/hours/UPDATE_TAB";
-export const REQUEST_STAFF = "sportomatic-web/admin/hours/REQUEST_STAFF";
-export const RECEIVE_STAFF = "sportomatic-web/admin/hours/RECEIVE_STAFF";
-export const ERROR_LOADING_STAFF =
-  "sportomatic-web/admin/hours/ERROR_LOADING_STAFF";
-export const REQUEST_EVENTS = "sportomatic-web/admin/hours/REQUEST_EVENTS";
-export const RECEIVE_EVENTS = "sportomatic-web/admin/hours/RECEIVE_EVENTS";
-export const ERROR_LOADING_EVENTS =
-  "sportomatic-web/admin/hours/ERROR_LOADING_EVENTS";
-export const REQUEST_SIGN_IN = "sportomatic-web/admin/hours/REQUEST_SIGN_IN";
-export const RECEIVE_SIGN_IN = "sportomatic-web/admin/hours/RECEIVE_SIGN_IN";
-export const ERROR_SIGNING_IN = "sportomatic-web/admin/hours/ERROR_SIGNING_IN";
-export const REQUEST_SIGN_OUT = "sportomatic-web/admin/hours/REQUEST_SIGN_OUT";
-export const RECEIVE_SIGN_OUT = "sportomatic-web/admin/hours/RECEIVE_SIGN_OUT";
-export const ERROR_SIGNING_OUT =
-  "sportomatic-web/admin/hours/ERROR_SIGNING_OUT";
-export const REQUEST_APPROVE_HOURS =
-  "sportomatic-web/admin/hours/REQUEST_APPROVE_HOURS";
-export const RECEIVE_APPROVE_HOURS =
-  "sportomatic-web/admin/hours/RECEIVE_APPROVE_HOURS";
-export const ERROR_APPROVING_HOURS =
-  "sportomatic-web/admin/hours/ERROR_APPROVING_HOURS";
+const NAMESPACE = "sportomatic-web/admin/hours";
+
+export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
+export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
+export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
+export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
+export const REQUEST_EVENTS = `${NAMESPACE}/REQUEST_EVENTS`;
+export const RECEIVE_EVENTS = `${NAMESPACE}/RECEIVE_EVENTS`;
+export const ERROR_LOADING_EVENTS = `${NAMESPACE}/ERROR_LOADING_EVENTS`;
+export const REQUEST_SIGN_IN = `${NAMESPACE}/REQUEST_SIGN_IN`;
+export const RECEIVE_SIGN_IN = `${NAMESPACE}/RECEIVE_SIGN_IN`;
+export const ERROR_SIGNING_IN = `${NAMESPACE}/ERROR_SIGNING_IN`;
+export const REQUEST_SIGN_OUT = `${NAMESPACE}/REQUEST_SIGN_OUT`;
+export const RECEIVE_SIGN_OUT = `${NAMESPACE}/RECEIVE_SIGN_OUT`;
+export const ERROR_SIGNING_OUT = `${NAMESPACE}/ERROR_SIGNING_OUT`;
+export const REQUEST_APPROVE_HOURS = `${NAMESPACE}/REQUEST_APPROVE_HOURS`;
+export const RECEIVE_APPROVE_HOURS = `${NAMESPACE}/RECEIVE_APPROVE_HOURS`;
+export const ERROR_APPROVING_HOURS = `${NAMESPACE}/ERROR_APPROVING_HOURS`;
 
 // Reducers
 

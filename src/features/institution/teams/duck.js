@@ -3,9 +3,9 @@ import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
 
-const NAMESPACE = "sportomatic-web/admin/teams";
-
 // Actions
+
+const NAMESPACE = "sportomatic-web/admin/teams";
 
 export const OPEN_ADD_TEAM_DIALOG = `${NAMESPACE}/OPEN_ADD_TEAM_DIALOG`;
 export const CLOSE_ADD_TEAM_DIALOG = `${NAMESPACE}/CLOSE_ADD_TEAM_DIALOG`;

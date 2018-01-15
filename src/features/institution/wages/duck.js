@@ -2,16 +2,17 @@ import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import _ from "lodash";
 import { SportomaticFirebaseAPI } from "../../../api/sportmatic-firebase-api";
+
 // Actions
 
-export const REQUEST_STAFF = "sportomatic-web/admin/wages/REQUEST_STAFF";
-export const RECEIVE_STAFF = "sportomatic-web/admin/wages/RECEIVE_STAFF";
-export const ERROR_LOADING_STAFF =
-  "sportomatic-web/admin/wages/ERROR_LOADING_STAFF";
-export const REQUEST_WAGES = "sportomatic-web/admin/wages/REQUEST_WAGES";
-export const RECEIVE_WAGES = "sportomatic-web/admin/wages/RECEIVE_WAGES";
-export const ERROR_LOADING_WAGES =
-  "sportomatic-web/admin/wages/ERROR_LOADING_WAGES";
+const NAMESPACE = "sportomatic-web/admin/wages";
+
+export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
+export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
+export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
+export const REQUEST_WAGES = `${NAMESPACE}/REQUEST_WAGES`;
+export const RECEIVE_WAGES = `${NAMESPACE}/RECEIVE_WAGES`;
+export const ERROR_LOADING_WAGES = `${NAMESPACE}/ERROR_LOADING_WAGES`;
 
 // Reducers
 
