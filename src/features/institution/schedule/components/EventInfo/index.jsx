@@ -239,8 +239,21 @@ class EventInfo extends Component {
     };
   }
 
+  createAd() {
+    const { isMobile, isTablet } = this.props;
+
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
+    return ad;
+  }
+
   render() {
-    const { classes, isMobile, isTablet, info } = this.props;
+    const { classes, info } = this.props;
     const {
       updateView,
       editEvent,
@@ -254,31 +267,20 @@ class EventInfo extends Component {
       isTeamsLoading
     } = this.props;
 
-    const dateOptions = {
-      weekday: "long",
-      month: "long",
-      day: "numeric"
-    };
+    const dateOptions = { weekday: "long", month: "long", day: "numeric" };
     const timeOptions = { hour12: true, hour: "2-digit", minute: "2-digit" };
-
-    let ad = <LeaderboardAd />;
-    if (isMobile) {
-      ad = <LargeMobileBannerAd />;
-    } else if (isTablet) {
-      ad = <BannerAd />;
-    }
-
+    const ad = this.createAd();
     const { coaches, managers, teams } = this.getListItems();
-    let showCancelButton = false;
 
+    let showButtons = false;
     if (info) {
       const eventDate = new Date(info.requiredInfo.times.start);
       const currentDate = new Date(Date.now());
-      showCancelButton = eventDate > currentDate;
+      showButtons = eventDate > currentDate;
     }
 
     let cancelButton = <div />;
-    if (showCancelButton) {
+    if (showButtons) {
       if (info.requiredInfo.status === "CANCELLED") {
         cancelButton = (
           <Tooltip title="Uncancel event" placement="bottom">
@@ -350,21 +352,23 @@ class EventInfo extends Component {
               )}
             />
             <div className={classes.flexGrow} />
-            {showCancelButton && cancelButton}
-            <Tooltip title="Edit event" placement="bottom">
-              <IconButton
-                disabled={
-                  isInfoLoading ||
-                  isCoachesLoading ||
-                  isManagersLoading ||
-                  isTeamsLoading
-                }
-                aria-label="edit event"
-                onClick={() => editEvent()}
-              >
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
+            {showButtons && cancelButton}
+            {showButtons && (
+              <Tooltip title="Edit event" placement="bottom">
+                <IconButton
+                  disabled={
+                    isInfoLoading ||
+                    isCoachesLoading ||
+                    isManagersLoading ||
+                    isTeamsLoading
+                  }
+                  aria-label="edit event"
+                  onClick={() => editEvent()}
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+            )}
           </Toolbar>
           <div className={classes.wrapper}>
             <div className={classes.adWrapper}>{ad}</div>
