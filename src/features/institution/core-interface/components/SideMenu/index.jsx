@@ -138,6 +138,7 @@ class SideMenu extends Component {
               render={({ history }) => (
                 <ListItem
                   button
+                  disabled
                   onClick={() => {
                     history.push("/admin/hours");
                     isMobile && toggleSideMenu();
@@ -159,6 +160,7 @@ class SideMenu extends Component {
               render={({ history }) => (
                 <ListItem
                   button
+                  disabled
                   onClick={() => {
                     history.push("/admin/results");
                     isMobile && toggleSideMenu();
@@ -180,6 +182,7 @@ class SideMenu extends Component {
               render={({ history }) => (
                 <ListItem
                   button
+                  disabled
                   onClick={() => {
                     history.push("/admin/wages");
                     isMobile && toggleSideMenu();

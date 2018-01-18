@@ -8,12 +8,15 @@ import AddEventDialog from "./components/AddEventDialog";
 import BannerAd from "../../../components/BannerAd";
 import Calendar from "./components/Calendar";
 import DecisionModal from "../../../components/DecisionModal";
+import EditAbsentRatingModal from "./components/EditAbsentRatingModal";
 import EditEventDialog from "./components/EditEventDialog";
 import EventInfo from "./components/EventInfo";
 import FiltersToolbar from "./components/FiltersToolbar";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
+import MarkAbsentModal from "./components/MarkAbsentModal";
 import NotificationModal from "../../../components/NotificationModal";
+import ReplacementCoachModal from "./components/ReplacementCoachModal";
 
 const styles = theme => ({
   adWrapper: {
@@ -324,7 +327,12 @@ class ScheduleLayout extends Component {
       filters
     } = this.props;
     const { dateSelected, eventID } = this.props.match.params;
-    const { currentView, errorType, minDate } = this.props.uiConfig;
+    const {
+      currentView,
+      errorType,
+      minDate,
+      selectedCoach
+    } = this.props.uiConfig;
     const {
       updateView,
       openAddEventDialog,
@@ -342,7 +350,21 @@ class ScheduleLayout extends Component {
       uncancelEvent,
       editEvent,
       applyFilters,
-      updateSearch
+      updateSearch,
+      openMarkAbsentModal,
+      closeMarkAbsentModal,
+      updateAbsent,
+      openUnmarkAbsentModal,
+      closeUnmarkAbsentModal,
+      openEditAbsentRatingModal,
+      closeEditAbsentRatingModal,
+      editAbsentRating,
+      openReplacementCoachModal,
+      closeReplacementCoachModal,
+      updateReplacementCoach,
+      openReplacementCoachRemovalModal,
+      closeReplacementCoachRemovalModal,
+      removeReplacementCoach
     } = this.props.actions;
     const {
       isEventsLoading,
@@ -358,7 +380,12 @@ class ScheduleLayout extends Component {
       isCancelEventAlertOpen,
       isUncancelEventAlertOpen,
       isEditEventDialogOpen,
-      isEventErrorAlertOpen
+      isEventErrorAlertOpen,
+      isMarkAbsentModalOpen,
+      isUnmarkAbsentModalOpen,
+      isEditAbsentRatingModalOpen,
+      isReplacementCoachModalOpen,
+      isReplacementCoachRemovalModalOpen
     } = this.props.dialogs;
 
     const currentDate = new Date(Date.now());
@@ -391,6 +418,12 @@ class ScheduleLayout extends Component {
 
     const ad = this.createAd();
     const filteredEvents = this.filterEvents();
+    let isPastEvent = false;
+    if (events[eventID]) {
+      const eventDate = new Date(events[eventID].requiredInfo.times.start);
+      const currentDate = new Date(Date.now());
+      isPastEvent = eventDate < currentDate;
+    }
 
     if (currentView === "EVENT_INFO") {
       return (
@@ -404,10 +437,16 @@ class ScheduleLayout extends Component {
             isCoachesLoading={isCoachesLoading}
             isManagersLoading={isManagersLoading}
             isTeamsLoading={isTeamsLoading}
+            isPastEvent={isPastEvent}
             isMobile={isMobile}
             isTablet={isTablet}
             actions={{
               updateView,
+              removeReplacementCoach: openReplacementCoachRemovalModal,
+              updateReplacementCoach: openReplacementCoachModal,
+              editAbsentRating: openEditAbsentRatingModal,
+              markAbsent: openMarkAbsentModal,
+              unmarkAbsent: openUnmarkAbsentModal,
               editEvent: openEditEventDialog,
               cancelEvent: openCancelEventAlert,
               uncancelEvent: openUncancelEventAlert
@@ -415,7 +454,15 @@ class ScheduleLayout extends Component {
           />
           <EditEventDialog
             isOpen={isEditEventDialogOpen}
-            isLoading={isEditEventDialogLoading}
+            isLoading={
+              isEditEventDialogLoading ||
+              isEventsLoading ||
+              isCoachesLoading ||
+              isManagersLoading ||
+              isTeamsLoading
+            }
+            isMobile={isMobile}
+            isTablet={isTablet}
             minDate={currentDate.toISOString().slice(0, 10)}
             initialDate={dateSelected}
             teams={teams}
@@ -456,6 +503,101 @@ class ScheduleLayout extends Component {
             heading="Uncancel Event"
             message="Are you sure you want to uncancel this event?"
           />
+          {coaches[selectedCoach] && (
+            <div>
+              {events[eventID].coaches[selectedCoach].attendance.substitute !==
+                "" && (
+                <DecisionModal
+                  isOpen={isReplacementCoachRemovalModalOpen}
+                  handleYesClick={() => {
+                    removeReplacementCoach(eventID, selectedCoach);
+                    closeReplacementCoachRemovalModal();
+                  }}
+                  handleNoClick={closeReplacementCoachRemovalModal}
+                  heading="Remove Replacement Coach"
+                  message={`Are you sure you want to remove ${coaches[
+                    events[eventID].coaches[selectedCoach].attendance.substitute
+                  ].info.name} ${coaches[
+                    events[eventID].coaches[selectedCoach].attendance.substitute
+                  ].info.surname} as the replacement coach?`}
+                />
+              )}
+              <ReplacementCoachModal
+                isOpen={isReplacementCoachModalOpen}
+                coaches={coaches}
+                coachName={`${coaches[selectedCoach].info.name} ${coaches[
+                  selectedCoach
+                ].info.surname}`}
+                initialReplacementCoach={
+                  events[eventID].coaches[selectedCoach].attendance.substitute
+                }
+                originalCoachID={selectedCoach}
+                actions={{
+                  updateReplacementCoach: replacementCoachID => {
+                    updateReplacementCoach(
+                      eventID,
+                      selectedCoach,
+                      replacementCoachID
+                    );
+                    closeReplacementCoachModal();
+                  },
+                  closeModal: () => closeReplacementCoachModal()
+                }}
+              />
+              <MarkAbsentModal
+                isOpen={isMarkAbsentModalOpen}
+                coachName={`${coaches[selectedCoach].info.name} ${coaches[
+                  selectedCoach
+                ].info.surname}`}
+                actions={{
+                  markAbsent: (rating, reason) => {
+                    updateAbsent(
+                      eventID,
+                      selectedCoach,
+                      false,
+                      isPastEvent,
+                      rating,
+                      reason
+                    );
+                    closeMarkAbsentModal();
+                  },
+                  closeModal: () => closeMarkAbsentModal()
+                }}
+              />
+              <EditAbsentRatingModal
+                isOpen={isEditAbsentRatingModalOpen}
+                initialInfo={events[eventID].coaches[selectedCoach].absenteeism}
+                coachName={`${coaches[selectedCoach].info.name} ${coaches[
+                  selectedCoach
+                ].info.surname}`}
+                actions={{
+                  editAbsentRating: (rating, reason) => {
+                    editAbsentRating(eventID, selectedCoach, rating, reason);
+                    closeEditAbsentRatingModal();
+                  },
+                  closeModal: () => closeEditAbsentRatingModal()
+                }}
+              />
+              <DecisionModal
+                isOpen={isUnmarkAbsentModalOpen}
+                handleYesClick={() => {
+                  updateAbsent(eventID, selectedCoach, true, isPastEvent);
+                  closeUnmarkAbsentModal();
+                }}
+                handleNoClick={closeUnmarkAbsentModal}
+                heading={isPastEvent ? "Mark as Attended" : "Mark as Attending"}
+                message={
+                  isPastEvent
+                    ? `Are you sure ${coaches[selectedCoach].info
+                        .name} ${coaches[selectedCoach].info
+                        .surname} did attend?`
+                    : `Are you sure ${coaches[selectedCoach].info
+                        .name} ${coaches[selectedCoach].info
+                        .surname} will attend?`
+                }
+              />
+            </div>
+          )}
         </div>
       );
     } else {
@@ -490,7 +632,14 @@ class ScheduleLayout extends Component {
           />
           <AddEventDialog
             isOpen={isAddEventDialogOpen}
-            isLoading={isAddEventDialogLoading}
+            isMobile={isTablet}
+            isLoading={
+              isAddEventDialogLoading ||
+              isEventsLoading ||
+              isCoachesLoading ||
+              isManagersLoading ||
+              isTeamsLoading
+            }
             minDate={currentDate.toISOString().slice(0, 10)}
             initialDate={dateSelected}
             institutionID={userID}

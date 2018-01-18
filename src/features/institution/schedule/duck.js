@@ -46,17 +46,68 @@ export const RECEIVE_CREATION_DATE = `${NAMESPACE}/RECEIVE_CREATION_DATE`;
 export const ERROR_FETCHING_CREATION_DATE = `${NAMESPACE}/ERROR_FETCHING_CREATION_DATE`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
+export const REQUEST_ABSENT_UPDATE = `${NAMESPACE}/REQUEST_ABSENT_UPDATE`;
+export const RECEIVE_ABSENT_UPDATE = `${NAMESPACE}/RECEIVE_ABSENT_UPDATE`;
+export const ERROR_UPDATING_ABSENT = `${NAMESPACE}/ERROR_UPDATING_ABSENT`;
+export const OPEN_MARK_ABSENT_MODAL = `${NAMESPACE}/OPEN_MARK_ABSENT_MODAL`;
+export const CLOSE_MARK_ABSENT_MODAL = `${NAMESPACE}/CLOSE_MARK_ABSENT_MODAL`;
+export const OPEN_UNMARK_ABSENT_MODAL = `${NAMESPACE}/OPEN_UNMARK_ABSENT_MODAL`;
+export const CLOSE_UNMARK_ABSENT_MODAL = `${NAMESPACE}/CLOSE_UNMARK_ABSENT_MODAL`;
+export const REQUEST_ABSENT_RATING_UPDATE = `${NAMESPACE}/REQUEST_ABSENT_RATING_UPDATE`;
+export const RECEIVE_ABSENT_RATING_UPDATE = `${NAMESPACE}/RECEIVE_ABSENT_RATING_UPDATE`;
+export const ERROR_UPDATING_ABSENT_RATING = `${NAMESPACE}/ERROR_UPDATING_ABSENT_RATING`;
+export const OPEN_EDIT_ABSENT_RATING_MODAL = `${NAMESPACE}/OPEN_EDIT_ABSENT_RATING_MODAL`;
+export const CLOSE_EDIT_ABSENT_RATING_MODAL = `${NAMESPACE}/CLOSE_EDIT_ABSENT_RATING_MODAL`;
+export const OPEN_REPLACEMENT_COACH_MODAL = `${NAMESPACE}/OPEN_REPLACEMENT_COACH_MODAL`;
+export const CLOSE_REPLACEMENT_COACH_MODAL = `${NAMESPACE}/CLOSE_REPLACEMENT_COACH_MODAL`;
+export const REQUEST_REPLACEMENT_COACH_UPDATE = `${NAMESPACE}/REQUEST_REPLACEMENT_COACH_UPDATE`;
+export const RECEIVE_REPLACEMENT_COACH_UPDATE = `${NAMESPACE}/RECEIVE_REPLACEMENT_COACH_UPDATE`;
+export const ERROR_UPDATING_REPLACEMENT_COACH = `${NAMESPACE}/ERROR_UPDATING_REPLACEMENT_COACH`;
+export const OPEN_REPLACEMENT_COACH_REMOVAL_MODAL = `${NAMESPACE}/OPEN_REPLACEMENT_COACH_REMOVAL_MODAL`;
+export const CLOSE_REPLACEMENT_COACH_REMOVAL_MODAL = `${NAMESPACE}/CLOSE_REPLACEMENT_COACH_REMOVAL_MODAL`;
+export const REQUEST_REPLACEMENT_COACH_REMOVAL = `${NAMESPACE}/REQUEST_REPLACEMENT_COACH_REMOVAL`;
+export const RECEIVE_REPLACEMENT_COACH_REMOVAL = `${NAMESPACE}/RECEIVE_REPLACEMENT_COACH_REMOVAL`;
+export const ERROR_REMOVING_REPLACEMENT_COACH = `${NAMESPACE}/ERROR_REMOVING_REPLACEMENT_COACH`;
 
 // Reducers
 
 export const uiConfigInitialState = {
   currentView: "SCHEDULE",
   errorType: "NONE",
-  minDate: new Date(2017, 1, 1)
+  minDate: new Date(2017, 1, 1),
+  selectedCoach: false,
+  newAbsentStatus: false
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case OPEN_MARK_ABSENT_MODAL:
+      return {
+        ...state,
+        selectedCoach: action.payload.coachID,
+        newAbsentStatus: action.payload.newStatus
+      };
+    case OPEN_UNMARK_ABSENT_MODAL:
+      return {
+        ...state,
+        selectedCoach: action.payload.coachID,
+        newAbsentStatus: action.payload.newStatus
+      };
+    case OPEN_EDIT_ABSENT_RATING_MODAL:
+      return {
+        ...state,
+        selectedCoach: action.payload.coachID
+      };
+    case OPEN_REPLACEMENT_COACH_MODAL:
+      return {
+        ...state,
+        selectedCoach: action.payload.coachID
+      };
+    case OPEN_REPLACEMENT_COACH_REMOVAL_MODAL:
+      return {
+        ...state,
+        selectedCoach: action.payload.coachID
+      };
     case RECEIVE_CREATION_DATE:
       return {
         ...state,
@@ -87,11 +138,66 @@ export const dialogsInitialState = {
   isEditEventDialogOpen: false,
   isCancelEventAlertOpen: false,
   isUncancelEventAlertOpen: false,
-  isEventErrorAlertOpen: false
+  isEventErrorAlertOpen: false,
+  isMarkAbsentModalOpen: false,
+  isUnmarkAbsentModalOpen: false,
+  isEditAbsentRatingModalOpen: false,
+  isReplacementCoachModalOpen: false,
+  isReplacementCoachRemovalModalOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
+    case OPEN_REPLACEMENT_COACH_REMOVAL_MODAL:
+      return {
+        ...state,
+        isReplacementCoachRemovalModalOpen: true
+      };
+    case CLOSE_REPLACEMENT_COACH_REMOVAL_MODAL:
+      return {
+        ...state,
+        isReplacementCoachRemovalModalOpen: false
+      };
+    case OPEN_REPLACEMENT_COACH_MODAL:
+      return {
+        ...state,
+        isReplacementCoachModalOpen: true
+      };
+    case CLOSE_REPLACEMENT_COACH_MODAL:
+      return {
+        ...state,
+        isReplacementCoachModalOpen: false
+      };
+    case OPEN_EDIT_ABSENT_RATING_MODAL:
+      return {
+        ...state,
+        isEditAbsentRatingModalOpen: true
+      };
+    case CLOSE_EDIT_ABSENT_RATING_MODAL:
+      return {
+        ...state,
+        isEditAbsentRatingModalOpen: false
+      };
+    case OPEN_MARK_ABSENT_MODAL:
+      return {
+        ...state,
+        isMarkAbsentModalOpen: true
+      };
+    case CLOSE_MARK_ABSENT_MODAL:
+      return {
+        ...state,
+        isMarkAbsentModalOpen: false
+      };
+    case OPEN_UNMARK_ABSENT_MODAL:
+      return {
+        ...state,
+        isUnmarkAbsentModalOpen: true
+      };
+    case CLOSE_UNMARK_ABSENT_MODAL:
+      return {
+        ...state,
+        isUnmarkAbsentModalOpen: false
+      };
     case OPEN_ADD_EVENT_DIALOG:
       return {
         ...state,
@@ -215,6 +321,10 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isEditEventDialogLoading: false
       };
+    case REQUEST_REPLACEMENT_COACH_REMOVAL:
+    case REQUEST_REPLACEMENT_COACH_UPDATE:
+    case REQUEST_ABSENT_UPDATE:
+    case REQUEST_ABSENT_RATING_UPDATE:
     case REQUEST_COACHES:
       return {
         ...state,
@@ -222,6 +332,14 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       };
     case RECEIVE_COACHES:
     case ERROR_LOADING_COACHES:
+    case RECEIVE_ABSENT_UPDATE:
+    case ERROR_UPDATING_ABSENT:
+    case RECEIVE_ABSENT_RATING_UPDATE:
+    case ERROR_UPDATING_ABSENT_RATING:
+    case RECEIVE_REPLACEMENT_COACH_UPDATE:
+    case ERROR_UPDATING_REPLACEMENT_COACH:
+    case RECEIVE_REPLACEMENT_COACH_REMOVAL:
+    case ERROR_REMOVING_REPLACEMENT_COACH:
       return {
         ...state,
         isCoachesLoading: false
@@ -380,6 +498,83 @@ export function updateView(newView) {
     payload: {
       newView
     }
+  };
+}
+
+export function openReplacementCoachRemovalModal(coachID) {
+  return {
+    type: OPEN_REPLACEMENT_COACH_REMOVAL_MODAL,
+    payload: {
+      coachID
+    }
+  };
+}
+
+export function closeReplacementCoachRemovalModal() {
+  return {
+    type: CLOSE_REPLACEMENT_COACH_REMOVAL_MODAL
+  };
+}
+
+export function openReplacementCoachModal(coachID) {
+  return {
+    type: OPEN_REPLACEMENT_COACH_MODAL,
+    payload: {
+      coachID
+    }
+  };
+}
+
+export function closeReplacementCoachModal() {
+  return {
+    type: CLOSE_REPLACEMENT_COACH_MODAL
+  };
+}
+
+export function openEditAbsentRatingModal(coachID) {
+  return {
+    type: OPEN_EDIT_ABSENT_RATING_MODAL,
+    payload: {
+      coachID
+    }
+  };
+}
+
+export function closeEditAbsentRatingModal() {
+  return {
+    type: CLOSE_EDIT_ABSENT_RATING_MODAL
+  };
+}
+
+export function openMarkAbsentModal(coachID) {
+  return {
+    type: OPEN_MARK_ABSENT_MODAL,
+    payload: {
+      coachID,
+      newStatus: false
+    }
+  };
+}
+
+export function closeMarkAbsentModal() {
+  return {
+    type: CLOSE_MARK_ABSENT_MODAL
+  };
+}
+
+export function openUnmarkAbsentModal(coachID) {
+  return {
+    type: OPEN_UNMARK_ABSENT_MODAL,
+    payload: {
+      coachID,
+      newStatus: true
+    }
+  };
+}
+
+export function closeUnmarkAbsentModal() {
+  return {
+    type: CLOSE_UNMARK_ABSENT_MODAL
   };
 }
 
@@ -915,6 +1110,188 @@ export function uncancelEvent(eventID) {
       })
       .then(() => dispatch(receiveUncancelEvent()))
       .catch(error => dispatch(errorUncancellingEvent(error)));
+  };
+}
+
+export function requestAbsentUpdate() {
+  return {
+    type: REQUEST_ABSENT_UPDATE
+  };
+}
+
+export function receiveAbsentUpdate() {
+  return {
+    type: RECEIVE_ABSENT_UPDATE
+  };
+}
+
+export function errorUpdatingAbsent(error: { code: string, message: string }) {
+  return {
+    type: ERROR_UPDATING_ABSENT,
+    payload: {
+      error
+    }
+  };
+}
+
+export function updateAbsent(
+  eventID,
+  coachID,
+  newStatus,
+  isPastEvent,
+  rating = "NEATURAL",
+  reason = ""
+) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestAbsentUpdate());
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    let updates = {
+      [`coaches.${coachID}.absenteeism.rating`]: rating,
+      [`coaches.${coachID}.absenteeism.reason`]: reason
+    };
+    if (isPastEvent) {
+      updates[`coaches.${coachID}.attendance.didAttend`] = newStatus;
+    } else {
+      updates[`coaches.${coachID}.attendance.didAttend`] = newStatus;
+      updates[`coaches.${coachID}.attendance.willAttend`] = newStatus;
+      if (newStatus) {
+        updates[`coaches.${coachID}.attendance.hasSubstitute`] = false;
+        updates[`coaches.${coachID}.attendance.substitute`] = "";
+      }
+    }
+
+    return eventRef
+      .update(updates)
+      .then(() => dispatch(receiveAbsentUpdate()))
+      .catch(error => dispatch(errorUpdatingAbsent(error)));
+  };
+}
+
+export function requestAbsentRatingUpdate() {
+  return {
+    type: REQUEST_ABSENT_RATING_UPDATE
+  };
+}
+
+export function receiveAbsentRatingUpdate() {
+  return {
+    type: RECEIVE_ABSENT_RATING_UPDATE
+  };
+}
+
+export function errorUpdatingAbsentRating(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_UPDATING_ABSENT_RATING,
+    payload: {
+      error
+    }
+  };
+}
+
+export function editAbsentRating(eventID, coachID, rating, reason) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestAbsentRatingUpdate());
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    let updates = {
+      [`coaches.${coachID}.absenteeism.rating`]: rating,
+      [`coaches.${coachID}.absenteeism.reason`]: reason
+    };
+
+    return eventRef
+      .update(updates)
+      .then(() => dispatch(receiveAbsentRatingUpdate()))
+      .catch(error => dispatch(errorUpdatingAbsentRating(error)));
+  };
+}
+
+export function requestReplacementCoachUpdate() {
+  return {
+    type: REQUEST_REPLACEMENT_COACH_UPDATE
+  };
+}
+
+export function receiveReplacementCoachUpdate() {
+  return {
+    type: RECEIVE_REPLACEMENT_COACH_UPDATE
+  };
+}
+
+export function errorUpdatingReplacementCoach(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_UPDATING_REPLACEMENT_COACH,
+    payload: {
+      error
+    }
+  };
+}
+
+export function updateReplacementCoach(eventID, coachID, replacementCoachID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestReplacementCoachUpdate());
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    let updates = {
+      [`coaches.${coachID}.attendance.hasSubstitute`]: true,
+      [`coaches.${coachID}.attendance.substitute`]: replacementCoachID
+    };
+
+    return eventRef
+      .update(updates)
+      .then(() => dispatch(receiveReplacementCoachUpdate()))
+      .catch(error => dispatch(errorUpdatingReplacementCoach(error)));
+  };
+}
+
+export function requestReplacementCoachRemoval() {
+  return {
+    type: REQUEST_REPLACEMENT_COACH_REMOVAL
+  };
+}
+
+export function receiveReplacementCoachRemoval() {
+  return {
+    type: RECEIVE_REPLACEMENT_COACH_REMOVAL
+  };
+}
+
+export function errorRemovingReplacementCoach(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_REMOVING_REPLACEMENT_COACH,
+    payload: {
+      error
+    }
+  };
+}
+
+export function removeReplacementCoach(eventID, coachID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestReplacementCoachRemoval());
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    let updates = {
+      [`coaches.${coachID}.attendance.hasSubstitute`]: false,
+      [`coaches.${coachID}.attendance.substitute`]: ""
+    };
+
+    return eventRef
+      .update(updates)
+      .then(() => dispatch(receiveReplacementCoachRemoval()))
+      .catch(error => dispatch(errorRemovingReplacementCoach(error)));
   };
 }
 

@@ -1,9 +1,10 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
+import AddIcon from "material-ui-icons/Add";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
-import Checkbox from "material-ui/Checkbox";
 import { CircularProgress } from "material-ui/Progress";
 import CloseIcon from "material-ui-icons/Close";
 import Dialog, {
@@ -16,21 +17,23 @@ import { grey, lightBlue, orange } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import IconButton from "material-ui/IconButton";
 import Input, { InputLabel } from "material-ui/Input";
-import List, {
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText
-} from "material-ui/List";
 import Radio, { RadioGroup } from "material-ui/Radio";
+import RemoveIcon from "material-ui-icons/Delete";
 import Select from "material-ui/Select";
 import Slide from "material-ui/transitions/Slide";
 import Switch from "material-ui/Switch";
 import TextField from "material-ui/TextField";
 import Toolbar from "material-ui/Toolbar";
+import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 
 const styles = {
+  addButtonWrapper: {
+    width: "100%",
+    textAlign: "center",
+    marginBottom: 16
+  },
   appBar: {
     position: "relative"
   },
@@ -63,14 +66,40 @@ const styles = {
   },
   mainContent: {
     height: "100%",
-    overflow: "auto"
+    width: "100%",
+    overflow: "auto",
+    paddingBottom: 40
   },
   nonCompetitiveEvent: {
     backgroundColor: lightBlue[500],
     marginLeft: 20
   },
+  opponentsHeading: {
+    color: grey[700]
+  },
+  opponentsHeadingWrapper: {
+    margin: "0 10%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  opponentsTextField: {
+    flexGrow: 1
+  },
+  opponentsTextFieldWrapper: {
+    width: "80%",
+    margin: "10px 10%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
   section: {
     backgroundColor: grey[100]
+  },
+  subFormControl: {
+    width: "75%",
+    margin: "24px 10% 24px 15%"
   },
   subheading: {
     width: "100%",
@@ -95,11 +124,8 @@ class EditEventDialog extends Component {
     date: new Date(Date.now()).toISOString().slice(0, 10),
     startTime: "12:00",
     endTime: "13:00",
-    venue: "To be specified",
-    opponents: {
-      institution: "To be specified",
-      isSignedUp: false
-    },
+    venue: "",
+    opponents: {},
     homeAway: "UNKNOWN",
     frequency: "ONCE",
     numberOfEvents: "1",
@@ -115,7 +141,14 @@ class EditEventDialog extends Component {
   };
 
   componentWillMount() {
-    const { initialEventInfo, initialDate, isOpen } = this.props;
+    const {
+      initialEventInfo,
+      initialDate,
+      isOpen,
+      teams,
+      coaches,
+      managers
+    } = this.props;
 
     if (initialEventInfo) {
       const timeOptions = { hour12: false, hour: "2-digit", minute: "2-digit" };
@@ -126,8 +159,6 @@ class EditEventDialog extends Component {
         type = "PRACTICE";
       } else if (type === "Training") {
         type = "TRAINING";
-      } else if (type === "Gym") {
-        type = "GYM";
       } else if (type === "Match") {
         type = "MATCH";
       } else if (type === "Meeting") {
@@ -147,7 +178,37 @@ class EditEventDialog extends Component {
         type = "OTHER";
       }
 
+      const selectedTeams = _.fromPairs(
+        _.keys(initialEventInfo.teams).map(teamID => [teamID, teams[teamID]])
+      );
+      const selectedCoaches = _.fromPairs(
+        _.keys(initialEventInfo.coaches).map(coachID => [
+          coachID,
+          coaches[coachID]
+        ])
+      );
+      const selectedManagers = _.fromPairs(
+        _.keys(initialEventInfo.managers).map(managerID => [
+          managerID,
+          managers[managerID]
+        ])
+      );
+
+      let opponents = {};
+      if (initialEventInfo.requiredInfo.isCompetitive) {
+        opponents = _.fromPairs(
+          _.keys(selectedTeams).map(teamID => [
+            teamID,
+            initialEventInfo.teams[teamID].opponents
+          ])
+        );
+      }
+
       this.setState({
+        selectedTeams,
+        selectedManagers,
+        selectedCoaches,
+        opponents,
         date: initialDate,
         title: initialEventInfo.requiredInfo.title,
         type: type,
@@ -160,16 +221,12 @@ class EditEventDialog extends Component {
           timeOptions
         ),
         venue: initialEventInfo.optionalInfo.venue,
-        opponents: initialEventInfo.optionalInfo.opponents,
         homeAway: initialEventInfo.optionalInfo.homeAway,
         frequency: initialEventInfo.recurrencePattern.frequency,
         numberOfEvents: initialEventInfo.recurrencePattern.numberOfEvents,
         otherEventType: otherEventType,
         notes: initialEventInfo.optionalInfo.notes,
         isOtherEventTypeCompetitive: isOtherEventTypeCompetitive,
-        selectedTeams: _.keys(initialEventInfo.teams),
-        selectedManagers: _.keys(initialEventInfo.managers),
-        selectedCoaches: _.keys(initialEventInfo.coaches),
         isRecurringEventModalOpen:
           initialEventInfo.recurrencePattern.frequency !== "ONCE" && isOpen
       });
@@ -177,7 +234,14 @@ class EditEventDialog extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { initialEventInfo, initialDate, isOpen } = nextProps;
+    const {
+      initialEventInfo,
+      initialDate,
+      isOpen,
+      teams,
+      coaches,
+      managers
+    } = nextProps;
 
     if (this.props.initialEventInfo !== initialEventInfo) {
       const timeOptions = { hour12: false, hour: "2-digit", minute: "2-digit" };
@@ -188,8 +252,6 @@ class EditEventDialog extends Component {
         type = "PRACTICE";
       } else if (type === "Training") {
         type = "TRAINING";
-      } else if (type === "Gym") {
-        type = "GYM";
       } else if (type === "Match") {
         type = "MATCH";
       } else if (type === "Meeting") {
@@ -209,7 +271,37 @@ class EditEventDialog extends Component {
         type = "OTHER";
       }
 
+      const selectedTeams = _.fromPairs(
+        _.keys(initialEventInfo.teams).map(teamID => [teamID, teams[teamID]])
+      );
+      const selectedCoaches = _.fromPairs(
+        _.keys(initialEventInfo.coaches).map(coachID => [
+          coachID,
+          coaches[coachID]
+        ])
+      );
+      const selectedManagers = _.fromPairs(
+        _.keys(initialEventInfo.managers).map(managerID => [
+          managerID,
+          managers[managerID]
+        ])
+      );
+
+      let opponents = {};
+      if (initialEventInfo.requiredInfo.isCompetitive) {
+        opponents = _.fromPairs(
+          _.keys(selectedTeams).map(teamID => [
+            teamID,
+            initialEventInfo.teams[teamID].opponents
+          ])
+        );
+      }
+
       this.setState({
+        selectedTeams,
+        selectedManagers,
+        selectedCoaches,
+        opponents,
         date: initialDate,
         title: initialEventInfo.requiredInfo.title,
         type: type,
@@ -222,16 +314,14 @@ class EditEventDialog extends Component {
           timeOptions
         ),
         venue: initialEventInfo.optionalInfo.venue,
-        opponents: initialEventInfo.optionalInfo.opponents,
         homeAway: initialEventInfo.optionalInfo.homeAway,
         frequency: initialEventInfo.recurrencePattern.frequency,
         numberOfEvents: initialEventInfo.recurrencePattern.numberOfEvents,
         otherEventType: otherEventType,
         notes: initialEventInfo.optionalInfo.notes,
         isOtherEventTypeCompetitive: isOtherEventTypeCompetitive,
-        selectedTeams: _.keys(initialEventInfo.teams),
-        selectedManagers: _.keys(initialEventInfo.managers),
-        selectedCoaches: _.keys(initialEventInfo.coaches)
+        isRecurringEventModalOpen:
+          initialEventInfo.recurrencePattern.frequency !== "ONCE" && isOpen
       });
     }
 
@@ -250,130 +340,314 @@ class EditEventDialog extends Component {
     });
   }
 
+  isEventCompetitive() {
+    const { type, isOtherEventTypeCompetitive } = this.state;
+
+    return (
+      type === "MATCH" ||
+      type === "MEETING" ||
+      type === "GALA" ||
+      type === "SCRIM" ||
+      type === "EXHIBITION" ||
+      type === "FRIENDLY" ||
+      (type === "OTHER" && isOtherEventTypeCompetitive)
+    );
+  }
+
   createTeamsList() {
-    const { classes, teams } = this.props;
-    const { selectedTeams } = this.state;
-    const listItems = _.toPairs(teams).map(([id, team]) => {
+    const { classes, teams, isMobile } = this.props;
+    const { selectedTeams, opponents } = this.state;
+
+    const isCompetitive = this.isEventCompetitive();
+
+    let teamsBySport = {};
+    _.toPairs(teams).map(([teamID, teamInfo]) => {
+      if (teamsBySport[teamInfo.info.sport]) {
+        teamsBySport[teamInfo.info.sport] = {
+          ...teamsBySport[teamInfo.info.sport],
+          [teamID]: teamInfo.info.name
+        };
+      } else {
+        teamsBySport[teamInfo.info.sport] = {
+          [teamID]: teamInfo.info.name
+        };
+      }
+    });
+
+    const listItems = _.toPairs(selectedTeams).map(([id, info]) => {
       return (
-        <ListItem
-          key={id}
-          dense
-          button
-          className={classes.listItem}
-          onClick={() => this.handleToggle(id, "TEAM")}
-        >
-          <ListItemText primary={team.info.name} secondary={team.info.sport} />
-          <ListItemSecondaryAction>
-            <Checkbox
-              onClick={() => this.handleToggle(id, "TEAM")}
-              checked={selectedTeams.indexOf(id) !== -1}
-            />
-          </ListItemSecondaryAction>
-        </ListItem>
+        <div key={`selectedTeam:${id}`}>
+          <div className={classes.teamWrapper}>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="teamSelection">Team</InputLabel>
+              <Select
+                native
+                value={id}
+                onChange={this.changeTeam(id)}
+                input={<Input id="team selection" />}
+              >
+                {_.toPairs(teamsBySport).map(([sport, sportTeams]) => {
+                  return (
+                    <optgroup label={sport} key={`${id}${sport}`}>
+                      {_.toPairs(sportTeams).map(([teamID, teamName]) => {
+                        return (
+                          <option
+                            key={`${id}${sport}${teamID}`}
+                            value={teamID}
+                            disabled={
+                              teamID !== id &&
+                              _.keys(selectedTeams).includes(teamID)
+                            }
+                          >
+                            {teamName}
+                          </option>
+                        );
+                      })}
+                    </optgroup>
+                  );
+                })}
+              </Select>
+            </FormControl>
+            {isCompetitive && (
+              <div>
+                <div className={classes.opponentsHeadingWrapper}>
+                  <Typography
+                    className={classes.opponentsHeading}
+                    type="body1"
+                    component="h4"
+                  >
+                    Opponents
+                  </Typography>
+                  <Button
+                    aria-label="add opponent"
+                    onClick={() =>
+                      this.addOpponent(id, _.keys(opponents[id]).length)}
+                  >
+                    <AddIcon /> {isMobile ? "" : "Add opponent"}
+                  </Button>
+                </div>
+                {_.toPairs(opponents[id]).map(([opponentID, info], index) => (
+                  <FormControl
+                    className={classes.opponentsTextFieldWrapper}
+                    key={`${id}${opponentID}`}
+                  >
+                    <TextField
+                      id="opponents"
+                      className={classes.opponentsTextField}
+                      placeholder="Currently unknown"
+                      value={info.name}
+                      onChange={this.handleOpponentsChange(id, opponentID)}
+                    />
+                    <Tooltip title="Remove opponent" placement="bottom">
+                      <IconButton
+                        disabled={index === 0}
+                        aria-label="remove opponent"
+                        onClick={() => this.removeOpponent(id, opponentID)}
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </FormControl>
+                ))}
+              </div>
+            )}
+            <Button
+              aria-label="remove team"
+              onClick={() => this.removeTeam(id)}
+            >
+              Remove team
+            </Button>
+          </div>
+        </div>
       );
     });
+
     return (
-      <List>
+      <div>
         {listItems.length > 0 ? (
           listItems
         ) : (
-          <Typography
-            type="subheading"
-            component="p"
-            className={classes.subheading}
-          >
-            None
-          </Typography>
+          <div className={classes.teamWrapper}>
+            <Typography
+              type="subheading"
+              component="p"
+              className={classes.subheading}
+            >
+              None
+            </Typography>
+          </div>
         )}
-      </List>
+      </div>
     );
   }
 
   createCoachesList() {
     const { classes, coaches } = this.props;
     const { selectedCoaches } = this.state;
-    const listItems = _.toPairs(coaches).map(([id, coach]) => {
+
+    let coachesBySport = {};
+    _.toPairs(coaches).map(([coachID, coachInfo]) => {
+      _.keys(coachInfo.info.sports).map(sport => {
+        if (coachesBySport[sport]) {
+          coachesBySport[sport] = {
+            ...coachesBySport[sport],
+            [coachID]: `${coachInfo.info.name} ${coachInfo.info.surname}`
+          };
+        } else {
+          coachesBySport[sport] = {
+            [coachID]: `${coachInfo.info.name} ${coachInfo.info.surname}`
+          };
+        }
+      });
+    });
+
+    const listItems = _.toPairs(selectedCoaches).map(([id, info]) => {
       return (
-        <ListItem
-          key={id}
-          dense
-          button
-          className={classes.listItem}
-          onClick={() => this.handleToggle(id, "COACH")}
-        >
-          <Avatar
-            alt={`${coach.info.name} ${coach.info.surname}`}
-            src={coach.info.profilePictureURL}
-          />
-          <ListItemText primary={`${coach.info.name} ${coach.info.surname}`} />
-          <ListItemSecondaryAction>
-            <Checkbox
-              onClick={() => this.handleToggle(id, "COACH")}
-              checked={selectedCoaches.indexOf(id) !== -1}
-            />
-          </ListItemSecondaryAction>
-        </ListItem>
+        <div key={`selectedCoach:${id}`}>
+          <div className={classes.teamWrapper}>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="coachSelection">Coach</InputLabel>
+              <Select
+                native
+                value={id}
+                onChange={this.changeCoach(id)}
+                input={<Input id="coach selection" />}
+              >
+                {_.toPairs(coachesBySport).map(([sport, sportCoaches]) => {
+                  return (
+                    <optgroup label={sport} key={`${id}${sport}`}>
+                      {_.toPairs(sportCoaches).map(([coachID, coachName]) => {
+                        return (
+                          <option
+                            key={`${id}${sport}${coachID}`}
+                            value={coachID}
+                            disabled={
+                              coachID !== id &&
+                              _.keys(selectedCoaches).includes(coachID)
+                            }
+                          >
+                            {coachName}
+                          </option>
+                        );
+                      })}
+                    </optgroup>
+                  );
+                })}
+              </Select>
+            </FormControl>
+            <Button
+              aria-label="remove coach"
+              onClick={() => this.removeCoach(id)}
+            >
+              Remove coach
+            </Button>
+          </div>
+        </div>
       );
     });
+
     return (
-      <List>
+      <div>
         {listItems.length > 0 ? (
           listItems
         ) : (
-          <Typography
-            type="subheading"
-            component="p"
-            className={classes.subheading}
-          >
-            None
-          </Typography>
+          <div className={classes.teamWrapper}>
+            <Typography
+              type="subheading"
+              component="p"
+              className={classes.subheading}
+            >
+              None
+            </Typography>
+          </div>
         )}
-      </List>
+      </div>
     );
   }
 
   createManagersList() {
     const { classes, managers } = this.props;
     const { selectedManagers } = this.state;
-    const listItems = _.toPairs(managers).map(([id, manager]) => {
+
+    let managersBySport = {};
+    _.toPairs(managers).map(([managerID, managerInfo]) => {
+      _.keys(managerInfo.info.sports).map(sport => {
+        if (managersBySport[sport]) {
+          managersBySport[sport] = {
+            ...managersBySport[sport],
+            [managerID]: `${managerInfo.info.name} ${managerInfo.info.surname}`
+          };
+        } else {
+          managersBySport[sport] = {
+            [managerID]: `${managerInfo.info.name} ${managerInfo.info.surname}`
+          };
+        }
+      });
+    });
+
+    const listItems = _.toPairs(selectedManagers).map(([id, info]) => {
       return (
-        <ListItem
-          key={id}
-          dense
-          button
-          className={classes.listItem}
-          onClick={() => this.handleToggle(id, "MANAGER")}
-        >
-          <Avatar
-            alt={`${manager.info.name} ${manager.info.surname}`}
-            src={manager.info.profilePictureURL}
-          />
-          <ListItemText
-            primary={`${manager.info.name} ${manager.info.surname}`}
-          />
-          <ListItemSecondaryAction>
-            <Checkbox
-              onClick={() => this.handleToggle(id, "MANAGER")}
-              checked={selectedManagers.indexOf(id) !== -1}
-            />
-          </ListItemSecondaryAction>
-        </ListItem>
+        <div key={`selectedManager:${id}`}>
+          <div className={classes.teamWrapper}>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="managerSelection">Manager</InputLabel>
+              <Select
+                native
+                value={id}
+                onChange={this.changeManager(id)}
+                input={<Input id="manager selection" />}
+              >
+                {_.toPairs(managersBySport).map(([sport, sportManagers]) => {
+                  return (
+                    <optgroup label={sport} key={`${id}${sport}`}>
+                      {_.toPairs(
+                        sportManagers
+                      ).map(([managerID, managerName]) => {
+                        return (
+                          <option
+                            key={`${id}${sport}${managerID}`}
+                            value={managerID}
+                            disabled={
+                              managerID !== id &&
+                              _.keys(selectedManagers).includes(managerID)
+                            }
+                          >
+                            {managerName}
+                          </option>
+                        );
+                      })}
+                    </optgroup>
+                  );
+                })}
+              </Select>
+            </FormControl>
+            <Button
+              aria-label="remove manager"
+              onClick={() => this.removeManager(id)}
+            >
+              Remove manager
+            </Button>
+          </div>
+        </div>
       );
     });
+
     return (
-      <List>
+      <div>
         {listItems.length > 0 ? (
           listItems
         ) : (
-          <Typography
-            type="subheading"
-            component="p"
-            className={classes.subheading}
-          >
-            None
-          </Typography>
+          <div className={classes.teamWrapper}>
+            <Typography
+              type="subheading"
+              component="p"
+              className={classes.subheading}
+            >
+              None
+            </Typography>
+          </div>
         )}
-      </List>
+      </div>
     );
   }
 
@@ -383,13 +657,14 @@ class EditEventDialog extends Component {
     });
   }
 
-  setNewAutomatedTitle(selectedTeams, update = "", value = "") {
+  setNewAutomatedTitle(selectedTeams, update = "", value = "", teamOpponents) {
     const { teams } = this.props;
     const { type, otherEventType } = this.state;
 
     let newTitle = "";
-    if (selectedTeams.length === 1) {
-      newTitle = teams[selectedTeams[0]].info.name + " ";
+    const selectedTeamIDs = _.keys(selectedTeams);
+    if (selectedTeamIDs.length === 1) {
+      newTitle = teams[selectedTeamIDs[0]].info.name + " ";
       if (update === "type") {
         if (value === "OTHER") {
           newTitle = newTitle + otherEventType;
@@ -419,7 +694,11 @@ class EditEventDialog extends Component {
       }
     }
 
-    if (update === "opponents") {
+    if (
+      update === "opponents" &&
+      _.keys(teamOpponents).length === 1 &&
+      value !== ""
+    ) {
       newTitle = newTitle + " vs " + value;
     }
 
@@ -429,9 +708,6 @@ class EditEventDialog extends Component {
   handleChange = name => event => {
     const { selectedTeams, startTime, endTime } = this.state;
     switch (name) {
-      case "opponents":
-        this.setNewAutomatedTitle(selectedTeams, name, event.target.value);
-        break;
       case "type":
         this.setNewAutomatedTitle(selectedTeams, name, event.target.value);
         break;
@@ -457,99 +733,7 @@ class EditEventDialog extends Component {
         break;
     }
 
-    if (name === "opponents") {
-      this.setState({
-        [name]: {
-          institution: event.target.value,
-          isSignedUp: false
-        }
-      });
-    } else {
-      this.setState({ [name]: event.target.value });
-    }
-  };
-
-  handleToggle = (value, type) => {
-    const { selectedTeams, selectedManagers, selectedCoaches } = this.state;
-    const { teams } = this.props;
-
-    if (type === "TEAM") {
-      const currentIndex = selectedTeams.indexOf(value);
-      const newChecked = [...selectedTeams];
-      let newManagers = [...selectedManagers];
-      let newCoaches = [...selectedCoaches];
-
-      if (currentIndex === -1) {
-        newChecked.push(value);
-        newManagers = [...newManagers, ..._.keys(teams[value].managers)];
-        newCoaches = [...newCoaches, ..._.keys(teams[value].coaches)];
-      } else {
-        newChecked.splice(currentIndex, 1);
-        newManagers = selectedManagers.filter(managerID => {
-          if (!teams[value].managers[managerID]) {
-            return true;
-          } else {
-            return newChecked.reduce((keep, teamID) => {
-              if (!keep) {
-                if (teams[teamID].managers[managerID]) {
-                  return true;
-                }
-                return false;
-              }
-              return true;
-            }, false);
-          }
-        });
-        newCoaches = selectedCoaches.filter(coachID => {
-          if (!teams[value].coaches[coachID]) {
-            return true;
-          } else {
-            return newChecked.reduce((keep, teamID) => {
-              if (!keep) {
-                if (teams[teamID].coaches[coachID]) {
-                  return true;
-                }
-                return false;
-              }
-              return true;
-            }, false);
-          }
-        });
-      }
-
-      this.setNewAutomatedTitle(newChecked);
-      this.setState({
-        selectedTeams: newChecked,
-        selectedCoaches: newCoaches,
-        selectedManagers: newManagers
-      });
-    } else if (type === "MANAGER") {
-      const currentIndex = selectedManagers.indexOf(value);
-      const newChecked = [...selectedManagers];
-
-      if (currentIndex === -1) {
-        newChecked.push(value);
-      } else {
-        newChecked.splice(currentIndex, 1);
-      }
-
-      this.setState({
-        selectedManagers: newChecked
-      });
-    } else {
-      const currentIndex = selectedCoaches.indexOf(value);
-      const newChecked = [...selectedCoaches];
-
-      if (currentIndex === -1) {
-        newChecked.push(value);
-      } else {
-        newChecked.splice(currentIndex, 1);
-      }
-
-      this.setState({
-        selectedCoaches: newChecked
-      });
-    }
+    this.setState({ [name]: event.target.value });
   };
 
   handleEditAllEvents() {
@@ -566,6 +750,423 @@ class EditEventDialog extends Component {
     });
   }
 
+  handleOpponentsChange = (teamID, id) => event => {
+    const { opponents, selectedTeams } = this.state;
+
+    this.setNewAutomatedTitle(
+      selectedTeams,
+      "opponents",
+      event.target.value,
+      opponents[teamID]
+    );
+    this.setState({
+      opponents: {
+        ...opponents,
+        [teamID]: {
+          ...opponents[teamID],
+          [id]: {
+            name: event.target.value,
+            isSignedUp: false
+          }
+        }
+      }
+    });
+  };
+
+  addOpponent(teamID, id) {
+    const { selectedTeams, opponents } = this.state;
+
+    this.setNewAutomatedTitle(selectedTeams);
+    this.setState({
+      opponents: {
+        ...opponents,
+        [teamID]: {
+          ...opponents[teamID],
+          [id]: {
+            name: "",
+            isSignedUp: false
+          }
+        }
+      }
+    });
+  }
+
+  removeOpponent(teamID, removeID) {
+    const { selectedTeams, opponents } = this.state;
+
+    const newTeamOpponents = _.fromPairs(
+      _.toPairs(opponents[teamID]).filter(([id, info]) => {
+        if (id === removeID) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+
+    this.setNewAutomatedTitle(
+      selectedTeams,
+      "opponents",
+      newTeamOpponents[_.keys(newTeamOpponents)[0]].name,
+      newTeamOpponents
+    );
+    this.setState({
+      opponents: {
+        ...opponents,
+        [teamID]: newTeamOpponents
+      }
+    });
+  }
+
+  addTeam() {
+    const { teams, coaches, managers } = this.props;
+    const {
+      selectedTeams,
+      selectedCoaches,
+      selectedManagers,
+      opponents
+    } = this.state;
+
+    const teamIDs = _.keys(teams);
+    const selectedTeamIDs = _.keys(selectedTeams);
+
+    let idCount = 0;
+    let newID = teamIDs[idCount];
+    let teamAlreadySelected = selectedTeamIDs.includes(newID);
+
+    while (teamAlreadySelected) {
+      idCount = idCount + 1;
+      newID = teamIDs[idCount];
+      teamAlreadySelected = selectedTeamIDs.includes(newID);
+    }
+
+    let newSelectedCoaches = selectedCoaches;
+    let newSelectedManagers = selectedManagers;
+    _.keys(teams[newID].coaches).map(coachID => {
+      newSelectedCoaches = {
+        ...newSelectedCoaches,
+        [coachID]: coaches[coachID]
+      };
+    });
+    _.keys(teams[newID].managers).map(managerID => {
+      newSelectedManagers = {
+        ...newSelectedManagers,
+        [managerID]: managers[managerID]
+      };
+    });
+
+    const newSelectedTeams = {
+      ...this.state.selectedTeams,
+      [newID]: teams[newID]
+    };
+
+    const newOpponents = {
+      ...opponents,
+      [newID]: {
+        "0": {
+          name: "",
+          isSignedUp: false
+        }
+      }
+    };
+
+    this.setNewAutomatedTitle(newSelectedTeams);
+    this.setState({
+      opponents: newOpponents,
+      selectedTeams: newSelectedTeams,
+      selectedCoaches: newSelectedCoaches,
+      selectedManagers: newSelectedManagers
+    });
+  }
+
+  changeTeam = oldID => event => {
+    const { teams, coaches, managers } = this.props;
+    const {
+      selectedTeams,
+      selectedCoaches,
+      selectedManagers,
+      opponents
+    } = this.state;
+    const newID = event.target.value;
+
+    const newTeams = _.fromPairs(
+      _.toPairs(selectedTeams).filter(([id, info]) => {
+        if (id === oldID) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+
+    let newCoaches = _.fromPairs(
+      _.toPairs(selectedCoaches).filter(([id, info]) => {
+        let allowThroughFilter = false;
+        if (_.keys(teams[oldID].coaches).includes(id)) {
+          _.toPairs(selectedTeams).map(([teamID, teamInfo]) => {
+            if (teamID !== oldID && _.keys(teamInfo.coaches).includes(id)) {
+              allowThroughFilter = true;
+            }
+          });
+        } else {
+          allowThroughFilter = true;
+        }
+        return allowThroughFilter;
+      })
+    );
+    _.keys(teams[newID].coaches).map(coachID => {
+      newCoaches = {
+        ...newCoaches,
+        [coachID]: coaches[coachID]
+      };
+    });
+
+    let newManagers = _.fromPairs(
+      _.toPairs(selectedManagers).filter(([id, info]) => {
+        let allowThroughFilter = false;
+        if (_.keys(teams[oldID].managers).includes(id)) {
+          _.toPairs(selectedTeams).map(([teamID, teamInfo]) => {
+            if (teamID !== oldID && _.keys(teamInfo.managers).includes(id)) {
+              allowThroughFilter = true;
+            }
+          });
+        } else {
+          allowThroughFilter = true;
+        }
+        return allowThroughFilter;
+      })
+    );
+    _.keys(teams[newID].managers).map(managerID => {
+      newManagers = {
+        ...newManagers,
+        [managerID]: managers[managerID]
+      };
+    });
+
+    const newSelectedTeams = {
+      ...newTeams,
+      [newID]: teams[newID]
+    };
+
+    const newOpponents = _.fromPairs(
+      _.toPairs(opponents).map(([id, info]) => {
+        if (id === oldID) {
+          return [newID, info];
+        } else {
+          return [id, info];
+        }
+      })
+    );
+
+    this.setNewAutomatedTitle(newSelectedTeams);
+    this.setState({
+      opponents: newOpponents,
+      selectedTeams: newSelectedTeams,
+      selectedCoaches: newCoaches,
+      selectedManagers: newManagers
+    });
+  };
+
+  removeTeam(removeID) {
+    const { teams } = this.props;
+    const {
+      selectedTeams,
+      selectedCoaches,
+      selectedManagers,
+      opponents
+    } = this.state;
+
+    const newTeams = _.fromPairs(
+      _.toPairs(selectedTeams).filter(([id, info]) => {
+        if (id === removeID) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+
+    const newCoaches = _.fromPairs(
+      _.toPairs(selectedCoaches).filter(([id, info]) => {
+        let allowThroughFilter = false;
+        if (_.keys(teams[removeID].coaches).includes(id)) {
+          _.toPairs(selectedTeams).map(([teamID, teamInfo]) => {
+            if (teamID !== removeID && _.keys(teamInfo.coaches).includes(id)) {
+              allowThroughFilter = true;
+            }
+          });
+        } else {
+          allowThroughFilter = true;
+        }
+        return allowThroughFilter;
+      })
+    );
+
+    const newManagers = _.fromPairs(
+      _.toPairs(selectedManagers).filter(([id, info]) => {
+        let allowThroughFilter = false;
+        if (_.keys(teams[removeID].managers).includes(id)) {
+          _.toPairs(selectedTeams).map(([teamID, teamInfo]) => {
+            if (teamID !== removeID && _.keys(teamInfo.managers).includes(id)) {
+              allowThroughFilter = true;
+            }
+          });
+        } else {
+          allowThroughFilter = true;
+        }
+        return allowThroughFilter;
+      })
+    );
+
+    const newOpponents = _.fromPairs(
+      _.toPairs(opponents).filter(([id, info]) => {
+        if (id === removeID) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+
+    this.setNewAutomatedTitle(newTeams);
+    this.setState({
+      opponents: newOpponents,
+      selectedTeams: newTeams,
+      selectedCoaches: newCoaches,
+      selectedManagers: newManagers
+    });
+  }
+
+  addCoach() {
+    const { coaches } = this.props;
+    const { selectedCoaches } = this.state;
+
+    const coachIDs = _.keys(coaches);
+    const selectedCoachIDs = _.keys(selectedCoaches);
+
+    let idCount = 0;
+    let newID = coachIDs[idCount];
+    let coachAlreadySelected = selectedCoachIDs.includes(newID);
+
+    while (coachAlreadySelected) {
+      idCount = idCount + 1;
+      newID = coachIDs[idCount];
+      coachAlreadySelected = selectedCoachIDs.includes(newID);
+    }
+
+    this.setState({
+      selectedCoaches: {
+        ...selectedCoaches,
+        [newID]: coaches[newID]
+      }
+    });
+  }
+
+  changeCoach = oldID => event => {
+    const { coaches } = this.props;
+    const { selectedCoaches } = this.state;
+
+    const newCoaches = _.fromPairs(
+      _.toPairs(selectedCoaches).filter(([id, info]) => {
+        if (id === oldID) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+
+    this.setState({
+      selectedCoaches: {
+        ...newCoaches,
+        [event.target.value]: coaches[event.target.value]
+      }
+    });
+  };
+
+  removeCoach(removeID) {
+    const { selectedCoaches } = this.state;
+
+    const newCoaches = _.fromPairs(
+      _.toPairs(selectedCoaches).filter(([id, info]) => {
+        if (id === removeID) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+
+    this.setState({
+      selectedCoaches: newCoaches
+    });
+  }
+
+  addManager() {
+    const { managers } = this.props;
+    const { selectedManagers } = this.state;
+
+    const managerIDs = _.keys(managers);
+    const selectedManagerIDs = _.keys(selectedManagers);
+
+    let idCount = 0;
+    let newID = managerIDs[idCount];
+    let managerAlreadySelected = selectedManagerIDs.includes(newID);
+
+    while (managerAlreadySelected) {
+      idCount = idCount + 1;
+      newID = managerIDs[idCount];
+      managerAlreadySelected = selectedManagerIDs.includes(newID);
+    }
+
+    this.setState({
+      selectedManagers: {
+        ...selectedManagers,
+        [newID]: managers[newID]
+      }
+    });
+  }
+
+  changeManager = oldID => event => {
+    const { managers } = this.props;
+    const { selectedManagers } = this.state;
+
+    const newManagers = _.fromPairs(
+      _.toPairs(selectedManagers).filter(([id, info]) => {
+        if (id === oldID) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+
+    this.setState({
+      selectedManagers: {
+        ...newManagers,
+        [event.target.value]: managers[event.target.value]
+      }
+    });
+  };
+
+  removeManager(removeID) {
+    const { selectedManagers } = this.state;
+
+    const newManagers = _.fromPairs(
+      _.toPairs(selectedManagers).filter(([id, info]) => {
+        if (id === removeID) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+
+    this.setState({
+      selectedManagers: newManagers
+    });
+  }
+
   render() {
     const {
       classes,
@@ -574,7 +1175,11 @@ class EditEventDialog extends Component {
       minDate,
       institutionID,
       initialEventID,
-      initialEventInfo
+      initialEventInfo,
+      teams,
+      coaches,
+      managers,
+      isMobile
     } = this.props;
     const {
       handleClose,
@@ -633,18 +1238,12 @@ class EditEventDialog extends Component {
                 disabled={isLoading}
                 color="contrast"
                 onClick={() => {
-                  let eventType = _.capitalize(type);
+                  let eventType = type;
                   if (eventType === "OTHER") {
                     eventType = otherEventType;
                   }
-                  const isCompetitive =
-                    eventType === "Match" ||
-                    eventType === "Meeting" ||
-                    eventType === "Gala" ||
-                    eventType === "Scrim" ||
-                    eventType === "Exhibition" ||
-                    eventType === "Friendly" ||
-                    isOtherEventTypeCompetitive;
+                  eventType = _.capitalize(eventType);
+                  const isCompetitive = this.isEventCompetitive();
                   const recurrencePattern = initialEventInfo.recurrencePattern;
 
                   const requiredInfo = {
@@ -660,9 +1259,50 @@ class EditEventDialog extends Component {
                   const optionalInfo = {
                     homeAway,
                     notes,
-                    venue,
-                    opponents
+                    venue
                   };
+                  const eventTeams = _.fromPairs(
+                    _.keys(selectedTeams).map(teamID => {
+                      if (isCompetitive) {
+                        return [
+                          teamID,
+                          {
+                            resultsStatus: "AWAITING_APPROVAL",
+                            opponents: opponents[teamID]
+                          }
+                        ];
+                      } else {
+                        return [teamID, true];
+                      }
+                    })
+                  );
+                  const eventManagers = _.fromPairs(
+                    _.keys(selectedManagers).map(managerID => [managerID, true])
+                  );
+                  const eventCoaches = _.fromPairs(
+                    _.keys(selectedCoaches).map(coachID => [
+                      coachID,
+                      {
+                        attendance: {
+                          didAttend: true,
+                          hasSubstitute: false,
+                          substitute: "",
+                          willAttend: true
+                        },
+                        absenteeism: {
+                          rating: "GOOD",
+                          reason: ""
+                        },
+                        hours: {
+                          status: "AWAITING_SIGN_IN",
+                          times: {
+                            signIn: new Date(`${date}T${startTime}:00`),
+                            signOut: new Date(`${date}T${endTime}:00`)
+                          }
+                        }
+                      }
+                    ])
+                  );
 
                   if (hasTitleError || hasOtherEventTypeError || hasDateError) {
                     let errorType = "TITLE";
@@ -676,16 +1316,9 @@ class EditEventDialog extends Component {
                       requiredInfo,
                       optionalInfo,
                       recurrencePattern,
-                      _.fromPairs(selectedTeams.map(teamID => [teamID, true])),
-                      _.fromPairs(
-                        selectedManagers.map(managerID => [managerID, true])
-                      ),
-                      _.fromPairs(
-                        selectedCoaches.map(coachID => [
-                          coachID,
-                          initialEventInfo.coaches[coachID]
-                        ])
-                      ),
+                      eventTeams,
+                      eventManagers,
+                      eventCoaches,
                       shouldEditAllEvents
                     );
                   }
@@ -701,64 +1334,44 @@ class EditEventDialog extends Component {
             </div>
           ) : (
             <Grid container className={classes.mainContent}>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={12}
-                lg={12}
-                xl={12}
-                className={classes.titleWrapper}
-              >
-                <Avatar
-                  className={
-                    type === "MATCH" ||
-                    type === "MEETING" ||
-                    type === "GALA" ||
-                    type === "SCRIM" ||
-                    type === "EXHIBITION" ||
-                    type === "FRIENDLY" ||
-                    (type === "OTHER" && isOtherEventTypeCompetitive)
-                      ? classes.competitiveEvent
-                      : classes.nonCompetitiveEvent
-                  }
-                />
-                <TextField
-                  label="Event title"
-                  value={title}
-                  className={classes.title}
-                  onChange={e => this.handleTitleUpdate(e.target.value)}
-                  error={hasTitleError}
-                  helperText={
-                    hasTitleError ? "Please provide an event title" : ""
-                  }
-                />
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={4}
-                lg={4}
-                xl={4}
-                className={classes.section}
-              >
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
+              {!isMobile && (
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={12}
+                  lg={12}
+                  xl={12}
+                  className={classes.titleWrapper}
                 >
-                  Teams
-                </Typography>
-                {teamsList}
-              </Grid>
+                  <Avatar
+                    className={
+                      this.isEventCompetitive()
+                        ? classes.competitiveEvent
+                        : classes.nonCompetitiveEvent
+                    }
+                  />
+                  <TextField
+                    label="Event title"
+                    value={title}
+                    multiline
+                    rows={title.length > 24 ? "2" : "1"}
+                    className={classes.title}
+                    onChange={e => this.handleTitleUpdate(e.target.value)}
+                    error={hasTitleError}
+                    helperText={
+                      hasTitleError ? "Please provide an event title" : ""
+                    }
+                  />
+                </Grid>
+              )}
               <Grid
                 item
                 xs={12}
                 sm={12}
-                md={4}
-                lg={4}
-                xl={4}
+                md={6}
+                lg={6}
+                xl={6}
                 className={classes.section}
               >
                 <Typography
@@ -780,7 +1393,6 @@ class EditEventDialog extends Component {
                       <optgroup label="Non-competitive">
                         <option value="PRACTICE">Practice</option>
                         <option value="TRAINING">Training</option>
-                        <option value="GYM">Gym</option>
                       </optgroup>
                       <optgroup label="Competitive">
                         <option value="MATCH">Match</option>
@@ -795,7 +1407,7 @@ class EditEventDialog extends Component {
                   </FormControl>
                   {type === "OTHER" && (
                     <div>
-                      <FormControl className={classes.formControl}>
+                      <FormControl className={classes.subFormControl}>
                         <TextField
                           id="other-event-type"
                           label="Event type name"
@@ -813,7 +1425,7 @@ class EditEventDialog extends Component {
                           }}
                         />
                       </FormControl>
-                      <FormControl className={classes.formControl}>
+                      <FormControl className={classes.subFormControl}>
                         <FormControlLabel
                           control={
                             <Switch
@@ -873,116 +1485,61 @@ class EditEventDialog extends Component {
                       }}
                     />
                   </FormControl>
-                </form>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={4}
-                lg={4}
-                xl={4}
-                className={classes.section}
-              >
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Additional Info
-                </Typography>
-                <form autoComplete="off">
                   <FormControl className={classes.formControl}>
                     <TextField
                       id="venue"
-                      label="Venue"
+                      label="Venue (Optional)"
                       value={venue}
+                      placeholder="Currently unknown"
                       onChange={this.handleChange("venue")}
                       InputLabelProps={{
                         shrink: true
                       }}
                     />
                   </FormControl>
-                  {(type === "MATCH" ||
-                    type === "MEETING" ||
-                    type === "SCRIM" ||
-                    type === "GALA" ||
-                    type === "EXHIBITION" ||
-                    type === "FRIENDLY" ||
-                    (type === "OTHER" && isOtherEventTypeCompetitive)) &&
+                  {this.isEventCompetitive() &&
                     !shouldEditAllEvents && (
-                      <div>
-                        <FormControl className={classes.formControl}>
-                          <TextField
-                            id="opponents"
-                            label="Opponents"
-                            value={opponents.institution}
-                            onChange={this.handleChange("opponents")}
-                            InputLabelProps={{
-                              shrink: true
-                            }}
-                          />
-                        </FormControl>
-                        <FormControl
-                          component="fieldset"
-                          className={classes.formControl}
+                      <FormControl
+                        component="fieldset"
+                        className={classes.formControl}
+                      >
+                        <FormLabel component="legend">Home / away</FormLabel>
+                        <RadioGroup
+                          aria-label="home"
+                          name="home"
+                          value={homeAway}
+                          onChange={this.handleChange("homeAway")}
                         >
-                          <FormLabel component="legend">Home / away</FormLabel>
-                          <RadioGroup
-                            aria-label="home"
-                            name="home"
-                            value={homeAway}
-                            onChange={this.handleChange("homeAway")}
-                          >
-                            <FormControlLabel
-                              value="UNKNOWN"
-                              control={<Radio />}
-                              label="To be specified"
-                            />
-                            <FormControlLabel
-                              value="HOME"
-                              control={<Radio />}
-                              label="Home"
-                            />
-                            <FormControlLabel
-                              value="AWAY"
-                              control={<Radio />}
-                              label="Away"
-                            />
-                            <FormControlLabel
-                              value="NEUTRAL"
-                              control={<Radio />}
-                              label="Neutral"
-                            />
-                          </RadioGroup>
-                        </FormControl>
-                      </div>
+                          <FormControlLabel
+                            value="UNKNOWN"
+                            control={<Radio />}
+                            label="To be specified"
+                          />
+                          <FormControlLabel
+                            value="HOME"
+                            control={<Radio />}
+                            label="Home"
+                          />
+                          <FormControlLabel
+                            value="AWAY"
+                            control={<Radio />}
+                            label="Away"
+                          />
+                          <FormControlLabel
+                            value="NEUTRAL"
+                            control={<Radio />}
+                            label="Neutral"
+                          />
+                        </RadioGroup>
+                      </FormControl>
                     )}
-                </form>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={4}
-                lg={4}
-                xl={4}
-                className={classes.section}
-              >
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Notes
-                </Typography>
-                <form autoComplete="off">
                   <FormControl className={classes.formControl}>
                     <TextField
                       id="multiline-static"
-                      label="Event notes"
+                      label="Notes (Optional)"
                       multiline
                       rows="4"
+                      placeholder="E.g. Please remember to bring your A game."
                       value={notes}
                       onChange={this.handleChange("notes")}
                       InputLabelProps={{
@@ -996,11 +1553,30 @@ class EditEventDialog extends Component {
                 item
                 xs={12}
                 sm={12}
-                md={4}
-                lg={4}
-                xl={4}
+                md={6}
+                lg={6}
+                xl={6}
                 className={classes.section}
               >
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Teams
+                </Typography>
+                {teamsList}
+                <div className={classes.addButtonWrapper}>
+                  <Button
+                    disabled={
+                      _.keys(teams).length === _.keys(selectedTeams).length
+                    }
+                    aria-label="add team"
+                    onClick={() => this.addTeam()}
+                  >
+                    <AddIcon /> Add team
+                  </Button>
+                </div>
                 <Typography
                   className={classes.heading}
                   type="title"
@@ -1009,16 +1585,18 @@ class EditEventDialog extends Component {
                   Managers
                 </Typography>
                 {managersList}
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={4}
-                lg={4}
-                xl={4}
-                className={classes.section}
-              >
+                <div className={classes.addButtonWrapper}>
+                  <Button
+                    disabled={
+                      _.keys(managers).length ===
+                      _.keys(selectedManagers).length
+                    }
+                    aria-label="add manager"
+                    onClick={() => this.addManager(_.keys(managers).length)}
+                  >
+                    <AddIcon /> Add manager
+                  </Button>
+                </div>
                 <Typography
                   className={classes.heading}
                   type="title"
@@ -1027,7 +1605,49 @@ class EditEventDialog extends Component {
                   Coaches
                 </Typography>
                 {coachesList}
+                <div className={classes.addButtonWrapper}>
+                  <Button
+                    disabled={
+                      _.keys(coaches).length === _.keys(selectedCoaches).length
+                    }
+                    aria-label="add coach"
+                    onClick={() => this.addCoach(_.keys(coaches).length)}
+                  >
+                    <AddIcon /> Add coach
+                  </Button>
+                </div>
               </Grid>
+              {isMobile && (
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={12}
+                  lg={12}
+                  xl={12}
+                  className={classes.titleWrapper}
+                >
+                  <Avatar
+                    className={
+                      this.isEventCompetitive()
+                        ? classes.competitiveEvent
+                        : classes.nonCompetitiveEvent
+                    }
+                  />
+                  <TextField
+                    label="Event title"
+                    value={title}
+                    multiline
+                    rows={title.length > 24 ? "2" : "1"}
+                    className={classes.title}
+                    onChange={e => this.handleTitleUpdate(e.target.value)}
+                    error={hasTitleError}
+                    helperText={
+                      hasTitleError ? "Please provide an event title" : ""
+                    }
+                  />
+                </Grid>
+              )}
             </Grid>
           )}
         </Dialog>
