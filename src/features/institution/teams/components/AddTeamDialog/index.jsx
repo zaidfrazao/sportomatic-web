@@ -1,9 +1,9 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
+import AddIcon from "material-ui-icons/Add";
 import AppBar from "material-ui/AppBar";
-import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
-import Checkbox from "material-ui/Checkbox";
 import { CircularProgress } from "material-ui/Progress";
 import CloseIcon from "material-ui-icons/Close";
 import Dialog from "material-ui/Dialog";
@@ -12,12 +12,6 @@ import { grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import IconButton from "material-ui/IconButton";
 import Input, { InputLabel } from "material-ui/Input";
-import List, {
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText
-} from "material-ui/List";
-import { MenuItem } from "material-ui/Menu";
 import Select from "material-ui/Select";
 import Slide from "material-ui/transitions/Slide";
 import TextField from "material-ui/TextField";
@@ -26,6 +20,11 @@ import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 
 const styles = {
+  addButtonWrapper: {
+    width: "100%",
+    textAlign: "center",
+    marginBottom: 16
+  },
   appBar: {
     position: "relative"
   },
@@ -46,6 +45,10 @@ const styles = {
     backgroundColor: grey[300],
     color: grey[700]
   },
+  innerContentWrapper: {
+    maxWidth: 1600,
+    margin: "0 auto"
+  },
   loaderWrapper: {
     flexGrow: 1,
     display: "flex",
@@ -54,10 +57,13 @@ const styles = {
   },
   mainContent: {
     height: "100%",
-    overflow: "auto"
+    width: "100%",
+    overflow: "auto",
+    paddingBottom: 40
   },
   section: {
-    backgroundColor: grey[100]
+    backgroundColor: grey[100],
+    border: `1px solid ${grey[300]}`
   },
   subheading: {
     width: "100%",
@@ -72,6 +78,12 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
+  },
+  teamWrapper: {
+    backgroundColor: grey[200],
+    padding: 16,
+    margin: 24,
+    border: `1px solid ${grey[300]}`
   }
 };
 
@@ -82,8 +94,8 @@ class AddTeamDialog extends Component {
     division: "A",
     sport: "Cricket",
     gender: "Boys",
-    selectedManagers: [],
-    selectedCoaches: [],
+    selectedManagers: {},
+    selectedCoaches: {},
     Transition: props => <Slide direction="up" {...props} />
   };
 
@@ -194,97 +206,173 @@ class AddTeamDialog extends Component {
     });
   }
 
-  getRelevantCoaches(sport) {
+  createCoachesList() {
     const { classes, coaches } = this.props;
+    const { selectedCoaches } = this.state;
 
-    const listItems = _.toPairs(coaches)
-      .filter(coach => coach[1].info.sports[sport])
-      .map(coach => {
-        const id = coach[0];
-        const info = coach[1];
-        return (
-          <ListItem
-            key={id}
-            dense
-            button
-            className={classes.listItem}
-            onClick={() => this.handleToggle(id, "COACH")}
-          >
-            <Avatar
-              alt={`${info.info.name} ${info.info.surname}`}
-              src={info.info.profilePictureURL}
-            />
-            <ListItemText primary={`${info.info.name} ${info.info.surname}`} />
-            <ListItemSecondaryAction>
-              <Checkbox
-                onClick={() => this.handleToggle(id, "COACH")}
-                checked={this.state.selectedCoaches.indexOf(id) !== -1}
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
-        );
+    let coachesBySport = {};
+    _.toPairs(coaches).map(([coachID, coachInfo]) => {
+      _.keys(coachInfo.info.sports).map(sport => {
+        if (coachesBySport[sport]) {
+          coachesBySport[sport] = {
+            ...coachesBySport[sport],
+            [coachID]: `${coachInfo.info.name} ${coachInfo.info.surname}`
+          };
+        } else {
+          coachesBySport[sport] = {
+            [coachID]: `${coachInfo.info.name} ${coachInfo.info.surname}`
+          };
+        }
       });
+    });
+
+    const listItems = _.toPairs(selectedCoaches).map(([id, info]) => {
+      return (
+        <div key={`selectedCoach:${id}`}>
+          <div className={classes.teamWrapper}>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="coachSelection">Coach</InputLabel>
+              <Select
+                native
+                value={id}
+                onChange={this.changeCoach(id)}
+                input={<Input id="coach selection" />}
+              >
+                {_.toPairs(coachesBySport).map(([sport, sportCoaches]) => {
+                  return (
+                    <optgroup label={sport} key={`${id}${sport}`}>
+                      {_.toPairs(sportCoaches).map(([coachID, coachName]) => {
+                        return (
+                          <option
+                            key={`${id}${sport}${coachID}`}
+                            value={coachID}
+                            disabled={
+                              coachID !== id &&
+                              _.keys(selectedCoaches).includes(coachID)
+                            }
+                          >
+                            {coachName}
+                          </option>
+                        );
+                      })}
+                    </optgroup>
+                  );
+                })}
+              </Select>
+            </FormControl>
+            <Button
+              aria-label="remove coach"
+              onClick={() => this.removeCoach(id)}
+            >
+              Remove coach
+            </Button>
+          </div>
+        </div>
+      );
+    });
+
     return (
-      <List>
+      <div>
         {listItems.length > 0 ? (
           listItems
         ) : (
-          <Typography
-            type="subheading"
-            component="p"
-            className={classes.subheading}
-          >
-            None
-          </Typography>
+          <div className={classes.teamWrapper}>
+            <Typography
+              type="subheading"
+              component="p"
+              className={classes.subheading}
+            >
+              None
+            </Typography>
+          </div>
         )}
-      </List>
+      </div>
     );
   }
 
-  getRelevantManagers(sport) {
+  createManagersList() {
     const { classes, managers } = this.props;
+    const { selectedManagers } = this.state;
 
-    const listItems = _.toPairs(managers)
-      .filter(manager => manager[1].info.sports[sport])
-      .map(manager => {
-        const id = manager[0];
-        const info = manager[1];
-        return (
-          <ListItem
-            key={id}
-            dense
-            button
-            className={classes.listItem}
-            onClick={() => this.handleToggle(id, "MANAGER")}
-          >
-            <Avatar
-              alt={`${info.info.name} ${info.info.surname}`}
-              src={info.info.profilePictureURL}
-            />
-            <ListItemText primary={`${info.info.name} ${info.info.surname}`} />
-            <ListItemSecondaryAction>
-              <Checkbox
-                onClick={() => this.handleToggle(id, "MANAGER")}
-                checked={this.state.selectedManagers.indexOf(id) !== -1}
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
-        );
+    let managersBySport = {};
+    _.toPairs(managers).map(([managerID, managerInfo]) => {
+      _.keys(managerInfo.info.sports).map(sport => {
+        if (managersBySport[sport]) {
+          managersBySport[sport] = {
+            ...managersBySport[sport],
+            [managerID]: `${managerInfo.info.name} ${managerInfo.info.surname}`
+          };
+        } else {
+          managersBySport[sport] = {
+            [managerID]: `${managerInfo.info.name} ${managerInfo.info.surname}`
+          };
+        }
       });
+    });
+
+    const listItems = _.toPairs(selectedManagers).map(([id, info]) => {
+      return (
+        <div key={`selectedManager:${id}`}>
+          <div className={classes.teamWrapper}>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="managerSelection">Manager</InputLabel>
+              <Select
+                native
+                value={id}
+                onChange={this.changeManager(id)}
+                input={<Input id="manager selection" />}
+              >
+                {_.toPairs(managersBySport).map(([sport, sportManagers]) => {
+                  return (
+                    <optgroup label={sport} key={`${id}${sport}`}>
+                      {_.toPairs(
+                        sportManagers
+                      ).map(([managerID, managerName]) => {
+                        return (
+                          <option
+                            key={`${id}${sport}${managerID}`}
+                            value={managerID}
+                            disabled={
+                              managerID !== id &&
+                              _.keys(selectedManagers).includes(managerID)
+                            }
+                          >
+                            {managerName}
+                          </option>
+                        );
+                      })}
+                    </optgroup>
+                  );
+                })}
+              </Select>
+            </FormControl>
+            <Button
+              aria-label="remove manager"
+              onClick={() => this.removeManager(id)}
+            >
+              Remove manager
+            </Button>
+          </div>
+        </div>
+      );
+    });
+
     return (
-      <List>
+      <div>
         {listItems.length > 0 ? (
           listItems
         ) : (
-          <Typography
-            type="subheading"
-            component="p"
-            className={classes.subheading}
-          >
-            None
-          </Typography>
+          <div className={classes.teamWrapper}>
+            <Typography
+              type="subheading"
+              component="p"
+              className={classes.subheading}
+            >
+              None
+            </Typography>
+          </div>
         )}
-      </List>
+      </div>
     );
   }
 
@@ -314,8 +402,146 @@ class AddTeamDialog extends Component {
     }
   };
 
+  addCoach() {
+    const { coaches } = this.props;
+    const { selectedCoaches } = this.state;
+
+    const coachIDs = _.keys(coaches);
+    const selectedCoachIDs = _.keys(selectedCoaches);
+
+    let idCount = 0;
+    let newID = coachIDs[idCount];
+    let coachAlreadySelected = selectedCoachIDs.includes(newID);
+
+    while (coachAlreadySelected) {
+      idCount = idCount + 1;
+      newID = coachIDs[idCount];
+      coachAlreadySelected = selectedCoachIDs.includes(newID);
+    }
+
+    this.setState({
+      selectedCoaches: {
+        ...selectedCoaches,
+        [newID]: coaches[newID]
+      }
+    });
+  }
+
+  changeCoach = oldID => event => {
+    const { coaches } = this.props;
+    const { selectedCoaches } = this.state;
+
+    const newCoaches = _.fromPairs(
+      _.toPairs(selectedCoaches).filter(([id, info]) => {
+        if (id === oldID) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+
+    this.setState({
+      selectedCoaches: {
+        ...newCoaches,
+        [event.target.value]: coaches[event.target.value]
+      }
+    });
+  };
+
+  removeCoach(removeID) {
+    const { selectedCoaches } = this.state;
+
+    const newCoaches = _.fromPairs(
+      _.toPairs(selectedCoaches).filter(([id, info]) => {
+        if (id === removeID) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+
+    this.setState({
+      selectedCoaches: newCoaches
+    });
+  }
+
+  addManager() {
+    const { managers } = this.props;
+    const { selectedManagers } = this.state;
+
+    const managerIDs = _.keys(managers);
+    const selectedManagerIDs = _.keys(selectedManagers);
+
+    let idCount = 0;
+    let newID = managerIDs[idCount];
+    let managerAlreadySelected = selectedManagerIDs.includes(newID);
+
+    while (managerAlreadySelected) {
+      idCount = idCount + 1;
+      newID = managerIDs[idCount];
+      managerAlreadySelected = selectedManagerIDs.includes(newID);
+    }
+
+    this.setState({
+      selectedManagers: {
+        ...selectedManagers,
+        [newID]: managers[newID]
+      }
+    });
+  }
+
+  changeManager = oldID => event => {
+    const { managers } = this.props;
+    const { selectedManagers } = this.state;
+
+    const newManagers = _.fromPairs(
+      _.toPairs(selectedManagers).filter(([id, info]) => {
+        if (id === oldID) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+
+    this.setState({
+      selectedManagers: {
+        ...newManagers,
+        [event.target.value]: managers[event.target.value]
+      }
+    });
+  };
+
+  removeManager(removeID) {
+    const { selectedManagers } = this.state;
+
+    const newManagers = _.fromPairs(
+      _.toPairs(selectedManagers).filter(([id, info]) => {
+        if (id === removeID) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+
+    this.setState({
+      selectedManagers: newManagers
+    });
+  }
+
   render() {
-    const { classes, isOpen, isLoading, institutionID } = this.props;
+    const {
+      classes,
+      isOpen,
+      isLoading,
+      institutionID,
+      coaches,
+      managers,
+      isMobile
+    } = this.props;
     const { handleClose, addTeam, openTeamErrorAlert } = this.props.actions;
     const { ageGroups, divisions, sports, genderType } = this.props.options;
     const {
@@ -329,13 +555,13 @@ class AddTeamDialog extends Component {
     } = this.state;
 
     let genderOptions = <div />;
-    let relevantCoaches = <div />;
-    let relevantManagers = <div />;
+    let coachesList = <div />;
+    let managersList = <div />;
 
     if (!isLoading) {
       genderOptions = this.setGenderOptions(ageGroup, genderType);
-      relevantCoaches = this.getRelevantCoaches(sport);
-      relevantManagers = this.getRelevantManagers(sport);
+      coachesList = this.createCoachesList();
+      managersList = this.createManagersList();
     }
 
     return (
@@ -364,6 +590,12 @@ class AddTeamDialog extends Component {
                 if (teamName.length === 0) {
                   openTeamErrorAlert("TITLE");
                 } else {
+                  const teamManagers = _.fromPairs(
+                    _.keys(selectedManagers).map(managerID => [managerID, true])
+                  );
+                  const teamCoaches = _.fromPairs(
+                    _.keys(selectedCoaches).map(coachID => [coachID, true])
+                  );
                   addTeam(
                     institutionID,
                     {
@@ -373,16 +605,8 @@ class AddTeamDialog extends Component {
                       gender,
                       name: teamName
                     },
-                    _.fromPairs(
-                      selectedManagers.map(id => {
-                        return [id, true];
-                      })
-                    ),
-                    _.fromPairs(
-                      selectedCoaches.map(id => {
-                        return [id, true];
-                      })
-                    )
+                    teamManagers,
+                    teamCoaches
                   );
                 }
               }}
@@ -396,139 +620,186 @@ class AddTeamDialog extends Component {
             <CircularProgress />
           </div>
         ) : (
-          <Grid container className={classes.mainContent}>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={12}
-              lg={12}
-              xl={12}
-              className={classes.teamNameWrapper}
-            >
-              <TextField
-                label="Team name"
-                value={teamName}
-                className={classes.teamName}
-                onChange={e => this.handleNameUpdate(e.target.value)}
-                error={teamName.length === 0}
-                helperText={
-                  teamName.length === 0 ? "Please provide a team name" : ""
-                }
-              />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={4}
-              lg={4}
-              xl={4}
-              className={classes.section}
-            >
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
+          <div className={classes.innerContentWrapper}>
+            <Grid container spacing={0} className={classes.mainContent}>
+              {!isMobile && (
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={12}
+                  lg={12}
+                  xl={12}
+                  className={classes.teamNameWrapper}
+                >
+                  <TextField
+                    label="Team name"
+                    value={teamName}
+                    multiline
+                    rows={teamName.length > 24 ? "2" : "1"}
+                    className={classes.teamName}
+                    onChange={e => this.handleNameUpdate(e.target.value)}
+                    error={teamName.length === 0}
+                    helperText={
+                      teamName.length === 0 ? "Please provide a team name" : ""
+                    }
+                  />
+                </Grid>
+              )}
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={6}
+                lg={6}
+                xl={6}
+                className={classes.section}
               >
-                Details
-              </Typography>
-              <form autoComplete="off">
-                <FormControl className={classes.formControl}>
-                  <InputLabel htmlFor="age-group">Age group</InputLabel>
-                  <Select
-                    value={ageGroup}
-                    onChange={this.handleChange("ageGroup")}
-                    input={<Input id="age-group" />}
-                  >
-                    {_.toPairs(ageGroups).map(keyValuePair => (
-                      <MenuItem value={keyValuePair[0]} key={keyValuePair[0]}>
-                        {keyValuePair[1]}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl className={classes.formControl}>
-                  <InputLabel htmlFor="division">Division</InputLabel>
-                  <Select
-                    value={division}
-                    onChange={this.handleChange("division")}
-                    input={<Input id="division" />}
-                  >
-                    {_.toPairs(divisions).map(keyValuePair => (
-                      <MenuItem value={keyValuePair[0]} key={keyValuePair[0]}>
-                        {keyValuePair[1]}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl className={classes.formControl}>
-                  <InputLabel htmlFor="sport">Sport</InputLabel>
-                  <Select
-                    value={sport}
-                    onChange={this.handleChange("sport")}
-                    input={<Input id="sport" />}
-                  >
-                    {_.toPairs(sports).map(keyValuePair => (
-                      <MenuItem value={keyValuePair[0]} key={keyValuePair[0]}>
-                        {keyValuePair[1]}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl className={classes.formControl}>
-                  <InputLabel htmlFor="gender">Gender</InputLabel>
-                  <Select
-                    value={gender}
-                    onChange={this.handleChange("gender")}
-                    input={<Input id="gender" />}
-                  >
-                    {_.toPairs(genderOptions).map(keyValuePair => (
-                      <MenuItem value={keyValuePair[0]} key={keyValuePair[0]}>
-                        {keyValuePair[1]}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </form>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={4}
-              lg={4}
-              xl={4}
-              className={classes.section}
-            >
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Details
+                </Typography>
+                <form autoComplete="off">
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="age-group">Age group</InputLabel>
+                    <Select
+                      native
+                      value={ageGroup}
+                      onChange={this.handleChange("ageGroup")}
+                      input={<Input id="age-group" />}
+                    >
+                      {_.toPairs(ageGroups).map(keyValuePair => (
+                        <option value={keyValuePair[0]} key={keyValuePair[0]}>
+                          {keyValuePair[1]}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="division">Division</InputLabel>
+                    <Select
+                      native
+                      value={division}
+                      onChange={this.handleChange("division")}
+                      input={<Input id="division" />}
+                    >
+                      {_.toPairs(divisions).map(keyValuePair => (
+                        <option value={keyValuePair[0]} key={keyValuePair[0]}>
+                          {keyValuePair[1]}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="sport">Sport</InputLabel>
+                    <Select
+                      native
+                      value={sport}
+                      onChange={this.handleChange("sport")}
+                      input={<Input id="sport" />}
+                    >
+                      {_.toPairs(sports).map(keyValuePair => (
+                        <option value={keyValuePair[0]} key={keyValuePair[0]}>
+                          {keyValuePair[1]}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="gender">Gender</InputLabel>
+                    <Select
+                      native
+                      value={gender}
+                      onChange={this.handleChange("gender")}
+                      input={<Input id="gender" />}
+                    >
+                      {_.toPairs(genderOptions).map(keyValuePair => (
+                        <option value={keyValuePair[0]} key={keyValuePair[0]}>
+                          {keyValuePair[1]}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </form>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={6}
+                lg={6}
+                xl={6}
+                className={classes.section}
               >
-                {sports[sport]} Managers
-              </Typography>
-              {relevantManagers}
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Managers
+                </Typography>
+                {managersList}
+                <div className={classes.addButtonWrapper}>
+                  <Button
+                    disabled={
+                      _.keys(managers).length ===
+                      _.keys(selectedManagers).length
+                    }
+                    aria-label="add manager"
+                    onClick={() => this.addManager(_.keys(managers).length)}
+                  >
+                    <AddIcon /> Add manager
+                  </Button>
+                </div>
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Coaches
+                </Typography>
+                {coachesList}
+                <div className={classes.addButtonWrapper}>
+                  <Button
+                    disabled={
+                      _.keys(coaches).length === _.keys(selectedCoaches).length
+                    }
+                    aria-label="add coach"
+                    onClick={() => this.addCoach(_.keys(coaches).length)}
+                  >
+                    <AddIcon /> Add coach
+                  </Button>
+                </div>
+              </Grid>
+              {isMobile && (
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={12}
+                  lg={12}
+                  xl={12}
+                  className={classes.teamNameWrapper}
+                >
+                  <TextField
+                    label="Team name"
+                    value={teamName}
+                    multiline
+                    rows={teamName.length > 24 ? "2" : "1"}
+                    className={classes.teamName}
+                    onChange={e => this.handleNameUpdate(e.target.value)}
+                    error={teamName.length === 0}
+                    helperText={
+                      teamName.length === 0 ? "Please provide a team name" : ""
+                    }
+                  />
+                </Grid>
+              )}
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={4}
-              lg={4}
-              xl={4}
-              className={classes.section}
-            >
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
-              >
-                {sports[sport]} Coaches
-              </Typography>
-              {relevantCoaches}
-            </Grid>
-          </Grid>
+          </div>
         )}
       </Dialog>
     );

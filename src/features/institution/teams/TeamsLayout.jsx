@@ -298,6 +298,7 @@ class TeamsLayout extends Component {
             />
             <EditTeamDialog
               isOpen={isEditTeamDialogOpen}
+              isMobile={isMobile}
               isLoading={
                 isEditTeamDialogLoading ||
                 isOptionsLoading ||
@@ -358,6 +359,7 @@ class TeamsLayout extends Component {
         )}
         <AddTeamDialog
           isOpen={isAddTeamDialogOpen}
+          isMobile={isMobile}
           isLoading={
             isAddTeamDialogLoading ||
             isOptionsLoading ||

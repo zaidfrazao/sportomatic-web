@@ -58,6 +58,10 @@ const styles = {
     backgroundColor: grey[300],
     color: grey[700]
   },
+  innerContentWrapper: {
+    maxWidth: 1600,
+    margin: "0 auto"
+  },
   loaderWrapper: {
     flexGrow: 1,
     display: "flex",
@@ -95,7 +99,8 @@ const styles = {
     alignItems: "center"
   },
   section: {
-    backgroundColor: grey[100]
+    backgroundColor: grey[100],
+    border: `1px solid ${grey[300]}`
   },
   subFormControl: {
     width: "75%",
@@ -105,6 +110,12 @@ const styles = {
     width: "100%",
     textAlign: "center",
     margin: "24px 0"
+  },
+  teamWrapper: {
+    backgroundColor: grey[200],
+    padding: 16,
+    margin: 24,
+    border: `1px solid ${grey[300]}`
   },
   title: {
     margin: 24,
@@ -1333,322 +1344,325 @@ class EditEventDialog extends Component {
               <CircularProgress />
             </div>
           ) : (
-            <Grid container className={classes.mainContent}>
-              {!isMobile && (
+            <div className={classes.innerContentWrapper}>
+              <Grid container spacing={0} className={classes.mainContent}>
+                {!isMobile && (
+                  <Grid
+                    item
+                    xs={12}
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    xl={12}
+                    className={classes.titleWrapper}
+                  >
+                    <Avatar
+                      className={
+                        this.isEventCompetitive()
+                          ? classes.competitiveEvent
+                          : classes.nonCompetitiveEvent
+                      }
+                    />
+                    <TextField
+                      label="Event title"
+                      value={title}
+                      multiline
+                      rows={title.length > 24 ? "2" : "1"}
+                      className={classes.title}
+                      onChange={e => this.handleTitleUpdate(e.target.value)}
+                      error={hasTitleError}
+                      helperText={
+                        hasTitleError ? "Please provide an event title" : ""
+                      }
+                    />
+                  </Grid>
+                )}
                 <Grid
                   item
                   xs={12}
                   sm={12}
-                  md={12}
-                  lg={12}
-                  xl={12}
-                  className={classes.titleWrapper}
+                  md={6}
+                  lg={6}
+                  xl={6}
+                  className={classes.section}
                 >
-                  <Avatar
-                    className={
-                      this.isEventCompetitive()
-                        ? classes.competitiveEvent
-                        : classes.nonCompetitiveEvent
-                    }
-                  />
-                  <TextField
-                    label="Event title"
-                    value={title}
-                    multiline
-                    rows={title.length > 24 ? "2" : "1"}
-                    className={classes.title}
-                    onChange={e => this.handleTitleUpdate(e.target.value)}
-                    error={hasTitleError}
-                    helperText={
-                      hasTitleError ? "Please provide an event title" : ""
-                    }
-                  />
-                </Grid>
-              )}
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={6}
-                lg={6}
-                xl={6}
-                className={classes.section}
-              >
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Details
-                </Typography>
-                <form autoComplete="off">
-                  <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="type">Type</InputLabel>
-                    <Select
-                      native
-                      value={type}
-                      onChange={this.handleChange("type")}
-                      input={<Input id="type" />}
-                    >
-                      <optgroup label="Non-competitive">
-                        <option value="PRACTICE">Practice</option>
-                        <option value="TRAINING">Training</option>
-                      </optgroup>
-                      <optgroup label="Competitive">
-                        <option value="MATCH">Match</option>
-                        <option value="MEETING">Meeting</option>
-                        <option value="GALA">Gala</option>
-                        <option value="SCRIM">Scrim</option>
-                        <option value="EXHIBITION">Exhibition</option>
-                        <option value="FRIENDLY">Friendly</option>
-                      </optgroup>
-                      <option value="OTHER">Other</option>
-                    </Select>
-                  </FormControl>
-                  {type === "OTHER" && (
-                    <div>
-                      <FormControl className={classes.subFormControl}>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Details
+                  </Typography>
+                  <form autoComplete="off">
+                    <FormControl className={classes.formControl}>
+                      <InputLabel htmlFor="type">Type</InputLabel>
+                      <Select
+                        native
+                        value={type}
+                        onChange={this.handleChange("type")}
+                        input={<Input id="type" />}
+                      >
+                        <optgroup label="Non-competitive">
+                          <option value="PRACTICE">Practice</option>
+                          <option value="TRAINING">Training</option>
+                        </optgroup>
+                        <optgroup label="Competitive">
+                          <option value="MATCH">Match</option>
+                          <option value="MEETING">Meeting</option>
+                          <option value="GALA">Gala</option>
+                          <option value="SCRIM">Scrim</option>
+                          <option value="EXHIBITION">Exhibition</option>
+                          <option value="FRIENDLY">Friendly</option>
+                        </optgroup>
+                        <option value="OTHER">Other</option>
+                      </Select>
+                    </FormControl>
+                    {type === "OTHER" && (
+                      <div>
+                        <FormControl className={classes.subFormControl}>
+                          <TextField
+                            id="other-event-type"
+                            label="Event type name"
+                            value={otherEventType}
+                            placeholder="E.g. Gym Session, Sports Day, Meeting"
+                            error={hasOtherEventTypeError}
+                            helperText={
+                              hasOtherEventTypeError
+                                ? "Please specify the event type"
+                                : ""
+                            }
+                            onChange={this.handleChange("otherEventType")}
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </FormControl>
+                        <FormControl className={classes.subFormControl}>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={isOtherEventTypeCompetitive}
+                                onChange={(event, checked) =>
+                                  this.setState({
+                                    isOtherEventTypeCompetitive: checked
+                                  })}
+                              />
+                            }
+                            label="Competitive event"
+                          />
+                        </FormControl>
+                      </div>
+                    )}
+                    {!shouldEditAllEvents && (
+                      <FormControl className={classes.formControl}>
                         <TextField
-                          id="other-event-type"
-                          label="Event type name"
-                          value={otherEventType}
-                          placeholder="E.g. Gym Session, Sports Day, Meeting"
-                          error={hasOtherEventTypeError}
+                          id="date"
+                          label="Date"
+                          type="date"
+                          value={date}
+                          error={hasDateError}
                           helperText={
-                            hasOtherEventTypeError
-                              ? "Please specify the event type"
+                            hasDateError
+                              ? "You cannot schedule events in the past"
                               : ""
                           }
-                          onChange={this.handleChange("otherEventType")}
+                          onChange={this.handleChange("date")}
                           InputLabelProps={{
                             shrink: true
                           }}
                         />
                       </FormControl>
-                      <FormControl className={classes.subFormControl}>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={isOtherEventTypeCompetitive}
-                              onChange={(event, checked) =>
-                                this.setState({
-                                  isOtherEventTypeCompetitive: checked
-                                })}
-                            />
-                          }
-                          label="Competitive event"
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                  {!shouldEditAllEvents && (
+                    )}
                     <FormControl className={classes.formControl}>
                       <TextField
-                        id="date"
-                        label="Date"
-                        type="date"
-                        value={date}
-                        error={hasDateError}
-                        helperText={
-                          hasDateError
-                            ? "You cannot schedule events in the past"
-                            : ""
-                        }
-                        onChange={this.handleChange("date")}
+                        id="time"
+                        label="Starts at"
+                        type="time"
+                        value={startTime}
+                        onChange={this.handleChange("startTime")}
                         InputLabelProps={{
                           shrink: true
                         }}
                       />
                     </FormControl>
-                  )}
-                  <FormControl className={classes.formControl}>
-                    <TextField
-                      id="time"
-                      label="Starts at"
-                      type="time"
-                      value={startTime}
-                      onChange={this.handleChange("startTime")}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl className={classes.formControl}>
-                    <TextField
-                      id="time"
-                      label="Ends at"
-                      type="time"
-                      value={endTime}
-                      onChange={this.handleChange("endTime")}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl className={classes.formControl}>
-                    <TextField
-                      id="venue"
-                      label="Venue (Optional)"
-                      value={venue}
-                      placeholder="Currently unknown"
-                      onChange={this.handleChange("venue")}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
-                  </FormControl>
-                  {this.isEventCompetitive() &&
-                    !shouldEditAllEvents && (
-                      <FormControl
-                        component="fieldset"
-                        className={classes.formControl}
-                      >
-                        <FormLabel component="legend">Home / away</FormLabel>
-                        <RadioGroup
-                          aria-label="home"
-                          name="home"
-                          value={homeAway}
-                          onChange={this.handleChange("homeAway")}
+                    <FormControl className={classes.formControl}>
+                      <TextField
+                        id="time"
+                        label="Ends at"
+                        type="time"
+                        value={endTime}
+                        onChange={this.handleChange("endTime")}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                    </FormControl>
+                    <FormControl className={classes.formControl}>
+                      <TextField
+                        id="venue"
+                        label="Venue (Optional)"
+                        value={venue}
+                        placeholder="Currently unknown"
+                        onChange={this.handleChange("venue")}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                    </FormControl>
+                    {this.isEventCompetitive() &&
+                      !shouldEditAllEvents && (
+                        <FormControl
+                          component="fieldset"
+                          className={classes.formControl}
                         >
-                          <FormControlLabel
-                            value="UNKNOWN"
-                            control={<Radio />}
-                            label="To be specified"
-                          />
-                          <FormControlLabel
-                            value="HOME"
-                            control={<Radio />}
-                            label="Home"
-                          />
-                          <FormControlLabel
-                            value="AWAY"
-                            control={<Radio />}
-                            label="Away"
-                          />
-                          <FormControlLabel
-                            value="NEUTRAL"
-                            control={<Radio />}
-                            label="Neutral"
-                          />
-                        </RadioGroup>
-                      </FormControl>
-                    )}
-                  <FormControl className={classes.formControl}>
-                    <TextField
-                      id="multiline-static"
-                      label="Notes (Optional)"
-                      multiline
-                      rows="4"
-                      placeholder="E.g. Please remember to bring your A game."
-                      value={notes}
-                      onChange={this.handleChange("notes")}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
-                  </FormControl>
-                </form>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={6}
-                lg={6}
-                xl={6}
-                className={classes.section}
-              >
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Teams
-                </Typography>
-                {teamsList}
-                <div className={classes.addButtonWrapper}>
-                  <Button
-                    disabled={
-                      _.keys(teams).length === _.keys(selectedTeams).length
-                    }
-                    aria-label="add team"
-                    onClick={() => this.addTeam()}
-                  >
-                    <AddIcon /> Add team
-                  </Button>
-                </div>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Managers
-                </Typography>
-                {managersList}
-                <div className={classes.addButtonWrapper}>
-                  <Button
-                    disabled={
-                      _.keys(managers).length ===
-                      _.keys(selectedManagers).length
-                    }
-                    aria-label="add manager"
-                    onClick={() => this.addManager(_.keys(managers).length)}
-                  >
-                    <AddIcon /> Add manager
-                  </Button>
-                </div>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Coaches
-                </Typography>
-                {coachesList}
-                <div className={classes.addButtonWrapper}>
-                  <Button
-                    disabled={
-                      _.keys(coaches).length === _.keys(selectedCoaches).length
-                    }
-                    aria-label="add coach"
-                    onClick={() => this.addCoach(_.keys(coaches).length)}
-                  >
-                    <AddIcon /> Add coach
-                  </Button>
-                </div>
-              </Grid>
-              {isMobile && (
+                          <FormLabel component="legend">Home / away</FormLabel>
+                          <RadioGroup
+                            aria-label="home"
+                            name="home"
+                            value={homeAway}
+                            onChange={this.handleChange("homeAway")}
+                          >
+                            <FormControlLabel
+                              value="UNKNOWN"
+                              control={<Radio />}
+                              label="To be specified"
+                            />
+                            <FormControlLabel
+                              value="HOME"
+                              control={<Radio />}
+                              label="Home"
+                            />
+                            <FormControlLabel
+                              value="AWAY"
+                              control={<Radio />}
+                              label="Away"
+                            />
+                            <FormControlLabel
+                              value="NEUTRAL"
+                              control={<Radio />}
+                              label="Neutral"
+                            />
+                          </RadioGroup>
+                        </FormControl>
+                      )}
+                    <FormControl className={classes.formControl}>
+                      <TextField
+                        id="multiline-static"
+                        label="Notes (Optional)"
+                        multiline
+                        rows="4"
+                        placeholder="E.g. Please remember to bring your A game."
+                        value={notes}
+                        onChange={this.handleChange("notes")}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                    </FormControl>
+                  </form>
+                </Grid>
                 <Grid
                   item
                   xs={12}
                   sm={12}
-                  md={12}
-                  lg={12}
-                  xl={12}
-                  className={classes.titleWrapper}
+                  md={6}
+                  lg={6}
+                  xl={6}
+                  className={classes.section}
                 >
-                  <Avatar
-                    className={
-                      this.isEventCompetitive()
-                        ? classes.competitiveEvent
-                        : classes.nonCompetitiveEvent
-                    }
-                  />
-                  <TextField
-                    label="Event title"
-                    value={title}
-                    multiline
-                    rows={title.length > 24 ? "2" : "1"}
-                    className={classes.title}
-                    onChange={e => this.handleTitleUpdate(e.target.value)}
-                    error={hasTitleError}
-                    helperText={
-                      hasTitleError ? "Please provide an event title" : ""
-                    }
-                  />
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Teams
+                  </Typography>
+                  {teamsList}
+                  <div className={classes.addButtonWrapper}>
+                    <Button
+                      disabled={
+                        _.keys(teams).length === _.keys(selectedTeams).length
+                      }
+                      aria-label="add team"
+                      onClick={() => this.addTeam()}
+                    >
+                      <AddIcon /> Add team
+                    </Button>
+                  </div>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Managers
+                  </Typography>
+                  {managersList}
+                  <div className={classes.addButtonWrapper}>
+                    <Button
+                      disabled={
+                        _.keys(managers).length ===
+                        _.keys(selectedManagers).length
+                      }
+                      aria-label="add manager"
+                      onClick={() => this.addManager(_.keys(managers).length)}
+                    >
+                      <AddIcon /> Add manager
+                    </Button>
+                  </div>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Coaches
+                  </Typography>
+                  {coachesList}
+                  <div className={classes.addButtonWrapper}>
+                    <Button
+                      disabled={
+                        _.keys(coaches).length ===
+                        _.keys(selectedCoaches).length
+                      }
+                      aria-label="add coach"
+                      onClick={() => this.addCoach(_.keys(coaches).length)}
+                    >
+                      <AddIcon /> Add coach
+                    </Button>
+                  </div>
                 </Grid>
-              )}
-            </Grid>
+                {isMobile && (
+                  <Grid
+                    item
+                    xs={12}
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    xl={12}
+                    className={classes.titleWrapper}
+                  >
+                    <Avatar
+                      className={
+                        this.isEventCompetitive()
+                          ? classes.competitiveEvent
+                          : classes.nonCompetitiveEvent
+                      }
+                    />
+                    <TextField
+                      label="Event title"
+                      value={title}
+                      multiline
+                      rows={title.length > 24 ? "2" : "1"}
+                      className={classes.title}
+                      onChange={e => this.handleTitleUpdate(e.target.value)}
+                      error={hasTitleError}
+                      helperText={
+                        hasTitleError ? "Please provide an event title" : ""
+                      }
+                    />
+                  </Grid>
+                )}
+              </Grid>
+            </div>
           )}
         </Dialog>
         <Dialog open={isRecurringEventModalOpen}>
