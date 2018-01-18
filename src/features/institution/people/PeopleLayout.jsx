@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
 import AppBar from "material-ui/AppBar";

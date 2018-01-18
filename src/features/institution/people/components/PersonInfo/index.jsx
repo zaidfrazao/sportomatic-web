@@ -4,7 +4,6 @@ import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import BackIcon from "material-ui-icons/ArrowBack";
-import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import EditIcon from "material-ui-icons/Edit";
 import { grey, red } from "material-ui/colors";
