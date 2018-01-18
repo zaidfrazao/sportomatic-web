@@ -117,12 +117,16 @@ export const selector = createStructuredSelector({
 // Action Creators
 
 export function initUser() {
+  let accountInfo = {};
+  if (localStorage.accountInfo) {
+    accountInfo = JSON.parse(localStorage.accountInfo);
+  }
   const user = {
+    accountInfo,
     id: localStorage.userID || "",
     email: localStorage.email || "",
     isLoggedIn: localStorage.isLoggedIn === "true" || false,
-    type: localStorage.type || "",
-    accountInfo: JSON.parse(localStorage.accountInfo)
+    type: localStorage.type || ""
   };
 
   return {
