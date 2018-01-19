@@ -1,12 +1,17 @@
 // @flow
 import React, { Component } from "react";
-import Avatar from "material-ui/Avatar";
 import Badge from "material-ui/Badge";
+import DismissIcon from "material-ui-icons/Clear";
 import FolderIcon from "material-ui-icons/Folder";
+import { grey, lightBlue } from "material-ui/colors";
 import HoursIcon from "material-ui-icons/Alarm";
 import IconButton from "material-ui/IconButton";
-import List, { ListItem, ListItemText } from "material-ui/List";
-import NoNotificationsIcon from "material-ui-icons/NotificationsOff";
+import List, {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemSecondaryAction
+} from "material-ui/List";
 import NotificationsClosedIcon from "material-ui-icons/Notifications";
 import NotificationsOpenIcon from "material-ui-icons/NotificationsActive";
 import PeopleIcon from "material-ui-icons/Person";
@@ -15,12 +20,18 @@ import ResultsIcon from "material-ui-icons/PlusOne";
 import ScheduleIcon from "material-ui-icons/Event";
 import TeamsIcon from "material-ui-icons/People";
 import Tooltip from "material-ui/Tooltip";
+import Typography from "material-ui/Typography";
 import WagesIcon from "material-ui-icons/AttachMoney";
 import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
   badge: {
     margin: `0 ${theme.spacing.unit * 2}px`
+  },
+  heading: {
+    backgroundColor: lightBlue[900],
+    color: grey[50],
+    padding: theme.spacing.unit * 2
   },
   list: {
     maxHeight: 400,
@@ -64,10 +75,7 @@ class NotificationsTray extends Component<Props, State> {
 
     if (notifications.length === 0) {
       return (
-        <ListItem button>
-          <Avatar>
-            <NoNotificationsIcon />
-          </Avatar>
+        <ListItem>
           <ListItemText primary="No unread notifications" />
         </ListItem>
       );
@@ -77,82 +85,117 @@ class NotificationsTray extends Component<Props, State> {
           case "SCHEDULE":
             return (
               <ListItem key={index} button>
-                <Avatar>
+                <ListItemIcon>
                   <ScheduleIcon />
-                </Avatar>
+                </ListItemIcon>
                 <ListItemText
                   primary={notification.title}
                   secondary={notification.body}
                 />
+                <ListItemSecondaryAction>
+                  <IconButton aria-label="Dismiss">
+                    <DismissIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
               </ListItem>
             );
           case "HOURS":
             return (
               <ListItem key={index} button>
-                <Avatar>
+                <ListItemIcon>
                   <HoursIcon />
-                </Avatar>
+                </ListItemIcon>
                 <ListItemText
                   primary={notification.title}
                   secondary={notification.body}
                 />
+                <ListItemSecondaryAction>
+                  <IconButton aria-label="Dismiss">
+                    <DismissIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
               </ListItem>
             );
           case "RESULTS":
             return (
               <ListItem key={index} button>
-                <Avatar>
+                <ListItemIcon>
                   <ResultsIcon />
-                </Avatar>
+                </ListItemIcon>
                 <ListItemText
                   primary={notification.title}
                   secondary={notification.body}
                 />
+                <ListItemSecondaryAction>
+                  <IconButton aria-label="Dismiss">
+                    <DismissIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
               </ListItem>
             );
           case "WAGES":
             return (
               <ListItem key={index} button>
-                <Avatar>
+                <ListItemIcon>
                   <WagesIcon />
-                </Avatar>
+                </ListItemIcon>
                 <ListItemText
                   primary={notification.title}
                   secondary={notification.body}
                 />
+                <ListItemSecondaryAction>
+                  <IconButton aria-label="Dismiss">
+                    <DismissIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
               </ListItem>
             );
           case "PEOPLE":
             return (
               <ListItem key={index} button>
-                <Avatar>
+                <ListItemIcon>
                   <PeopleIcon />
-                </Avatar>
+                </ListItemIcon>
                 <ListItemText
                   primary={notification.title}
                   secondary={notification.body}
                 />
+                <ListItemSecondaryAction>
+                  <IconButton aria-label="Dismiss">
+                    <DismissIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
               </ListItem>
             );
           case "TEAMS":
             return (
               <ListItem key={index} button>
-                <Avatar>
+                <ListItemIcon>
                   <TeamsIcon />
-                </Avatar>
+                </ListItemIcon>
                 <ListItemText
                   primary={notification.title}
                   secondary={notification.body}
                 />
+                <ListItemSecondaryAction>
+                  <IconButton aria-label="Dismiss">
+                    <DismissIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
               </ListItem>
             );
           default:
             return (
               <ListItem key={index} button>
-                <Avatar>
+                <ListItemIcon>
                   <FolderIcon />
-                </Avatar>
+                </ListItemIcon>
                 <ListItemText primary="Unknown notification type" />
+                <ListItemSecondaryAction>
+                  <IconButton aria-label="Dismiss">
+                    <DismissIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
               </ListItem>
             );
         }
@@ -180,13 +223,27 @@ class NotificationsTray extends Component<Props, State> {
             aria-label="show notifications"
             onClick={event => this.handleMenuToggle(event.currentTarget)}
           >
-            <Badge
-              className={classes.badge}
-              badgeContent={numberOfNotifications}
-              color="accent"
-            >
-              {isOpen ? <NotificationsOpenIcon /> : <NotificationsClosedIcon />}
-            </Badge>
+            {numberOfNotifications > 0 ? (
+              <Badge
+                className={classes.badge}
+                badgeContent={numberOfNotifications}
+                color="accent"
+              >
+                {isOpen ? (
+                  <NotificationsOpenIcon />
+                ) : (
+                  <NotificationsClosedIcon />
+                )}
+              </Badge>
+            ) : (
+              <div>
+                {isOpen ? (
+                  <NotificationsOpenIcon />
+                ) : (
+                  <NotificationsClosedIcon />
+                )}
+              </div>
+            )}
           </IconButton>
         </Tooltip>
         <Popover
@@ -202,6 +259,14 @@ class NotificationsTray extends Component<Props, State> {
             horizontal: "right"
           }}
         >
+          <Typography
+            type="title"
+            color="inherit"
+            noWrap
+            className={classes.heading}
+          >
+            Notifications
+          </Typography>
           <List className={classes.list}>{this.createListItems()}</List>
         </Popover>
       </div>

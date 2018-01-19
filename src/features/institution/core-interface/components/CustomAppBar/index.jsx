@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { withStyles } from "material-ui/styles";
 import { grey } from "material-ui/colors";
-import { Route } from "react-router-dom";
 import classNames from "classnames";
 import AppBar from "material-ui/AppBar";
 import IconButton from "material-ui/IconButton";
 import MenuIcon from "material-ui-icons/Menu";
+import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import AppBarMenuIcon from "material-ui-icons/MoreVert";
+import Popover from "material-ui/Popover";
 import LogOutIcon from "material-ui-icons/ExitToApp";
 import SettingsIcon from "material-ui-icons/Settings";
-import Menu, { MenuItem } from "material-ui/Menu";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
@@ -42,8 +42,8 @@ const styles = theme => ({
     flexGrow: 1
   },
   menuButton: {
-    marginLeft: 12,
-    marginRight: 36
+    marginLeft: theme.spacing.unit * 2,
+    marginRight: theme.spacing.unit * 2
   },
   hide: {
     display: "none"
@@ -61,7 +61,7 @@ const styles = theme => ({
     alignItems: "center"
   },
   titleMargin: {
-    marginLeft: 36
+    marginLeft: theme.spacing.unit * 3
   }
 });
 
@@ -163,64 +163,52 @@ class CustomAppBar extends Component {
             {title}
           </Typography>
           <div className={classes.rightButtons}>
-            <Route
-              render={({ history }) => (
-                <Tooltip title="Settings" placement="bottom">
-                  <IconButton
-                    color="contrast"
-                    aria-label="edit settings"
-                    onClick={() => openSettingsAlert()}
-                  >
-                    <SettingsIcon />
-                  </IconButton>
-                </Tooltip>
-              )}
-            />
             <NotificationsTray notifications={notifications} />
-            {isMobile ? (
-              <div>
-                <Tooltip title="Options" placement="bottom">
-                  <IconButton
-                    color="contrast"
-                    aria-label="app bar menu"
-                    onClick={this.handleClick}
-                  >
-                    <AppBarMenuIcon />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  id="simple-menu"
-                  anchorEl={this.state.anchorEl}
-                  open={this.state.open}
-                  onRequestClose={this.handleRequestClose}
+            <div>
+              <Tooltip title="Options" placement="bottom">
+                <IconButton
+                  color="contrast"
+                  aria-label="app bar menu"
+                  onClick={this.handleClick}
                 >
-                  <MenuItem
+                  <AppBarMenuIcon />
+                </IconButton>
+              </Tooltip>
+              <Popover
+                anchorEl={this.state.anchorEl}
+                open={this.state.open}
+                onRequestClose={this.handleRequestClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right"
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right"
+                }}
+              >
+                <List className={classes.list}>
+                  <ListItem button onClick={() => openSettingsAlert()}>
+                    <ListItemIcon>
+                      <SettingsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Settings" />
+                  </ListItem>
+                  <ListItem
+                    button
                     onClick={() => {
                       this.handleRequestClose();
                       openLogOutModal();
                     }}
                   >
-                    Logout
-                  </MenuItem>
-                </Menu>
-              </div>
-            ) : (
-              <div className={classes.desktopIcons}>
-                <Route
-                  render={({ history }) => (
-                    <Tooltip title="Log out" placement="bottom">
-                      <IconButton
-                        color="contrast"
-                        aria-label="log out"
-                        onClick={() => openLogOutModal()}
-                      >
-                        <LogOutIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                />
-              </div>
-            )}
+                    <ListItemIcon>
+                      <LogOutIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Log out" />
+                  </ListItem>
+                </List>
+              </Popover>
+            </div>
           </div>
         </Toolbar>
       </AppBar>
