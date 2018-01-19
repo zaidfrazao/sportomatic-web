@@ -19,6 +19,7 @@ import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
 import LargeRectangleAd from "../../../../../components/LargeRectangleAd";
+import defaultProfilePicture from "../../image/default-profile-picture.png";
 
 const styles = {
   actionsBar: {
@@ -169,7 +170,14 @@ class PersonInfo extends Component {
   }
 
   render() {
-    const { classes, type, isStaffLoading, isTeamsLoading, info } = this.props;
+    const {
+      classes,
+      type,
+      isStaffLoading,
+      isTeamsLoading,
+      info,
+      institutionID
+    } = this.props;
     const { editPersonInfo } = this.props.actions;
 
     const teamsList = this.createTeamsList();
@@ -181,6 +189,9 @@ class PersonInfo extends Component {
     let profilePictureURL = "";
     let phoneNumber = "";
     let sports = {};
+    let rates = {};
+    let paymentType = "";
+    let isCoach = false;
 
     if (info) {
       name = info.info.name;
@@ -189,6 +200,42 @@ class PersonInfo extends Component {
       profilePictureURL = info.info.profilePictureURL;
       phoneNumber = info.info.phoneNumber;
       sports = info.info.sports;
+      rates = {
+        standard: info.institutions[
+          institutionID
+        ].paymentDefaults.rates.standard.toLocaleString("en-GB", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }),
+        overtime: info.institutions[
+          institutionID
+        ].paymentDefaults.rates.overtime.toLocaleString("en-GB", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }),
+        salary: info.institutions[
+          institutionID
+        ].paymentDefaults.rates.salary.toLocaleString("en-GB", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      };
+      isCoach = info.institutions[institutionID].roles.coach === "APPROVED";
+
+      switch (info.institutions[institutionID].paymentDefaults.type) {
+        case "N/A":
+          paymentType = "Not applicable";
+          break;
+        case "HOURLY":
+          paymentType = "Paid per hour";
+          break;
+        case "MONTHLY":
+          paymentType = "Paid monthly salary";
+          break;
+        default:
+          paymentType = "Not applicable";
+          break;
+      }
     }
 
     return (
@@ -246,7 +293,11 @@ class PersonInfo extends Component {
                 ) : (
                   <div className={classes.pictureWrapper}>
                     <Avatar
-                      src={profilePictureURL}
+                      src={
+                        profilePictureURL === ""
+                          ? defaultProfilePicture
+                          : profilePictureURL
+                      }
                       className={classes.picture}
                     />
                   </div>
@@ -293,7 +344,11 @@ class PersonInfo extends Component {
                     <ListItem>
                       <ListItemText
                         primary="Phone number"
-                        secondary={isStaffLoading ? "Loading..." : phoneNumber}
+                        secondary={
+                          isStaffLoading
+                            ? "Loading..."
+                            : phoneNumber === "" ? "Unknown" : phoneNumber
+                        }
                       />
                     </ListItem>
                   </List>
@@ -306,7 +361,7 @@ class PersonInfo extends Component {
                     type="title"
                     component="h3"
                   >
-                    Sports
+                    Preferred Sports
                   </Typography>
                   {isStaffLoading ? (
                     <ListItem className={classes.noItems}>
@@ -314,7 +369,7 @@ class PersonInfo extends Component {
                     </ListItem>
                   ) : (
                     <List>
-                      {sports &&
+                      {sports && _.keys(sports).length > 0 ? (
                         _.toPairs(sports).map(([sport, exists]) => {
                           if (exists)
                             return (
@@ -322,7 +377,12 @@ class PersonInfo extends Component {
                                 <ListItemText primary={sport} />
                               </ListItem>
                             );
-                        })}
+                        })
+                      ) : (
+                        <ListItem className={classes.noItems}>
+                          <ListItemText primary="No preferred sports" />
+                        </ListItem>
+                      )}
                     </List>
                   )}
                 </Paper>
@@ -371,6 +431,56 @@ class PersonInfo extends Component {
                   )}
                 </Paper>
               </Grid>
+              {isCoach && (
+                <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                  <Paper className={classes.section}>
+                    <Typography
+                      className={classes.heading}
+                      type="title"
+                      component="h3"
+                    >
+                      Coach Payment Settings
+                    </Typography>
+                    <List>
+                      <ListItem>
+                        <ListItemText
+                          primary="Terms"
+                          secondary={
+                            isStaffLoading ? "Loading..." : paymentType
+                          }
+                        />
+                      </ListItem>
+                      {info.institutions[institutionID].paymentDefaults.type ===
+                        "HOURLY" && (
+                        <ListItem>
+                          <ListItemText
+                            primary="Standard hourly rate"
+                            secondary={`R ${rates.standard}`}
+                          />
+                        </ListItem>
+                      )}
+                      {info.institutions[institutionID].paymentDefaults.type ===
+                        "HOURLY" && (
+                        <ListItem>
+                          <ListItemText
+                            primary="Overtime hourly rate"
+                            secondary={`R ${rates.overtime}`}
+                          />
+                        </ListItem>
+                      )}
+                      {info.institutions[institutionID].paymentDefaults.type ===
+                        "MONTHLY" && (
+                        <ListItem>
+                          <ListItemText
+                            primary="Monthly salary"
+                            secondary={`R ${rates.salary}`}
+                          />
+                        </ListItem>
+                      )}
+                    </List>
+                  </Paper>
+                </Grid>
+              )}
             </Grid>
           </div>
         </div>

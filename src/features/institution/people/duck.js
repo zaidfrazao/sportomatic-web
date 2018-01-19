@@ -2,7 +2,6 @@ import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
 import { TeamAlias } from "../../../models/aliases";
-import _ from "lodash";
 
 // Actions
 
@@ -17,21 +16,36 @@ export const REQUEST_COACHES = `${NAMESPACE}/REQUEST_COACHES`;
 export const RECEIVE_COACHES = `${NAMESPACE}/RECEIVE_COACHES`;
 export const REQUEST_MANAGERS = `${NAMESPACE}/REQUEST_MANAGERS`;
 export const RECEIVE_MANAGERS = `${NAMESPACE}/RECEIVE_MANAGERS`;
+export const REQUEST_ADMINS = `${NAMESPACE}/REQUEST_ADMINS`;
+export const RECEIVE_ADMINS = `${NAMESPACE}/RECEIVE_ADMINS`;
 export const REQUEST_COACH_REQUESTS = `${NAMESPACE}/REQUEST_COACH_REQUESTS`;
 export const RECEIVE_COACH_REQUESTS = `${NAMESPACE}/RECEIVE_COACH_REQUESTS`;
 export const REQUEST_MANAGER_REQUESTS = `${NAMESPACE}/REQUEST_MANAGER_REQUESTS`;
 export const RECEIVE_MANAGER_REQUESTS = `${NAMESPACE}/RECEIVE_MANAGER_REQUESTS`;
+export const REQUEST_ADMIN_REQUESTS = `${NAMESPACE}/REQUEST_ADMIN_REQUESTS`;
+export const RECEIVE_ADMIN_REQUESTS = `${NAMESPACE}/RECEIVE_ADMIN_REQUESTS`;
 export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
 export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
-export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
-export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
+export const OPEN_INVITE_PERSON_MODAL = `${NAMESPACE}/OPEN_INVITE_PERSON_MODAL`;
+export const CLOSE_INVITE_PERSON_MODAL = `${NAMESPACE}/CLOSE_INVITE_PERSON_MODAL`;
+export const REQUEST_INVITEE = `${NAMESPACE}/REQUEST_INVITEE`;
+export const RECEIVE_INVITEE = `${NAMESPACE}/RECEIVE_INVITEE`;
+export const ERROR_FETCHING_INVITEE_INFO = `${NAMESPACE}/ERROR_FETCHING_INVITEE_INFO`;
+export const REQUEST_CREATE_USER = `${NAMESPACE}/REQUEST_CREATE_USER`;
+export const RECEIVE_CREATE_USER = `${NAMESPACE}/RECEIVE_CREATE_USER`;
+export const ERROR_CREATING_USER = `${NAMESPACE}/ERROR_CREATING_USER`;
+export const REQUEST_INVITE_PERSON = `${NAMESPACE}/REQUEST_INVITE_PERSON`;
+export const RECEIVE_INVITE_PERSON = `${NAMESPACE}/RECEIVE_INVITE_PERSON`;
+export const ERROR_INVITING_PERSON = `${NAMESPACE}/ERROR_INVITING_PERSON`;
 
 // Reducers
 
 export const uiConfigInitialState = {
-  currentTab: "STAFF"
+  currentTab: "STAFF",
+  inviteeID: "",
+  inviteeInfo: {}
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -40,6 +54,12 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
       return {
         ...state,
         currentTab: action.payload.newTab
+      };
+    case RECEIVE_INVITEE:
+      return {
+        ...state,
+        inviteeID: action.payload.id,
+        inviteeInfo: action.payload.info
       };
     default:
       return state;
@@ -71,7 +91,8 @@ function filterReducer(state = filtersInitialState, action = {}) {
 
 export const dialogsInitialState = {
   isDeletPersonAlertOpen: false,
-  isEditPersonDialogOpen: false
+  isEditPersonDialogOpen: false,
+  isInvitePersonModalOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
@@ -96,6 +117,20 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
         ...state,
         isEditPersonDialogOpen: false
       };
+    case OPEN_INVITE_PERSON_MODAL:
+      return {
+        ...state,
+        isInvitePersonModalOpen: true
+      };
+    case RECEIVE_INVITE_PERSON:
+    case ERROR_INVITING_PERSON:
+    case RECEIVE_CREATE_USER:
+    case ERROR_CREATING_USER:
+    case CLOSE_INVITE_PERSON_MODAL:
+      return {
+        ...state,
+        isInvitePersonModalOpen: false
+      };
     default:
       return state;
   }
@@ -113,6 +148,11 @@ function staffReducer(state = {}, action = {}) {
         ...state,
         ...action.payload.managers
       };
+    case RECEIVE_ADMINS:
+      return {
+        ...state,
+        ...action.payload.admins
+      };
     default:
       return state;
   }
@@ -129,6 +169,11 @@ function requestsReducer(state = {}, action = {}) {
       return {
         ...state,
         ...action.payload.managers
+      };
+    case RECEIVE_ADMIN_REQUESTS:
+      return {
+        ...state,
+        ...action.payload.admins
       };
     default:
       return state;
@@ -150,7 +195,9 @@ function teamsReducer(state = {}, action = {}) {
 export const loadingStatusInitialState = {
   isCoachesLoading: false,
   isManagersLoading: false,
-  isTeamsLoading: false
+  isAdminsLoading: false,
+  isTeamsLoading: false,
+  isInviteeLoading: false
 };
 
 function loadingStatusListReducer(
@@ -158,25 +205,41 @@ function loadingStatusListReducer(
   action = {}
 ) {
   switch (action.type) {
+    case REQUEST_COACH_REQUESTS:
     case REQUEST_COACHES:
       return {
         ...state,
         isCoachesLoading: true
       };
+    case REQUEST_MANAGER_REQUESTS:
     case REQUEST_MANAGERS:
       return {
         ...state,
         isManagersLoading: true
       };
+    case REQUEST_ADMIN_REQUESTS:
+    case REQUEST_ADMINS:
+      return {
+        ...state,
+        isAdminsLoading: true
+      };
+    case RECEIVE_COACH_REQUESTS:
     case RECEIVE_COACHES:
       return {
         ...state,
         isCoachesLoading: false
       };
+    case RECEIVE_MANAGER_REQUESTS:
     case RECEIVE_MANAGERS:
       return {
         ...state,
         isManagersLoading: false
+      };
+    case RECEIVE_ADMIN_REQUESTS:
+    case RECEIVE_ADMINS:
+      return {
+        ...state,
+        isAdminsLoading: false
       };
     case REQUEST_TEAMS:
       return {
@@ -187,6 +250,23 @@ function loadingStatusListReducer(
       return {
         ...state,
         isTeamsLoading: false
+      };
+    case REQUEST_INVITE_PERSON:
+    case REQUEST_CREATE_USER:
+    case REQUEST_INVITEE:
+      return {
+        ...state,
+        isInviteeLoading: true
+      };
+    case RECEIVE_INVITE_PERSON:
+    case ERROR_INVITING_PERSON:
+    case RECEIVE_CREATE_USER:
+    case ERROR_CREATING_USER:
+    case RECEIVE_INVITEE:
+    case ERROR_FETCHING_INVITEE_INFO:
+      return {
+        ...state,
+        isInviteeLoading: false
       };
     default:
       return state;
@@ -277,18 +357,15 @@ export function closeEditPersonDialog() {
   };
 }
 
-export function requestStaff() {
+export function openInvitePersonModal() {
   return {
-    type: REQUEST_STAFF
+    type: OPEN_INVITE_PERSON_MODAL
   };
 }
 
-export function receiveStaff(filteredStaff) {
+export function closeInvitePersonModal() {
   return {
-    type: RECEIVE_STAFF,
-    payload: {
-      filteredStaff
-    }
+    type: CLOSE_INVITE_PERSON_MODAL
   };
 }
 
@@ -314,7 +391,7 @@ export function loadCoaches(institutionID) {
     const coachesRef = firebase
       .firestore()
       .collection("users")
-      .where(`institutions.${institutionID}.coachStatus`, "==", "APPROVED");
+      .where(`institutions.${institutionID}.roles.coach`, "==", "APPROVED");
 
     return coachesRef.onSnapshot(querySnapshot => {
       let coaches = {};
@@ -349,7 +426,7 @@ export function loadCoachRequests(institutionID) {
       .firestore()
       .collection("users")
       .where(
-        `institutions.${institutionID}.coachStatus`,
+        `institutions.${institutionID}.roles.coach`,
         "==",
         "AWAITING_APPROVAL"
       );
@@ -386,7 +463,7 @@ export function loadManagers(institutionID) {
     const managersRef = firebase
       .firestore()
       .collection("users")
-      .where(`institutions.${institutionID}.managerStatus`, "==", "APPROVED");
+      .where(`institutions.${institutionID}.roles.manager`, "==", "APPROVED");
 
     return managersRef.onSnapshot(querySnapshot => {
       let managers = {};
@@ -421,7 +498,7 @@ export function loadManagerRequests(institutionID) {
       .firestore()
       .collection("users")
       .where(
-        `institutions.${institutionID}.managerStatus`,
+        `institutions.${institutionID}.roles.manager`,
         "==",
         "AWAITING_APPROVAL"
       );
@@ -432,6 +509,78 @@ export function loadManagerRequests(institutionID) {
         managers[doc.id] = doc.data();
       });
       dispatch(receiveManagerRequests(managers));
+    });
+  };
+}
+
+export function requestAdmins() {
+  return {
+    type: REQUEST_ADMINS
+  };
+}
+
+export function receiveAdmins(admins) {
+  return {
+    type: RECEIVE_ADMINS,
+    payload: {
+      admins
+    }
+  };
+}
+
+export function loadAdmins(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestAdmins());
+
+    const adminsRef = firebase
+      .firestore()
+      .collection("users")
+      .where(`institutions.${institutionID}.roles.admin`, "==", "APPROVED");
+
+    return adminsRef.onSnapshot(querySnapshot => {
+      let admins = {};
+      querySnapshot.forEach(doc => {
+        admins[doc.id] = doc.data();
+      });
+      dispatch(receiveAdmins(admins));
+    });
+  };
+}
+
+export function requestAdminRequests() {
+  return {
+    type: REQUEST_ADMIN_REQUESTS
+  };
+}
+
+export function receiveAdminRequests(admins) {
+  return {
+    type: RECEIVE_ADMIN_REQUESTS,
+    payload: {
+      admins
+    }
+  };
+}
+
+export function loadAdminRequests(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestAdminRequests());
+
+    const adminsRef = firebase
+      .firestore()
+      .collection("users")
+      .where(
+        `institutions.${institutionID}.roles.admin`,
+        "==",
+        "AWAITING_APPROVAL"
+      );
+
+    return adminsRef.onSnapshot(querySnapshot => {
+      let admins = {};
+      querySnapshot.forEach(doc => {
+        admins[doc.id] = doc.data();
+      });
+      dispatch(receiveAdminRequests(admins));
     });
   };
 }
@@ -470,29 +619,122 @@ export function loadTeams(institutionID) {
   };
 }
 
-export function performFilter(userType, sport) {
+export function requestInvitee() {
+  return {
+    type: REQUEST_INVITEE
+  };
+}
+
+export function receiveInvitee(id, info) {
+  return {
+    type: RECEIVE_INVITEE,
+    payload: {
+      id,
+      info
+    }
+  };
+}
+
+export function errorFetchingInviteeInfo(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_FETCHING_INVITEE_INFO,
+    payload: {
+      error
+    }
+  };
+}
+
+export function fetchInviteeInfo(email) {
   return function(dispatch: DispatchAlias) {
-    let filteredStaff = staff;
-    if (userType !== "") {
-      filteredStaff = _.fromPairs(
-        _.toPairs(filteredStaff).filter(
-          keyValuePairs => keyValuePairs[1].metadata.type === userType
-        )
-      );
-    }
+    dispatch(requestInvitee());
 
-    if (sport !== "") {
-      filteredStaff = _.fromPairs(
-        _.toPairs(filteredStaff).filter(
-          keyValuePairs => keyValuePairs[1].preferredSports === sport
-        )
-      );
-    }
+    const inviteeRef = firebase
+      .firestore()
+      .collection("users")
+      .where("info.email", "==", email);
 
-    if (filteredStaff === null) {
-      dispatch(receiveStaff({}));
-    } else {
-      dispatch(receiveStaff(filteredStaff));
+    return inviteeRef
+      .get()
+      .then(querySnapshot => {
+        let info = {};
+        let id = "";
+        querySnapshot.forEach(doc => {
+          id = doc.id;
+          info = doc.data();
+        });
+        dispatch(receiveInvitee(id, info));
+      })
+      .catch(error => dispatch(errorFetchingInviteeInfo(error)));
+  };
+}
+
+export function requestCreateUser() {
+  return {
+    type: REQUEST_CREATE_USER
+  };
+}
+
+export function receiveCreateUser() {
+  return {
+    type: RECEIVE_CREATE_USER
+  };
+}
+
+export function errorCreatingUser(error: { code: string, message: string }) {
+  return {
+    type: ERROR_CREATING_USER,
+    payload: {
+      error
     }
+  };
+}
+
+export function createUser(userInfo) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestCreateUser());
+    const db = firebase.firestore();
+
+    return db
+      .collection("users")
+      .add(userInfo)
+      .then(() => dispatch(receiveCreateUser()))
+      .catch(error => dispatch(errorCreatingUser(error)));
+  };
+}
+
+export function requestInvitePerson() {
+  return {
+    type: REQUEST_INVITE_PERSON
+  };
+}
+
+export function receiveInvitePerson() {
+  return {
+    type: RECEIVE_INVITE_PERSON
+  };
+}
+
+export function errorInvitingPerson(error: { code: string, message: string }) {
+  return {
+    type: ERROR_INVITING_PERSON,
+    payload: {
+      error
+    }
+  };
+}
+
+export function invitePerson(userID, info) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestInvitePerson());
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
+    return userRef
+      .set(info)
+      .then(() => dispatch(receiveInvitePerson()))
+      .catch(error => dispatch(errorInvitingPerson(error)));
   };
 }

@@ -12,7 +12,6 @@ import { FormControl } from "material-ui/Form";
 import { grey } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
-import { MenuItem } from "material-ui/Menu";
 import SearchIcon from "material-ui-icons/Search";
 import Select from "material-ui/Select";
 import Toolbar from "material-ui/Toolbar";
@@ -56,14 +55,10 @@ class FiltersToolbar extends Component {
   state = {
     isOpen: false,
     searchText: "",
-    selectedGender: "All",
     selectedSport: "All",
-    selectedDivision: "All",
-    selectedAgeGroup: "All",
-    confirmedGender: "All",
+    selectedType: "All",
     confirmedSport: "All",
-    confirmedDivision: "All",
-    confirmedAgeGroup: "All"
+    confirmedType: "All"
   };
 
   componentWillMount() {
@@ -94,7 +89,7 @@ class FiltersToolbar extends Component {
     this.setState({
       isOpen: false,
       confirmedSport: this.state.selectedSport,
-      confirmedAgeGroup: this.state.selectedType
+      confirmedType: this.state.selectedType
     });
   }
 
@@ -180,7 +175,7 @@ class FiltersToolbar extends Component {
               <FilterIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Add new person" placement="bottom">
+          <Tooltip title="Invite new person" placement="bottom">
             <IconButton aria-label="add new person" onClick={() => addPerson()}>
               <AddIcon />
             </IconButton>
@@ -193,33 +188,35 @@ class FiltersToolbar extends Component {
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="sport">Sport</InputLabel>
                 <Select
+                  native
                   value={selectedSport}
                   onChange={this.handleChange("selectedSport")}
                   input={<Input id="sport" />}
                 >
-                  <MenuItem value="All">All</MenuItem>
+                  <option value="All">All</option>
                   {sports.map(item => {
                     return (
-                      <MenuItem key={item} value={item}>
+                      <option key={item} value={item}>
                         {item}
-                      </MenuItem>
+                      </option>
                     );
                   })}
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="type">Types</InputLabel>
+                <InputLabel htmlFor="type">Role</InputLabel>
                 <Select
+                  native
                   value={selectedType}
                   onChange={this.handleChange("selectedType")}
                   input={<Input id="type" />}
                 >
-                  <MenuItem value="All">All</MenuItem>
+                  <option value="All">All</option>
                   {types.map(item => {
                     return (
-                      <MenuItem key={item} value={item}>
+                      <option key={item} value={item}>
                         {item}
-                      </MenuItem>
+                      </option>
                     );
                   })}
                 </Select>

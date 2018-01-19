@@ -940,7 +940,7 @@ export function loadCoaches(institutionID) {
     const coachesRef = firebase
       .firestore()
       .collection("users")
-      .where(`institutions.${institutionID}.coachStatus`, "==", "APPROVED");
+      .where(`institutions.${institutionID}.roles.coach`, "==", "APPROVED");
 
     return coachesRef.onSnapshot(querySnapshot => {
       let coaches = {};
@@ -983,7 +983,7 @@ export function loadManagers(institutionID) {
     const managersRef = firebase
       .firestore()
       .collection("users")
-      .where(`institutions.${institutionID}.managerStatus`, "==", "APPROVED");
+      .where(`institutions.${institutionID}.roles.manager`, "==", "APPROVED");
 
     return managersRef.onSnapshot(querySnapshot => {
       let managers = {};

@@ -4,6 +4,7 @@ import Button from "material-ui/Button";
 import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
+import defaultProfilePicture from "../../../../image/default-profile-picture.png";
 
 const styles = {
   card: {
@@ -31,7 +32,11 @@ class PersonCard extends Component {
         <Card className={classes.card}>
           <CardMedia
             className={classes.media}
-            image={profilePictureURL}
+            image={
+              profilePictureURL === ""
+                ? defaultProfilePicture
+                : profilePictureURL
+            }
             title={name}
           />
           <CardContent>
