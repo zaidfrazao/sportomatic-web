@@ -39,6 +39,9 @@ export const ERROR_CREATING_USER = `${NAMESPACE}/ERROR_CREATING_USER`;
 export const REQUEST_INVITE_PERSON = `${NAMESPACE}/REQUEST_INVITE_PERSON`;
 export const RECEIVE_INVITE_PERSON = `${NAMESPACE}/RECEIVE_INVITE_PERSON`;
 export const ERROR_INVITING_PERSON = `${NAMESPACE}/ERROR_INVITING_PERSON`;
+export const REQUEST_EDIT_PERSON = `${NAMESPACE}/REQUEST_EDIT_PERSON`;
+export const RECEIVE_EDIT_PERSON = `${NAMESPACE}/RECEIVE_EDIT_PERSON`;
+export const ERROR_EDITTING_PERSON = `${NAMESPACE}/ERROR_EDITTING_PERSON`;
 
 // Reducers
 
@@ -112,6 +115,8 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
         ...state,
         isEditPersonDialogOpen: true
       };
+    case RECEIVE_EDIT_PERSON:
+    case ERROR_EDITTING_PERSON:
     case CLOSE_EDIT_PERSON_DIALOG:
       return {
         ...state,
@@ -197,7 +202,8 @@ export const loadingStatusInitialState = {
   isManagersLoading: false,
   isAdminsLoading: false,
   isTeamsLoading: false,
-  isInviteeLoading: false
+  isInviteeLoading: false,
+  isEditPersonLoading: false
 };
 
 function loadingStatusListReducer(
@@ -250,6 +256,17 @@ function loadingStatusListReducer(
       return {
         ...state,
         isTeamsLoading: false
+      };
+    case REQUEST_EDIT_PERSON:
+      return {
+        ...state,
+        isEditPersonLoading: true
+      };
+    case RECEIVE_EDIT_PERSON:
+    case ERROR_EDITTING_PERSON:
+      return {
+        ...state,
+        isEditPersonLoading: false
       };
     case REQUEST_INVITE_PERSON:
     case REQUEST_CREATE_USER:
@@ -736,5 +753,39 @@ export function invitePerson(userID, info) {
       .set(info)
       .then(() => dispatch(receiveInvitePerson()))
       .catch(error => dispatch(errorInvitingPerson(error)));
+  };
+}
+
+export function requestEditPerson() {
+  return {
+    type: REQUEST_EDIT_PERSON
+  };
+}
+
+export function receiveEditPerson() {
+  return {
+    type: RECEIVE_EDIT_PERSON
+  };
+}
+
+export function errorEdittingPerson(error: { code: string, message: string }) {
+  return {
+    type: ERROR_EDITTING_PERSON,
+    payload: {
+      error
+    }
+  };
+}
+
+export function editPerson(userID, info) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEditPerson());
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
+    return userRef
+      .set(info)
+      .then(() => dispatch(receiveEditPerson()))
+      .catch(error => dispatch(errorEdittingPerson(error)));
   };
 }

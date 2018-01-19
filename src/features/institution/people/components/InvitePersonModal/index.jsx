@@ -97,7 +97,11 @@ class InvitePersonModal extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const { inviteeInfo, institutionID } = nextProps;
+    const { inviteeInfo, institutionID, isOpen } = nextProps;
+
+    if (isOpen !== this.props.isOpen && !isOpen) {
+      this.resetState();
+    }
 
     if (inviteeInfo !== this.props.inviteeInfo) {
       if (!inviteeInfo.institutions) {
@@ -114,10 +118,6 @@ class InvitePersonModal extends Component {
         });
       }
     }
-  }
-
-  componentWillUnmount() {
-    this.resetState();
   }
 
   getType() {

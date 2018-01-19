@@ -7,6 +7,7 @@ import { CircularProgress } from "material-ui/Progress";
 import Tabs, { Tab } from "material-ui/Tabs";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../components/BannerAd";
+import EditPersonDialog from "./components/EditPersonDialog";
 import InvitePersonModal from "./components/InvitePersonModal";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
@@ -390,7 +391,8 @@ class PeopleLayout extends Component {
       isManagersLoading,
       isAdminsLoading,
       isTeamsLoading,
-      isInviteeLoading
+      isInviteeLoading,
+      isEditPersonLoading
     } = this.props.loadingStatus;
     const {
       updateTab,
@@ -404,7 +406,8 @@ class PeopleLayout extends Component {
       updateSearch,
       fetchInviteeInfo,
       createUser,
-      invitePerson
+      invitePerson,
+      editPerson
     } = this.props.actions;
     const {
       isDeletPersonAlertOpen,
@@ -440,11 +443,21 @@ class PeopleLayout extends Component {
                 editPersonInfo: () => openEditPersonDialog()
               }}
             />
-            <NotificationModal
+            <EditPersonDialog
               isOpen={isEditPersonDialogOpen}
-              handleOkClick={closeEditPersonDialog}
-              heading="Unavailable in Beta"
-              message="The ability to edit staff member info is unavailable in this version of the beta."
+              isLoading={
+                isCoachesLoading ||
+                isManagersLoading ||
+                isAdminsLoading ||
+                isEditPersonLoading
+              }
+              personID={personID}
+              personInfo={staff[personID]}
+              institutionID={userID}
+              actions={{
+                editPerson: (id, info) => editPerson(id, info),
+                closeModal: () => closeEditPersonDialog()
+              }}
             />
           </div>
         ) : (
