@@ -4,12 +4,21 @@ import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import BackIcon from "material-ui-icons/ArrowBack";
+import Collapse from "material-ui/transitions/Collapse";
 import EditIcon from "material-ui-icons/Edit";
+import ExpandLess from "material-ui-icons/ExpandLess";
+import ExpandMore from "material-ui-icons/ExpandMore";
 import { grey, red } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import IconButton from "material-ui/IconButton";
-import List, { ListItem, ListItemText } from "material-ui/List";
+import List, {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader
+} from "material-ui/List";
 import Paper from "material-ui/Paper";
+import PersonIcon from "material-ui-icons/Person";
 import { Route } from "react-router-dom";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
@@ -19,8 +28,9 @@ import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../../components/LeaderboardAd";
+import defaultProfilePicture from "../../image/default-profile-picture.png";
 
-const styles = {
+const styles = theme => ({
   actionsBar: {
     backgroundColor: grey[200]
   },
@@ -68,10 +78,16 @@ const styles = {
     color: grey[50],
     borderBottom: `1px solid ${grey[200]}`
   },
+  inset: {
+    paddingLeft: theme.spacing.unit * 4
+  },
   name: {
     margin: 24,
     width: "calc(100% - 48px)",
     textAlign: "center"
+  },
+  nested: {
+    backgroundColor: grey[100]
   },
   noItems: {
     textAlign: "center"
@@ -100,9 +116,80 @@ const styles = {
   wrapper: {
     padding: 24
   }
-};
+});
 
 class TeamInfo extends Component {
+  state = {
+    isCoachOpen: {},
+    isManagerOpen: {}
+  };
+
+  componentWillMount() {
+    const { info } = this.props;
+
+    if (info) {
+      let isCoachOpen = {};
+      let isManagerOpen = {};
+
+      _.keys(info.coaches).map(coachID => {
+        isCoachOpen[coachID] = false;
+      });
+
+      _.keys(info.managers).map(managerID => {
+        isManagerOpen[managerID] = false;
+      });
+
+      this.setState({
+        isCoachOpen,
+        isManagerOpen
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { info } = nextProps;
+
+    if (info && info !== this.props.info) {
+      let isCoachOpen = {};
+      let isManagerOpen = {};
+
+      _.keys(info.coaches).map(coachID => {
+        isCoachOpen[coachID] = false;
+      });
+
+      _.keys(info.managers).map(managerID => {
+        isManagerOpen[managerID] = false;
+      });
+
+      this.setState({
+        isCoachOpen,
+        isManagerOpen
+      });
+    }
+  }
+
+  toggleCoachInfo = coachID => {
+    const { isCoachOpen } = this.state;
+
+    this.setState({
+      isCoachOpen: {
+        ...isCoachOpen,
+        [coachID]: !isCoachOpen[coachID]
+      }
+    });
+  };
+
+  toggleManagerInfo = managerID => {
+    const { isManagerOpen } = this.state;
+
+    this.setState({
+      isManagerOpen: {
+        ...isManagerOpen,
+        [managerID]: !isManagerOpen[managerID]
+      }
+    });
+  };
+
   formatGender(gender, ageGroup) {
     let formattedGender = "Mixed";
     if (ageGroup < 18) {
@@ -127,12 +214,14 @@ class TeamInfo extends Component {
 
   getListItems() {
     const {
+      classes,
       coaches,
       managers,
       info,
       isCoachesLoading,
       isManagersLoading
     } = this.props;
+    const { isCoachOpen, isManagerOpen } = this.state;
 
     let eventCoaches = [];
     let eventManagers = [];
@@ -146,16 +235,42 @@ class TeamInfo extends Component {
             key={id}
             render={({ history }) => {
               return (
-                <ListItem
-                  button
-                  onClick={() => history.push(`/admin/people/${id}`)}
-                >
-                  <Avatar src={coachInfo.profilePictureURL} />
-                  <ListItemText
-                    primary={`${coachInfo.name} ${coachInfo.surname}`}
-                    secondary={coachInfo.phoneNumber}
-                  />
-                </ListItem>
+                <div>
+                  <ListItem button onClick={() => this.toggleCoachInfo(id)}>
+                    <Avatar
+                      src={
+                        coachInfo.profilePictureURL === ""
+                          ? defaultProfilePicture
+                          : coachInfo.profilePictureURL
+                      }
+                    />
+                    <ListItemText
+                      primary={`${coachInfo.name} ${coachInfo.surname}`}
+                      secondary={coachInfo.phoneNumber}
+                    />
+                    {isCoachOpen[id] ? <ExpandLess /> : <ExpandMore />}
+                  </ListItem>
+                  <Collapse
+                    component="li"
+                    in={isCoachOpen[id]}
+                    timeout="auto"
+                    unmountOnExit
+                  >
+                    <List className={classes.nested} disablePadding>
+                      <ListSubheader>Options</ListSubheader>
+                      <ListItem
+                        className={classes.inset}
+                        button
+                        onClick={() => history.push(`/admin/people/${id}`)}
+                      >
+                        <ListItemIcon>
+                          <PersonIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="View coach info" />
+                      </ListItem>
+                    </List>
+                  </Collapse>
+                </div>
               );
             }}
           />
@@ -170,16 +285,42 @@ class TeamInfo extends Component {
             key={id}
             render={({ history }) => {
               return (
-                <ListItem
-                  button
-                  onClick={() => history.push(`/admin/people/${id}`)}
-                >
-                  <Avatar src={managerInfo.profilePictureURL} />
-                  <ListItemText
-                    primary={`${managerInfo.name} ${managerInfo.surname}`}
-                    secondary={managerInfo.phoneNumber}
-                  />
-                </ListItem>
+                <div>
+                  <ListItem button onClick={() => this.toggleManagerInfo(id)}>
+                    <Avatar
+                      src={
+                        managerInfo.profilePictureURL === ""
+                          ? defaultProfilePicture
+                          : managerInfo.profilePictureURL
+                      }
+                    />
+                    <ListItemText
+                      primary={`${managerInfo.name} ${managerInfo.surname}`}
+                      secondary={managerInfo.phoneNumber}
+                    />
+                    {isManagerOpen[id] ? <ExpandLess /> : <ExpandMore />}
+                  </ListItem>
+                  <Collapse
+                    component="li"
+                    in={isManagerOpen[id]}
+                    timeout="auto"
+                    unmountOnExit
+                  >
+                    <List className={classes.nested} disablePadding>
+                      <ListSubheader>Options</ListSubheader>
+                      <ListItem
+                        className={classes.inset}
+                        button
+                        onClick={() => history.push(`/admin/people/${id}`)}
+                      >
+                        <ListItemIcon>
+                          <PersonIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="View manager info" />
+                      </ListItem>
+                    </List>
+                  </Collapse>
+                </div>
               );
             }}
           />

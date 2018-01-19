@@ -5,13 +5,22 @@ import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import BackIcon from "material-ui-icons/ArrowBack";
 import { CircularProgress } from "material-ui/Progress";
+import Collapse from "material-ui/transitions/Collapse";
 import EditIcon from "material-ui-icons/Edit";
+import ExpandLess from "material-ui-icons/ExpandLess";
+import ExpandMore from "material-ui-icons/ExpandMore";
 import { grey, red } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import IconButton from "material-ui/IconButton";
-import List, { ListItem, ListItemText } from "material-ui/List";
+import List, {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader
+} from "material-ui/List";
 import Paper from "material-ui/Paper";
 import { Route } from "react-router-dom";
+import TeamIcon from "material-ui-icons/Group";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
@@ -21,7 +30,7 @@ import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
 import LargeRectangleAd from "../../../../../components/LargeRectangleAd";
 import defaultProfilePicture from "../../image/default-profile-picture.png";
 
-const styles = {
+const styles = theme => ({
   actionsBar: {
     backgroundColor: grey[200]
   },
@@ -59,6 +68,9 @@ const styles = {
     color: grey[50],
     borderBottom: `1px solid ${grey[200]}`
   },
+  inset: {
+    paddingLeft: theme.spacing.unit * 4
+  },
   loaderWrapper: {
     flexGrow: 1,
     display: "flex",
@@ -73,6 +85,9 @@ const styles = {
     margin: 24,
     width: "calc(100% - 48px)",
     textAlign: "center"
+  },
+  nested: {
+    backgroundColor: grey[100]
   },
   noItems: {
     textAlign: "center"
@@ -138,9 +153,45 @@ const styles = {
   wrapper: {
     padding: 24
   }
-};
+});
 
 class PersonInfo extends Component {
+  state = {
+    isTeamOpen: {}
+  };
+
+  componentWillMount() {
+    const { info } = this.props;
+
+    if (info) {
+      let isTeamOpen = {};
+
+      _.keys(this.createTeamsList()).map(teamID => {
+        isTeamOpen[teamID] = false;
+      });
+
+      this.setState({
+        isTeamOpen
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { info } = nextProps;
+
+    if (info && info !== this.props.info) {
+      let isTeamOpen = {};
+
+      _.keys(this.createTeamsList()).map(teamID => {
+        isTeamOpen[teamID] = false;
+      });
+
+      this.setState({
+        isTeamOpen
+      });
+    }
+  }
+
   createAd() {
     const { isMobile, isTablet } = this.props;
 
@@ -169,6 +220,17 @@ class PersonInfo extends Component {
     return teamsList;
   }
 
+  toggleTeamInfo = teamID => {
+    const { isTeamOpen } = this.state;
+
+    this.setState({
+      isTeamOpen: {
+        ...isTeamOpen,
+        [teamID]: !isTeamOpen[teamID]
+      }
+    });
+  };
+
   render() {
     const {
       classes,
@@ -178,6 +240,7 @@ class PersonInfo extends Component {
       info,
       institutionID
     } = this.props;
+    const { isTeamOpen } = this.state;
     const { editPersonInfo } = this.props.actions;
 
     const teamsList = this.createTeamsList();
@@ -406,21 +469,49 @@ class PersonInfo extends Component {
                     <List>
                       {teamsList && teamsList.length > 0 ? (
                         teamsList.map(teamInfo => (
-                          <Route
-                            key={teamInfo.id}
-                            component={({ history }) => (
-                              <ListItem
-                                button
-                                onClick={() =>
-                                  history.push(`/admin/teams/${teamInfo.id}`)}
-                              >
-                                <ListItemText
-                                  primary={teamInfo.info.name}
-                                  secondary={teamInfo.info.sport}
-                                />
-                              </ListItem>
-                            )}
-                          />
+                          <div key={teamInfo.id}>
+                            <ListItem
+                              button
+                              onClick={() => this.toggleTeamInfo(teamInfo.id)}
+                            >
+                              <ListItemText
+                                primary={teamInfo.info.name}
+                                secondary={teamInfo.info.sport}
+                              />
+                              {isTeamOpen[teamInfo.id] ? (
+                                <ExpandLess />
+                              ) : (
+                                <ExpandMore />
+                              )}
+                            </ListItem>
+                            <Collapse
+                              component="li"
+                              in={isTeamOpen[teamInfo.id]}
+                              timeout="auto"
+                              unmountOnExit
+                            >
+                              <List className={classes.nested} disablePadding>
+                                <ListSubheader>Options</ListSubheader>
+                                <Route
+                                  render={({ history }) => (
+                                    <ListItem
+                                      className={classes.inset}
+                                      button
+                                      onClick={() =>
+                                        history.push(
+                                          `/admin/teams/${teamInfo.id}`
+                                        )}
+                                    >
+                                      <ListItemIcon>
+                                        <TeamIcon />
+                                      </ListItemIcon>
+                                      <ListItemText primary="View team info" />
+                                    </ListItem>
+                                  )}
+                                />{" "}
+                              </List>
+                            </Collapse>
+                          </div>
                         ))
                       ) : (
                         <ListItem className={classes.noItems}>

@@ -49,6 +49,7 @@ import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../../components/LeaderboardAd";
+import defaultProfilePicture from "../../image/default-profile-picture.png";
 
 const styles = theme => ({
   actionsBar: {
@@ -645,14 +646,15 @@ class EventInfo extends Component {
                             }
                           })}
                         <ListSubheader>Options</ListSubheader>
-                        <ListItem className={classes.inset} button>
+                        <ListItem
+                          className={classes.inset}
+                          button
+                          onClick={() => history.push(`/admin/teams/${id}`)}
+                        >
                           <ListItemIcon>
                             <TeamIcon />
                           </ListItemIcon>
-                          <ListItemText
-                            primary="View team info"
-                            onClick={() => history.push(`/admin/teams/${id}`)}
-                          />
+                          <ListItemText primary="View team info" />
                         </ListItem>
                         {info.requiredInfo.isCompetitive &&
                           info.requiredInfo.status === "ACTIVE" && (
@@ -712,7 +714,13 @@ class EventInfo extends Component {
               return (
                 <div>
                   <ListItem button onClick={() => this.toggleCoachInfo(id)}>
-                    <Avatar src={coachInfo.profilePictureURL} />
+                    <Avatar
+                      src={
+                        coachInfo.profilePictureURL === ""
+                          ? defaultProfilePicture
+                          : coachInfo.profilePictureURL
+                      }
+                    />
                     <ListItemText
                       primary={`${coachInfo.name} ${coachInfo.surname}`}
                       secondary={coachInfo.phoneNumber}
@@ -786,7 +794,11 @@ class EventInfo extends Component {
                               <Avatar
                                 src={
                                   coaches[coachEventInfo.attendance.substitute]
-                                    .info.profilePictureURL
+                                    .info.profilePictureURL === ""
+                                    ? defaultProfilePicture
+                                    : coaches[
+                                        coachEventInfo.attendance.substitute
+                                      ].info.profilePictureURL
                                 }
                               />
                             ) : (
@@ -823,14 +835,15 @@ class EventInfo extends Component {
                           </ListItem>
                         )}
                       <ListSubheader>Options</ListSubheader>
-                      <ListItem className={classes.inset} button>
+                      <ListItem
+                        className={classes.inset}
+                        button
+                        onClick={() => history.push(`/admin/people/${id}`)}
+                      >
                         <ListItemIcon>
                           <PersonIcon />
                         </ListItemIcon>
-                        <ListItemText
-                          primary="View coach info"
-                          onClick={() => history.push(`/admin/people/${id}`)}
-                        />
+                        <ListItemText primary="View coach info" />
                       </ListItem>
                       {info.requiredInfo.status === "ACTIVE" &&
                         coachEventInfo.hours.status === "AWAITING_SIGN_IN" &&
@@ -921,7 +934,13 @@ class EventInfo extends Component {
               return (
                 <div>
                   <ListItem button onClick={() => this.toggleManagerInfo(id)}>
-                    <Avatar src={managerInfo.profilePictureURL} />
+                    <Avatar
+                      src={
+                        managerInfo.profilePictureURL === ""
+                          ? defaultProfilePicture
+                          : managerInfo.profilePictureURL
+                      }
+                    />
                     <ListItemText
                       primary={`${managerInfo.name} ${managerInfo.surname}`}
                       secondary={managerInfo.phoneNumber}
@@ -936,14 +955,15 @@ class EventInfo extends Component {
                   >
                     <List className={classes.nested} disablePadding>
                       <ListSubheader>Options</ListSubheader>
-                      <ListItem className={classes.inset} button>
+                      <ListItem
+                        className={classes.inset}
+                        button
+                        onClick={() => history.push(`/admin/people/${id}`)}
+                      >
                         <ListItemIcon>
                           <PersonIcon />
                         </ListItemIcon>
-                        <ListItemText
-                          primary="View manager info"
-                          onClick={() => history.push(`/admin/people/${id}`)}
-                        />
+                        <ListItemText primary="View manager info" />
                       </ListItem>
                     </List>
                   </Collapse>
