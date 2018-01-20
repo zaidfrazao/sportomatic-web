@@ -85,13 +85,15 @@ class CustomAppBar extends Component {
       title,
       isSideMenuOpen,
       isMobile,
-      notifications,
+      unreadNotifications,
+      readNotifications,
       isNotificationsLoading
     } = this.props;
     const {
       toggleSideMenu,
       openLogOutModal,
-      openSettingsAlert
+      openSettingsAlert,
+      markNotificationsRead
     } = this.props.actions;
 
     return (
@@ -126,8 +128,12 @@ class CustomAppBar extends Component {
           </Typography>
           <div className={classes.rightButtons}>
             <NotificationsTray
-              notifications={notifications}
+              readNotifications={readNotifications}
+              unreadNotifications={unreadNotifications}
               isLoading={isNotificationsLoading}
+              actions={{
+                markNotificationsRead
+              }}
             />
             <div>
               <Tooltip title="Options" placement="bottom">

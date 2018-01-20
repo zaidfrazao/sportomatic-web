@@ -86,18 +86,26 @@ class CoreInterfaceLayout extends Component {
 
   componentWillMount() {
     const { pathname } = this.props.location;
-    const { initUser, loadNotifications } = this.props.actions;
+    const {
+      initUser,
+      loadUnreadNotifications,
+      loadReadNotifications
+    } = this.props.actions;
     const { userID } = this.props.uiConfig;
     initUser();
     if (userID !== "") {
-      loadNotifications(userID);
+      loadUnreadNotifications(userID);
+      loadReadNotifications(userID);
     }
     this.updateCoreUI(pathname);
   }
 
   componentWillReceiveProps(nextProps) {
     const { pathname } = nextProps.location;
-    const { loadNotifications } = nextProps.actions;
+    const {
+      loadUnreadNotifications,
+      loadReadNotifications
+    } = nextProps.actions;
     const { userID } = nextProps.uiConfig;
 
     if (pathname !== this.props.location.pathname) {
@@ -105,7 +113,8 @@ class CoreInterfaceLayout extends Component {
     }
 
     if (userID !== this.props.uiConfig.userID) {
-      loadNotifications(userID);
+      loadUnreadNotifications(userID);
+      loadReadNotifications(userID);
     }
   }
 
@@ -161,14 +170,15 @@ class CoreInterfaceLayout extends Component {
   }
 
   render() {
-    const { classes, notifications } = this.props;
+    const { classes, unreadNotifications, readNotifications } = this.props;
     const {
       toggleSideMenu,
       signOut,
       closeSettingsAlert,
       openSettingsAlert,
       openLogOutModal,
-      closeLogOutModal
+      closeLogOutModal,
+      markNotificationsRead
     } = this.props.actions;
     const { windowWidth } = this.state;
     const { isNotificationsLoading } = this.props.loadingStatus;
@@ -197,9 +207,15 @@ class CoreInterfaceLayout extends Component {
           <CustomAppBar
             title={appBarTitle}
             isSideMenuOpen={isSideMenuOpen}
-            actions={{ toggleSideMenu, openLogOutModal, openSettingsAlert }}
+            actions={{
+              toggleSideMenu,
+              openLogOutModal,
+              openSettingsAlert,
+              markNotificationsRead
+            }}
             isMobile={isMobile}
-            notifications={notifications}
+            readNotifications={readNotifications}
+            unreadNotifications={unreadNotifications}
             isNotificationsLoading={isNotificationsLoading}
           />
           <SideMenu

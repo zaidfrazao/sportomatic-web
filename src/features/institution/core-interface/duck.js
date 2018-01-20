@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
@@ -15,8 +16,13 @@ export const OPEN_SETTINGS_ALERT = `${NAMESPACE}/OPEN_SETTINGS_ALERT`;
 export const CLOSE_SETTINGS_ALERT = `${NAMESPACE}/CLOSE_SETTINGS_ALERT`;
 export const OPEN_LOG_OUT_MODAL = `${NAMESPACE}/OPEN_LOG_OUT_MODAL`;
 export const CLOSE_LOG_OUT_MODAL = `${NAMESPACE}/CLOSE_LOG_OUT_MODAL`;
-export const REQUEST_NOTIFICATIONS = `${NAMESPACE}/REQUEST_NOTIFICATIONS`;
-export const RECEIVE_NOTIFICATIONS = `${NAMESPACE}/RECEIVE_NOTIFICATIONS`;
+export const REQUEST_UNREAD_NOTIFICATIONS = `${NAMESPACE}/REQUEST_UNREAD_NOTIFICATIONS`;
+export const RECEIVE_UNREAD_NOTIFICATIONS = `${NAMESPACE}/RECEIVE_UNREAD_NOTIFICATIONS`;
+export const REQUEST_READ_NOTIFICATIONS = `${NAMESPACE}/REQUEST_READ_NOTIFICATIONS`;
+export const RECEIVE_READ_NOTIFICATIONS = `${NAMESPACE}/RECEIVE_READ_NOTIFICATIONS`;
+export const REQUEST_MARK_NOTIFICATIONS_READ = `${NAMESPACE}/REQUEST_MARK_NOTIFICATIONS_READ`;
+export const RECEIVE_MARK_NOTIFICATIONS_READ = `${NAMESPACE}/RECEIVE_MARK_NOTIFICATIONS_READ`;
+export const ERROR_MARKING_NOTIFICATIONS_READ = `${NAMESPACE}/ERROR_MARKING_NOTIFICATIONS_READ`;
 
 // Reducers
 
@@ -108,12 +114,14 @@ export const loadingStatusInitialState = {
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
-    case REQUEST_NOTIFICATIONS:
+    case REQUEST_READ_NOTIFICATIONS:
+    case REQUEST_UNREAD_NOTIFICATIONS:
       return {
         ...state,
         isNotificationsLoading: true
       };
-    case RECEIVE_NOTIFICATIONS:
+    case RECEIVE_READ_NOTIFICATIONS:
+    case RECEIVE_UNREAD_NOTIFICATIONS:
       return {
         ...state,
         isNotificationsLoading: false
@@ -123,11 +131,28 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   }
 }
 
-export const notificationsInitialState = [];
+export const unreadNotificationsInitialState = [];
 
-function notificationsReducer(state = notificationsInitialState, action = {}) {
+function unreadNotificationsReducer(
+  state = unreadNotificationsInitialState,
+  action = {}
+) {
   switch (action.type) {
-    case RECEIVE_NOTIFICATIONS:
+    case RECEIVE_UNREAD_NOTIFICATIONS:
+      return action.payload.notifications;
+    default:
+      return state;
+  }
+}
+
+export const readNotificationsInitialState = [];
+
+function readNotificationsReducer(
+  state = readNotificationsInitialState,
+  action = {}
+) {
+  switch (action.type) {
+    case RECEIVE_READ_NOTIFICATIONS:
       return action.payload.notifications;
     default:
       return state;
@@ -138,7 +163,8 @@ export const coreInterfaceReducer = combineReducers({
   uiConfig: uiConfigReducer,
   dialogs: dialogsReducer,
   loadingStatus: loadingStatusReducer,
-  notifications: notificationsReducer
+  unreadNotifications: unreadNotificationsReducer,
+  readNotifications: readNotificationsReducer
 });
 
 // Selectors
@@ -146,13 +172,17 @@ export const coreInterfaceReducer = combineReducers({
 const uiConfig = state => state.institution.coreInterface.uiConfig;
 const dialogs = state => state.institution.coreInterface.dialogs;
 const loadingStatus = state => state.institution.coreInterface.loadingStatus;
-const notifications = state => state.institution.coreInterface.notifications;
+const unreadNotifications = state =>
+  state.institution.coreInterface.unreadNotifications;
+const readNotifications = state =>
+  state.institution.coreInterface.readNotifications;
 
 export const selector = createStructuredSelector({
   uiConfig,
   dialogs,
   loadingStatus,
-  notifications
+  unreadNotifications,
+  readNotifications
 });
 
 // Action Creators
@@ -233,24 +263,24 @@ export function closeLogOutModal() {
   };
 }
 
-export function requestNotifications() {
+export function requestUnreadNotifications() {
   return {
-    type: REQUEST_NOTIFICATIONS
+    type: REQUEST_UNREAD_NOTIFICATIONS
   };
 }
 
-export function receiveNotifications(notifications) {
+export function receiveUnreadNotifications(notifications) {
   return {
-    type: RECEIVE_NOTIFICATIONS,
+    type: RECEIVE_UNREAD_NOTIFICATIONS,
     payload: {
       notifications
     }
   };
 }
 
-export function loadNotifications(userID) {
+export function loadUnreadNotifications(userID) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestNotifications());
+    dispatch(requestUnreadNotifications());
 
     const notificationsRef = firebase
       .firestore()
@@ -267,7 +297,91 @@ export function loadNotifications(userID) {
           id: doc.id
         });
       });
-      dispatch(receiveNotifications(notifications));
+      dispatch(receiveUnreadNotifications(notifications));
     });
+  };
+}
+
+export function requestReadNotifications() {
+  return {
+    type: REQUEST_READ_NOTIFICATIONS
+  };
+}
+
+export function receiveReadNotifications(notifications) {
+  return {
+    type: RECEIVE_READ_NOTIFICATIONS,
+    payload: {
+      notifications
+    }
+  };
+}
+
+export function loadReadNotifications(userID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestReadNotifications());
+
+    const notificationsRef = firebase
+      .firestore()
+      .collection("notifications")
+      .where("recipient", "==", userID)
+      .where("metadata.isRead", "==", true)
+      .orderBy("metadata.creationDate", "desc")
+      .limit(20);
+
+    return notificationsRef.onSnapshot(querySnapshot => {
+      let notifications = [];
+      querySnapshot.forEach(doc => {
+        notifications.push({
+          ...doc.data(),
+          id: doc.id
+        });
+      });
+      dispatch(receiveReadNotifications(notifications));
+    });
+  };
+}
+
+export function requestMarkNotificationsRead() {
+  return {
+    type: REQUEST_MARK_NOTIFICATIONS_READ
+  };
+}
+
+export function receiveMarkNotificationsRead() {
+  return {
+    type: RECEIVE_MARK_NOTIFICATIONS_READ
+  };
+}
+
+export function errorMarkingNotificationsRead(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_MARKING_NOTIFICATIONS_READ,
+    payload: {
+      error
+    }
+  };
+}
+
+export function markNotificationsRead(unreadNotifications) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestMarkNotificationsRead());
+    const db = firebase.firestore();
+
+    let batch = db.batch();
+    unreadNotifications.map(notification => {
+      const notificationRef = db
+        .collection("notifications")
+        .doc(notification.id);
+      batch.update(notificationRef, { "metadata.isRead": true });
+    });
+
+    return batch
+      .commit()
+      .then(() => dispatch(receiveMarkNotificationsRead()))
+      .catch(error => dispatch(errorMarkingNotificationsRead(error)));
   };
 }

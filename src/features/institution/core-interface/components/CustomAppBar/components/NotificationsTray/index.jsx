@@ -77,14 +77,28 @@ class NotificationsTray extends Component<Props, State> {
   };
 
   handleMenuToggle(anchorEl) {
+    const { isOpen } = this.state;
+    const { unreadNotifications } = this.props;
+    const { markNotificationsRead } = this.props.actions;
+
+    if (isOpen && unreadNotifications.length > 0) {
+      markNotificationsRead(unreadNotifications);
+    }
+
     this.setState({
       anchorEl: anchorEl,
-      isOpen: !this.state.isOpen
+      isOpen: !isOpen
     });
   }
 
   createListItems() {
-    const { classes, notifications, isLoading } = this.props;
+    const {
+      classes,
+      unreadNotifications,
+      readNotifications,
+      isLoading
+    } = this.props;
+    const notifications = [...unreadNotifications, ...readNotifications];
 
     if (isLoading) {
       return (
@@ -95,7 +109,7 @@ class NotificationsTray extends Component<Props, State> {
     } else if (notifications.length === 0) {
       return (
         <ListItem>
-          <ListItemText primary="No unread notifications" />
+          <ListItemText primary="No notifications" />
         </ListItem>
       );
     } else {
@@ -107,9 +121,9 @@ class NotificationsTray extends Component<Props, State> {
           case "SCHEDULE":
             return (
               <Route
+                key={notification.id}
                 render={({ history }) => (
                   <ListItem
-                    key={index}
                     button
                     onClick={() => {
                       this.handleMenuToggle(null);
@@ -135,67 +149,142 @@ class NotificationsTray extends Component<Props, State> {
             );
           case "HOURS":
             return (
-              <ListItem key={index} button>
-                <ListItemIcon>
-                  <HoursIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={notification.message.body}
-                  secondary={moment(date).fromNow()}
-                />
-              </ListItem>
+              <Route
+                key={notification.id}
+                render={({ history }) => (
+                  <ListItem
+                    button
+                    onClick={() => {
+                      this.handleMenuToggle(null);
+                      history.push(`/admin/hours/${notification.objectID}`);
+                    }}
+                  >
+                    <Avatar
+                      className={
+                        notification.metadata.isRead ? "" : classes.unreadIcon
+                      }
+                    >
+                      <HoursIcon />
+                    </Avatar>
+                    <ListItemText
+                      primary={notification.message.body}
+                      secondary={moment(date).fromNow()}
+                    />
+                  </ListItem>
+                )}
+              />
             );
           case "RESULTS":
             return (
-              <ListItem key={index} button>
-                <ListItemIcon>
-                  <ResultsIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={notification.message.body}
-                  secondary={moment(date).fromNow()}
-                />
-              </ListItem>
+              <Route
+                key={notification.id}
+                render={({ history }) => (
+                  <ListItem
+                    button
+                    onClick={() => {
+                      this.handleMenuToggle(null);
+                      history.push(`/admin/results/${notification.objectID}`);
+                    }}
+                  >
+                    <Avatar
+                      className={
+                        notification.metadata.isRead ? "" : classes.unreadIcon
+                      }
+                    >
+                      <ResultsIcon />
+                    </Avatar>
+                    <ListItemText
+                      primary={notification.message.body}
+                      secondary={moment(date).fromNow()}
+                    />
+                  </ListItem>
+                )}
+              />
             );
           case "WAGES":
             return (
-              <ListItem key={index} button>
-                <ListItemIcon>
-                  <WagesIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={notification.message.body}
-                  secondary={moment(date).fromNow()}
-                />
-              </ListItem>
+              <Route
+                key={notification.id}
+                render={({ history }) => (
+                  <ListItem
+                    button
+                    onClick={() => {
+                      this.handleMenuToggle(null);
+                      history.push(`/admin/wages/${notification.objectID}`);
+                    }}
+                  >
+                    <Avatar
+                      className={
+                        notification.metadata.isRead ? "" : classes.unreadIcon
+                      }
+                    >
+                      <WagesIcon />
+                    </Avatar>
+                    <ListItemText
+                      primary={notification.message.body}
+                      secondary={moment(date).fromNow()}
+                    />
+                  </ListItem>
+                )}
+              />
             );
           case "PEOPLE":
             return (
-              <ListItem key={index} button>
-                <ListItemIcon>
-                  <PeopleIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={notification.message.body}
-                  secondary={moment(date).fromNow()}
-                />
-              </ListItem>
+              <Route
+                key={notification.id}
+                render={({ history }) => (
+                  <ListItem
+                    button
+                    onClick={() => {
+                      this.handleMenuToggle(null);
+                      history.push(`/admin/people/${notification.objectID}`);
+                    }}
+                  >
+                    <Avatar
+                      className={
+                        notification.metadata.isRead ? "" : classes.unreadIcon
+                      }
+                    >
+                      <PeopleIcon />
+                    </Avatar>
+                    <ListItemText
+                      primary={notification.message.body}
+                      secondary={moment(date).fromNow()}
+                    />
+                  </ListItem>
+                )}
+              />
             );
           case "TEAMS":
             return (
-              <ListItem key={index} button>
-                <ListItemIcon>
-                  <TeamsIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={notification.message.body}
-                  secondary={moment(date).fromNow()}
-                />
-              </ListItem>
+              <Route
+                key={notification.id}
+                render={({ history }) => (
+                  <ListItem
+                    button
+                    onClick={() => {
+                      this.handleMenuToggle(null);
+                      history.push(`/admin/teams/${notification.objectID}`);
+                    }}
+                  >
+                    <Avatar
+                      className={
+                        notification.metadata.isRead ? "" : classes.unreadIcon
+                      }
+                    >
+                      <TeamsIcon />
+                    </Avatar>
+                    <ListItemText
+                      primary={notification.message.body}
+                      secondary={moment(date).fromNow()}
+                    />
+                  </ListItem>
+                )}
+              />
             );
           default:
             return (
-              <ListItem key={index} button>
+              <ListItem key={notification.id} button>
                 <ListItemIcon>
                   <FolderIcon />
                 </ListItemIcon>
@@ -208,16 +297,19 @@ class NotificationsTray extends Component<Props, State> {
   }
 
   render() {
-    const { classes, notifications } = this.props;
+    const { classes, unreadNotifications } = this.props;
     const { isOpen, anchorEl } = this.state;
 
-    const numberOfNotifications = notifications.reduce((acc, notification) => {
-      if (notification.isRead) {
-        return acc;
-      } else {
-        return acc + 1;
-      }
-    }, 0);
+    const numberOfNotifications = unreadNotifications.reduce(
+      (acc, notification) => {
+        if (notification.isRead) {
+          return acc;
+        } else {
+          return acc + 1;
+        }
+      },
+      0
+    );
 
     return (
       <div>
@@ -239,14 +331,10 @@ class NotificationsTray extends Component<Props, State> {
                   <NotificationsClosedIcon />
                 )}
               </Badge>
+            ) : isOpen ? (
+              <NotificationsOpenIcon />
             ) : (
-              <div>
-                {isOpen ? (
-                  <NotificationsOpenIcon />
-                ) : (
-                  <NotificationsClosedIcon />
-                )}
-              </div>
+              <NotificationsClosedIcon />
             )}
           </IconButton>
         </Tooltip>
