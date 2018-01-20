@@ -94,9 +94,14 @@ const styles = theme => ({
       borderRadius: 32
     }
   },
-  calendar: {
+  calendarWithHeader: {
     width: "100%",
     height: "calc(100% - 48px)",
+    overflow: "auto"
+  },
+  calendarWithoutHeader: {
+    width: "100%",
+    height: "100%",
     overflow: "auto"
   },
   root: {
@@ -455,7 +460,7 @@ class Calendar extends Component {
 
                         return classNames(...tileClasses);
                       }}
-                      className={classes.calendar}
+                      className={classes.calendarWithHeader}
                       value={new Date(dateSelected)}
                       minDate={minDate}
                       showNavigation={false}
@@ -672,7 +677,6 @@ class Calendar extends Component {
         <div className={classes.contentWrapper}>
           {currentView === "SCHEDULE" ? (
             <div className={classes.mobileCalendar}>
-              <div className={classes.bumper} />
               <Route
                 render={({ history }) => {
                   if (isEventsLoading || isMinDateLoading) {
@@ -745,7 +749,7 @@ class Calendar extends Component {
 
                           return classNames(...tileClasses);
                         }}
-                        className={classes.calendar}
+                        className={classes.calendarWithoutHeader}
                         value={new Date(dateSelected)}
                         minDate={minDate}
                         showNavigation={false}

@@ -26,7 +26,8 @@ const styles = theme => ({
     width: "100%",
     height: "100%",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    overflow: "auto"
   },
   adWrapper: {
     width: "100%",
@@ -39,18 +40,6 @@ const styles = theme => ({
     height: 98,
     backgroundColor: lightBlue[700]
   },
-  events: {
-    flexGrow: 1,
-    backgroundColor: grey[50],
-    overflow: "auto"
-  },
-  noEvents: {
-    flexGrow: 1,
-    backgroundColor: grey[50],
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
-  },
   timeHeading: {
     padding: 12.5,
     backgroundColor: lightBlue[900],
@@ -59,6 +48,12 @@ const styles = theme => ({
   },
   backButton: {
     margin: 24
+  },
+  loaderWrapper: {
+    height: 80,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 
@@ -304,19 +299,19 @@ class EventsList extends Component {
             )}
           />
         )}
-        {isLoading ? (
-          <div className={classes.noEvents}>
-            <CircularProgress />
-          </div>
-        ) : (
-          <div className={classes.events}>
-            <Typography
-              component="h3"
-              type="body2"
-              className={classes.timeHeading}
-            >
-              Morning
-            </Typography>
+        <div className={classes.events}>
+          <Typography
+            component="h3"
+            type="body2"
+            className={classes.timeHeading}
+          >
+            Morning
+          </Typography>
+          {isLoading ? (
+            <div className={classes.loaderWrapper}>
+              <CircularProgress />
+            </div>
+          ) : (
             <List>
               {morningEvents.length > 0 ? (
                 morningEvents
@@ -326,13 +321,19 @@ class EventsList extends Component {
                 </ListItem>
               )}
             </List>
-            <Typography
-              component="h3"
-              type="body2"
-              className={classes.timeHeading}
-            >
-              Afternoon
-            </Typography>
+          )}
+          <Typography
+            component="h3"
+            type="body2"
+            className={classes.timeHeading}
+          >
+            Afternoon
+          </Typography>
+          {isLoading ? (
+            <div className={classes.loaderWrapper}>
+              <CircularProgress />
+            </div>
+          ) : (
             <List>
               {afternoonEvents.length > 0 ? (
                 afternoonEvents
@@ -342,13 +343,19 @@ class EventsList extends Component {
                 </ListItem>
               )}
             </List>
-            <Typography
-              component="h3"
-              type="body2"
-              className={classes.timeHeading}
-            >
-              Evening
-            </Typography>
+          )}
+          <Typography
+            component="h3"
+            type="body2"
+            className={classes.timeHeading}
+          >
+            Evening
+          </Typography>
+          {isLoading ? (
+            <div className={classes.loaderWrapper}>
+              <CircularProgress />
+            </div>
+          ) : (
             <List>
               {eveningEvents.length > 0 ? (
                 eveningEvents
@@ -358,13 +365,19 @@ class EventsList extends Component {
                 </ListItem>
               )}
             </List>
-            <Typography
-              component="h3"
-              type="body2"
-              className={classes.cancelledHeading}
-            >
-              Cancelled Events
-            </Typography>
+          )}
+          <Typography
+            component="h3"
+            type="body2"
+            className={classes.cancelledHeading}
+          >
+            Cancelled Events
+          </Typography>
+          {isLoading ? (
+            <div className={classes.loaderWrapper}>
+              <CircularProgress />
+            </div>
+          ) : (
             <List>
               {cancelledEvents.length > 0 ? (
                 cancelledEvents
@@ -374,8 +387,8 @@ class EventsList extends Component {
                 </ListItem>
               )}
             </List>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     );
   }
