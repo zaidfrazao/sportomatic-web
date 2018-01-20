@@ -154,7 +154,8 @@ class FiltersToolbar extends Component {
       divisions,
       ageGroups,
       applyFilters,
-      addTeam
+      addTeam,
+      isLoading
     } = this.props;
     const {
       searchText,
@@ -265,7 +266,11 @@ class FiltersToolbar extends Component {
             </IconButton>
           </Tooltip>
           <Tooltip title="Add new team" placement="bottom">
-            <IconButton aria-label="add new team" onClick={() => addTeam()}>
+            <IconButton
+              disabled={isLoading}
+              aria-label="add new team"
+              onClick={() => addTeam()}
+            >
               <AddIcon />
             </IconButton>
           </Tooltip>

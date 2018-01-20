@@ -330,6 +330,7 @@ class TeamsLayout extends Component {
               divisions={_.keys(this.state.divisions)}
               ageGroups={_.keys(this.state.ageGroups)}
               showDeletedTeams={this.state.showDeletedTeams}
+              isLoading={isManagersLoading || isCoachesLoading}
               initialFilters={filters}
               applyFilters={applyFilters}
               addTeam={() => {
@@ -360,12 +361,8 @@ class TeamsLayout extends Component {
         <AddTeamDialog
           isOpen={isAddTeamDialogOpen}
           isMobile={isMobile}
-          isLoading={
-            isAddTeamDialogLoading ||
-            isOptionsLoading ||
-            isCoachesLoading ||
-            isManagersLoading
-          }
+          isSaveTeamLoading={isAddTeamDialogLoading}
+          isOptionsLoading={isOptionsLoading}
           institutionID={userID}
           options={options}
           coaches={coaches}

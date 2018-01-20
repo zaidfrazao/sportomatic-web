@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
+import firebase from "firebase";
 
 // Actions
 
@@ -14,6 +15,8 @@ export const OPEN_SETTINGS_ALERT = `${NAMESPACE}/OPEN_SETTINGS_ALERT`;
 export const CLOSE_SETTINGS_ALERT = `${NAMESPACE}/CLOSE_SETTINGS_ALERT`;
 export const OPEN_LOG_OUT_MODAL = `${NAMESPACE}/OPEN_LOG_OUT_MODAL`;
 export const CLOSE_LOG_OUT_MODAL = `${NAMESPACE}/CLOSE_LOG_OUT_MODAL`;
+export const REQUEST_NOTIFICATIONS = `${NAMESPACE}/REQUEST_NOTIFICATIONS`;
+export const RECEIVE_NOTIFICATIONS = `${NAMESPACE}/RECEIVE_NOTIFICATIONS`;
 
 // Reducers
 
@@ -99,19 +102,57 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
   }
 }
 
+export const loadingStatusInitialState = {
+  isNotificationsLoading: false
+};
+
+function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
+  switch (action.type) {
+    case REQUEST_NOTIFICATIONS:
+      return {
+        ...state,
+        isNotificationsLoading: true
+      };
+    case RECEIVE_NOTIFICATIONS:
+      return {
+        ...state,
+        isNotificationsLoading: false
+      };
+    default:
+      return state;
+  }
+}
+
+export const notificationsInitialState = [];
+
+function notificationsReducer(state = notificationsInitialState, action = {}) {
+  switch (action.type) {
+    case RECEIVE_NOTIFICATIONS:
+      return action.payload.notifications;
+    default:
+      return state;
+  }
+}
+
 export const coreInterfaceReducer = combineReducers({
   uiConfig: uiConfigReducer,
-  dialogs: dialogsReducer
+  dialogs: dialogsReducer,
+  loadingStatus: loadingStatusReducer,
+  notifications: notificationsReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.institution.coreInterface.uiConfig;
 const dialogs = state => state.institution.coreInterface.dialogs;
+const loadingStatus = state => state.institution.coreInterface.loadingStatus;
+const notifications = state => state.institution.coreInterface.notifications;
 
 export const selector = createStructuredSelector({
   uiConfig,
-  dialogs
+  dialogs,
+  loadingStatus,
+  notifications
 });
 
 // Action Creators
@@ -189,5 +230,44 @@ export function openLogOutModal() {
 export function closeLogOutModal() {
   return {
     type: CLOSE_LOG_OUT_MODAL
+  };
+}
+
+export function requestNotifications() {
+  return {
+    type: REQUEST_NOTIFICATIONS
+  };
+}
+
+export function receiveNotifications(notifications) {
+  return {
+    type: RECEIVE_NOTIFICATIONS,
+    payload: {
+      notifications
+    }
+  };
+}
+
+export function loadNotifications(userID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestNotifications());
+
+    const notificationsRef = firebase
+      .firestore()
+      .collection("notifications")
+      .where("recipient", "==", userID)
+      .where("metadata.isRead", "==", false)
+      .orderBy("metadata.creationDate", "desc");
+
+    return notificationsRef.onSnapshot(querySnapshot => {
+      let notifications = [];
+      querySnapshot.forEach(doc => {
+        notifications.push({
+          ...doc.data(),
+          id: doc.id
+        });
+      });
+      dispatch(receiveNotifications(notifications));
+    });
   };
 }

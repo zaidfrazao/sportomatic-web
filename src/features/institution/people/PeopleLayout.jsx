@@ -445,6 +445,7 @@ class PeopleLayout extends Component {
             />
             <EditPersonDialog
               isOpen={isEditPersonDialogOpen}
+              isMobile={isMobile}
               isLoading={
                 isCoachesLoading ||
                 isManagersLoading ||
@@ -522,6 +523,7 @@ class PeopleLayout extends Component {
                 )}
                 <InvitePersonModal
                   isOpen={isInvitePersonModalOpen}
+                  isMobile={isMobile}
                   isLoading={isInviteeLoading}
                   inviteeID={inviteeID}
                   inviteeInfo={inviteeInfo}

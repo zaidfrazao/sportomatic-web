@@ -80,57 +80,19 @@ class CustomAppBar extends Component {
   };
 
   render() {
-    const { classes, title, isSideMenuOpen, isMobile } = this.props;
+    const {
+      classes,
+      title,
+      isSideMenuOpen,
+      isMobile,
+      notifications,
+      isNotificationsLoading
+    } = this.props;
     const {
       toggleSideMenu,
       openLogOutModal,
       openSettingsAlert
     } = this.props.actions;
-
-    const notifications = [
-      {
-        body: "Match on 30 Nov 2017 at 1:00 pm.",
-        feature: "SCHEDULE",
-        isRead: false,
-        title: "New event"
-      },
-      {
-        body: "Steve was signed in at 12:22 pm.",
-        feature: "HOURS",
-        isRead: false,
-        title: "Coach signed in"
-      },
-      {
-        body: "Steve earned R350.00.",
-        feature: "WAGES",
-        isRead: false,
-        title: "Wages approved"
-      },
-      {
-        body: "The U/14 A Rugby Boys team won 23 - 10.",
-        feature: "RESULTS",
-        isRead: false,
-        title: "Results approved"
-      },
-      {
-        body: "Lucy Stein wants to join your institution.",
-        feature: "PEOPLE",
-        isRead: false,
-        title: "Staff request"
-      },
-      {
-        body: "U/14 A Rugby Boys name changed to The Vipers",
-        feature: "TEAMS",
-        isRead: false,
-        title: "Team modified"
-      },
-      {
-        body: "U/12 B Cricket Practice on Thurs, 30 Nov 2017 canceled.",
-        feature: "SCHEDULE",
-        isRead: false,
-        title: "Event canceled"
-      }
-    ];
 
     return (
       <AppBar
@@ -163,7 +125,10 @@ class CustomAppBar extends Component {
             {title}
           </Typography>
           <div className={classes.rightButtons}>
-            <NotificationsTray notifications={notifications} />
+            <NotificationsTray
+              notifications={notifications}
+              isLoading={isNotificationsLoading}
+            />
             <div>
               <Tooltip title="Options" placement="bottom">
                 <IconButton

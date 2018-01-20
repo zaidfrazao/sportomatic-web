@@ -1,17 +1,13 @@
 // @flow
 import React, { Component } from "react";
+import _ from "lodash";
 import Badge from "material-ui/Badge";
-import DismissIcon from "material-ui-icons/Clear";
+import { CircularProgress } from "material-ui/Progress";
 import FolderIcon from "material-ui-icons/Folder";
 import { grey, lightBlue } from "material-ui/colors";
 import HoursIcon from "material-ui-icons/Alarm";
 import IconButton from "material-ui/IconButton";
-import List, {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListItemSecondaryAction
-} from "material-ui/List";
+import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import NotificationsClosedIcon from "material-ui-icons/Notifications";
 import NotificationsOpenIcon from "material-ui-icons/NotificationsActive";
 import PeopleIcon from "material-ui-icons/Person";
@@ -23,10 +19,15 @@ import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import WagesIcon from "material-ui-icons/AttachMoney";
 import { withStyles } from "material-ui/styles";
+import moment from "moment";
 
 const styles = theme => ({
   badge: {
     margin: `0 ${theme.spacing.unit * 2}px`
+  },
+  contentWrapper: {
+    minWidth: 280,
+    maxWidth: 400
   },
   heading: {
     backgroundColor: lightBlue[900],
@@ -36,6 +37,13 @@ const styles = theme => ({
   list: {
     maxHeight: 400,
     overflow: "auto"
+  },
+  loaderWrapper: {
+    width: "100%",
+    height: 48,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center"
   }
 });
 
@@ -71,9 +79,15 @@ class NotificationsTray extends Component<Props, State> {
   }
 
   createListItems() {
-    const { notifications } = this.props;
+    const { classes, notifications, isLoading } = this.props;
 
-    if (notifications.length === 0) {
+    if (isLoading) {
+      return (
+        <div className={classes.loaderWrapper}>
+          <CircularProgress />
+        </div>
+      );
+    } else if (notifications.length === 0) {
       return (
         <ListItem>
           <ListItemText primary="No unread notifications" />
@@ -81,6 +95,8 @@ class NotificationsTray extends Component<Props, State> {
       );
     } else {
       return notifications.map((notification, index) => {
+        const date = notification.metadata.creationDate;
+
         switch (notification.feature) {
           case "SCHEDULE":
             return (
@@ -89,14 +105,9 @@ class NotificationsTray extends Component<Props, State> {
                   <ScheduleIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={notification.title}
-                  secondary={notification.body}
+                  primary={notification.message.body}
+                  secondary={moment(date).fromNow()}
                 />
-                <ListItemSecondaryAction>
-                  <IconButton aria-label="Dismiss">
-                    <DismissIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
               </ListItem>
             );
           case "HOURS":
@@ -106,14 +117,9 @@ class NotificationsTray extends Component<Props, State> {
                   <HoursIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={notification.title}
-                  secondary={notification.body}
+                  primary={notification.message.body}
+                  secondary={moment(date).fromNow()}
                 />
-                <ListItemSecondaryAction>
-                  <IconButton aria-label="Dismiss">
-                    <DismissIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
               </ListItem>
             );
           case "RESULTS":
@@ -123,14 +129,9 @@ class NotificationsTray extends Component<Props, State> {
                   <ResultsIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={notification.title}
-                  secondary={notification.body}
+                  primary={notification.message.body}
+                  secondary={moment(date).fromNow()}
                 />
-                <ListItemSecondaryAction>
-                  <IconButton aria-label="Dismiss">
-                    <DismissIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
               </ListItem>
             );
           case "WAGES":
@@ -140,14 +141,9 @@ class NotificationsTray extends Component<Props, State> {
                   <WagesIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={notification.title}
-                  secondary={notification.body}
+                  primary={notification.message.body}
+                  secondary={moment(date).fromNow()}
                 />
-                <ListItemSecondaryAction>
-                  <IconButton aria-label="Dismiss">
-                    <DismissIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
               </ListItem>
             );
           case "PEOPLE":
@@ -157,14 +153,9 @@ class NotificationsTray extends Component<Props, State> {
                   <PeopleIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={notification.title}
-                  secondary={notification.body}
+                  primary={notification.message.body}
+                  secondary={moment(date).fromNow()}
                 />
-                <ListItemSecondaryAction>
-                  <IconButton aria-label="Dismiss">
-                    <DismissIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
               </ListItem>
             );
           case "TEAMS":
@@ -174,14 +165,9 @@ class NotificationsTray extends Component<Props, State> {
                   <TeamsIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={notification.title}
-                  secondary={notification.body}
+                  primary={notification.message.body}
+                  secondary={moment(date).fromNow()}
                 />
-                <ListItemSecondaryAction>
-                  <IconButton aria-label="Dismiss">
-                    <DismissIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
               </ListItem>
             );
           default:
@@ -191,11 +177,6 @@ class NotificationsTray extends Component<Props, State> {
                   <FolderIcon />
                 </ListItemIcon>
                 <ListItemText primary="Unknown notification type" />
-                <ListItemSecondaryAction>
-                  <IconButton aria-label="Dismiss">
-                    <DismissIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
               </ListItem>
             );
         }
@@ -259,15 +240,17 @@ class NotificationsTray extends Component<Props, State> {
             horizontal: "right"
           }}
         >
-          <Typography
-            type="title"
-            color="inherit"
-            noWrap
-            className={classes.heading}
-          >
-            Notifications
-          </Typography>
-          <List className={classes.list}>{this.createListItems()}</List>
+          <div className={classes.contentWrapper}>
+            <Typography
+              type="title"
+              color="inherit"
+              noWrap
+              className={classes.heading}
+            >
+              Notifications
+            </Typography>
+            <List className={classes.list}>{this.createListItems()}</List>
+          </div>
         </Popover>
       </div>
     );

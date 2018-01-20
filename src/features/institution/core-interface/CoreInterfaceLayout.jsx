@@ -86,16 +86,26 @@ class CoreInterfaceLayout extends Component {
 
   componentWillMount() {
     const { pathname } = this.props.location;
-    const { initUser } = this.props.actions;
+    const { initUser, loadNotifications } = this.props.actions;
+    const { userID } = this.props.uiConfig;
     initUser();
+    if (userID !== "") {
+      loadNotifications(userID);
+    }
     this.updateCoreUI(pathname);
   }
 
   componentWillReceiveProps(nextProps) {
     const { pathname } = nextProps.location;
+    const { loadNotifications } = nextProps.actions;
+    const { userID } = nextProps.uiConfig;
 
     if (pathname !== this.props.location.pathname) {
       this.updateCoreUI(pathname);
+    }
+
+    if (userID !== this.props.uiConfig.userID) {
+      loadNotifications(userID);
     }
   }
 
@@ -151,7 +161,7 @@ class CoreInterfaceLayout extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, notifications } = this.props;
     const {
       toggleSideMenu,
       signOut,
@@ -161,6 +171,7 @@ class CoreInterfaceLayout extends Component {
       closeLogOutModal
     } = this.props.actions;
     const { windowWidth } = this.state;
+    const { isNotificationsLoading } = this.props.loadingStatus;
     const {
       isLoggedIn,
       type,
@@ -188,6 +199,8 @@ class CoreInterfaceLayout extends Component {
             isSideMenuOpen={isSideMenuOpen}
             actions={{ toggleSideMenu, openLogOutModal, openSettingsAlert }}
             isMobile={isMobile}
+            notifications={notifications}
+            isNotificationsLoading={isNotificationsLoading}
           />
           <SideMenu
             isOpen={isSideMenuOpen}

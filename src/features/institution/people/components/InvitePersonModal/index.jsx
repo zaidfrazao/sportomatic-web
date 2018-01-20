@@ -18,6 +18,7 @@ import {
 import { grey } from "material-ui/colors";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
 import Select from "material-ui/Select";
+import Slide from "material-ui/transitions/Slide";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
@@ -34,6 +35,10 @@ const styles = theme => ({
   },
   button: {
     width: "100%"
+  },
+  contentWrapper: {
+    maxWidth: 320,
+    margin: "0 auto"
   },
   errorText: {
     color: grey[600],
@@ -93,7 +98,8 @@ class InvitePersonModal extends Component {
       coach: false,
       manager: false,
       admin: false
-    }
+    },
+    Transition: props => <Slide direction="up" {...props} />
   };
 
   componentWillReceiveProps(nextProps) {
@@ -324,7 +330,8 @@ class InvitePersonModal extends Component {
       isLoading,
       inviteeID,
       inviteeInfo,
-      institutionID
+      institutionID,
+      isMobile
     } = this.props;
     const { closeModal, invitePerson, createUser } = this.props.actions;
     const {
@@ -337,7 +344,11 @@ class InvitePersonModal extends Component {
     } = this.state;
 
     return (
-      <Dialog open={isOpen}>
+      <Dialog
+        open={isOpen}
+        fullScreen={isMobile}
+        transition={this.state.Transition}
+      >
         <DialogTitle>Invite Person</DialogTitle>
         <DialogContent>
           <div className={classes.contentWrapper}>
