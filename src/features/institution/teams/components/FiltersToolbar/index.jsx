@@ -278,6 +278,74 @@ class FiltersToolbar extends Component {
             </IconButton>
           </Tooltip>
         </Toolbar>
+        {isMobile && (
+          <div className={classes.settingChips}>
+            {confirmedGender !== "All" && (
+              <Chip
+                label={this.formatGender(confirmedGender)}
+                onRequestDelete={() => {
+                  this.handleDeleteFilter("Gender");
+                  applyFilters(
+                    confirmedShowDeletedTeams,
+                    "All",
+                    confirmedSport,
+                    confirmedDivision,
+                    confirmedAgeGroup
+                  );
+                }}
+                className={classes.chip}
+              />
+            )}
+            {confirmedSport !== "All" && (
+              <Chip
+                label={confirmedSport}
+                onRequestDelete={() => {
+                  this.handleDeleteFilter("Sport");
+                  applyFilters(
+                    confirmedShowDeletedTeams,
+                    confirmedGender,
+                    "All",
+                    confirmedDivision,
+                    confirmedAgeGroup
+                  );
+                }}
+                className={classes.chip}
+              />
+            )}
+            {confirmedDivision !== "All" && (
+              <Chip
+                label={confirmedDivision}
+                onRequestDelete={() => {
+                  this.handleDeleteFilter("Division");
+                  applyFilters(
+                    confirmedShowDeletedTeams,
+                    confirmedGender,
+                    confirmedSport,
+                    "All",
+                    confirmedAgeGroup
+                  );
+                }}
+                className={classes.chip}
+              />
+            )}
+            {confirmedAgeGroup !== "All" && (
+              <Chip
+                label={this.formatAgeGroup(confirmedAgeGroup)}
+                onRequestDelete={() => {
+                  this.handleDeleteFilter("AgeGroup");
+                  applyFilters(
+                    confirmedShowDeletedTeams,
+                    confirmedGender,
+                    confirmedSport,
+                    confirmedDivision,
+                    "All"
+                  );
+                }}
+                className={classes.chip}
+              />
+            )}
+          </div>
+        )}
         <Dialog
           open={isOpen}
           fullScreen={isMobile}

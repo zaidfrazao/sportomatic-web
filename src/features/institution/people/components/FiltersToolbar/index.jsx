@@ -14,6 +14,7 @@ import IconButton from "material-ui/IconButton";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
 import SearchIcon from "material-ui-icons/Search";
 import Select from "material-ui/Select";
+import Slide from "material-ui/transitions/Slide";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import { withStyles } from "material-ui/styles";
@@ -24,14 +25,16 @@ const styles = theme => ({
   },
   container: {
     display: "flex",
-    flexWrap: "wrap"
+    flexDirection: "column",
+    width: 240,
+    margin: "0 auto"
   },
   flexGrow: {
     flexGrow: 1
   },
   formControl: {
-    margin: theme.spacing.unit,
-    minWidth: 120
+    width: "100%",
+    margin: "8px 0"
   },
   searchIcon: {
     width: 18,
@@ -58,7 +61,8 @@ class FiltersToolbar extends Component {
     selectedSport: "All",
     selectedType: "All",
     confirmedSport: "All",
-    confirmedType: "All"
+    confirmedType: "All",
+    Transition: props => <Slide direction="up" {...props} />
   };
 
   componentWillMount() {
@@ -129,7 +133,7 @@ class FiltersToolbar extends Component {
     return (
       <div>
         <Toolbar className={classes.settings}>
-          <FormControl className={classes.formControl}>
+          <FormControl>
             <Input
               id="search"
               value={searchText}
@@ -181,8 +185,37 @@ class FiltersToolbar extends Component {
             </IconButton>
           </Tooltip>
         </Toolbar>
-        <Dialog open={isOpen} onRequestClose={() => this.toggleDialog()}>
-          <DialogTitle>Filters</DialogTitle>
+        {isMobile && (
+          <div className={classes.settingChips}>
+            {confirmedSport !== "All" && (
+              <Chip
+                label={confirmedSport}
+                onRequestDelete={() => {
+                  this.handleDeleteFilter("Sport");
+                  applyFilters("All", confirmedType);
+                }}
+                className={classes.chip}
+              />
+            )}
+            {confirmedType !== "All" && (
+              <Chip
+                label={confirmedType}
+                onRequestDelete={() => {
+                  this.handleDeleteFilter("Type");
+                  applyFilters(confirmedSport, "All");
+                }}
+                className={classes.chip}
+              />
+            )}
+          </div>
+        )}
+        <Dialog
+          open={isOpen}
+          fullScreen={isMobile}
+          transition={this.state.Transition}
+          onRequestClose={() => this.toggleDialog()}
+        >
+          <DialogTitle>Set Filters</DialogTitle>
           <DialogContent>
             <form className={classes.container} autoComplete="off">
               <FormControl className={classes.formControl}>
@@ -226,7 +259,6 @@ class FiltersToolbar extends Component {
           <DialogActions>
             <Button onClick={() => this.toggleDialog()}>Close</Button>
             <Button
-              color="accent"
               onClick={() => {
                 this.resetFilters();
               }}

@@ -506,6 +506,7 @@ class PeopleLayout extends Component {
                 <FiltersToolbar
                   sports={_.keys(this.state.sports)}
                   types={_.keys(this.state.types)}
+                  isMobile={isMobile}
                   initialFilters={filters}
                   applyFilters={applyFilters}
                   addPerson={openInvitePersonModal}

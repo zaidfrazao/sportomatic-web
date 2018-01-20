@@ -618,6 +618,7 @@ class ScheduleLayout extends Component {
             divisions={_.keys(this.state.divisions)}
             ageGroups={_.keys(this.state.ageGroups)}
             genders={_.keys(this.state.genders)}
+            isMobile={isMobile}
             initialFilters={filters}
             applyFilters={applyFilters}
             addEvent={openAddEventDialog}
