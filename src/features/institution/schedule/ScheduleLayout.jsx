@@ -123,13 +123,14 @@ class ScheduleLayout extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { userID, events, teams } = this.props;
-    const { dateSelected } = this.props.match.params;
+    const { dateSelected, eventID } = this.props.match.params;
     const {
       loadEvents,
       fetchCreationDate,
       loadCoaches,
       loadManagers,
-      loadTeams
+      loadTeams,
+      updateView
     } = this.props.actions;
 
     if (dateSelected !== nextProps.match.params.dateSelected) {
@@ -216,6 +217,14 @@ class ScheduleLayout extends Component {
           [info.info.ageGroup]: true
         };
       });
+    }
+
+    if (eventID !== nextProps.match.params.eventID) {
+      if (nextProps.match.params.eventID) {
+        updateView("EVENT_INFO");
+      } else {
+        updateView("EVENTS_LIST");
+      }
     }
 
     this.setState({

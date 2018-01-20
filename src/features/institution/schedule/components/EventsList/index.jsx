@@ -127,7 +127,6 @@ class EventsList extends Component {
                     history.push(
                       `/admin/schedule/${dateSelected}/${eventInfo.id}`
                     );
-                    updateView("EVENT_INFO");
                   }}
                 >
                   <Avatar
@@ -177,7 +176,6 @@ class EventsList extends Component {
                     history.push(
                       `/admin/schedule/${dateSelected}/${eventInfo.id}`
                     );
-                    updateView("EVENT_INFO");
                   }}
                 >
                   <Avatar
@@ -227,7 +225,6 @@ class EventsList extends Component {
                     history.push(
                       `/admin/schedule/${dateSelected}/${eventInfo.id}`
                     );
-                    updateView("EVENT_INFO");
                   }}
                 >
                   <Avatar
@@ -272,7 +269,6 @@ class EventsList extends Component {
                     history.push(
                       `/admin/schedule/${dateSelected}/${eventInfo.id}`
                     );
-                    updateView("EVENT_INFO");
                   }}
                 >
                   <Avatar

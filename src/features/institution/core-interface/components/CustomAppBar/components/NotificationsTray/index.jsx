@@ -1,10 +1,10 @@
 // @flow
 import React, { Component } from "react";
-import _ from "lodash";
+import Avatar from "material-ui/Avatar";
 import Badge from "material-ui/Badge";
 import { CircularProgress } from "material-ui/Progress";
 import FolderIcon from "material-ui-icons/Folder";
-import { grey, lightBlue } from "material-ui/colors";
+import { grey, lightBlue, orange } from "material-ui/colors";
 import HoursIcon from "material-ui-icons/Alarm";
 import IconButton from "material-ui/IconButton";
 import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
@@ -13,6 +13,7 @@ import NotificationsOpenIcon from "material-ui-icons/NotificationsActive";
 import PeopleIcon from "material-ui-icons/Person";
 import Popover from "material-ui/Popover";
 import ResultsIcon from "material-ui-icons/PlusOne";
+import { Route } from "react-router";
 import ScheduleIcon from "material-ui-icons/Event";
 import TeamsIcon from "material-ui-icons/People";
 import Tooltip from "material-ui/Tooltip";
@@ -44,6 +45,10 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center"
+  },
+  unreadIcon: {
+    backgroundColor: orange[500],
+    color: grey[50]
   }
 });
 
@@ -96,19 +101,37 @@ class NotificationsTray extends Component<Props, State> {
     } else {
       return notifications.map((notification, index) => {
         const date = notification.metadata.creationDate;
+        const currentDate = new Date(Date.now()).toISOString().slice(0, 10);
 
         switch (notification.feature) {
           case "SCHEDULE":
             return (
-              <ListItem key={index} button>
-                <ListItemIcon>
-                  <ScheduleIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={notification.message.body}
-                  secondary={moment(date).fromNow()}
-                />
-              </ListItem>
+              <Route
+                render={({ history }) => (
+                  <ListItem
+                    key={index}
+                    button
+                    onClick={() => {
+                      this.handleMenuToggle(null);
+                      history.push(
+                        `/admin/schedule/${currentDate}/${notification.objectID}`
+                      );
+                    }}
+                  >
+                    <Avatar
+                      className={
+                        notification.metadata.isRead ? "" : classes.unreadIcon
+                      }
+                    >
+                      <ScheduleIcon />
+                    </Avatar>
+                    <ListItemText
+                      primary={notification.message.body}
+                      secondary={moment(date).fromNow()}
+                    />
+                  </ListItem>
+                )}
+              />
             );
           case "HOURS":
             return (

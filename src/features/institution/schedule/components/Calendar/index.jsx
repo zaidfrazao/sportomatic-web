@@ -116,7 +116,8 @@ const styles = theme => ({
   contentWrapper: {
     flexGrow: 1,
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    backgroundColor: grey[50]
   },
   header: {
     padding: "20px 0",
@@ -147,6 +148,9 @@ const styles = theme => ({
     width: "40%",
     display: "flex",
     flexDirection: "column"
+  },
+  mobileCalendar: {
+    width: "100%"
   },
   headerContent: {
     flexGrow: 1,
@@ -667,7 +671,7 @@ class Calendar extends Component {
         </div>
         <div className={classes.contentWrapper}>
           {currentView === "SCHEDULE" ? (
-            <div>
+            <div className={classes.mobileCalendar}>
               <div className={classes.bumper} />
               <Route
                 render={({ history }) => {
