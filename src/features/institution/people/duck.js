@@ -42,6 +42,7 @@ export const ERROR_INVITING_PERSON = `${NAMESPACE}/ERROR_INVITING_PERSON`;
 export const REQUEST_EDIT_PERSON = `${NAMESPACE}/REQUEST_EDIT_PERSON`;
 export const RECEIVE_EDIT_PERSON = `${NAMESPACE}/RECEIVE_EDIT_PERSON`;
 export const ERROR_EDITTING_PERSON = `${NAMESPACE}/ERROR_EDITTING_PERSON`;
+export const EDIT_ROLES = `${NAMESPACE}/EDIT_ROLES`;
 
 // Reducers
 
@@ -134,6 +135,12 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
     case CLOSE_INVITE_PERSON_MODAL:
       return {
         ...state,
+        isInvitePersonModalOpen: false
+      };
+    case EDIT_ROLES:
+      return {
+        ...state,
+        isEditPersonDialogOpen: true,
         isInvitePersonModalOpen: false
       };
     default:
@@ -321,6 +328,12 @@ export const selector = createStructuredSelector({
 });
 
 // Action Creators
+
+export function editRoles() {
+  return {
+    type: EDIT_ROLES
+  };
+}
 
 export function applyFilters(sport, type) {
   return {

@@ -33,6 +33,11 @@ const styles = theme => ({
   button: {
     width: "100%"
   },
+  contentWrapper: {
+    minWidth: 280,
+    maxWidth: 320,
+    margin: "0 auto"
+  },
   errorText: {
     color: grey[600],
     width: "100%",
@@ -207,7 +212,14 @@ class EditPersonDialog extends Component {
   }
 
   render() {
-    const { classes, isOpen, isLoading, personID, institutionID } = this.props;
+    const {
+      classes,
+      isOpen,
+      isLoading,
+      personID,
+      institutionID,
+      isMobile
+    } = this.props;
     const { closeModal, editPerson } = this.props.actions;
     const { type, paymentDefaults } = this.state;
 
@@ -223,7 +235,7 @@ class EditPersonDialog extends Component {
     }
 
     return (
-      <Dialog open={isOpen}>
+      <Dialog open={isOpen} fullScreen={isMobile}>
         <DialogTitle>Edit Person's Info</DialogTitle>
         <DialogContent>
           <div className={classes.contentWrapper}>
@@ -400,7 +412,7 @@ class EditPersonDialog extends Component {
         </DialogContent>
         <DialogActions>
           <Button
-            disable={isLoading}
+            disabled={isLoading}
             onClick={() => {
               closeModal();
               this.resetState();

@@ -407,7 +407,8 @@ class PeopleLayout extends Component {
       fetchInviteeInfo,
       createUser,
       invitePerson,
-      editPerson
+      editPerson,
+      editRoles
     } = this.props.actions;
     const {
       isDeletPersonAlertOpen,
@@ -529,6 +530,7 @@ class PeopleLayout extends Component {
                   inviteeInfo={inviteeInfo}
                   institutionID={userID}
                   actions={{
+                    editRoles: () => editRoles(),
                     invitePerson: (id, info) => invitePerson(id, info),
                     createUser: userInfo => createUser(userInfo),
                     fetchInviteeInfo: email => fetchInviteeInfo(email),

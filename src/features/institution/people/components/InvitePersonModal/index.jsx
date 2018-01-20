@@ -17,6 +17,7 @@ import {
 } from "material-ui/Form";
 import { grey } from "material-ui/colors";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
+import { Route } from "react-router";
 import Select from "material-ui/Select";
 import Slide from "material-ui/transitions/Slide";
 import TextField from "material-ui/TextField";
@@ -37,6 +38,7 @@ const styles = theme => ({
     width: "100%"
   },
   contentWrapper: {
+    minWidth: 280,
     maxWidth: 320,
     margin: "0 auto"
   },
@@ -333,7 +335,12 @@ class InvitePersonModal extends Component {
       institutionID,
       isMobile
     } = this.props;
-    const { closeModal, invitePerson, createUser } = this.props.actions;
+    const {
+      closeModal,
+      invitePerson,
+      createUser,
+      editRoles
+    } = this.props.actions;
     const {
       emailEntered,
       emailError,
@@ -401,18 +408,7 @@ class InvitePersonModal extends Component {
                     </Typography>
                   )}
                 {!isLoading &&
-                  personStatus === "REGISTERED_USER" && (
-                    <Typography
-                      className={classes.errorText}
-                      type="body1"
-                      component="p"
-                    >
-                      This person has a Sportomatic account already
-                    </Typography>
-                  )}
-                {!isLoading &&
-                  (personStatus === "REGISTERED_USER" ||
-                    personStatus === "ALREADY_MEMBER") && (
+                  personStatus === "ALREADY_MEMBER" && (
                     <div className={classes.userInfoWrapper}>
                       <Typography
                         className={classes.errorText}
@@ -435,13 +431,43 @@ class InvitePersonModal extends Component {
                       <Typography type="subheading" component="h5">
                         {this.getType()}
                       </Typography>
-                      <Button
-                        disabled={isLoading}
-                        aria-label="edit roles"
-                        onClick={() => {}}
+                      <Route
+                        render={({ history }) => (
+                          <Button
+                            disabled={isLoading}
+                            aria-label="edit roles"
+                            onClick={() => {
+                              history.push(`/admin/people/${inviteeID}`);
+                              editRoles(inviteeID);
+                            }}
+                          >
+                            Edit roles
+                          </Button>
+                        )}
+                      />
+                    </div>
+                  )}
+                {!isLoading &&
+                  personStatus === "REGISTERED_USER" && (
+                    <div className={classes.userInfoWrapper}>
+                      <Typography
+                        className={classes.errorText}
+                        type="body1"
+                        component="p"
                       >
-                        Edit roles
-                      </Button>
+                        This person has a Sportomatic account already
+                      </Typography>
+                      <Avatar
+                        src={
+                          inviteeInfo.info.profilePictureURL === ""
+                            ? defaultProfilePicture
+                            : inviteeInfo.info.profilePictureURL
+                        }
+                        className={classes.profilePicture}
+                      />
+                      <Typography type="title" component="h4">
+                        {`${inviteeInfo.info.name} ${inviteeInfo.info.surname}`}
+                      </Typography>
                     </div>
                   )}
               </div>
