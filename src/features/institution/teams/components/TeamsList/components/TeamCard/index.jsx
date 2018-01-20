@@ -5,9 +5,6 @@ import { Route } from "react-router-dom";
 import { grey, red } from "material-ui/colors";
 import Card, { CardActions, CardContent } from "material-ui/Card";
 import Button from "material-ui/Button";
-import DeleteIcon from "material-ui-icons/Delete";
-import IconButton from "material-ui/IconButton";
-import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import WarningIcon from "material-ui-icons/Warning";
 
@@ -45,7 +42,7 @@ const styles = theme => ({
   name: {
     textAlign: "center",
     backgroundColor: grey[100],
-    padding: "24px 0",
+    padding: "24px 8px",
     flexGrow: 1,
     display: "flex",
     alignItems: "center",
@@ -77,7 +74,6 @@ const styles = theme => ({
 class TeamCard extends Component {
   render() {
     const { classes, sport, name, id, status } = this.props;
-    const { deleteTeam } = this.props.actions;
 
     return (
       <Card className={classes.card}>
@@ -109,11 +105,6 @@ class TeamCard extends Component {
               </Button>
             )}
           />
-          <Tooltip title="Delete team" placement="bottom">
-            <IconButton aria-label="Delete team" onClick={() => deleteTeam()}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
         </CardActions>
       </Card>
     );

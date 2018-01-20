@@ -12,9 +12,9 @@ import { FormControl, FormControlLabel } from "material-ui/Form";
 import { grey } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
-import { MenuItem } from "material-ui/Menu";
 import SearchIcon from "material-ui-icons/Search";
 import Select from "material-ui/Select";
+import Slide from "material-ui/transitions/Slide";
 import Switch from "material-ui/Switch";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
@@ -26,14 +26,16 @@ const styles = theme => ({
   },
   container: {
     display: "flex",
-    flexWrap: "wrap"
+    flexDirection: "column",
+    width: 240,
+    margin: "0 auto"
   },
   flexGrow: {
     flexGrow: 1
   },
   formControl: {
-    margin: theme.spacing.unit,
-    minWidth: 120
+    width: "100%",
+    margin: "8px 0"
   },
   searchIcon: {
     width: 18,
@@ -66,7 +68,8 @@ class FiltersToolbar extends Component {
     confirmedGender: "All",
     confirmedSport: "All",
     confirmedDivision: "All",
-    confirmedAgeGroup: "All"
+    confirmedAgeGroup: "All",
+    Transition: props => <Slide direction="up" {...props} />
   };
 
   componentWillMount() {
@@ -175,7 +178,7 @@ class FiltersToolbar extends Component {
     return (
       <div>
         <Toolbar className={classes.settings}>
-          <FormControl className={classes.formControl}>
+          <FormControl>
             <Input
               id="search"
               value={searchText}
@@ -275,23 +278,29 @@ class FiltersToolbar extends Component {
             </IconButton>
           </Tooltip>
         </Toolbar>
-        <Dialog open={isOpen} onRequestClose={() => this.toggleDialog()}>
-          <DialogTitle>Filters</DialogTitle>
+        <Dialog
+          open={isOpen}
+          fullScreen={isMobile}
+          transition={this.state.Transition}
+          onRequestClose={() => this.toggleDialog()}
+        >
+          <DialogTitle>Set Filters</DialogTitle>
           <DialogContent>
             <form className={classes.container} autoComplete="off">
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="gender">Gender</InputLabel>
                 <Select
+                  native
                   value={selectedGender}
                   onChange={this.handleChange("selectedGender")}
                   input={<Input id="type" />}
                 >
-                  <MenuItem value="All">All</MenuItem>
+                  <option value="All">All</option>
                   {genders.map(item => {
                     return (
-                      <MenuItem key={item} value={item}>
+                      <option key={item} value={item}>
                         {this.formatGender(item)}
-                      </MenuItem>
+                      </option>
                     );
                   })}
                 </Select>
@@ -299,16 +308,17 @@ class FiltersToolbar extends Component {
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="sport">Sport</InputLabel>
                 <Select
+                  native
                   value={selectedSport}
                   onChange={this.handleChange("selectedSport")}
                   input={<Input id="sport" />}
                 >
-                  <MenuItem value="All">All</MenuItem>
+                  <option value="All">All</option>
                   {sports.map(item => {
                     return (
-                      <MenuItem key={item} value={item}>
+                      <option key={item} value={item}>
                         {item}
-                      </MenuItem>
+                      </option>
                     );
                   })}
                 </Select>
@@ -316,16 +326,17 @@ class FiltersToolbar extends Component {
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="division">Division</InputLabel>
                 <Select
+                  native
                   value={selectedDivision}
                   onChange={this.handleChange("selectedDivision")}
                   input={<Input id="division" />}
                 >
-                  <MenuItem value="All">All</MenuItem>
+                  <option value="All">All</option>
                   {divisions.map(item => {
                     return (
-                      <MenuItem key={item} value={item}>
+                      <option key={item} value={item}>
                         {item}
-                      </MenuItem>
+                      </option>
                     );
                   })}
                 </Select>
@@ -333,16 +344,17 @@ class FiltersToolbar extends Component {
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="ageGroup">Age Group</InputLabel>
                 <Select
+                  native
                   value={selectedAgeGroup}
                   onChange={this.handleChange("selectedAgeGroup")}
                   input={<Input id="ageGroup" />}
                 >
-                  <MenuItem value="All">All</MenuItem>
+                  <option value="All">All</option>
                   {ageGroups.map(item => {
                     return (
-                      <MenuItem key={item} value={item}>
+                      <option key={item} value={item}>
                         {this.formatAgeGroup(item)}
-                      </MenuItem>
+                      </option>
                     );
                   })}
                 </Select>
@@ -362,7 +374,6 @@ class FiltersToolbar extends Component {
           <DialogActions>
             <Button onClick={() => this.toggleDialog()}>Close</Button>
             <Button
-              color="accent"
               onClick={() => {
                 this.resetFilters();
               }}

@@ -299,12 +299,8 @@ class TeamsLayout extends Component {
             <EditTeamDialog
               isOpen={isEditTeamDialogOpen}
               isMobile={isMobile}
-              isLoading={
-                isEditTeamDialogLoading ||
-                isOptionsLoading ||
-                isCoachesLoading ||
-                isManagersLoading
-              }
+              isSaveTeamLoading={isEditTeamDialogLoading}
+              isOptionsLoading={isOptionsLoading}
               teamID={teamID}
               initialTeamInfo={teams[teamID]}
               institutionID={userID}
@@ -330,6 +326,7 @@ class TeamsLayout extends Component {
               divisions={_.keys(this.state.divisions)}
               ageGroups={_.keys(this.state.ageGroups)}
               showDeletedTeams={this.state.showDeletedTeams}
+              isMobile={isMobile}
               isLoading={isManagersLoading || isCoachesLoading}
               initialFilters={filters}
               applyFilters={applyFilters}

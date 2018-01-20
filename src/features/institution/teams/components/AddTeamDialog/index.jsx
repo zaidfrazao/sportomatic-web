@@ -11,7 +11,6 @@ import Dialog, {
 } from "material-ui/Dialog";
 import { FormControl } from "material-ui/Form";
 import { grey } from "material-ui/colors";
-import Grid from "material-ui/Grid";
 import Input, { InputLabel } from "material-ui/Input";
 import Select from "material-ui/Select";
 import Slide from "material-ui/transitions/Slide";
@@ -42,12 +41,17 @@ const styles = {
     margin: 0,
     width: "100%",
     textAlign: "center",
-    backgroundColor: grey[300],
+    backgroundColor: grey[200],
     color: grey[700]
   },
   innerContentWrapper: {
-    maxWidth: 1600,
-    margin: "0 auto"
+    margin: "0 auto",
+    maxWidth: 900,
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    alignItems: "stretch"
   },
   loaderWrapper: {
     height: "100%",
@@ -62,9 +66,9 @@ const styles = {
     overflow: "auto"
   },
   section: {
-    minWidth: 200,
-    minHeight: 200,
-    backgroundColor: grey[100],
+    width: "48%",
+    minWidth: 260,
+    minHeight: 300,
     border: `1px solid ${grey[300]}`
   },
   subheading: {
@@ -82,10 +86,10 @@ const styles = {
     justifyContent: "center"
   },
   teamWrapper: {
-    backgroundColor: grey[200],
+    backgroundColor: grey[100],
     padding: 16,
     margin: 24,
-    border: `1px solid ${grey[300]}`
+    border: `1px solid ${grey[200]}`
   }
 };
 
@@ -575,207 +579,168 @@ class AddTeamDialog extends Component {
       >
         <DialogTitle>Add New Team</DialogTitle>
         <DialogContent>
-          <div className={classes.innerContentWrapper}>
-            <Grid container spacing={0} className={classes.mainContent}>
-              {!isMobile && (
-                <Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  md={12}
-                  lg={12}
-                  xl={12}
-                  className={classes.teamNameWrapper}
-                >
-                  {isOptionsLoading || isSaveTeamLoading ? (
-                    <div className={classes.loaderWrapper}>
-                      <CircularProgress />
-                    </div>
-                  ) : (
-                    <TextField
-                      label="Team name"
-                      value={teamName}
-                      multiline
-                      rows={teamName.length > 24 ? "2" : "1"}
-                      className={classes.teamName}
-                      onChange={e => this.handleNameUpdate(e.target.value)}
-                      error={teamName.length === 0}
-                      helperText={
-                        teamName.length === 0
-                          ? "Please provide a team name"
-                          : ""
-                      }
-                    />
-                  )}
-                </Grid>
+          {!isMobile && (
+            <div className={classes.teamNameWrapper}>
+              {isOptionsLoading || isSaveTeamLoading ? (
+                <div className={classes.loaderWrapper}>
+                  <CircularProgress />
+                </div>
+              ) : (
+                <TextField
+                  label="Team name"
+                  value={teamName}
+                  multiline
+                  rows={teamName.length > 24 ? "2" : "1"}
+                  className={classes.teamName}
+                  onChange={e => this.handleNameUpdate(e.target.value)}
+                  error={teamName.length === 0}
+                  helperText={
+                    teamName.length === 0 ? "Please provide a team name" : ""
+                  }
+                />
               )}
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={6}
-                lg={6}
-                xl={6}
-                className={classes.section}
+            </div>
+          )}
+          <div className={classes.innerContentWrapper}>
+            <div className={classes.section}>
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
               >
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
+                Details
+              </Typography>
+              {isOptionsLoading || isSaveTeamLoading ? (
+                <div className={classes.loaderWrapper}>
+                  <CircularProgress />
+                </div>
+              ) : (
+                <form autoComplete="off">
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="age-group">Age group</InputLabel>
+                    <Select
+                      native
+                      value={ageGroup}
+                      onChange={this.handleChange("ageGroup")}
+                      input={<Input id="age-group" />}
+                    >
+                      {_.toPairs(ageGroups).map(keyValuePair => (
+                        <option value={keyValuePair[0]} key={keyValuePair[0]}>
+                          {keyValuePair[1]}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="division">Division</InputLabel>
+                    <Select
+                      native
+                      value={division}
+                      onChange={this.handleChange("division")}
+                      input={<Input id="division" />}
+                    >
+                      {_.toPairs(divisions).map(keyValuePair => (
+                        <option value={keyValuePair[0]} key={keyValuePair[0]}>
+                          {keyValuePair[1]}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="sport">Sport</InputLabel>
+                    <Select
+                      native
+                      value={sport}
+                      onChange={this.handleChange("sport")}
+                      input={<Input id="sport" />}
+                    >
+                      {_.toPairs(sports).map(keyValuePair => (
+                        <option value={keyValuePair[0]} key={keyValuePair[0]}>
+                          {keyValuePair[1]}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="gender">Gender</InputLabel>
+                    <Select
+                      native
+                      value={gender}
+                      onChange={this.handleChange("gender")}
+                      input={<Input id="gender" />}
+                    >
+                      {_.toPairs(genderOptions).map(keyValuePair => (
+                        <option value={keyValuePair[0]} key={keyValuePair[0]}>
+                          {keyValuePair[1]}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </form>
+              )}
+            </div>
+            <div className={classes.section}>
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
+              >
+                Managers
+              </Typography>
+              {managersList}
+              <div className={classes.addButtonWrapper}>
+                <Button
+                  disabled={
+                    _.keys(managers).length === _.keys(selectedManagers).length
+                  }
+                  aria-label="add manager"
+                  onClick={() => this.addManager(_.keys(managers).length)}
                 >
-                  Details
-                </Typography>
+                  <AddIcon /> Add manager
+                </Button>
+              </div>
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
+              >
+                Coaches
+              </Typography>
+              {coachesList}
+              <div className={classes.addButtonWrapper}>
+                <Button
+                  disabled={
+                    _.keys(coaches).length === _.keys(selectedCoaches).length
+                  }
+                  aria-label="add coach"
+                  onClick={() => this.addCoach(_.keys(coaches).length)}
+                >
+                  <AddIcon /> Add coach
+                </Button>
+              </div>
+            </div>
+            {isMobile && (
+              <div className={classes.teamNameWrapper}>
                 {isOptionsLoading || isSaveTeamLoading ? (
                   <div className={classes.loaderWrapper}>
                     <CircularProgress />
                   </div>
                 ) : (
-                  <form autoComplete="off">
-                    <FormControl className={classes.formControl}>
-                      <InputLabel htmlFor="age-group">Age group</InputLabel>
-                      <Select
-                        native
-                        value={ageGroup}
-                        onChange={this.handleChange("ageGroup")}
-                        input={<Input id="age-group" />}
-                      >
-                        {_.toPairs(ageGroups).map(keyValuePair => (
-                          <option value={keyValuePair[0]} key={keyValuePair[0]}>
-                            {keyValuePair[1]}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl className={classes.formControl}>
-                      <InputLabel htmlFor="division">Division</InputLabel>
-                      <Select
-                        native
-                        value={division}
-                        onChange={this.handleChange("division")}
-                        input={<Input id="division" />}
-                      >
-                        {_.toPairs(divisions).map(keyValuePair => (
-                          <option value={keyValuePair[0]} key={keyValuePair[0]}>
-                            {keyValuePair[1]}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl className={classes.formControl}>
-                      <InputLabel htmlFor="sport">Sport</InputLabel>
-                      <Select
-                        native
-                        value={sport}
-                        onChange={this.handleChange("sport")}
-                        input={<Input id="sport" />}
-                      >
-                        {_.toPairs(sports).map(keyValuePair => (
-                          <option value={keyValuePair[0]} key={keyValuePair[0]}>
-                            {keyValuePair[1]}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl className={classes.formControl}>
-                      <InputLabel htmlFor="gender">Gender</InputLabel>
-                      <Select
-                        native
-                        value={gender}
-                        onChange={this.handleChange("gender")}
-                        input={<Input id="gender" />}
-                      >
-                        {_.toPairs(genderOptions).map(keyValuePair => (
-                          <option value={keyValuePair[0]} key={keyValuePair[0]}>
-                            {keyValuePair[1]}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </form>
+                  <TextField
+                    label="Team name"
+                    value={teamName}
+                    multiline
+                    rows={teamName.length > 24 ? "2" : "1"}
+                    className={classes.teamName}
+                    onChange={e => this.handleNameUpdate(e.target.value)}
+                    error={teamName.length === 0}
+                    helperText={
+                      teamName.length === 0 ? "Please provide a team name" : ""
+                    }
+                  />
                 )}
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={6}
-                lg={6}
-                xl={6}
-                className={classes.section}
-              >
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Managers
-                </Typography>
-                {managersList}
-                <div className={classes.addButtonWrapper}>
-                  <Button
-                    disabled={
-                      _.keys(managers).length ===
-                      _.keys(selectedManagers).length
-                    }
-                    aria-label="add manager"
-                    onClick={() => this.addManager(_.keys(managers).length)}
-                  >
-                    <AddIcon /> Add manager
-                  </Button>
-                </div>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Coaches
-                </Typography>
-                {coachesList}
-                <div className={classes.addButtonWrapper}>
-                  <Button
-                    disabled={
-                      _.keys(coaches).length === _.keys(selectedCoaches).length
-                    }
-                    aria-label="add coach"
-                    onClick={() => this.addCoach(_.keys(coaches).length)}
-                  >
-                    <AddIcon /> Add coach
-                  </Button>
-                </div>
-              </Grid>
-              {isMobile && (
-                <Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  md={12}
-                  lg={12}
-                  xl={12}
-                  className={classes.teamNameWrapper}
-                >
-                  {isOptionsLoading || isSaveTeamLoading ? (
-                    <div className={classes.loaderWrapper}>
-                      <CircularProgress />
-                    </div>
-                  ) : (
-                    <TextField
-                      label="Team name"
-                      value={teamName}
-                      multiline
-                      rows={teamName.length > 24 ? "2" : "1"}
-                      className={classes.teamName}
-                      onChange={e => this.handleNameUpdate(e.target.value)}
-                      error={teamName.length === 0}
-                      helperText={
-                        teamName.length === 0
-                          ? "Please provide a team name"
-                          : ""
-                      }
-                    />
-                  )}
-                </Grid>
-              )}
-            </Grid>
+              </div>
+            )}
           </div>
         </DialogContent>
         <DialogActions>

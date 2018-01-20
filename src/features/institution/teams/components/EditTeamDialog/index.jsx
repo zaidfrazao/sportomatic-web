@@ -2,20 +2,19 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import AddIcon from "material-ui-icons/Add";
-import AppBar from "material-ui/AppBar";
 import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
-import CloseIcon from "material-ui-icons/Close";
-import Dialog from "material-ui/Dialog";
+import Dialog, {
+  DialogActions,
+  DialogContent,
+  DialogTitle
+} from "material-ui/Dialog";
 import { FormControl } from "material-ui/Form";
 import { grey } from "material-ui/colors";
-import Grid from "material-ui/Grid";
-import IconButton from "material-ui/IconButton";
 import Input, { InputLabel } from "material-ui/Input";
 import Select from "material-ui/Select";
 import Slide from "material-ui/transitions/Slide";
 import TextField from "material-ui/TextField";
-import Toolbar from "material-ui/Toolbar";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 
@@ -42,15 +41,21 @@ const styles = {
     margin: 0,
     width: "100%",
     textAlign: "center",
-    backgroundColor: grey[300],
+    backgroundColor: grey[200],
     color: grey[700]
   },
   innerContentWrapper: {
-    maxWidth: 1600,
-    margin: "0 auto"
+    margin: "0 auto",
+    maxWidth: 900,
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    alignItems: "stretch"
   },
   loaderWrapper: {
-    flexGrow: 1,
+    height: "100%",
+    width: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
@@ -58,11 +63,12 @@ const styles = {
   mainContent: {
     height: "100%",
     width: "100%",
-    overflow: "auto",
-    paddingBottom: 40
+    overflow: "auto"
   },
   section: {
-    backgroundColor: grey[100],
+    width: "48%",
+    minWidth: 260,
+    minHeight: 300,
     border: `1px solid ${grey[300]}`
   },
   subheading: {
@@ -71,19 +77,19 @@ const styles = {
     margin: "24px 0"
   },
   teamName: {
-    margin: 24,
     fontSize: "1.4rem"
   },
   teamNameWrapper: {
+    padding: 24,
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
   },
   teamWrapper: {
-    backgroundColor: grey[200],
+    backgroundColor: grey[100],
     padding: 16,
     margin: 24,
-    border: `1px solid ${grey[300]}`
+    border: `1px solid ${grey[200]}`
   }
 };
 
@@ -614,7 +620,9 @@ class EditTeamDialog extends Component {
       teamID,
       isMobile,
       managers,
-      coaches
+      coaches,
+      isSaveTeamLoading,
+      isOptionsLoading
     } = this.props;
     const { handleClose, editTeam, openTeamErrorAlert } = this.props.actions;
     const { ageGroups, divisions, sports, genderType } = this.props.options;
@@ -640,103 +648,48 @@ class EditTeamDialog extends Component {
 
     return (
       <Dialog
-        fullScreen
         open={isOpen}
-        onRequestClose={() => handleClose()}
+        fullScreen={isMobile}
         transition={this.state.Transition}
       >
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <IconButton
-              color="contrast"
-              onClick={() => handleClose()}
-              aria-label="Close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography type="title" color="inherit" className={classes.flex}>
-              Add Team
-            </Typography>
-            <Button
-              disabled={isLoading}
-              color="contrast"
-              onClick={() => {
-                if (teamName.length === 0) {
-                  openTeamErrorAlert("TITLE");
-                } else {
-                  const teamManagers = _.fromPairs(
-                    _.keys(selectedManagers).map(managerID => [managerID, true])
-                  );
-                  const teamCoaches = _.fromPairs(
-                    _.keys(selectedCoaches).map(coachID => [coachID, true])
-                  );
-                  editTeam(
-                    institutionID,
-                    teamID,
-                    {
-                      ageGroup,
-                      division,
-                      sport,
-                      gender,
-                      name: teamName
-                    },
-                    teamManagers,
-                    teamCoaches
-                  );
-                }
-              }}
-            >
-              save
-            </Button>
-          </Toolbar>
-        </AppBar>
-        {isLoading ? (
-          <div className={classes.loaderWrapper}>
-            <CircularProgress />
-          </div>
-        ) : (
-          <div className={classes.innerContentWrapper}>
-            <Grid container spacing={0} className={classes.mainContent}>
-              {!isMobile && (
-                <Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  md={12}
-                  lg={12}
-                  xl={12}
-                  className={classes.teamNameWrapper}
-                >
-                  <TextField
-                    label="Team name"
-                    value={teamName}
-                    multiline
-                    rows={teamName.length > 24 ? "2" : "1"}
-                    className={classes.teamName}
-                    onChange={e => this.handleNameUpdate(e.target.value)}
-                    error={teamName.length === 0}
-                    helperText={
-                      teamName.length === 0 ? "Please provide a team name" : ""
-                    }
-                  />
-                </Grid>
+        <DialogTitle>Edit Team</DialogTitle>
+        <DialogContent>
+          {!isMobile && (
+            <div className={classes.teamNameWrapper}>
+              {isOptionsLoading || isSaveTeamLoading ? (
+                <div className={classes.loaderWrapper}>
+                  <CircularProgress />
+                </div>
+              ) : (
+                <TextField
+                  label="Team name"
+                  value={teamName}
+                  multiline
+                  rows={teamName.length > 24 ? "2" : "1"}
+                  className={classes.teamName}
+                  onChange={e => this.handleNameUpdate(e.target.value)}
+                  error={teamName.length === 0}
+                  helperText={
+                    teamName.length === 0 ? "Please provide a team name" : ""
+                  }
+                />
               )}
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={6}
-                lg={6}
-                xl={6}
-                className={classes.section}
+            </div>
+          )}
+          <div className={classes.innerContentWrapper}>
+            <div className={classes.section}>
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
               >
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Details
-                </Typography>
+                Details
+              </Typography>
+              {isOptionsLoading || isSaveTeamLoading ? (
+                <div className={classes.loaderWrapper}>
+                  <CircularProgress />
+                </div>
+              ) : (
                 <form autoComplete="off">
                   <FormControl className={classes.formControl}>
                     <InputLabel htmlFor="age-group">Age group</InputLabel>
@@ -799,66 +752,55 @@ class EditTeamDialog extends Component {
                     </Select>
                   </FormControl>
                 </form>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={6}
-                lg={6}
-                xl={6}
-                className={classes.section}
+              )}
+            </div>
+            <div className={classes.section}>
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
               >
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
+                Managers
+              </Typography>
+              {managersList}
+              <div className={classes.addButtonWrapper}>
+                <Button
+                  disabled={
+                    _.keys(managers).length === _.keys(selectedManagers).length
+                  }
+                  aria-label="add manager"
+                  onClick={() => this.addManager(_.keys(managers).length)}
                 >
-                  Managers
-                </Typography>
-                {managersList}
-                <div className={classes.addButtonWrapper}>
-                  <Button
-                    disabled={
-                      _.keys(managers).length ===
-                      _.keys(selectedManagers).length
-                    }
-                    aria-label="add manager"
-                    onClick={() => this.addManager(_.keys(managers).length)}
-                  >
-                    <AddIcon /> Add manager
-                  </Button>
-                </div>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
+                  <AddIcon /> Add manager
+                </Button>
+              </div>
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
+              >
+                Coaches
+              </Typography>
+              {coachesList}
+              <div className={classes.addButtonWrapper}>
+                <Button
+                  disabled={
+                    _.keys(coaches).length === _.keys(selectedCoaches).length
+                  }
+                  aria-label="add coach"
+                  onClick={() => this.addCoach(_.keys(coaches).length)}
                 >
-                  Coaches
-                </Typography>
-                {coachesList}
-                <div className={classes.addButtonWrapper}>
-                  <Button
-                    disabled={
-                      _.keys(coaches).length === _.keys(selectedCoaches).length
-                    }
-                    aria-label="add coach"
-                    onClick={() => this.addCoach(_.keys(coaches).length)}
-                  >
-                    <AddIcon /> Add coach
-                  </Button>
-                </div>
-              </Grid>
-              {isMobile && (
-                <Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  md={12}
-                  lg={12}
-                  xl={12}
-                  className={classes.teamNameWrapper}
-                >
+                  <AddIcon /> Add coach
+                </Button>
+              </div>
+            </div>
+            {isMobile && (
+              <div className={classes.teamNameWrapper}>
+                {isOptionsLoading || isSaveTeamLoading ? (
+                  <div className={classes.loaderWrapper}>
+                    <CircularProgress />
+                  </div>
+                ) : (
                   <TextField
                     label="Team name"
                     value={teamName}
@@ -871,11 +813,45 @@ class EditTeamDialog extends Component {
                       teamName.length === 0 ? "Please provide a team name" : ""
                     }
                   />
-                </Grid>
-              )}
-            </Grid>
+                )}
+              </div>
+            )}
           </div>
-        )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleClose()}>Cancel</Button>
+          <Button
+            disabled={isOptionsLoading || isSaveTeamLoading}
+            color="primary"
+            onClick={() => {
+              if (teamName.length === 0) {
+                openTeamErrorAlert("TITLE");
+              } else {
+                const teamManagers = _.fromPairs(
+                  _.keys(selectedManagers).map(managerID => [managerID, true])
+                );
+                const teamCoaches = _.fromPairs(
+                  _.keys(selectedCoaches).map(coachID => [coachID, true])
+                );
+                editTeam(
+                  institutionID,
+                  teamID,
+                  {
+                    ageGroup,
+                    division,
+                    sport,
+                    gender,
+                    name: teamName
+                  },
+                  teamManagers,
+                  teamCoaches
+                );
+              }
+            }}
+          >
+            Save changes
+          </Button>
+        </DialogActions>
       </Dialog>
     );
   }
