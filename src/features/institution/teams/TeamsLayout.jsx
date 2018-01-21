@@ -299,8 +299,7 @@ class TeamsLayout extends Component {
             <EditTeamDialog
               isOpen={isEditTeamDialogOpen}
               isMobile={isMobile}
-              isSaveTeamLoading={isEditTeamDialogLoading}
-              isOptionsLoading={isOptionsLoading}
+              isLoading={isEditTeamDialogLoading || isOptionsLoading}
               teamID={teamID}
               initialTeamInfo={teams[teamID]}
               institutionID={userID}
@@ -358,8 +357,7 @@ class TeamsLayout extends Component {
         <AddTeamDialog
           isOpen={isAddTeamDialogOpen}
           isMobile={isMobile}
-          isSaveTeamLoading={isAddTeamDialogLoading}
-          isOptionsLoading={isOptionsLoading}
+          isLoading={isAddTeamDialogLoading || isOptionsLoading}
           institutionID={userID}
           options={options}
           coaches={coaches}

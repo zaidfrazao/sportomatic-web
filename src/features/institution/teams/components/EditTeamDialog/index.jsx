@@ -45,13 +45,8 @@ const styles = {
     color: grey[700]
   },
   innerContentWrapper: {
-    margin: "0 auto",
-    maxWidth: 900,
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    alignItems: "stretch"
+    maxWidth: 1600,
+    margin: "0 auto"
   },
   loaderWrapper: {
     height: "100%",
@@ -66,10 +61,8 @@ const styles = {
     overflow: "auto"
   },
   section: {
-    width: "48%",
-    minWidth: 260,
-    minHeight: 300,
-    border: `1px solid ${grey[300]}`
+    border: `1px solid ${grey[300]}`,
+    margin: "24px 0"
   },
   subheading: {
     width: "100%",
@@ -77,10 +70,10 @@ const styles = {
     margin: "24px 0"
   },
   teamName: {
+    margin: 24,
     fontSize: "1.4rem"
   },
   teamNameWrapper: {
-    padding: 24,
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
@@ -620,9 +613,7 @@ class EditTeamDialog extends Component {
       teamID,
       isMobile,
       managers,
-      coaches,
-      isSaveTeamLoading,
-      isOptionsLoading
+      coaches
     } = this.props;
     const { handleClose, editTeam, openTeamErrorAlert } = this.props.actions;
     const { ageGroups, divisions, sports, genderType } = this.props.options;
@@ -654,42 +645,20 @@ class EditTeamDialog extends Component {
       >
         <DialogTitle>Edit Team</DialogTitle>
         <DialogContent>
-          {!isMobile && (
-            <div className={classes.teamNameWrapper}>
-              {isOptionsLoading || isSaveTeamLoading ? (
-                <div className={classes.loaderWrapper}>
-                  <CircularProgress />
-                </div>
-              ) : (
-                <TextField
-                  label="Team name"
-                  value={teamName}
-                  multiline
-                  rows={teamName.length > 24 ? "2" : "1"}
-                  className={classes.teamName}
-                  onChange={e => this.handleNameUpdate(e.target.value)}
-                  error={teamName.length === 0}
-                  helperText={
-                    teamName.length === 0 ? "Please provide a team name" : ""
-                  }
-                />
-              )}
+          {isLoading ? (
+            <div className={classes.loaderWrapper}>
+              <CircularProgress />
             </div>
-          )}
-          <div className={classes.innerContentWrapper}>
-            <div className={classes.section}>
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
-              >
-                Details
-              </Typography>
-              {isOptionsLoading || isSaveTeamLoading ? (
-                <div className={classes.loaderWrapper}>
-                  <CircularProgress />
-                </div>
-              ) : (
+          ) : (
+            <div className={classes.innerContentWrapper}>
+              <div className={classes.section}>
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Details
+                </Typography>
                 <form autoComplete="off">
                   <FormControl className={classes.formControl}>
                     <InputLabel htmlFor="age-group">Age group</InputLabel>
@@ -752,76 +721,71 @@ class EditTeamDialog extends Component {
                     </Select>
                   </FormControl>
                 </form>
-              )}
-            </div>
-            <div className={classes.section}>
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
-              >
-                Managers
-              </Typography>
-              {managersList}
-              <div className={classes.addButtonWrapper}>
-                <Button
-                  disabled={
-                    _.keys(managers).length === _.keys(selectedManagers).length
-                  }
-                  aria-label="add manager"
-                  onClick={() => this.addManager(_.keys(managers).length)}
-                >
-                  <AddIcon /> Add manager
-                </Button>
               </div>
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
-              >
-                Coaches
-              </Typography>
-              {coachesList}
-              <div className={classes.addButtonWrapper}>
-                <Button
-                  disabled={
-                    _.keys(coaches).length === _.keys(selectedCoaches).length
-                  }
-                  aria-label="add coach"
-                  onClick={() => this.addCoach(_.keys(coaches).length)}
+              <div className={classes.section}>
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
                 >
-                  <AddIcon /> Add coach
-                </Button>
-              </div>
-            </div>
-            {isMobile && (
-              <div className={classes.teamNameWrapper}>
-                {isOptionsLoading || isSaveTeamLoading ? (
-                  <div className={classes.loaderWrapper}>
-                    <CircularProgress />
-                  </div>
-                ) : (
-                  <TextField
-                    label="Team name"
-                    value={teamName}
-                    multiline
-                    rows={teamName.length > 24 ? "2" : "1"}
-                    className={classes.teamName}
-                    onChange={e => this.handleNameUpdate(e.target.value)}
-                    error={teamName.length === 0}
-                    helperText={
-                      teamName.length === 0 ? "Please provide a team name" : ""
+                  Managers
+                </Typography>
+                {managersList}
+                <div className={classes.addButtonWrapper}>
+                  <Button
+                    disabled={
+                      _.keys(managers).length ===
+                      _.keys(selectedManagers).length
                     }
-                  />
-                )}
+                    aria-label="add manager"
+                    onClick={() => this.addManager(_.keys(managers).length)}
+                  >
+                    <AddIcon /> Add manager
+                  </Button>
+                </div>
               </div>
-            )}
-          </div>
+              <div className={classes.section}>
+                <Typography
+                  className={classes.heading}
+                  type="title"
+                  component="h3"
+                >
+                  Coaches
+                </Typography>
+                {coachesList}
+                <div className={classes.addButtonWrapper}>
+                  <Button
+                    disabled={
+                      _.keys(coaches).length === _.keys(selectedCoaches).length
+                    }
+                    aria-label="add coach"
+                    onClick={() => this.addCoach(_.keys(coaches).length)}
+                  >
+                    <AddIcon /> Add coach
+                  </Button>
+                </div>
+              </div>
+              <div className={classes.teamNameWrapper}>
+                <TextField
+                  label="Team name"
+                  value={teamName}
+                  multiline
+                  rows={teamName.length > 24 ? "2" : "1"}
+                  className={classes.teamName}
+                  onChange={e => this.handleNameUpdate(e.target.value)}
+                  error={teamName.length === 0}
+                  helperText={
+                    teamName.length === 0 ? "Please provide a team name" : ""
+                  }
+                />
+              </div>
+            </div>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => handleClose()}>Cancel</Button>
           <Button
-            disabled={isOptionsLoading || isSaveTeamLoading}
+            disabled={isLoading}
             color="primary"
             onClick={() => {
               if (teamName.length === 0) {

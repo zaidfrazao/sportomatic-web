@@ -77,8 +77,7 @@ const styles = {
   mainContent: {
     height: "100%",
     width: "100%",
-    overflow: "auto",
-    paddingBottom: 40
+    overflow: "auto"
   },
   nonCompetitiveEvent: {
     backgroundColor: lightBlue[500],
