@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
@@ -9,6 +10,9 @@ const styles = {
     padding: 24,
     maxWidth: 1200,
     margin: "0 auto"
+  },
+  noCardsText: {
+    color: grey[600]
   },
   noCardsWrapper: {
     flexGrow: 1,
@@ -55,7 +59,11 @@ class PeopleList extends Component {
     } else {
       return (
         <div className={classes.noCardsWrapper}>
-          <Typography type="title" component="h3">
+          <Typography
+            type="title"
+            component="h3"
+            className={classes.noCardsText}
+          >
             No staff members
           </Typography>
         </div>

@@ -517,6 +517,8 @@ export function loadTeams(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestTeams());
 
+    console.log(institutionID);
+
     const teamsRef = firebase
       .firestore()
       .collection("teams")
