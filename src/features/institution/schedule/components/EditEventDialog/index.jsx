@@ -2,11 +2,9 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import AddIcon from "material-ui-icons/Add";
-import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
-import CloseIcon from "material-ui-icons/Close";
 import Dialog, {
   DialogActions,
   DialogContent,
@@ -14,7 +12,6 @@ import Dialog, {
 } from "material-ui/Dialog";
 import { FormLabel, FormControl, FormControlLabel } from "material-ui/Form";
 import { grey, lightBlue, orange } from "material-ui/colors";
-import Grid from "material-ui/Grid";
 import IconButton from "material-ui/IconButton";
 import Input, { InputLabel } from "material-ui/Input";
 import Radio, { RadioGroup } from "material-ui/Radio";
@@ -23,7 +20,6 @@ import Select from "material-ui/Select";
 import Slide from "material-ui/transitions/Slide";
 import Switch from "material-ui/Switch";
 import TextField from "material-ui/TextField";
-import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
@@ -39,7 +35,17 @@ const styles = {
   },
   competitiveEvent: {
     backgroundColor: orange[500],
-    marginLeft: 20
+    marginRight: 16
+  },
+  eventTypeControl: {
+    flexGrow: 1
+  },
+  eventTypeControlWrapper: {
+    width: "80%",
+    margin: "24px 10%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
   },
   flex: {
     flex: 1
@@ -55,7 +61,7 @@ const styles = {
     margin: 0,
     width: "100%",
     textAlign: "center",
-    backgroundColor: grey[300],
+    backgroundColor: grey[200],
     color: grey[700]
   },
   innerContentWrapper: {
@@ -76,7 +82,7 @@ const styles = {
   },
   nonCompetitiveEvent: {
     backgroundColor: lightBlue[500],
-    marginLeft: 20
+    marginRight: 16
   },
   opponentsHeading: {
     color: grey[700]
@@ -99,8 +105,8 @@ const styles = {
     alignItems: "center"
   },
   section: {
-    backgroundColor: grey[100],
-    border: `1px solid ${grey[300]}`
+    border: `1px solid ${grey[300]}`,
+    margin: "24px 0"
   },
   subFormControl: {
     width: "75%",
@@ -112,10 +118,10 @@ const styles = {
     margin: "24px 0"
   },
   teamWrapper: {
-    backgroundColor: grey[200],
+    backgroundColor: grey[100],
     padding: 16,
     margin: 24,
-    border: `1px solid ${grey[300]}`
+    border: `1px solid ${grey[200]}`
   },
   title: {
     margin: 24,
@@ -1228,164 +1234,20 @@ class EditEventDialog extends Component {
     return (
       <div>
         <Dialog
-          fullScreen
+          fullScreen={isMobile}
           open={isOpen}
           onRequestClose={() => handleClose()}
           transition={this.state.Transition}
         >
-          <AppBar className={classes.appBar}>
-            <Toolbar>
-              <IconButton
-                color="contrast"
-                onClick={() => handleClose()}
-                aria-label="Close"
-              >
-                <CloseIcon />
-              </IconButton>
-              <Typography type="title" color="inherit" className={classes.flex}>
-                Edit Event
-              </Typography>
-              <Button
-                disabled={isLoading}
-                color="contrast"
-                onClick={() => {
-                  let eventType = type;
-                  if (eventType === "OTHER") {
-                    eventType = otherEventType;
-                  }
-                  eventType = _.capitalize(eventType);
-                  const isCompetitive = this.isEventCompetitive();
-                  const recurrencePattern = initialEventInfo.recurrencePattern;
-
-                  const requiredInfo = {
-                    isCompetitive,
-                    title,
-                    status: "ACTIVE",
-                    times: {
-                      end: new Date(`${date}T${endTime}:00`),
-                      start: new Date(`${date}T${startTime}:00`)
-                    },
-                    type: eventType
-                  };
-                  const optionalInfo = {
-                    homeAway,
-                    notes,
-                    venue
-                  };
-                  const eventTeams = _.fromPairs(
-                    _.keys(selectedTeams).map(teamID => {
-                      if (isCompetitive) {
-                        return [
-                          teamID,
-                          {
-                            resultsStatus: "AWAITING_APPROVAL",
-                            opponents: opponents[teamID]
-                          }
-                        ];
-                      } else {
-                        return [teamID, true];
-                      }
-                    })
-                  );
-                  const eventManagers = _.fromPairs(
-                    _.keys(selectedManagers).map(managerID => [managerID, true])
-                  );
-                  const eventCoaches = _.fromPairs(
-                    _.keys(selectedCoaches).map(coachID => [
-                      coachID,
-                      {
-                        attendance: {
-                          didAttend: true,
-                          hasSubstitute: false,
-                          substitute: "",
-                          willAttend: true
-                        },
-                        absenteeism: {
-                          rating: "GOOD",
-                          reason: ""
-                        },
-                        hours: {
-                          status: "AWAITING_SIGN_IN",
-                          times: {
-                            signIn: new Date(`${date}T${startTime}:00`),
-                            signOut: new Date(`${date}T${endTime}:00`)
-                          }
-                        }
-                      }
-                    ])
-                  );
-
-                  if (hasTitleError || hasOtherEventTypeError || hasDateError) {
-                    let errorType = "TITLE";
-                    if (hasOtherEventTypeError) errorType = "EVENT_TYPE";
-                    if (hasDateError) errorType = "DATE";
-                    openAddEventErrorAlert(errorType);
-                  } else {
-                    editEvent(
-                      institutionID,
-                      initialEventID,
-                      requiredInfo,
-                      optionalInfo,
-                      recurrencePattern,
-                      eventTeams,
-                      eventManagers,
-                      eventCoaches,
-                      shouldEditAllEvents
-                    );
-                  }
-                }}
-              >
-                save
-              </Button>
-            </Toolbar>
-          </AppBar>
-          {isLoading ? (
-            <div className={classes.loaderWrapper}>
-              <CircularProgress />
-            </div>
-          ) : (
-            <div className={classes.innerContentWrapper}>
-              <Grid container spacing={0} className={classes.mainContent}>
-                {!isMobile && (
-                  <Grid
-                    item
-                    xs={12}
-                    sm={12}
-                    md={12}
-                    lg={12}
-                    xl={12}
-                    className={classes.titleWrapper}
-                  >
-                    <Avatar
-                      className={
-                        this.isEventCompetitive()
-                          ? classes.competitiveEvent
-                          : classes.nonCompetitiveEvent
-                      }
-                    />
-                    <TextField
-                      label="Event title"
-                      value={title}
-                      multiline
-                      rows={title.length > 24 ? "2" : "1"}
-                      className={classes.title}
-                      onChange={e => this.handleTitleUpdate(e.target.value)}
-                      error={hasTitleError}
-                      helperText={
-                        hasTitleError ? "Please provide an event title" : ""
-                      }
-                    />
-                  </Grid>
-                )}
-                <Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  md={6}
-                  lg={6}
-                  xl={6}
-                  className={classes.section}
-                >
+          <DialogTitle>Edit Event</DialogTitle>
+          <DialogContent>
+            {isLoading ? (
+              <div className={classes.loaderWrapper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <div className={classes.innerContentWrapper}>
+                <div className={classes.section}>
                   <Typography
                     className={classes.heading}
                     type="title"
@@ -1394,29 +1256,38 @@ class EditEventDialog extends Component {
                     Details
                   </Typography>
                   <form autoComplete="off">
-                    <FormControl className={classes.formControl}>
-                      <InputLabel htmlFor="type">Type</InputLabel>
-                      <Select
-                        native
-                        value={type}
-                        onChange={this.handleChange("type")}
-                        input={<Input id="type" />}
-                      >
-                        <optgroup label="Non-competitive">
-                          <option value="PRACTICE">Practice</option>
-                          <option value="TRAINING">Training</option>
-                        </optgroup>
-                        <optgroup label="Competitive">
-                          <option value="MATCH">Match</option>
-                          <option value="MEETING">Meeting</option>
-                          <option value="GALA">Gala</option>
-                          <option value="SCRIM">Scrim</option>
-                          <option value="EXHIBITION">Exhibition</option>
-                          <option value="FRIENDLY">Friendly</option>
-                        </optgroup>
-                        <option value="OTHER">Other</option>
-                      </Select>
-                    </FormControl>
+                    <div className={classes.eventTypeControlWrapper}>
+                      <Avatar
+                        className={
+                          this.isEventCompetitive()
+                            ? classes.competitiveEvent
+                            : classes.nonCompetitiveEvent
+                        }
+                      />
+                      <FormControl className={classes.eventTypeControl}>
+                        <InputLabel htmlFor="type">Type</InputLabel>
+                        <Select
+                          native
+                          value={type}
+                          onChange={this.handleChange("type")}
+                          input={<Input id="type" />}
+                        >
+                          <optgroup label="Non-competitive">
+                            <option value="PRACTICE">Practice</option>
+                            <option value="TRAINING">Training</option>
+                          </optgroup>
+                          <optgroup label="Competitive">
+                            <option value="MATCH">Match</option>
+                            <option value="MEETING">Meeting</option>
+                            <option value="GALA">Gala</option>
+                            <option value="SCRIM">Scrim</option>
+                            <option value="EXHIBITION">Exhibition</option>
+                            <option value="FRIENDLY">Friendly</option>
+                          </optgroup>
+                          <option value="OTHER">Other</option>
+                        </Select>
+                      </FormControl>
+                    </div>
                     {type === "OTHER" && (
                       <div>
                         <FormControl className={classes.subFormControl}>
@@ -1560,16 +1431,8 @@ class EditEventDialog extends Component {
                       />
                     </FormControl>
                   </form>
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  md={6}
-                  lg={6}
-                  xl={6}
-                  className={classes.section}
-                >
+                </div>
+                <div className={classes.section}>
                   <Typography
                     className={classes.heading}
                     type="title"
@@ -1589,6 +1452,8 @@ class EditEventDialog extends Component {
                       <AddIcon /> Add team
                     </Button>
                   </div>
+                </div>
+                <div className={classes.section}>
                   <Typography
                     className={classes.heading}
                     type="title"
@@ -1609,6 +1474,8 @@ class EditEventDialog extends Component {
                       <AddIcon /> Add manager
                     </Button>
                   </div>
+                </div>
+                <div className={classes.section}>
                   <Typography
                     className={classes.heading}
                     type="title"
@@ -1629,41 +1496,119 @@ class EditEventDialog extends Component {
                       <AddIcon /> Add coach
                     </Button>
                   </div>
-                </Grid>
-                {isMobile && (
-                  <Grid
-                    item
-                    xs={12}
-                    sm={12}
-                    md={12}
-                    lg={12}
-                    xl={12}
-                    className={classes.titleWrapper}
-                  >
-                    <Avatar
-                      className={
-                        this.isEventCompetitive()
-                          ? classes.competitiveEvent
-                          : classes.nonCompetitiveEvent
+                </div>
+                <div className={classes.titleWrapper}>
+                  <TextField
+                    label="Event title"
+                    value={title}
+                    multiline
+                    rows={title.length > 24 ? "2" : "1"}
+                    className={classes.title}
+                    onChange={e => this.handleTitleUpdate(e.target.value)}
+                    error={hasTitleError}
+                    helperText={
+                      hasTitleError ? "Please provide an event title" : ""
+                    }
+                  />
+                </div>
+              </div>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => handleClose()}>Cancel</Button>
+            <Button
+              disabled={isLoading}
+              color="primary"
+              onClick={() => {
+                let eventType = type;
+                if (eventType === "OTHER") {
+                  eventType = otherEventType;
+                }
+                eventType = _.capitalize(eventType);
+                const isCompetitive = this.isEventCompetitive();
+                const recurrencePattern = initialEventInfo.recurrencePattern;
+
+                const requiredInfo = {
+                  isCompetitive,
+                  title,
+                  status: "ACTIVE",
+                  times: {
+                    end: new Date(`${date}T${endTime}:00`),
+                    start: new Date(`${date}T${startTime}:00`)
+                  },
+                  type: eventType
+                };
+                const optionalInfo = {
+                  homeAway,
+                  notes,
+                  venue
+                };
+                const eventTeams = _.fromPairs(
+                  _.keys(selectedTeams).map(teamID => {
+                    if (isCompetitive) {
+                      return [
+                        teamID,
+                        {
+                          resultsStatus: "AWAITING_APPROVAL",
+                          opponents: opponents[teamID]
+                        }
+                      ];
+                    } else {
+                      return [teamID, true];
+                    }
+                  })
+                );
+                const eventManagers = _.fromPairs(
+                  _.keys(selectedManagers).map(managerID => [managerID, true])
+                );
+                const eventCoaches = _.fromPairs(
+                  _.keys(selectedCoaches).map(coachID => [
+                    coachID,
+                    {
+                      attendance: {
+                        didAttend: true,
+                        hasSubstitute: false,
+                        substitute: "",
+                        willAttend: true
+                      },
+                      absenteeism: {
+                        rating: "GOOD",
+                        reason: ""
+                      },
+                      hours: {
+                        status: "AWAITING_SIGN_IN",
+                        times: {
+                          signIn: new Date(`${date}T${startTime}:00`),
+                          signOut: new Date(`${date}T${endTime}:00`)
+                        }
                       }
-                    />
-                    <TextField
-                      label="Event title"
-                      value={title}
-                      multiline
-                      rows={title.length > 24 ? "2" : "1"}
-                      className={classes.title}
-                      onChange={e => this.handleTitleUpdate(e.target.value)}
-                      error={hasTitleError}
-                      helperText={
-                        hasTitleError ? "Please provide an event title" : ""
-                      }
-                    />
-                  </Grid>
-                )}
-              </Grid>
-            </div>
-          )}
+                    }
+                  ])
+                );
+
+                if (hasTitleError || hasOtherEventTypeError || hasDateError) {
+                  let errorType = "TITLE";
+                  if (hasOtherEventTypeError) errorType = "EVENT_TYPE";
+                  if (hasDateError) errorType = "DATE";
+                  openAddEventErrorAlert(errorType);
+                } else {
+                  editEvent(
+                    institutionID,
+                    initialEventID,
+                    requiredInfo,
+                    optionalInfo,
+                    recurrencePattern,
+                    eventTeams,
+                    eventManagers,
+                    eventCoaches,
+                    shouldEditAllEvents
+                  );
+                }
+              }}
+            >
+              Save changes
+            </Button>
+          </DialogActions>
         </Dialog>
         <Dialog open={isRecurringEventModalOpen}>
           <DialogTitle>Recurring Event</DialogTitle>
