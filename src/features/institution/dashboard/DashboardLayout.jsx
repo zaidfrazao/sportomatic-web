@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import BannerCarousel from "./components/BannerCarousel";
-import Typography from "material-ui/Typography";
+// import Button from "material-ui/Button";
 
 const styles = theme => ({
   root: {
@@ -23,36 +23,103 @@ const styles = theme => ({
 class DashboardLayout extends Component {
   render() {
     const { classes, isTablet } = this.props;
+    // const { createInstitution } = this.props.actions;
 
     return (
       <div className={classes.root}>
         <BannerCarousel isTablet={isTablet} />
-        <div className={classes.explanation}>
-          <Typography type="body1" component="p" className={classes.paragraph}>
-            This is the first version of the Sportomatic Beta release. It is
-            only intented to be used by St Stithians staff members. It contains
-            very rudimentary versions of the final functionality of the
-            software.
-          </Typography>
-          <Typography type="body1" component="p" className={classes.paragraph}>
-            This dashboard would not normally contain this type of explanatory
-            text. In the future it will contain things like notices, alerts,
-            scoreboards, and other useful information that you would want to see
-            every time you open the app.
-          </Typography>
-          <Typography type="body1" component="p" className={classes.paragraph}>
-            Certain features have been temporarily disabled or have not yet been
-            implemented. Again, this is just a rudimentary version of the final
-            product.
-          </Typography>
-          <Typography type="body1" component="p" className={classes.paragraph}>
-            Hopefully you will find the functionality that has been implemented
-            thus far useful :)
-          </Typography>
-          <Typography type="body1" component="p" className={classes.paragraph}>
-            - The Sportomatic Team
-          </Typography>
-        </div>
+        {/*<Button
+          onClick={() =>
+            createInstitution({
+              info: {
+                abbreviation: "RWC",
+                ageGroups: [
+                  "Open",
+                  18,
+                  17,
+                  16,
+                  15,
+                  14,
+                  13,
+                  12,
+                  11,
+                  10,
+                  9,
+                  8,
+                  7,
+                  6
+                ],
+                divisions: ["1st Team", "2nd Team", "A", "B", "C", "D"],
+                emblemURL: "",
+                gender: "MIXED",
+                name: "Rowan's Personal Institution",
+                phoneNumber: "",
+                physicalAddress: "",
+                publicEmail: "",
+                sports: [
+                  "Athletics",
+                  "Cricket",
+                  "Hockey",
+                  "Netball",
+                  "Rugby",
+                  "Soccer",
+                  "Swimming",
+                  "Tennis"
+                ],
+                type: "Personal"
+              },
+              metadata: {
+                creationDate: new Date(Date.now()),
+                status: "ACTIVE"
+              },
+              paymentDefaults: {
+                hourlyRates: {
+                  overtime: 150,
+                  standard: 100,
+                  salaray: 6000
+                },
+                maxOvertimeHours: 3,
+                payDay: {
+                  day: 1,
+                  isEndOfTheMonth: false
+                },
+                type: "HOURLY"
+              },
+              permissions: {
+                coaches: {
+                  events: {
+                    canCancel: true,
+                    canCreate: true,
+                    canEdit: true
+                  },
+                  results: {
+                    canApprove: true,
+                    canEdit: true
+                  },
+                  teams: {
+                    canEdit: true
+                  }
+                },
+                managers: {
+                  events: {
+                    canCancel: true,
+                    canCreate: true,
+                    canEdit: true
+                  },
+                  teams: {
+                    canEdit: true
+                  },
+                  wages: {
+                    canCreate: true,
+                    canEdit: true,
+                    canView: true
+                  }
+                }
+              }
+            })}
+        >
+          Create institution
+        </Button>*/}
       </div>
     );
   }

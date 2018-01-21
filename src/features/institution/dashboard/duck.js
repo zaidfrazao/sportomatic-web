@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
+import firebase from "firebase";
 
 // Actions
 
@@ -44,5 +45,13 @@ export const selector = createStructuredSelector({
 export function toggleSideMenu() {
   return {
     type: TOGGLE_SIDE_MENU
+  };
+}
+
+export function createInstitution(info) {
+  return function(dispatch: DispatchAlias) {
+    const db = firebase.firestore();
+
+    return db.collection("institutions").add(info);
   };
 }
