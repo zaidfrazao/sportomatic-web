@@ -13,6 +13,9 @@ export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
 export const REQUEST_EVENTS_BY_DATE = `${NAMESPACE}/REQUEST_EVENTS_BY_DATE`;
 export const RECEIVE_EVENTS_BY_DATE = `${NAMESPACE}/RECEIVE_EVENTS_BY_DATE`;
 export const ERROR_LOADING_EVENTS_BY_DATE = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_DATE`;
+export const REQUEST_EVENTS_BY_COACH = `${NAMESPACE}/REQUEST_EVENTS_BY_COACH`;
+export const RECEIVE_EVENTS_BY_COACH = `${NAMESPACE}/RECEIVE_EVENTS_BY_COACH`;
+export const ERROR_LOADING_EVENTS_BY_COACH = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_COACH`;
 export const REQUEST_SIGN_IN = `${NAMESPACE}/REQUEST_SIGN_IN`;
 export const RECEIVE_SIGN_IN = `${NAMESPACE}/RECEIVE_SIGN_IN`;
 export const ERROR_SIGNING_IN = `${NAMESPACE}/ERROR_SIGNING_IN`;
@@ -22,6 +25,8 @@ export const ERROR_SIGNING_OUT = `${NAMESPACE}/ERROR_SIGNING_OUT`;
 export const REQUEST_APPROVE_HOURS = `${NAMESPACE}/REQUEST_APPROVE_HOURS`;
 export const RECEIVE_APPROVE_HOURS = `${NAMESPACE}/RECEIVE_APPROVE_HOURS`;
 export const ERROR_APPROVING_HOURS = `${NAMESPACE}/ERROR_APPROVING_HOURS`;
+export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
+export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
 
 // Reducers
 
@@ -59,8 +64,8 @@ function staffReducer(state = {}, action = {}) {
 
 export const loadingStatusInitialState = {
   isStaffLoading: false,
-  isEventsLoading: {},
-  isEventsByDateLoading: false
+  isEventsByDateLoading: false,
+  isEventsByCoachLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -87,6 +92,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isEventsByDateLoading: false
       };
+    case REQUEST_EVENTS_BY_COACH:
+      return {
+        ...state,
+        isEventsByCoachLoading: true
+      };
+    case ERROR_LOADING_EVENTS_BY_COACH:
+    case RECEIVE_EVENTS_BY_COACH:
+      return {
+        ...state,
+        isEventsByCoachLoading: false
+      };
     default:
       return state;
   }
@@ -104,11 +120,44 @@ function eventsByDateReducer(state = {}, action = {}) {
   }
 }
 
+function eventsByCoachReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RECEIVE_EVENTS_BY_COACH:
+      return action.payload.events;
+    default:
+      return state;
+  }
+}
+
+export const filtersInitialState = {
+  sport: "All",
+  searchText: ""
+};
+
+function filterReducer(state = filtersInitialState, action = {}) {
+  switch (action.type) {
+    case APPLY_FILTERS:
+      return {
+        ...state,
+        ...action.payload
+      };
+    case UPDATE_SEARCH:
+      return {
+        ...state,
+        searchText: action.payload.searchText
+      };
+    default:
+      return state;
+  }
+}
+
 export const hoursReducer = combineReducers({
   uiConfig: uiConfigReducer,
   staff: staffReducer,
   loadingStatus: loadingStatusReducer,
-  eventsByDate: eventsByDateReducer
+  eventsByDate: eventsByDateReducer,
+  eventsByCoach: eventsByCoachReducer,
+  filters: filterReducer
 });
 
 // Selectors
@@ -117,15 +166,37 @@ const uiConfig = state => state.institution.hours.uiConfig;
 const staff = state => state.institution.hours.staff;
 const loadingStatus = state => state.institution.hours.loadingStatus;
 const eventsByDate = state => state.institution.hours.eventsByDate;
+const eventsByCoach = state => state.institution.hours.eventsByCoach;
+const filters = state => state.institution.hours.filters;
 
 export const selector = createStructuredSelector({
   uiConfig,
   staff,
   loadingStatus,
-  eventsByDate
+  eventsByDate,
+  eventsByCoach,
+  filters
 });
 
 // Action Creators
+
+export function applyFilters(sport) {
+  return {
+    type: APPLY_FILTERS,
+    payload: {
+      sport
+    }
+  };
+}
+
+export function updateSearch(searchText) {
+  return {
+    type: UPDATE_SEARCH,
+    payload: {
+      searchText
+    }
+  };
+}
 
 export function updateTab(newTab) {
   return {
@@ -242,6 +313,53 @@ export function loadEventsByDate(institutionID, startAfter = "") {
   };
 }
 
+export function requestEventsByCoach() {
+  return {
+    type: REQUEST_EVENTS_BY_COACH
+  };
+}
+
+export function receiveEventsByCoach(events) {
+  return {
+    type: RECEIVE_EVENTS_BY_COACH,
+    payload: {
+      events
+    }
+  };
+}
+
+export function errorLoadingEventsByCoach(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_EVENTS_BY_COACH,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadEventsByCoach(institutionID, coachID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEventsByCoach());
+
+    let eventsRef = firebase
+      .firestore()
+      .collection("events")
+      .where("institutionID", "==", institutionID)
+      .where(`coaches.${coachID}.hours.status`, "==", "APPROVED");
+
+    return eventsRef.onSnapshot(querySnapshot => {
+      let events = {};
+      querySnapshot.forEach(doc => {
+        events[doc.id] = doc.data();
+      });
+      dispatch(receiveEventsByCoach(events));
+    });
+  };
+}
+
 export function requestSignIn() {
   return {
     type: REQUEST_SIGN_IN
@@ -307,13 +425,6 @@ export function signOut(eventID, coachID, signOutTime, newStatus) {
 
     const db = firebase.firestore();
     const eventRef = db.collection("events").doc(eventID);
-
-    console.log({
-      eventID,
-      coachID,
-      signOutTime,
-      newStatus
-    });
 
     return eventRef
       .update({

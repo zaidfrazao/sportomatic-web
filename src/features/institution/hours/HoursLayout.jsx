@@ -2,19 +2,31 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import AppBar from "material-ui/AppBar";
+import BackIcon from "material-ui-icons/ArrowBack";
 import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import { grey, lightBlue } from "material-ui/colors";
+import IconButton from "material-ui/IconButton";
 import moment from "moment";
 import Paper from "material-ui/Paper";
+import { Route } from "react-router-dom";
 import Tabs, { Tab } from "material-ui/Tabs";
+import Toolbar from "material-ui/Toolbar";
+import Tooltip from "material-ui/Tooltip";
+import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../components/BannerAd";
+import CoachesList from "./components/CoachesList";
+import FiltersToolbar from "./components/FiltersToolbar";
 import HoursCard from "./components/HoursCard";
+import HoursHistory from "./components/HoursHistory";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 
 const styles = theme => ({
+  actionsBar: {
+    backgroundColor: grey[200]
+  },
   adWrapper: {
     width: "100%",
     display: "flex",
@@ -74,6 +86,10 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center"
   },
+  innerWrapper: {
+    flexGrow: 1,
+    overflow: "auto"
+  },
   inProgressWrapper: {
     flexGrow: 1,
     display: "flex",
@@ -92,11 +108,22 @@ const styles = theme => ({
   loadMoreButton: {
     margin: 24
   },
+  name: {
+    margin: 24,
+    width: "calc(100% - 48px)",
+    textAlign: "center"
+  },
   noEventsAwaitingApprovalWrapper: {
     flexGrow: 1,
     display: "flex",
     justifyContent: "center",
     alignItems: "center"
+  },
+  outerWrapper: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
   },
   root: {
     width: "100%",
@@ -223,6 +250,63 @@ class HoursLayout extends Component {
     }
   }
 
+  renderLogs() {
+    const { classes, staff } = this.props;
+    const { coachID } = this.props.match.params;
+    const { isStaffLoading } = this.props.loadingStatus;
+
+    const ad = this.createAd();
+    const filteredStaff = this.getStaffCardsInfo(this.filterPeople(staff));
+
+    if (isStaffLoading) {
+      return (
+        <div>
+          <div className={classes.adWrapper}>{ad}</div>
+          <div className={classes.loaderWrapper}>
+            <CircularProgress />
+          </div>
+        </div>
+      );
+    } else {
+      if (coachID) {
+      } else {
+        return (
+          <div>
+            <div className={classes.adWrapper}>{ad}</div>
+            <CoachesList people={filteredStaff} />
+          </div>
+        );
+      }
+    }
+  }
+
+  getStaffCardsInfo(staff) {
+    const { userID } = this.props;
+
+    let sortedStaff = [];
+    _.values(
+      _.mapValues(staff, (value, key) => {
+        if (value.institutions[userID].roles.coach === "APPROVED") {
+          sortedStaff.push({
+            ...value,
+            id: key,
+            name: value.info.name,
+            surname: value.info.surname,
+            profilePictureURL: value.info.profilePictureURL
+          });
+        }
+      })
+    );
+
+    return sortedStaff.sort((personA, personB) => {
+      if (personA.info.name > personB.info.name) return +1;
+      if (personA.info.name < personB.info.name) return -1;
+      if (personA.info.surname > personB.info.surname) return +1;
+      if (personA.info.surname < personB.info.surname) return -1;
+      return 0;
+    });
+  }
+
   createAd() {
     const { isMobile, isTablet } = this.props;
 
@@ -236,44 +320,133 @@ class HoursLayout extends Component {
     return ad;
   }
 
+  filterPeople(staff) {
+    const { searchText } = this.props.filters;
+
+    return _.fromPairs(
+      _.toPairs(staff).filter(([staffID, personInfo]) => {
+        let allowThroughFilter = true;
+        let nameMatch = true;
+
+        if (searchText !== "") {
+          nameMatch =
+            nameMatch &&
+            _.toLower(
+              `${personInfo.info.name} ${personInfo.info.surname}`
+            ).includes(_.toLower(searchText));
+        }
+
+        allowThroughFilter = allowThroughFilter && nameMatch;
+
+        return allowThroughFilter;
+      })
+    );
+  }
+
   render() {
-    const { classes } = this.props;
+    const {
+      classes,
+      isMobile,
+      isTablet,
+      eventsByCoach,
+      userID,
+      staff
+    } = this.props;
     const { currentTab } = this.props.uiConfig;
-    const { updateTab } = this.props.actions;
+    const { updateTab, loadEventsByCoach, updateSearch } = this.props.actions;
+    const { coachID } = this.props.match.params;
+    const { isEventsByCoachLoading, isStaffLoading } = this.props.loadingStatus;
 
     const ad = this.createAd();
 
-    return (
-      <div className={classes.root}>
-        <div className={classes.contentWrapper}>
-          <div className={classes.tabsWrapper}>
-            <AppBar position="static" color="default">
-              <Tabs
-                value={currentTab}
-                onChange={(event, newTab) => updateTab(newTab)}
-                indicatorColor="primary"
-                textColor="primary"
-                centered
-              >
-                <Tab
-                  label="Overview"
-                  value="OVERVIEW"
-                  className={classes.tabs}
-                />
-                <Tab label="Logs" value="LOGS" className={classes.tabs} />
-              </Tabs>
-            </AppBar>
-            {currentTab === "OVERVIEW" && (
-              <div className={classes.contentWrapper}>
-                <div className={classes.adWrapper}>{ad}</div>
-                {this.renderHoursByDate()}
-              </div>
+    if (coachID) {
+      return (
+        <div className={classes.outerWrapper}>
+          <AppBar position="static" color="default">
+            {isStaffLoading || !staff[coachID] ? (
+              <Typography className={classes.name} type="title" component="h2">
+                Loading...
+              </Typography>
+            ) : (
+              <Typography className={classes.name} type="title" component="h2">
+                {`${staff[coachID].info.name} ${staff[coachID].info.surname}`}
+              </Typography>
             )}
-            {currentTab === "LOGS" && <div />}
+          </AppBar>
+          <div className={classes.innerWrapper}>
+            <Toolbar className={classes.actionsBar}>
+              <Route
+                render={({ history }) => (
+                  <Tooltip title="Back" placement="bottom">
+                    <IconButton
+                      aria-label="back"
+                      onClick={() => {
+                        history.goBack();
+                      }}
+                    >
+                      <BackIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              />
+            </Toolbar>
+            <div className={classes.adWrapper}>{ad}</div>
+            <HoursHistory
+              institutionID={userID}
+              isLoading={isEventsByCoachLoading}
+              isMobile={isMobile}
+              isTablet={isTablet}
+              events={eventsByCoach}
+              coachID={coachID}
+              minDate={new Date(2017, 11)}
+              actions={{
+                loadEvents: loadEventsByCoach
+              }}
+            />
           </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className={classes.root}>
+          <div className={classes.contentWrapper}>
+            <div className={classes.tabsWrapper}>
+              <AppBar position="static" color="default">
+                <Tabs
+                  value={currentTab}
+                  onChange={(event, newTab) => updateTab(newTab)}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab
+                    label="Overview"
+                    value="OVERVIEW"
+                    className={classes.tabs}
+                  />
+                  <Tab label="Logs" value="LOGS" className={classes.tabs} />
+                </Tabs>
+              </AppBar>
+              {currentTab === "OVERVIEW" && (
+                <div className={classes.contentWrapper}>
+                  <div className={classes.adWrapper}>{ad}</div>
+                  {this.renderHoursByDate()}
+                </div>
+              )}
+              {currentTab === "LOGS" && (
+                <div className={classes.contentWrapper}>
+                  <FiltersToolbar
+                    isMobile={isMobile}
+                    updateSearch={updateSearch}
+                  />
+                  {this.renderLogs()}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
   }
 }
 

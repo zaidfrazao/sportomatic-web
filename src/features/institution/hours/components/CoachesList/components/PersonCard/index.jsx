@@ -1,29 +1,29 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "material-ui/styles";
-import { Route } from "react-router-dom";
 import Card, { CardActions, CardContent, CardMedia } from "material-ui/Card";
 import Button from "material-ui/Button";
+import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
+import defaultProfilePicture from "../../../../image/default-profile-picture.png";
 
 const styles = {
   card: {
     maxWidth: 400,
     margin: "0 auto"
   },
-  media: {
-    height: 300
-  },
   buttons: {
     display: "flex",
     justifyContent: "space-between"
+  },
+  media: {
+    height: 300
   },
   viewButton: {
     flexGrow: 1
   }
 };
 
-class CoachCard extends Component {
+class PersonCard extends Component {
   render() {
     const { classes, name, surname, profilePictureURL, id } = this.props;
 
@@ -32,14 +32,17 @@ class CoachCard extends Component {
         <Card className={classes.card}>
           <CardMedia
             className={classes.media}
-            image={profilePictureURL}
+            image={
+              profilePictureURL === ""
+                ? defaultProfilePicture
+                : profilePictureURL
+            }
             title={name}
           />
           <CardContent>
             <Typography type="headline" component="h2">
               {`${name} ${surname}`}
             </Typography>
-            <Typography component="p">Coach</Typography>
           </CardContent>
           <CardActions className={classes.buttons}>
             <Route
@@ -49,7 +52,7 @@ class CoachCard extends Component {
                   className={classes.viewButton}
                   onClick={() => history.push(`/admin/hours/${id}`)}
                 >
-                  View hours
+                  View
                 </Button>
               )}
             />
@@ -60,8 +63,4 @@ class CoachCard extends Component {
   }
 }
 
-CoachCard.propTypes = {
-  classes: PropTypes.object.isRequired
-};
-
-export default withStyles(styles)(CoachCard);
+export default withStyles(styles)(PersonCard);

@@ -1,9 +1,10 @@
 /* eslint-disable array-callback-return */
+import _ from "lodash";
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "material-ui/styles";
-import { grey, lightBlue } from "material-ui/colors";
 import Button from "material-ui/Button";
+import { CircularProgress } from "material-ui/Progress";
+import { grey, lightBlue } from "material-ui/colors";
+import moment from "moment";
 import Paper from "material-ui/Paper";
 import Table, {
   TableBody,
@@ -13,31 +14,10 @@ import Table, {
   TableRow
 } from "material-ui/Table";
 import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
 import { getMonthName } from "../../../../../utils/dates";
-import _ from "lodash";
 
 const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    padding: "24px 40px 40px 40px"
-  },
-  mobileRoot: {
-    flexGrow: 1
-  },
-  tableWrapper: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column"
-  },
-  header: {
-    backgroundColor: lightBlue[700],
-    width: "100%",
-    minHeight: 80,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
   footer: {
     backgroundColor: lightBlue[700],
     width: "100%",
@@ -47,9 +27,13 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "space-around"
   },
-  headerTitle: {
-    color: grey[50],
-    textAlign: "center"
+  header: {
+    backgroundColor: lightBlue[700],
+    width: "100%",
+    minHeight: 80,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
   headerButton: {
     color: grey[300],
@@ -57,84 +41,145 @@ const styles = theme => ({
       color: grey[200]
     }
   },
+  headerTitle: {
+    color: grey[50],
+    textAlign: "center"
+  },
+  loaderWrapper: {
+    flexGrow: 1,
+    padding: 24,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  mobileRoot: {
+    flexGrow: 1
+  },
+  noHoursText: {
+    textAlign: "center"
+  },
+  root: {
+    flexGrow: 1,
+    padding: "24px 40px 40px 40px",
+    maxWidth: 970,
+    margin: "0 auto"
+  },
   tableBody: {
     flexGrow: 1,
     overflow: "auto"
   },
-  noData: {
-    flexGrow: 1,
+  tableWrapper: {
+    width: "100%",
+    height: "100%",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
+    flexDirection: "column"
   }
 });
 
 class HoursHistory extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      year: new Date(Date.now()).getFullYear(),
-      month: new Date(Date.now()).getMonth() + 1
-    };
+  state = {
+    year: new Date(Date.now()).getFullYear(),
+    month: new Date(Date.now()).getMonth() + 1,
+    isLoading: false
+  };
+
+  componentWillMount() {
+    const { coachID, institutionID } = this.props;
+    const { loadEvents } = this.props.actions;
+
+    if (coachID && institutionID) {
+      loadEvents(institutionID, coachID);
+      this.setState({
+        isLoading: true
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { coachID, institutionID, isLoading } = nextProps;
+    const { loadEvents } = nextProps.actions;
+
+    if (
+      coachID !== this.props.coachID ||
+      institutionID !== this.props.institutionID
+    ) {
+      loadEvents(institutionID, coachID);
+      this.setState({
+        isLoading: true
+      });
+    }
+
+    if (isLoading !== this.props.isLoading) {
+      this.setState({
+        isLoading
+      });
+    }
   }
 
   goToPrevMonth() {
-    if (this.state.month > 1) {
-      this.setState({ month: this.state.month - 1 });
+    const { year, month } = this.state;
+
+    if (month > 1) {
+      this.setState({ month: month - 1 });
     } else {
-      this.setState({ year: this.state.year - 1 });
+      this.setState({ year: year - 1 });
       this.setState({ month: 12 });
     }
   }
 
   goToNextMonth() {
-    if (this.state.month < 12) {
-      this.setState({ month: this.state.month + 1 });
+    const { year, month } = this.state;
+
+    if (month < 12) {
+      this.setState({ month: month + 1 });
     } else {
-      this.setState({ year: this.state.year + 1 });
+      this.setState({ year: year + 1 });
       this.setState({ month: 1 });
     }
   }
 
-  renderTableBody() {
-    const { isMobile, isTablet, events, coachID } = this.props;
-    const { year, month } = this.state;
-    const dateOptions = {
-      month: "short",
-      day: "numeric",
-      year: "numeric"
-    };
+  getEventsThisMonth() {
+    const { month, year } = this.state;
+    const { events } = this.props;
 
-    if (!events[year] || !events[year][month]) {
-      return (
-        <Typography type="body2" component="p">
-          No hours logged
-        </Typography>
-      );
-    }
+    return _.fromPairs(
+      _.toPairs(events).filter(([eventID, eventInfo]) => {
+        const startTime = moment(eventInfo.requiredInfo.times.start);
+        if (
+          startTime.get("month") === month - 1 &&
+          startTime.get("year") === year
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+    );
+  }
+
+  renderTableBody() {
+    const { classes, isMobile, isTablet, coachID } = this.props;
+
+    const eventsThisMonth = this.getEventsThisMonth();
 
     let totalHoursLogged = 0;
-    _.toPairs(events[year][month]).map(([id, info]) => {
-      const hoursLogged = Math.round(
-        (new Date(
-          2017,
-          1,
-          1,
-          info.coaches[coachID].hours.signOutTime.slice(0, 2),
-          info.coaches[coachID].hours.signOutTime.slice(3, 5)
-        ).getTime() -
-          new Date(
-            2017,
-            1,
-            1,
-            info.coaches[coachID].hours.signInTime.slice(0, 2),
-            info.coaches[coachID].hours.signInTime.slice(3, 5)
-          ).getTime()) /
-          1000 /
-          60 /
-          60
+    _.toPairs(eventsThisMonth).map(([eventID, eventInfo]) => {
+      const startTime = moment(eventInfo.requiredInfo.times.start);
+      const signInTime = moment(eventInfo.coaches[coachID].hours.times.signIn);
+      const signOutTime = moment(
+        eventInfo.coaches[coachID].hours.times.signOut
       );
-      totalHoursLogged += hoursLogged;
+      if (startTime > signInTime) {
+        const hoursLogged = Math.round(
+          signOutTime.diff(startTime, "hours", true)
+        );
+        totalHoursLogged += hoursLogged;
+      } else {
+        const hoursLogged = Math.round(
+          signOutTime.diff(signInTime, "hours", true)
+        );
+        totalHoursLogged += hoursLogged;
+      }
     });
 
     if (isMobile) {
@@ -147,46 +192,49 @@ class HoursHistory extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {_.toPairs(events[year][month]).map(([id, info]) => {
-              const hoursLogged = Math.round(
-                (new Date(
-                  2017,
-                  1,
-                  1,
-                  info.coaches[coachID].hours.signOutTime.slice(0, 2),
-                  info.coaches[coachID].hours.signOutTime.slice(3, 5)
-                ).getTime() -
-                  new Date(
-                    2017,
-                    1,
-                    1,
-                    info.coaches[coachID].hours.signInTime.slice(0, 2),
-                    info.coaches[coachID].hours.signInTime.slice(3, 5)
-                  ).getTime()) /
-                  1000 /
-                  60 /
-                  60
-              );
+            {_.keys(eventsThisMonth).length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={2} className={classes.noHoursText}>
+                  No hours logged
+                </TableCell>
+              </TableRow>
+            ) : (
+              _.toPairs(eventsThisMonth).map(([eventID, eventInfo]) => {
+                let hoursLogged = 0;
+                const startTime = moment(eventInfo.requiredInfo.times.start);
+                const signInTime = moment(
+                  eventInfo.coaches[coachID].hours.times.signIn
+                );
+                const signOutTime = moment(
+                  eventInfo.coaches[coachID].hours.times.signOut
+                );
+                if (startTime > signInTime) {
+                  hoursLogged = Math.round(
+                    signOutTime.diff(startTime, "hours", true)
+                  );
+                } else {
+                  hoursLogged = Math.round(
+                    signOutTime.diff(signInTime, "hours", true)
+                  );
+                }
 
-              return (
-                <TableRow key={id}>
-                  <TableCell>
-                    {new Date(info.metadata.date).toLocaleDateString(
-                      "en-US",
-                      dateOptions
-                    )}
-                  </TableCell>
-                  <TableCell numeric>{hoursLogged}</TableCell>
-                </TableRow>
-              );
-            })}
+                return (
+                  <TableRow key={eventID}>
+                    <TableCell>
+                      {moment(eventInfo.requiredInfo.times.start).format(
+                        "YYYY/MM/DD"
+                      )}
+                    </TableCell>
+                    <TableCell numeric>{hoursLogged}</TableCell>
+                  </TableRow>
+                );
+              })
+            )}
           </TableBody>
           <TableFooter>
             <TableRow>
               <TableCell>TOTAL</TableCell>
-              <TableCell numeric>
-                {totalHoursLogged.toLocaleString("en")}
-              </TableCell>
+              <TableCell numeric>{totalHoursLogged}</TableCell>
             </TableRow>
           </TableFooter>
         </Table>
@@ -203,54 +251,61 @@ class HoursHistory extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {_.toPairs(events[year][month]).map(([id, info]) => {
-              const hoursLogged = Math.round(
-                (new Date(
-                  2017,
-                  1,
-                  1,
-                  info.coaches[coachID].hours.signOutTime.slice(0, 2),
-                  info.coaches[coachID].hours.signOutTime.slice(3, 5)
-                ).getTime() -
-                  new Date(
-                    2017,
-                    1,
-                    1,
-                    info.coaches[coachID].hours.signInTime.slice(0, 2),
-                    info.coaches[coachID].hours.signInTime.slice(3, 5)
-                  ).getTime()) /
-                  1000 /
-                  60 /
-                  60
-              );
+            {_.keys(eventsThisMonth).length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className={classes.noHoursText}>
+                  No hours logged
+                </TableCell>
+              </TableRow>
+            ) : (
+              _.toPairs(eventsThisMonth).map(([eventID, eventInfo]) => {
+                let hoursLogged = 0;
+                const startTime = moment(eventInfo.requiredInfo.times.start);
+                const signInTime = moment(
+                  eventInfo.coaches[coachID].hours.times.signIn
+                );
+                const signOutTime = moment(
+                  eventInfo.coaches[coachID].hours.times.signOut
+                );
+                if (startTime > signInTime) {
+                  hoursLogged = Math.round(
+                    signOutTime.diff(startTime, "hours", true)
+                  );
+                } else {
+                  hoursLogged = Math.round(
+                    signOutTime.diff(signInTime, "hours", true)
+                  );
+                }
 
-              return (
-                <TableRow key={id}>
-                  <TableCell>
-                    {new Date(info.metadata.date).toLocaleDateString(
-                      "en-US",
-                      dateOptions
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {info.coaches[coachID].hours.signInTime}
-                  </TableCell>
-                  <TableCell>
-                    {info.coaches[coachID].hours.signOutTime}
-                  </TableCell>
-                  <TableCell numeric>{hoursLogged}</TableCell>
-                </TableRow>
-              );
-            })}
+                return (
+                  <TableRow key={eventID}>
+                    <TableCell>
+                      {moment(eventInfo.requiredInfo.times.start).format(
+                        "YYYY/MM/DD"
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {moment(
+                        eventInfo.coaches[coachID].hours.times.signIn
+                      ).format("h:mm A")}
+                    </TableCell>
+                    <TableCell>
+                      {moment(
+                        eventInfo.coaches[coachID].hours.times.signOut
+                      ).format("h:mm A")}
+                    </TableCell>
+                    <TableCell numeric>{hoursLogged}</TableCell>
+                  </TableRow>
+                );
+              })
+            )}
           </TableBody>
           <TableFooter>
             <TableRow>
               <TableCell>TOTAL</TableCell>
               <TableCell />
               <TableCell />
-              <TableCell numeric>
-                {totalHoursLogged.toLocaleString("en")}
-              </TableCell>
+              <TableCell numeric>{totalHoursLogged}</TableCell>
             </TableRow>
           </TableFooter>
         </Table>
@@ -268,46 +323,55 @@ class HoursHistory extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {_.toPairs(events[year][month]).map(([id, info]) => {
-              const hoursLogged = Math.round(
-                (new Date(
-                  2017,
-                  1,
-                  1,
-                  info.coaches[coachID].hours.signOutTime.slice(0, 2),
-                  info.coaches[coachID].hours.signOutTime.slice(3, 5)
-                ).getTime() -
-                  new Date(
-                    2017,
-                    1,
-                    1,
-                    info.coaches[coachID].hours.signInTime.slice(0, 2),
-                    info.coaches[coachID].hours.signInTime.slice(3, 5)
-                  ).getTime()) /
-                  1000 /
-                  60 /
-                  60
-              );
+            {_.keys(eventsThisMonth).length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} className={classes.noHoursText}>
+                  No hours logged
+                </TableCell>
+              </TableRow>
+            ) : (
+              _.toPairs(eventsThisMonth).map(([eventID, eventInfo]) => {
+                let hoursLogged = 0;
+                const startTime = moment(eventInfo.requiredInfo.times.start);
+                const signInTime = moment(
+                  eventInfo.coaches[coachID].hours.times.signIn
+                );
+                const signOutTime = moment(
+                  eventInfo.coaches[coachID].hours.times.signOut
+                );
+                if (startTime > signInTime) {
+                  hoursLogged = Math.round(
+                    signOutTime.diff(startTime, "hours", true)
+                  );
+                } else {
+                  hoursLogged = Math.round(
+                    signOutTime.diff(signInTime, "hours", true)
+                  );
+                }
 
-              return (
-                <TableRow key={id}>
-                  <TableCell>
-                    {new Date(info.metadata.date).toLocaleDateString(
-                      "en-US",
-                      dateOptions
-                    )}
-                  </TableCell>
-                  <TableCell>{info.metadata.title}</TableCell>
-                  <TableCell>
-                    {info.coaches[coachID].hours.signInTime}
-                  </TableCell>
-                  <TableCell>
-                    {info.coaches[coachID].hours.signOutTime}
-                  </TableCell>
-                  <TableCell numeric>{hoursLogged}</TableCell>
-                </TableRow>
-              );
-            })}
+                return (
+                  <TableRow key={eventID}>
+                    <TableCell>
+                      {moment(eventInfo.requiredInfo.times.start).format(
+                        "YYYY/MM/DD"
+                      )}
+                    </TableCell>
+                    <TableCell>{eventInfo.requiredInfo.title}</TableCell>
+                    <TableCell>
+                      {moment(
+                        eventInfo.coaches[coachID].hours.times.signIn
+                      ).format("h:mm A")}
+                    </TableCell>
+                    <TableCell>
+                      {moment(
+                        eventInfo.coaches[coachID].hours.times.signOut
+                      ).format("h:mm A")}
+                    </TableCell>
+                    <TableCell numeric>{hoursLogged}</TableCell>
+                  </TableRow>
+                );
+              })
+            )}
           </TableBody>
           <TableFooter>
             <TableRow>
@@ -315,9 +379,7 @@ class HoursHistory extends Component {
               <TableCell />
               <TableCell />
               <TableCell />
-              <TableCell numeric>
-                {totalHoursLogged.toLocaleString("en")}
-              </TableCell>
+              <TableCell numeric>{totalHoursLogged}</TableCell>
             </TableRow>
           </TableFooter>
         </Table>
@@ -326,23 +388,12 @@ class HoursHistory extends Component {
   }
 
   render() {
-    const { classes, isMobile, events } = this.props;
-    const { year, month } = this.state;
+    const { classes, isMobile, minDate } = this.props;
+    const { year, month, isLoading } = this.state;
 
-    let disablePrev = false;
-    if (month > 1) {
-      if (!events[year] || !events[year][month - 1]) {
-        disablePrev = true;
-      } else {
-        disablePrev = false;
-      }
-    } else {
-      if (!events[year - 1] || !events[year - 1][1]) {
-        disablePrev = true;
-      } else {
-        disablePrev = false;
-      }
-    }
+    const minYear = moment(minDate).get("year");
+    const minMonth = moment(minDate).get("month");
+    const disablePrev = minYear === year && minMonth === month - 1;
 
     return (
       <div className={isMobile ? classes.mobileRoot : classes.root}>
@@ -378,23 +429,19 @@ class HoursHistory extends Component {
               Prev
             </Button>
           </div>
-          <div
-            className={
-              events[year] && events[year][month]
-                ? classes.tableBody
-                : classes.noData
-            }
-          >
-            {this.renderTableBody()}
+          <div>
+            {isLoading ? (
+              <div className={classes.loaderWrapper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              this.renderTableBody()
+            )}
           </div>
         </Paper>
       </div>
     );
   }
 }
-
-HoursHistory.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(HoursHistory);
