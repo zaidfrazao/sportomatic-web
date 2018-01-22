@@ -288,7 +288,8 @@ export function loadEventsByDate(institutionID, startAfter = "") {
         .firestore()
         .collection("events")
         .orderBy("requiredInfo.times.start", "desc")
-        .limit(4)
+        .limit(5)
+        .where("requiredInfo.status", "==", "ACTIVE")
         .where("institutionID", "==", institutionID)
         .where("requiredInfo.times.start", "<", new Date(Date.now()));
     } else {
@@ -297,7 +298,8 @@ export function loadEventsByDate(institutionID, startAfter = "") {
         .collection("events")
         .orderBy("requiredInfo.times.start", "desc")
         .startAfter(startAfter)
-        .limit(4)
+        .limit(5)
+        .where("requiredInfo.status", "==", "ACTIVE")
         .where("institutionID", "==", institutionID)
         .where("requiredInfo.times.start", "<", new Date(Date.now()));
     }
@@ -348,6 +350,7 @@ export function loadEventsByCoach(institutionID, coachID) {
       .firestore()
       .collection("events")
       .where("institutionID", "==", institutionID)
+      .where("requiredInfo.status", "==", "ACTIVE")
       .where(`coaches.${coachID}.hours.status`, "==", "APPROVED");
 
     return eventsRef.onSnapshot(querySnapshot => {

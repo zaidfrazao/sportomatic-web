@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import { lightBlue, orange } from "material-ui/colors";
+import moment from "moment";
 import { Redirect } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import AddEventDialog from "./components/AddEventDialog";
@@ -95,17 +96,12 @@ class ScheduleLayout extends Component {
     const { eventID, dateSelected } = this.props.match.params;
 
     if (dateSelected && userID !== "") {
-      const selectedDateObject = new Date(dateSelected);
-      const minDate = new Date(
-        selectedDateObject.getFullYear(),
-        selectedDateObject.getMonth(),
-        1
-      );
-      const maxDate = new Date(
-        selectedDateObject.getFullYear(),
-        selectedDateObject.getMonth() + 1,
-        0
-      );
+      const minDate = moment(dateSelected)
+        .startOf("month")
+        .toDate();
+      const maxDate = moment(dateSelected)
+        .endOf("month")
+        .toDate();
       loadEvents(userID, minDate, maxDate);
     }
 
@@ -122,8 +118,8 @@ class ScheduleLayout extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID, events, teams } = this.props;
-    const { dateSelected, eventID } = this.props.match.params;
+    const { userID, events, teams } = nextProps;
+    const { dateSelected, eventID } = nextProps.match.params;
     const {
       loadEvents,
       fetchCreationDate,
@@ -131,51 +127,34 @@ class ScheduleLayout extends Component {
       loadManagers,
       loadTeams,
       updateView
-    } = this.props.actions;
+    } = nextProps.actions;
 
-    if (dateSelected !== nextProps.match.params.dateSelected) {
-      const newSelectedDateObject = new Date(
-        nextProps.match.params.dateSelected
-      );
-      const oldSelectedDateObject = new Date(dateSelected);
+    if (dateSelected !== this.props.match.params.dateSelected && dateSelected) {
+      const minDate = moment(dateSelected)
+        .startOf("month")
+        .toDate();
+      const maxDate = moment(dateSelected)
+        .endOf("month")
+        .toDate();
 
-      if (
-        newSelectedDateObject.getMonth() !== oldSelectedDateObject.getMonth()
-      ) {
-        const minDate = new Date(
-          newSelectedDateObject.getFullYear(),
-          newSelectedDateObject.getMonth(),
-          1
-        );
-        const maxDate = new Date(
-          newSelectedDateObject.getFullYear(),
-          newSelectedDateObject.getMonth() + 1,
-          0
-        );
-        loadEvents(nextProps.userID, minDate, maxDate);
-      }
+      loadEvents(userID, minDate, maxDate);
     }
 
-    if (userID !== nextProps.userID) {
-      if (nextProps.match.params.dateSelected) {
-        const selectedDateObject = new Date(dateSelected);
-        const minDate = new Date(
-          selectedDateObject.getFullYear(),
-          selectedDateObject.getMonth(),
-          1
-        );
-        const maxDate = new Date(
-          selectedDateObject.getFullYear(),
-          selectedDateObject.getMonth() + 1,
-          0
-        );
-        loadEvents(nextProps.userID, minDate, maxDate);
+    if (userID !== this.props.userID) {
+      if (dateSelected) {
+        const minDate = moment(dateSelected)
+          .startOf("month")
+          .toDate();
+        const maxDate = moment(dateSelected)
+          .endOf("month")
+          .toDate();
+        loadEvents(userID, minDate, maxDate);
       }
 
-      loadCoaches(nextProps.userID);
-      loadManagers(nextProps.userID);
-      loadTeams(nextProps.userID);
-      fetchCreationDate(nextProps.userID);
+      loadCoaches(userID);
+      loadManagers(userID);
+      loadTeams(userID);
+      fetchCreationDate(userID);
     }
 
     let genders = this.state.genders;
@@ -184,9 +163,9 @@ class ScheduleLayout extends Component {
     let divisions = this.state.divisions;
     let ageGroups = this.state.ageGroups;
 
-    if (events !== nextProps.events) {
+    if (events !== this.props.events) {
       eventTypes = {};
-      _.toPairs(nextProps.events).map(([id, info]) => {
+      _.toPairs(events).map(([id, info]) => {
         eventTypes = {
           ...eventTypes,
           [info.requiredInfo.type]: true
@@ -194,12 +173,12 @@ class ScheduleLayout extends Component {
       });
     }
 
-    if (teams !== nextProps.teams) {
+    if (teams !== this.props.teams) {
       genders = {};
       sports = {};
       divisions = {};
       ageGroups = {};
-      _.toPairs(nextProps.teams).map(([id, info]) => {
+      _.toPairs(teams).map(([id, info]) => {
         genders = {
           ...genders,
           [info.info.gender]: true
@@ -219,8 +198,8 @@ class ScheduleLayout extends Component {
       });
     }
 
-    if (eventID !== nextProps.match.params.eventID) {
-      if (nextProps.match.params.eventID) {
+    if (eventID !== this.props.match.params.eventID) {
+      if (eventID) {
         updateView("EVENT_INFO");
       } else {
         updateView("EVENTS_LIST");
