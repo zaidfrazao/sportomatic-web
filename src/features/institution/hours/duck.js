@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
-import _ from "lodash";
 
 // Actions
 
@@ -11,9 +10,9 @@ export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
 export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
 export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
 export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
-export const REQUEST_EVENTS = `${NAMESPACE}/REQUEST_EVENTS`;
-export const RECEIVE_EVENTS = `${NAMESPACE}/RECEIVE_EVENTS`;
-export const ERROR_LOADING_EVENTS = `${NAMESPACE}/ERROR_LOADING_EVENTS`;
+export const REQUEST_EVENTS_BY_DATE = `${NAMESPACE}/REQUEST_EVENTS_BY_DATE`;
+export const RECEIVE_EVENTS_BY_DATE = `${NAMESPACE}/RECEIVE_EVENTS_BY_DATE`;
+export const ERROR_LOADING_EVENTS_BY_DATE = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_DATE`;
 export const REQUEST_SIGN_IN = `${NAMESPACE}/REQUEST_SIGN_IN`;
 export const RECEIVE_SIGN_IN = `${NAMESPACE}/RECEIVE_SIGN_IN`;
 export const ERROR_SIGNING_IN = `${NAMESPACE}/ERROR_SIGNING_IN`;
@@ -28,7 +27,8 @@ export const ERROR_APPROVING_HOURS = `${NAMESPACE}/ERROR_APPROVING_HOURS`;
 
 export const uiConfigInitialState = {
   isLoading: false,
-  currentTab: "IN_PROGRESS"
+  currentTab: "OVERVIEW",
+  lastVisible: ""
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -38,15 +38,20 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         currentTab: action.payload.newTab
       };
+    case RECEIVE_EVENTS_BY_DATE:
+      return {
+        ...state,
+        lastVisible: action.payload.lastVisible
+      };
     default:
       return state;
   }
 }
 
-function coachesReducer(state = {}, action = {}) {
+function staffReducer(state = {}, action = {}) {
   switch (action.type) {
     case RECEIVE_STAFF:
-      return action.payload.coaches;
+      return action.payload.staff;
     default:
       return state;
   }
@@ -54,7 +59,8 @@ function coachesReducer(state = {}, action = {}) {
 
 export const loadingStatusInitialState = {
   isStaffLoading: false,
-  isEventsLoading: false
+  isEventsLoading: {},
+  isEventsByDateLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -70,26 +76,29 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isStaffLoading: false
       };
-    case REQUEST_EVENTS:
+    case REQUEST_EVENTS_BY_DATE:
       return {
         ...state,
-        isEventsLoading: true
+        isEventsByDateLoading: true
       };
-    case ERROR_LOADING_EVENTS:
-    case RECEIVE_EVENTS:
+    case ERROR_LOADING_EVENTS_BY_DATE:
+    case RECEIVE_EVENTS_BY_DATE:
       return {
         ...state,
-        isEventsLoading: false
+        isEventsByDateLoading: false
       };
     default:
       return state;
   }
 }
 
-function eventsReducer(state = {}, action = {}) {
+function eventsByDateReducer(state = {}, action = {}) {
   switch (action.type) {
-    case RECEIVE_EVENTS:
-      return action.payload.events;
+    case RECEIVE_EVENTS_BY_DATE:
+      return {
+        ...state,
+        ...action.payload.events
+      };
     default:
       return state;
   }
@@ -97,23 +106,23 @@ function eventsReducer(state = {}, action = {}) {
 
 export const hoursReducer = combineReducers({
   uiConfig: uiConfigReducer,
-  coaches: coachesReducer,
+  staff: staffReducer,
   loadingStatus: loadingStatusReducer,
-  events: eventsReducer
+  eventsByDate: eventsByDateReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.institution.hours.uiConfig;
-const coaches = state => state.institution.hours.coaches;
+const staff = state => state.institution.hours.staff;
 const loadingStatus = state => state.institution.hours.loadingStatus;
-const events = state => state.institution.hours.events;
+const eventsByDate = state => state.institution.hours.eventsByDate;
 
 export const selector = createStructuredSelector({
   uiConfig,
-  coaches,
+  staff,
   loadingStatus,
-  events
+  eventsByDate
 });
 
 // Action Creators
@@ -134,13 +143,10 @@ export function requestStaff() {
 }
 
 export function receiveStaff(staff) {
-  const coaches = _.fromPairs(
-    _.toPairs(staff).filter(([id, info]) => info.metadata.type === "COACH")
-  );
   return {
     type: RECEIVE_STAFF,
     payload: {
-      coaches
+      staff
     }
   };
 }
@@ -157,59 +163,81 @@ export function errorLoadingStaff(error: { code: string, message: string }) {
 export function loadStaff(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestStaff());
-    const staffRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/staff`);
 
-    return staffRef.on("value", snapshot => {
-      const staff = snapshot.val();
-      if (staff === null) {
-        dispatch(receiveStaff({}));
-      } else {
-        dispatch(receiveStaff(staff));
-      }
+    const staffRef = firebase
+      .firestore()
+      .collection("users")
+      .where(`institutions.${institutionID}.status`, "==", "STAFF");
+
+    return staffRef.onSnapshot(querySnapshot => {
+      let staff = {};
+      querySnapshot.forEach(doc => {
+        staff[doc.id] = doc.data();
+      });
+      dispatch(receiveStaff(staff));
     });
   };
 }
 
-export function requestEvents() {
+export function requestEventsByDate() {
   return {
-    type: REQUEST_EVENTS
+    type: REQUEST_EVENTS_BY_DATE
   };
 }
 
-export function receiveEvents(events) {
+export function receiveEventsByDate(events, lastVisible) {
   return {
-    type: RECEIVE_EVENTS,
+    type: RECEIVE_EVENTS_BY_DATE,
     payload: {
-      events
+      events,
+      lastVisible
     }
   };
 }
 
-export function errorLoadingEvents(error: { code: string, message: string }) {
+export function errorLoadingEventsByDate(error: {
+  code: string,
+  message: string
+}) {
   return {
-    type: ERROR_LOADING_EVENTS,
+    type: ERROR_LOADING_EVENTS_BY_DATE,
     payload: {
       error
     }
   };
 }
 
-export function loadEvents(institutionID) {
+export function loadEventsByDate(institutionID, startAfter = "") {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestEvents());
-    const eventsRef = firebase
-      .database()
-      .ref(`institution/${institutionID}/private/events`);
+    dispatch(requestEventsByDate());
 
-    return eventsRef.on("value", snapshot => {
-      const events = snapshot.val();
-      if (events === null) {
-        dispatch(receiveEvents({}));
-      } else {
-        dispatch(receiveEvents(events));
-      }
+    let eventsRef = {};
+    if (startAfter === "") {
+      eventsRef = firebase
+        .firestore()
+        .collection("events")
+        .orderBy("requiredInfo.times.start", "desc")
+        .limit(4)
+        .where("institutionID", "==", institutionID)
+        .where("requiredInfo.times.start", "<", new Date(Date.now()));
+    } else {
+      eventsRef = firebase
+        .firestore()
+        .collection("events")
+        .orderBy("requiredInfo.times.start", "desc")
+        .startAfter(startAfter)
+        .limit(4)
+        .where("institutionID", "==", institutionID)
+        .where("requiredInfo.times.start", "<", new Date(Date.now()));
+    }
+
+    return eventsRef.onSnapshot(querySnapshot => {
+      let events = {};
+      const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+      querySnapshot.forEach(doc => {
+        events[doc.id] = doc.data();
+      });
+      dispatch(receiveEventsByDate(events, lastVisible));
     });
   };
 }
@@ -235,46 +263,18 @@ export function errorSigningIn(error: { code: string, message: string }) {
   };
 }
 
-export function signIn(institutionID, eventInfo, coachID, signInTime) {
+export function signIn(eventID, coachID, signInTime, newStatus) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestSignIn());
 
-    const { year, month, eventID, startTime } = eventInfo;
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
 
-    const signInTimeDelta =
-      (new Date(
-        2017,
-        1,
-        1,
-        signInTime.slice(0, 2),
-        signInTime.slice(3, 5)
-      ).getTime() -
-        new Date(
-          2017,
-          1,
-          1,
-          startTime.slice(0, 2),
-          startTime.slice(3, 5)
-        ).getTime()) /
-      1000 /
-      60;
-
-    let updates = {};
-    updates[
-      `institution/${institutionID}/private/events/${year}/${month}/${eventID}/coaches/${coachID}/hours/signInTime`
-    ] = signInTime;
-    updates[
-      `institution/${institutionID}/private/events/${year}/${month}/${eventID}/coaches/${coachID}/hours/signInTimeDelta`
-    ] = signInTimeDelta;
-    updates[
-      `institution/${institutionID}/private/events/${year}/${month}/${eventID}/coaches/${coachID}/hours/status`
-    ] =
-      "AWAITING_SIGN_OUT";
-
-    return firebase
-      .database()
-      .ref()
-      .update(updates)
+    return eventRef
+      .update({
+        [`coaches.${coachID}.hours.times.signIn`]: signInTime,
+        [`coaches.${coachID}.hours.status`]: newStatus
+      })
       .then(() => dispatch(receiveSignIn()))
       .catch(error => dispatch(errorSigningIn(error)));
   };
@@ -301,46 +301,25 @@ export function errorSigningOut(error: { code: string, message: string }) {
   };
 }
 
-export function signOut(institutionID, eventInfo, coachID, signOutTime) {
+export function signOut(eventID, coachID, signOutTime, newStatus) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestSignIn());
+    dispatch(requestSignOut());
 
-    const { year, month, eventID, endTime } = eventInfo;
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
 
-    const signOutTimeDelta =
-      (new Date(
-        2017,
-        1,
-        1,
-        signOutTime.slice(0, 2),
-        signOutTime.slice(3, 5)
-      ).getTime() -
-        new Date(
-          2017,
-          1,
-          1,
-          endTime.slice(0, 2),
-          endTime.slice(3, 5)
-        ).getTime()) /
-      1000 /
-      60;
+    console.log({
+      eventID,
+      coachID,
+      signOutTime,
+      newStatus
+    });
 
-    let updates = {};
-    updates[
-      `institution/${institutionID}/private/events/${year}/${month}/${eventID}/coaches/${coachID}/hours/signOutTime`
-    ] = signOutTime;
-    updates[
-      `institution/${institutionID}/private/events/${year}/${month}/${eventID}/coaches/${coachID}/hours/status`
-    ] =
-      "AWAITING_APPROVAL";
-    updates[
-      `institution/${institutionID}/private/events/${year}/${month}/${eventID}/coaches/${coachID}/hours/signOutTimeDelta`
-    ] = signOutTimeDelta;
-
-    return firebase
-      .database()
-      .ref()
-      .update(updates)
+    return eventRef
+      .update({
+        [`coaches.${coachID}.hours.times.signOut`]: signOutTime,
+        [`coaches.${coachID}.hours.status`]: newStatus
+      })
       .then(() => dispatch(receiveSignOut()))
       .catch(error => dispatch(errorSigningOut(error)));
   };
@@ -367,121 +346,115 @@ export function errorApprovingHours(error: { code: string, message: string }) {
   };
 }
 
-export function approveHours(institutionID, eventInfo, coachID, wageInfo) {
+export function approveHours(eventID, coachID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestApproveHours());
 
-    const {
-      signInTime,
-      signOutTime,
-      standardHourlyRate,
-      overtimeHourlyRate
-    } = wageInfo;
-    const {
-      year,
-      month,
-      eventID,
-      startTime,
-      endTime,
-      date,
-      eventTitle
-    } = eventInfo;
+    // const {
+    //   signInTime,
+    //   signOutTime,
+    //   standardHourlyRate,
+    //   overtimeHourlyRate
+    // } = wageInfo;
+    // const {
+    //   year,
+    //   month,
+    //   eventID,
+    //   startTime,
+    //   endTime,
+    //   date,
+    //   eventTitle
+    // } = eventInfo;
+    //
+    // const signInTimeValue = new Date(
+    //   2017,
+    //   1,
+    //   1,
+    //   signInTime.slice(0, 2),
+    //   signInTime.slice(3, 5)
+    // ).getTime();
+    // const signOutTimeValue = new Date(
+    //   2017,
+    //   1,
+    //   1,
+    //   signOutTime.slice(0, 2),
+    //   signOutTime.slice(3, 5)
+    // ).getTime();
+    // const scheduledStartTimeValue = new Date(
+    //   2017,
+    //   1,
+    //   1,
+    //   startTime.slice(0, 2),
+    //   startTime.slice(3, 5)
+    // ).getTime();
+    // const scheduledEndTimeValue = new Date(
+    //   2017,
+    //   1,
+    //   1,
+    //   endTime.slice(0, 2),
+    //   endTime.slice(3, 5)
+    // ).getTime();
+    //
+    // let standardHoursStartTime = signInTimeValue;
+    // let standardHoursEndTime = signOutTimeValue;
+    // const overtimeHoursStartTime = scheduledEndTimeValue;
+    // const overtimeHoursEndTime = signOutTimeValue;
+    // let standardTimeWorked = 0;
+    // let extraTimeWorked = 0;
+    // let workedOvertime = false;
+    //
+    // if (signInTimeValue < scheduledStartTimeValue) {
+    //   standardHoursStartTime = scheduledStartTimeValue;
+    // }
+    // if (signOutTimeValue > scheduledEndTimeValue) {
+    //   standardHoursEndTime = scheduledEndTimeValue;
+    //   workedOvertime = true;
+    // }
+    // if (workedOvertime) {
+    //   extraTimeWorked = overtimeHoursEndTime - overtimeHoursStartTime;
+    // }
+    // standardTimeWorked = standardHoursEndTime - standardHoursStartTime;
+    //
+    // let standardHoursWorked = Math.floor(standardTimeWorked / 1000 / 60 / 60);
+    // const leftoverStandardMinutesWorked =
+    //   (standardTimeWorked - standardHoursWorked * 1000 * 60 * 60) / 1000 / 60;
+    // let overTimeHoursWorked = Math.floor(extraTimeWorked / 1000 / 60 / 60);
+    // const leftoverOvertimeMinutesWorked =
+    //   (extraTimeWorked - overTimeHoursWorked * 1000 * 60 * 60) / 1000 / 60;
+    //
+    // if (leftoverStandardMinutesWorked > 20) {
+    //   standardHoursWorked += 1;
+    // }
+    // if (leftoverOvertimeMinutesWorked > 20) {
+    //   overTimeHoursWorked += 1;
+    // }
+    //
+    // const wage =
+    //   standardHoursWorked * standardHourlyRate +
+    //   overTimeHoursWorked * overtimeHourlyRate;
+    //
+    // const newWage = {
+    //   type: "HOURLY",
+    //   date: date,
+    //   title: eventTitle,
+    //   hours: {
+    //     standard: standardHoursWorked,
+    //     overtime: overTimeHoursWorked
+    //   },
+    //   rates: {
+    //     stardard: standardHourlyRate,
+    //     overtime: overtimeHourlyRate
+    //   },
+    //   wage
+    // };
 
-    const signInTimeValue = new Date(
-      2017,
-      1,
-      1,
-      signInTime.slice(0, 2),
-      signInTime.slice(3, 5)
-    ).getTime();
-    const signOutTimeValue = new Date(
-      2017,
-      1,
-      1,
-      signOutTime.slice(0, 2),
-      signOutTime.slice(3, 5)
-    ).getTime();
-    const scheduledStartTimeValue = new Date(
-      2017,
-      1,
-      1,
-      startTime.slice(0, 2),
-      startTime.slice(3, 5)
-    ).getTime();
-    const scheduledEndTimeValue = new Date(
-      2017,
-      1,
-      1,
-      endTime.slice(0, 2),
-      endTime.slice(3, 5)
-    ).getTime();
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
 
-    let standardHoursStartTime = signInTimeValue;
-    let standardHoursEndTime = signOutTimeValue;
-    const overtimeHoursStartTime = scheduledEndTimeValue;
-    const overtimeHoursEndTime = signOutTimeValue;
-    let standardTimeWorked = 0;
-    let extraTimeWorked = 0;
-    let workedOvertime = false;
-
-    if (signInTimeValue < scheduledStartTimeValue) {
-      standardHoursStartTime = scheduledStartTimeValue;
-    }
-    if (signOutTimeValue > scheduledEndTimeValue) {
-      standardHoursEndTime = scheduledEndTimeValue;
-      workedOvertime = true;
-    }
-    if (workedOvertime) {
-      extraTimeWorked = overtimeHoursEndTime - overtimeHoursStartTime;
-    }
-    standardTimeWorked = standardHoursEndTime - standardHoursStartTime;
-
-    let standardHoursWorked = Math.floor(standardTimeWorked / 1000 / 60 / 60);
-    const leftoverStandardMinutesWorked =
-      (standardTimeWorked - standardHoursWorked * 1000 * 60 * 60) / 1000 / 60;
-    let overTimeHoursWorked = Math.floor(extraTimeWorked / 1000 / 60 / 60);
-    const leftoverOvertimeMinutesWorked =
-      (extraTimeWorked - overTimeHoursWorked * 1000 * 60 * 60) / 1000 / 60;
-
-    if (leftoverStandardMinutesWorked > 20) {
-      standardHoursWorked += 1;
-    }
-    if (leftoverOvertimeMinutesWorked > 20) {
-      overTimeHoursWorked += 1;
-    }
-
-    const wage =
-      standardHoursWorked * standardHourlyRate +
-      overTimeHoursWorked * overtimeHourlyRate;
-
-    const newWage = {
-      type: "HOURLY",
-      date: date,
-      title: eventTitle,
-      hours: {
-        standard: standardHoursWorked,
-        overtime: overTimeHoursWorked
-      },
-      rates: {
-        stardard: standardHourlyRate,
-        overtime: overtimeHourlyRate
-      },
-      wage
-    };
-
-    let updates = {};
-    updates[
-      `institution/${institutionID}/private/events/${year}/${month}/${eventID}/coaches/${coachID}/hours/status`
-    ] =
-      "APPROVED";
-    updates[
-      `institution/${institutionID}/private/wages/${coachID}/${year}/${month}/${eventID}`
-    ] = newWage;
-
-    return firebase
-      .database()
-      .ref()
-      .update(updates)
+    return eventRef
+      .update({
+        [`coaches.${coachID}.hours.status`]: "APPROVED"
+      })
       .then(() => dispatch(receiveApproveHours()))
       .catch(error => dispatch(errorApprovingHours(error)));
   };

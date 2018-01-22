@@ -911,7 +911,10 @@ class EventInfo extends Component {
                             <ListItemIcon>
                               <HoursIcon />
                             </ListItemIcon>
-                            <ListItemText primary="View hours" />
+                            <ListItemText
+                              primary="View hours"
+                              onClick={() => history.push("/admin/hours")}
+                            />
                           </ListItem>
                         )}
                     </List>
