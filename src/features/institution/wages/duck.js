@@ -1,36 +1,53 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
-import _ from "lodash";
-import { SportomaticFirebaseAPI } from "../../../api/sportmatic-firebase-api";
+import firebase from "firebase";
 
 // Actions
 
 const NAMESPACE = "sportomatic-web/admin/wages";
 
+export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
 export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
 export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
 export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
-export const REQUEST_WAGES = `${NAMESPACE}/REQUEST_WAGES`;
-export const RECEIVE_WAGES = `${NAMESPACE}/RECEIVE_WAGES`;
-export const ERROR_LOADING_WAGES = `${NAMESPACE}/ERROR_LOADING_WAGES`;
+export const REQUEST_WAGES_BY_DATE = `${NAMESPACE}/REQUEST_WAGES_BY_DATE`;
+export const RECEIVE_WAGES_BY_DATE = `${NAMESPACE}/RECEIVE_WAGES_BY_DATE`;
+export const ERROR_LOADING_WAGES_BY_DATE = `${NAMESPACE}/ERROR_LOADING_WAGES_BY_DATE`;
+export const REQUEST_WAGES_BY_COACH = `${NAMESPACE}/REQUEST_WAGES_BY_COACH`;
+export const RECEIVE_WAGES_BY_COACH = `${NAMESPACE}/RECEIVE_WAGES_BY_COACH`;
+export const ERROR_LOADING_WAGES_BY_COACH = `${NAMESPACE}/ERROR_LOADING_WAGES_BY_COACH`;
+export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
+export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
 
 // Reducers
 
 export const uiConfigInitialState = {
-  isLoading: false
+  isLoading: false,
+  currentTab: "OVERVIEW",
+  lastVisible: ""
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case UPDATE_TAB:
+      return {
+        ...state,
+        currentTab: action.payload.newTab
+      };
+    case RECEIVE_WAGES_BY_DATE:
+      return {
+        ...state,
+        lastVisible: action.payload.lastVisible
+      };
     default:
       return state;
   }
 }
 
-function coachesReducer(state = {}, action = {}) {
+function staffReducer(state = {}, action = {}) {
   switch (action.type) {
     case RECEIVE_STAFF:
-      return action.payload.coaches;
+      return action.payload.staff;
     default:
       return state;
   }
@@ -38,7 +55,8 @@ function coachesReducer(state = {}, action = {}) {
 
 export const loadingStatusInitialState = {
   isStaffLoading: false,
-  isWagesLoading: false
+  isWagesByDateLoading: false,
+  isWagesByCoachLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -54,26 +72,71 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isStaffLoading: false
       };
-    case REQUEST_WAGES:
+    case REQUEST_WAGES_BY_DATE:
       return {
         ...state,
-        isWagesLoading: true
+        isWagesByDateLoading: true
       };
-    case ERROR_LOADING_WAGES:
-    case RECEIVE_WAGES:
+    case ERROR_LOADING_WAGES_BY_DATE:
+    case RECEIVE_WAGES_BY_DATE:
       return {
         ...state,
-        isWagesLoading: false
+        isWagesByDateLoading: false
+      };
+    case REQUEST_WAGES_BY_COACH:
+      return {
+        ...state,
+        isWagesByCoachLoading: true
+      };
+    case ERROR_LOADING_WAGES_BY_COACH:
+    case RECEIVE_WAGES_BY_COACH:
+      return {
+        ...state,
+        isWagesByCoachLoading: false
       };
     default:
       return state;
   }
 }
 
-function coachWagesReducer(state = {}, action = {}) {
+function wagesByDateReducer(state = {}, action = {}) {
   switch (action.type) {
-    case RECEIVE_WAGES:
+    case RECEIVE_WAGES_BY_DATE:
+      return {
+        ...state,
+        ...action.payload.wages
+      };
+    default:
+      return state;
+  }
+}
+
+function wagesByCoachReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RECEIVE_WAGES_BY_COACH:
       return action.payload.wages;
+    default:
+      return state;
+  }
+}
+
+export const filtersInitialState = {
+  sport: "All",
+  searchText: ""
+};
+
+function filterReducer(state = filtersInitialState, action = {}) {
+  switch (action.type) {
+    case APPLY_FILTERS:
+      return {
+        ...state,
+        ...action.payload
+      };
+    case UPDATE_SEARCH:
+      return {
+        ...state,
+        searchText: action.payload.searchText
+      };
     default:
       return state;
   }
@@ -81,26 +144,59 @@ function coachWagesReducer(state = {}, action = {}) {
 
 export const wagesReducer = combineReducers({
   uiConfig: uiConfigReducer,
-  coaches: coachesReducer,
+  staff: staffReducer,
   loadingStatus: loadingStatusReducer,
-  coachWages: coachWagesReducer
+  wagesByDate: wagesByDateReducer,
+  wagesByCoach: wagesByCoachReducer,
+  filters: filterReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.institution.wages.uiConfig;
-const coaches = state => state.institution.wages.coaches;
+const staff = state => state.institution.wages.staff;
 const loadingStatus = state => state.institution.wages.loadingStatus;
-const coachWages = state => state.institution.wages.coachWages;
+const wagesByDate = state => state.institution.wages.wagesByDate;
+const wagesByCoach = state => state.institution.wages.wagesByCoach;
+const filters = state => state.institution.wages.filters;
 
 export const selector = createStructuredSelector({
   uiConfig,
-  coaches,
+  staff,
   loadingStatus,
-  coachWages
+  wagesByDate,
+  wagesByCoach,
+  filters
 });
 
 // Action Creators
+
+export function applyFilters(sport) {
+  return {
+    type: APPLY_FILTERS,
+    payload: {
+      sport
+    }
+  };
+}
+
+export function updateSearch(searchText) {
+  return {
+    type: UPDATE_SEARCH,
+    payload: {
+      searchText
+    }
+  };
+}
+
+export function updateTab(newTab) {
+  return {
+    type: UPDATE_TAB,
+    payload: {
+      newTab
+    }
+  };
+}
 
 export function requestStaff() {
   return {
@@ -109,13 +205,10 @@ export function requestStaff() {
 }
 
 export function receiveStaff(staff) {
-  const coaches = _.fromPairs(
-    _.toPairs(staff).filter(([id, info]) => info.metadata.type === "COACH")
-  );
   return {
     type: RECEIVE_STAFF,
     payload: {
-      coaches
+      staff
     }
   };
 }
@@ -132,49 +225,129 @@ export function errorLoadingStaff(error: { code: string, message: string }) {
 export function loadStaff(institutionID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestStaff());
-    return SportomaticFirebaseAPI.getPeople(institutionID)
-      .then(staff => {
-        dispatch(receiveStaff(staff));
-      })
-      .catch(err => {
-        dispatch(errorLoadingStaff(err));
+
+    const staffRef = firebase
+      .firestore()
+      .collection("users")
+      .where(`institutions.${institutionID}.status`, "==", "STAFF");
+
+    return staffRef.onSnapshot(querySnapshot => {
+      let staff = {};
+      querySnapshot.forEach(doc => {
+        staff[doc.id] = doc.data();
       });
+      dispatch(receiveStaff(staff));
+    });
   };
 }
 
-export function requestWages() {
+export function requestWagesByDate() {
   return {
-    type: REQUEST_WAGES
+    type: REQUEST_WAGES_BY_DATE
   };
 }
 
-export function receiveWages(wages) {
+export function receiveWagesByDate(wages, lastVisible) {
   return {
-    type: RECEIVE_WAGES,
+    type: RECEIVE_WAGES_BY_DATE,
     payload: {
-      wages
+      wages,
+      lastVisible
     }
   };
 }
 
-export function errorLoadingWages(error: { code: string, message: string }) {
+export function errorLoadingWagesByDate(error: {
+  code: string,
+  message: string
+}) {
   return {
-    type: ERROR_LOADING_WAGES,
+    type: ERROR_LOADING_WAGES_BY_DATE,
     payload: {
       error
     }
   };
 }
 
-export function loadCoachWages(institutionID, coachID) {
+export function loadWagesByDate(institutionID, startAfter = "") {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestWages());
-    return SportomaticFirebaseAPI.getCoachWages(institutionID, coachID)
-      .then(wages => {
-        dispatch(receiveWages(wages));
-      })
-      .catch(err => {
-        dispatch(errorLoadingWages(err));
+    dispatch(requestWagesByDate());
+
+    let wagesRef = {};
+    if (startAfter === "") {
+      wagesRef = firebase
+        .firestore()
+        .collection("wages")
+        .orderBy("date", "desc")
+        .limit(5)
+        .where("institutionID", "==", institutionID)
+        .where("date", "<", new Date(Date.now()));
+    } else {
+      wagesRef = firebase
+        .firestore()
+        .collection("wages")
+        .orderBy("date", "desc")
+        .startAfter(startAfter)
+        .limit(5)
+        .where("institutionID", "==", institutionID)
+        .where("date", "<", new Date(Date.now()));
+    }
+
+    return wagesRef.onSnapshot(querySnapshot => {
+      let wages = {};
+      const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+      querySnapshot.forEach(doc => {
+        wages[doc.id] = doc.data();
       });
+      dispatch(receiveWagesByDate(wages, lastVisible));
+    });
+  };
+}
+
+export function requestWagesByCoach() {
+  return {
+    type: REQUEST_WAGES_BY_COACH
+  };
+}
+
+export function receiveWagesByCoach(wages) {
+  return {
+    type: RECEIVE_WAGES_BY_COACH,
+    payload: {
+      wages
+    }
+  };
+}
+
+export function errorLoadingWagesByCoach(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_WAGES_BY_COACH,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadWagesByCoach(institutionID, coachID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestWagesByCoach());
+
+    let wagesRef = firebase
+      .firestore()
+      .collection("wages")
+      .orderBy("date", "desc")
+      .where("institutionID", "==", institutionID)
+      .where("coachID", "==", coachID);
+
+    return wagesRef.onSnapshot(querySnapshot => {
+      let wages = {};
+      querySnapshot.forEach(doc => {
+        wages[doc.id] = doc.data();
+      });
+      dispatch(receiveWagesByCoach(wages));
+    });
   };
 }

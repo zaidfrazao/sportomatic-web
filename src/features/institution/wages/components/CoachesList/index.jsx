@@ -1,44 +1,52 @@
 import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
+import { grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
-import CoachCard from "./components/CoachCard";
+import { withStyles } from "material-ui/styles";
+import PersonCard from "./components/PersonCard";
 
 const styles = {
   cardsWrapper: {
-    padding: 24
+    padding: 24,
+    maxWidth: 1200,
+    margin: "0 auto"
+  },
+  noCardsText: {
+    color: grey[600]
   },
   noCardsWrapper: {
     flexGrow: 1,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    maxWidth: 1200,
+    margin: "0 auto"
   }
 };
 
 class CoachesList extends Component {
   render() {
-    const { classes, coaches } = this.props;
+    const { classes, people } = this.props;
 
-    if (coaches.length > 0) {
+    if (people.length > 0) {
       return (
         <div className={classes.cardsWrapper}>
           <Grid container direction="row" spacing={40} align="stretch">
-            {coaches.map(coachInfo => (
+            {people.map(personInfo => (
               <Grid
                 item
                 xs={12}
                 sm={12}
                 md={6}
                 lg={4}
-                xl={3}
-                key={coachInfo.id}
+                xl={4}
+                key={personInfo.id}
               >
-                <CoachCard
-                  name={coachInfo.name}
-                  surname={coachInfo.surname}
-                  profilePictureURL={coachInfo.profilePictureURL}
-                  id={coachInfo.id}
+                <PersonCard
+                  name={personInfo.name}
+                  surname={personInfo.surname}
+                  profilePictureURL={personInfo.profilePictureURL}
+                  id={personInfo.id}
                 />
               </Grid>
             ))}
@@ -48,7 +56,11 @@ class CoachesList extends Component {
     } else {
       return (
         <div className={classes.noCardsWrapper}>
-          <Typography type="title" component="h3">
+          <Typography
+            type="title"
+            component="h3"
+            className={classes.noCardsText}
+          >
             No staff members
           </Typography>
         </div>

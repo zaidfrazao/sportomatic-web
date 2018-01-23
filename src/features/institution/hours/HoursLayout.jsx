@@ -219,6 +219,7 @@ class HoursLayout extends Component {
                         isTablet={isTablet}
                         eventID={eventID}
                         eventInfo={eventInfo}
+                        institutionID={userID}
                         staff={staff}
                         actions={{
                           signIn,

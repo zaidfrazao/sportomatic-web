@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
+import moment from "moment";
 import firebase from "firebase";
 
 // Actions
@@ -460,115 +461,77 @@ export function errorApprovingHours(error: { code: string, message: string }) {
   };
 }
 
-export function approveHours(eventID, coachID) {
+export function approveHours(
+  institutionID,
+  eventID,
+  coachID,
+  paymentInfo,
+  eventInfo,
+  signInTime,
+  signOutTime
+) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestApproveHours());
-
-    // const {
-    //   signInTime,
-    //   signOutTime,
-    //   standardHourlyRate,
-    //   overtimeHourlyRate
-    // } = wageInfo;
-    // const {
-    //   year,
-    //   month,
-    //   eventID,
-    //   startTime,
-    //   endTime,
-    //   date,
-    //   eventTitle
-    // } = eventInfo;
-    //
-    // const signInTimeValue = new Date(
-    //   2017,
-    //   1,
-    //   1,
-    //   signInTime.slice(0, 2),
-    //   signInTime.slice(3, 5)
-    // ).getTime();
-    // const signOutTimeValue = new Date(
-    //   2017,
-    //   1,
-    //   1,
-    //   signOutTime.slice(0, 2),
-    //   signOutTime.slice(3, 5)
-    // ).getTime();
-    // const scheduledStartTimeValue = new Date(
-    //   2017,
-    //   1,
-    //   1,
-    //   startTime.slice(0, 2),
-    //   startTime.slice(3, 5)
-    // ).getTime();
-    // const scheduledEndTimeValue = new Date(
-    //   2017,
-    //   1,
-    //   1,
-    //   endTime.slice(0, 2),
-    //   endTime.slice(3, 5)
-    // ).getTime();
-    //
-    // let standardHoursStartTime = signInTimeValue;
-    // let standardHoursEndTime = signOutTimeValue;
-    // const overtimeHoursStartTime = scheduledEndTimeValue;
-    // const overtimeHoursEndTime = signOutTimeValue;
-    // let standardTimeWorked = 0;
-    // let extraTimeWorked = 0;
-    // let workedOvertime = false;
-    //
-    // if (signInTimeValue < scheduledStartTimeValue) {
-    //   standardHoursStartTime = scheduledStartTimeValue;
-    // }
-    // if (signOutTimeValue > scheduledEndTimeValue) {
-    //   standardHoursEndTime = scheduledEndTimeValue;
-    //   workedOvertime = true;
-    // }
-    // if (workedOvertime) {
-    //   extraTimeWorked = overtimeHoursEndTime - overtimeHoursStartTime;
-    // }
-    // standardTimeWorked = standardHoursEndTime - standardHoursStartTime;
-    //
-    // let standardHoursWorked = Math.floor(standardTimeWorked / 1000 / 60 / 60);
-    // const leftoverStandardMinutesWorked =
-    //   (standardTimeWorked - standardHoursWorked * 1000 * 60 * 60) / 1000 / 60;
-    // let overTimeHoursWorked = Math.floor(extraTimeWorked / 1000 / 60 / 60);
-    // const leftoverOvertimeMinutesWorked =
-    //   (extraTimeWorked - overTimeHoursWorked * 1000 * 60 * 60) / 1000 / 60;
-    //
-    // if (leftoverStandardMinutesWorked > 20) {
-    //   standardHoursWorked += 1;
-    // }
-    // if (leftoverOvertimeMinutesWorked > 20) {
-    //   overTimeHoursWorked += 1;
-    // }
-    //
-    // const wage =
-    //   standardHoursWorked * standardHourlyRate +
-    //   overTimeHoursWorked * overtimeHourlyRate;
-    //
-    // const newWage = {
-    //   type: "HOURLY",
-    //   date: date,
-    //   title: eventTitle,
-    //   hours: {
-    //     standard: standardHoursWorked,
-    //     overtime: overTimeHoursWorked
-    //   },
-    //   rates: {
-    //     stardard: standardHourlyRate,
-    //     overtime: overtimeHourlyRate
-    //   },
-    //   wage
-    // };
 
     const db = firebase.firestore();
     const eventRef = db.collection("events").doc(eventID);
 
-    return eventRef
-      .update({
-        [`coaches.${coachID}.hours.status`]: "APPROVED"
-      })
+    let batch = db.batch();
+    batch.update(eventRef, {
+      [`coaches.${coachID}.hours.status`]: "APPROVED"
+    });
+
+    if (paymentInfo.type === "HOURLY") {
+      const newWageRef = db.collection("wages").doc();
+
+      let standardHours = 0;
+      let overtimeHours = 0;
+      const startTime = moment(eventInfo.requiredInfo.times.start);
+      const endTime = moment(eventInfo.requiredInfo.times.end);
+      if (startTime.isBefore(signInTime)) {
+        if (endTime.isBefore(signOutTime)) {
+          standardHours = Math.round(endTime.diff(signInTime, "hours", true));
+          overtimeHours = Math.round(signOutTime.diff(endTime, "hours", true));
+        } else {
+          standardHours = Math.round(
+            signOutTime.diff(signInTime, "hours", true)
+          );
+        }
+      } else {
+        if (endTime.isBefore(signOutTime)) {
+          standardHours = Math.round(endTime.diff(startTime, "hours", true));
+          overtimeHours = Math.round(signOutTime.diff(endTime, "hours", true));
+        } else {
+          standardHours = Math.round(
+            signOutTime.diff(startTime, "hours", true)
+          );
+        }
+      }
+
+      const wage =
+        standardHours * paymentInfo.rates.standard +
+        overtimeHours * paymentInfo.rates.overtime;
+
+      if (wage > 0) {
+        batch.set(newWageRef, {
+          coachID,
+          institutionID,
+          wage,
+          currency: "ZAR",
+          date: eventInfo.requiredInfo.times.start,
+          hours: {
+            standard: standardHours,
+            overtime: overtimeHours
+          },
+          rates: paymentInfo.rates,
+          title: eventInfo.requiredInfo.title,
+          type: "HOURLY"
+        });
+      }
+    }
+
+    return batch
+      .commit()
       .then(() => dispatch(receiveApproveHours()))
       .catch(error => dispatch(errorApprovingHours(error)));
   };

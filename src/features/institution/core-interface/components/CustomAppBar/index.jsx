@@ -99,7 +99,7 @@ class CustomAppBar extends Component {
     return (
       <AppBar
         className={classNames(
-          !isMobile && classes.appBar,
+          classes.appBar,
           !isMobile && isSideMenuOpen && classes.appBarShift
         )}
       >

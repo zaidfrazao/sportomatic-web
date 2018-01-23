@@ -1,33 +1,60 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Route } from "react-router-dom";
-import { withStyles } from "material-ui/styles";
-import WagesTable from "./components/WagesTable";
-import AppBar from "material-ui/AppBar";
-import Button from "material-ui/Button";
-import LeaderboardAd from "../../../components/LeaderboardAd";
-import BannerAd from "../../../components/BannerAd";
-import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
-import { CircularProgress } from "material-ui/Progress";
-import CoachesList from "./components/CoachesList";
-import Typography from "material-ui/Typography";
 import _ from "lodash";
+import AppBar from "material-ui/AppBar";
+import BackIcon from "material-ui-icons/ArrowBack";
+import Button from "material-ui/Button";
+import { CircularProgress } from "material-ui/Progress";
+import { grey, lightBlue } from "material-ui/colors";
+import IconButton from "material-ui/IconButton";
+import moment from "moment";
+import Paper from "material-ui/Paper";
+import { Route } from "react-router-dom";
+import Tabs, { Tab } from "material-ui/Tabs";
+import Toolbar from "material-ui/Toolbar";
+import Tooltip from "material-ui/Tooltip";
+import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
+import BannerAd from "../../../components/BannerAd";
+import CoachesList from "./components/CoachesList";
+import FiltersToolbar from "./components/FiltersToolbar";
+import WageCard from "./components/WageCard";
+import WageHistory from "./components/WageHistory";
+import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
+import LeaderboardAd from "../../../components/LeaderboardAd";
 
 const styles = theme => ({
-  root: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column"
+  actionsBar: {
+    backgroundColor: grey[200]
   },
   adWrapper: {
     width: "100%",
     display: "flex",
     justifyContent: "center"
   },
-  wagesTableWrapper: {
+  contentWrapper: {
+    width: "100%",
+    height: "100%",
+    overflow: "auto"
+  },
+  dateHeader: {
+    padding: 16,
+    backgroundColor: lightBlue[900],
+    color: grey[50]
+  },
+  dateWrapper: {
+    margin: 24,
+    width: "calc(100% - 24px)",
+    maxWidth: 970
+  },
+  wagesByDateWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  },
+  innerWrapper: {
     flexGrow: 1,
-    display: "flex"
+    overflow: "auto"
   },
   loaderWrapper: {
     flexGrow: 1,
@@ -35,47 +62,195 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center"
   },
-  button: {
-    margin: 24,
-    "@media (max-width: 960px)": {
-      width: "calc(100% - 48px)"
-    }
+  loadMoreButton: {
+    margin: 24
   },
-  coachName: {
+  name: {
     margin: 24,
     width: "calc(100% - 48px)",
     textAlign: "center"
+  },
+  outerWrapper: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
+  },
+  root: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
+  },
+  tabs: {
+    height: 72
+  },
+  tabsWrapper: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
   }
 });
 
 class WagesLayout extends Component {
   componentWillMount() {
     const { userID } = this.props;
-    const { loadStaff, loadCoachWages } = this.props.actions;
-    const { coachID } = this.props.match.params;
+    const { loadStaff, loadWagesByDate } = this.props.actions;
 
-    loadCoachWages(userID, coachID);
-    loadStaff(userID);
+    if (userID !== "") {
+      loadStaff(userID);
+      loadWagesByDate(userID);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID } = this.props;
-    const { loadStaff, loadCoachWages } = this.props.actions;
-    const { coachID } = this.props.match.params;
+    const { userID } = nextProps;
+    const { loadStaff, loadWagesByDate } = nextProps.actions;
 
-    if (userID !== nextProps.userID) {
-      loadStaff(nextProps.userID);
-      loadCoachWages(nextProps.userID, nextProps.match.params.coachID);
-    }
-    if (coachID !== nextProps.match.params.coachID) {
-      loadCoachWages(nextProps.userID, nextProps.match.params.coachID);
+    if (userID !== this.props.userID && userID !== "") {
+      loadStaff(userID);
+      loadWagesByDate(userID);
     }
   }
 
-  render() {
-    const { classes, isMobile, isTablet, coachWages, coaches } = this.props;
-    const { isWagesLoading, isStaffLoading } = this.props.loadingStatus;
+  renderWagesByDate() {
+    const { classes, wagesByDate, staff, userID } = this.props;
+    const { lastVisible } = this.props.uiConfig;
+    const { isStaffLoading, isWagesByDateLoading } = this.props.loadingStatus;
+    const { loadWagesByDate } = this.props.actions;
+
+    if (isStaffLoading) {
+      return (
+        <div className={classes.loaderWrapper}>
+          <CircularProgress />
+        </div>
+      );
+    } else {
+      let groupedByDate = {};
+      _.toPairs(wagesByDate).map(([id, info]) => {
+        const wageDate = moment(info.date).format("YYYY-MM-DD");
+        if (groupedByDate[wageDate]) {
+          groupedByDate[wageDate] = {
+            ...groupedByDate[wageDate],
+            [id]: info
+          };
+        } else {
+          groupedByDate[wageDate] = {
+            [id]: info
+          };
+        }
+      });
+
+      return (
+        <div className={classes.wagesByDateWrapper}>
+          {_.toPairs(groupedByDate).map(([date, wages]) => {
+            const currentDate = moment(new Date(Date.now())).format(
+              "YYYY-MM-DD"
+            );
+            return (
+              <Paper className={classes.dateWrapper} key={date}>
+                <div className={classes.dateHeader}>
+                  {date === currentDate
+                    ? "Today"
+                    : moment(date).format("dddd, MMMM Do YYYY")}
+                </div>
+                <div>
+                  {_.toPairs(wages).map(([wageID, wageInfo]) => {
+                    return (
+                      <WageCard
+                        key={`wagescards-${wageID}`}
+                        wageInfo={wageInfo}
+                        coachInfo={{
+                          name: staff[wageInfo.coachID].info.name,
+                          surname: staff[wageInfo.coachID].info.surname,
+                          profilePictureURL:
+                            staff[wageInfo.coachID].info.profilePictureURL
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </Paper>
+            );
+          })}
+          {isWagesByDateLoading && (
+            <div className={classes.loaderWrapper}>
+              <CircularProgress />
+            </div>
+          )}
+          <Button
+            disabled={isWagesByDateLoading}
+            className={classes.loadMoreButton}
+            raised
+            onClick={() => loadWagesByDate(userID, lastVisible)}
+          >
+            Load more...
+          </Button>
+        </div>
+      );
+    }
+  }
+
+  renderLogs() {
+    const { classes, staff } = this.props;
     const { coachID } = this.props.match.params;
+    const { isStaffLoading } = this.props.loadingStatus;
+
+    const ad = this.createAd();
+    const filteredStaff = this.getStaffCardsInfo(this.filterPeople(staff));
+
+    if (isStaffLoading) {
+      return (
+        <div>
+          <div className={classes.adWrapper}>{ad}</div>
+          <div className={classes.loaderWrapper}>
+            <CircularProgress />
+          </div>
+        </div>
+      );
+    } else {
+      if (coachID) {
+      } else {
+        return (
+          <div>
+            <div className={classes.adWrapper}>{ad}</div>
+            <CoachesList people={filteredStaff} />
+          </div>
+        );
+      }
+    }
+  }
+
+  getStaffCardsInfo(staff) {
+    const { userID } = this.props;
+
+    let sortedStaff = [];
+    _.values(
+      _.mapValues(staff, (value, key) => {
+        if (value.institutions[userID].roles.coach === "APPROVED") {
+          sortedStaff.push({
+            ...value,
+            id: key,
+            name: value.info.name,
+            surname: value.info.surname,
+            profilePictureURL: value.info.profilePictureURL
+          });
+        }
+      })
+    );
+
+    return sortedStaff.sort((personA, personB) => {
+      if (personA.info.name > personB.info.name) return +1;
+      if (personA.info.name < personB.info.name) return -1;
+      if (personA.info.surname > personB.info.surname) return +1;
+      if (personA.info.surname < personB.info.surname) return -1;
+      return 0;
+    });
+  }
+
+  createAd() {
+    const { isMobile, isTablet } = this.props;
 
     let ad = <LeaderboardAd />;
     if (isMobile) {
@@ -84,89 +259,137 @@ class WagesLayout extends Component {
       ad = <BannerAd />;
     }
 
-    if (isWagesLoading || isStaffLoading) {
+    return ad;
+  }
+
+  filterPeople(staff) {
+    const { searchText } = this.props.filters;
+
+    return _.fromPairs(
+      _.toPairs(staff).filter(([staffID, personInfo]) => {
+        let allowThroughFilter = true;
+        let nameMatch = true;
+
+        if (searchText !== "") {
+          nameMatch =
+            nameMatch &&
+            _.toLower(
+              `${personInfo.info.name} ${personInfo.info.surname}`
+            ).includes(_.toLower(searchText));
+        }
+
+        allowThroughFilter = allowThroughFilter && nameMatch;
+
+        return allowThroughFilter;
+      })
+    );
+  }
+
+  render() {
+    const {
+      classes,
+      isMobile,
+      isTablet,
+      wagesByCoach,
+      userID,
+      staff
+    } = this.props;
+    const { currentTab } = this.props.uiConfig;
+    const { updateTab, loadWagesByCoach, updateSearch } = this.props.actions;
+    const { coachID } = this.props.match.params;
+    const { isWagesByCoachLoading, isStaffLoading } = this.props.loadingStatus;
+
+    const ad = this.createAd();
+
+    if (coachID) {
       return (
-        <div className={classes.root}>
-          <div className={classes.loaderWrapper}>
-            <CircularProgress />
+        <div className={classes.outerWrapper}>
+          <AppBar position="static" color="default">
+            {isStaffLoading || !staff[coachID] ? (
+              <Typography className={classes.name} type="title" component="h2">
+                Loading...
+              </Typography>
+            ) : (
+              <Typography className={classes.name} type="title" component="h2">
+                {`${staff[coachID].info.name} ${staff[coachID].info.surname}`}
+              </Typography>
+            )}
+          </AppBar>
+          <div className={classes.innerWrapper}>
+            <Toolbar className={classes.actionsBar}>
+              <Route
+                render={({ history }) => (
+                  <Tooltip title="Back" placement="bottom">
+                    <IconButton
+                      aria-label="back"
+                      onClick={() => {
+                        history.goBack();
+                      }}
+                    >
+                      <BackIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              />
+            </Toolbar>
+            <div className={classes.adWrapper}>{ad}</div>
+            <WageHistory
+              institutionID={userID}
+              isLoading={isWagesByCoachLoading}
+              isMobile={isMobile}
+              isTablet={isTablet}
+              wages={wagesByCoach}
+              coachID={coachID}
+              minDate={new Date(2017, 11)}
+              actions={{
+                loadWages: loadWagesByCoach
+              }}
+            />
           </div>
         </div>
       );
     } else {
-      if (coachID && coaches[coachID]) {
-        return (
-          <div className={classes.root}>
-            <AppBar position="static" color="default">
-              <Typography
-                type="title"
-                component="h2"
-                className={classes.coachName}
-              >
-                {`${coaches[coachID].metadata.name} ${coaches[coachID].metadata
-                  .surname}`}
-              </Typography>
-            </AppBar>
-            <div>
-              <Route
-                render={({ history }) => (
-                  <Button
-                    raised
-                    className={classes.button}
-                    onClick={() => history.goBack()}
-                  >
-                    Back
-                  </Button>
-                )}
-              />
-            </div>
-            {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
-            <div className={classes.wagesTableWrapper}>
-              <WagesTable
-                isMobile={isMobile}
-                isTablet={isTablet}
-                wages={coachWages}
-              />
+      return (
+        <div className={classes.root}>
+          <div className={classes.contentWrapper}>
+            <div className={classes.tabsWrapper}>
+              <AppBar position="static" color="default">
+                <Tabs
+                  value={currentTab}
+                  onChange={(event, newTab) => updateTab(newTab)}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab
+                    label="Overview"
+                    value="OVERVIEW"
+                    className={classes.tabs}
+                  />
+                  <Tab label="Logs" value="LOGS" className={classes.tabs} />
+                </Tabs>
+              </AppBar>
+              {currentTab === "OVERVIEW" && (
+                <div className={classes.contentWrapper}>
+                  <div className={classes.adWrapper}>{ad}</div>
+                  {this.renderWagesByDate()}
+                </div>
+              )}
+              {currentTab === "LOGS" && (
+                <div className={classes.contentWrapper}>
+                  <FiltersToolbar
+                    isMobile={isMobile}
+                    updateSearch={updateSearch}
+                  />
+                  {this.renderLogs()}
+                </div>
+              )}
             </div>
           </div>
-        );
-      } else {
-        const coachesList = _.values(
-          _.mapValues(coaches, (value, key) => {
-            return {
-              ...value,
-              id: key,
-              name: value.metadata.name,
-              surname: value.metadata.surname,
-              profilePictureURL: value.metadata.profilePictureURL
-            };
-          })
-        ).sort((personA, personB) => {
-          if (personA.metadata.name > personB.metadata.name) return +1;
-          if (personA.metadata.name < personB.metadata.name) return -1;
-          if (personA.metadata.surname > personB.metadata.surname) return +1;
-          if (personA.metadata.surname < personB.metadata.surname) return -1;
-          return 0;
-        });
-
-        return (
-          <div
-            className={
-              coachesList.length > 0
-                ? classes.coachesList
-                : classes.coachesListNoCards
-            }
-          >
-            <div className={classes.adWrapper}>{ad}</div>
-            <CoachesList coaches={coachesList} />
-          </div>
-        );
-      }
+        </div>
+      );
     }
   }
 }
-
-WagesLayout.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(WagesLayout);

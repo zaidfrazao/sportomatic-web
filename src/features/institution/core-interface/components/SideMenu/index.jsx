@@ -181,7 +181,6 @@ class SideMenu extends Component {
               render={({ history }) => (
                 <ListItem
                   button
-                  disabled
                   onClick={() => {
                     history.push("/admin/wages");
                     isMobile && toggleSideMenu();

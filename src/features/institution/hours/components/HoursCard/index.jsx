@@ -188,7 +188,7 @@ class HoursCard extends Component {
   }
 
   renderCardContent() {
-    const { classes, eventInfo, eventID, staff } = this.props;
+    const { classes, eventInfo, eventID, staff, institutionID } = this.props;
     const { signIn, signOut, approveHours } = this.props.actions;
 
     return _.toPairs(eventInfo.coaches).map(([coachID, coachInfo]) => {
@@ -498,7 +498,17 @@ class HoursCard extends Component {
                 <Button
                   raised
                   className={classes.approveButton}
-                  onClick={() => approveHours(eventID, coachID)}
+                  onClick={() =>
+                    approveHours(
+                      institutionID,
+                      eventID,
+                      coachID,
+                      staff[coachID].institutions[institutionID]
+                        .paymentDefaults,
+                      eventInfo,
+                      moment(signInTime),
+                      moment(signOutTime)
+                    )}
                 >
                   <ApproveIcon /> Approve
                 </Button>
