@@ -77,26 +77,22 @@ class TeamsLayout extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID, teams } = this.props;
-    const { loadTeams, loadCoaches, loadManagers } = this.props.actions;
+    const { userID, teams } = nextProps;
+    const { loadTeams, loadCoaches, loadManagers } = nextProps.actions;
 
-    if (userID !== nextProps.userID) {
-      loadTeams(nextProps.userID);
-      loadCoaches(nextProps.userID);
-      loadManagers(nextProps.userID);
+    if (userID !== this.props.userID) {
+      loadTeams(userID);
+      loadCoaches(userID);
+      loadManagers(userID);
     }
 
-    let genders = this.state.genders;
-    let sports = this.state.sports;
-    let divisions = this.state.divisions;
-    let ageGroups = this.state.ageGroups;
+    if (teams !== this.props.teams) {
+      let genders = {};
+      let sports = {};
+      let divisions = {};
+      let ageGroups = {};
 
-    if (teams !== nextProps.teams) {
-      genders = {};
-      sports = {};
-      divisions = {};
-      ageGroups = {};
-      _.toPairs(nextProps.teams).map(([id, info]) => {
+      _.toPairs(teams).map(([id, info]) => {
         genders = {
           ...genders,
           [info.info.gender]: true
@@ -114,14 +110,14 @@ class TeamsLayout extends Component {
           [info.info.ageGroup]: true
         };
       });
-    }
 
-    this.setState({
-      genders,
-      sports,
-      divisions,
-      ageGroups
-    });
+      this.setState({
+        genders,
+        sports,
+        divisions,
+        ageGroups
+      });
+    }
   }
 
   createAd() {

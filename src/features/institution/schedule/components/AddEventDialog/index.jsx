@@ -1375,7 +1375,7 @@ class AddEventDialog extends Component {
                     return [
                       teamID,
                       {
-                        resultsStatus: "AWAITING_APPROVAL",
+                        resultsStatus: "AWAITING_START",
                         opponents: opponents[teamID]
                       }
                     ];
