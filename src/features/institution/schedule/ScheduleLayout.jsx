@@ -421,6 +421,7 @@ class ScheduleLayout extends Component {
             managers={managers}
             teams={teams}
             info={events[eventID]}
+            eventID={eventID}
             isInfoLoading={isEventsLoading}
             isCoachesLoading={isCoachesLoading}
             isManagersLoading={isManagersLoading}

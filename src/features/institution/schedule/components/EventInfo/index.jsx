@@ -330,7 +330,8 @@ class EventInfo extends Component {
       isTeamsLoading,
       isManagersLoading,
       isCoachesLoading,
-      isPastEvent
+      isPastEvent,
+      eventID
     } = this.props;
     const {
       markAbsent,
@@ -353,8 +354,11 @@ class EventInfo extends Component {
           let scores = [{ id, score: 0 }];
           const hasMultipleOpponents = _.keys(teamInfo.opponents).length > 1;
           _.toPairs(teamInfo.opponents).map(([opponentID, opponentInfo]) => {
-            scores[0].score = opponentInfo.ourScore;
-            scores.push({ id: opponentID, score: opponentInfo.theirScore });
+            scores[0].score = opponentInfo.ourScore.totalPoints;
+            scores.push({
+              id: opponentID,
+              score: opponentInfo.theirScore.totalPoints
+            });
           });
           scores.sort((scoreA, scoreB) => {
             if (scoreA.score > scoreB.score) {
@@ -388,7 +392,7 @@ class EventInfo extends Component {
             <Route
               key={id}
               render={({ history }) => {
-                const showResults = teamInfo.resultsStatus === "APPROVED";
+                const showResults = teamInfo.resultsStatus === "FINALISED";
                 const shouldRankTeams =
                   teams[id].info.sport === "Swimming" ||
                   teams[id].info.sport === "Athletics" ||
@@ -561,27 +565,36 @@ class EventInfo extends Component {
                                 );
                               } else {
                                 if (showResults) {
-                                  if (ourScore > theirScore) {
+                                  if (
+                                    ourScore.totalPoints >
+                                    theirScore.totalPoints
+                                  ) {
                                     resultAvatar = (
                                       <Avatar className={classes.winAvatar}>
                                         W
                                       </Avatar>
                                     );
-                                    resultText = `${teams[id].info.name} won`;
-                                  } else if (ourScore < theirScore) {
+                                    resultText = `${teams[id].info
+                                      .name} won ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                  } else if (
+                                    ourScore.totalPoints <
+                                    theirScore.totalPoints
+                                  ) {
                                     resultAvatar = (
                                       <Avatar className={classes.lossAvatar}>
                                         L
                                       </Avatar>
                                     );
-                                    resultText = `${teams[id].info.name} lost`;
+                                    resultText = `${teams[id].info
+                                      .name} lost ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
                                   } else {
                                     resultAvatar = (
                                       <Avatar className={classes.drawAvatar}>
                                         D
                                       </Avatar>
                                     );
-                                    resultText = `${teams[id].info.name} drew`;
+                                    resultText = `${teams[id].info
+                                      .name} drew ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
                                   }
                                 }
                                 return (
@@ -662,7 +675,13 @@ class EventInfo extends Component {
                               <ListItemIcon>
                                 <ResultsIcon />
                               </ListItemIcon>
-                              <ListItemText primary="View results" />
+                              <ListItemText
+                                primary="View results"
+                                onClick={() =>
+                                  history.push(
+                                    `/admin/results/${id}/${eventID}`
+                                  )}
+                              />
                             </ListItem>
                           )}
                       </List>
