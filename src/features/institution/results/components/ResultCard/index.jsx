@@ -38,17 +38,25 @@ class ResultCard extends Component {
 
     let isOpen = false;
     _.toPairs(eventInfo.teams).map(([teamID, teamInfo]) => {
-      if (teamInfo.resultStatus !== "FINALISED") {
+      if (teamInfo.resultsStatus !== "FINALISED") {
         isOpen = true;
       }
-      this.setState({
-        isOpen
-      });
+    });
+    this.setState({
+      isOpen
     });
   }
 
   renderCardContent() {
-    const { eventInfo, teams, isMobile, isTablet, eventID } = this.props;
+    const {
+      eventInfo,
+      teams,
+      isMobile,
+      isTablet,
+      eventID,
+      institutionEmblemURL
+    } = this.props;
+    const { startLogging, finaliseResults, editResult } = this.props.actions;
 
     return _.toPairs(eventInfo.teams).map(([teamID, teamInfo]) => {
       const { name, sport } = teams[teamID].info;
@@ -65,10 +73,15 @@ class ResultCard extends Component {
               ourTeam={{
                 name,
                 opponents,
-                emblemURL: ""
+                emblemURL: institutionEmblemURL
               }}
               isMobile={isMobile}
               isTablet={isTablet}
+              actions={{
+                startLogging,
+                finaliseResults,
+                editResult
+              }}
             />
           );
       }

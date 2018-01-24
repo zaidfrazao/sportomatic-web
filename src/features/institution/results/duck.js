@@ -1,6 +1,6 @@
+/* eslint-disable array-callback-return */
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
-import moment from "moment";
 import firebase from "firebase";
 
 // Actions
@@ -17,15 +17,18 @@ export const ERROR_LOADING_EVENTS_BY_DATE = `${NAMESPACE}/ERROR_LOADING_EVENTS_B
 export const REQUEST_EVENTS_BY_TEAM = `${NAMESPACE}/REQUEST_EVENTS_BY_TEAM`;
 export const RECEIVE_EVENTS_BY_TEAM = `${NAMESPACE}/RECEIVE_EVENTS_BY_TEAM`;
 export const ERROR_LOADING_EVENTS_BY_TEAM = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_TEAM`;
-export const REQUEST_SIGN_IN = `${NAMESPACE}/REQUEST_SIGN_IN`;
-export const RECEIVE_SIGN_IN = `${NAMESPACE}/RECEIVE_SIGN_IN`;
-export const ERROR_SIGNING_IN = `${NAMESPACE}/ERROR_SIGNING_IN`;
-export const REQUEST_SIGN_OUT = `${NAMESPACE}/REQUEST_SIGN_OUT`;
-export const RECEIVE_SIGN_OUT = `${NAMESPACE}/RECEIVE_SIGN_OUT`;
-export const ERROR_SIGNING_OUT = `${NAMESPACE}/ERROR_SIGNING_OUT`;
-export const REQUEST_APPROVE_HOURS = `${NAMESPACE}/REQUEST_APPROVE_HOURS`;
-export const RECEIVE_APPROVE_HOURS = `${NAMESPACE}/RECEIVE_APPROVE_HOURS`;
-export const ERROR_APPROVING_HOURS = `${NAMESPACE}/ERROR_APPROVING_HOURS`;
+export const REQUEST_START_LOGGING = `${NAMESPACE}/REQUEST_START_LOGGING`;
+export const RECEIVE_START_LOGGING = `${NAMESPACE}/RECEIVE_START_LOGGING`;
+export const ERROR_STARTING_LOGGING = `${NAMESPACE}/ERROR_STARTING_LOGGING`;
+export const REQUEST_FINALISE_RESULTS = `${NAMESPACE}/REQUEST_FINALISE_RESULTS`;
+export const RECEIVE_FINALISE_RESULTS = `${NAMESPACE}/RECEIVE_FINALISE_RESULTS`;
+export const ERROR_FINALISING_RESULTS = `${NAMESPACE}/ERROR_FINALISING_RESULTS`;
+export const REQUEST_EDIT_RESULT = `${NAMESPACE}/REQUEST_EDIT_RESULT`;
+export const RECEIVE_EDIT_RESULT = `${NAMESPACE}/RECEIVE_EDIT_RESULT`;
+export const ERROR_EDITTING_RESULT = `${NAMESPACE}/ERROR_EDITTING_RESULT`;
+export const REQUEST_INSTITUTION_EMBLEM = `${NAMESPACE}/REQUEST_INSTITUTION_EMBLEM`;
+export const RECEIVE_INSTITUTION_EMBLEM = `${NAMESPACE}/RECEIVE_INSTITUTION_EMBLEM`;
+export const ERROR_FETCHING_INSTITUTION_EMBLEM = `${NAMESPACE}/ERROR_FETCHING_INSTITUTION_EMBLEM`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
 
@@ -34,7 +37,8 @@ export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
 export const uiConfigInitialState = {
   isLoading: false,
   currentTab: "OVERVIEW",
-  lastVisible: ""
+  lastVisible: "",
+  institutionEmblemURL: ""
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -48,6 +52,11 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
       return {
         ...state,
         lastVisible: action.payload.lastVisible
+      };
+    case RECEIVE_INSTITUTION_EMBLEM:
+      return {
+        ...state,
+        institutionEmblemURL: action.payload.emblemURL
       };
     default:
       return state;
@@ -222,6 +231,48 @@ export function updateTab(newTab) {
   };
 }
 
+export function requestInstitutionEmblem() {
+  return {
+    type: REQUEST_INSTITUTION_EMBLEM
+  };
+}
+
+export function receiveInstitutionEmblem(emblemURL) {
+  return {
+    type: RECEIVE_INSTITUTION_EMBLEM,
+    payload: {
+      emblemURL
+    }
+  };
+}
+
+export function errorFetchingInstitutionEmblem(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_FETCHING_INSTITUTION_EMBLEM,
+    payload: {
+      error
+    }
+  };
+}
+
+export function fetchInstitutionEmblem(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestInstitutionEmblem());
+
+    const institutionRef = firebase
+      .firestore()
+      .collection("institutions")
+      .doc(institutionID);
+
+    return institutionRef.onSnapshot(doc => {
+      dispatch(receiveInstitutionEmblem(doc.data().info.emblemURL));
+    });
+  };
+}
+
 export function requestTeams() {
   return {
     type: REQUEST_TEAMS
@@ -381,175 +432,125 @@ export function loadEventsByTeam(institutionID, teamID) {
   };
 }
 
-export function requestSignIn() {
+export function requestStartLogging() {
   return {
-    type: REQUEST_SIGN_IN
+    type: REQUEST_START_LOGGING
   };
 }
 
-export function receiveSignIn() {
+export function receiveStartLogging() {
   return {
-    type: RECEIVE_SIGN_IN
+    type: RECEIVE_START_LOGGING
   };
 }
 
-export function errorSigningIn(error: { code: string, message: string }) {
+export function errorStartingLogging(error: { code: string, message: string }) {
   return {
-    type: ERROR_SIGNING_IN,
+    type: ERROR_STARTING_LOGGING,
     payload: {
       error
     }
   };
 }
 
-export function signIn(eventID, coachID, signInTime, newStatus) {
+export function startLogging(eventID, teamID, structure, opponentIDs) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestSignIn());
+    dispatch(requestStartLogging());
 
     const db = firebase.firestore();
     const eventRef = db.collection("events").doc(eventID);
 
-    return eventRef
-      .update({
-        [`coaches.${coachID}.hours.times.signIn`]: signInTime,
-        [`coaches.${coachID}.hours.status`]: newStatus
-      })
-      .then(() => dispatch(receiveSignIn()))
-      .catch(error => dispatch(errorSigningIn(error)));
-  };
-}
+    let updates = {
+      [`teams.${teamID}.resultsStatus`]: "AWAITING_FINALISE"
+    };
 
-export function requestSignOut() {
-  return {
-    type: REQUEST_SIGN_OUT
-  };
-}
-
-export function receiveSignOut() {
-  return {
-    type: RECEIVE_SIGN_OUT
-  };
-}
-
-export function errorSigningOut(error: { code: string, message: string }) {
-  return {
-    type: ERROR_SIGNING_OUT,
-    payload: {
-      error
-    }
-  };
-}
-
-export function signOut(eventID, coachID, signOutTime, newStatus) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestSignOut());
-
-    const db = firebase.firestore();
-    const eventRef = db.collection("events").doc(eventID);
-
-    return eventRef
-      .update({
-        [`coaches.${coachID}.hours.times.signOut`]: signOutTime,
-        [`coaches.${coachID}.hours.status`]: newStatus
-      })
-      .then(() => dispatch(receiveSignOut()))
-      .catch(error => dispatch(errorSigningOut(error)));
-  };
-}
-
-export function requestApproveHours() {
-  return {
-    type: REQUEST_APPROVE_HOURS
-  };
-}
-
-export function receiveApproveHours() {
-  return {
-    type: RECEIVE_APPROVE_HOURS
-  };
-}
-
-export function errorApprovingHours(error: { code: string, message: string }) {
-  return {
-    type: ERROR_APPROVING_HOURS,
-    payload: {
-      error
-    }
-  };
-}
-
-export function approveHours(
-  institutionID,
-  eventID,
-  coachID,
-  paymentInfo,
-  eventInfo,
-  signInTime,
-  signOutTime
-) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestApproveHours());
-
-    const db = firebase.firestore();
-    const eventRef = db.collection("events").doc(eventID);
-
-    let batch = db.batch();
-    batch.update(eventRef, {
-      [`coaches.${coachID}.hours.status`]: "APPROVED"
+    opponentIDs.map(id => {
+      updates[`teams.${teamID}.opponents.${id}.ourScore`] = structure;
+      updates[`teams.${teamID}.opponents.${id}.theirScore`] = structure;
     });
 
-    if (paymentInfo.type === "HOURLY") {
-      const newWageRef = db.collection("wages").doc();
+    return eventRef
+      .update(updates)
+      .then(() => dispatch(receiveStartLogging()))
+      .catch(error => dispatch(errorStartingLogging(error)));
+  };
+}
 
-      let standardHours = 0;
-      let overtimeHours = 0;
-      const startTime = moment(eventInfo.requiredInfo.times.start);
-      const endTime = moment(eventInfo.requiredInfo.times.end);
-      if (startTime.isBefore(signInTime)) {
-        if (endTime.isBefore(signOutTime)) {
-          standardHours = Math.round(endTime.diff(signInTime, "hours", true));
-          overtimeHours = Math.round(signOutTime.diff(endTime, "hours", true));
-        } else {
-          standardHours = Math.round(
-            signOutTime.diff(signInTime, "hours", true)
-          );
-        }
-      } else {
-        if (endTime.isBefore(signOutTime)) {
-          standardHours = Math.round(endTime.diff(startTime, "hours", true));
-          overtimeHours = Math.round(signOutTime.diff(endTime, "hours", true));
-        } else {
-          standardHours = Math.round(
-            signOutTime.diff(startTime, "hours", true)
-          );
-        }
-      }
+export function requestFinaliseResults() {
+  return {
+    type: REQUEST_FINALISE_RESULTS
+  };
+}
 
-      const wage =
-        standardHours * paymentInfo.rates.standard +
-        overtimeHours * paymentInfo.rates.overtime;
+export function receiveFinaliseResults() {
+  return {
+    type: RECEIVE_FINALISE_RESULTS
+  };
+}
 
-      if (wage > 0) {
-        batch.set(newWageRef, {
-          coachID,
-          institutionID,
-          wage,
-          currency: "ZAR",
-          date: eventInfo.requiredInfo.times.start,
-          hours: {
-            standard: standardHours,
-            overtime: overtimeHours
-          },
-          rates: paymentInfo.rates,
-          title: eventInfo.requiredInfo.title,
-          type: "HOURLY"
-        });
-      }
+export function errorFinalisingResults(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_FINALISING_RESULTS,
+    payload: {
+      error
     }
+  };
+}
 
-    return batch
-      .commit()
-      .then(() => dispatch(receiveApproveHours()))
-      .catch(error => dispatch(errorApprovingHours(error)));
+export function finaliseResults(eventID, teamID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestFinaliseResults());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    return eventRef
+      .update({
+        [`teams.${teamID}.resultsStatus`]: "FINALISED"
+      })
+      .then(() => dispatch(receiveFinaliseResults()))
+      .catch(error => dispatch(errorFinalisingResults(error)));
+  };
+}
+
+export function requestEditResult() {
+  return {
+    type: REQUEST_EDIT_RESULT
+  };
+}
+
+export function receiveEditResult() {
+  return {
+    type: RECEIVE_EDIT_RESULT
+  };
+}
+
+export function errorEdittingResult(error: { code: string, message: string }) {
+  return {
+    type: ERROR_EDITTING_RESULT,
+    payload: {
+      error
+    }
+  };
+}
+
+export function editResult(eventID, teamID, opponentID, newResult) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEditResult());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    return eventRef
+      .update({
+        [`teams.${teamID}.opponents.${opponentID}.commentary`]: newResult.commentary,
+        [`teams.${teamID}.opponents.${opponentID}.ourScore`]: newResult.ourScore,
+        [`teams.${teamID}.opponents.${opponentID}.theirScore`]: newResult.theirScore
+      })
+      .then(() => dispatch(receiveEditResult()))
+      .catch(error => dispatch(errorEdittingResult(error)));
   };
 }

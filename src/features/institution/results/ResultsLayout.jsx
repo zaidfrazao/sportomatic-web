@@ -31,26 +31,6 @@ const styles = theme => ({
     display: "flex",
     justifyContent: "center"
   },
-  awaitingApprovalWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    overflow: "auto",
-    "@media (max-width: 960px)": {
-      display: "block"
-    }
-  },
-  button: {
-    margin: 24,
-    "@media (max-width: 600px)": {
-      width: "calc(100% - 48px)"
-    }
-  },
-  coachName: {
-    margin: 24,
-    width: "calc(100% - 48px)",
-    textAlign: "center"
-  },
   contentWrapper: {
     width: "100%",
     height: "100%",
@@ -66,20 +46,6 @@ const styles = theme => ({
     width: "calc(100% - 24px)",
     maxWidth: 970
   },
-  eventsAwaitingApprovalWrapper: {
-    flexGrow: 1,
-    overflow: "auto"
-  },
-  historyTableWrapper: {
-    flexGrow: 1,
-    display: "flex"
-  },
-  historyWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    overflow: "auto"
-  },
   hoursByDateWrapper: {
     display: "flex",
     flexDirection: "column",
@@ -88,15 +54,6 @@ const styles = theme => ({
   innerWrapper: {
     flexGrow: 1,
     overflow: "auto"
-  },
-  inProgressWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    "@media (max-width: 960px)": {
-      display: "block",
-      overflow: "auto"
-    }
   },
   loaderWrapper: {
     flexGrow: 1,
@@ -111,12 +68,6 @@ const styles = theme => ({
     margin: 24,
     width: "calc(100% - 48px)",
     textAlign: "center"
-  },
-  noEventsAwaitingApprovalWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
   },
   outerWrapper: {
     width: "100%",
@@ -152,21 +103,31 @@ class ResultsLayout extends Component {
 
   componentWillMount() {
     const { userID } = this.props;
-    const { loadTeams, loadEventsByDate } = this.props.actions;
+    const {
+      loadTeams,
+      loadEventsByDate,
+      fetchInstitutionEmblem
+    } = this.props.actions;
 
     if (userID !== "") {
       loadTeams(userID);
       loadEventsByDate(userID);
+      fetchInstitutionEmblem(userID);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { userID, teams } = nextProps;
-    const { loadTeams, loadEventsByDate } = nextProps.actions;
+    const {
+      loadTeams,
+      loadEventsByDate,
+      fetchInstitutionEmblem
+    } = nextProps.actions;
 
     if (userID !== this.props.userID && userID !== "") {
       loadTeams(userID);
       loadEventsByDate(userID);
+      fetchInstitutionEmblem(userID);
     }
 
     if (teams !== this.props.teams) {
@@ -212,9 +173,14 @@ class ResultsLayout extends Component {
       isTablet,
       teams
     } = this.props;
-    const { lastVisible } = this.props.uiConfig;
+    const { lastVisible, institutionEmblemURL } = this.props.uiConfig;
     const { isTeamsLoading, isEventsByDateLoading } = this.props.loadingStatus;
-    const { loadEventsByDate } = this.props.actions;
+    const {
+      loadEventsByDate,
+      startLogging,
+      finaliseResults,
+      editResult
+    } = this.props.actions;
 
     if (isTeamsLoading) {
       return (
@@ -265,6 +231,12 @@ class ResultsLayout extends Component {
                         isTablet={isTablet}
                         eventID={eventID}
                         eventInfo={eventInfo}
+                        institutionEmblemURL={institutionEmblemURL}
+                        actions={{
+                          startLogging,
+                          finaliseResults,
+                          editResult
+                        }}
                       />
                     );
                   })}

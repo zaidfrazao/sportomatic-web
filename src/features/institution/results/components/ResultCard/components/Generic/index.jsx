@@ -4,23 +4,37 @@ import Avatar from "material-ui/Avatar";
 import { grey, green, lightBlue, red } from "material-ui/colors";
 import Button from "material-ui/Button";
 import { Route } from "react-router";
+import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import defaultEmblemURL from "../../../../images/default-emblem-url.png";
 
 const styles = theme => ({
   centerSpace: {
-    width: "10%",
+    flexGrow: 1,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center"
   },
+  commentaryInnerWrapper: {
+    flexGrow: 1,
+    padding: 24
+  },
+  commentaryTextField: {
+    width: "100%"
+  },
+  commentaryWrapper: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    backgroundColor: "white"
+  },
   draw: {
     backgroundColor: lightBlue[500],
     color: grey[50],
-    width: "100%",
-    padding: 24,
+    fontSize: 14,
+    padding: 8,
     textAlign: "center"
   },
   emblems: {
@@ -29,28 +43,7 @@ const styles = theme => ({
     margin: 10,
     height: "auto"
   },
-  goalsWrapper: {
-    width: "15%",
-    padding: 24,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  loss: {
-    backgroundColor: red[500],
-    color: grey[50],
-    width: "100%",
-    padding: 24,
-    textAlign: "center"
-  },
-  pointsWrapper: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "stretch",
-    justifyContent: "space-around"
-  },
-  startButton: {
+  finaliseButton: {
     backgroundColor: green[500],
     color: grey[50],
     width: "100%",
@@ -59,9 +52,78 @@ const styles = theme => ({
       backgroundColor: green[300]
     }
   },
+  goalsWrapper: {
+    width: "40%",
+    padding: 24,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  innerResultWrapper: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "stretch",
+    justifyContent: "center",
+    backgroundColor: "white"
+  },
+  loss: {
+    backgroundColor: red[500],
+    color: grey[50],
+    fontSize: 14,
+    padding: 8,
+    textAlign: "center"
+  },
+  pointNameColumn: {
+    flexGrow: 1,
+    textAlign: "center",
+    padding: 24,
+    backgroundColor: grey[100]
+  },
+  pointsWrapper: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    backgroundColor: "white"
+  },
+  resultWrapper: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column"
+  },
+  subPointColumn: {
+    width: "25%",
+    padding: 24,
+    textAlign: "center",
+    backgroundColor: grey[200]
+  },
+  subPointWrapper: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row"
+  },
+  startButton: {
+    backgroundColor: lightBlue[500],
+    color: grey[50],
+    width: "100%",
+    height: 80,
+    "&:hover": {
+      backgroundColor: lightBlue[300]
+    }
+  },
   teamName: {
     width: "100%",
-    textAlign: "center"
+    textAlign: "center",
+    color: grey[600]
+  },
+  teamNameHeader: {
+    textAlign: "center",
+    color: grey[600],
+    backgroundColor: grey[50],
+    border: `1px solid ${grey[300]}`,
+    padding: 16
   },
   teamNameWrapper: {
     width: "25%",
@@ -69,21 +131,16 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    backgroundColor: grey[100]
   },
   teamsWrapper: {
     width: "calc(100% - 1px)",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: grey[50],
+    alignItems: "center",
+    backgroundColor: grey[200],
     border: `1px solid ${grey[300]}`
-  },
-  unknownResult: {
-    backgroundColor: grey[900],
-    color: grey[50],
-    width: "100%",
-    padding: 24,
-    textAlign: "center"
   },
   viewStatsButton: {
     backgroundColor: grey[200],
@@ -96,36 +153,74 @@ const styles = theme => ({
   win: {
     backgroundColor: green[500],
     color: grey[50],
-    width: "100%",
-    padding: 24,
+    fontSize: 14,
+    padding: 8,
     textAlign: "center"
   },
   wrapper: {
-    width: "100%",
-    margin: "16px 0 "
+    margin: "16px 0"
   }
 });
 
 class Generic extends Component {
-  renderMobile() {
-    return <div />;
+  state = {
+    opponents: {}
+  };
+
+  componentWillMount() {
+    const { opponents } = this.props.ourTeam;
+
+    this.setState({
+      opponents
+    });
   }
 
-  renderDesktop() {
+  componentWillReceiveProps(nextProps) {
+    const { opponents } = nextProps.ourTeam;
+
+    if (opponents !== this.props.ourTeam.opponents) {
+      this.setState({
+        opponents
+      });
+    }
+  }
+
+  updateResult(opponentID, newResult) {
+    const { opponents } = this.state;
+
+    this.setState({
+      opponents: {
+        ...opponents,
+        [opponentID]: newResult
+      }
+    });
+  }
+
+  renderMobile() {
     const { classes, teamID, eventID, resultsStatus } = this.props;
-    const { name, emblemURL, opponents } = this.props.ourTeam;
+    const { name, emblemURL } = this.props.ourTeam;
+    const { startLogging, finaliseResults, editResult } = this.props.actions;
+    const { opponents } = this.state;
 
     return (
       <div key={`result-${teamID}`} className={classes.wrapper}>
+        <Typography
+          type="title"
+          component="p"
+          className={classes.teamNameHeader}
+        >
+          {name}
+        </Typography>
         {_.toPairs(opponents).map(([opponentID, opponentInfo]) => {
-          const { ourScore, theirScore } = this.props;
-          let statusStyle = classes.unknownResult;
-          let resultText = "NO RESULTS LOGGED";
-          if (resultsStatus !== "AWAITING_START") {
-            if (ourScore.total > theirScore.total) {
+          const { ourScore, theirScore } = opponentInfo;
+
+          let statusStyle = "";
+          let resultText = "";
+          if (resultsStatus === "FINALISED") {
+            if (ourScore.totalPoints > theirScore.totalPoints) {
               statusStyle = classes.win;
               resultText = "WIN";
-            } else if (ourScore.total < theirScore.total) {
+            } else if (ourScore.totalPoints < theirScore.totalPoints) {
               statusStyle = classes.loss;
               resultText = "LOSS";
             } else {
@@ -133,12 +228,16 @@ class Generic extends Component {
               resultText = "DRAW";
             }
           }
+
+          const commentary = opponentInfo.commentary
+            ? opponentInfo.commentary
+            : "";
+
           return (
             <div
               key={`result-${teamID}${opponentID}`}
               className={classes.teamsWrapper}
             >
-              <div className={statusStyle}>{resultText}</div>
               <div className={classes.pointsWrapper}>
                 <div className={classes.teamNameWrapper}>
                   <Avatar
@@ -146,42 +245,45 @@ class Generic extends Component {
                     className={classes.emblems}
                   />
                   <Typography
-                    type="title"
+                    type="subheading"
                     component="p"
                     className={classes.teamName}
                   >
                     {name}
                   </Typography>
                 </div>
-                {resultsStatus === "AWAITING_START" && (
-                  <div className={classes.goalsWrapper}>
-                    <Typography type="display2" component="p">
-                      {resultsStatus === "AWAITING_START" ? 0 : ourScore.total}
-                    </Typography>
+                <div className={classes.resultWrapper}>
+                  <div className={statusStyle}>{resultText}</div>
+                  <div className={classes.innerResultWrapper}>
+                    {resultsStatus !== "AWAITING_START" && (
+                      <div className={classes.goalsWrapper}>
+                        <Typography type="display2" component="p">
+                          {ourScore.totalPoints}
+                        </Typography>
+                      </div>
+                    )}
+                    <div className={classes.centerSpace}>
+                      <Typography
+                        type="display1"
+                        component="p"
+                        className={classes.teamName}
+                      >
+                        {resultsStatus === "AWAITING_START" ? "vs" : "-"}
+                      </Typography>
+                    </div>
+                    {resultsStatus !== "AWAITING_START" && (
+                      <div className={classes.goalsWrapper}>
+                        <Typography type="display2" component="p">
+                          {theirScore.totalPoints}
+                        </Typography>
+                      </div>
+                    )}
                   </div>
-                )}
-                <div className={classes.centerSpace}>
-                  <Typography
-                    type="display1"
-                    component="p"
-                    className={classes.teamName}
-                  >
-                    vs
-                  </Typography>
                 </div>
-                {resultsStatus === "AWAITING_START" && (
-                  <div className={classes.goalsWrapper}>
-                    <Typography type="display2" component="p">
-                      {resultsStatus === "AWAITING_START"
-                        ? 0
-                        : theirScore.total}
-                    </Typography>
-                  </div>
-                )}
                 <div className={classes.teamNameWrapper}>
                   <Avatar src={defaultEmblemURL} className={classes.emblems} />
                   <Typography
-                    type="title"
+                    type="subheading"
                     component="p"
                     className={classes.teamName}
                   >
@@ -189,26 +291,381 @@ class Generic extends Component {
                   </Typography>
                 </div>
               </div>
+              {resultsStatus === "AWAITING_FINALISE" && (
+                <div className={classes.subPointWrapper}>
+                  <div className={classes.subPointColumn}>
+                    <TextField
+                      type="number"
+                      value={ourScore.requiredPoints.points}
+                      onChange={e =>
+                        this.updateResult(opponentID, {
+                          commentary,
+                          ourScore: {
+                            totalPoints: parseInt(e.target.value, 10),
+                            requiredPoints: {
+                              points: parseInt(e.target.value, 10)
+                            }
+                          },
+                          theirScore,
+                          name: opponentInfo.name,
+                          isSignedUp: opponentInfo.isSignedUp
+                        })}
+                      onBlur={() =>
+                        editResult(eventID, teamID, opponentID, {
+                          commentary,
+                          ourScore,
+                          theirScore
+                        })}
+                    />
+                  </div>
+                  <div className={classes.pointNameColumn}>
+                    <Typography type="subheading" component="p">
+                      Score
+                    </Typography>
+                  </div>
+                  <div className={classes.subPointColumn}>
+                    <TextField
+                      type="number"
+                      value={theirScore.requiredPoints.points}
+                      onChange={e =>
+                        this.updateResult(opponentID, {
+                          commentary,
+                          ourScore,
+                          theirScore: {
+                            totalPoints: parseInt(e.target.value, 10),
+                            requiredPoints: {
+                              points: parseInt(e.target.value, 10)
+                            }
+                          },
+                          name: opponentInfo.name,
+                          isSignedUp: opponentInfo.isSignedUp
+                        })}
+                      onBlur={() =>
+                        editResult(eventID, teamID, opponentID, {
+                          commentary,
+                          ourScore,
+                          theirScore
+                        })}
+                    />
+                  </div>
+                </div>
+              )}
+              {resultsStatus === "AWAITING_FINALISE" && (
+                <div className={classes.commentaryWrapper}>
+                  <div className={classes.commentaryInnerWrapper}>
+                    <TextField
+                      className={classes.commentaryTextField}
+                      onChange={e =>
+                        this.updateResult(opponentID, {
+                          commentary: e.target.value,
+                          ourScore,
+                          theirScore,
+                          name: opponentInfo.name,
+                          isSignedUp: opponentInfo.isSignedUp
+                        })}
+                      onBlur={() =>
+                        editResult(eventID, teamID, opponentID, {
+                          commentary,
+                          ourScore,
+                          theirScore
+                        })}
+                      label="Additional commentary"
+                      value={commentary}
+                      multiline
+                      rows={3}
+                      placeholder="Optional"
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
-        <Button raised className={classes.startButton}>
-          log results
-        </Button>
-        <Route
-          render={({ history }) => (
-            <Button
-              raised
-              dense
-              color="contrast"
-              className={classes.viewStatsButton}
-              onClick={() =>
-                history.push(`/admin/results/${teamID}/${eventID}`)}
+        {resultsStatus === "AWAITING_START" && (
+          <Button
+            raised
+            className={classes.startButton}
+            onClick={() =>
+              startLogging(
+                eventID,
+                teamID,
+                {
+                  totalPoints: 0,
+                  requiredPoints: {
+                    points: 0
+                  }
+                },
+                _.keys(opponents)
+              )}
+          >
+            Log results
+          </Button>
+        )}
+        {resultsStatus === "AWAITING_FINALISE" && (
+          <Button
+            raised
+            className={classes.finaliseButton}
+            onClick={() => finaliseResults(eventID, teamID)}
+          >
+            Finalise results
+          </Button>
+        )}
+        {resultsStatus === "FINALISED" && (
+          <Route
+            render={({ history }) => (
+              <Button
+                raised
+                dense
+                color="contrast"
+                className={classes.viewStatsButton}
+                onClick={() =>
+                  history.push(`/admin/results/${teamID}/${eventID}`)}
+              >
+                View stats & commentary
+              </Button>
+            )}
+          />
+        )}
+      </div>
+    );
+  }
+
+  renderDesktop() {
+    const { classes, teamID, eventID, resultsStatus } = this.props;
+    const { name, emblemURL } = this.props.ourTeam;
+    const { startLogging, finaliseResults, editResult } = this.props.actions;
+    const { opponents } = this.state;
+
+    return (
+      <div key={`result-${teamID}`} className={classes.wrapper}>
+        <Typography
+          type="title"
+          component="p"
+          className={classes.teamNameHeader}
+        >
+          {name}
+        </Typography>
+        {_.toPairs(opponents).map(([opponentID, opponentInfo]) => {
+          const { ourScore, theirScore } = opponentInfo;
+
+          let statusStyle = "";
+          let resultText = "";
+          if (resultsStatus === "FINALISED") {
+            if (ourScore.totalPoints > theirScore.totalPoints) {
+              statusStyle = classes.win;
+              resultText = "WIN";
+            } else if (ourScore.totalPoints < theirScore.totalPoints) {
+              statusStyle = classes.loss;
+              resultText = "LOSS";
+            } else {
+              statusStyle = classes.draw;
+              resultText = "DRAW";
+            }
+          }
+
+          const commentary = opponentInfo.commentary
+            ? opponentInfo.commentary
+            : "";
+
+          return (
+            <div
+              key={`result-${teamID}${opponentID}`}
+              className={classes.teamsWrapper}
             >
-              View stats
-            </Button>
-          )}
-        />
+              <div className={classes.pointsWrapper}>
+                <div className={classes.teamNameWrapper}>
+                  <Avatar
+                    src={emblemURL === "" ? defaultEmblemURL : emblemURL}
+                    className={classes.emblems}
+                  />
+                  <Typography
+                    type="subheading"
+                    component="p"
+                    className={classes.teamName}
+                  >
+                    {name}
+                  </Typography>
+                </div>
+                <div className={classes.resultWrapper}>
+                  <div className={statusStyle}>{resultText}</div>
+                  <div className={classes.innerResultWrapper}>
+                    {resultsStatus !== "AWAITING_START" && (
+                      <div className={classes.goalsWrapper}>
+                        <Typography type="display2" component="p">
+                          {ourScore.totalPoints}
+                        </Typography>
+                      </div>
+                    )}
+                    <div className={classes.centerSpace}>
+                      <Typography
+                        type="display1"
+                        component="p"
+                        className={classes.teamName}
+                      >
+                        {resultsStatus === "AWAITING_START" ? "vs" : "-"}
+                      </Typography>
+                    </div>
+                    {resultsStatus !== "AWAITING_START" && (
+                      <div className={classes.goalsWrapper}>
+                        <Typography type="display2" component="p">
+                          {theirScore.totalPoints}
+                        </Typography>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.teamNameWrapper}>
+                  <Avatar src={defaultEmblemURL} className={classes.emblems} />
+                  <Typography
+                    type="subheading"
+                    component="p"
+                    className={classes.teamName}
+                  >
+                    {opponentInfo.name === "" ? "Unknown" : opponentInfo.name}
+                  </Typography>
+                </div>
+              </div>
+              {resultsStatus === "AWAITING_FINALISE" && (
+                <div className={classes.subPointWrapper}>
+                  <div className={classes.subPointColumn}>
+                    <TextField
+                      type="number"
+                      value={ourScore.requiredPoints.points}
+                      onChange={e =>
+                        this.updateResult(opponentID, {
+                          commentary,
+                          ourScore: {
+                            totalPoints: parseInt(e.target.value, 10),
+                            requiredPoints: {
+                              points: parseInt(e.target.value, 10)
+                            }
+                          },
+                          theirScore,
+                          name: opponentInfo.name,
+                          isSignedUp: opponentInfo.isSignedUp
+                        })}
+                      onBlur={() =>
+                        editResult(eventID, teamID, opponentID, {
+                          commentary,
+                          ourScore,
+                          theirScore
+                        })}
+                    />
+                  </div>
+                  <div className={classes.pointNameColumn}>
+                    <Typography type="subheading" component="p">
+                      Score
+                    </Typography>
+                  </div>
+                  <div className={classes.subPointColumn}>
+                    <TextField
+                      type="number"
+                      value={theirScore.requiredPoints.points}
+                      onChange={e =>
+                        this.updateResult(opponentID, {
+                          commentary,
+                          ourScore,
+                          theirScore: {
+                            totalPoints: parseInt(e.target.value, 10),
+                            requiredPoints: {
+                              points: parseInt(e.target.value, 10)
+                            }
+                          },
+                          name: opponentInfo.name,
+                          isSignedUp: opponentInfo.isSignedUp
+                        })}
+                      onBlur={() =>
+                        editResult(eventID, teamID, opponentID, {
+                          commentary,
+                          ourScore,
+                          theirScore
+                        })}
+                    />
+                  </div>
+                </div>
+              )}
+              {resultsStatus === "AWAITING_FINALISE" && (
+                <div className={classes.commentaryWrapper}>
+                  <div className={classes.commentaryInnerWrapper}>
+                    <TextField
+                      className={classes.commentaryTextField}
+                      onChange={e =>
+                        this.updateResult(opponentID, {
+                          commentary: e.target.value,
+                          ourScore,
+                          theirScore,
+                          name: opponentInfo.name,
+                          isSignedUp: opponentInfo.isSignedUp
+                        })}
+                      onBlur={() =>
+                        editResult(eventID, teamID, opponentID, {
+                          commentary,
+                          ourScore,
+                          theirScore
+                        })}
+                      label="Additional commentary"
+                      value={commentary}
+                      multiline
+                      rows={3}
+                      placeholder="Optional"
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+        {resultsStatus === "AWAITING_START" && (
+          <Button
+            raised
+            className={classes.startButton}
+            onClick={() =>
+              startLogging(
+                eventID,
+                teamID,
+                {
+                  totalPoints: 0,
+                  requiredPoints: {
+                    points: 0
+                  }
+                },
+                _.keys(opponents)
+              )}
+          >
+            Log results
+          </Button>
+        )}
+        {resultsStatus === "AWAITING_FINALISE" && (
+          <Button
+            raised
+            className={classes.finaliseButton}
+            onClick={() => finaliseResults(eventID, teamID)}
+          >
+            Finalise results
+          </Button>
+        )}
+        {resultsStatus === "FINALISED" && (
+          <Route
+            render={({ history }) => (
+              <Button
+                raised
+                dense
+                color="contrast"
+                className={classes.viewStatsButton}
+                onClick={() =>
+                  history.push(`/admin/results/${teamID}/${eventID}`)}
+              >
+                View stats & commentary
+              </Button>
+            )}
+          />
+        )}
       </div>
     );
   }
