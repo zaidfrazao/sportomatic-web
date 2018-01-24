@@ -19,6 +19,7 @@ import BannerAd from "../../../components/BannerAd";
 import TeamsList from "./components/TeamsList";
 import FiltersToolbar from "./components/FiltersToolbar";
 import ResultCard from "./components/ResultCard";
+import ResultInfo from "./components/ResultInfo";
 import LargeMobileBannerAd from "../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../components/LeaderboardAd";
 
@@ -74,6 +75,10 @@ const styles = theme => ({
     height: "100%",
     display: "flex",
     flexDirection: "column"
+  },
+  resultInfoWrapper: {
+    maxWidth: 970,
+    margin: "0 auto"
   },
   root: {
     width: "100%",
@@ -397,7 +402,7 @@ class ResultsLayout extends Component {
       editResult,
       finaliseResults
     } = this.props.actions;
-    const { teamID } = this.props.match.params;
+    const { teamID, eventID } = this.props.match.params;
     const { isEventsByTeamLoading, isTeamsLoading } = this.props.loadingStatus;
 
     const ad = this.createAd();
@@ -422,81 +427,153 @@ class ResultsLayout extends Component {
     });
 
     if (teamID) {
-      return (
-        <div className={classes.outerWrapper}>
-          <AppBar position="static" color="default">
-            {isTeamsLoading || !teams[teamID] ? (
-              <Typography className={classes.name} type="title" component="h2">
-                Loading...
-              </Typography>
-            ) : (
-              <Typography className={classes.name} type="title" component="h2">
-                {teams[teamID].info.name}
-              </Typography>
-            )}
-          </AppBar>
-          <div className={classes.innerWrapper}>
-            <Toolbar className={classes.actionsBar}>
-              <Route
-                render={({ history }) => (
-                  <Tooltip title="Back" placement="bottom">
-                    <IconButton
-                      aria-label="back"
-                      onClick={() => {
-                        history.goBack();
-                      }}
-                    >
-                      <BackIcon />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              />
-            </Toolbar>
-            <div className={classes.adWrapper}>{ad}</div>
-            <div className={classes.hoursByDateWrapper}>
-              {_.toPairs(groupedByDate).map(([date, events]) => {
-                const currentDate = moment(new Date(Date.now())).format(
-                  "YYYY-MM-DD"
-                );
-                return (
-                  <Paper className={classes.dateWrapper} key={date}>
-                    <div className={classes.dateHeader}>
-                      {date === currentDate
-                        ? "Today"
-                        : moment(date).format("dddd, MMMM Do YYYY")}
-                    </div>
-                    <div>
-                      {_.toPairs(events).map(([eventID, eventInfo]) => {
-                        return (
-                          <ResultCard
-                            key={`results-${eventID}`}
-                            teams={teams}
-                            isMobile={isMobile}
-                            isTablet={isTablet}
-                            eventID={eventID}
-                            eventInfo={eventInfo}
-                            institutionEmblemURL={institutionEmblemURL}
-                            actions={{
-                              startLogging,
-                              finaliseResults,
-                              editResult
-                            }}
-                          />
-                        );
-                      })}
-                    </div>
-                  </Paper>
-                );
-              })}
-              {isEventsByTeamLoading && (
-                <div className={classes.loaderWrapper}>
-                  <CircularProgress />
-                </div>
+      if (eventID) {
+        return (
+          <div className={classes.outerWrapper}>
+            <AppBar position="static" color="default">
+              {isEventsByTeamLoading || !eventsByTeam[eventID] ? (
+                <Typography
+                  className={classes.name}
+                  type="title"
+                  component="h2"
+                >
+                  Loading...
+                </Typography>
+              ) : (
+                <Typography
+                  className={classes.name}
+                  type="title"
+                  component="h2"
+                >
+                  {eventsByTeam[eventID].requiredInfo.title}
+                </Typography>
               )}
+            </AppBar>
+            <div className={classes.innerWrapper}>
+              <Toolbar className={classes.actionsBar}>
+                <Route
+                  render={({ history }) => (
+                    <Tooltip title="Back" placement="bottom">
+                      <IconButton
+                        aria-label="back"
+                        onClick={() => {
+                          history.goBack();
+                        }}
+                      >
+                        <BackIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                />
+              </Toolbar>
+              <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.resultInfoWrapper}>
+                {isEventsByTeamLoading ||
+                isTeamsLoading ||
+                !eventsByTeam[eventID] ? (
+                  <div className={classes.loaderWrapper}>
+                    <CircularProgress />
+                  </div>
+                ) : (
+                  <ResultInfo
+                    teamID={teamID}
+                    teamInfo={teams[teamID]}
+                    teamEventInfo={eventsByTeam[eventID].teams[teamID]}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    eventID={eventID}
+                    institutionEmblemURL={institutionEmblemURL}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      );
+        );
+      } else {
+        return (
+          <div className={classes.outerWrapper}>
+            <AppBar position="static" color="default">
+              {isTeamsLoading || !teams[teamID] ? (
+                <Typography
+                  className={classes.name}
+                  type="title"
+                  component="h2"
+                >
+                  Loading...
+                </Typography>
+              ) : (
+                <Typography
+                  className={classes.name}
+                  type="title"
+                  component="h2"
+                >
+                  {teams[teamID].info.name}
+                </Typography>
+              )}
+            </AppBar>
+            <div className={classes.innerWrapper}>
+              <Toolbar className={classes.actionsBar}>
+                <Route
+                  render={({ history }) => (
+                    <Tooltip title="Back" placement="bottom">
+                      <IconButton
+                        aria-label="back"
+                        onClick={() => {
+                          history.goBack();
+                        }}
+                      >
+                        <BackIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                />
+              </Toolbar>
+              <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.hoursByDateWrapper}>
+                {_.toPairs(groupedByDate).map(([date, events]) => {
+                  const currentDate = moment(new Date(Date.now())).format(
+                    "YYYY-MM-DD"
+                  );
+                  return (
+                    <Paper className={classes.dateWrapper} key={date}>
+                      <div className={classes.dateHeader}>
+                        {date === currentDate
+                          ? "Today"
+                          : moment(date).format("dddd, MMMM Do YYYY")}
+                      </div>
+                      <div>
+                        {_.toPairs(events).map(([eventID, eventInfo]) => {
+                          return (
+                            <ResultCard
+                              key={`results-${eventID}`}
+                              teams={teams}
+                              isMobile={isMobile}
+                              isTablet={isTablet}
+                              eventID={eventID}
+                              eventInfo={eventInfo}
+                              institutionEmblemURL={institutionEmblemURL}
+                              actions={{
+                                startLogging,
+                                finaliseResults,
+                                editResult
+                              }}
+                            />
+                          );
+                        })}
+                      </div>
+                    </Paper>
+                  );
+                })}
+                {isEventsByTeamLoading && (
+                  <div className={classes.loaderWrapper}>
+                    <CircularProgress />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      }
     } else {
       return (
         <div className={classes.root}>
