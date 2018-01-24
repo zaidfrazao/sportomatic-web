@@ -128,6 +128,7 @@ class CustomAppBar extends Component {
           </Typography>
           <div className={classes.rightButtons}>
             <NotificationsTray
+              isMobile={isMobile}
               readNotifications={readNotifications}
               unreadNotifications={unreadNotifications}
               isLoading={isNotificationsLoading}
