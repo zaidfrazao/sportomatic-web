@@ -294,7 +294,7 @@ class EventsList extends Component {
                 className={classes.backButton}
                 onClick={() => updateView("SCHEDULE")}
               >
-                Back to calendar
+                View calendar
               </Button>
             )}
           />
