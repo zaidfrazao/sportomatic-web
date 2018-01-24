@@ -132,6 +132,8 @@ function eventsByDateReducer(state = {}, action = {}) {
 
 function eventsByTeamReducer(state = {}, action = {}) {
   switch (action.type) {
+    case REQUEST_EVENTS_BY_TEAM:
+      return {};
     case RECEIVE_EVENTS_BY_TEAM:
       return action.payload.events;
     default:

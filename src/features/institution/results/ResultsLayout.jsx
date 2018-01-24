@@ -103,31 +103,45 @@ class ResultsLayout extends Component {
 
   componentWillMount() {
     const { userID } = this.props;
+    const { teamID } = this.props.match.params;
     const {
       loadTeams,
       loadEventsByDate,
-      fetchInstitutionEmblem
+      fetchInstitutionEmblem,
+      loadEventsByTeam
     } = this.props.actions;
 
     if (userID !== "") {
       loadTeams(userID);
       loadEventsByDate(userID);
       fetchInstitutionEmblem(userID);
+      if (teamID) {
+        loadEventsByTeam(userID, teamID);
+      }
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { userID, teams } = nextProps;
+    const { teamID } = nextProps.match.params;
     const {
       loadTeams,
       loadEventsByDate,
+      loadEventsByTeam,
       fetchInstitutionEmblem
     } = nextProps.actions;
+
+    if (teamID !== this.props.match.params.teamID && teamID) {
+      loadEventsByTeam(userID, teamID);
+    }
 
     if (userID !== this.props.userID && userID !== "") {
       loadTeams(userID);
       loadEventsByDate(userID);
       fetchInstitutionEmblem(userID);
+      if (teamID) {
+        loadEventsByTeam(userID, teamID);
+      }
     }
 
     if (teams !== this.props.teams) {
@@ -371,21 +385,41 @@ class ResultsLayout extends Component {
       isMobile,
       isTablet,
       eventsByTeam,
-      userID,
       teams,
       filters
     } = this.props;
-    const { currentTab } = this.props.uiConfig;
+    const { currentTab, institutionEmblemURL } = this.props.uiConfig;
     const {
       updateTab,
-      loadEventsByTeam,
       updateSearch,
-      applyFilters
+      applyFilters,
+      startLogging,
+      editResult,
+      finaliseResults
     } = this.props.actions;
     const { teamID } = this.props.match.params;
     const { isEventsByTeamLoading, isTeamsLoading } = this.props.loadingStatus;
 
     const ad = this.createAd();
+
+    let groupedByDate = {};
+    _.toPairs(eventsByTeam).map(([id, info]) => {
+      const hoursDate = moment(info.requiredInfo.times.start).format(
+        "YYYY-MM-DD"
+      );
+      if (_.keys(info.teams).length > 0) {
+        if (groupedByDate[hoursDate]) {
+          groupedByDate[hoursDate] = {
+            ...groupedByDate[hoursDate],
+            [id]: info
+          };
+        } else {
+          groupedByDate[hoursDate] = {
+            [id]: info
+          };
+        }
+      }
+    });
 
     if (teamID) {
       return (
@@ -419,18 +453,47 @@ class ResultsLayout extends Component {
               />
             </Toolbar>
             <div className={classes.adWrapper}>{ad}</div>
-            {/*<HoursHistory
-              institutionID={userID}
-              isLoading={isEventsByLoading}
-              isMobile={isMobile}
-              isTablet={isTablet}
-              events={eventsByCoach}
-              coachID={coachID}
-              minDate={new Date(2017, 11)}
-              actions={{
-                loadEvents: loadEventsByCoach
-              }}
-            />*/}
+            <div className={classes.hoursByDateWrapper}>
+              {_.toPairs(groupedByDate).map(([date, events]) => {
+                const currentDate = moment(new Date(Date.now())).format(
+                  "YYYY-MM-DD"
+                );
+                return (
+                  <Paper className={classes.dateWrapper} key={date}>
+                    <div className={classes.dateHeader}>
+                      {date === currentDate
+                        ? "Today"
+                        : moment(date).format("dddd, MMMM Do YYYY")}
+                    </div>
+                    <div>
+                      {_.toPairs(events).map(([eventID, eventInfo]) => {
+                        return (
+                          <ResultCard
+                            key={`results-${eventID}`}
+                            teams={teams}
+                            isMobile={isMobile}
+                            isTablet={isTablet}
+                            eventID={eventID}
+                            eventInfo={eventInfo}
+                            institutionEmblemURL={institutionEmblemURL}
+                            actions={{
+                              startLogging,
+                              finaliseResults,
+                              editResult
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                  </Paper>
+                );
+              })}
+              {isEventsByTeamLoading && (
+                <div className={classes.loaderWrapper}>
+                  <CircularProgress />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       );
