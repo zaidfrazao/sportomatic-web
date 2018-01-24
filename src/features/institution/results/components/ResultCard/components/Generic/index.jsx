@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import Avatar from "material-ui/Avatar";
-import { grey, green, lightBlue, red } from "material-ui/colors";
 import Button from "material-ui/Button";
+import { grey, green, lightBlue, red } from "material-ui/colors";
 import { Route } from "react-router";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
@@ -34,14 +34,22 @@ const styles = theme => ({
     backgroundColor: lightBlue[500],
     color: grey[50],
     fontSize: 14,
-    padding: 8,
-    textAlign: "center"
+    padding: "8px 0",
+    textAlign: "center",
+    "@media (max-width: 600px)": {
+      width: "100%"
+    }
   },
   emblems: {
     width: "80%",
     maxWidth: 100,
     margin: 10,
-    height: "auto"
+    height: "auto",
+    "@media (max-width: 600px)": {
+      width: 40,
+      margin: 10,
+      height: "auto"
+    }
   },
   finaliseButton: {
     backgroundColor: green[500],
@@ -58,7 +66,12 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    "@media (max-width: 600px)": {
+      width: "auto",
+      padding: 16,
+      display: "block"
+    }
   },
   innerResultWrapper: {
     flex: 1,
@@ -72,8 +85,11 @@ const styles = theme => ({
     backgroundColor: red[500],
     color: grey[50],
     fontSize: 14,
-    padding: 8,
-    textAlign: "center"
+    padding: "8px 0",
+    textAlign: "center",
+    "@media (max-width: 600px)": {
+      width: "100%"
+    }
   },
   pointNameColumn: {
     flexGrow: 1,
@@ -85,11 +101,13 @@ const styles = theme => ({
     width: "100%",
     display: "flex",
     flexDirection: "row",
-    flexWrap: "wrap",
-    backgroundColor: "white"
+    backgroundColor: "white",
+    "@media (max-width: 600px)": {
+      flexDirection: "column"
+    }
   },
   resultWrapper: {
-    flex: 1,
+    flexGrow: 1,
     display: "flex",
     flexDirection: "column"
   },
@@ -116,7 +134,11 @@ const styles = theme => ({
   teamName: {
     width: "100%",
     textAlign: "center",
-    color: grey[600]
+    color: grey[600],
+    "@media (max-width: 600px)": {
+      textAlign: "left",
+      flexGrow: 1
+    }
   },
   teamNameHeader: {
     textAlign: "center",
@@ -132,7 +154,14 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: grey[100]
+    backgroundColor: grey[100],
+    "@media (max-width: 600px)": {
+      width: "100%",
+      padding: "8px 0",
+      flexDirection: "row",
+      justifyContent: "flex-start",
+      backgroundColor: "white"
+    }
   },
   teamsWrapper: {
     width: "calc(100% - 1px)",
@@ -154,8 +183,11 @@ const styles = theme => ({
     backgroundColor: green[500],
     color: grey[50],
     fontSize: 14,
-    padding: 8,
-    textAlign: "center"
+    padding: "8px 0",
+    textAlign: "center",
+    "@media (max-width: 600px)": {
+      width: "100%"
+    }
   },
   wrapper: {
     margin: "16px 0"
@@ -238,6 +270,7 @@ class Generic extends Component {
               key={`result-${teamID}${opponentID}`}
               className={classes.teamsWrapper}
             >
+              <div className={statusStyle}>{resultText}</div>
               <div className={classes.pointsWrapper}>
                 <div className={classes.teamNameWrapper}>
                   <Avatar
@@ -251,34 +284,13 @@ class Generic extends Component {
                   >
                     {name}
                   </Typography>
-                </div>
-                <div className={classes.resultWrapper}>
-                  <div className={statusStyle}>{resultText}</div>
-                  <div className={classes.innerResultWrapper}>
-                    {resultsStatus !== "AWAITING_START" && (
-                      <div className={classes.goalsWrapper}>
-                        <Typography type="display2" component="p">
-                          {ourScore.totalPoints}
-                        </Typography>
-                      </div>
-                    )}
-                    <div className={classes.centerSpace}>
-                      <Typography
-                        type="display1"
-                        component="p"
-                        className={classes.teamName}
-                      >
-                        {resultsStatus === "AWAITING_START" ? "vs" : "-"}
+                  {resultsStatus !== "AWAITING_START" && (
+                    <div className={classes.goalsWrapper}>
+                      <Typography type="title" component="p">
+                        {ourScore.totalPoints}
                       </Typography>
                     </div>
-                    {resultsStatus !== "AWAITING_START" && (
-                      <div className={classes.goalsWrapper}>
-                        <Typography type="display2" component="p">
-                          {theirScore.totalPoints}
-                        </Typography>
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
                 <div className={classes.teamNameWrapper}>
                   <Avatar src={defaultEmblemURL} className={classes.emblems} />
@@ -289,6 +301,13 @@ class Generic extends Component {
                   >
                     {opponentInfo.name === "" ? "Unknown" : opponentInfo.name}
                   </Typography>
+                  {resultsStatus !== "AWAITING_START" && (
+                    <div className={classes.goalsWrapper}>
+                      <Typography type="title" component="p">
+                        {theirScore.totalPoints}
+                      </Typography>
+                    </div>
+                  )}
                 </div>
               </div>
               {resultsStatus === "AWAITING_FINALISE" && (
@@ -297,19 +316,27 @@ class Generic extends Component {
                     <TextField
                       type="number"
                       value={ourScore.requiredPoints.points}
-                      onChange={e =>
+                      inputProps={{
+                        min: 0
+                      }}
+                      onChange={e => {
+                        const newValue =
+                          e.target.value === ""
+                            ? 0
+                            : parseInt(e.target.value, 10);
                         this.updateResult(opponentID, {
                           commentary,
                           ourScore: {
-                            totalPoints: parseInt(e.target.value, 10),
+                            totalPoints: newValue,
                             requiredPoints: {
-                              points: parseInt(e.target.value, 10)
+                              points: newValue
                             }
                           },
                           theirScore,
                           name: opponentInfo.name,
                           isSignedUp: opponentInfo.isSignedUp
-                        })}
+                        });
+                      }}
                       onBlur={() =>
                         editResult(eventID, teamID, opponentID, {
                           commentary,
@@ -327,19 +354,27 @@ class Generic extends Component {
                     <TextField
                       type="number"
                       value={theirScore.requiredPoints.points}
-                      onChange={e =>
+                      inputProps={{
+                        min: 0
+                      }}
+                      onChange={e => {
+                        const newValue =
+                          e.target.value === ""
+                            ? 0
+                            : parseInt(e.target.value, 10);
                         this.updateResult(opponentID, {
                           commentary,
                           ourScore,
                           theirScore: {
-                            totalPoints: parseInt(e.target.value, 10),
+                            totalPoints: newValue,
                             requiredPoints: {
-                              points: parseInt(e.target.value, 10)
+                              points: newValue
                             }
                           },
                           name: opponentInfo.name,
                           isSignedUp: opponentInfo.isSignedUp
-                        })}
+                        });
+                      }}
                       onBlur={() =>
                         editResult(eventID, teamID, opponentID, {
                           commentary,
@@ -534,19 +569,27 @@ class Generic extends Component {
                     <TextField
                       type="number"
                       value={ourScore.requiredPoints.points}
-                      onChange={e =>
+                      inputProps={{
+                        min: 0
+                      }}
+                      onChange={e => {
+                        const newValue =
+                          e.target.value === ""
+                            ? 0
+                            : parseInt(e.target.value, 10);
                         this.updateResult(opponentID, {
                           commentary,
                           ourScore: {
-                            totalPoints: parseInt(e.target.value, 10),
+                            totalPoints: newValue,
                             requiredPoints: {
-                              points: parseInt(e.target.value, 10)
+                              points: newValue
                             }
                           },
                           theirScore,
                           name: opponentInfo.name,
                           isSignedUp: opponentInfo.isSignedUp
-                        })}
+                        });
+                      }}
                       onBlur={() =>
                         editResult(eventID, teamID, opponentID, {
                           commentary,
@@ -564,19 +607,27 @@ class Generic extends Component {
                     <TextField
                       type="number"
                       value={theirScore.requiredPoints.points}
-                      onChange={e =>
+                      inputProps={{
+                        min: 0
+                      }}
+                      onChange={e => {
+                        const newValue =
+                          e.target.value === ""
+                            ? 0
+                            : parseInt(e.target.value, 10);
                         this.updateResult(opponentID, {
                           commentary,
                           ourScore,
                           theirScore: {
-                            totalPoints: parseInt(e.target.value, 10),
+                            totalPoints: newValue,
                             requiredPoints: {
-                              points: parseInt(e.target.value, 10)
+                              points: newValue
                             }
                           },
                           name: opponentInfo.name,
                           isSignedUp: opponentInfo.isSignedUp
-                        })}
+                        });
+                      }}
                       onBlur={() =>
                         editResult(eventID, teamID, opponentID, {
                           commentary,
