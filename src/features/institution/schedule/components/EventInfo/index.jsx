@@ -350,25 +350,10 @@ class EventInfo extends Component {
       !isInfoLoading &&
       info &&
       _.toPairs(info.teams).map(([id, teamInfo]) => {
+        const showResults = teamInfo.resultsStatus === "FINALISED";
+        const hasMultipleOpponents = _.keys(teamInfo.opponents).length > 1;
         if (teamInfo) {
           let scores = [{ id, score: 0 }];
-          const hasMultipleOpponents = _.keys(teamInfo.opponents).length > 1;
-          _.toPairs(teamInfo.opponents).map(([opponentID, opponentInfo]) => {
-            scores[0].score = opponentInfo.ourScore.totalPoints;
-            scores.push({
-              id: opponentID,
-              score: opponentInfo.theirScore.totalPoints
-            });
-          });
-          scores.sort((scoreA, scoreB) => {
-            if (scoreA.score > scoreB.score) {
-              return -1;
-            } else if (scoreA.score < scoreB.score) {
-              return +1;
-            } else {
-              return 0;
-            }
-          });
           let placement = 1;
           let prevScore = scores[0].score;
           const placements = _.fromPairs(
@@ -388,11 +373,30 @@ class EventInfo extends Component {
               }
             })
           );
+
+          if (showResults) {
+            _.toPairs(teamInfo.opponents).map(([opponentID, opponentInfo]) => {
+              scores[0].score = opponentInfo.ourScore.totalPoints;
+              scores.push({
+                id: opponentID,
+                score: opponentInfo.theirScore.totalPoints
+              });
+            });
+            scores.sort((scoreA, scoreB) => {
+              if (scoreA.score > scoreB.score) {
+                return -1;
+              } else if (scoreA.score < scoreB.score) {
+                return +1;
+              } else {
+                return 0;
+              }
+            });
+          }
+
           eventTeams.push(
             <Route
               key={id}
               render={({ history }) => {
-                const showResults = teamInfo.resultsStatus === "FINALISED";
                 const shouldRankTeams =
                   teams[id].info.sport === "Swimming" ||
                   teams[id].info.sport === "Athletics" ||
@@ -481,6 +485,7 @@ class EventInfo extends Component {
                             teamInfo.opponents
                           ).map(([opponentID, opponentInfo]) => {
                             const { ourScore, theirScore } = opponentInfo;
+
                             let resultAvatar = (
                               <Avatar className={classes.unknownResultAvatar}>
                                 ?
@@ -616,27 +621,34 @@ class EventInfo extends Component {
                               }
                             } else {
                               if (showResults) {
-                                if (ourScore > theirScore) {
+                                if (
+                                  ourScore.totalPoints > theirScore.totalPoints
+                                ) {
                                   resultAvatar = (
                                     <Avatar className={classes.winAvatar}>
                                       W
                                     </Avatar>
                                   );
-                                  resultText = `${teams[id].info.name} won`;
-                                } else if (ourScore < theirScore) {
+                                  resultText = `${teams[id].info
+                                    .name} won ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                } else if (
+                                  ourScore.totalPoints < theirScore.totalPoints
+                                ) {
                                   resultAvatar = (
                                     <Avatar className={classes.lossAvatar}>
                                       L
                                     </Avatar>
                                   );
-                                  resultText = `${teams[id].info.name} lost`;
+                                  resultText = `${teams[id].info
+                                    .name} lost ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
                                 } else {
                                   resultAvatar = (
                                     <Avatar className={classes.drawAvatar}>
                                       D
                                     </Avatar>
                                   );
-                                  resultText = `${teams[id].info.name} drew`;
+                                  resultText = `${teams[id].info
+                                    .name} drew ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
                                 }
                               }
 
