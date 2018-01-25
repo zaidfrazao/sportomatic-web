@@ -16,6 +16,7 @@ export const ERROR_SWITCHING_INSTITUTION = `${NAMESPACE}/ERROR_SWITCHING_INSTITU
 export const REQUEST_SWITCH_ROLE = `${NAMESPACE}/REQUEST_SWITCH_ROLE`;
 export const RECEIVE_SWITCH_ROLE = `${NAMESPACE}/RECEIVE_SWITCH_ROLE`;
 export const ERROR_SWITCHING_ROLE = `${NAMESPACE}/ERROR_SWITCHING_ROLE`;
+export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
 
 // Reducers
 
@@ -27,6 +28,8 @@ export const uiConfigInitialState = {
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return uiConfigInitialState;
     case TOGGLE_SIDE_MENU:
       return {
         ...state,
@@ -43,6 +46,8 @@ export const loadingStatusInitialState = {
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return loadingStatusInitialState;
     case REQUEST_INSTITUTION_INFO:
       return {
         ...state,
@@ -61,6 +66,8 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 
 function institutionsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return {};
     case RECEIVE_INSTITUTION_INFO:
       return {
         ...state,

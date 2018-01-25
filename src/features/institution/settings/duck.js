@@ -6,6 +6,7 @@ import { createStructuredSelector } from "reselect";
 const NAMESPACE = "sportomatic-web/admin/settings";
 
 export const TOGGLE_SIDE_MENU = `${NAMESPACE}/TOGGLE_SIDE_MENU`;
+export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
 
 // Reducers
 
@@ -17,6 +18,8 @@ export const uiConfigInitialState = {
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return uiConfigInitialState;
     case TOGGLE_SIDE_MENU:
       return {
         ...state,
@@ -62,6 +65,8 @@ export const accountInfoInitialState = {
 
 function accountInfoReducer(state = accountInfoInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return accountInfoInitialState;
     default:
       return state;
   }

@@ -68,6 +68,7 @@ export const CLOSE_REPLACEMENT_COACH_REMOVAL_MODAL = `${NAMESPACE}/CLOSE_REPLACE
 export const REQUEST_REPLACEMENT_COACH_REMOVAL = `${NAMESPACE}/REQUEST_REPLACEMENT_COACH_REMOVAL`;
 export const RECEIVE_REPLACEMENT_COACH_REMOVAL = `${NAMESPACE}/RECEIVE_REPLACEMENT_COACH_REMOVAL`;
 export const ERROR_REMOVING_REPLACEMENT_COACH = `${NAMESPACE}/ERROR_REMOVING_REPLACEMENT_COACH`;
+export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
 
 // Reducers
 
@@ -81,6 +82,8 @@ export const uiConfigInitialState = {
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return uiConfigInitialState;
     case OPEN_MARK_ABSENT_MODAL:
       return {
         ...state,
@@ -148,6 +151,8 @@ export const dialogsInitialState = {
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return dialogsInitialState;
     case OPEN_REPLACEMENT_COACH_REMOVAL_MODAL:
       return {
         ...state,
@@ -272,6 +277,8 @@ export const filtersInitialState = {
 
 function filterReducer(state = filtersInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return filtersInitialState;
     case APPLY_FILTERS:
       return {
         ...state,
@@ -299,6 +306,8 @@ export const loadingStatusInitialState = {
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return loadingStatusInitialState;
     case REQUEST_ADD_EVENT:
       return {
         ...state,
@@ -395,6 +404,8 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 
 function eventsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return {};
     case RECEIVE_EVENTS:
       return {
         ...state,
@@ -407,6 +418,8 @@ function eventsReducer(state = {}, action = {}) {
 
 function coachesReducer(state = {}, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return {};
     case RECEIVE_COACHES:
       return { ...state, ...action.payload.coaches };
     default:
@@ -416,6 +429,8 @@ function coachesReducer(state = {}, action = {}) {
 
 function managersReducer(state = {}, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return {};
     case RECEIVE_MANAGERS:
       return { ...state, ...action.payload.managers };
     default:
@@ -425,6 +440,8 @@ function managersReducer(state = {}, action = {}) {
 
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return {};
     case RECEIVE_TEAMS:
       return {
         ...state,

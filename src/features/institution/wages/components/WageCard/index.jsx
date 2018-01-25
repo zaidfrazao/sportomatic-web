@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import accounting from "accounting";
-import { grey, orange } from "material-ui/colors";
+import { grey } from "material-ui/colors";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 

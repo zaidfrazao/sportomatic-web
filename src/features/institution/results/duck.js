@@ -31,6 +31,7 @@ export const RECEIVE_INSTITUTION_EMBLEM = `${NAMESPACE}/RECEIVE_INSTITUTION_EMBL
 export const ERROR_FETCHING_INSTITUTION_EMBLEM = `${NAMESPACE}/ERROR_FETCHING_INSTITUTION_EMBLEM`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
+export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
 
 // Reducers
 
@@ -43,6 +44,8 @@ export const uiConfigInitialState = {
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return uiConfigInitialState;
     case UPDATE_TAB:
       return {
         ...state,
@@ -65,6 +68,8 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return {};
     case RECEIVE_TEAMS:
       return action.payload.teams;
     default:
@@ -80,6 +85,8 @@ export const loadingStatusInitialState = {
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return loadingStatusInitialState;
     case REQUEST_TEAMS:
       return {
         ...state,
@@ -120,6 +127,8 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 
 function eventsByDateReducer(state = {}, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return {};
     case RECEIVE_EVENTS_BY_DATE:
       return {
         ...state,
@@ -132,6 +141,8 @@ function eventsByDateReducer(state = {}, action = {}) {
 
 function eventsByTeamReducer(state = {}, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return {};
     case REQUEST_EVENTS_BY_TEAM:
       return {};
     case RECEIVE_EVENTS_BY_TEAM:
@@ -152,6 +163,8 @@ export const filtersInitialState = {
 
 function filterReducer(state = filtersInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return filtersInitialState;
     case APPLY_FILTERS:
       return {
         ...state,

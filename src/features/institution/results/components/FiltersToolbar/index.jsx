@@ -155,8 +155,7 @@ class FiltersToolbar extends Component {
       sports,
       divisions,
       ageGroups,
-      applyFilters,
-      isLoading
+      applyFilters
     } = this.props;
     const {
       searchText,

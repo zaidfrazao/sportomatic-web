@@ -152,8 +152,7 @@ class SignInLayout extends Component {
       email,
       password,
       passwordResetEmail,
-      isLoggedIn,
-      type
+      isLoggedIn
     } = this.props.userInfo;
 
     if (!pathname.includes("sign-in")) {
@@ -161,7 +160,7 @@ class SignInLayout extends Component {
     }
 
     if (isLoggedIn) {
-      return <Redirect to={`/${type.toLowerCase()}/dashboard`} />;
+      return <Redirect to="/admin/dashboard" />;
     }
 
     return (

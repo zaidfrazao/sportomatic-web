@@ -60,7 +60,7 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
       };
     case SIGN_OUT:
       return {
-        ...state,
+        ...uiConfigInitialState,
         isLoggedIn: false
       };
     case TOGGLE_SIDE_MENU:
@@ -90,6 +90,8 @@ export const dialogsInitialState = {
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return dialogsInitialState;
     case OPEN_SETTINGS_ALERT:
       return {
         ...state,
@@ -122,6 +124,8 @@ export const loadingStatusInitialState = {
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return loadingStatusInitialState;
     case REQUEST_READ_NOTIFICATIONS:
     case REQUEST_UNREAD_NOTIFICATIONS:
       return {
@@ -157,6 +161,8 @@ function unreadNotificationsReducer(
   action = {}
 ) {
   switch (action.type) {
+    case SIGN_OUT:
+      return unreadNotificationsInitialState;
     case RECEIVE_UNREAD_NOTIFICATIONS:
       return action.payload.notifications;
     default:
@@ -171,6 +177,8 @@ function readNotificationsReducer(
   action = {}
 ) {
   switch (action.type) {
+    case SIGN_OUT:
+      return readNotificationsInitialState;
     case RECEIVE_READ_NOTIFICATIONS:
       return action.payload.notifications;
     default:

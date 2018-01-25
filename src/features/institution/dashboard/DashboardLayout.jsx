@@ -115,21 +115,32 @@ class DashboardLayout extends Component {
                 }}
                 institutions={_.fromPairs(
                   _.toPairs(institutions).map(([id, info]) => {
+                    let rolesAvailable = {
+                      admin: false,
+                      coach: false,
+                      manager: false
+                    };
+                    if (
+                      accountInfo.institutions &&
+                      accountInfo.institutions[id]
+                    ) {
+                      rolesAvailable = {
+                        admin:
+                          accountInfo.institutions[id].roles.admin ===
+                          "APPROVED",
+                        coach:
+                          accountInfo.institutions[id].roles.coach ===
+                          "APPROVED",
+                        manager:
+                          accountInfo.institutions[id].roles.manager ===
+                          "APPROVED"
+                      };
+                    }
                     return [
                       id,
                       {
                         name: info.name,
-                        rolesAvailable: {
-                          admin:
-                            accountInfo.institutions[id].roles.admin ===
-                            "APPROVED",
-                          coach:
-                            accountInfo.institutions[id].roles.coach ===
-                            "APPROVED",
-                          manager:
-                            accountInfo.institutions[id].roles.manager ===
-                            "APPROVED"
-                        }
+                        rolesAvailable
                       }
                     ];
                   })

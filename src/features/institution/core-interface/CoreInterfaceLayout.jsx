@@ -92,9 +92,9 @@ class CoreInterfaceLayout extends Component {
       loadReadNotifications,
       loadAccountInfo
     } = this.props.actions;
-    const { userID } = this.props.uiConfig;
+    const { userID, isLoggedIn } = this.props.uiConfig;
     initUser();
-    if (userID !== "") {
+    if (userID !== "" && isLoggedIn) {
       loadUnreadNotifications(userID);
       loadReadNotifications(userID);
       loadAccountInfo(userID);
@@ -109,13 +109,13 @@ class CoreInterfaceLayout extends Component {
       loadReadNotifications,
       loadAccountInfo
     } = nextProps.actions;
-    const { userID } = nextProps.uiConfig;
+    const { userID, isLoggedIn } = nextProps.uiConfig;
 
     if (pathname !== this.props.location.pathname) {
       this.updateCoreUI(pathname);
     }
 
-    if (userID !== this.props.uiConfig.userID) {
+    if (userID !== this.props.uiConfig.userID && userID !== "" && isLoggedIn) {
       loadUnreadNotifications(userID);
       loadReadNotifications(userID);
       loadAccountInfo(userID);
@@ -191,7 +191,6 @@ class CoreInterfaceLayout extends Component {
     } = this.props.loadingStatus;
     const {
       isLoggedIn,
-      type,
       accountInfo,
       appBarTitle,
       isSideMenuOpen,
@@ -202,10 +201,6 @@ class CoreInterfaceLayout extends Component {
     const isTablet = windowWidth < 960;
 
     if (!isLoggedIn) {
-      return <Redirect to="/sign-in" />;
-    }
-
-    if (type !== "ADMIN") {
       return <Redirect to="/sign-in" />;
     }
 

@@ -43,6 +43,7 @@ export const REQUEST_EDIT_PERSON = `${NAMESPACE}/REQUEST_EDIT_PERSON`;
 export const RECEIVE_EDIT_PERSON = `${NAMESPACE}/RECEIVE_EDIT_PERSON`;
 export const ERROR_EDITTING_PERSON = `${NAMESPACE}/ERROR_EDITTING_PERSON`;
 export const EDIT_ROLES = `${NAMESPACE}/EDIT_ROLES`;
+export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
 
 // Reducers
 
@@ -54,6 +55,8 @@ export const uiConfigInitialState = {
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return uiConfigInitialState;
     case UPDATE_TAB:
       return {
         ...state,
@@ -78,6 +81,8 @@ export const filtersInitialState = {
 
 function filterReducer(state = filtersInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return filtersInitialState;
     case APPLY_FILTERS:
       return {
         ...state,
@@ -101,6 +106,8 @@ export const dialogsInitialState = {
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return dialogsInitialState;
     case OPEN_DELETE_PERSON_ALERT:
       return {
         ...state,
@@ -150,6 +157,8 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 
 function staffReducer(state = {}, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return {};
     case RECEIVE_COACHES:
       return {
         ...state,
@@ -172,6 +181,8 @@ function staffReducer(state = {}, action = {}) {
 
 function requestsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return {};
     case RECEIVE_COACH_REQUESTS:
       return {
         ...state,
@@ -194,6 +205,8 @@ function requestsReducer(state = {}, action = {}) {
 
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case SIGN_OUT:
+      return {};
     case RECEIVE_TEAMS:
       return {
         ...state,
@@ -218,6 +231,8 @@ function loadingStatusListReducer(
   action = {}
 ) {
   switch (action.type) {
+    case SIGN_OUT:
+      return loadingStatusInitialState;
     case REQUEST_COACH_REQUESTS:
     case REQUEST_COACHES:
       return {
