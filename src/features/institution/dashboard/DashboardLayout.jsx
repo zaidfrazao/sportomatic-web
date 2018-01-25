@@ -1,6 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
+import { CircularProgress } from "material-ui/Progress";
 import { grey } from "material-ui/colors";
 import Toolbar from "material-ui/Toolbar";
 import { withStyles } from "material-ui/styles";
@@ -10,6 +11,11 @@ import RoleSelectCard from "./components/RoleSelectCard";
 // import Button from "material-ui/Button";
 
 const styles = theme => ({
+  loaderWrapper: {
+    margin: 24,
+    width: "100%",
+    textAlign: "center"
+  },
   root: {
     width: "100%"
   },
@@ -21,7 +27,6 @@ const styles = theme => ({
     backgroundColor: grey[200],
     display: "flex",
     flexDirection: "row",
-    flexWrap: "wrap",
     alignItems: "stretch"
   }
 });
@@ -59,7 +64,7 @@ class DashboardLayout extends Component {
       userID
     } = this.props;
     const { isInstitutionsLoading } = this.props.loadingStatus;
-    const { switchInstitution } = this.props.actions;
+    const { switchInstitution, switchRole } = this.props.actions;
 
     let active = {
       id: "",
@@ -94,47 +99,65 @@ class DashboardLayout extends Component {
       <div className={classes.root}>
         <Toolbar className={classes.toolbar}>
           <div className={classes.selectWrapper}>
-            <InstitutionSelectCard
-              isMobile={isMobile}
-              isLoading={isInstitutionsLoading}
-              userID={userID}
-              activeInstitution={{
-                id: active.id,
-                name: active.institutionName
-              }}
-              institutions={_.fromPairs(
-                _.toPairs(institutions).map(([id, info]) => {
-                  return [
-                    id,
-                    {
-                      name: info.name,
-                      rolesAvailable: {
-                        admin:
-                          accountInfo.institutions[id].roles.admin ===
-                          "APPROVED",
-                        coach:
-                          accountInfo.institutions[id].roles.coach ===
-                          "APPROVED",
-                        manager:
-                          accountInfo.institutions[id].roles.manager ===
-                          "APPROVED"
+            {isInstitutionsLoading ||
+            accountInfo.lastAccessed.institutionID === "" ? (
+              <div className={classes.loaderWrapper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <InstitutionSelectCard
+                isMobile={isMobile}
+                isLoading={isInstitutionsLoading}
+                userID={userID}
+                activeInstitution={{
+                  id: active.id,
+                  name: active.institutionName
+                }}
+                institutions={_.fromPairs(
+                  _.toPairs(institutions).map(([id, info]) => {
+                    return [
+                      id,
+                      {
+                        name: info.name,
+                        rolesAvailable: {
+                          admin:
+                            accountInfo.institutions[id].roles.admin ===
+                            "APPROVED",
+                          coach:
+                            accountInfo.institutions[id].roles.coach ===
+                            "APPROVED",
+                          manager:
+                            accountInfo.institutions[id].roles.manager ===
+                            "APPROVED"
+                        }
                       }
-                    }
-                  ];
-                })
-              )}
-              emblemURL={active.emblemURL}
-              actions={{
-                switchInstitution
-              }}
-            />
+                    ];
+                  })
+                )}
+                emblemURL={active.emblemURL}
+                actions={{
+                  switchInstitution
+                }}
+              />
+            )}
           </div>
           <div className={classes.selectWrapper}>
-            <RoleSelectCard
-              isMobile={isMobile}
-              activeRole={active.role}
-              rolesAvailable={rolesAvailable}
-            />
+            {isInstitutionsLoading ||
+            accountInfo.lastAccessed.institutionID === "" ? (
+              <div className={classes.loaderWrapper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <RoleSelectCard
+                isMobile={isMobile}
+                userID={userID}
+                activeRole={active.role}
+                rolesAvailable={rolesAvailable}
+                actions={{
+                  switchRole
+                }}
+              />
+            )}
           </div>
         </Toolbar>
         <BannerCarousel isTablet={isTablet} />

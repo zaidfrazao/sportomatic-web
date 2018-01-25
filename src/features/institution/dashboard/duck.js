@@ -13,6 +13,9 @@ export const ERROR_LOADING_INSTITUTION_INFO = `${NAMESPACE}/ERROR_LOADING_INSTIT
 export const REQUEST_SWITCH_INSTITUTION = `${NAMESPACE}/REQUEST_SWITCH_INSTITUTION`;
 export const RECEIVE_SWITCH_INSTITUTION = `${NAMESPACE}/RECEIVE_SWITCH_INSTITUTION`;
 export const ERROR_SWITCHING_INSTITUTION = `${NAMESPACE}/ERROR_SWITCHING_INSTITUTION`;
+export const REQUEST_SWITCH_ROLE = `${NAMESPACE}/REQUEST_SWITCH_ROLE`;
+export const RECEIVE_SWITCH_ROLE = `${NAMESPACE}/RECEIVE_SWITCH_ROLE`;
+export const ERROR_SWITCHING_ROLE = `${NAMESPACE}/ERROR_SWITCHING_ROLE`;
 
 // Reducers
 
@@ -35,8 +38,7 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 }
 
 export const loadingStatusInitialState = {
-  isInstitutionsLoading: false,
-  isSwitchInstitutionLoading: false
+  isInstitutionsLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -51,17 +53,6 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isInstitutionsLoading: false
-      };
-    case REQUEST_SWITCH_INSTITUTION:
-      return {
-        ...state,
-        isSwitchInstitutionLoading: true
-      };
-    case ERROR_SWITCHING_INSTITUTION:
-    case RECEIVE_SWITCH_INSTITUTION:
-      return {
-        ...state,
-        isSwitchInstitutionLoading: false
       };
     default:
       return state;
@@ -194,6 +185,43 @@ export function switchInstitution(userID, institutionID, role) {
           institutionID,
           role
         }
+      })
+      .then(() => dispatch(receiveSwitchInstitution()))
+      .catch(error => dispatch(errorSwitchingInstitution(error)));
+  };
+}
+
+export function requestSwitchRole() {
+  return {
+    type: REQUEST_SWITCH_ROLE
+  };
+}
+
+export function receiveSwitchRole() {
+  return {
+    type: RECEIVE_SWITCH_ROLE
+  };
+}
+
+export function errorSwitchingRole(error: { code: string, message: string }) {
+  return {
+    type: ERROR_SWITCHING_ROLE,
+    payload: {
+      error
+    }
+  };
+}
+
+export function switchRole(userID, role) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestSwitchInstitution());
+
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
+    return userRef
+      .update({
+        "lastAccessed.role": role
       })
       .then(() => dispatch(receiveSwitchInstitution()))
       .catch(error => dispatch(errorSwitchingInstitution(error)));

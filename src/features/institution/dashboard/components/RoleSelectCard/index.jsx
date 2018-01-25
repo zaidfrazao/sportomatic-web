@@ -34,7 +34,14 @@ const styles = {
 
 class RoleSelectCard extends Component {
   render() {
-    const { classes, activeRole, isMobile, rolesAvailable } = this.props;
+    const {
+      classes,
+      activeRole,
+      isMobile,
+      rolesAvailable,
+      userID
+    } = this.props;
+    const { switchRole } = this.props.actions;
 
     let roleIcon = adminIcon;
     if (activeRole === "COACH") {
@@ -59,7 +66,7 @@ class RoleSelectCard extends Component {
           <Select
             native
             value={activeRole}
-            onChange={() => {}}
+            onChange={e => switchRole(userID, e.target.value)}
             input={<Input id="institution selection" />}
           >
             <option disabled={!rolesAvailable.admin} value="ADMIN">
