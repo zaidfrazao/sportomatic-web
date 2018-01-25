@@ -26,12 +26,9 @@ export const CLOSE_CANCEL_EVENT_ALERT = `${NAMESPACE}/CLOSE_CANCEL_EVENT_ALERT`;
 export const OPEN_UNCANCEL_EVENT_ALERT = `${NAMESPACE}/OPEN_UNCANCEL_EVENT_ALERT`;
 export const CLOSE_UNCANCEL_EVENT_ALERT = `${NAMESPACE}/CLOSE_UNCANCEL_EVENT_ALERT`;
 export const UPDATE_CURRENT_VIEW = `${NAMESPACE}/UPDATE_CURRENT_VIEW`;
-export const REQUEST_COACHES = `${NAMESPACE}/REQUEST_COACHES`;
-export const RECEIVE_COACHES = `${NAMESPACE}/RECEIVE_COACHES`;
-export const ERROR_LOADING_COACHES = `${NAMESPACE}/ERROR_LOADING_COACHES`;
-export const REQUEST_MANAGERS = `${NAMESPACE}/REQUEST_MANAGERS`;
-export const RECEIVE_MANAGERS = `${NAMESPACE}/RECEIVE_MANAGERS`;
-export const ERROR_LOADING_MANAGERS = `${NAMESPACE}/ERROR_LOADING_MANAGERS`;
+export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
+export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
+export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
 export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
 export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
 export const ERROR_LOADING_TEAMS = `${NAMESPACE}/ERROR_LOADING_TEAMS`;
@@ -300,8 +297,7 @@ export const loadingStatusInitialState = {
   isEventsLoading: false,
   isCreationDateLoading: false,
   isTeamsLoading: false,
-  isCoachesLoading: false,
-  isManagersLoading: false
+  isStaffLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -334,13 +330,13 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
     case REQUEST_REPLACEMENT_COACH_UPDATE:
     case REQUEST_ABSENT_UPDATE:
     case REQUEST_ABSENT_RATING_UPDATE:
-    case REQUEST_COACHES:
+    case REQUEST_STAFF:
       return {
         ...state,
-        isCoachesLoading: true
+        isStaffLoading: true
       };
-    case RECEIVE_COACHES:
-    case ERROR_LOADING_COACHES:
+    case RECEIVE_STAFF:
+    case ERROR_LOADING_STAFF:
     case RECEIVE_ABSENT_UPDATE:
     case ERROR_UPDATING_ABSENT:
     case RECEIVE_ABSENT_RATING_UPDATE:
@@ -351,18 +347,7 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
     case ERROR_REMOVING_REPLACEMENT_COACH:
       return {
         ...state,
-        isCoachesLoading: false
-      };
-    case REQUEST_MANAGERS:
-      return {
-        ...state,
-        isManagersLoading: true
-      };
-    case RECEIVE_MANAGERS:
-    case ERROR_LOADING_MANAGERS:
-      return {
-        ...state,
-        isManagersLoading: false
+        isStaffLoading: false
       };
     case REQUEST_TEAMS:
       return {
@@ -416,23 +401,12 @@ function eventsReducer(state = {}, action = {}) {
   }
 }
 
-function coachesReducer(state = {}, action = {}) {
+function staffReducer(state = {}, action = {}) {
   switch (action.type) {
     case SIGN_OUT:
       return {};
-    case RECEIVE_COACHES:
-      return { ...state, ...action.payload.coaches };
-    default:
-      return state;
-  }
-}
-
-function managersReducer(state = {}, action = {}) {
-  switch (action.type) {
-    case SIGN_OUT:
-      return {};
-    case RECEIVE_MANAGERS:
-      return { ...state, ...action.payload.managers };
+    case RECEIVE_STAFF:
+      return { ...state, ...action.payload.staff };
     default:
       return state;
   }
@@ -458,8 +432,7 @@ export const scheduleReducer = combineReducers({
   events: eventsReducer,
   loadingStatus: loadingStatusReducer,
   teams: teamsReducer,
-  coaches: coachesReducer,
-  managers: managersReducer,
+  staff: staffReducer,
   filters: filterReducer
 });
 
@@ -470,8 +443,7 @@ const dialogs = state => state.institution.schedule.dialogs;
 const events = state => state.institution.schedule.events;
 const loadingStatus = state => state.institution.schedule.loadingStatus;
 const teams = state => state.institution.schedule.teams;
-const coaches = state => state.institution.schedule.coaches;
-const managers = state => state.institution.schedule.managers;
+const staff = state => state.institution.schedule.staff;
 const filters = state => state.institution.schedule.filters;
 
 export const selector = createStructuredSelector({
@@ -480,8 +452,7 @@ export const selector = createStructuredSelector({
   events,
   loadingStatus,
   teams,
-  coaches,
-  managers,
+  staff,
   filters
 });
 
@@ -926,88 +897,45 @@ export function editEvent(
   };
 }
 
-export function requestCoaches() {
+export function requestStaff() {
   return {
-    type: REQUEST_COACHES
+    type: REQUEST_STAFF
   };
 }
 
-export function receiveCoaches(coaches) {
+export function receiveStaff(staff) {
   return {
-    type: RECEIVE_COACHES,
+    type: RECEIVE_STAFF,
     payload: {
-      coaches
+      staff
     }
   };
 }
 
-export function errorLoadingCoaches(error: { code: string, message: string }) {
+export function errorLoadingStaff(error: { code: string, message: string }) {
   return {
-    type: ERROR_LOADING_COACHES,
-    payload: {
-      error
-    }
-  };
-}
-
-export function loadCoaches(institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestCoaches());
-
-    const coachesRef = firebase
-      .firestore()
-      .collection("users")
-      .where(`institutions.${institutionID}.roles.coach`, "==", "APPROVED");
-
-    return coachesRef.onSnapshot(querySnapshot => {
-      let coaches = {};
-      querySnapshot.forEach(doc => {
-        coaches[doc.id] = doc.data();
-      });
-      dispatch(receiveCoaches(coaches));
-    });
-  };
-}
-
-export function requestManagers() {
-  return {
-    type: REQUEST_MANAGERS
-  };
-}
-
-export function receiveManagers(managers) {
-  return {
-    type: RECEIVE_MANAGERS,
-    payload: {
-      managers
-    }
-  };
-}
-
-export function errorLoadingManagers(error: { code: string, message: string }) {
-  return {
-    type: ERROR_LOADING_MANAGERS,
+    type: ERROR_LOADING_STAFF,
     payload: {
       error
     }
   };
 }
 
-export function loadManagers(institutionID) {
+export function loadStaff(institutionID) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestManagers());
+    dispatch(requestStaff());
 
-    const managersRef = firebase
+    const staffRef = firebase
       .firestore()
       .collection("users")
-      .where(`institutions.${institutionID}.roles.manager`, "==", "APPROVED");
+      .where(`institutions.${institutionID}.status`, "==", "STAFF");
 
-    return managersRef.onSnapshot(querySnapshot => {
-      let managers = {};
+    return staffRef.onSnapshot(querySnapshot => {
+      let staff = {};
       querySnapshot.forEach(doc => {
-        managers[doc.id] = doc.data();
+        staff[doc.id] = doc.data();
       });
-      dispatch(receiveManagers(managers));
+      dispatch(receiveStaff(staff));
     });
   };
 }

@@ -88,8 +88,7 @@ class ScheduleLayout extends Component {
     const {
       loadEvents,
       fetchCreationDate,
-      loadCoaches,
-      loadManagers,
+      loadStaff,
       loadTeams,
       updateView
     } = this.props.actions;
@@ -106,8 +105,7 @@ class ScheduleLayout extends Component {
     }
 
     if (activeInstitutionID !== "") {
-      loadCoaches(activeInstitutionID);
-      loadManagers(activeInstitutionID);
+      loadStaff(activeInstitutionID);
       loadTeams(activeInstitutionID);
       fetchCreationDate(activeInstitutionID);
     }
@@ -123,8 +121,7 @@ class ScheduleLayout extends Component {
     const {
       loadEvents,
       fetchCreationDate,
-      loadCoaches,
-      loadManagers,
+      loadStaff,
       loadTeams,
       updateView
     } = nextProps.actions;
@@ -138,7 +135,7 @@ class ScheduleLayout extends Component {
         .toDate();
 
       if (
-        events === {} ||
+        _.keys(events).length === 0 ||
         !moment(dateSelected).isSame(
           moment(this.props.match.params.dateSelected),
           "month"
@@ -162,8 +159,7 @@ class ScheduleLayout extends Component {
         loadEvents(activeInstitutionID, minDate, maxDate);
       }
 
-      loadCoaches(activeInstitutionID);
-      loadManagers(activeInstitutionID);
+      loadStaff(activeInstitutionID);
       loadTeams(activeInstitutionID);
       fetchCreationDate(activeInstitutionID);
     }
@@ -320,8 +316,7 @@ class ScheduleLayout extends Component {
       classes,
       activeInstitutionID,
       teams,
-      coaches,
-      managers,
+      staff,
       events,
       filters
     } = this.props;
@@ -370,8 +365,7 @@ class ScheduleLayout extends Component {
       isAddEventDialogLoading,
       isEditEventDialogLoading,
       isCreationDateLoading,
-      isCoachesLoading,
-      isManagersLoading,
+      isStaffLoading,
       isTeamsLoading
     } = this.props.loadingStatus;
     const {
@@ -424,6 +418,27 @@ class ScheduleLayout extends Component {
       isPastEvent = eventDate < currentDate;
     }
 
+    const coaches = _.fromPairs(
+      _.toPairs(staff).filter(([id, info]) => {
+        if (info.institutions[activeInstitutionID].roles.coach === "APPROVED") {
+          return true;
+        } else {
+          return false;
+        }
+      })
+    );
+    const managers = _.fromPairs(
+      _.toPairs(staff).filter(([id, info]) => {
+        if (
+          info.institutions[activeInstitutionID].roles.manager === "APPROVED"
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+    );
+
     if (currentView === "EVENT_INFO") {
       return (
         <div className={classes.contentWrapper}>
@@ -434,8 +449,8 @@ class ScheduleLayout extends Component {
             info={events[eventID]}
             eventID={eventID}
             isInfoLoading={isEventsLoading || activeInstitutionID === ""}
-            isCoachesLoading={isCoachesLoading || activeInstitutionID === ""}
-            isManagersLoading={isManagersLoading || activeInstitutionID === ""}
+            isCoachesLoading={isStaffLoading || activeInstitutionID === ""}
+            isManagersLoading={isStaffLoading || activeInstitutionID === ""}
             isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
             isPastEvent={isPastEvent}
             isMobile={isMobile}
@@ -457,8 +472,7 @@ class ScheduleLayout extends Component {
             isLoading={
               isEditEventDialogLoading ||
               isEventsLoading ||
-              isCoachesLoading ||
-              isManagersLoading ||
+              isStaffLoading ||
               isTeamsLoading ||
               activeInstitutionID === ""
             }
@@ -640,8 +654,7 @@ class ScheduleLayout extends Component {
             isLoading={
               isAddEventDialogLoading ||
               isEventsLoading ||
-              isCoachesLoading ||
-              isManagersLoading ||
+              isStaffLoading ||
               isTeamsLoading ||
               activeInstitutionID === ""
             }

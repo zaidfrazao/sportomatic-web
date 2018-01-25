@@ -346,6 +346,8 @@ class EventInfo extends Component {
     let eventCoaches = [];
     let eventManagers = [];
 
+    console.log(coaches);
+
     !isTeamsLoading &&
       !isInfoLoading &&
       info &&
