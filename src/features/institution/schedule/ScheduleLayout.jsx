@@ -84,7 +84,7 @@ class ScheduleLayout extends Component {
   };
 
   componentWillMount() {
-    const { userID } = this.props;
+    const { activeInstitutionID } = this.props;
     const {
       loadEvents,
       fetchCreationDate,
@@ -95,21 +95,21 @@ class ScheduleLayout extends Component {
     } = this.props.actions;
     const { eventID, dateSelected } = this.props.match.params;
 
-    if (dateSelected && userID !== "") {
+    if (dateSelected && activeInstitutionID !== "") {
       const minDate = moment(dateSelected)
         .startOf("month")
         .toDate();
       const maxDate = moment(dateSelected)
         .endOf("month")
         .toDate();
-      loadEvents(userID, minDate, maxDate);
+      loadEvents(activeInstitutionID, minDate, maxDate);
     }
 
-    if (userID !== "") {
-      loadCoaches(userID);
-      loadManagers(userID);
-      loadTeams(userID);
-      fetchCreationDate(userID);
+    if (activeInstitutionID !== "") {
+      loadCoaches(activeInstitutionID);
+      loadManagers(activeInstitutionID);
+      loadTeams(activeInstitutionID);
+      fetchCreationDate(activeInstitutionID);
     }
 
     if (eventID) {
@@ -118,7 +118,7 @@ class ScheduleLayout extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID, events, teams } = nextProps;
+    const { activeInstitutionID, events, teams } = nextProps;
     const { dateSelected, eventID } = nextProps.match.params;
     const {
       loadEvents,
@@ -137,10 +137,10 @@ class ScheduleLayout extends Component {
         .endOf("month")
         .toDate();
 
-      loadEvents(userID, minDate, maxDate);
+      loadEvents(activeInstitutionID, minDate, maxDate);
     }
 
-    if (userID !== this.props.userID) {
+    if (activeInstitutionID !== this.props.activeInstitutionID) {
       if (dateSelected) {
         const minDate = moment(dateSelected)
           .startOf("month")
@@ -148,13 +148,13 @@ class ScheduleLayout extends Component {
         const maxDate = moment(dateSelected)
           .endOf("month")
           .toDate();
-        loadEvents(userID, minDate, maxDate);
+        loadEvents(activeInstitutionID, minDate, maxDate);
       }
 
-      loadCoaches(userID);
-      loadManagers(userID);
-      loadTeams(userID);
-      fetchCreationDate(userID);
+      loadCoaches(activeInstitutionID);
+      loadManagers(activeInstitutionID);
+      loadTeams(activeInstitutionID);
+      fetchCreationDate(activeInstitutionID);
     }
 
     let genders = this.state.genders;
@@ -307,7 +307,7 @@ class ScheduleLayout extends Component {
       isTablet,
       isMobile,
       classes,
-      userID,
+      activeInstitutionID,
       teams,
       coaches,
       managers,
@@ -459,7 +459,7 @@ class ScheduleLayout extends Component {
             managers={managers}
             initialEventInfo={events[eventID]}
             initialEventID={eventID}
-            institutionID={userID}
+            institutionID={activeInstitutionID}
             actions={{
               handleClose: closeEditEventDialog,
               editEvent,
@@ -611,7 +611,7 @@ class ScheduleLayout extends Component {
             dateSelected={dateSelected}
             isMobile={isMobile}
             isTablet={isTablet}
-            institutionID={userID}
+            institutionID={activeInstitutionID}
             currentView={currentView}
             isEventsLoading={isEventsLoading}
             isMinDateLoading={isCreationDateLoading}
@@ -632,7 +632,7 @@ class ScheduleLayout extends Component {
             }
             minDate={currentDate.toISOString().slice(0, 10)}
             initialDate={dateSelected}
-            institutionID={userID}
+            institutionID={activeInstitutionID}
             teams={teams}
             coaches={coaches}
             managers={managers}

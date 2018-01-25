@@ -107,7 +107,7 @@ class ResultsLayout extends Component {
   };
 
   componentWillMount() {
-    const { userID } = this.props;
+    const { activeInstitutionID } = this.props;
     const { teamID } = this.props.match.params;
     const {
       loadTeams,
@@ -116,18 +116,18 @@ class ResultsLayout extends Component {
       loadEventsByTeam
     } = this.props.actions;
 
-    if (userID !== "") {
-      loadTeams(userID);
-      loadEventsByDate(userID);
-      fetchInstitutionEmblem(userID);
+    if (activeInstitutionID !== "") {
+      loadTeams(activeInstitutionID);
+      loadEventsByDate(activeInstitutionID);
+      fetchInstitutionEmblem(activeInstitutionID);
       if (teamID) {
-        loadEventsByTeam(userID, teamID);
+        loadEventsByTeam(activeInstitutionID, teamID);
       }
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID, teams } = nextProps;
+    const { activeInstitutionID, teams } = nextProps;
     const { teamID } = nextProps.match.params;
     const {
       loadTeams,
@@ -137,15 +137,18 @@ class ResultsLayout extends Component {
     } = nextProps.actions;
 
     if (teamID !== this.props.match.params.teamID && teamID) {
-      loadEventsByTeam(userID, teamID);
+      loadEventsByTeam(activeInstitutionID, teamID);
     }
 
-    if (userID !== this.props.userID && userID !== "") {
-      loadTeams(userID);
-      loadEventsByDate(userID);
-      fetchInstitutionEmblem(userID);
+    if (
+      activeInstitutionID !== this.props.activeInstitutionID &&
+      activeInstitutionID !== ""
+    ) {
+      loadTeams(activeInstitutionID);
+      loadEventsByDate(activeInstitutionID);
+      fetchInstitutionEmblem(activeInstitutionID);
       if (teamID) {
-        loadEventsByTeam(userID, teamID);
+        loadEventsByTeam(activeInstitutionID, teamID);
       }
     }
 
@@ -187,7 +190,7 @@ class ResultsLayout extends Component {
     const {
       classes,
       eventsByDate,
-      userID,
+      activeInstitutionID,
       isMobile,
       isTablet,
       teams
@@ -272,7 +275,7 @@ class ResultsLayout extends Component {
             disabled={isEventsByDateLoading}
             className={classes.loadMoreButton}
             raised
-            onClick={() => loadEventsByDate(userID, lastVisible)}
+            onClick={() => loadEventsByDate(activeInstitutionID, lastVisible)}
           >
             Load more...
           </Button>

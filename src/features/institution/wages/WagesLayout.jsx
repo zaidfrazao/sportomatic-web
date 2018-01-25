@@ -95,27 +95,30 @@ const styles = theme => ({
 
 class WagesLayout extends Component {
   componentWillMount() {
-    const { userID } = this.props;
+    const { activeInstitutionID } = this.props;
     const { loadStaff, loadWagesByDate } = this.props.actions;
 
-    if (userID !== "") {
-      loadStaff(userID);
-      loadWagesByDate(userID);
+    if (activeInstitutionID !== "") {
+      loadStaff(activeInstitutionID);
+      loadWagesByDate(activeInstitutionID);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID } = nextProps;
+    const { activeInstitutionID } = nextProps;
     const { loadStaff, loadWagesByDate } = nextProps.actions;
 
-    if (userID !== this.props.userID && userID !== "") {
-      loadStaff(userID);
-      loadWagesByDate(userID);
+    if (
+      activeInstitutionID !== this.props.activeInstitutionID &&
+      activeInstitutionID !== ""
+    ) {
+      loadStaff(activeInstitutionID);
+      loadWagesByDate(activeInstitutionID);
     }
   }
 
   renderWagesByDate() {
-    const { classes, wagesByDate, staff, userID } = this.props;
+    const { classes, wagesByDate, staff, activeInstitutionID } = this.props;
     const { lastVisible } = this.props.uiConfig;
     const { isStaffLoading, isWagesByDateLoading } = this.props.loadingStatus;
     const { loadWagesByDate } = this.props.actions;
@@ -183,7 +186,7 @@ class WagesLayout extends Component {
             disabled={isWagesByDateLoading}
             className={classes.loadMoreButton}
             raised
-            onClick={() => loadWagesByDate(userID, lastVisible)}
+            onClick={() => loadWagesByDate(activeInstitutionID, lastVisible)}
           >
             Load more...
           </Button>
@@ -223,12 +226,14 @@ class WagesLayout extends Component {
   }
 
   getStaffCardsInfo(staff) {
-    const { userID } = this.props;
+    const { activeInstitutionID } = this.props;
 
     let sortedStaff = [];
     _.values(
       _.mapValues(staff, (value, key) => {
-        if (value.institutions[userID].roles.coach === "APPROVED") {
+        if (
+          value.institutions[activeInstitutionID].roles.coach === "APPROVED"
+        ) {
           sortedStaff.push({
             ...value,
             id: key,
@@ -291,7 +296,7 @@ class WagesLayout extends Component {
       isMobile,
       isTablet,
       wagesByCoach,
-      userID,
+      activeInstitutionID,
       staff
     } = this.props;
     const { currentTab } = this.props.uiConfig;
@@ -334,7 +339,7 @@ class WagesLayout extends Component {
             </Toolbar>
             <div className={classes.adWrapper}>{ad}</div>
             <WageHistory
-              institutionID={userID}
+              institutionID={activeInstitutionID}
               isLoading={isWagesByCoachLoading}
               isMobile={isMobile}
               isTablet={isTablet}

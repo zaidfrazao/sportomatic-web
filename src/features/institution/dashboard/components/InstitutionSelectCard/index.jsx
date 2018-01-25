@@ -70,7 +70,6 @@ class RoleSelectCard extends Component {
               ) {
                 newRole = "MANAGER";
               }
-              console.log(institutions[newInstitutionID]);
               switchInstitution(userID, newInstitutionID, newRole);
             }}
             input={<Input id="institution selection" />}

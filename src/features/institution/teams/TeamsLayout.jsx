@@ -66,24 +66,24 @@ class TeamsLayout extends Component {
   };
 
   componentWillMount() {
-    const { userID } = this.props;
+    const { activeInstitutionID } = this.props;
     const { loadTeams, loadCoaches, loadManagers } = this.props.actions;
 
-    if (userID !== "") {
-      loadTeams(userID);
-      loadCoaches(userID);
-      loadManagers(userID);
+    if (activeInstitutionID !== "") {
+      loadTeams(activeInstitutionID);
+      loadCoaches(activeInstitutionID);
+      loadManagers(activeInstitutionID);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID, teams } = nextProps;
+    const { activeInstitutionID, teams } = nextProps;
     const { loadTeams, loadCoaches, loadManagers } = nextProps.actions;
 
-    if (userID !== this.props.userID) {
-      loadTeams(userID);
-      loadCoaches(userID);
-      loadManagers(userID);
+    if (activeInstitutionID !== this.props.activeInstitutionID) {
+      loadTeams(activeInstitutionID);
+      loadCoaches(activeInstitutionID);
+      loadManagers(activeInstitutionID);
     }
 
     if (teams !== this.props.teams) {
@@ -223,7 +223,7 @@ class TeamsLayout extends Component {
       options,
       coaches,
       managers,
-      userID,
+      activeInstitutionID,
       isMobile,
       isTablet,
       filters
@@ -288,7 +288,7 @@ class TeamsLayout extends Component {
               actions={{
                 editTeam: () => {
                   openEditTeamDialog();
-                  loadOptions(userID);
+                  loadOptions(activeInstitutionID);
                 }
               }}
             />
@@ -298,7 +298,7 @@ class TeamsLayout extends Component {
               isLoading={isEditTeamDialogLoading || isOptionsLoading}
               teamID={teamID}
               initialTeamInfo={teams[teamID]}
-              institutionID={userID}
+              institutionID={activeInstitutionID}
               options={options}
               coaches={coaches}
               managers={managers}
@@ -327,7 +327,7 @@ class TeamsLayout extends Component {
               applyFilters={applyFilters}
               addTeam={() => {
                 openAddTeamDialog();
-                loadOptions(userID);
+                loadOptions(activeInstitutionID);
               }}
               updateSearch={updateSearch}
             />
@@ -354,7 +354,7 @@ class TeamsLayout extends Component {
           isOpen={isAddTeamDialogOpen}
           isMobile={isMobile}
           isLoading={isAddTeamDialogLoading || isOptionsLoading}
-          institutionID={userID}
+          institutionID={activeInstitutionID}
           options={options}
           coaches={coaches}
           managers={managers}

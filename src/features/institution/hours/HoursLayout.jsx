@@ -144,27 +144,36 @@ const styles = theme => ({
 
 class HoursLayout extends Component {
   componentWillMount() {
-    const { userID } = this.props;
+    const { activeInstitutionID } = this.props;
     const { loadStaff, loadEventsByDate } = this.props.actions;
 
-    if (userID !== "") {
-      loadStaff(userID);
-      loadEventsByDate(userID);
+    if (activeInstitutionID !== "") {
+      loadStaff(activeInstitutionID);
+      loadEventsByDate(activeInstitutionID);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID } = nextProps;
+    const { activeInstitutionID } = nextProps;
     const { loadStaff, loadEventsByDate } = nextProps.actions;
 
-    if (userID !== this.props.userID && userID !== "") {
-      loadStaff(userID);
-      loadEventsByDate(userID);
+    if (
+      activeInstitutionID !== this.props.activeInstitutionID &&
+      activeInstitutionID !== ""
+    ) {
+      loadStaff(activeInstitutionID);
+      loadEventsByDate(activeInstitutionID);
     }
   }
 
   renderHoursByDate() {
-    const { classes, eventsByDate, isTablet, staff, userID } = this.props;
+    const {
+      classes,
+      eventsByDate,
+      isTablet,
+      staff,
+      activeInstitutionID
+    } = this.props;
     const { lastVisible } = this.props.uiConfig;
     const { isStaffLoading, isEventsByDateLoading } = this.props.loadingStatus;
     const {
@@ -219,7 +228,7 @@ class HoursLayout extends Component {
                         isTablet={isTablet}
                         eventID={eventID}
                         eventInfo={eventInfo}
-                        institutionID={userID}
+                        institutionID={activeInstitutionID}
                         staff={staff}
                         actions={{
                           signIn,
@@ -242,7 +251,7 @@ class HoursLayout extends Component {
             disabled={isEventsByDateLoading}
             className={classes.loadMoreButton}
             raised
-            onClick={() => loadEventsByDate(userID, lastVisible)}
+            onClick={() => loadEventsByDate(activeInstitutionID, lastVisible)}
           >
             Load more...
           </Button>
@@ -282,12 +291,14 @@ class HoursLayout extends Component {
   }
 
   getStaffCardsInfo(staff) {
-    const { userID } = this.props;
+    const { activeInstitutionID } = this.props;
 
     let sortedStaff = [];
     _.values(
       _.mapValues(staff, (value, key) => {
-        if (value.institutions[userID].roles.coach === "APPROVED") {
+        if (
+          value.institutions[activeInstitutionID].roles.coach === "APPROVED"
+        ) {
           sortedStaff.push({
             ...value,
             id: key,
@@ -350,7 +361,7 @@ class HoursLayout extends Component {
       isMobile,
       isTablet,
       eventsByCoach,
-      userID,
+      activeInstitutionID,
       staff
     } = this.props;
     const { currentTab } = this.props.uiConfig;
@@ -393,7 +404,7 @@ class HoursLayout extends Component {
             </Toolbar>
             <div className={classes.adWrapper}>{ad}</div>
             <HoursHistory
-              institutionID={userID}
+              institutionID={activeInstitutionID}
               isLoading={isEventsByCoachLoading}
               isMobile={isMobile}
               isTablet={isTablet}

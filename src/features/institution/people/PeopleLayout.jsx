@@ -81,7 +81,7 @@ class PeopleLayout extends Component {
   };
 
   componentWillMount() {
-    const { userID } = this.props;
+    const { activeInstitutionID } = this.props;
     const {
       loadCoaches,
       loadManagers,
@@ -92,19 +92,19 @@ class PeopleLayout extends Component {
       loadAdminRequests
     } = this.props.actions;
 
-    if (userID !== "") {
-      loadCoaches(userID);
-      loadManagers(userID);
-      loadAdmins(userID);
-      loadCoachRequests(userID);
-      loadManagerRequests(userID);
-      loadAdminRequests(userID);
-      loadTeams(userID);
+    if (activeInstitutionID !== "") {
+      loadCoaches(activeInstitutionID);
+      loadManagers(activeInstitutionID);
+      loadAdmins(activeInstitutionID);
+      loadCoachRequests(activeInstitutionID);
+      loadManagerRequests(activeInstitutionID);
+      loadAdminRequests(activeInstitutionID);
+      loadTeams(activeInstitutionID);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { userID, teams } = this.props;
+    const { activeInstitutionID, teams } = this.props;
     const {
       loadCoaches,
       loadManagers,
@@ -127,14 +127,14 @@ class PeopleLayout extends Component {
       });
     }
 
-    if (userID !== nextProps.userID) {
-      loadCoaches(nextProps.userID);
-      loadManagers(nextProps.userID);
-      loadAdmins(nextProps.userID);
-      loadCoachRequests(nextProps.userID);
-      loadManagerRequests(nextProps.userID);
-      loadAdminRequests(nextProps.userID);
-      loadTeams(nextProps.userID);
+    if (activeInstitutionID !== nextProps.activeInstitutionID) {
+      loadCoaches(nextProps.activeInstitutionID);
+      loadManagers(nextProps.activeInstitutionID);
+      loadAdmins(nextProps.activeInstitutionID);
+      loadCoachRequests(nextProps.activeInstitutionID);
+      loadManagerRequests(nextProps.activeInstitutionID);
+      loadAdminRequests(nextProps.activeInstitutionID);
+      loadTeams(nextProps.activeInstitutionID);
     }
 
     this.setState({
@@ -156,42 +156,60 @@ class PeopleLayout extends Component {
   }
 
   getType() {
-    const { staff, userID } = this.props;
+    const { staff, activeInstitutionID } = this.props;
     const { personID } = this.props.match.params;
 
     let type = "";
     if (personID && staff[personID]) {
-      if (staff[personID].institutions[userID].roles.admin === "APPROVED") {
+      if (
+        staff[personID].institutions[activeInstitutionID].roles.admin ===
+        "APPROVED"
+      ) {
         type = "Admin";
       }
-      if (staff[personID].institutions[userID].roles.manager === "APPROVED") {
+      if (
+        staff[personID].institutions[activeInstitutionID].roles.manager ===
+        "APPROVED"
+      ) {
         type = "Manager";
       }
-      if (staff[personID].institutions[userID].roles.coach === "APPROVED") {
+      if (
+        staff[personID].institutions[activeInstitutionID].roles.coach ===
+        "APPROVED"
+      ) {
         type = "Coach";
       }
       if (
-        staff[personID].institutions[userID].roles.admin === "APPROVED" &&
-        staff[personID].institutions[userID].roles.coach === "APPROVED"
+        staff[personID].institutions[activeInstitutionID].roles.admin ===
+          "APPROVED" &&
+        staff[personID].institutions[activeInstitutionID].roles.coach ===
+          "APPROVED"
       ) {
         type = "Admin / Coach";
       }
       if (
-        staff[personID].institutions[userID].roles.coach === "APPROVED" &&
-        staff[personID].institutions[userID].roles.manager === "APPROVED"
+        staff[personID].institutions[activeInstitutionID].roles.coach ===
+          "APPROVED" &&
+        staff[personID].institutions[activeInstitutionID].roles.manager ===
+          "APPROVED"
       ) {
         type = "Manager / Coach";
       }
       if (
-        staff[personID].institutions[userID].roles.admin === "APPROVED" &&
-        staff[personID].institutions[userID].roles.manager === "APPROVED"
+        staff[personID].institutions[activeInstitutionID].roles.admin ===
+          "APPROVED" &&
+        staff[personID].institutions[activeInstitutionID].roles.manager ===
+          "APPROVED"
       ) {
         type = "Admin / Manager";
       }
       if (
-        staff[personID].institutions[userID].roles.admin === "APPROVED" &&
-        staff[personID].institutions[userID].roles.coach === "APPROVED" &&
-        staff[personID].institutions[userID].roles.manager === "APPROVED"
+        staff[personID].institutions[activeInstitutionID].roles.admin ===
+          "APPROVED" &&
+        staff[personID].institutions[activeInstitutionID].roles.coach ===
+          "APPROVED" &&
+        staff[personID].institutions[activeInstitutionID].roles.manager ===
+          "APPROVED"
       ) {
         type = "Admin / Coach / Manager";
       }
@@ -201,42 +219,48 @@ class PeopleLayout extends Component {
   }
 
   getStaffCardsInfo(staff) {
-    const { userID } = this.props;
+    const { activeInstitutionID } = this.props;
 
     return _.values(
       _.mapValues(staff, (value, key) => {
         let type = "";
-        if (value.institutions[userID].roles.admin === "APPROVED") {
+        if (
+          value.institutions[activeInstitutionID].roles.admin === "APPROVED"
+        ) {
           type = "Admin";
         }
-        if (value.institutions[userID].roles.manager === "APPROVED") {
+        if (
+          value.institutions[activeInstitutionID].roles.manager === "APPROVED"
+        ) {
           type = "Manager";
         }
-        if (value.institutions[userID].roles.coach === "APPROVED") {
+        if (
+          value.institutions[activeInstitutionID].roles.coach === "APPROVED"
+        ) {
           type = "Coach";
         }
         if (
-          value.institutions[userID].roles.admin === "APPROVED" &&
-          value.institutions[userID].roles.coach === "APPROVED"
+          value.institutions[activeInstitutionID].roles.admin === "APPROVED" &&
+          value.institutions[activeInstitutionID].roles.coach === "APPROVED"
         ) {
           type = "Admin / Coach";
         }
         if (
-          value.institutions[userID].roles.coach === "APPROVED" &&
-          value.institutions[userID].roles.manager === "APPROVED"
+          value.institutions[activeInstitutionID].roles.coach === "APPROVED" &&
+          value.institutions[activeInstitutionID].roles.manager === "APPROVED"
         ) {
           type = "Manager / Coach";
         }
         if (
-          value.institutions[userID].roles.admin === "APPROVED" &&
-          value.institutions[userID].roles.manager === "APPROVED"
+          value.institutions[activeInstitutionID].roles.admin === "APPROVED" &&
+          value.institutions[activeInstitutionID].roles.manager === "APPROVED"
         ) {
           type = "Admin / Manager";
         }
         if (
-          value.institutions[userID].roles.admin === "APPROVED" &&
-          value.institutions[userID].roles.coach === "APPROVED" &&
-          value.institutions[userID].roles.manager === "APPROVED"
+          value.institutions[activeInstitutionID].roles.admin === "APPROVED" &&
+          value.institutions[activeInstitutionID].roles.coach === "APPROVED" &&
+          value.institutions[activeInstitutionID].roles.manager === "APPROVED"
         ) {
           type = "Admin / Coach / Manager";
         }
@@ -259,42 +283,60 @@ class PeopleLayout extends Component {
   }
 
   getRequestsCardsInfo(requests) {
-    const { userID } = this.props;
+    const { activeInstitutionID } = this.props;
 
     return _.values(
       _.mapValues(requests, (value, key) => {
         let type = "";
-        if (value.institutions[userID].roles.admin === "AWAITING_APPROVAL") {
+        if (
+          value.institutions[activeInstitutionID].roles.admin ===
+          "AWAITING_APPROVAL"
+        ) {
           type = "Admin";
         }
-        if (value.institutions[userID].roles.manager === "AWAITING_APPROVAL") {
+        if (
+          value.institutions[activeInstitutionID].roles.manager ===
+          "AWAITING_APPROVAL"
+        ) {
           type = "Manager";
         }
-        if (value.institutions[userID].roles.coach === "AWAITING_APPROVAL") {
+        if (
+          value.institutions[activeInstitutionID].roles.coach ===
+          "AWAITING_APPROVAL"
+        ) {
           type = "Coach";
         }
         if (
-          value.institutions[userID].roles.admin === "AWAITING_APPROVAL" &&
-          value.institutions[userID].roles.coach === "AWAITING_APPROVAL"
+          value.institutions[activeInstitutionID].roles.admin ===
+            "AWAITING_APPROVAL" &&
+          value.institutions[activeInstitutionID].roles.coach ===
+            "AWAITING_APPROVAL"
         ) {
           type = "Admin and Coach";
         }
         if (
-          value.institutions[userID].roles.coach === "AWAITING_APPROVAL" &&
-          value.institutions[userID].roles.manager === "AWAITING_APPROVAL"
+          value.institutions[activeInstitutionID].roles.coach ===
+            "AWAITING_APPROVAL" &&
+          value.institutions[activeInstitutionID].roles.manager ===
+            "AWAITING_APPROVAL"
         ) {
           type = "Manager and Coach";
         }
         if (
-          value.institutions[userID].roles.admin === "AWAITING_APPROVAL" &&
-          value.institutions[userID].roles.manager === "AWAITING_APPROVAL"
+          value.institutions[activeInstitutionID].roles.admin ===
+            "AWAITING_APPROVAL" &&
+          value.institutions[activeInstitutionID].roles.manager ===
+            "AWAITING_APPROVAL"
         ) {
           type = "Admin and Manager";
         }
         if (
-          value.institutions[userID].roles.admin === "AWAITING_APPROVAL" &&
-          value.institutions[userID].roles.coach === "AWAITING_APPROVAL" &&
-          value.institutions[userID].roles.manager === "AWAITING_APPROVAL"
+          value.institutions[activeInstitutionID].roles.admin ===
+            "AWAITING_APPROVAL" &&
+          value.institutions[activeInstitutionID].roles.coach ===
+            "AWAITING_APPROVAL" &&
+          value.institutions[activeInstitutionID].roles.manager ===
+            "AWAITING_APPROVAL"
         ) {
           type = "Admin, Coach and Manager";
         }
@@ -318,7 +360,7 @@ class PeopleLayout extends Component {
 
   filterPeople(staff) {
     const { sport, type, searchText } = this.props.filters;
-    const { teams, userID } = this.props;
+    const { teams, activeInstitutionID } = this.props;
 
     return _.fromPairs(
       _.toPairs(staff).filter(([staffID, personInfo]) => {
@@ -355,15 +397,18 @@ class PeopleLayout extends Component {
           if (type === "Admin") {
             allowThroughFilter =
               allowThroughFilter &&
-              personInfo.institutions[userID].roles.admin === "APPROVED";
+              personInfo.institutions[activeInstitutionID].roles.admin ===
+                "APPROVED";
           } else if (type === "Coach") {
             allowThroughFilter =
               allowThroughFilter &&
-              personInfo.institutions[userID].roles.coach === "APPROVED";
+              personInfo.institutions[activeInstitutionID].roles.coach ===
+                "APPROVED";
           } else if (type === "Manager") {
             allowThroughFilter =
               allowThroughFilter &&
-              personInfo.institutions[userID].roles.manager === "APPROVED";
+              personInfo.institutions[activeInstitutionID].roles.manager ===
+                "APPROVED";
           }
         }
 
@@ -383,7 +428,7 @@ class PeopleLayout extends Component {
       isMobile,
       isTablet,
       filters,
-      userID
+      activeInstitutionID
     } = this.props;
     const { currentTab, inviteeID, inviteeInfo } = this.props.uiConfig;
     const {
@@ -433,7 +478,7 @@ class PeopleLayout extends Component {
               teams={teams}
               personID={personID}
               info={staff[personID]}
-              institutionID={userID}
+              institutionID={activeInstitutionID}
               isStaffLoading={
                 isCoachesLoading || isManagersLoading || isAdminsLoading
               }
@@ -455,7 +500,7 @@ class PeopleLayout extends Component {
               }
               personID={personID}
               personInfo={staff[personID]}
-              institutionID={userID}
+              institutionID={activeInstitutionID}
               actions={{
                 editPerson: (id, info) => editPerson(id, info),
                 closeModal: () => closeEditPersonDialog()
@@ -529,7 +574,7 @@ class PeopleLayout extends Component {
                   isLoading={isInviteeLoading}
                   inviteeID={inviteeID}
                   inviteeInfo={inviteeInfo}
-                  institutionID={userID}
+                  institutionID={activeInstitutionID}
                   actions={{
                     editRoles: () => editRoles(),
                     invitePerson: (id, info) => invitePerson(id, info),
