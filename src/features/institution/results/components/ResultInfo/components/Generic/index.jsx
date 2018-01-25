@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import Avatar from "material-ui/Avatar";
 import { grey, green, lightBlue, red } from "material-ui/colors";
+import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import defaultEmblemURL from "../../../../images/default-emblem-url.png";
@@ -226,7 +227,7 @@ class Generic extends Component {
     const { opponents } = this.state;
 
     return (
-      <div key={`result-${teamID}`} className={classes.wrapper}>
+      <div className={classes.wrapper}>
         {_.toPairs(opponents).map(([opponentID, opponentInfo]) => {
           const { ourScore, theirScore } = opponentInfo;
 
@@ -248,7 +249,7 @@ class Generic extends Component {
             : "";
 
           return (
-            <div
+            <Paper
               key={`result-${teamID}${opponentID}`}
               className={classes.teamsWrapper}
             >
@@ -321,7 +322,7 @@ class Generic extends Component {
                   </div>
                 </div>
               )}
-            </div>
+            </Paper>
           );
         })}
       </div>
@@ -334,7 +335,7 @@ class Generic extends Component {
     const { opponents } = this.state;
 
     return (
-      <div key={`result-${teamID}`} className={classes.wrapper}>
+      <div className={classes.wrapper}>
         {_.toPairs(opponents).map(([opponentID, opponentInfo]) => {
           const { ourScore, theirScore } = opponentInfo;
 
@@ -356,7 +357,7 @@ class Generic extends Component {
             : "";
 
           return (
-            <div
+            <Paper
               key={`result-${teamID}${opponentID}`}
               className={classes.teamsWrapper}
             >
@@ -442,7 +443,7 @@ class Generic extends Component {
                   </div>
                 </div>
               )}
-            </div>
+            </Paper>
           );
         })}
       </div>
