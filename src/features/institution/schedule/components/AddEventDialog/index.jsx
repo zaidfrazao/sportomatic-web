@@ -15,6 +15,7 @@ import { grey, lightBlue, orange } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
+import moment from "moment";
 import Radio, { RadioGroup } from "material-ui/Radio";
 import RemoveIcon from "material-ui-icons/Delete";
 import Select from "material-ui/Select";
@@ -138,7 +139,7 @@ class AddEventDialog extends Component {
   state = {
     title: "Practice",
     type: "PRACTICE",
-    date: new Date(Date.now()).toISOString().slice(0, 10),
+    date: moment(new Date(Date.now())).format("YYYY-MM-DD"),
     startTime: "12:00",
     endTime: "13:00",
     venue: "",

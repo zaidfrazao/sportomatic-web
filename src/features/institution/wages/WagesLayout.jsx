@@ -123,7 +123,7 @@ class WagesLayout extends Component {
     const { isStaffLoading, isWagesByDateLoading } = this.props.loadingStatus;
     const { loadWagesByDate } = this.props.actions;
 
-    if (isStaffLoading) {
+    if (isStaffLoading || activeInstitutionID === "") {
       return (
         <div className={classes.loaderWrapper}>
           <CircularProgress />
@@ -196,14 +196,14 @@ class WagesLayout extends Component {
   }
 
   renderLogs() {
-    const { classes, staff } = this.props;
+    const { classes, staff, activeInstitutionID } = this.props;
     const { coachID } = this.props.match.params;
     const { isStaffLoading } = this.props.loadingStatus;
 
     const ad = this.createAd();
     const filteredStaff = this.getStaffCardsInfo(this.filterPeople(staff));
 
-    if (isStaffLoading) {
+    if (isStaffLoading || activeInstitutionID === "") {
       return (
         <div>
           <div className={classes.adWrapper}>{ad}</div>
@@ -310,7 +310,7 @@ class WagesLayout extends Component {
       return (
         <div className={classes.outerWrapper}>
           <AppBar position="static" color="default">
-            {isStaffLoading || !staff[coachID] ? (
+            {isStaffLoading || !staff[coachID] || activeInstitutionID === "" ? (
               <Typography className={classes.name} type="title" component="h2">
                 Loading...
               </Typography>
@@ -340,7 +340,7 @@ class WagesLayout extends Component {
             <div className={classes.adWrapper}>{ad}</div>
             <WageHistory
               institutionID={activeInstitutionID}
-              isLoading={isWagesByCoachLoading}
+              isLoading={isWagesByCoachLoading || activeInstitutionID === ""}
               isMobile={isMobile}
               isTablet={isTablet}
               wages={wagesByCoach}

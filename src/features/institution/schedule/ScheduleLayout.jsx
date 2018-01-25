@@ -137,10 +137,21 @@ class ScheduleLayout extends Component {
         .endOf("month")
         .toDate();
 
-      loadEvents(activeInstitutionID, minDate, maxDate);
+      if (
+        events === {} ||
+        !moment(dateSelected).isSame(
+          moment(this.props.match.params.dateSelected),
+          "month"
+        )
+      ) {
+        loadEvents(activeInstitutionID, minDate, maxDate);
+      }
     }
 
-    if (activeInstitutionID !== this.props.activeInstitutionID) {
+    if (
+      activeInstitutionID !== this.props.activeInstitutionID &&
+      activeInstitutionID !== ""
+    ) {
       if (dateSelected) {
         const minDate = moment(dateSelected)
           .startOf("month")
@@ -380,7 +391,7 @@ class ScheduleLayout extends Component {
     if (!dateSelected) {
       return (
         <Redirect
-          to={`/admin/schedule/${currentDate.toISOString().slice(0, 10)}`}
+          to={`/admin/schedule/${moment(currentDate).format("YYYY-MM-DD")}`}
         />
       );
     }
@@ -413,6 +424,8 @@ class ScheduleLayout extends Component {
       isPastEvent = eventDate < currentDate;
     }
 
+    console.log(coaches);
+
     if (currentView === "EVENT_INFO") {
       return (
         <div className={classes.contentWrapper}>
@@ -422,10 +435,10 @@ class ScheduleLayout extends Component {
             teams={teams}
             info={events[eventID]}
             eventID={eventID}
-            isInfoLoading={isEventsLoading}
-            isCoachesLoading={isCoachesLoading}
-            isManagersLoading={isManagersLoading}
-            isTeamsLoading={isTeamsLoading}
+            isInfoLoading={isEventsLoading || activeInstitutionID === ""}
+            isCoachesLoading={isCoachesLoading || activeInstitutionID === ""}
+            isManagersLoading={isManagersLoading || activeInstitutionID === ""}
+            isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
             isPastEvent={isPastEvent}
             isMobile={isMobile}
             isTablet={isTablet}
@@ -448,11 +461,12 @@ class ScheduleLayout extends Component {
               isEventsLoading ||
               isCoachesLoading ||
               isManagersLoading ||
-              isTeamsLoading
+              isTeamsLoading ||
+              activeInstitutionID === ""
             }
             isMobile={isMobile}
             isTablet={isTablet}
-            minDate={currentDate.toISOString().slice(0, 10)}
+            minDate={moment(currentDate).format("YYYY-MM-DD")}
             initialDate={dateSelected}
             teams={teams}
             coaches={coaches}
@@ -613,8 +627,10 @@ class ScheduleLayout extends Component {
             isTablet={isTablet}
             institutionID={activeInstitutionID}
             currentView={currentView}
-            isEventsLoading={isEventsLoading}
-            isMinDateLoading={isCreationDateLoading}
+            isEventsLoading={isEventsLoading || activeInstitutionID === ""}
+            isMinDateLoading={
+              isCreationDateLoading || activeInstitutionID === ""
+            }
             actions={{
               updateView,
               cancelEvent
@@ -628,9 +644,10 @@ class ScheduleLayout extends Component {
               isEventsLoading ||
               isCoachesLoading ||
               isManagersLoading ||
-              isTeamsLoading
+              isTeamsLoading ||
+              activeInstitutionID === ""
             }
-            minDate={currentDate.toISOString().slice(0, 10)}
+            minDate={moment(currentDate).format("YYYY-MM-DD")}
             initialDate={dateSelected}
             institutionID={activeInstitutionID}
             teams={teams}

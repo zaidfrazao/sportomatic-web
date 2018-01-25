@@ -136,7 +136,11 @@ class ResultsLayout extends Component {
       fetchInstitutionEmblem
     } = nextProps.actions;
 
-    if (teamID !== this.props.match.params.teamID && teamID) {
+    if (
+      teamID !== this.props.match.params.teamID &&
+      teamID &&
+      activeInstitutionID !== ""
+    ) {
       loadEventsByTeam(activeInstitutionID, teamID);
     }
 
@@ -204,7 +208,7 @@ class ResultsLayout extends Component {
       editResult
     } = this.props.actions;
 
-    if (isTeamsLoading) {
+    if (isTeamsLoading || activeInstitutionID === "") {
       return (
         <div className={classes.loaderWrapper}>
           <CircularProgress />
@@ -272,7 +276,7 @@ class ResultsLayout extends Component {
             </div>
           )}
           <Button
-            disabled={isEventsByDateLoading}
+            disabled={isEventsByDateLoading || activeInstitutionID === ""}
             className={classes.loadMoreButton}
             raised
             onClick={() => loadEventsByDate(activeInstitutionID, lastVisible)}
@@ -285,14 +289,14 @@ class ResultsLayout extends Component {
   }
 
   renderLogs() {
-    const { classes } = this.props;
+    const { classes, activeInstitutionID } = this.props;
     const { teamID } = this.props.match.params;
     const { isTeamsLoading } = this.props.loadingStatus;
 
     const ad = this.createAd();
     const filteredTeams = this.getTeamsList(this.filterTeams());
 
-    if (isTeamsLoading) {
+    if (isTeamsLoading || activeInstitutionID === "") {
       return (
         <div>
           <div className={classes.adWrapper}>{ad}</div>
@@ -394,7 +398,8 @@ class ResultsLayout extends Component {
       isTablet,
       eventsByTeam,
       teams,
-      filters
+      filters,
+      activeInstitutionID
     } = this.props;
     const { currentTab, institutionEmblemURL } = this.props.uiConfig;
     const {
@@ -434,7 +439,9 @@ class ResultsLayout extends Component {
         return (
           <div className={classes.outerWrapper}>
             <AppBar position="static" color="default">
-              {isEventsByTeamLoading || !eventsByTeam[eventID] ? (
+              {isEventsByTeamLoading ||
+              !eventsByTeam[eventID] ||
+              activeInstitutionID === "" ? (
                 <Typography
                   className={classes.name}
                   type="title"
@@ -496,7 +503,9 @@ class ResultsLayout extends Component {
         return (
           <div className={classes.outerWrapper}>
             <AppBar position="static" color="default">
-              {isTeamsLoading || !teams[teamID] ? (
+              {isTeamsLoading ||
+              !teams[teamID] ||
+              activeInstitutionID === "" ? (
                 <Typography
                   className={classes.name}
                   type="title"
@@ -567,7 +576,7 @@ class ResultsLayout extends Component {
                     </Paper>
                   );
                 })}
-                {isEventsByTeamLoading && (
+                {(isEventsByTeamLoading || activeInstitutionID === "") && (
                   <div className={classes.loaderWrapper}>
                     <CircularProgress />
                   </div>

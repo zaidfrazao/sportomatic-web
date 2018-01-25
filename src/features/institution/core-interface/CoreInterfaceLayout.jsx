@@ -263,6 +263,7 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={
                       accountInfo.lastAccessed.institutionID || ""
                     }
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route exact path={`/admin/hours/:coachID`}>
@@ -272,6 +273,7 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={
                       accountInfo.lastAccessed.institutionID || ""
                     }
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route exact path={`/admin/results/`}>
@@ -281,6 +283,7 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={
                       accountInfo.lastAccessed.institutionID || ""
                     }
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route exact path={`/admin/results/:teamID`}>
@@ -290,6 +293,7 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={
                       accountInfo.lastAccessed.institutionID || ""
                     }
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route exact path={`/admin/results/:teamID/:eventID`}>
@@ -299,6 +303,7 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={
                       accountInfo.lastAccessed.institutionID || ""
                     }
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route exact path={`/admin/people/`}>
@@ -308,6 +313,7 @@ class CoreInterfaceLayout extends Component {
                     }
                     isMobile={isMobile}
                     isTablet={isTablet}
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route path={`/admin/people/:personID`}>
@@ -317,6 +323,7 @@ class CoreInterfaceLayout extends Component {
                     }
                     isMobile={isMobile}
                     isTablet={isTablet}
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route exact path={`/admin/teams/`}>
@@ -326,6 +333,7 @@ class CoreInterfaceLayout extends Component {
                     }
                     isMobile={isMobile}
                     isTablet={isTablet}
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route path={`/admin/teams/:teamID`}>
@@ -335,6 +343,7 @@ class CoreInterfaceLayout extends Component {
                     }
                     isMobile={isMobile}
                     isTablet={isTablet}
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route exact path={`/admin/schedule/`}>
@@ -344,6 +353,7 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={
                       accountInfo.lastAccessed.institutionID || ""
                     }
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route exact path={`/admin/schedule/:dateSelected`}>
@@ -353,6 +363,7 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={
                       accountInfo.lastAccessed.institutionID || ""
                     }
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route exact path={`/admin/schedule/:dateSelected/:eventID`}>
@@ -362,10 +373,11 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={
                       accountInfo.lastAccessed.institutionID || ""
                     }
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route exact path={`/admin/settings/`}>
-                  <Settings />
+                  <Settings isAccountInfoLoading={isAccountInfoLoading} />
                 </Route>
                 <Route exact path={`/admin/wages`}>
                   <Wages
@@ -374,6 +386,7 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={
                       accountInfo.lastAccessed.institutionID || ""
                     }
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
                 <Route path={`/admin/wages/:coachID`}>
@@ -383,6 +396,7 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={
                       accountInfo.lastAccessed.institutionID || ""
                     }
+                    isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
               </Switch>

@@ -7,6 +7,7 @@ import classNames from "classnames";
 import EventIcon from "material-ui-icons/FiberManualRecord";
 import { grey, lightBlue, orange, red } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
+import moment from "moment";
 import NextIcon from "material-ui-icons/ArrowForward";
 import Next2Icon from "material-ui-icons/LastPage";
 import Paper from "material-ui/Paper";
@@ -294,8 +295,9 @@ class Calendar extends Component {
                         minDate.getDate() + 1
                       );
                     }
-                    const ISOdate = newDate.toISOString().slice(0, 10);
-                    history.push(`/admin/schedule/${ISOdate}`);
+                    history.push(
+                      `/admin/schedule/${moment(newDate).format("YYYY-MM-DD")}`
+                    );
                   }}
                 >
                   <PreviousIcon
@@ -325,14 +327,14 @@ class Calendar extends Component {
                   disabled={nextDisabled}
                   onClick={() => {
                     const date = new Date(dateSelected);
-                    const ISOdate = new Date(
+                    const newDate = new Date(
                       date.getFullYear(),
                       date.getMonth() + 1,
                       2
-                    )
-                      .toISOString()
-                      .slice(0, 10);
-                    history.push(`/admin/schedule/${ISOdate}`);
+                    );
+                    history.push(
+                      `/admin/schedule/${moment(newDate).format("YYYY-MM-DD")}`
+                    );
                   }}
                 >
                   <NextIcon
@@ -465,15 +467,16 @@ class Calendar extends Component {
                       minDate={minDate}
                       showNavigation={false}
                       onChange={date => {
-                        const ISOdate = new Date(
+                        const newDate = new Date(
                           date.getFullYear(),
                           date.getMonth(),
-                          date.getDate(),
-                          date.getHours() + 2
-                        )
-                          .toISOString()
-                          .slice(0, 10);
-                        history.push(`/admin/schedule/${ISOdate}`);
+                          date.getDate()
+                        );
+                        history.push(
+                          `/admin/schedule/${moment(newDate).format(
+                            "YYYY-MM-DD"
+                          )}`
+                        );
                         updateView("EVENTS_LIST");
                       }}
                       nextLabel={<NextIcon />}
@@ -556,15 +559,13 @@ class Calendar extends Component {
       prevDate = new Date(
         dateSelectedObject.getFullYear(),
         dateSelectedObject.getMonth() - 1,
-        dateSelectedObject.getDate(),
-        dateSelectedObject.getHours() + 2
+        dateSelectedObject.getDate()
       );
     } else {
       prevDate = new Date(
         dateSelectedObject.getFullYear(),
         dateSelectedObject.getMonth(),
-        dateSelectedObject.getDate() - 1,
-        dateSelectedObject.getHours() + 2
+        dateSelectedObject.getDate() - 1
       );
     }
 
@@ -584,28 +585,24 @@ class Calendar extends Component {
                   disabled={prevDisabled}
                   onClick={() => {
                     const date = new Date(dateSelected);
-                    let ISOdate = new Date();
+                    let newDate = new Date();
                     if (currentView === "SCHEDULE") {
-                      ISOdate = new Date(
+                      newDate = new Date(
                         date.getFullYear(),
                         date.getMonth() - 1,
-                        date.getDate(),
-                        date.getHours() + 2
-                      )
-                        .toISOString()
-                        .slice(0, 10);
+                        date.getDate()
+                      );
                     } else {
-                      ISOdate = new Date(
+                      newDate = new Date(
                         date.getFullYear(),
                         date.getMonth(),
-                        date.getDate() - 1,
-                        date.getHours() + 2
-                      )
-                        .toISOString()
-                        .slice(0, 10);
+                        date.getDate() - 1
+                      );
                     }
 
-                    history.push(`/admin/schedule/${ISOdate}`);
+                    history.push(
+                      `/admin/schedule/${moment(newDate).format("YYYY-MM-DD")}`
+                    );
                   }}
                 >
                   <PreviousIcon
@@ -640,28 +637,24 @@ class Calendar extends Component {
                   disabled={nextDisabled}
                   onClick={() => {
                     const date = new Date(dateSelected);
-                    let ISOdate = new Date();
+                    let newDate = new Date();
                     if (currentView === "SCHEDULE") {
-                      ISOdate = new Date(
+                      newDate = new Date(
                         date.getFullYear(),
                         date.getMonth() + 1,
-                        date.getDate(),
-                        date.getHours() + 2
-                      )
-                        .toISOString()
-                        .slice(0, 10);
+                        date.getDate()
+                      );
                     } else {
-                      ISOdate = new Date(
+                      newDate = new Date(
                         date.getFullYear(),
                         date.getMonth(),
-                        date.getDate() + 1,
-                        date.getHours() + 2
-                      )
-                        .toISOString()
-                        .slice(0, 10);
+                        date.getDate() + 1
+                      );
                     }
 
-                    history.push(`/admin/schedule/${ISOdate}`);
+                    history.push(
+                      `/admin/schedule/${moment(newDate).format("YYYY-MM-DD")}`
+                    );
                   }}
                 >
                   <NextIcon
@@ -754,15 +747,16 @@ class Calendar extends Component {
                         minDate={minDate}
                         showNavigation={false}
                         onChange={date => {
-                          const ISOdate = new Date(
+                          const newDate = new Date(
                             date.getFullYear(),
                             date.getMonth(),
-                            date.getDate(),
-                            date.getHours() + 2
-                          )
-                            .toISOString()
-                            .slice(0, 10);
-                          history.push(`/admin/schedule/${ISOdate}`);
+                            date.getDate()
+                          );
+                          history.push(
+                            `/admin/schedule/${moment(newDate).format(
+                              "YYYY-MM-DD"
+                            )}`
+                          );
                           updateView("EVENTS_LIST");
                         }}
                         nextLabel={<NextIcon />}

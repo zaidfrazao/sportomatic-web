@@ -127,7 +127,10 @@ class PeopleLayout extends Component {
       });
     }
 
-    if (activeInstitutionID !== nextProps.activeInstitutionID) {
+    if (
+      activeInstitutionID !== nextProps.activeInstitutionID &&
+      nextProps.activeInstitutionID !== ""
+    ) {
       loadCoaches(nextProps.activeInstitutionID);
       loadManagers(nextProps.activeInstitutionID);
       loadAdmins(nextProps.activeInstitutionID);
@@ -480,9 +483,12 @@ class PeopleLayout extends Component {
               info={staff[personID]}
               institutionID={activeInstitutionID}
               isStaffLoading={
-                isCoachesLoading || isManagersLoading || isAdminsLoading
+                isCoachesLoading ||
+                isManagersLoading ||
+                isAdminsLoading ||
+                activeInstitutionID === ""
               }
-              isTeamsLoading={isTeamsLoading}
+              isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
               isMobile={isMobile}
               isTablet={isTablet}
               actions={{
@@ -496,7 +502,8 @@ class PeopleLayout extends Component {
                 isCoachesLoading ||
                 isManagersLoading ||
                 isAdminsLoading ||
-                isEditPersonLoading
+                isEditPersonLoading ||
+                activeInstitutionID === ""
               }
               personID={personID}
               personInfo={staff[personID]}
@@ -558,7 +565,10 @@ class PeopleLayout extends Component {
                   updateSearch={updateSearch}
                 />
                 <div className={classes.adWrapper}>{ad}</div>
-                {isCoachesLoading || isManagersLoading || isAdminsLoading ? (
+                {activeInstitutionID === "" ||
+                isCoachesLoading ||
+                isManagersLoading ||
+                isAdminsLoading ? (
                   <div className={classes.loaderWrapper}>
                     <CircularProgress />
                   </div>
@@ -571,7 +581,7 @@ class PeopleLayout extends Component {
                 <InvitePersonModal
                   isOpen={isInvitePersonModalOpen}
                   isMobile={isMobile}
-                  isLoading={isInviteeLoading}
+                  isLoading={isInviteeLoading || activeInstitutionID === ""}
                   inviteeID={inviteeID}
                   inviteeInfo={inviteeInfo}
                   institutionID={activeInstitutionID}
@@ -594,7 +604,10 @@ class PeopleLayout extends Component {
                 }
               >
                 <div className={classes.adWrapper}>{ad}</div>
-                {isCoachesLoading || isManagersLoading || isAdminsLoading ? (
+                {activeInstitutionID === "" ||
+                isCoachesLoading ||
+                isManagersLoading ||
+                isAdminsLoading ? (
                   <div className={classes.loaderWrapper}>
                     <CircularProgress />
                   </div>

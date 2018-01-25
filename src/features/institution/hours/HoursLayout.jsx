@@ -183,7 +183,7 @@ class HoursLayout extends Component {
       approveHours
     } = this.props.actions;
 
-    if (isStaffLoading) {
+    if (isStaffLoading || activeInstitutionID === "") {
       return (
         <div className={classes.loaderWrapper}>
           <CircularProgress />
@@ -261,14 +261,14 @@ class HoursLayout extends Component {
   }
 
   renderLogs() {
-    const { classes, staff } = this.props;
+    const { classes, staff, activeInstitutionID } = this.props;
     const { coachID } = this.props.match.params;
     const { isStaffLoading } = this.props.loadingStatus;
 
     const ad = this.createAd();
     const filteredStaff = this.getStaffCardsInfo(this.filterPeople(staff));
 
-    if (isStaffLoading) {
+    if (isStaffLoading || activeInstitutionID === "") {
       return (
         <div>
           <div className={classes.adWrapper}>{ad}</div>
@@ -375,7 +375,7 @@ class HoursLayout extends Component {
       return (
         <div className={classes.outerWrapper}>
           <AppBar position="static" color="default">
-            {isStaffLoading || !staff[coachID] ? (
+            {isStaffLoading || !staff[coachID] || activeInstitutionID === "" ? (
               <Typography className={classes.name} type="title" component="h2">
                 Loading...
               </Typography>
@@ -405,7 +405,7 @@ class HoursLayout extends Component {
             <div className={classes.adWrapper}>{ad}</div>
             <HoursHistory
               institutionID={activeInstitutionID}
-              isLoading={isEventsByCoachLoading}
+              isLoading={isEventsByCoachLoading || activeInstitutionID === ""}
               isMobile={isMobile}
               isTablet={isTablet}
               events={eventsByCoach}

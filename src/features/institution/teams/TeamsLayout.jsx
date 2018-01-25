@@ -277,7 +277,7 @@ class TeamsLayout extends Component {
         {teamID ? (
           <div className={classes.infoWrapper}>
             <TeamInfo
-              isTeamsLoading={isTeamsLoading}
+              isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
               isCoachesLoading={isCoachesLoading}
               isManagersLoading={isManagersLoading}
               coaches={coaches}
@@ -295,7 +295,11 @@ class TeamsLayout extends Component {
             <EditTeamDialog
               isOpen={isEditTeamDialogOpen}
               isMobile={isMobile}
-              isLoading={isEditTeamDialogLoading || isOptionsLoading}
+              isLoading={
+                isEditTeamDialogLoading ||
+                isOptionsLoading ||
+                activeInstitutionID === ""
+              }
               teamID={teamID}
               initialTeamInfo={teams[teamID]}
               institutionID={activeInstitutionID}
@@ -332,7 +336,7 @@ class TeamsLayout extends Component {
               updateSearch={updateSearch}
             />
             <div className={classes.adWrapper}>{ad}</div>
-            {isTeamsLoading ? (
+            {isTeamsLoading || activeInstitutionID === "" ? (
               <div className={classes.loaderWrapper}>
                 <CircularProgress />
               </div>
@@ -353,7 +357,11 @@ class TeamsLayout extends Component {
         <AddTeamDialog
           isOpen={isAddTeamDialogOpen}
           isMobile={isMobile}
-          isLoading={isAddTeamDialogLoading || isOptionsLoading}
+          isLoading={
+            isAddTeamDialogLoading ||
+            isOptionsLoading ||
+            activeInstitutionID === ""
+          }
           institutionID={activeInstitutionID}
           options={options}
           coaches={coaches}
