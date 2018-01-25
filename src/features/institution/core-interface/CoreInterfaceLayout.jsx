@@ -89,13 +89,15 @@ class CoreInterfaceLayout extends Component {
     const {
       initUser,
       loadUnreadNotifications,
-      loadReadNotifications
+      loadReadNotifications,
+      loadAccountInfo
     } = this.props.actions;
     const { userID } = this.props.uiConfig;
     initUser();
     if (userID !== "") {
       loadUnreadNotifications(userID);
       loadReadNotifications(userID);
+      loadAccountInfo(userID);
     }
     this.updateCoreUI(pathname);
   }
@@ -104,7 +106,8 @@ class CoreInterfaceLayout extends Component {
     const { pathname } = nextProps.location;
     const {
       loadUnreadNotifications,
-      loadReadNotifications
+      loadReadNotifications,
+      loadAccountInfo
     } = nextProps.actions;
     const { userID } = nextProps.uiConfig;
 
@@ -115,6 +118,7 @@ class CoreInterfaceLayout extends Component {
     if (userID !== this.props.uiConfig.userID) {
       loadUnreadNotifications(userID);
       loadReadNotifications(userID);
+      loadAccountInfo(userID);
     }
   }
 
@@ -181,13 +185,17 @@ class CoreInterfaceLayout extends Component {
       markNotificationsRead
     } = this.props.actions;
     const { windowWidth } = this.state;
-    const { isNotificationsLoading } = this.props.loadingStatus;
+    const {
+      isNotificationsLoading,
+      isAccountInfoLoading
+    } = this.props.loadingStatus;
     const {
       isLoggedIn,
       type,
       accountInfo,
       appBarTitle,
-      isSideMenuOpen
+      isSideMenuOpen,
+      userID
     } = this.props.uiConfig;
     const { isSettingsAlertOpen, isLogOutModalOpen } = this.props.dialogs;
     const isMobile = windowWidth < 600;
@@ -230,10 +238,28 @@ class CoreInterfaceLayout extends Component {
             <div className={classes.main}>
               <Switch>
                 <Route exact path={"/admin/"}>
-                  <Dashboard isTablet={isTablet} />
+                  <Dashboard
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                    activeInstitutionID={
+                      accountInfo.lastAccessed.institutionID || ""
+                    }
+                    accountInfo={accountInfo}
+                    isAccountInfoLoading={isAccountInfoLoading}
+                  />
                 </Route>
                 <Route exact path={`/admin/dashboard/`}>
-                  <Dashboard isTablet={isTablet} />
+                  <Dashboard
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                    activeInstitutionID={
+                      accountInfo.lastAccessed.institutionID || ""
+                    }
+                    accountInfo={accountInfo}
+                    isAccountInfoLoading={isAccountInfoLoading}
+                  />
                 </Route>
                 <Route exact path={`/admin/hours/`}>
                   <Hours

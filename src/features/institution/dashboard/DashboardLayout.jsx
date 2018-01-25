@@ -1,32 +1,142 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
-import PropTypes from "prop-types";
+import _ from "lodash";
+import { grey } from "material-ui/colors";
+import Toolbar from "material-ui/Toolbar";
 import { withStyles } from "material-ui/styles";
 import BannerCarousel from "./components/BannerCarousel";
+import InstitutionSelectCard from "./components/InstitutionSelectCard";
+import RoleSelectCard from "./components/RoleSelectCard";
 // import Button from "material-ui/Button";
 
 const styles = theme => ({
   root: {
     width: "100%"
   },
-  explanation: {
-    margin: "80px auto",
-    maxWidth: 600,
-    "@media (max-width: 760px)": {
-      margin: 40
-    }
+  selectWrapper: {
+    width: "50%"
   },
-  paragraph: {
-    margin: "24px 0"
+  toolbar: {
+    padding: 0,
+    backgroundColor: grey[200],
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "stretch"
   }
 });
 
 class DashboardLayout extends Component {
+  componentWillMount() {
+    const { accountInfo } = this.props;
+    const { loadInstitutionInfo } = this.props.actions;
+
+    if (accountInfo.institutions) {
+      _.toPairs(accountInfo.institutions).map(([id, info]) => {
+        loadInstitutionInfo(id);
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { accountInfo } = nextProps;
+    const { loadInstitutionInfo } = this.props.actions;
+
+    if (accountInfo !== this.props.accountInfo && accountInfo.institutions) {
+      _.toPairs(accountInfo.institutions).map(([id, info]) => {
+        loadInstitutionInfo(id);
+      });
+    }
+  }
+
   render() {
-    const { classes, isTablet } = this.props;
-    // const { createInstitution } = this.props.actions;
+    const {
+      classes,
+      isTablet,
+      isMobile,
+      accountInfo,
+      institutions,
+      userID
+    } = this.props;
+    const { isInstitutionsLoading } = this.props.loadingStatus;
+    const { switchInstitution } = this.props.actions;
+
+    let active = {
+      id: "",
+      role: "ADMIN",
+      institutionName: "",
+      emblemURL: ""
+    };
+    let rolesAvailable = {
+      admin: false,
+      coach: false,
+      manager: false
+    };
+
+    if (accountInfo.lastAccessed) {
+      active.id = accountInfo.lastAccessed.institutionID;
+      active.role = accountInfo.lastAccessed.role;
+    }
+    if (accountInfo.institutions && accountInfo.institutions[active.id]) {
+      rolesAvailable = {
+        admin: accountInfo.institutions[active.id].roles.admin === "APPROVED",
+        coach: accountInfo.institutions[active.id].roles.coach === "APPROVED",
+        manager:
+          accountInfo.institutions[active.id].roles.manager === "APPROVED"
+      };
+    }
+    if (institutions[active.id]) {
+      active.institutionName = institutions[active.id].name;
+      active.emblemURL = institutions[active.id].emblemURL;
+    }
 
     return (
       <div className={classes.root}>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.selectWrapper}>
+            <InstitutionSelectCard
+              isMobile={isMobile}
+              isLoading={isInstitutionsLoading}
+              userID={userID}
+              activeInstitution={{
+                id: active.id,
+                name: active.institutionName
+              }}
+              institutions={_.fromPairs(
+                _.toPairs(institutions).map(([id, info]) => {
+                  return [
+                    id,
+                    {
+                      name: info.name,
+                      rolesAvailable: {
+                        admin:
+                          accountInfo.institutions[id].roles.admin ===
+                          "APPROVED",
+                        coach:
+                          accountInfo.institutions[id].roles.coach ===
+                          "APPROVED",
+                        manager:
+                          accountInfo.institutions[id].roles.manager ===
+                          "APPROVED"
+                      }
+                    }
+                  ];
+                })
+              )}
+              emblemURL={active.emblemURL}
+              actions={{
+                switchInstitution
+              }}
+            />
+          </div>
+          <div className={classes.selectWrapper}>
+            <RoleSelectCard
+              isMobile={isMobile}
+              activeRole={active.role}
+              rolesAvailable={rolesAvailable}
+            />
+          </div>
+        </Toolbar>
         <BannerCarousel isTablet={isTablet} />
         {/*<Button
           onClick={() =>
@@ -124,9 +234,5 @@ class DashboardLayout extends Component {
     );
   }
 }
-
-DashboardLayout.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(DashboardLayout);

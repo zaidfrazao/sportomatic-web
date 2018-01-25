@@ -7,6 +7,12 @@ import firebase from "firebase";
 const NAMESPACE = "sportomatic-web/admin/dashboard";
 
 export const TOGGLE_SIDE_MENU = `${NAMESPACE}/TOGGLE_SIDE_MENU`;
+export const REQUEST_INSTITUTION_INFO = `${NAMESPACE}/REQUEST_INSTITUTION_INFO`;
+export const RECEIVE_INSTITUTION_INFO = `${NAMESPACE}/RECEIVE_INSTITUTION_INFO`;
+export const ERROR_LOADING_INSTITUTION_INFO = `${NAMESPACE}/ERROR_LOADING_INSTITUTION_INFO`;
+export const REQUEST_SWITCH_INSTITUTION = `${NAMESPACE}/REQUEST_SWITCH_INSTITUTION`;
+export const RECEIVE_SWITCH_INSTITUTION = `${NAMESPACE}/RECEIVE_SWITCH_INSTITUTION`;
+export const ERROR_SWITCHING_INSTITUTION = `${NAMESPACE}/ERROR_SWITCHING_INSTITUTION`;
 
 // Reducers
 
@@ -28,16 +34,68 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   }
 }
 
+export const loadingStatusInitialState = {
+  isInstitutionsLoading: false,
+  isSwitchInstitutionLoading: false
+};
+
+function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
+  switch (action.type) {
+    case REQUEST_INSTITUTION_INFO:
+      return {
+        ...state,
+        isInstitutionsLoading: true
+      };
+    case ERROR_LOADING_INSTITUTION_INFO:
+    case RECEIVE_INSTITUTION_INFO:
+      return {
+        ...state,
+        isInstitutionsLoading: false
+      };
+    case REQUEST_SWITCH_INSTITUTION:
+      return {
+        ...state,
+        isSwitchInstitutionLoading: true
+      };
+    case ERROR_SWITCHING_INSTITUTION:
+    case RECEIVE_SWITCH_INSTITUTION:
+      return {
+        ...state,
+        isSwitchInstitutionLoading: false
+      };
+    default:
+      return state;
+  }
+}
+
+function institutionsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RECEIVE_INSTITUTION_INFO:
+      return {
+        ...state,
+        [action.payload.id]: action.payload.info
+      };
+    default:
+      return state;
+  }
+}
+
 export const dashboardReducer = combineReducers({
-  uiConfig: uiConfigReducer
+  uiConfig: uiConfigReducer,
+  loadingStatus: loadingStatusReducer,
+  institutions: institutionsReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.institution.dashboard.uiConfig;
+const loadingStatus = state => state.institution.dashboard.loadingStatus;
+const institutions = state => state.institution.dashboard.institutions;
 
 export const selector = createStructuredSelector({
-  uiConfig
+  uiConfig,
+  loadingStatus,
+  institutions
 });
 
 // Action Creators
@@ -53,5 +111,91 @@ export function createInstitution(info) {
     const db = firebase.firestore();
 
     return db.collection("institutions").add(info);
+  };
+}
+
+export function requestInstitutionInfo() {
+  return {
+    type: REQUEST_INSTITUTION_INFO
+  };
+}
+
+export function receiveInstitutionInfo(id, info) {
+  return {
+    type: RECEIVE_INSTITUTION_INFO,
+    payload: {
+      id,
+      info
+    }
+  };
+}
+
+export function errorLoadingInstitutionInfo(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_INSTITUTION_INFO,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadInstitutionInfo(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestInstitutionInfo());
+
+    const institutionRef = firebase
+      .firestore()
+      .collection("institutions")
+      .doc(institutionID);
+
+    return institutionRef.onSnapshot(doc => {
+      dispatch(receiveInstitutionInfo(doc.id, doc.data().info));
+    });
+  };
+}
+
+export function requestSwitchInstitution() {
+  return {
+    type: REQUEST_SWITCH_INSTITUTION
+  };
+}
+
+export function receiveSwitchInstitution() {
+  return {
+    type: RECEIVE_SWITCH_INSTITUTION
+  };
+}
+
+export function errorSwitchingInstitution(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_SWITCHING_INSTITUTION,
+    payload: {
+      error
+    }
+  };
+}
+
+export function switchInstitution(userID, institutionID, role) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestSwitchInstitution());
+
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
+    return userRef
+      .update({
+        lastAccessed: {
+          institutionID,
+          role
+        }
+      })
+      .then(() => dispatch(receiveSwitchInstitution()))
+      .catch(error => dispatch(errorSwitchingInstitution(error)));
   };
 }

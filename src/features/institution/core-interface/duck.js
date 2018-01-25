@@ -23,6 +23,9 @@ export const RECEIVE_READ_NOTIFICATIONS = `${NAMESPACE}/RECEIVE_READ_NOTIFICATIO
 export const REQUEST_MARK_NOTIFICATIONS_READ = `${NAMESPACE}/REQUEST_MARK_NOTIFICATIONS_READ`;
 export const RECEIVE_MARK_NOTIFICATIONS_READ = `${NAMESPACE}/RECEIVE_MARK_NOTIFICATIONS_READ`;
 export const ERROR_MARKING_NOTIFICATIONS_READ = `${NAMESPACE}/ERROR_MARKING_NOTIFICATIONS_READ`;
+export const REQUEST_ACCOUNT_INFO = `${NAMESPACE}/REQUEST_ACCOUNT_INFO`;
+export const RECEIVE_ACCOUNT_INFO = `${NAMESPACE}/RECEIVE_ACCOUNT_INFO`;
+export const ERROR_LOADING_ACCOUNT_INFO = `${NAMESPACE}/ERROR_LOADING_ACCOUNT_INFO`;
 
 // Reducers
 
@@ -36,7 +39,7 @@ export const uiConfigInitialState = {
   accountInfo: {
     lastAccessed: {
       institutionID: "",
-      type: "ADMIN"
+      accountType: "ADMIN"
     }
   }
 };
@@ -48,8 +51,12 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         isLoggedIn: action.payload.user.isLoggedIn,
         type: action.payload.user.type,
-        userID: action.payload.user.id,
-        accountInfo: action.payload.user.accountInfo
+        userID: action.payload.user.id
+      };
+    case RECEIVE_ACCOUNT_INFO:
+      return {
+        ...state,
+        accountInfo: action.payload.info
       };
     case SIGN_OUT:
       return {
@@ -109,7 +116,8 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 }
 
 export const loadingStatusInitialState = {
-  isNotificationsLoading: false
+  isNotificationsLoading: false,
+  isAccountInfoLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -125,6 +133,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isNotificationsLoading: false
+      };
+    case REQUEST_ACCOUNT_INFO:
+      return {
+        ...state,
+        isAccountInfoLoading: true
+      };
+    case RECEIVE_ACCOUNT_INFO:
+    case ERROR_LOADING_ACCOUNT_INFO:
+      return {
+        ...state,
+        isAccountInfoLoading: false
       };
     default:
       return state;
@@ -188,12 +207,7 @@ export const selector = createStructuredSelector({
 // Action Creators
 
 export function initUser() {
-  let accountInfo = {};
-  if (localStorage.accountInfo) {
-    accountInfo = JSON.parse(localStorage.accountInfo);
-  }
   const user = {
-    accountInfo,
     id: localStorage.userID || "",
     email: localStorage.email || "",
     isLoggedIn: localStorage.isLoggedIn === "true" || false,
@@ -383,5 +397,47 @@ export function markNotificationsRead(unreadNotifications) {
       .commit()
       .then(() => dispatch(receiveMarkNotificationsRead()))
       .catch(error => dispatch(errorMarkingNotificationsRead(error)));
+  };
+}
+
+export function requestAccountInfo() {
+  return {
+    type: REQUEST_ACCOUNT_INFO
+  };
+}
+
+export function receiveAccountInfo(info) {
+  return {
+    type: RECEIVE_ACCOUNT_INFO,
+    payload: {
+      info
+    }
+  };
+}
+
+export function errorLoadingAccountInfo(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_ACCOUNT_INFO,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadAccountInfo(userID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestAccountInfo());
+
+    const userRef = firebase
+      .firestore()
+      .collection("users")
+      .doc(userID);
+
+    return userRef.onSnapshot(doc => {
+      dispatch(receiveAccountInfo(doc.data()));
+    });
   };
 }
