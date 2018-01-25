@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import Avatar from "material-ui/Avatar";
+import { grey } from "material-ui/colors";
 import Input from "material-ui/Input";
 import Select from "material-ui/Select";
 import Typography from "material-ui/Typography";
@@ -10,24 +11,33 @@ import defaultEmblem from "../../image/default-emblem.jpg";
 const styles = {
   avatar: {
     width: 40,
-    height: 40
+    height: 40,
+    backgroundColor: grey[300]
   },
   button: {
     flex: 1
   },
+  select: {
+    width: "100%"
+  },
   textWrapper: {
     margin: 16,
     "@media (max-width: 600px)": {
-      textAlign: "center"
+      margin: 8,
+      textAlign: "center",
+      width: "100%"
     }
   },
   wrapper: {
-    padding: 8,
+    padding: "16px 8px",
     flexGrow: 1,
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    "@media (max-width: 600px)": {
+      flexDirection: "column"
+    }
   }
 };
 
@@ -45,18 +55,20 @@ class RoleSelectCard extends Component {
 
     return (
       <div className={classes.wrapper}>
-        {!isMobile && (
-          <Avatar
-            src={emblemURL === "" ? defaultEmblem : emblemURL}
-            aria-label="institution emblem"
-          />
-        )}
+        <Avatar
+          className={classes.avatar}
+          src={emblemURL === "" ? defaultEmblem : emblemURL}
+          aria-label="institution emblem"
+        />
         <div className={classes.textWrapper}>
-          <Typography type="headline" component="h2">
-            {"Institution"}
-          </Typography>
+          {!isMobile && (
+            <Typography type="headline" component="h2">
+              {"Institution"}
+            </Typography>
+          )}
           <Select
             native
+            className={classes.select}
             value={activeInstitution.id}
             onChange={e => {
               const newInstitutionID = e.target.value;

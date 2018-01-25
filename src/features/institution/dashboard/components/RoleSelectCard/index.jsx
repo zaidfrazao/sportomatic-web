@@ -16,19 +16,27 @@ const styles = {
   button: {
     flex: 1
   },
+  select: {
+    width: "100%"
+  },
   textWrapper: {
     margin: 16,
     "@media (max-width: 600px)": {
-      textAlign: "center"
+      margin: 8,
+      textAlign: "center",
+      width: "100%"
     }
   },
   wrapper: {
-    padding: 8,
+    padding: "16px 8px",
     flexGrow: 1,
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    "@media (max-width: 600px)": {
+      flexDirection: "column"
+    }
   }
 };
 
@@ -52,19 +60,20 @@ class RoleSelectCard extends Component {
 
     return (
       <div className={classes.wrapper}>
-        {!isMobile && (
-          <Avatar
-            src={roleIcon}
-            className={classes.avatar}
-            aria-label="role icon"
-          />
-        )}
+        <Avatar
+          src={roleIcon}
+          className={classes.avatar}
+          aria-label="role icon"
+        />
         <div className={classes.textWrapper}>
-          <Typography type="headline" component="h2">
-            {"Role"}
-          </Typography>
+          {!isMobile && (
+            <Typography type="headline" component="h2">
+              {"Role"}
+            </Typography>
+          )}
           <Select
             native
+            className={classes.select}
             value={activeRole}
             onChange={e => switchRole(userID, e.target.value)}
             input={<Input id="institution selection" />}

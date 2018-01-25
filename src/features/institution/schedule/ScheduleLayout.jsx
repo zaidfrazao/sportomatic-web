@@ -424,8 +424,6 @@ class ScheduleLayout extends Component {
       isPastEvent = eventDate < currentDate;
     }
 
-    console.log(coaches);
-
     if (currentView === "EVENT_INFO") {
       return (
         <div className={classes.contentWrapper}>
