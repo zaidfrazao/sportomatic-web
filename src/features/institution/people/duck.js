@@ -43,6 +43,13 @@ export const REQUEST_EDIT_PERSON = `${NAMESPACE}/REQUEST_EDIT_PERSON`;
 export const RECEIVE_EDIT_PERSON = `${NAMESPACE}/RECEIVE_EDIT_PERSON`;
 export const ERROR_EDITTING_PERSON = `${NAMESPACE}/ERROR_EDITTING_PERSON`;
 export const EDIT_ROLES = `${NAMESPACE}/EDIT_ROLES`;
+export const REQUEST_EVENTS_BY_COACH = `${NAMESPACE}/REQUEST_EVENTS_BY_COACH`;
+export const RECEIVE_EVENTS_BY_COACH = `${NAMESPACE}/RECEIVE_EVENTS_BY_COACH`;
+export const ERROR_LOADING_EVENTS_BY_COACH = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_COACH`;
+export const REQUEST_EVENTS_BY_MANAGER = `${NAMESPACE}/REQUEST_EVENTS_BY_MANAGER`;
+export const RECEIVE_EVENTS_BY_MANAGER = `${NAMESPACE}/RECEIVE_EVENTS_BY_MANAGER`;
+export const ERROR_LOADING_EVENTS_BY_MANAGER = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_MANAGER`;
+
 export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
 
 // Reducers
@@ -223,7 +230,9 @@ export const loadingStatusInitialState = {
   isAdminsLoading: false,
   isTeamsLoading: false,
   isInviteeLoading: false,
-  isEditPersonLoading: false
+  isEditPersonLoading: false,
+  isEventsByCoachLoading: false,
+  isEventsByManagerLoading: false
 };
 
 function loadingStatusListReducer(
@@ -307,6 +316,52 @@ function loadingStatusListReducer(
         ...state,
         isInviteeLoading: false
       };
+    case REQUEST_EVENTS_BY_COACH:
+      return {
+        ...state,
+        isEventsByCoachLoading: true
+      };
+    case RECEIVE_EVENTS_BY_COACH:
+    case ERROR_LOADING_EVENTS_BY_COACH:
+      return {
+        ...state,
+        isEventsByCoachLoading: false
+      };
+    case REQUEST_EVENTS_BY_MANAGER:
+      return {
+        ...state,
+        isEventsByManagerLoading: true
+      };
+    case RECEIVE_EVENTS_BY_MANAGER:
+    case ERROR_LOADING_EVENTS_BY_MANAGER:
+      return {
+        ...state,
+        isEventsByManagerLoading: false
+      };
+    default:
+      return state;
+  }
+}
+
+function eventsByCoachReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case REQUEST_EVENTS_BY_COACH:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_EVENTS_BY_COACH:
+      return action.payload.events;
+    default:
+      return state;
+  }
+}
+
+function eventsByManagerReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case REQUEST_EVENTS_BY_MANAGER:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_EVENTS_BY_MANAGER:
+      return action.payload.events;
     default:
       return state;
   }
@@ -319,7 +374,9 @@ export const peopleReducer = combineReducers({
   loadingStatus: loadingStatusListReducer,
   teams: teamsReducer,
   requests: requestsReducer,
-  filters: filterReducer
+  filters: filterReducer,
+  eventsByCoach: eventsByCoachReducer,
+  eventsByManager: eventsByManagerReducer
 });
 
 // Selectors
@@ -331,6 +388,8 @@ const teams = state => state.institution.people.teams;
 const dialogs = state => state.institution.people.dialogs;
 const loadingStatus = state => state.institution.people.loadingStatus;
 const filters = state => state.institution.people.filters;
+const eventsByCoach = state => state.institution.people.eventsByCoach;
+const eventsByManager = state => state.institution.people.eventsByManager;
 
 export const selector = createStructuredSelector({
   uiConfig,
@@ -339,7 +398,9 @@ export const selector = createStructuredSelector({
   loadingStatus,
   teams,
   requests,
-  filters
+  filters,
+  eventsByCoach,
+  eventsByManager
 });
 
 // Action Creators
@@ -815,5 +876,101 @@ export function editPerson(userID, info) {
       .set(info)
       .then(() => dispatch(receiveEditPerson()))
       .catch(error => dispatch(errorEdittingPerson(error)));
+  };
+}
+
+export function requestEventsByCoach() {
+  return {
+    type: REQUEST_EVENTS_BY_COACH
+  };
+}
+
+export function receiveEventsByCoach(events) {
+  return {
+    type: RECEIVE_EVENTS_BY_COACH,
+    payload: {
+      events
+    }
+  };
+}
+
+export function errorLoadingEventsByCoach(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_EVENTS_BY_COACH,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadEventsByCoach(institutionID, coachID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEventsByCoach());
+
+    let eventsRef = firebase
+      .firestore()
+      .collection("events")
+      .where("institutionID", "==", institutionID)
+      .where("requiredInfo.status", "==", "ACTIVE")
+      .where(`coaches.${coachID}.status`, "==", "ACTIVE");
+
+    return eventsRef.onSnapshot(querySnapshot => {
+      let events = {};
+      querySnapshot.forEach(doc => {
+        events[doc.id] = doc.data();
+      });
+      dispatch(receiveEventsByCoach(events));
+    });
+  };
+}
+
+export function requestEventsByManager() {
+  return {
+    type: REQUEST_EVENTS_BY_MANAGER
+  };
+}
+
+export function receiveEventsByManager(events) {
+  return {
+    type: RECEIVE_EVENTS_BY_MANAGER,
+    payload: {
+      events
+    }
+  };
+}
+
+export function errorLoadingEventsByManager(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_EVENTS_BY_MANAGER,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadEventsByManager(institutionID, managerID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEventsByManager());
+
+    let eventsRef = firebase
+      .firestore()
+      .collection("events")
+      .where("institutionID", "==", institutionID)
+      .where("requiredInfo.status", "==", "ACTIVE")
+      .where(`managers.${managerID}.status`, "==", "ACTIVE");
+
+    return eventsRef.onSnapshot(querySnapshot => {
+      let events = {};
+      querySnapshot.forEach(doc => {
+        events[doc.id] = doc.data();
+      });
+      dispatch(receiveEventsByManager(events));
+    });
   };
 }

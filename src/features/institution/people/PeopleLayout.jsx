@@ -82,6 +82,7 @@ class PeopleLayout extends Component {
 
   componentWillMount() {
     const { activeInstitutionID } = this.props;
+    const { personID } = this.props.match.params;
     const {
       loadCoaches,
       loadManagers,
@@ -89,7 +90,9 @@ class PeopleLayout extends Component {
       loadTeams,
       loadCoachRequests,
       loadManagerRequests,
-      loadAdminRequests
+      loadAdminRequests,
+      loadEventsByCoach,
+      loadEventsByManager
     } = this.props.actions;
 
     if (activeInstitutionID !== "") {
@@ -100,11 +103,17 @@ class PeopleLayout extends Component {
       loadManagerRequests(activeInstitutionID);
       loadAdminRequests(activeInstitutionID);
       loadTeams(activeInstitutionID);
+
+      if (personID) {
+        loadEventsByCoach(activeInstitutionID, personID);
+        loadEventsByManager(activeInstitutionID, personID);
+      }
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { activeInstitutionID, teams } = this.props;
+    const { activeInstitutionID, teams } = nextProps;
+    const { personID } = nextProps.match.params;
     const {
       loadCoaches,
       loadManagers,
@@ -112,14 +121,16 @@ class PeopleLayout extends Component {
       loadTeams,
       loadCoachRequests,
       loadManagerRequests,
-      loadAdminRequests
-    } = this.props.actions;
+      loadAdminRequests,
+      loadEventsByCoach,
+      loadEventsByManager
+    } = nextProps.actions;
 
     let sports = this.state.sports;
 
-    if (teams !== nextProps.teams) {
+    if (teams !== this.props.teams) {
       sports = {};
-      _.toPairs(nextProps.teams).map(([id, info]) => {
+      _.toPairs(teams).map(([id, info]) => {
         sports = {
           ...sports,
           [info.info.sport]: true
@@ -128,16 +139,30 @@ class PeopleLayout extends Component {
     }
 
     if (
-      activeInstitutionID !== nextProps.activeInstitutionID &&
-      nextProps.activeInstitutionID !== ""
+      activeInstitutionID !== this.props.activeInstitutionID &&
+      activeInstitutionID !== ""
     ) {
-      loadCoaches(nextProps.activeInstitutionID);
-      loadManagers(nextProps.activeInstitutionID);
-      loadAdmins(nextProps.activeInstitutionID);
-      loadCoachRequests(nextProps.activeInstitutionID);
-      loadManagerRequests(nextProps.activeInstitutionID);
-      loadAdminRequests(nextProps.activeInstitutionID);
-      loadTeams(nextProps.activeInstitutionID);
+      loadCoaches(activeInstitutionID);
+      loadManagers(activeInstitutionID);
+      loadAdmins(activeInstitutionID);
+      loadCoachRequests(activeInstitutionID);
+      loadManagerRequests(activeInstitutionID);
+      loadAdminRequests(activeInstitutionID);
+      loadTeams(activeInstitutionID);
+
+      if (personID) {
+        loadEventsByCoach(activeInstitutionID, personID);
+        loadEventsByManager(activeInstitutionID, personID);
+      }
+    }
+
+    if (
+      activeInstitutionID !== "" &&
+      personID &&
+      personID !== this.props.match.params.personID
+    ) {
+      loadEventsByCoach(activeInstitutionID, personID);
+      loadEventsByManager(activeInstitutionID, personID);
     }
 
     this.setState({
@@ -431,7 +456,9 @@ class PeopleLayout extends Component {
       isMobile,
       isTablet,
       filters,
-      activeInstitutionID
+      activeInstitutionID,
+      eventsByCoach,
+      eventsByManager
     } = this.props;
     const { currentTab, inviteeID, inviteeInfo } = this.props.uiConfig;
     const {
@@ -440,7 +467,9 @@ class PeopleLayout extends Component {
       isAdminsLoading,
       isTeamsLoading,
       isInviteeLoading,
-      isEditPersonLoading
+      isEditPersonLoading,
+      isEventsByCoachLoading,
+      isEventsByManagerLoading
     } = this.props.loadingStatus;
     const {
       updateTab,
@@ -489,6 +518,10 @@ class PeopleLayout extends Component {
                 activeInstitutionID === ""
               }
               isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
+              isEventsByPersonLoading={
+                isEventsByCoachLoading || isEventsByManagerLoading
+              }
+              eventsByPerson={{ ...eventsByCoach, ...eventsByManager }}
               isMobile={isMobile}
               isTablet={isTablet}
               actions={{

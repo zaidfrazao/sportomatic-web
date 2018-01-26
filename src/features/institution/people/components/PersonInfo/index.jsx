@@ -7,6 +7,7 @@ import BackIcon from "material-ui-icons/ArrowBack";
 import { CircularProgress } from "material-ui/Progress";
 import Collapse from "material-ui/transitions/Collapse";
 import EditIcon from "material-ui-icons/Edit";
+import EventIcon from "material-ui-icons/Event";
 import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
 import { grey, red } from "material-ui/colors";
@@ -18,6 +19,7 @@ import List, {
   ListItemText,
   ListSubheader
 } from "material-ui/List";
+import moment from "moment";
 import Paper from "material-ui/Paper";
 import { Route } from "react-router-dom";
 import TeamIcon from "material-ui-icons/Group";
@@ -157,39 +159,135 @@ const styles = theme => ({
 
 class PersonInfo extends Component {
   state = {
-    isTeamOpen: {}
+    isTeamOpen: {},
+    isEventOpen: {},
+    upcomingEvents: {},
+    pastEvents: {}
   };
 
   componentWillMount() {
-    const { info } = this.props;
+    const { info, eventsByPerson } = this.props;
+
+    let isTeamOpen = {};
+    let isEventOpen = {};
+    let upcomingEvents = {};
+    let pastEvents = {};
 
     if (info) {
-      let isTeamOpen = {};
-
       _.keys(this.createTeamsList()).map(teamID => {
         isTeamOpen[teamID] = false;
       });
+    }
 
-      this.setState({
-        isTeamOpen
+    if (eventsByPerson) {
+      _.toPairs(eventsByPerson)
+        .sort(([id1, info1], [id2, info2]) => {
+          const time1 = info1.requiredInfo.times.start;
+          const time2 = info2.requiredInfo.times.start;
+          if (time1 < time2) {
+            return -1;
+          } else if (time1 > time2) {
+            return +1;
+          } else {
+            return 0;
+          }
+        })
+        .map(([id, info]) => {
+          const startTime = moment(info.requiredInfo.times.start);
+          const currentTime = moment(new Date(Date.now()));
+          if (startTime.isAfter(currentTime)) {
+            upcomingEvents[id] = info;
+          } else {
+            pastEvents[id] = info;
+          }
+        });
+
+      _.keys(eventsByPerson).map(eventID => {
+        isEventOpen[eventID] = false;
       });
     }
+
+    this.setState({
+      isTeamOpen,
+      isEventOpen,
+      upcomingEvents,
+      pastEvents
+    });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { info } = nextProps;
+    const { info, eventsByPerson, personID } = nextProps;
+
+    let isTeamOpen = this.state.isTeamOpen;
+    let isEventOpen = this.state.isEventOpen;
+    let upcomingEvents = this.state.upcomingEvents;
+    let pastEvents = this.state.pastEvents;
+
+    if (personID !== this.props.personID) {
+      isTeamOpen = {};
+      isEventOpen = {};
+      upcomingEvents = {};
+      pastEvents = {};
+    }
 
     if (info && info !== this.props.info) {
-      let isTeamOpen = {};
-
       _.keys(this.createTeamsList()).map(teamID => {
         isTeamOpen[teamID] = false;
       });
+    }
 
-      this.setState({
-        isTeamOpen
+    if (eventsByPerson !== {} && eventsByPerson !== this.props.eventsByPerson) {
+      upcomingEvents = {};
+      pastEvents = {};
+      isEventOpen = {};
+
+      _.toPairs(eventsByPerson)
+        .sort(([id1, info1], [id2, info2]) => {
+          const time1 = info1.requiredInfo.times.start;
+          const time2 = info2.requiredInfo.times.start;
+          if (time1 < time2) {
+            return -1;
+          } else if (time1 > time2) {
+            return +1;
+          } else {
+            return 0;
+          }
+        })
+        .map(([id, info]) => {
+          const startTime = moment(info.requiredInfo.times.start);
+          const currentTime = moment(new Date(Date.now()));
+          if (startTime.isAfter(currentTime)) {
+            upcomingEvents[id] = info;
+          } else {
+            pastEvents[id] = info;
+          }
+        });
+
+      pastEvents = _.fromPairs(
+        _.toPairs(pastEvents).sort(([id1, info1], [id2, info2]) => {
+          const time1 = info1.requiredInfo.times.start;
+          const time2 = info2.requiredInfo.times.start;
+          if (time1 < time2) {
+            return +1;
+          } else if (time1 > time2) {
+            return -1;
+          } else {
+            return 0;
+          }
+        })
+      );
+
+      _.keys(eventsByPerson).map(eventID => {
+        isEventOpen[eventID] = false;
       });
     }
+
+    this.setState({
+      isTeamOpen,
+      isEventOpen,
+      upcomingEvents,
+      pastEvents
+    });
   }
 
   createAd() {
@@ -231,12 +329,83 @@ class PersonInfo extends Component {
     });
   };
 
+  toggleEventInfo = eventID => {
+    const { isEventOpen } = this.state;
+
+    this.setState({
+      isEventOpen: {
+        ...isEventOpen,
+        [eventID]: !isEventOpen[eventID]
+      }
+    });
+  };
+
+  createUpcomingEventsList() {
+    const { classes, isStaffLoading, isEventsByPersonLoading } = this.props;
+    const { isEventOpen, upcomingEvents } = this.state;
+
+    let upcomingEventsList = [];
+
+    !isEventsByPersonLoading &&
+      !isStaffLoading &&
+      _.toPairs(upcomingEvents).map(([id, eventInfo]) => {
+        const startTime = moment(eventInfo.requiredInfo.times.start);
+        upcomingEventsList.length < 5 &&
+          upcomingEventsList.push(
+            <Route
+              key={id}
+              render={({ history }) => {
+                return (
+                  <div>
+                    <ListItem button onClick={() => this.toggleEventInfo(id)}>
+                      <ListItemText
+                        primary={eventInfo.requiredInfo.title}
+                        secondary={startTime.format("D MMM YYYY")}
+                      />
+                      {isEventOpen[id] ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Collapse
+                      component="li"
+                      in={isEventOpen[id]}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      <List className={classes.nested} disablePadding>
+                        <ListSubheader>Options</ListSubheader>
+                        <ListItem
+                          className={classes.inset}
+                          button
+                          onClick={() =>
+                            history.push(
+                              `/admin/schedule/${startTime.format(
+                                "YYYY-MM-DD"
+                              )}/${id}`
+                            )}
+                        >
+                          <ListItemIcon>
+                            <EventIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="View event info" />
+                        </ListItem>
+                      </List>
+                    </Collapse>
+                  </div>
+                );
+              }}
+            />
+          );
+      });
+
+    return upcomingEventsList;
+  }
+
   render() {
     const {
       classes,
       type,
       isStaffLoading,
       isTeamsLoading,
+      isEventsByPersonLoading,
       info,
       institutionID
     } = this.props;
@@ -245,6 +414,7 @@ class PersonInfo extends Component {
 
     const teamsList = this.createTeamsList();
     const ad = this.createAd();
+    const upcomingEventsList = this.createUpcomingEventsList();
 
     let name = "";
     let surname = "";
@@ -255,6 +425,7 @@ class PersonInfo extends Component {
     let rates = {};
     let paymentType = "";
     let isCoach = false;
+    let isManager = false;
 
     if (info) {
       name = info.info.name;
@@ -284,6 +455,7 @@ class PersonInfo extends Component {
         })
       };
       isCoach = info.institutions[institutionID].roles.coach === "APPROVED";
+      isManager = info.institutions[institutionID].roles.manager === "APPROVED";
 
       switch (info.institutions[institutionID].paymentDefaults.type) {
         case "N/A":
@@ -569,6 +741,36 @@ class PersonInfo extends Component {
                         </ListItem>
                       )}
                     </List>
+                  </Paper>
+                </Grid>
+              )}
+              {(isCoach || isManager) && (
+                <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                  <Paper className={classes.section}>
+                    <Typography
+                      className={classes.heading}
+                      type="title"
+                      component="h3"
+                    >
+                      Upcoming Events
+                    </Typography>
+                    {isEventsByPersonLoading || isStaffLoading ? (
+                      <List>
+                        <ListItem className={classes.noItems}>
+                          <ListItemText primary="Loading..." />
+                        </ListItem>
+                      </List>
+                    ) : (
+                      <List>
+                        {upcomingEventsList.length > 0 ? (
+                          upcomingEventsList
+                        ) : (
+                          <ListItem className={classes.noItems}>
+                            <ListItemText primary="None" />
+                          </ListItem>
+                        )}
+                      </List>
+                    )}
                   </Paper>
                 </Grid>
               )}
