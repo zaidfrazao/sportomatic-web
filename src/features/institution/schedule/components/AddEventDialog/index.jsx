@@ -1376,22 +1376,27 @@ class AddEventDialog extends Component {
                     return [
                       teamID,
                       {
+                        status: "ACTIVE",
                         resultsStatus: "AWAITING_START",
                         opponents: opponents[teamID]
                       }
                     ];
                   } else {
-                    return [teamID, true];
+                    return [teamID, { status: "ACTIVE" }];
                   }
                 })
               );
               const eventManagers = _.fromPairs(
-                _.keys(selectedManagers).map(managerID => [managerID, true])
+                _.keys(selectedManagers).map(managerID => [
+                  managerID,
+                  { status: "ACTIVE" }
+                ])
               );
               const eventCoaches = _.fromPairs(
                 _.keys(selectedCoaches).map(coachID => [
                   coachID,
                   {
+                    status: "ACTIVE",
                     attendance: {
                       didAttend: true,
                       hasSubstitute: false,

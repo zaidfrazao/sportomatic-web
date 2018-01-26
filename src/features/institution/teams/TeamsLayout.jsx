@@ -67,23 +67,51 @@ class TeamsLayout extends Component {
 
   componentWillMount() {
     const { activeInstitutionID } = this.props;
-    const { loadTeams, loadCoaches, loadManagers } = this.props.actions;
+    const { teamID } = this.props.match.params;
+    const {
+      loadTeams,
+      loadCoaches,
+      loadManagers,
+      loadEventsByTeam
+    } = this.props.actions;
 
     if (activeInstitutionID !== "") {
       loadTeams(activeInstitutionID);
       loadCoaches(activeInstitutionID);
       loadManagers(activeInstitutionID);
+
+      if (teamID) {
+        loadEventsByTeam(activeInstitutionID, teamID);
+      }
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { activeInstitutionID, teams } = nextProps;
-    const { loadTeams, loadCoaches, loadManagers } = nextProps.actions;
+    const { teamID } = nextProps.match.params;
+    const {
+      loadTeams,
+      loadCoaches,
+      loadManagers,
+      loadEventsByTeam
+    } = nextProps.actions;
 
     if (activeInstitutionID !== this.props.activeInstitutionID) {
       loadTeams(activeInstitutionID);
       loadCoaches(activeInstitutionID);
       loadManagers(activeInstitutionID);
+
+      if (teamID) {
+        loadEventsByTeam(activeInstitutionID, teamID);
+      }
+    }
+
+    if (
+      activeInstitutionID !== "" &&
+      teamID &&
+      teamID !== this.props.match.params.teamID
+    ) {
+      loadEventsByTeam(activeInstitutionID, teamID);
     }
 
     if (teams !== this.props.teams) {
@@ -226,7 +254,8 @@ class TeamsLayout extends Component {
       activeInstitutionID,
       isMobile,
       isTablet,
-      filters
+      filters,
+      eventsByTeam
     } = this.props;
     const {
       isAddTeamDialogOpen,
@@ -240,7 +269,8 @@ class TeamsLayout extends Component {
       isTeamsLoading,
       isManagersLoading,
       isCoachesLoading,
-      isOptionsLoading
+      isOptionsLoading,
+      isEventsByTeamLoading
     } = this.props.loadingStatus;
     const {
       openAddTeamDialog,
@@ -280,9 +310,12 @@ class TeamsLayout extends Component {
               isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
               isCoachesLoading={isCoachesLoading}
               isManagersLoading={isManagersLoading}
+              isEventsByTeamLoading={isEventsByTeamLoading}
+              eventsByTeam={eventsByTeam}
               coaches={coaches}
               managers={managers}
               info={teams[teamID]}
+              teamID={teamID}
               isMobile={isMobile}
               isTablet={isTablet}
               actions={{

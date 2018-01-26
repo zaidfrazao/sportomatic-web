@@ -35,6 +35,10 @@ export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
 export const OPEN_TEAM_ERROR_ALERT = `${NAMESPACE}/OPEN_TEAM_ERROR_ALERT`;
 export const CLOSE_TEAM_ERROR_ALERT = `${NAMESPACE}/CLOSE_TEAM_ERROR_ALERT`;
+export const REQUEST_EVENTS_BY_TEAM = `${NAMESPACE}/REQUEST_EVENTS_BY_TEAM`;
+export const RECEIVE_EVENTS_BY_TEAM = `${NAMESPACE}/RECEIVE_EVENTS_BY_TEAM`;
+export const ERROR_LOADING_EVENTS_BY_TEAM = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_TEAM`;
+
 export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
 
 // Reducers
@@ -186,7 +190,8 @@ export const loadingStatusInitialState = {
   isTeamsLoading: false,
   isOptionsLoading: false,
   isManagersLoading: false,
-  isCoachesLoading: false
+  isCoachesLoading: false,
+  isEventsByTeamLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -259,6 +264,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isManagersLoading: false
       };
+    case REQUEST_EVENTS_BY_TEAM:
+      return {
+        ...state,
+        isEventsByTeamLoading: true
+      };
+    case RECEIVE_EVENTS_BY_TEAM:
+    case ERROR_LOADING_EVENTS_BY_TEAM:
+      return {
+        ...state,
+        isEventsByTeamLoading: false
+      };
     default:
       return state;
   }
@@ -306,6 +322,18 @@ function teamsListReducer(state = {}, action = {}) {
   }
 }
 
+function eventsByTeamReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case REQUEST_EVENTS_BY_TEAM:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_EVENTS_BY_TEAM:
+      return action.payload.events;
+    default:
+      return state;
+  }
+}
+
 export const teamsReducer = combineReducers({
   dialogs: dialogsReducer,
   teamsList: teamsListReducer,
@@ -314,7 +342,8 @@ export const teamsReducer = combineReducers({
   managers: managersReducer,
   loadingStatus: loadingStatusReducer,
   filters: filterReducer,
-  uiConfig: uiConfigReducer
+  uiConfig: uiConfigReducer,
+  eventsByTeam: eventsByTeamReducer
 });
 
 // Selectors
@@ -327,6 +356,7 @@ const managers = state => state.institution.teams.managers;
 const loadingStatus = state => state.institution.teams.loadingStatus;
 const filters = state => state.institution.teams.filters;
 const uiConfig = state => state.institution.teams.uiConfig;
+const eventsByTeam = state => state.institution.teams.eventsByTeam;
 
 export const selector = createStructuredSelector({
   dialogs,
@@ -336,7 +366,8 @@ export const selector = createStructuredSelector({
   managers,
   loadingStatus,
   filters,
-  uiConfig
+  uiConfig,
+  eventsByTeam
 });
 
 // Action Creators
@@ -687,5 +718,53 @@ export function editTeam(institutionID, teamID, info, managers, coaches) {
       })
       .then(() => dispatch(receiveEditTeam()))
       .catch(error => dispatch(errorEdittingTeam(error)));
+  };
+}
+
+export function requestEventsByTeam() {
+  return {
+    type: REQUEST_EVENTS_BY_TEAM
+  };
+}
+
+export function receiveEventsByTeam(events) {
+  return {
+    type: RECEIVE_EVENTS_BY_TEAM,
+    payload: {
+      events
+    }
+  };
+}
+
+export function errorLoadingEventsByTeam(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_EVENTS_BY_TEAM,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadEventsByTeam(institutionID, teamID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEventsByTeam());
+
+    let eventsRef = firebase
+      .firestore()
+      .collection("events")
+      .where("institutionID", "==", institutionID)
+      .where("requiredInfo.status", "==", "ACTIVE")
+      .where(`teams.${teamID}.status`, "==", "ACTIVE");
+
+    return eventsRef.onSnapshot(querySnapshot => {
+      let events = {};
+      querySnapshot.forEach(doc => {
+        events[doc.id] = doc.data();
+      });
+      dispatch(receiveEventsByTeam(events));
+    });
   };
 }

@@ -1,14 +1,15 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
+import { amber, brown, green, grey, lightBlue, red } from "material-ui/colors";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import BackIcon from "material-ui-icons/ArrowBack";
 import Collapse from "material-ui/transitions/Collapse";
 import EditIcon from "material-ui-icons/Edit";
+import EventIcon from "material-ui-icons/Event";
 import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
-import { grey, red } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import IconButton from "material-ui/IconButton";
 import List, {
@@ -17,8 +18,10 @@ import List, {
   ListItemText,
   ListSubheader
 } from "material-ui/List";
+import moment from "moment";
 import Paper from "material-ui/Paper";
 import PersonIcon from "material-ui-icons/Person";
+import ResultsIcon from "material-ui-icons/PlusOne";
 import { Route } from "react-router-dom";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
@@ -64,6 +67,9 @@ const styles = theme => ({
     color: red[500],
     textAlign: "center"
   },
+  drawAvatar: {
+    backgroundColor: lightBlue[500]
+  },
   flexGrow: {
     flexGrow: 1
   },
@@ -80,6 +86,9 @@ const styles = theme => ({
   },
   inset: {
     paddingLeft: theme.spacing.unit * 4
+  },
+  lossAvatar: {
+    backgroundColor: red[500]
   },
   name: {
     margin: 24,
@@ -98,6 +107,18 @@ const styles = theme => ({
     flexDirection: "column",
     overflow: "auto"
   },
+  placedFirstAvatar: {
+    backgroundColor: amber[500]
+  },
+  placedSecondAvatar: {
+    backgroundColor: grey[400]
+  },
+  placedThirdAvatar: {
+    backgroundColor: brown[400]
+  },
+  placedOtherAvatar: {
+    backgroundColor: grey[700]
+  },
   root: {
     height: "100%",
     width: "100%",
@@ -110,8 +131,14 @@ const styles = theme => ({
     height: "100%",
     width: "100%"
   },
+  unknownResultAvatar: {
+    backgroundColor: grey[800]
+  },
   warningIcon: {
     color: red[500]
+  },
+  winAvatar: {
+    backgroundColor: green[500]
   },
   wrapper: {
     padding: 24
@@ -121,51 +148,148 @@ const styles = theme => ({
 class TeamInfo extends Component {
   state = {
     isCoachOpen: {},
-    isManagerOpen: {}
+    isManagerOpen: {},
+    isEventOpen: {},
+    upcomingEvents: {},
+    pastEvents: {}
   };
 
   componentWillMount() {
-    const { info } = this.props;
+    const { info, eventsByTeam } = this.props;
+
+    let isCoachOpen = {};
+    let isManagerOpen = {};
+    let isEventOpen = {};
+    let upcomingEvents = {};
+    let pastEvents = {};
 
     if (info) {
-      let isCoachOpen = {};
-      let isManagerOpen = {};
-
       _.keys(info.coaches).map(coachID => {
         isCoachOpen[coachID] = false;
       });
-
       _.keys(info.managers).map(managerID => {
         isManagerOpen[managerID] = false;
       });
+    }
 
-      this.setState({
-        isCoachOpen,
-        isManagerOpen
+    if (eventsByTeam) {
+      _.toPairs(eventsByTeam)
+        .sort(([id1, info1], [id2, info2]) => {
+          const time1 = info1.requiredInfo.times.start;
+          const time2 = info2.requiredInfo.times.start;
+          if (time1 < time2) {
+            return -1;
+          } else if (time1 > time2) {
+            return +1;
+          } else {
+            return 0;
+          }
+        })
+        .map(([id, info]) => {
+          const startTime = moment(info.requiredInfo.times.start);
+          const currentTime = moment(new Date(Date.now()));
+          if (startTime.isAfter(currentTime)) {
+            upcomingEvents[id] = info;
+          } else {
+            pastEvents[id] = info;
+          }
+        });
+
+      _.keys(eventsByTeam).map(eventID => {
+        isEventOpen[eventID] = false;
       });
     }
+
+    this.setState({
+      isCoachOpen,
+      isManagerOpen,
+      isEventOpen,
+      upcomingEvents,
+      pastEvents
+    });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { info } = nextProps;
+    const { info, eventsByTeam, teamID } = nextProps;
+
+    let isCoachOpen = this.state.isCoachOpen;
+    let isManagerOpen = this.state.isManagerOpen;
+    let isEventOpen = this.state.isEventOpen;
+    let upcomingEvents = this.state.upcomingEvents;
+    let pastEvents = this.state.pastEvents;
+
+    if (teamID !== this.props.teamID) {
+      isCoachOpen = {};
+      isManagerOpen = {};
+      isEventOpen = {};
+      upcomingEvents = {};
+      pastEvents = {};
+    }
 
     if (info && info !== this.props.info) {
-      let isCoachOpen = {};
-      let isManagerOpen = {};
-
+      isCoachOpen = {};
+      isManagerOpen = {};
       _.keys(info.coaches).map(coachID => {
         isCoachOpen[coachID] = false;
       });
-
       _.keys(info.managers).map(managerID => {
         isManagerOpen[managerID] = false;
       });
+    }
 
-      this.setState({
-        isCoachOpen,
-        isManagerOpen
+    if (eventsByTeam !== {} && eventsByTeam !== this.props.eventsByTeam) {
+      upcomingEvents = {};
+      pastEvents = {};
+      isEventOpen = {};
+
+      _.toPairs(eventsByTeam)
+        .sort(([id1, info1], [id2, info2]) => {
+          const time1 = info1.requiredInfo.times.start;
+          const time2 = info2.requiredInfo.times.start;
+          if (time1 < time2) {
+            return -1;
+          } else if (time1 > time2) {
+            return +1;
+          } else {
+            return 0;
+          }
+        })
+        .map(([id, info]) => {
+          const startTime = moment(info.requiredInfo.times.start);
+          const currentTime = moment(new Date(Date.now()));
+          if (startTime.isAfter(currentTime)) {
+            upcomingEvents[id] = info;
+          } else {
+            pastEvents[id] = info;
+          }
+        });
+
+      pastEvents = _.fromPairs(
+        _.toPairs(pastEvents).sort(([id1, info1], [id2, info2]) => {
+          const time1 = info1.requiredInfo.times.start;
+          const time2 = info2.requiredInfo.times.start;
+          if (time1 < time2) {
+            return +1;
+          } else if (time1 > time2) {
+            return -1;
+          } else {
+            return 0;
+          }
+        })
+      );
+
+      _.keys(eventsByTeam).map(eventID => {
+        isEventOpen[eventID] = false;
       });
     }
+
+    this.setState({
+      isCoachOpen,
+      isManagerOpen,
+      isEventOpen,
+      upcomingEvents,
+      pastEvents
+    });
   }
 
   toggleCoachInfo = coachID => {
@@ -186,6 +310,17 @@ class TeamInfo extends Component {
       isManagerOpen: {
         ...isManagerOpen,
         [managerID]: !isManagerOpen[managerID]
+      }
+    });
+  };
+
+  toggleEventInfo = eventID => {
+    const { isEventOpen } = this.state;
+
+    this.setState({
+      isEventOpen: {
+        ...isEventOpen,
+        [eventID]: !isEventOpen[eventID]
       }
     });
   };
@@ -219,12 +354,23 @@ class TeamInfo extends Component {
       managers,
       info,
       isCoachesLoading,
-      isManagersLoading
+      isManagersLoading,
+      isEventsByTeamLoading,
+      isTeamsLoading,
+      teamID
     } = this.props;
-    const { isCoachOpen, isManagerOpen } = this.state;
+    const {
+      isCoachOpen,
+      isManagerOpen,
+      isEventOpen,
+      upcomingEvents,
+      pastEvents
+    } = this.state;
 
     let eventCoaches = [];
     let eventManagers = [];
+    let upcomingEventsList = [];
+    let recentResultsList = [];
 
     !isCoachesLoading &&
       info &&
@@ -276,6 +422,7 @@ class TeamInfo extends Component {
           />
         );
       });
+
     !isManagersLoading &&
       info &&
       _.toPairs(info.managers).map(([id, managerEventInfo]) => {
@@ -327,9 +474,452 @@ class TeamInfo extends Component {
         );
       });
 
+    !isEventsByTeamLoading &&
+      !isTeamsLoading &&
+      _.toPairs(upcomingEvents).map(([id, eventInfo]) => {
+        const startTime = moment(eventInfo.requiredInfo.times.start);
+        upcomingEventsList.length < 5 &&
+          upcomingEventsList.push(
+            <Route
+              key={id}
+              render={({ history }) => {
+                return (
+                  <div>
+                    <ListItem button onClick={() => this.toggleEventInfo(id)}>
+                      <ListItemText
+                        primary={eventInfo.requiredInfo.title}
+                        secondary={startTime.format("D MMM YYYY")}
+                      />
+                      {isEventOpen[id] ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Collapse
+                      component="li"
+                      in={isEventOpen[id]}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      <List className={classes.nested} disablePadding>
+                        <ListSubheader>Options</ListSubheader>
+                        <ListItem
+                          className={classes.inset}
+                          button
+                          onClick={() =>
+                            history.push(
+                              `/admin/schedule/${startTime.format(
+                                "YYYY-MM-DD"
+                              )}/${id}`
+                            )}
+                        >
+                          <ListItemIcon>
+                            <EventIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="View event info" />
+                        </ListItem>
+                      </List>
+                    </Collapse>
+                  </div>
+                );
+              }}
+            />
+          );
+      });
+
+    !isEventsByTeamLoading &&
+      !isTeamsLoading &&
+      _.toPairs(pastEvents).map(([id, eventInfo]) => {
+        const startTime = moment(eventInfo.requiredInfo.times.start);
+        const teamInfo = eventInfo.teams[teamID];
+
+        if (teamInfo) {
+          const showResults = teamInfo.resultsStatus === "FINALISED";
+          const hasMultipleOpponents = _.keys(teamInfo.opponents).length > 1;
+          if (teamInfo) {
+            let scores = [{ id, score: 0 }];
+            let placement = 1;
+            let prevScore = scores[0].score;
+            const placements = _.fromPairs(
+              scores.map((score, index) => {
+                if (index === 0) {
+                  prevScore = score.score;
+                  return [score.id, placement];
+                } else {
+                  if (score.score === prevScore) {
+                    prevScore = score.score;
+                    return [score.id, placement];
+                  } else {
+                    placement = index + 1;
+                    prevScore = score.score;
+                    return [score.id, placement];
+                  }
+                }
+              })
+            );
+
+            if (showResults) {
+              _.toPairs(
+                teamInfo.opponents
+              ).map(([opponentID, opponentInfo]) => {
+                scores[0].score = opponentInfo.ourScore.totalPoints;
+                scores.push({
+                  id: opponentID,
+                  score: opponentInfo.theirScore.totalPoints
+                });
+              });
+              scores.sort((scoreA, scoreB) => {
+                if (scoreA.score > scoreB.score) {
+                  return -1;
+                } else if (scoreA.score < scoreB.score) {
+                  return +1;
+                } else {
+                  return 0;
+                }
+              });
+            }
+
+            showResults &&
+              recentResultsList.push(
+                <Route
+                  key={id}
+                  render={({ history }) => {
+                    const shouldRankTeams =
+                      info.info.sport === "Swimming" ||
+                      info.info.sport === "Athletics" ||
+                      info.info.sport === "Golf";
+                    let ourResultAvatar = (
+                      <Avatar className={classes.unknownResultAvatar}>?</Avatar>
+                    );
+                    let ourResultText = "Results not yet logged";
+                    if (hasMultipleOpponents && shouldRankTeams) {
+                      if (showResults) {
+                        if (placements[id] === 1) {
+                          ourResultAvatar = (
+                            <Avatar className={classes.placedFirstAvatar}>
+                              {"1"}
+                            </Avatar>
+                          );
+                          ourResultText = `${info.info.name} placed 1st`;
+                        } else if (placements[id] === 2) {
+                          ourResultAvatar = (
+                            <Avatar className={classes.placedSecondAvatar}>
+                              {"2"}
+                            </Avatar>
+                          );
+                          ourResultText = `${info.info.name} placed 2nd`;
+                        } else if (placements[id] === 3) {
+                          ourResultAvatar = (
+                            <Avatar className={classes.placedThirdAvatar}>
+                              {"3"}
+                            </Avatar>
+                          );
+                          ourResultText = `${info.info.name} placed 3rd`;
+                        } else {
+                          let suffix = "th";
+                          if (placements[id] > 20) {
+                            if (placements[id] % 10 === 1) {
+                              suffix = "st";
+                            } else if (placements[id] % 10 === 2) {
+                              suffix = "nd";
+                            } else if (placements[id] % 10 === 3) {
+                              suffix = "rd";
+                            }
+                          }
+                          ourResultAvatar = (
+                            <Avatar className={classes.placedOtherAvatar}>
+                              {placements[id]}
+                            </Avatar>
+                          );
+                          ourResultText = `${info.info
+                            .name} placed ${placements[id]}${suffix}`;
+                        }
+                      }
+                    }
+                    return (
+                      <div>
+                        <ListItem
+                          button
+                          onClick={() => this.toggleEventInfo(id)}
+                        >
+                          <ListItemText
+                            primary={eventInfo.requiredInfo.title}
+                            secondary={startTime.format("D MMM YYYY")}
+                          />
+                          {isEventOpen[id] ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse
+                          component="li"
+                          in={isEventOpen[id]}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          <List className={classes.nested} disablePadding>
+                            {eventInfo.requiredInfo.isCompetitive &&
+                              eventInfo.requiredInfo.status === "ACTIVE" && (
+                                <ListSubheader>
+                                  Opponents & Results
+                                </ListSubheader>
+                              )}
+                            {hasMultipleOpponents &&
+                              shouldRankTeams && (
+                                <ListItem className={classes.inset}>
+                                  {ourResultAvatar}
+                                  <ListItemText
+                                    primary={info.info.name}
+                                    secondary={ourResultText}
+                                  />
+                                </ListItem>
+                              )}
+                            {eventInfo.requiredInfo.isCompetitive &&
+                              eventInfo.requiredInfo.status === "ACTIVE" &&
+                              _.toPairs(
+                                teamInfo.opponents
+                              ).map(([opponentID, opponentInfo]) => {
+                                const { ourScore, theirScore } = opponentInfo;
+
+                                let resultAvatar = (
+                                  <Avatar
+                                    className={classes.unknownResultAvatar}
+                                  >
+                                    ?
+                                  </Avatar>
+                                );
+                                let resultText = "Results not yet logged";
+
+                                if (hasMultipleOpponents) {
+                                  if (shouldRankTeams) {
+                                    if (showResults) {
+                                      if (placements[opponentID] === 1) {
+                                        resultAvatar = (
+                                          <Avatar
+                                            className={
+                                              classes.placedFirstAvatar
+                                            }
+                                          >
+                                            {"1"}
+                                          </Avatar>
+                                        );
+                                        resultText = `${opponentInfo.name} placed 1st`;
+                                      } else if (placements[opponentID] === 2) {
+                                        resultAvatar = (
+                                          <Avatar
+                                            className={
+                                              classes.placedSecondAvatar
+                                            }
+                                          >
+                                            {"2"}
+                                          </Avatar>
+                                        );
+                                        resultText = `${opponentInfo.name} placed 2nd`;
+                                      } else if (placements[opponentID] === 3) {
+                                        resultAvatar = (
+                                          <Avatar
+                                            className={
+                                              classes.placedThirdAvatar
+                                            }
+                                          >
+                                            {"3"}
+                                          </Avatar>
+                                        );
+                                        resultText = `${opponentInfo.name} placed 3rd`;
+                                      } else {
+                                        let suffix = "th";
+                                        if (placements[opponentID] > 20) {
+                                          if (
+                                            placements[opponentID] % 10 ===
+                                            1
+                                          ) {
+                                            suffix = "st";
+                                          } else if (
+                                            placements[opponentID] % 10 ===
+                                            2
+                                          ) {
+                                            suffix = "nd";
+                                          } else if (
+                                            placements[opponentID] % 10 ===
+                                            3
+                                          ) {
+                                            suffix = "rd";
+                                          }
+                                        }
+                                        resultAvatar = (
+                                          <Avatar
+                                            className={
+                                              classes.placedOtherAvatar
+                                            }
+                                          >
+                                            {placements[opponentID]}
+                                          </Avatar>
+                                        );
+                                        resultText = `Placed ${placements[
+                                          opponentID
+                                        ]}${suffix}`;
+                                      }
+                                    }
+                                    return (
+                                      <ListItem
+                                        className={classes.inset}
+                                        key={`${id}${opponentID}`}
+                                      >
+                                        {resultAvatar}
+                                        <ListItemText
+                                          primary={
+                                            opponentInfo.name === ""
+                                              ? "Unknown"
+                                              : opponentInfo.name
+                                          }
+                                          secondary={resultText}
+                                        />
+                                      </ListItem>
+                                    );
+                                  } else {
+                                    if (showResults) {
+                                      if (
+                                        ourScore.totalPoints >
+                                        theirScore.totalPoints
+                                      ) {
+                                        resultAvatar = (
+                                          <Avatar className={classes.winAvatar}>
+                                            W
+                                          </Avatar>
+                                        );
+                                        resultText = `Won ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                      } else if (
+                                        ourScore.totalPoints <
+                                        theirScore.totalPoints
+                                      ) {
+                                        resultAvatar = (
+                                          <Avatar
+                                            className={classes.lossAvatar}
+                                          >
+                                            L
+                                          </Avatar>
+                                        );
+                                        resultText = `Lost ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                      } else {
+                                        resultAvatar = (
+                                          <Avatar
+                                            className={classes.drawAvatar}
+                                          >
+                                            D
+                                          </Avatar>
+                                        );
+                                        resultText = `Drew ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                      }
+                                    }
+                                    return (
+                                      <ListItem
+                                        className={classes.inset}
+                                        key={`${id}${opponentID}`}
+                                      >
+                                        {resultAvatar}
+                                        <ListItemText
+                                          primary={
+                                            opponentInfo.name === ""
+                                              ? "Unknown"
+                                              : opponentInfo.name
+                                          }
+                                          secondary={resultText}
+                                        />
+                                      </ListItem>
+                                    );
+                                  }
+                                } else {
+                                  if (showResults) {
+                                    if (
+                                      ourScore.totalPoints >
+                                      theirScore.totalPoints
+                                    ) {
+                                      resultAvatar = (
+                                        <Avatar className={classes.winAvatar}>
+                                          W
+                                        </Avatar>
+                                      );
+                                      resultText = `Won ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                    } else if (
+                                      ourScore.totalPoints <
+                                      theirScore.totalPoints
+                                    ) {
+                                      resultAvatar = (
+                                        <Avatar className={classes.lossAvatar}>
+                                          L
+                                        </Avatar>
+                                      );
+                                      resultText = `Lost ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                    } else {
+                                      resultAvatar = (
+                                        <Avatar className={classes.drawAvatar}>
+                                          D
+                                        </Avatar>
+                                      );
+                                      resultText = `Drew ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                    }
+                                  }
+
+                                  return (
+                                    <ListItem
+                                      className={classes.inset}
+                                      key={`${id}${opponentID}`}
+                                    >
+                                      {resultAvatar}
+                                      <ListItemText
+                                        primary={
+                                          opponentInfo.name === ""
+                                            ? "Unknown"
+                                            : opponentInfo.name
+                                        }
+                                        secondary={resultText}
+                                      />
+                                    </ListItem>
+                                  );
+                                }
+                              })}
+                            <ListSubheader>Options</ListSubheader>
+                            <ListItem
+                              className={classes.inset}
+                              button
+                              onClick={() =>
+                                history.push(
+                                  `/admin/schedule/${startTime.format(
+                                    "YYYY-MM-DD"
+                                  )}/${id}`
+                                )}
+                            >
+                              <ListItemIcon>
+                                <EventIcon />
+                              </ListItemIcon>
+                              <ListItemText primary="View event info" />
+                            </ListItem>
+                            {eventInfo.requiredInfo.isCompetitive &&
+                              eventInfo.requiredInfo.status === "ACTIVE" && (
+                                <ListItem
+                                  className={classes.inset}
+                                  button
+                                  onClick={() =>
+                                    history.push(
+                                      `/admin/results/${teamID}/${id}`
+                                    )}
+                                >
+                                  <ListItemIcon>
+                                    <ResultsIcon />
+                                  </ListItemIcon>
+                                  <ListItemText primary="View results" />
+                                </ListItem>
+                              )}
+                          </List>
+                        </Collapse>
+                      </div>
+                    );
+                  }}
+                />
+              );
+          }
+        }
+      });
+
     return {
       coaches: eventCoaches,
-      managers: eventManagers
+      managers: eventManagers,
+      upcomingEvents: upcomingEventsList,
+      recentResults: recentResultsList
     };
   }
 
@@ -348,7 +938,12 @@ class TeamInfo extends Component {
 
   render() {
     const { classes, info } = this.props;
-    const { isTeamsLoading, isCoachesLoading, isManagersLoading } = this.props;
+    const {
+      isTeamsLoading,
+      isCoachesLoading,
+      isManagersLoading,
+      isEventsByTeamLoading
+    } = this.props;
     const { editTeam } = this.props.actions;
 
     let name = "";
@@ -373,7 +968,12 @@ class TeamInfo extends Component {
     }
 
     const ad = this.createAd();
-    const { coaches, managers } = this.getListItems();
+    const {
+      coaches,
+      managers,
+      upcomingEvents,
+      recentResults
+    } = this.getListItems();
 
     return (
       <div className={classes.root}>
@@ -488,7 +1088,7 @@ class TeamInfo extends Component {
                   >
                     Managers
                   </Typography>
-                  {isManagersLoading ? (
+                  {isManagersLoading || isTeamsLoading ? (
                     <List>
                       <ListItem className={classes.noItems}>
                         <ListItemText primary="Loading..." />
@@ -500,7 +1100,7 @@ class TeamInfo extends Component {
                         managers
                       ) : (
                         <ListItem className={classes.noItems}>
-                          <ListItemText primary="No managers" />
+                          <ListItemText primary="None" />
                         </ListItem>
                       )}
                     </List>
@@ -516,7 +1116,7 @@ class TeamInfo extends Component {
                   >
                     Coaches
                   </Typography>
-                  {isCoachesLoading ? (
+                  {isCoachesLoading || isTeamsLoading ? (
                     <List>
                       <ListItem className={classes.noItems}>
                         <ListItemText primary="Loading..." />
@@ -528,7 +1128,63 @@ class TeamInfo extends Component {
                         coaches
                       ) : (
                         <ListItem className={classes.noItems}>
-                          <ListItemText primary="No coaches" />
+                          <ListItemText primary="None" />
+                        </ListItem>
+                      )}
+                    </List>
+                  )}
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <Paper className={classes.section}>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Upcoming Events
+                  </Typography>
+                  {isEventsByTeamLoading || isTeamsLoading ? (
+                    <List>
+                      <ListItem className={classes.noItems}>
+                        <ListItemText primary="Loading..." />
+                      </ListItem>
+                    </List>
+                  ) : (
+                    <List>
+                      {upcomingEvents.length > 0 ? (
+                        upcomingEvents
+                      ) : (
+                        <ListItem className={classes.noItems}>
+                          <ListItemText primary="None" />
+                        </ListItem>
+                      )}
+                    </List>
+                  )}
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <Paper className={classes.section}>
+                  <Typography
+                    className={classes.heading}
+                    type="title"
+                    component="h3"
+                  >
+                    Recent Results
+                  </Typography>
+                  {isEventsByTeamLoading || isTeamsLoading ? (
+                    <List>
+                      <ListItem className={classes.noItems}>
+                        <ListItemText primary="Loading..." />
+                      </ListItem>
+                    </List>
+                  ) : (
+                    <List>
+                      {recentResults.length > 0 ? (
+                        recentResults
+                      ) : (
+                        <ListItem className={classes.noItems}>
+                          <ListItemText primary="None" />
                         </ListItem>
                       )}
                     </List>

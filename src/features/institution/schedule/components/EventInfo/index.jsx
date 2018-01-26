@@ -346,8 +346,6 @@ class EventInfo extends Component {
     let eventCoaches = [];
     let eventManagers = [];
 
-    console.log(coaches);
-
     !isTeamsLoading &&
       !isInfoLoading &&
       info &&
@@ -685,17 +683,16 @@ class EventInfo extends Component {
                         </ListItem>
                         {info.requiredInfo.isCompetitive &&
                           info.requiredInfo.status === "ACTIVE" && (
-                            <ListItem className={classes.inset} button>
+                            <ListItem
+                              className={classes.inset}
+                              button
+                              onClick={() =>
+                                history.push(`/admin/results/${id}/${eventID}`)}
+                            >
                               <ListItemIcon>
                                 <ResultsIcon />
                               </ListItemIcon>
-                              <ListItemText
-                                primary="View results"
-                                onClick={() =>
-                                  history.push(
-                                    `/admin/results/${id}/${eventID}`
-                                  )}
-                              />
+                              <ListItemText primary="View results" />
                             </ListItem>
                           )}
                       </List>
@@ -812,10 +809,11 @@ class EventInfo extends Component {
                               }
                             />
                             <ListItemSecondaryAction>
-                              <IconButton aria-label="edit attendance rating">
-                                <EditIcon
-                                  onClick={() => editAbsentRating(id)}
-                                />
+                              <IconButton
+                                aria-label="edit attendance rating"
+                                onClick={() => editAbsentRating(id)}
+                              >
+                                <EditIcon />
                               </IconButton>
                             </ListItemSecondaryAction>
                           </ListItem>
@@ -940,14 +938,15 @@ class EventInfo extends Component {
                         )}
                       {info.requiredInfo.isCompetitive &&
                         info.requiredInfo.status === "ACTIVE" && (
-                          <ListItem className={classes.inset} button>
+                          <ListItem
+                            className={classes.inset}
+                            button
+                            onClick={() => history.push("/admin/hours")}
+                          >
                             <ListItemIcon>
                               <HoursIcon />
                             </ListItemIcon>
-                            <ListItemText
-                              primary="View hours"
-                              onClick={() => history.push("/admin/hours")}
-                            />
+                            <ListItemText primary="View hours" />
                           </ListItem>
                         )}
                     </List>
