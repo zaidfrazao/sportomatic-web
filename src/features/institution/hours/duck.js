@@ -302,7 +302,7 @@ export function loadEventsByDate(institutionID, startAfter = "") {
         .firestore()
         .collection("events")
         .orderBy("requiredInfo.times.start", "desc")
-        .limit(5)
+        .limit(10)
         .where("requiredInfo.status", "==", "ACTIVE")
         .where("institutionID", "==", institutionID)
         .where("requiredInfo.times.start", "<", new Date(Date.now()));
@@ -312,7 +312,7 @@ export function loadEventsByDate(institutionID, startAfter = "") {
         .collection("events")
         .orderBy("requiredInfo.times.start", "desc")
         .startAfter(startAfter)
-        .limit(5)
+        .limit(10)
         .where("requiredInfo.status", "==", "ACTIVE")
         .where("institutionID", "==", institutionID)
         .where("requiredInfo.times.start", "<", new Date(Date.now()));

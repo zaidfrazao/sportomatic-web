@@ -292,7 +292,7 @@ export function loadWagesByDate(institutionID, startAfter = "") {
         .firestore()
         .collection("wages")
         .orderBy("date", "desc")
-        .limit(5)
+        .limit(10)
         .where("institutionID", "==", institutionID)
         .where("date", "<", new Date(Date.now()));
     } else {
@@ -301,7 +301,7 @@ export function loadWagesByDate(institutionID, startAfter = "") {
         .collection("wages")
         .orderBy("date", "desc")
         .startAfter(startAfter)
-        .limit(5)
+        .limit(10)
         .where("institutionID", "==", institutionID)
         .where("date", "<", new Date(Date.now()));
     }
