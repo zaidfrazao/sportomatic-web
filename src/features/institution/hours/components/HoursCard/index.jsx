@@ -46,9 +46,9 @@ const styles = {
     width: "100%",
     padding: 10,
     textAlign: "center",
-    backgroundColor: grey[200],
-    border: `1px solid ${grey[300]}`,
-    color: grey[900]
+    color: grey[600],
+    backgroundColor: grey[50],
+    border: `1px solid ${grey[300]}`
   },
   contentWrapper: {
     padding: 16
@@ -75,7 +75,8 @@ const styles = {
     display: "flex",
     alignItems: "stretch",
     flexWrap: "wrap",
-    backgroundColor: grey[100]
+    backgroundColor: grey[100],
+    margin: "16px 0"
   },
   profilePicture: {
     backgroundColor: grey[50],
@@ -108,7 +109,8 @@ const styles = {
   },
   time: {
     fontSize: "1.6rem",
-    margin: 24
+    margin: 24,
+    minWidth: 120
   },
   timeWrapper: {
     textAlign: "center",
@@ -204,7 +206,7 @@ class HoursCard extends Component {
               key={`hours-${coachID}${eventID}`}
             >
               <Typography
-                type="subheading"
+                type="title"
                 component="h3"
                 className={classes.coachName}
               >
@@ -300,7 +302,7 @@ class HoursCard extends Component {
               key={`hours-${coachID}${eventID}`}
             >
               <Typography
-                type="subheading"
+                type="title"
                 component="h3"
                 className={classes.coachName}
               >
@@ -414,7 +416,7 @@ class HoursCard extends Component {
               key={`hours-${coachID}${eventID}`}
             >
               <Typography
-                type="subheading"
+                type="title"
                 component="h3"
                 className={classes.coachName}
               >
@@ -522,7 +524,7 @@ class HoursCard extends Component {
               key={`hours-${coachID}${eventID}`}
             >
               <Typography
-                type="subheading"
+                type="title"
                 component="h3"
                 className={classes.coachName}
               >
