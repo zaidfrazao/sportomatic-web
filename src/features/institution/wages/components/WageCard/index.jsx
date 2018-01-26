@@ -23,7 +23,8 @@ const styles = {
   coachNameText: {
     padding: 16,
     textAlign: "center",
-    color: grey[900]
+    color: grey[600],
+    backgroundColor: grey[50]
   },
   coachNameWrapper: {
     width: "100%",
@@ -56,10 +57,11 @@ const styles = {
     display: "flex",
     alignItems: "stretch",
     flexWrap: "wrap",
-    backgroundColor: grey[100]
+    backgroundColor: grey[100],
+    border: `1px solid ${grey[300]}`
   },
   rootWrapper: {
-    backgroundColor: grey[100]
+    padding: 16
   }
 };
 
@@ -73,7 +75,7 @@ class WageCard extends Component {
       <div className={classes.wagesWrapper}>
         <div className={classes.coachNameWrapper}>
           <Typography
-            type="subheading"
+            type="title"
             component="h3"
             className={classes.coachNameText}
           >
