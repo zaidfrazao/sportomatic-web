@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
-import CoachAccount from "../features/coach/core-interface/CoreInterfaceView";
 import InstitutionAccount from "../features/institution/core-interface/CoreInterfaceView";
-import ManagerAccount from "../features/manager/core-interface/CoreInterfaceView";
 import SignIn from "../features/sign-in/SignInView";
 
 class App extends Component {
@@ -20,12 +18,6 @@ class App extends Component {
         </Route>
         <Route path="/admin">
           <InstitutionAccount />
-        </Route>
-        <Route path="/manager">
-          <ManagerAccount />
-        </Route>
-        <Route path="/coach">
-          <CoachAccount />
         </Route>
       </Switch>
     );

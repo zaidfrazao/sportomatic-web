@@ -12,7 +12,7 @@ import RoleSelectCard from "./components/RoleSelectCard";
 
 const styles = theme => ({
   loaderWrapper: {
-    margin: 24,
+    margin: 12,
     width: "100%",
     textAlign: "center"
   },
