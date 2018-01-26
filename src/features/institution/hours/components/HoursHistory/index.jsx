@@ -1,11 +1,13 @@
 /* eslint-disable array-callback-return */
 import _ from "lodash";
 import React, { Component } from "react";
-import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import { grey, lightBlue } from "material-ui/colors";
+import IconButton from "material-ui/IconButton";
 import moment from "moment";
+import NextIcon from "material-ui-icons/ArrowForward";
 import Paper from "material-ui/Paper";
+import PreviousIcon from "material-ui-icons/ArrowBack";
 import Table, {
   TableBody,
   TableCell,
@@ -399,7 +401,21 @@ class HoursHistory extends Component {
       <div className={isMobile ? classes.mobileRoot : classes.root}>
         <Paper className={classes.tableWrapper}>
           <div className={classes.header}>
-            <Button
+            <IconButton
+              className={disablePrev ? "" : classes.headerButton}
+              disabled={disablePrev}
+              onClick={() => this.goToPrevMonth()}
+            >
+              <PreviousIcon />
+            </IconButton>
+            <Typography
+              component="h2"
+              type="title"
+              className={classes.headerTitle}
+            >
+              {getMonthName(month - 1)} {year}
+            </Typography>
+            <IconButton
               className={
                 year !== new Date(Date.now()).getFullYear() ||
                 month !== new Date(Date.now()).getMonth() + 1
@@ -412,22 +428,8 @@ class HoursHistory extends Component {
               }
               onClick={() => this.goToNextMonth()}
             >
-              Next
-            </Button>
-            <Typography
-              component="h2"
-              type="title"
-              className={classes.headerTitle}
-            >
-              {getMonthName(month - 1)} {year}
-            </Typography>
-            <Button
-              className={disablePrev ? "" : classes.headerButton}
-              disabled={disablePrev}
-              onClick={() => this.goToPrevMonth()}
-            >
-              Prev
-            </Button>
+              <NextIcon />
+            </IconButton>
           </div>
           <div>
             {isLoading ? (
