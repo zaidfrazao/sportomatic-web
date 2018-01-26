@@ -178,6 +178,7 @@ class FiltersToolbar extends Component {
           <FormControl>
             <Input
               id="search"
+              type="search"
               value={searchText}
               onChange={this.handleChange("searchText")}
               placeholder="Search by team name"
