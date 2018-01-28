@@ -709,7 +709,8 @@ class InvitePersonModal extends Component {
                         coach: type.coach ? "APPROVED" : "N/A",
                         manager: type.manager ? "APPROVED" : "N/A"
                       },
-                      paymentDefaults
+                      paymentDefaults,
+                      status: "STAFF"
                     }
                   }
                 });
