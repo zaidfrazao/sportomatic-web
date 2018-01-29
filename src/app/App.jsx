@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
-import InstitutionAccount from "../features/institution/core-interface/CoreInterfaceView";
+import Account from "../features/core-interface/CoreInterfaceView";
 import SignIn from "../features/sign-in/SignInView";
 
 class App extends Component {
@@ -17,7 +17,7 @@ class App extends Component {
           <SignIn />
         </Route>
         <Route path="/admin">
-          <InstitutionAccount />
+          <Account />
         </Route>
       </Switch>
     );

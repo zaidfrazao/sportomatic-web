@@ -1,30 +1,24 @@
 import { combineReducers } from "redux";
-
+import { coreInterfaceReducer } from "../features/core-interface/duck";
+import { dashboardReducer } from "../features/dashboard/duck";
+import { hoursReducer } from "../features/hours/duck";
+import { peopleReducer } from "../features/people/duck";
+import { resultsReducer } from "../features/results/duck";
+import { scheduleReducer } from "../features/schedule/duck";
+import { settingsReducer } from "../features/settings/duck";
 import { signInReducer } from "../features/sign-in/duck";
-
-import { coreInterfaceReducer as institutionCoreInterface } from "../features/institution/core-interface/duck";
-import { dashboardReducer as institutionDashboard } from "../features/institution/dashboard/duck";
-import { hoursReducer as institutionHours } from "../features/institution/hours/duck";
-import { resultsReducer as institutionResults } from "../features/institution/results/duck";
-import { peopleReducer as institutionPeople } from "../features/institution/people/duck";
-import { scheduleReducer as institutionSchedule } from "../features/institution/schedule/duck";
-import { settingsReducer as institutionSettings } from "../features/institution/settings/duck";
-import { teamsReducer as institutionTeams } from "../features/institution/teams/duck";
-import { wagesReducer as institutionWages } from "../features/institution/wages/duck";
-
-const institution = combineReducers({
-  coreInterface: institutionCoreInterface,
-  dashboard: institutionDashboard,
-  hours: institutionHours,
-  results: institutionResults,
-  people: institutionPeople,
-  schedule: institutionSchedule,
-  settings: institutionSettings,
-  teams: institutionTeams,
-  wages: institutionWages
-});
+import { teamsReducer } from "../features/teams/duck";
+import { wagesReducer } from "../features/wages/duck";
 
 export default combineReducers({
   signIn: signInReducer,
-  institution
+  coreInterface: coreInterfaceReducer,
+  dashboard: dashboardReducer,
+  hours: hoursReducer,
+  results: resultsReducer,
+  people: peopleReducer,
+  schedule: scheduleReducer,
+  settings: settingsReducer,
+  teams: teamsReducer,
+  wages: wagesReducer
 });
