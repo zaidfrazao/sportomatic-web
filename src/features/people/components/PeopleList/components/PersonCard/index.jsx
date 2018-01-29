@@ -1,19 +1,19 @@
 import React, { Component } from "react";
-import Card, { CardActions, CardContent, CardMedia } from "material-ui/Card";
 import Button from "material-ui/Button";
+import Card, { CardActions, CardContent, CardMedia } from "material-ui/Card";
 import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import defaultProfilePicture from "../../../../image/default-profile-picture.png";
 
 const styles = {
-  card: {
-    maxWidth: 400,
-    margin: "0 auto"
-  },
   buttons: {
     display: "flex",
     justifyContent: "space-between"
+  },
+  card: {
+    maxWidth: 400,
+    margin: "0 auto"
   },
   media: {
     height: 300

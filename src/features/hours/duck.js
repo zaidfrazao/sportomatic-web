@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
-import moment from "moment";
 import firebase from "firebase";
+import moment from "moment";
 
 // Actions
 

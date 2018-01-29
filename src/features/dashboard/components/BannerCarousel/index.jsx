@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
-import Slider from "react-slick";
 import BackIcon from "material-ui-icons/ArrowBack";
 import ForwardIcon from "material-ui-icons/ArrowForward";
+import { grey } from "material-ui/colors";
 import Paper from "material-ui/Paper";
+import Slider from "react-slick";
+import { withStyles } from "material-ui/styles";
 import backgroundImage from "./images/background-image.jpeg";
-import DashboardMobileAd from "../../../../components/DashboardMobileAd";
 import DashboardDesktopAd from "../../../../components/DashboardDesktopAd";
+import DashboardMobileAd from "../../../../components/DashboardMobileAd";
 
 const styles = {
   bannerWrapper: {
@@ -21,10 +21,6 @@ const styles = {
       width: 300
     }
   },
-  updatesTitle: {
-    color: grey[50],
-    margin: 12
-  },
   slide: {
     height: 250
   },
@@ -37,6 +33,10 @@ const styles = {
     textAlign: "center",
     backgroundSize: "970px 250px",
     backgroundImage: `url(${backgroundImage})`
+  },
+  updatesTitle: {
+    color: grey[50],
+    margin: 12
   }
 };
 

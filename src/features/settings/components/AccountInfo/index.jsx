@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
-import { Route } from "react-router-dom";
 import Avatar from "material-ui/Avatar";
 import Button from "material-ui/Button";
 import EditIcon from "material-ui-icons/Edit";
 import DeleteIcon from "material-ui-icons/Delete";
+import { grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import IconButton from "material-ui/IconButton";
 import List, {
@@ -13,13 +11,15 @@ import List, {
   ListItemText,
   ListItemSecondaryAction
 } from "material-ui/List";
+import { Route } from "react-router-dom";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
 import LargeRectangleAd from "../../../../components/LargeRectangleAd";
 
 const styles = {
-  wrapper: {
-    padding: 24
+  addButton: {
+    width: "100%"
   },
   adWrapper: {
     width: "100%",
@@ -30,11 +30,10 @@ const styles = {
     alignItems: "center",
     justifyContent: "center"
   },
-  section: {
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[200]}`,
-    height: "100%",
-    width: "100%"
+  button: {
+    "@media (max-width: 960px)": {
+      width: "100%"
+    }
   },
   heading: {
     fontWeight: "normal",
@@ -52,6 +51,19 @@ const styles = {
     textAlign: "center",
     margin: "40px 0"
   },
+  picture: {
+    backgroundColor: grey[300],
+    width: 300,
+    height: "auto",
+    margin: 24
+  },
+  pictureButton: {
+    width: "50%"
+  },
+  pictureButtons: {
+    width: "100%",
+    display: "flex"
+  },
   pictureWrapper: {
     width: "100%",
     height: "100%",
@@ -61,26 +73,14 @@ const styles = {
     alignItems: "center",
     justifyContent: "center"
   },
-  picture: {
-    backgroundColor: grey[300],
-    width: 300,
-    height: "auto",
-    margin: 24
-  },
-  button: {
-    "@media (max-width: 960px)": {
-      width: "100%"
-    }
-  },
-  pictureButtons: {
-    width: "100%",
-    display: "flex"
-  },
-  pictureButton: {
-    width: "50%"
-  },
-  addButton: {
+  section: {
+    backgroundColor: grey[50],
+    border: `1px solid ${grey[200]}`,
+    height: "100%",
     width: "100%"
+  },
+  wrapper: {
+    padding: 24
   }
 };
 

@@ -1,6 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import Avatar from "material-ui/Avatar";
+import Button from "material-ui/Button";
 import Checkbox from "material-ui/Checkbox";
 import { CircularProgress } from "material-ui/Progress";
 import Dialog, {
@@ -8,7 +9,6 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from "material-ui/Dialog";
-import Button from "material-ui/Button";
 import {
   FormControl,
   FormControlLabel,

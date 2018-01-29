@@ -1,36 +1,23 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "material-ui/styles";
 import { Redirect, Route, Switch } from "react-router-dom";
+import { withStyles } from "material-ui/styles";
+import backgroundImage from "./images/background-image.jpeg";
 import CustomAppBar from "./components/CustomAppBar";
-import SideMenu from "./components/SideMenu";
 import Dashboard from "../dashboard/DashboardView";
+import DecisionModal from "../../components/DecisionModal";
 import Hours from "../hours/HoursView";
+import NotificationModal from "../../components/NotificationModal";
 import Results from "../results/ResultsView";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
 import Settings from "../settings/SettingsView";
+import SideMenu from "./components/SideMenu";
 import Teams from "../teams/TeamsView";
 import Wages from "../wages/WagesView";
-import backgroundImage from "./images/background-image.jpeg";
-import NotificationModal from "../../components/NotificationModal";
-import DecisionModal from "../../components/DecisionModal";
 
 const drawerWidth = 240;
 
 const styles = theme => ({
-  root: {
-    width: "100%",
-    height: "100vh",
-    zIndex: 1,
-    overflow: "hidden"
-  },
-  appFrame: {
-    position: "relative",
-    display: "flex",
-    width: "100%",
-    height: "100%"
-  },
   appBar: {
     position: "absolute",
     zIndex: theme.zIndex.navDrawer + 1,
@@ -47,12 +34,11 @@ const styles = theme => ({
       duration: theme.transitions.duration.enteringScreen
     })
   },
-  menuButton: {
-    marginLeft: 12,
-    marginRight: 36
-  },
-  hide: {
-    display: "none"
+  appFrame: {
+    position: "relative",
+    display: "flex",
+    width: "100%",
+    height: "100%"
   },
   content: {
     width: "100%",
@@ -71,9 +57,22 @@ const styles = theme => ({
       marginTop: 64
     }
   },
+  hide: {
+    display: "none"
+  },
   main: {
     height: "100%",
     overflow: "auto"
+  },
+  menuButton: {
+    marginLeft: 12,
+    marginRight: 36
+  },
+  root: {
+    width: "100%",
+    height: "100vh",
+    zIndex: 1,
+    overflow: "hidden"
   }
 });
 
@@ -423,9 +422,5 @@ class CoreInterfaceLayout extends Component {
     );
   }
 }
-
-CoreInterfaceLayout.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(CoreInterfaceLayout);

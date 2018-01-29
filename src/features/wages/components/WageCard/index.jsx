@@ -53,15 +53,15 @@ const styles = {
   hightlightText: {
     fontWeight: "bold"
   },
+  rootWrapper: {
+    padding: 16
+  },
   wagesWrapper: {
     display: "flex",
     alignItems: "stretch",
     flexWrap: "wrap",
     backgroundColor: grey[100],
     border: `1px solid ${grey[300]}`
-  },
-  rootWrapper: {
-    padding: 16
   }
 };
 

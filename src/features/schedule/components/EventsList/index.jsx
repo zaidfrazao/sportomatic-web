@@ -1,15 +1,25 @@
 import React, { Component } from "react";
+import _ from "lodash";
 import Avatar from "material-ui/Avatar";
+import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
-import { Route } from "react-router-dom";
-import { withStyles } from "material-ui/styles";
 import { grey, lightBlue, orange, red } from "material-ui/colors";
 import List, { ListItem, ListItemText } from "material-ui/List";
-import Button from "material-ui/Button";
+import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
-import _ from "lodash";
+import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
+  adWrapper: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "24px 0"
+  },
+  backButton: {
+    margin: 24
+  },
   cancelledHeading: {
     padding: 12.5,
     backgroundColor: red[900],
@@ -18,6 +28,16 @@ const styles = theme => ({
   },
   competitiveEvent: {
     backgroundColor: orange[500]
+  },
+  header: {
+    height: 98,
+    backgroundColor: lightBlue[700]
+  },
+  loaderWrapper: {
+    height: 80,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
   },
   nonCompetitiveEvent: {
     backgroundColor: lightBlue[500]
@@ -29,31 +49,11 @@ const styles = theme => ({
     flexDirection: "column",
     overflow: "auto"
   },
-  adWrapper: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    margin: "24px 0"
-  },
-  header: {
-    height: 98,
-    backgroundColor: lightBlue[700]
-  },
   timeHeading: {
     padding: 12.5,
     backgroundColor: lightBlue[900],
     fontWeight: "normal",
     color: grey[50]
-  },
-  backButton: {
-    margin: 24
-  },
-  loaderWrapper: {
-    height: 80,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
   }
 });
 

@@ -1,13 +1,13 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
+import Button from "material-ui/Button";
 import Dialog, {
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle
 } from "material-ui/Dialog";
-import Button from "material-ui/Button";
 import { FormControl } from "material-ui/Form";
 import Input from "material-ui/Input";
 import Select from "material-ui/Select";

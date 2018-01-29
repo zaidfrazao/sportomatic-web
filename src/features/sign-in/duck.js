@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
-import { isValidEmail } from "../../utils/validation";
 import firebase from "firebase";
+import { isValidEmail } from "../../utils/validation";
 import { UserAlias } from "../../models/aliases";
 
 // Actions

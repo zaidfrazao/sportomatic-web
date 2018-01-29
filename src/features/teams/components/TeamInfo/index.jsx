@@ -29,9 +29,9 @@ import Typography from "material-ui/Typography";
 import WarningIcon from "material-ui-icons/Warning";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../components/BannerAd";
+import defaultProfilePicture from "../../image/default-profile-picture.png";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
-import defaultProfilePicture from "../../image/default-profile-picture.png";
 
 const styles = theme => ({
   actionsBar: {

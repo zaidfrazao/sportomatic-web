@@ -18,10 +18,10 @@ import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
 import CoachesList from "./components/CoachesList";
 import FiltersToolbar from "./components/FiltersToolbar";
-import WageCard from "./components/WageCard";
-import WageHistory from "./components/WageHistory";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
+import WageCard from "./components/WageCard";
+import WageHistory from "./components/WageHistory";
 
 const styles = theme => ({
   actionsBar: {
@@ -46,11 +46,6 @@ const styles = theme => ({
     margin: 24,
     width: "calc(100% - 24px)",
     maxWidth: 970
-  },
-  wagesByDateWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
   },
   innerWrapper: {
     flexGrow: 1,
@@ -90,6 +85,11 @@ const styles = theme => ({
     height: "100%",
     display: "flex",
     flexDirection: "column"
+  },
+  wagesByDateWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
   }
 });
 

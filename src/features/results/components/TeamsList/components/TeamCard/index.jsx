@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "material-ui/styles";
-import { Route } from "react-router-dom";
-import { grey, red } from "material-ui/colors";
-import Card, { CardActions, CardContent } from "material-ui/Card";
 import Button from "material-ui/Button";
+import Card, { CardActions, CardContent } from "material-ui/Card";
+import { grey, red } from "material-ui/colors";
+import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
 import WarningIcon from "material-ui-icons/Warning";
+import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
   avatar: {
@@ -110,9 +109,5 @@ class TeamCard extends Component {
     );
   }
 }
-
-TeamCard.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(TeamCard);

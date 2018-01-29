@@ -18,153 +18,6 @@ import { withStyles } from "material-ui/styles";
 import EventsList from "../EventsList";
 
 const styles = theme => ({
-  cancelledEvent: {
-    width: 12,
-    height: 12,
-    color: red[500]
-  },
-  competitiveEvent: {
-    width: 12,
-    height: 12,
-    color: orange[500]
-  },
-  nonCompetitiveEvent: {
-    width: 12,
-    height: 12,
-    color: lightBlue[500]
-  },
-  figure: {
-    height: "100%",
-    width: "100%"
-  },
-  weekendTile: {
-    color: `${grey[500]} !important`
-  },
-  disabledDate: {
-    height: 64,
-    width: 64,
-    fontSize: 20
-  },
-  normalTile: {
-    height: 64,
-    width: 64,
-    fontSize: 18,
-    color: grey[800],
-    "&:hover": {
-      backgroundColor: `${grey[200]} !important`,
-      color: `${grey[900]} !important`,
-      borderRadius: 32
-    }
-  },
-  eventTile: {
-    height: 64,
-    width: 64,
-    fontSize: 20,
-    color: grey[900],
-    fontWeight: "bold",
-    "&:hover": {
-      backgroundColor: `${grey[200]} !important`,
-      color: `${grey[900]} !important`,
-      borderRadius: 32
-    }
-  },
-  todayTile: {
-    height: 64,
-    width: 64,
-    fontSize: 18,
-    color: grey[900],
-    backgroundColor: grey[200],
-    borderRadius: 32,
-    "&:hover": {
-      backgroundColor: `${grey[200]} !important`,
-      color: `${grey[900]} !important`,
-      borderRadius: 32
-    }
-  },
-  selectedTile: {
-    height: 64,
-    width: 64,
-    fontSize: 22,
-    backgroundColor: lightBlue[900],
-    color: `${grey[50]} !important`,
-    fontWeight: "bold",
-    borderRadius: 32,
-    "&:hover": {
-      backgroundColor: `${lightBlue[900]} !important`,
-      color: `${grey[50]} !important`,
-      borderRadius: 32
-    }
-  },
-  calendarWithHeader: {
-    width: "100%",
-    height: "calc(100% - 48px)",
-    overflow: "auto"
-  },
-  calendarWithoutHeader: {
-    width: "100%",
-    height: "100%",
-    overflow: "auto"
-  },
-  root: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    "@media (min-width: 960px)": {
-      margin: 48,
-      width: "calc(100% - 96px)"
-    },
-    "@media (min-width: 1200px)": {
-      width: 1200,
-      margin: "48px auto"
-    }
-  },
-  contentWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "row",
-    backgroundColor: grey[50]
-  },
-  header: {
-    padding: "20px 0",
-    width: "100%",
-    backgroundColor: lightBlue[700],
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
-  },
-  selectedYear: {
-    fontSize: 14,
-    color: grey[100],
-    "@media (min-width: 600px)": {
-      fontSize: 18
-    }
-  },
-  selectedDate: {
-    fontSize: 24,
-    color: grey[50],
-    "@media (min-width: 600px)": {
-      fontSize: 32
-    }
-  },
-  desktopCalendar: {
-    width: "60%"
-  },
-  desktopEventsList: {
-    width: "40%",
-    display: "flex",
-    flexDirection: "column"
-  },
-  mobileCalendar: {
-    width: "100%"
-  },
-  headerContent: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center"
-  },
   arrow: {
     color: grey[50],
     width: 32,
@@ -182,19 +35,166 @@ const styles = theme => ({
     width: "100%",
     backgroundColor: lightBlue[900]
   },
+  calendarWithHeader: {
+    width: "100%",
+    height: "calc(100% - 48px)",
+    overflow: "auto"
+  },
+  calendarWithoutHeader: {
+    width: "100%",
+    height: "100%",
+    overflow: "auto"
+  },
+  cancelledEvent: {
+    width: 12,
+    height: 12,
+    color: red[500]
+  },
+  competitiveEvent: {
+    width: 12,
+    height: 12,
+    color: orange[500]
+  },
+  contentWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "row",
+    backgroundColor: grey[50]
+  },
+  desktopCalendar: {
+    width: "60%"
+  },
+  desktopEventsList: {
+    width: "40%",
+    display: "flex",
+    flexDirection: "column"
+  },
   disabledButton: {
     color: lightBlue[900]
+  },
+  disabledDate: {
+    height: 64,
+    width: 64,
+    fontSize: 20
   },
   eventsListWrapper: {
     display: "flex",
     flexDirection: "column",
     width: "100%"
   },
+  eventTile: {
+    height: 64,
+    width: 64,
+    fontSize: 20,
+    color: grey[900],
+    fontWeight: "bold",
+    "&:hover": {
+      backgroundColor: `${grey[200]} !important`,
+      color: `${grey[900]} !important`,
+      borderRadius: 32
+    }
+  },
+  figure: {
+    height: "100%",
+    width: "100%"
+  },
+  header: {
+    padding: "20px 0",
+    width: "100%",
+    backgroundColor: lightBlue[700],
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  headerContent: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
+  },
   loadingWrapper: {
     height: "100%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center"
+  },
+  mobileCalendar: {
+    width: "100%"
+  },
+  nonCompetitiveEvent: {
+    width: 12,
+    height: 12,
+    color: lightBlue[500]
+  },
+  normalTile: {
+    height: 64,
+    width: 64,
+    fontSize: 18,
+    color: grey[800],
+    "&:hover": {
+      backgroundColor: `${grey[200]} !important`,
+      color: `${grey[900]} !important`,
+      borderRadius: 32
+    }
+  },
+  root: {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    "@media (min-width: 960px)": {
+      margin: 48,
+      width: "calc(100% - 96px)"
+    },
+    "@media (min-width: 1200px)": {
+      width: 1200,
+      margin: "48px auto"
+    }
+  },
+  selectedDate: {
+    fontSize: 24,
+    color: grey[50],
+    "@media (min-width: 600px)": {
+      fontSize: 32
+    }
+  },
+  selectedTile: {
+    height: 64,
+    width: 64,
+    fontSize: 22,
+    backgroundColor: lightBlue[900],
+    color: `${grey[50]} !important`,
+    fontWeight: "bold",
+    borderRadius: 32,
+    "&:hover": {
+      backgroundColor: `${lightBlue[900]} !important`,
+      color: `${grey[50]} !important`,
+      borderRadius: 32
+    }
+  },
+  selectedYear: {
+    fontSize: 14,
+    color: grey[100],
+    "@media (min-width: 600px)": {
+      fontSize: 18
+    }
+  },
+  todayTile: {
+    height: 64,
+    width: 64,
+    fontSize: 18,
+    color: grey[900],
+    backgroundColor: grey[200],
+    borderRadius: 32,
+    "&:hover": {
+      backgroundColor: `${grey[200]} !important`,
+      color: `${grey[900]} !important`,
+      borderRadius: 32
+    }
+  },
+  weekendTile: {
+    color: `${grey[500]} !important`
   }
 });
 

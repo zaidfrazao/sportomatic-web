@@ -1,18 +1,18 @@
 import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
-import { grey } from "material-ui/colors";
-import classNames from "classnames";
 import AppBar from "material-ui/AppBar";
-import IconButton from "material-ui/IconButton";
-import MenuIcon from "material-ui-icons/Menu";
-import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import AppBarMenuIcon from "material-ui-icons/MoreVert";
-import Popover from "material-ui/Popover";
+import classNames from "classnames";
+import { grey } from "material-ui/colors";
+import IconButton from "material-ui/IconButton";
+import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import LogOutIcon from "material-ui-icons/ExitToApp";
+import MenuIcon from "material-ui-icons/Menu";
+import Popover from "material-ui/Popover";
 import SettingsIcon from "material-ui-icons/Settings";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
 import NotificationsTray from "./components/NotificationsTray";
 
 const drawerWidth = 240;
@@ -38,27 +38,27 @@ const styles = theme => ({
     display: "flex",
     alignItems: "center"
   },
-  flexGrow: {
-    flexGrow: 1
-  },
-  menuButton: {
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2
-  },
-  hide: {
-    display: "none"
-  },
-  rightButtons: {
-    marginRight: "20px",
-    display: "flex",
-    flexDirection: "row"
-  },
   badgeColor: {
     backgroundColor: grey[50]
   },
   desktopIcons: {
     display: "flex",
     alignItems: "center"
+  },
+  flexGrow: {
+    flexGrow: 1
+  },
+  hide: {
+    display: "none"
+  },
+  menuButton: {
+    marginLeft: theme.spacing.unit * 2,
+    marginRight: theme.spacing.unit * 2
+  },
+  rightButtons: {
+    marginRight: "20px",
+    display: "flex",
+    flexDirection: "row"
   },
   titleMargin: {
     marginLeft: theme.spacing.unit * 3

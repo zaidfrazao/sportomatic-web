@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
+import Button from "material-ui/Button";
+import { CircularProgress } from "material-ui/Progress";
 import Dialog, {
   DialogActions,
   DialogContent,
   DialogTitle
 } from "material-ui/Dialog";
-import Button from "material-ui/Button";
-import { CircularProgress } from "material-ui/Progress";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
 
 const styles = {
   emailTextField: {

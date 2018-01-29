@@ -1,11 +1,11 @@
 import React, { Component } from "react";
+import Button from "material-ui/Button";
 import Dialog, {
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle
 } from "material-ui/Dialog";
-import Button from "material-ui/Button";
 import { FormControl } from "material-ui/Form";
 import { green, grey, red } from "material-ui/colors";
 import TextField from "material-ui/TextField";
