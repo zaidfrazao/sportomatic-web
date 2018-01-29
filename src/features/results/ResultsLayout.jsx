@@ -237,9 +237,7 @@ class ResultsLayout extends Component {
       return (
         <div className={classes.hoursByDateWrapper}>
           {_.toPairs(groupedByDate).map(([date, events]) => {
-            const currentDate = moment(new Date(Date.now())).format(
-              "YYYY-MM-DD"
-            );
+            const currentDate = moment().format("YYYY-MM-DD");
             return (
               <Paper className={classes.dateWrapper} key={date}>
                 <div className={classes.dateHeader}>
@@ -543,9 +541,7 @@ class ResultsLayout extends Component {
               <div className={classes.adWrapper}>{ad}</div>
               <div className={classes.hoursByDateWrapper}>
                 {_.toPairs(groupedByDate).map(([date, events]) => {
-                  const currentDate = moment(new Date(Date.now())).format(
-                    "YYYY-MM-DD"
-                  );
+                  const currentDate = moment().format("YYYY-MM-DD");
                   return (
                     <Paper className={classes.dateWrapper} key={date}>
                       <div className={classes.dateHeader}>

@@ -35,6 +35,7 @@ import List, {
   ListSubheader
 } from "material-ui/List";
 import LocationIcon from "material-ui-icons/LocationOn";
+import moment from "moment";
 import Paper from "material-ui/Paper";
 import PersonIcon from "material-ui-icons/Person";
 import ResultsIcon from "material-ui-icons/PlusOne";
@@ -1044,8 +1045,6 @@ class EventInfo extends Component {
       isTeamsLoading
     } = this.props;
 
-    const dateOptions = { weekday: "long", month: "long", day: "numeric" };
-    const timeOptions = { hour12: true, hour: "2-digit", minute: "2-digit" };
     const ad = this.createAd();
     const { coaches, managers, teams } = this.getListItems();
     const showButtons = !isPastEvent && info;
@@ -1178,9 +1177,8 @@ class EventInfo extends Component {
                         secondary={
                           isInfoLoading || !info
                             ? "Loading..."
-                            : info.requiredInfo.times.start.toLocaleDateString(
-                                "en-US",
-                                dateOptions
+                            : moment(info.requiredInfo.times.start).format(
+                                "DD MMMM YYYY"
                               )
                         }
                       />
@@ -1191,9 +1189,8 @@ class EventInfo extends Component {
                         secondary={
                           isInfoLoading || !info
                             ? "Loading..."
-                            : info.requiredInfo.times.start.toLocaleTimeString(
-                                "en-US",
-                                timeOptions
+                            : moment(info.requiredInfo.times.start).format(
+                                "h:mm A"
                               )
                         }
                       />
@@ -1204,9 +1201,8 @@ class EventInfo extends Component {
                         secondary={
                           isInfoLoading || !info
                             ? "Loading..."
-                            : info.requiredInfo.times.end.toLocaleTimeString(
-                                "en-US",
-                                timeOptions
+                            : moment(info.requiredInfo.times.end).format(
+                                "h:mm A"
                               )
                         }
                       />

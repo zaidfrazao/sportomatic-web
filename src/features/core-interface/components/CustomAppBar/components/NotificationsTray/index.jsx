@@ -143,7 +143,7 @@ class NotificationsTray extends Component<Props, State> {
     } else {
       return notifications.map((notification, index) => {
         const date = notification.metadata.creationDate;
-        const currentDate = moment(new Date(Date.now())).format("YYYY-MM-DD");
+        const currentDate = moment().format("YYYY-MM-DD");
 
         switch (notification.feature) {
           case "SCHEDULE":

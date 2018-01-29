@@ -187,7 +187,7 @@ class TeamInfo extends Component {
         })
         .map(([id, info]) => {
           const startTime = moment(info.requiredInfo.times.start);
-          const currentTime = moment(new Date(Date.now()));
+          const currentTime = moment();
           if (startTime.isAfter(currentTime)) {
             upcomingEvents[id] = info;
           } else {
@@ -256,7 +256,7 @@ class TeamInfo extends Component {
         })
         .map(([id, info]) => {
           const startTime = moment(info.requiredInfo.times.start);
-          const currentTime = moment(new Date(Date.now()));
+          const currentTime = moment();
           if (startTime.isAfter(currentTime)) {
             upcomingEvents[id] = info;
           } else {

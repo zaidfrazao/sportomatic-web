@@ -68,8 +68,8 @@ const styles = theme => ({
 
 class WageHistory extends Component {
   state = {
-    year: new Date(Date.now()).getFullYear(),
-    month: new Date(Date.now()).getMonth() + 1,
+    year: moment().year(),
+    month: moment().month() + 1,
     isLoading: false
   };
 
@@ -330,14 +330,12 @@ class WageHistory extends Component {
             </Typography>
             <IconButton
               className={
-                year !== new Date(Date.now()).getFullYear() ||
-                month !== new Date(Date.now()).getMonth() + 1
+                year !== moment().year() || month !== moment().month() + 1
                   ? classes.headerButton
                   : ""
               }
               disabled={
-                year === new Date(Date.now()).getFullYear() &&
-                month === new Date(Date.now()).getMonth() + 1
+                year === moment().year() && month === moment().month() + 1
               }
               onClick={() => this.goToNextMonth()}
             >

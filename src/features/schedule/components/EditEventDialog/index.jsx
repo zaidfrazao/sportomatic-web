@@ -138,7 +138,7 @@ class EditEventDialog extends Component {
   state = {
     title: "Practice",
     type: "PRACTICE",
-    date: moment(new Date(Date.now())).format("YYYY-MM-DD"),
+    date: moment().format("YYYY-MM-DD"),
     startTime: "12:00",
     endTime: "13:00",
     venue: "",

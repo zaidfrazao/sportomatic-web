@@ -212,7 +212,7 @@ class HoursLayout extends Component {
       return (
         <div className={classes.hoursByDateWrapper}>
           {_.toPairs(groupedByDate).map(([date, events]) => {
-            const currentDate = new Date(Date.now()).toISOString().slice(0, 10);
+            const currentDate = moment().format("YYYY-MM-DD");
             return (
               <Paper className={classes.dateWrapper} key={date}>
                 <div className={classes.dateHeader}>

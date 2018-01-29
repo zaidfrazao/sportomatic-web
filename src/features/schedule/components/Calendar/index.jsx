@@ -200,12 +200,8 @@ const styles = theme => ({
 
 class Calendar extends Component {
   compareDates(dateA, dateB) {
-    if (dateA.getFullYear() < dateB.getFullYear()) return -1;
-    if (dateA.getFullYear() > dateB.getFullYear()) return +1;
-    if (dateA.getMonth() < dateB.getMonth()) return -1;
-    if (dateA.getMonth() > dateB.getMonth()) return +1;
-    if (dateA.getDate() < dateB.getDate()) return -1;
-    if (dateA.getDate() > dateB.getDate()) return +1;
+    if (moment(dateA).isBefore(dateB)) return -1;
+    if (moment(dateA).isAfter(dateB)) return +1;
     return 0;
   }
 

@@ -5,6 +5,7 @@ import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import { grey, lightBlue, orange, red } from "material-ui/colors";
 import List, { ListItem, ListItemText } from "material-ui/List";
+import moment from "moment";
 import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
@@ -91,7 +92,6 @@ class EventsList extends Component {
     const { updateView } = this.props.actions;
 
     const allEvents = this.getFullSortedEventsList(events);
-    const options = { hour12: true, hour: "2-digit", minute: "2-digit" };
 
     const morningEvents = allEvents
       .filter(eventInfo => {
@@ -103,13 +103,11 @@ class EventsList extends Component {
         return eventInfo.requiredInfo.status === "ACTIVE";
       })
       .map(eventInfo => {
-        const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
-          "en-US",
-          options
-        );
-        const eventEndTime = eventInfo.requiredInfo.times.end.toLocaleTimeString(
-          "en-US",
-          options
+        const eventStartTime = moment(
+          eventInfo.requiredInfo.times.start
+        ).format("h:mm A");
+        const eventEndTime = moment(eventInfo.requiredInfo.times.end).format(
+          "h:mm A"
         );
         return (
           <Route
@@ -152,13 +150,11 @@ class EventsList extends Component {
         return eventInfo.requiredInfo.status === "ACTIVE";
       })
       .map(eventInfo => {
-        const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
-          "en-US",
-          options
-        );
-        const eventEndTime = eventInfo.requiredInfo.times.end.toLocaleTimeString(
-          "en-US",
-          options
+        const eventStartTime = moment(
+          eventInfo.requiredInfo.times.start
+        ).format("h:mm A");
+        const eventEndTime = moment(eventInfo.requiredInfo.times.end).format(
+          "h:mm A"
         );
         return (
           <Route
@@ -201,13 +197,11 @@ class EventsList extends Component {
         return eventInfo.requiredInfo.status === "ACTIVE";
       })
       .map(eventInfo => {
-        const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
-          "en-US",
-          options
-        );
-        const eventEndTime = eventInfo.requiredInfo.times.end.toLocaleTimeString(
-          "en-US",
-          options
+        const eventStartTime = moment(
+          eventInfo.requiredInfo.times.start
+        ).format("h:mm A");
+        const eventEndTime = moment(eventInfo.requiredInfo.times.end).format(
+          "h:mm A"
         );
         return (
           <Route
@@ -245,13 +239,11 @@ class EventsList extends Component {
         return eventInfo.requiredInfo.status === "CANCELLED";
       })
       .map(eventInfo => {
-        const eventStartTime = eventInfo.requiredInfo.times.start.toLocaleTimeString(
-          "en-US",
-          options
-        );
-        const eventEndTime = eventInfo.requiredInfo.times.end.toLocaleTimeString(
-          "en-US",
-          options
+        const eventStartTime = moment(
+          eventInfo.requiredInfo.times.start
+        ).format("h:mm A");
+        const eventEndTime = moment(eventInfo.requiredInfo.times.end).format(
+          "h:mm A"
         );
         return (
           <Route

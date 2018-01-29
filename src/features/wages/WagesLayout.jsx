@@ -148,9 +148,7 @@ class WagesLayout extends Component {
       return (
         <div className={classes.wagesByDateWrapper}>
           {_.toPairs(groupedByDate).map(([date, wages]) => {
-            const currentDate = moment(new Date(Date.now())).format(
-              "YYYY-MM-DD"
-            );
+            const currentDate = moment().format("YYYY-MM-DD");
             return (
               <Paper className={classes.dateWrapper} key={date}>
                 <div className={classes.dateHeader}>
