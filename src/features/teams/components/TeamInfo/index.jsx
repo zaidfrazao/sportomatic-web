@@ -937,7 +937,7 @@ class TeamInfo extends Component {
   }
 
   render() {
-    const { classes, info } = this.props;
+    const { classes, info, role } = this.props;
     const {
       isTeamsLoading,
       isCoachesLoading,
@@ -1005,17 +1005,19 @@ class TeamInfo extends Component {
               )}
             />
             <div className={classes.flexGrow} />
-            <Tooltip title="Edit team" placement="bottom">
-              <IconButton
-                disabled={
-                  isCoachesLoading || isManagersLoading || isTeamsLoading
-                }
-                aria-label="edit team"
-                onClick={() => editTeam()}
-              >
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
+            {role === "admin" && (
+              <Tooltip title="Edit team" placement="bottom">
+                <IconButton
+                  disabled={
+                    isCoachesLoading || isManagersLoading || isTeamsLoading
+                  }
+                  aria-label="edit team"
+                  onClick={() => editTeam()}
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+            )}
           </Toolbar>
           <div className={classes.wrapper}>
             <div className={classes.adWrapper}>{ad}</div>

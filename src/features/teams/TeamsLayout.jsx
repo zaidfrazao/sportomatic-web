@@ -2,6 +2,8 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import { CircularProgress } from "material-ui/Progress";
+import Switch from "material-ui/Switch";
+import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import AddTeamDialog from "./components/AddTeamDialog";
 import BannerAd from "../../components/BannerAd";
@@ -38,6 +40,12 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center"
   },
+  myTeamsSelector: {
+    width: "100%",
+    maxWidth: 1200,
+    margin: "0 auto",
+    display: "flex"
+  },
   root: {
     width: "100%",
     height: "100%",
@@ -62,7 +70,8 @@ class TeamsLayout extends Component {
     sports: {},
     divisions: {},
     ageGroups: {},
-    showDeletedTeams: false
+    showDeletedTeams: false,
+    showAllTeams: false
   };
 
   componentWillMount() {
@@ -181,7 +190,8 @@ class TeamsLayout extends Component {
       searchText,
       showDeletedTeams
     } = this.props.filters;
-    const { teams, coaches, managers } = this.props;
+    const { teams, coaches, managers, userID, role } = this.props;
+    const { showAllTeams } = this.state;
 
     return _.fromPairs(
       _.toPairs(teams).filter(([teamID, teamInfo]) => {
@@ -189,6 +199,7 @@ class TeamsLayout extends Component {
         let titleMatch = true;
         let coachMatch = true;
         let managerMatch = true;
+        let roleMatch = true;
 
         if (teamInfo.status === "DELETED" && !showDeletedTeams) {
           allowThroughFilter = false;
@@ -219,6 +230,24 @@ class TeamsLayout extends Component {
           titleMatch = teamName.includes(_.toLower(searchText));
         }
 
+        if (role === "coach" && !showAllTeams) {
+          const teamCoaches = _.keys(teamInfo.coaches);
+          roleMatch = false;
+
+          teamCoaches.map(coachID => {
+            roleMatch = roleMatch || coachID === userID;
+          });
+        }
+
+        if (role === "manager" && !showAllTeams) {
+          const teamManagers = _.keys(teamInfo.managers);
+          roleMatch = false;
+
+          teamManagers.map(managerID => {
+            roleMatch = roleMatch || managerID === userID;
+          });
+        }
+
         if (gender !== "All") {
           allowThroughFilter =
             allowThroughFilter && teamInfo.info.gender === gender;
@@ -237,7 +266,9 @@ class TeamsLayout extends Component {
         }
 
         allowThroughFilter =
-          allowThroughFilter && (titleMatch || coachMatch || managerMatch);
+          allowThroughFilter &&
+          (titleMatch || coachMatch || managerMatch) &&
+          roleMatch;
 
         return allowThroughFilter;
       })
@@ -245,6 +276,7 @@ class TeamsLayout extends Component {
   }
 
   render() {
+    const { showAllTeams } = this.state;
     const {
       classes,
       teams,
@@ -255,7 +287,8 @@ class TeamsLayout extends Component {
       isMobile,
       isTablet,
       filters,
-      eventsByTeam
+      eventsByTeam,
+      role
     } = this.props;
     const {
       isAddTeamDialogOpen,
@@ -307,6 +340,7 @@ class TeamsLayout extends Component {
         {teamID ? (
           <div className={classes.infoWrapper}>
             <TeamInfo
+              role={role}
               isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
               isCoachesLoading={isCoachesLoading}
               isManagersLoading={isManagersLoading}
@@ -353,6 +387,7 @@ class TeamsLayout extends Component {
             }
           >
             <FiltersToolbar
+              role={role}
               genders={_.keys(this.state.genders)}
               sports={_.keys(this.state.sports)}
               divisions={_.keys(this.state.divisions)}
@@ -374,10 +409,26 @@ class TeamsLayout extends Component {
                 <CircularProgress />
               </div>
             ) : (
-              <TeamsList
-                teams={filteredTeams}
-                actions={{ openDeleteTeamAlert }}
-              />
+              <div>
+                {(role === "coach" || role === "manager") && (
+                  <div className={classes.myTeamsSelector}>
+                    <Switch
+                      checked={showAllTeams}
+                      onChange={(event, checked) =>
+                        this.setState({
+                          showAllTeams: checked
+                        })}
+                    />
+                    <Typography component="h3" type="headline">
+                      {showAllTeams ? "All" : "My"} Teams
+                    </Typography>
+                  </div>
+                )}
+                <TeamsList
+                  teams={filteredTeams}
+                  actions={{ openDeleteTeamAlert }}
+                />
+              </div>
             )}
             <NotificationModal
               isOpen={isDeleteTeamAlertOpen}

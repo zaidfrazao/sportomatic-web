@@ -158,7 +158,8 @@ class FiltersToolbar extends Component {
       ageGroups,
       applyFilters,
       addTeam,
-      isLoading
+      isLoading,
+      role
     } = this.props;
     const {
       searchText,
@@ -269,15 +270,17 @@ class FiltersToolbar extends Component {
               <FilterIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Add new team" placement="bottom">
-            <IconButton
-              disabled={isLoading}
-              aria-label="add new team"
-              onClick={() => addTeam()}
-            >
-              <AddIcon />
-            </IconButton>
-          </Tooltip>
+          {role === "admin" && (
+            <Tooltip title="Add new team" placement="bottom">
+              <IconButton
+                disabled={isLoading}
+                aria-label="add new team"
+                onClick={() => addTeam()}
+              >
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
+          )}
         </Toolbar>
         {isMobile && (
           <div className={classes.settingChips}>
@@ -428,16 +431,18 @@ class FiltersToolbar extends Component {
                   })}
                 </Select>
               </FormControl>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={selectedShowDeletedTeams}
-                    onChange={(event, checked) =>
-                      this.setState({ selectedShowDeletedTeams: checked })}
-                  />
-                }
-                label="Show Deleted Teams"
-              />
+              {role === "admin" && (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={selectedShowDeletedTeams}
+                      onChange={(event, checked) =>
+                        this.setState({ selectedShowDeletedTeams: checked })}
+                    />
+                  }
+                  label="Show Deleted Teams"
+                />
+              )}
             </form>
           </DialogContent>
           <DialogActions>

@@ -325,6 +325,8 @@ class CoreInterfaceLayout extends Component {
                 </Route>
                 <Route exact path={"/myaccount/teams/"}>
                   <Teams
+                    userID={userID}
+                    role={role}
                     activeInstitutionID={activeInstitutionID}
                     isMobile={isMobile}
                     isTablet={isTablet}
@@ -333,6 +335,8 @@ class CoreInterfaceLayout extends Component {
                 </Route>
                 <Route path={"/myaccount/teams/:teamID"}>
                   <Teams
+                    userID={userID}
+                    role={role}
                     activeInstitutionID={activeInstitutionID}
                     isMobile={isMobile}
                     isTablet={isTablet}
