@@ -10,8 +10,8 @@ import defaultEmblem from "../../image/default-emblem.jpg";
 
 const styles = {
   avatar: {
-    width: 40,
-    height: 40,
+    width: 56,
+    height: 56,
     backgroundColor: grey[300]
   },
   button: {

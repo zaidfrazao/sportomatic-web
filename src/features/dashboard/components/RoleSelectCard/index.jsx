@@ -10,8 +10,8 @@ import managerIcon from "./image/manager-icon.png";
 
 const styles = {
   avatar: {
-    width: 40,
-    height: 40
+    width: 56,
+    height: 56
   },
   button: {
     flex: 1
