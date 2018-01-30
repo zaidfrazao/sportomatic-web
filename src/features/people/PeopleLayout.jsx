@@ -656,7 +656,7 @@ class PeopleLayout extends Component {
                             })}
                         />
                         <Typography component="h3" type="headline">
-                          {showAllPeople ? "All People" : "In My Teams"}
+                          {showAllPeople ? "All People" : "My Team Members"}
                         </Typography>
                       </div>
                     )}

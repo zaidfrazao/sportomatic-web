@@ -229,7 +229,7 @@ class Generic extends Component {
   }
 
   renderMobile() {
-    const { classes, teamID, eventID, resultsStatus } = this.props;
+    const { classes, teamID, eventID, resultsStatus, role } = this.props;
     const { name, emblemURL } = this.props.ourTeam;
     const { startLogging, finaliseResults, editResult } = this.props.actions;
     const { opponents } = this.state;
@@ -442,10 +442,13 @@ class Generic extends Component {
         {resultsStatus === "AWAITING_FINALISE" && (
           <Button
             raised
+            disabled={role === "coach"}
             className={classes.finaliseButton}
             onClick={() => finaliseResults(eventID, teamID)}
           >
-            Finalise results
+            {role === "admin" || role === "manager"
+              ? "Finalise results"
+              : "To be finalised"}
           </Button>
         )}
         {resultsStatus === "FINALISED" && (
@@ -469,7 +472,7 @@ class Generic extends Component {
   }
 
   renderDesktop() {
-    const { classes, teamID, eventID, resultsStatus } = this.props;
+    const { classes, teamID, eventID, resultsStatus, role } = this.props;
     const { name, emblemURL } = this.props.ourTeam;
     const { startLogging, finaliseResults, editResult } = this.props.actions;
     const { opponents } = this.state;
@@ -695,10 +698,13 @@ class Generic extends Component {
         {resultsStatus === "AWAITING_FINALISE" && (
           <Button
             raised
+            disabled={role === "coach"}
             className={classes.finaliseButton}
             onClick={() => finaliseResults(eventID, teamID)}
           >
-            Finalise results
+            {role === "admin" || role === "manager"
+              ? "Finalise results"
+              : "To be finalised"}
           </Button>
         )}
         {resultsStatus === "FINALISED" && (

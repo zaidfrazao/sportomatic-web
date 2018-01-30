@@ -415,7 +415,9 @@ class TeamsLayout extends Component {
                         })}
                     />
                     <Typography component="h3" type="headline">
-                      {showAllTeams ? "All" : "My"} Teams
+                      {showAllTeams
+                        ? "All Teams"
+                        : role === "coach" ? "Teams I Coach" : "Teams I Manage"}
                     </Typography>
                   </div>
                 )}

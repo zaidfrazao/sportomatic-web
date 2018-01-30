@@ -10,6 +10,7 @@ import IconButton from "material-ui/IconButton";
 import moment from "moment";
 import Paper from "material-ui/Paper";
 import { Route } from "react-router-dom";
+import Switch from "material-ui/Switch";
 import Tabs, { Tab } from "material-ui/Tabs";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
@@ -45,7 +46,7 @@ const styles = theme => ({
   dateWrapper: {
     margin: 24,
     width: "calc(100% - 24px)",
-    maxWidth: 970
+    maxWidth: 1200
   },
   hoursByDateWrapper: {
     display: "flex",
@@ -65,6 +66,13 @@ const styles = theme => ({
   loadMoreButton: {
     margin: 24
   },
+  myTeamsSelector: {
+    width: "100%",
+    maxWidth: 1200,
+    margin: "0 auto",
+    display: "flex",
+    alignItems: "center"
+  },
   name: {
     margin: 24,
     width: "calc(100% - 48px)",
@@ -77,7 +85,7 @@ const styles = theme => ({
     flexDirection: "column"
   },
   resultInfoWrapper: {
-    maxWidth: 970,
+    maxWidth: 1200,
     margin: "0 auto"
   },
   root: {
@@ -103,7 +111,8 @@ class ResultsLayout extends Component {
     sports: {},
     divisions: {},
     ageGroups: {},
-    showDeletedTeams: false
+    showDeletedTeams: false,
+    showAllTeams: false
   };
 
   componentWillMount() {
@@ -111,6 +120,8 @@ class ResultsLayout extends Component {
     const { teamID } = this.props.match.params;
     const {
       loadTeams,
+      loadCoaches,
+      loadManagers,
       loadEventsByDate,
       fetchInstitutionEmblem,
       loadEventsByTeam
@@ -118,6 +129,8 @@ class ResultsLayout extends Component {
 
     if (activeInstitutionID !== "") {
       loadTeams(activeInstitutionID);
+      loadCoaches(activeInstitutionID);
+      loadManagers(activeInstitutionID);
       loadEventsByDate(activeInstitutionID);
       fetchInstitutionEmblem(activeInstitutionID);
       if (teamID) {
@@ -131,6 +144,8 @@ class ResultsLayout extends Component {
     const { teamID } = nextProps.match.params;
     const {
       loadTeams,
+      loadCoaches,
+      loadManagers,
       loadEventsByDate,
       loadEventsByTeam,
       fetchInstitutionEmblem
@@ -149,6 +164,8 @@ class ResultsLayout extends Component {
       activeInstitutionID !== ""
     ) {
       loadTeams(activeInstitutionID);
+      loadCoaches(activeInstitutionID);
+      loadManagers(activeInstitutionID);
       loadEventsByDate(activeInstitutionID);
       fetchInstitutionEmblem(activeInstitutionID);
       if (teamID) {
@@ -191,16 +208,23 @@ class ResultsLayout extends Component {
   }
 
   renderResultsByDate() {
+    const { showAllTeams } = this.state;
     const {
       classes,
       eventsByDate,
       activeInstitutionID,
       isMobile,
       isTablet,
-      teams
+      teams,
+      role
     } = this.props;
     const { lastVisible, institutionEmblemURL } = this.props.uiConfig;
-    const { isTeamsLoading, isEventsByDateLoading } = this.props.loadingStatus;
+    const {
+      isTeamsLoading,
+      isEventsByDateLoading,
+      isManagersLoading,
+      isCoachesLoading
+    } = this.props.loadingStatus;
     const {
       loadEventsByDate,
       startLogging,
@@ -208,7 +232,12 @@ class ResultsLayout extends Component {
       editResult
     } = this.props.actions;
 
-    if (isTeamsLoading || activeInstitutionID === "") {
+    if (
+      isTeamsLoading ||
+      isCoachesLoading ||
+      isManagersLoading ||
+      activeInstitutionID === ""
+    ) {
       return (
         <div className={classes.loaderWrapper}>
           <CircularProgress />
@@ -216,26 +245,56 @@ class ResultsLayout extends Component {
       );
     } else {
       let groupedByDate = {};
+      const filteredTeamIDs = this.getTeamsList(this.filterTeams()).map(
+        teamInfo => teamInfo.id
+      );
+
       _.toPairs(eventsByDate).map(([id, info]) => {
         const hoursDate = moment(info.requiredInfo.times.start).format(
           "YYYY-MM-DD"
         );
-        if (_.keys(info.teams).length > 0) {
-          if (groupedByDate[hoursDate]) {
-            groupedByDate[hoursDate] = {
-              ...groupedByDate[hoursDate],
-              [id]: info
-            };
-          } else {
-            groupedByDate[hoursDate] = {
-              [id]: info
-            };
+        const eventTeamIDs = _.keys(info.teams);
+
+        if (eventTeamIDs.length > 0) {
+          let validEvent = false;
+          eventTeamIDs.map(
+            eventTeamID =>
+              (validEvent = validEvent || filteredTeamIDs.includes(eventTeamID))
+          );
+
+          if (validEvent) {
+            if (groupedByDate[hoursDate]) {
+              groupedByDate[hoursDate] = {
+                ...groupedByDate[hoursDate],
+                [id]: info
+              };
+            } else {
+              groupedByDate[hoursDate] = {
+                [id]: info
+              };
+            }
           }
         }
       });
 
       return (
         <div className={classes.hoursByDateWrapper}>
+          {(role === "coach" || role === "manager") && (
+            <div className={classes.myTeamsSelector}>
+              <Switch
+                checked={showAllTeams}
+                onChange={(event, checked) =>
+                  this.setState({
+                    showAllTeams: checked
+                  })}
+              />
+              <Typography component="h3" type="headline">
+                {showAllTeams
+                  ? "All Teams"
+                  : role === "coach" ? "Teams I Coach" : "Teams I Manage"}
+              </Typography>
+            </div>
+          )}
           {_.toPairs(groupedByDate).map(([date, events]) => {
             const currentDate = moment().format("YYYY-MM-DD");
             return (
@@ -250,6 +309,7 @@ class ResultsLayout extends Component {
                     return (
                       <ResultCard
                         key={`results-${eventID}`}
+                        role={role}
                         teams={teams}
                         isMobile={isMobile}
                         isTablet={isTablet}
@@ -287,14 +347,22 @@ class ResultsLayout extends Component {
   }
 
   renderLogs() {
-    const { classes, activeInstitutionID } = this.props;
-    const { teamID } = this.props.match.params;
-    const { isTeamsLoading } = this.props.loadingStatus;
+    const { showAllTeams } = this.state;
+    const { classes, activeInstitutionID, role } = this.props;
+    const {
+      isTeamsLoading,
+      isCoachesLoading,
+      isManagersLoading
+    } = this.props.loadingStatus;
 
     const ad = this.createAd();
-    const filteredTeams = this.getTeamsList(this.filterTeams());
 
-    if (isTeamsLoading || activeInstitutionID === "") {
+    if (
+      isTeamsLoading ||
+      isCoachesLoading ||
+      isManagersLoading ||
+      activeInstitutionID === ""
+    ) {
       return (
         <div>
           <div className={classes.adWrapper}>{ad}</div>
@@ -304,15 +372,30 @@ class ResultsLayout extends Component {
         </div>
       );
     } else {
-      if (teamID) {
-      } else {
-        return (
-          <div>
-            <div className={classes.adWrapper}>{ad}</div>
-            <TeamsList teams={filteredTeams} />
-          </div>
-        );
-      }
+      const filteredTeams = this.getTeamsList(this.filterTeams());
+
+      return (
+        <div>
+          <div className={classes.adWrapper}>{ad}</div>
+          {(role === "coach" || role === "manager") && (
+            <div className={classes.myTeamsSelector}>
+              <Switch
+                checked={showAllTeams}
+                onChange={(event, checked) =>
+                  this.setState({
+                    showAllTeams: checked
+                  })}
+              />
+              <Typography component="h3" type="headline">
+                {showAllTeams
+                  ? "All Teams"
+                  : role === "coach" ? "Teams I Coach" : "Teams I Manage"}
+              </Typography>
+            </div>
+          )}
+          <TeamsList teams={filteredTeams} />
+        </div>
+      );
     }
   }
 
@@ -349,12 +432,16 @@ class ResultsLayout extends Component {
       searchText,
       showDeletedTeams
     } = this.props.filters;
-    const { teams } = this.props;
+    const { teams, coaches, managers, userID, role } = this.props;
+    const { showAllTeams } = this.state;
 
     return _.fromPairs(
       _.toPairs(teams).filter(([teamID, teamInfo]) => {
         let allowThroughFilter = true;
         let titleMatch = true;
+        let coachMatch = true;
+        let managerMatch = true;
+        let roleMatch = true;
 
         if (teamInfo.status === "DELETED" && !showDeletedTeams) {
           allowThroughFilter = false;
@@ -362,7 +449,39 @@ class ResultsLayout extends Component {
 
         if (searchText !== "") {
           const teamName = _.toLower(teamInfo.info.name);
+          const teamCoaches = _.keys(teamInfo.coaches);
+          const teamManagers = _.keys(teamInfo.managers);
+
+          teamCoaches.map(coachID => {
+            const coachName = `${_.toLower(
+              coaches[coachID].info.name
+            )} ${_.toLower(coaches[coachID].info.surname)}`;
+            coachMatch =
+              coachMatch && coachName.includes(_.toLower(searchText));
+          });
+          teamManagers.map(managerID => {
+            const managerName = `${_.toLower(
+              managers[managerID].info.name
+            )} ${_.toLower(managers[managerID].info.surname)}`;
+            managerMatch =
+              managerMatch && managerName.includes(_.toLower(searchText));
+          });
+
+          if (teamCoaches.length === 0) coachMatch = false;
+          if (teamManagers.length === 0) managerMatch = false;
           titleMatch = teamName.includes(_.toLower(searchText));
+        }
+
+        if (role === "coach" && !showAllTeams) {
+          const teamCoaches = _.keys(teamInfo.coaches);
+          roleMatch = false;
+          roleMatch = roleMatch || teamCoaches.includes(userID);
+        }
+
+        if (role === "manager" && !showAllTeams) {
+          const teamManagers = _.keys(teamInfo.managers);
+          roleMatch = false;
+          roleMatch = roleMatch || teamManagers.includes(userID);
         }
 
         if (gender !== "All") {
@@ -382,7 +501,10 @@ class ResultsLayout extends Component {
             allowThroughFilter && teamInfo.info.ageGroup === ageGroup;
         }
 
-        allowThroughFilter = allowThroughFilter && titleMatch;
+        allowThroughFilter =
+          allowThroughFilter &&
+          (titleMatch || coachMatch || managerMatch) &&
+          roleMatch;
 
         return allowThroughFilter;
       })
@@ -397,7 +519,8 @@ class ResultsLayout extends Component {
       eventsByTeam,
       teams,
       filters,
-      activeInstitutionID
+      activeInstitutionID,
+      role
     } = this.props;
     const { currentTab, institutionEmblemURL } = this.props.uiConfig;
     const {
@@ -554,6 +677,7 @@ class ResultsLayout extends Component {
                           return (
                             <ResultCard
                               key={`results-${eventID}`}
+                              role={role}
                               teams={teams}
                               isMobile={isMobile}
                               isTablet={isTablet}
@@ -605,6 +729,18 @@ class ResultsLayout extends Component {
               </AppBar>
               {currentTab === "OVERVIEW" && (
                 <div className={classes.contentWrapper}>
+                  <FiltersToolbar
+                    genders={_.keys(this.state.genders)}
+                    sports={_.keys(this.state.sports)}
+                    divisions={_.keys(this.state.divisions)}
+                    ageGroups={_.keys(this.state.ageGroups)}
+                    showDeletedTeams={this.state.showDeletedTeams}
+                    isMobile={isMobile}
+                    isLoading={isTeamsLoading}
+                    initialFilters={filters}
+                    applyFilters={applyFilters}
+                    updateSearch={updateSearch}
+                  />
                   <div className={classes.adWrapper}>{ad}</div>
                   {this.renderResultsByDate()}
                 </div>
