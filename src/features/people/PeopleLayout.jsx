@@ -4,7 +4,9 @@ import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import Badge from "material-ui/Badge";
 import { CircularProgress } from "material-ui/Progress";
+import Switch from "material-ui/Switch";
 import Tabs, { Tab } from "material-ui/Tabs";
+import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
 import EditPersonDialog from "./components/EditPersonDialog";
@@ -42,6 +44,12 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center"
   },
+  myPeopleSelector: {
+    width: "100%",
+    maxWidth: 1200,
+    margin: "0 auto",
+    display: "flex"
+  },
   requestsTab: {
     flexGrow: 1,
     display: "flex",
@@ -77,7 +85,8 @@ const styles = theme => ({
 class PeopleLayout extends Component {
   state = {
     sports: {},
-    types: { Admin: true, Coach: true, Manager: true }
+    types: { Admin: true, Coach: true, Manager: true },
+    showAllPeople: false
   };
 
   componentWillMount() {
@@ -388,13 +397,15 @@ class PeopleLayout extends Component {
 
   filterPeople(staff) {
     const { sport, type, searchText } = this.props.filters;
-    const { teams, activeInstitutionID } = this.props;
+    const { teams, activeInstitutionID, userID, role } = this.props;
+    const { showAllPeople } = this.state;
 
     return _.fromPairs(
       _.toPairs(staff).filter(([staffID, personInfo]) => {
         let allowThroughFilter = true;
         let nameMatch = true;
         let teamMatch = false;
+        let roleMatch = true;
 
         if (searchText !== "") {
           nameMatch =
@@ -415,6 +426,26 @@ class PeopleLayout extends Component {
                 _.toLower(teamInfo.info.name).includes(_.toLower(searchText));
             }
           });
+        }
+
+        if ((role === "coach" || role === "manager") && !showAllPeople) {
+          if (!showAllPeople) {
+            roleMatch = false;
+            _.values(teams).map(teamInfo => {
+              const teamCoaches = _.keys(teamInfo.coaches);
+              const teamManagers = _.keys(teamInfo.managers);
+
+              if (
+                teamCoaches.includes(userID) ||
+                teamManagers.includes(userID)
+              ) {
+                roleMatch =
+                  roleMatch ||
+                  teamCoaches.includes(staffID) ||
+                  teamManagers.includes(staffID);
+              }
+            });
+          }
         }
 
         if (sport !== "All") {
@@ -440,7 +471,8 @@ class PeopleLayout extends Component {
           }
         }
 
-        allowThroughFilter = allowThroughFilter && (teamMatch || nameMatch);
+        allowThroughFilter =
+          allowThroughFilter && (teamMatch || nameMatch) && roleMatch;
 
         return allowThroughFilter;
       })
@@ -448,6 +480,7 @@ class PeopleLayout extends Component {
   }
 
   render() {
+    const { showAllPeople } = this.state;
     const {
       classes,
       staff,
@@ -611,10 +644,26 @@ class PeopleLayout extends Component {
                     <CircularProgress />
                   </div>
                 ) : (
-                  <PeopleList
-                    people={staffCardsInfo}
-                    actions={{ openDeletePersonAlert }}
-                  />
+                  <div>
+                    {(role === "coach" || role === "manager") && (
+                      <div className={classes.myPeopleSelector}>
+                        <Switch
+                          checked={showAllPeople}
+                          onChange={(event, checked) =>
+                            this.setState({
+                              showAllPeople: checked
+                            })}
+                        />
+                        <Typography component="h3" type="headline">
+                          {showAllPeople ? "All People" : "In My Teams"}
+                        </Typography>
+                      </div>
+                    )}
+                    <PeopleList
+                      people={staffCardsInfo}
+                      actions={{ openDeletePersonAlert }}
+                    />
+                  </div>
                 )}
                 <InvitePersonModal
                   isOpen={isInvitePersonModalOpen}

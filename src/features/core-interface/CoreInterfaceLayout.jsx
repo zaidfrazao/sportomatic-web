@@ -311,6 +311,7 @@ class CoreInterfaceLayout extends Component {
                     isMobile={isMobile}
                     isTablet={isTablet}
                     isAccountInfoLoading={isAccountInfoLoading}
+                    userID={userID}
                     role={role}
                   />
                 </Route>
@@ -320,6 +321,7 @@ class CoreInterfaceLayout extends Component {
                     isMobile={isMobile}
                     isTablet={isTablet}
                     isAccountInfoLoading={isAccountInfoLoading}
+                    userID={userID}
                     role={role}
                   />
                 </Route>
