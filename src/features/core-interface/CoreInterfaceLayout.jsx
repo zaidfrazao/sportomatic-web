@@ -271,6 +271,8 @@ class CoreInterfaceLayout extends Component {
                     isTablet={isTablet}
                     activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
+                    userID={userID}
+                    role={role}
                   />
                 </Route>
                 <Route exact path={"/myaccount/hours/:coachID"}>
@@ -279,6 +281,8 @@ class CoreInterfaceLayout extends Component {
                     isTablet={isTablet}
                     activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
+                    userID={userID}
+                    role={role}
                   />
                 </Route>
                 <Route exact path={"/myaccount/results/"}>

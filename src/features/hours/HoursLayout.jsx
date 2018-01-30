@@ -9,7 +9,7 @@ import { grey, lightBlue } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import moment from "moment";
 import Paper from "material-ui/Paper";
-import { Route } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
 import Tabs, { Tab } from "material-ui/Tabs";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
@@ -172,7 +172,9 @@ class HoursLayout extends Component {
       eventsByDate,
       isTablet,
       staff,
-      activeInstitutionID
+      activeInstitutionID,
+      role,
+      userID
     } = this.props;
     const { lastVisible } = this.props.uiConfig;
     const { isStaffLoading, isEventsByDateLoading } = this.props.loadingStatus;
@@ -195,16 +197,52 @@ class HoursLayout extends Component {
         const hoursDate = moment(info.requiredInfo.times.start).format(
           "YYYY-MM-DD"
         );
-        if (_.keys(info.coaches).length > 0) {
-          if (groupedByDate[hoursDate]) {
-            groupedByDate[hoursDate] = {
-              ...groupedByDate[hoursDate],
-              [id]: info
-            };
-          } else {
-            groupedByDate[hoursDate] = {
-              [id]: info
-            };
+
+        if (role === "coach") {
+          const eventCoachIDs = _.keys(info.coaches);
+
+          if (eventCoachIDs.includes(userID)) {
+            if (groupedByDate[hoursDate]) {
+              groupedByDate[hoursDate] = {
+                ...groupedByDate[hoursDate],
+                [id]: info
+              };
+            } else {
+              groupedByDate[hoursDate] = {
+                [id]: info
+              };
+            }
+          }
+        } else if (role === "manager") {
+          const eventCoachIDs = _.keys(info.coaches);
+          const eventManagerIDs = _.keys(info.managers);
+
+          if (eventCoachIDs.length > 0 && eventManagerIDs.includes(userID)) {
+            if (groupedByDate[hoursDate]) {
+              groupedByDate[hoursDate] = {
+                ...groupedByDate[hoursDate],
+                [id]: info
+              };
+            } else {
+              groupedByDate[hoursDate] = {
+                [id]: info
+              };
+            }
+          }
+        } else {
+          const eventCoachIDs = _.keys(info.coaches);
+
+          if (eventCoachIDs.length > 0) {
+            if (groupedByDate[hoursDate]) {
+              groupedByDate[hoursDate] = {
+                ...groupedByDate[hoursDate],
+                [id]: info
+              };
+            } else {
+              groupedByDate[hoursDate] = {
+                [id]: info
+              };
+            }
           }
         }
       });
@@ -225,6 +263,8 @@ class HoursLayout extends Component {
                     return (
                       <HoursCard
                         key={`hourscards-${eventID}`}
+                        role={role}
+                        userID={userID}
                         isTablet={isTablet}
                         eventID={eventID}
                         eventInfo={eventInfo}
@@ -261,9 +301,18 @@ class HoursLayout extends Component {
   }
 
   renderLogs() {
-    const { classes, staff, activeInstitutionID } = this.props;
-    const { coachID } = this.props.match.params;
-    const { isStaffLoading } = this.props.loadingStatus;
+    const {
+      classes,
+      staff,
+      activeInstitutionID,
+      isMobile,
+      isTablet,
+      eventsByCoach,
+      role,
+      userID
+    } = this.props;
+    const { updateSearch, loadEventsByCoach } = this.props.actions;
+    const { isStaffLoading, isEventsByCoachLoading } = this.props.loadingStatus;
 
     const ad = this.createAd();
     const filteredStaff = this.getStaffCardsInfo(this.filterPeople(staff));
@@ -271,6 +320,7 @@ class HoursLayout extends Component {
     if (isStaffLoading || activeInstitutionID === "") {
       return (
         <div>
+          <FiltersToolbar isMobile={isMobile} updateSearch={updateSearch} />
           <div className={classes.adWrapper}>{ad}</div>
           <div className={classes.loaderWrapper}>
             <CircularProgress />
@@ -278,10 +328,28 @@ class HoursLayout extends Component {
         </div>
       );
     } else {
-      if (coachID) {
+      if (role === "coach") {
+        return (
+          <div>
+            <div className={classes.adWrapper}>{ad}</div>
+            <HoursHistory
+              institutionID={activeInstitutionID}
+              isLoading={isEventsByCoachLoading || activeInstitutionID === ""}
+              isMobile={isMobile}
+              isTablet={isTablet}
+              events={eventsByCoach}
+              coachID={userID}
+              minDate={new Date(2017, 11)}
+              actions={{
+                loadEvents: loadEventsByCoach
+              }}
+            />
+          </div>
+        );
       } else {
         return (
           <div>
+            <FiltersToolbar isMobile={isMobile} updateSearch={updateSearch} />
             <div className={classes.adWrapper}>{ad}</div>
             <CoachesList people={filteredStaff} />
           </div>
@@ -362,16 +430,21 @@ class HoursLayout extends Component {
       isTablet,
       eventsByCoach,
       activeInstitutionID,
-      staff
+      staff,
+      role
     } = this.props;
     const { currentTab } = this.props.uiConfig;
-    const { updateTab, loadEventsByCoach, updateSearch } = this.props.actions;
+    const { updateTab, loadEventsByCoach } = this.props.actions;
     const { coachID } = this.props.match.params;
     const { isEventsByCoachLoading, isStaffLoading } = this.props.loadingStatus;
 
     const ad = this.createAd();
 
     if (coachID) {
+      if (role !== "admin") {
+        return <Redirect to="/myaccount/hours" />;
+      }
+
       return (
         <div className={classes.outerWrapper}>
           <AppBar position="static" color="default">
@@ -423,22 +496,24 @@ class HoursLayout extends Component {
         <div className={classes.root}>
           <div className={classes.contentWrapper}>
             <div className={classes.tabsWrapper}>
-              <AppBar position="static" color="default">
-                <Tabs
-                  value={currentTab}
-                  onChange={(event, newTab) => updateTab(newTab)}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  centered
-                >
-                  <Tab
-                    label="Overview"
-                    value="OVERVIEW"
-                    className={classes.tabs}
-                  />
-                  <Tab label="Logs" value="LOGS" className={classes.tabs} />
-                </Tabs>
-              </AppBar>
+              {(role === "admin" || role === "coach") && (
+                <AppBar position="static" color="default">
+                  <Tabs
+                    value={currentTab}
+                    onChange={(event, newTab) => updateTab(newTab)}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    centered
+                  >
+                    <Tab
+                      label="Overview"
+                      value="OVERVIEW"
+                      className={classes.tabs}
+                    />
+                    <Tab label="Logs" value="LOGS" className={classes.tabs} />
+                  </Tabs>
+                </AppBar>
+              )}
               {currentTab === "OVERVIEW" && (
                 <div className={classes.contentWrapper}>
                   <div className={classes.adWrapper}>{ad}</div>
@@ -447,10 +522,6 @@ class HoursLayout extends Component {
               )}
               {currentTab === "LOGS" && (
                 <div className={classes.contentWrapper}>
-                  <FiltersToolbar
-                    isMobile={isMobile}
-                    updateSearch={updateSearch}
-                  />
                   {this.renderLogs()}
                 </div>
               )}
