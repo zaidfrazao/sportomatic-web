@@ -407,7 +407,8 @@ class PersonInfo extends Component {
       isTeamsLoading,
       isEventsByPersonLoading,
       info,
-      institutionID
+      institutionID,
+      role
     } = this.props;
     const { isTeamOpen } = this.state;
     const { editPersonInfo } = this.props.actions;
@@ -503,15 +504,17 @@ class PersonInfo extends Component {
               )}
             />
             <div className={classes.flexGrow} />
-            <Tooltip title="Edit person info" placement="bottom">
-              <IconButton
-                disabled={isStaffLoading || isTeamsLoading}
-                aria-label="edit person info"
-                onClick={() => editPersonInfo()}
-              >
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
+            {role === "admin" && (
+              <Tooltip title="Edit person info" placement="bottom">
+                <IconButton
+                  disabled={isStaffLoading || isTeamsLoading}
+                  aria-label="edit person info"
+                  onClick={() => editPersonInfo()}
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+            )}
           </Toolbar>
           <div className={classes.wrapper}>
             <Grid
@@ -694,56 +697,57 @@ class PersonInfo extends Component {
                   )}
                 </Paper>
               </Grid>
-              {isCoach && (
-                <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                  <Paper className={classes.section}>
-                    <Typography
-                      className={classes.heading}
-                      type="title"
-                      component="h3"
-                    >
-                      Coach Payment Settings
-                    </Typography>
-                    <List>
-                      <ListItem>
-                        <ListItemText
-                          primary="Terms"
-                          secondary={
-                            isStaffLoading ? "Loading..." : paymentType
-                          }
-                        />
-                      </ListItem>
-                      {info.institutions[institutionID].paymentDefaults.type ===
-                        "HOURLY" && (
+              {isCoach &&
+                role === "admin" && (
+                  <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                    <Paper className={classes.section}>
+                      <Typography
+                        className={classes.heading}
+                        type="title"
+                        component="h3"
+                      >
+                        Coach Payment Settings
+                      </Typography>
+                      <List>
                         <ListItem>
                           <ListItemText
-                            primary="Standard hourly rate"
-                            secondary={`R ${rates.standard}`}
+                            primary="Terms"
+                            secondary={
+                              isStaffLoading ? "Loading..." : paymentType
+                            }
                           />
                         </ListItem>
-                      )}
-                      {info.institutions[institutionID].paymentDefaults.type ===
-                        "HOURLY" && (
-                        <ListItem>
-                          <ListItemText
-                            primary="Overtime hourly rate"
-                            secondary={`R ${rates.overtime}`}
-                          />
-                        </ListItem>
-                      )}
-                      {info.institutions[institutionID].paymentDefaults.type ===
-                        "MONTHLY" && (
-                        <ListItem>
-                          <ListItemText
-                            primary="Monthly salary"
-                            secondary={`R ${rates.salary}`}
-                          />
-                        </ListItem>
-                      )}
-                    </List>
-                  </Paper>
-                </Grid>
-              )}
+                        {info.institutions[institutionID].paymentDefaults
+                          .type === "HOURLY" && (
+                          <ListItem>
+                            <ListItemText
+                              primary="Standard hourly rate"
+                              secondary={`R ${rates.standard}`}
+                            />
+                          </ListItem>
+                        )}
+                        {info.institutions[institutionID].paymentDefaults
+                          .type === "HOURLY" && (
+                          <ListItem>
+                            <ListItemText
+                              primary="Overtime hourly rate"
+                              secondary={`R ${rates.overtime}`}
+                            />
+                          </ListItem>
+                        )}
+                        {info.institutions[institutionID].paymentDefaults
+                          .type === "MONTHLY" && (
+                          <ListItem>
+                            <ListItemText
+                              primary="Monthly salary"
+                              secondary={`R ${rates.salary}`}
+                            />
+                          </ListItem>
+                        )}
+                      </List>
+                    </Paper>
+                  </Grid>
+                )}
               {(isCoach || isManager) && (
                 <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
                   <Paper className={classes.section}>

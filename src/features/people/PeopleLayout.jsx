@@ -458,7 +458,8 @@ class PeopleLayout extends Component {
       filters,
       activeInstitutionID,
       eventsByCoach,
-      eventsByManager
+      eventsByManager,
+      role
     } = this.props;
     const { currentTab, inviteeID, inviteeInfo } = this.props.uiConfig;
     const {
@@ -506,6 +507,7 @@ class PeopleLayout extends Component {
         {personID ? (
           <div className={classes.infoWrapper}>
             <PersonInfo
+              role={role}
               type={type}
               teams={teams}
               personID={personID}
@@ -549,37 +551,39 @@ class PeopleLayout extends Component {
           </div>
         ) : (
           <div className={classes.tabsWrapper}>
-            <AppBar position="static" color="default">
-              <Tabs
-                value={currentTab}
-                onChange={(event, newTab) => updateTab(newTab)}
-                indicatorColor="primary"
-                textColor="primary"
-                centered
-              >
-                <Tab label="Staff" value="STAFF" className={classes.tabs} />
-                {requestsCardsInfo.length > 0 ? (
-                  <Tab
-                    label={
-                      <Badge
-                        badgeContent={requestsCardsInfo.length}
-                        color="accent"
-                      >
-                        Requests
-                      </Badge>
-                    }
-                    value="REQUESTS"
-                    className={classes.tabs}
-                  />
-                ) : (
-                  <Tab
-                    label="Requests"
-                    value="REQUESTS"
-                    className={classes.tabs}
-                  />
-                )}
-              </Tabs>
-            </AppBar>
+            {role === "admin" && (
+              <AppBar position="static" color="default">
+                <Tabs
+                  value={currentTab}
+                  onChange={(event, newTab) => updateTab(newTab)}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab label="Staff" value="STAFF" className={classes.tabs} />
+                  {requestsCardsInfo.length > 0 ? (
+                    <Tab
+                      label={
+                        <Badge
+                          badgeContent={requestsCardsInfo.length}
+                          color="accent"
+                        >
+                          Requests
+                        </Badge>
+                      }
+                      value="REQUESTS"
+                      className={classes.tabs}
+                    />
+                  ) : (
+                    <Tab
+                      label="Requests"
+                      value="REQUESTS"
+                      className={classes.tabs}
+                    />
+                  )}
+                </Tabs>
+              </AppBar>
+            )}
             {currentTab === "STAFF" && (
               <div
                 className={
@@ -596,6 +600,7 @@ class PeopleLayout extends Component {
                   applyFilters={applyFilters}
                   addPerson={openInvitePersonModal}
                   updateSearch={updateSearch}
+                  role={role}
                 />
                 <div className={classes.adWrapper}>{ad}</div>
                 {activeInstitutionID === "" ||

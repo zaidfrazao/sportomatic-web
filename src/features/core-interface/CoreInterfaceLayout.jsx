@@ -311,6 +311,7 @@ class CoreInterfaceLayout extends Component {
                     isMobile={isMobile}
                     isTablet={isTablet}
                     isAccountInfoLoading={isAccountInfoLoading}
+                    role={role}
                   />
                 </Route>
                 <Route path={"/myaccount/people/:personID"}>
@@ -319,6 +320,7 @@ class CoreInterfaceLayout extends Component {
                     isMobile={isMobile}
                     isTablet={isTablet}
                     isAccountInfoLoading={isAccountInfoLoading}
+                    role={role}
                   />
                 </Route>
                 <Route exact path={"/myaccount/teams/"}>

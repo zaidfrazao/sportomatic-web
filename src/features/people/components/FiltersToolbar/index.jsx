@@ -119,7 +119,8 @@ class FiltersToolbar extends Component {
       sports,
       types,
       applyFilters,
-      addPerson
+      addPerson,
+      role
     } = this.props;
     const {
       searchText,
@@ -180,11 +181,16 @@ class FiltersToolbar extends Component {
               <FilterIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Invite new person" placement="bottom">
-            <IconButton aria-label="add new person" onClick={() => addPerson()}>
-              <AddIcon />
-            </IconButton>
-          </Tooltip>
+          {role === "admin" && (
+            <Tooltip title="Invite new person" placement="bottom">
+              <IconButton
+                aria-label="add new person"
+                onClick={() => addPerson()}
+              >
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
+          )}
         </Toolbar>
         {isMobile && (
           <div className={classes.settingChips}>
