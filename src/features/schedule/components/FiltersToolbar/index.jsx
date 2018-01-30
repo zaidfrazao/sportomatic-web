@@ -157,7 +157,8 @@ class FiltersToolbar extends Component {
       ageGroups,
       genders,
       applyFilters,
-      addEvent
+      addEvent,
+      role
     } = this.props;
     const {
       searchText,
@@ -284,11 +285,13 @@ class FiltersToolbar extends Component {
               <FilterIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Add new event" placement="bottom">
-            <IconButton aria-label="add new event" onClick={() => addEvent()}>
-              <AddIcon />
-            </IconButton>
-          </Tooltip>
+          {role === "admin" && (
+            <Tooltip title="Add new event" placement="bottom">
+              <IconButton aria-label="add new event" onClick={() => addEvent()}>
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
+          )}
         </Toolbar>
         {isMobile && (
           <div className={classes.settingChips}>

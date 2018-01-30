@@ -61,8 +61,7 @@ const styles = theme => ({
     height: "100%",
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    margin: "24px 0"
+    justifyContent: "center"
   },
   appBar: {
     display: "flex",
@@ -332,7 +331,9 @@ class EventInfo extends Component {
       isManagersLoading,
       isCoachesLoading,
       isPastEvent,
-      eventID
+      eventID,
+      role,
+      userID
     } = this.props;
     const {
       markAbsent,
@@ -712,6 +713,34 @@ class EventInfo extends Component {
       info &&
       _.toPairs(info.coaches).map(([id, coachEventInfo]) => {
         const coachInfo = coaches[id].info;
+        const showMarkAbsent =
+          info.requiredInfo.status === "ACTIVE" &&
+          (role === "admin" || role === "manager") &&
+          ((isPastEvent && coachEventInfo.attendance.didAttend) ||
+            (!isPastEvent && coachEventInfo.attendance.willAttend)) &&
+          coachEventInfo.hours.status === "AWAITING_SIGN_IN";
+        const showUnmarkAbsent =
+          info.requiredInfo.status === "ACTIVE" &&
+          (role === "admin" || role === "manager") &&
+          ((isPastEvent && !coachEventInfo.attendance.didAttend) ||
+            (!isPastEvent && !coachEventInfo.attendance.willAttend));
+        const showFindReplacementCoach =
+          info.requiredInfo.status === "ACTIVE" &&
+          !isPastEvent &&
+          showUnmarkAbsent &&
+          coachEventInfo.hours.status === "AWAITING_SIGN_IN";
+        const showHoursStatus =
+          (role === "admin" || role === "manager" || id === userID) &&
+          info.requiredInfo.status === "ACTIVE" &&
+          (coachEventInfo.attendance.didAttend ||
+            coachEventInfo.attendance.hasSubstitute) &&
+          (coachEventInfo.attendance.willAttend ||
+            coachEventInfo.attendance.hasSubstitute);
+        const showAbsenteeismStatus =
+          info.requiredInfo.status === "ACTIVE" &&
+          (!coachEventInfo.attendance.didAttend ||
+            !coachEventInfo.attendance.willAttend);
+
         let hourLoggingStatusAvatar = (
           <Avatar className={classes.awaitingSignInAvatar}>
             <AwaitingSignInIcon />
@@ -767,107 +796,100 @@ class EventInfo extends Component {
                     unmountOnExit
                   >
                     <List className={classes.nested} disablePadding>
-                      {info.requiredInfo.status === "ACTIVE" && (
+                      {(showHoursStatus || showAbsenteeismStatus) && (
                         <ListSubheader>Status</ListSubheader>
                       )}
-                      {info.requiredInfo.status === "ACTIVE" &&
-                        (coachEventInfo.attendance.didAttend ||
-                          coachEventInfo.attendance.hasSubstitute) &&
-                        (coachEventInfo.attendance.willAttend ||
-                          coachEventInfo.attendance.hasSubstitute) && (
-                          <ListItem className={classes.inset}>
-                            {hourLoggingStatusAvatar}
-                            <ListItemText
-                              primary={
-                                coachEventInfo.attendance.hasSubstitute
-                                  ? "Replacement Coach Hours"
-                                  : "Hours"
-                              }
-                              secondary={hourLoggingStatusText}
-                            />
-                          </ListItem>
-                        )}
-                      {info.requiredInfo.status === "ACTIVE" &&
-                        (!coachEventInfo.attendance.didAttend ||
-                          !coachEventInfo.attendance.willAttend) && (
-                          <ListItem className={classes.inset}>
-                            <Avatar
-                              className={
-                                coachEventInfo.absenteeism.rating === "GOOD"
-                                  ? classes.goodAbsentAvatar
-                                  : classes.badAbsentAvatar
-                              }
+                      {showHoursStatus && (
+                        <ListItem className={classes.inset}>
+                          {hourLoggingStatusAvatar}
+                          <ListItemText
+                            primary={
+                              coachEventInfo.attendance.hasSubstitute
+                                ? "Replacement Coach Hours"
+                                : "Hours"
+                            }
+                            secondary={hourLoggingStatusText}
+                          />
+                        </ListItem>
+                      )}
+                      {showAbsenteeismStatus && (
+                        <ListItem className={classes.inset}>
+                          <Avatar
+                            className={
+                              coachEventInfo.absenteeism.rating === "GOOD"
+                                ? classes.goodAbsentAvatar
+                                : classes.badAbsentAvatar
+                            }
+                          >
+                            <AbsentIcon />
+                          </Avatar>
+                          <ListItemText
+                            primary={
+                              isPastEvent ? "Did Not Attend" : "Not Attending"
+                            }
+                            secondary={
+                              coachEventInfo.absenteeism.reason === ""
+                                ? "No reason given"
+                                : `Reason: "${coachEventInfo.absenteeism
+                                    .reason}"`
+                            }
+                          />
+                          <ListItemSecondaryAction>
+                            <IconButton
+                              aria-label="edit attendance rating"
+                              onClick={() => editAbsentRating(id)}
                             >
-                              <AbsentIcon />
+                              <EditIcon />
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      )}
+                      {showAbsenteeismStatus && (
+                        <ListItem className={classes.inset}>
+                          {coachEventInfo.attendance.hasSubstitute ? (
+                            <Avatar
+                              src={
+                                coaches[coachEventInfo.attendance.substitute]
+                                  .info.profilePictureURL === ""
+                                  ? defaultProfilePicture
+                                  : coaches[
+                                      coachEventInfo.attendance.substitute
+                                    ].info.profilePictureURL
+                              }
+                            />
+                          ) : (
+                            <Avatar>
+                              <PersonIcon />
                             </Avatar>
-                            <ListItemText
-                              primary={
-                                isPastEvent ? "Did Not Attend" : "Not Attending"
-                              }
-                              secondary={
-                                coachEventInfo.absenteeism.reason === ""
-                                  ? "No reason given"
-                                  : `Reason: "${coachEventInfo.absenteeism
-                                      .reason}"`
-                              }
-                            />
-                            <ListItemSecondaryAction>
-                              <IconButton
-                                aria-label="edit attendance rating"
-                                onClick={() => editAbsentRating(id)}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                            </ListItemSecondaryAction>
-                          </ListItem>
-                        )}
-                      {info.requiredInfo.status === "ACTIVE" &&
-                        !coachEventInfo.attendance.didAttend && (
-                          <ListItem className={classes.inset}>
-                            {coachEventInfo.attendance.hasSubstitute ? (
-                              <Avatar
-                                src={
-                                  coaches[coachEventInfo.attendance.substitute]
-                                    .info.profilePictureURL === ""
-                                    ? defaultProfilePicture
-                                    : coaches[
-                                        coachEventInfo.attendance.substitute
-                                      ].info.profilePictureURL
-                                }
-                              />
-                            ) : (
-                              <Avatar>
-                                <PersonIcon />
-                              </Avatar>
+                          )}
+                          <ListItemText
+                            primary="Replacement"
+                            secondary={
+                              coachEventInfo.attendance.hasSubstitute
+                                ? `${coaches[
+                                    coachEventInfo.attendance.substitute
+                                  ].info.name} ${coaches[
+                                    coachEventInfo.attendance.substitute
+                                  ].info.surname} | ${coaches[
+                                    coachEventInfo.attendance.substitute
+                                  ].info.phoneNumber}`
+                                : "No replacement coach assigned"
+                            }
+                          />
+                          {coachEventInfo.hours.status === "AWAITING_SIGN_IN" &&
+                            coachEventInfo.attendance.hasSubstitute &&
+                            (role === "admin" || role === "manager") && (
+                              <ListItemSecondaryAction>
+                                <IconButton
+                                  aria-label="remove replacement coach"
+                                  onClick={() => removeReplacementCoach(id)}
+                                >
+                                  <CancelIcon />
+                                </IconButton>
+                              </ListItemSecondaryAction>
                             )}
-                            <ListItemText
-                              primary="Replacement"
-                              secondary={
-                                coachEventInfo.attendance.hasSubstitute
-                                  ? `${coaches[
-                                      coachEventInfo.attendance.substitute
-                                    ].info.name} ${coaches[
-                                      coachEventInfo.attendance.substitute
-                                    ].info.surname} | ${coaches[
-                                      coachEventInfo.attendance.substitute
-                                    ].info.phoneNumber}`
-                                  : "No replacement coach assigned"
-                              }
-                            />
-                            {coachEventInfo.hours.status ===
-                              "AWAITING_SIGN_IN" &&
-                              coachEventInfo.attendance.hasSubstitute && (
-                                <ListItemSecondaryAction>
-                                  <IconButton
-                                    aria-label="remove replacement coach"
-                                    onClick={() => removeReplacementCoach(id)}
-                                  >
-                                    <CancelIcon />
-                                  </IconButton>
-                                </ListItemSecondaryAction>
-                              )}
-                          </ListItem>
-                        )}
+                        </ListItem>
+                      )}
                       <ListSubheader>Options</ListSubheader>
                       <ListItem
                         className={classes.inset}
@@ -879,79 +901,66 @@ class EventInfo extends Component {
                         </ListItemIcon>
                         <ListItemText primary="View coach info" />
                       </ListItem>
-                      {info.requiredInfo.status === "ACTIVE" &&
-                        coachEventInfo.hours.status === "AWAITING_SIGN_IN" &&
-                        ((!isPastEvent &&
-                          coachEventInfo.attendance.willAttend) ||
-                          (isPastEvent &&
-                            coachEventInfo.attendance.didAttend)) && (
-                          <ListItem
-                            className={classes.inset}
-                            button
-                            onClick={() => markAbsent(id)}
-                          >
-                            <ListItemIcon>
-                              <AbsentIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Mark as absent" />
-                          </ListItem>
-                        )}
-                      {info.requiredInfo.status === "ACTIVE" &&
-                        coachEventInfo.hours.status === "AWAITING_SIGN_IN" &&
-                        ((!isPastEvent &&
-                          !coachEventInfo.attendance.willAttend) ||
-                          (isPastEvent &&
-                            !coachEventInfo.attendance.didAttend)) && (
-                          <ListItem
-                            className={classes.inset}
-                            button
-                            onClick={() => unmarkAbsent(id)}
-                          >
-                            <ListItemIcon>
-                              <UncancelIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={
-                                isPastEvent
-                                  ? "Mark as attended"
-                                  : "Mark as attending"
-                              }
-                            />
-                          </ListItem>
-                        )}
-                      {info.requiredInfo.status === "ACTIVE" &&
-                        coachEventInfo.hours.status === "AWAITING_SIGN_IN" &&
-                        !isPastEvent && (
-                          <ListItem
-                            className={classes.inset}
-                            button
-                            onClick={() => updateReplacementCoach(id)}
-                          >
-                            <ListItemIcon>
-                              <AddSubIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={
-                                coachEventInfo.attendance.hasSubstitute
-                                  ? "Change replacement coach"
-                                  : "Find replacement coach"
-                              }
-                            />
-                          </ListItem>
-                        )}
-                      {info.requiredInfo.isCompetitive &&
-                        info.requiredInfo.status === "ACTIVE" && (
-                          <ListItem
-                            className={classes.inset}
-                            button
-                            onClick={() => history.push("/myaccount/hours")}
-                          >
-                            <ListItemIcon>
-                              <HoursIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="View hours" />
-                          </ListItem>
-                        )}
+                      {showMarkAbsent && (
+                        <ListItem
+                          className={classes.inset}
+                          button
+                          onClick={() => markAbsent(id)}
+                        >
+                          <ListItemIcon>
+                            <AbsentIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="Mark as absent" />
+                        </ListItem>
+                      )}
+                      {showUnmarkAbsent && (
+                        <ListItem
+                          className={classes.inset}
+                          button
+                          onClick={() => unmarkAbsent(id)}
+                        >
+                          <ListItemIcon>
+                            <UncancelIcon />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              isPastEvent
+                                ? "Mark as attended"
+                                : "Mark as attending"
+                            }
+                          />
+                        </ListItem>
+                      )}
+                      {showFindReplacementCoach && (
+                        <ListItem
+                          className={classes.inset}
+                          button
+                          onClick={() => updateReplacementCoach(id)}
+                        >
+                          <ListItemIcon>
+                            <AddSubIcon />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              coachEventInfo.attendance.hasSubstitute
+                                ? "Change replacement coach"
+                                : "Find replacement coach"
+                            }
+                          />
+                        </ListItem>
+                      )}
+                      {showHoursStatus && (
+                        <ListItem
+                          className={classes.inset}
+                          button
+                          onClick={() => history.push("/myaccount/hours")}
+                        >
+                          <ListItemIcon>
+                            <HoursIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="View hours" />
+                        </ListItem>
+                      )}
                     </List>
                   </Collapse>
                 </div>
@@ -1033,7 +1042,7 @@ class EventInfo extends Component {
   }
 
   render() {
-    const { classes, info, isPastEvent } = this.props;
+    const { classes, info, isPastEvent, role } = this.props;
     const {
       updateView,
       editEvent,
@@ -1049,7 +1058,8 @@ class EventInfo extends Component {
 
     const ad = this.createAd();
     const { coaches, managers, teams } = this.getListItems();
-    const showButtons = !isPastEvent && info;
+    const showButtons =
+      !isPastEvent && info && (role === "admin" || role === "manager");
 
     let cancelButton = <div />;
     if (showButtons) {

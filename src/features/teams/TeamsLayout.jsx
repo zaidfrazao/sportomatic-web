@@ -44,7 +44,8 @@ const styles = theme => ({
     width: "100%",
     maxWidth: 1200,
     margin: "0 auto",
-    display: "flex"
+    display: "flex",
+    alignItems: "center"
   },
   root: {
     width: "100%",
@@ -233,19 +234,13 @@ class TeamsLayout extends Component {
         if (role === "coach" && !showAllTeams) {
           const teamCoaches = _.keys(teamInfo.coaches);
           roleMatch = false;
-
-          teamCoaches.map(coachID => {
-            roleMatch = roleMatch || coachID === userID;
-          });
+          roleMatch = roleMatch || teamCoaches.includes(userID);
         }
 
         if (role === "manager" && !showAllTeams) {
           const teamManagers = _.keys(teamInfo.managers);
           roleMatch = false;
-
-          teamManagers.map(managerID => {
-            roleMatch = roleMatch || managerID === userID;
-          });
+          roleMatch = roleMatch || teamManagers.includes(userID);
         }
 
         if (gender !== "All") {

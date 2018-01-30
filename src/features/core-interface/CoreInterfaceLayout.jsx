@@ -347,6 +347,8 @@ class CoreInterfaceLayout extends Component {
                 </Route>
                 <Route exact path={"/myaccount/schedule/"}>
                   <Schedule
+                    userID={userID}
+                    role={role}
                     isMobile={isMobile}
                     isTablet={isTablet}
                     activeInstitutionID={activeInstitutionID}
@@ -355,6 +357,8 @@ class CoreInterfaceLayout extends Component {
                 </Route>
                 <Route exact path={"/myaccount/schedule/:dateSelected"}>
                   <Schedule
+                    userID={userID}
+                    role={role}
                     isMobile={isMobile}
                     isTablet={isTablet}
                     activeInstitutionID={activeInstitutionID}
@@ -366,6 +370,8 @@ class CoreInterfaceLayout extends Component {
                   path={"/myaccount/schedule/:dateSelected/:eventID"}
                 >
                   <Schedule
+                    userID={userID}
+                    role={role}
                     isMobile={isMobile}
                     isTablet={isTablet}
                     activeInstitutionID={activeInstitutionID}

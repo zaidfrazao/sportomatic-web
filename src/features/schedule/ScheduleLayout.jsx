@@ -4,27 +4,21 @@ import _ from "lodash";
 import { lightBlue, orange } from "material-ui/colors";
 import moment from "moment";
 import { Redirect } from "react-router-dom";
+import Switch from "material-ui/Switch";
+import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import AddEventDialog from "./components/AddEventDialog";
-import BannerAd from "../../components/BannerAd";
 import Calendar from "./components/Calendar";
 import DecisionModal from "../../components/DecisionModal";
 import EditAbsentRatingModal from "./components/EditAbsentRatingModal";
 import EditEventDialog from "./components/EditEventDialog";
 import EventInfo from "./components/EventInfo";
 import FiltersToolbar from "./components/FiltersToolbar";
-import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
-import LeaderboardAd from "../../components/LeaderboardAd";
 import MarkAbsentModal from "./components/MarkAbsentModal";
 import NotificationModal from "../../components/NotificationModal";
 import ReplacementCoachModal from "./components/ReplacementCoachModal";
 
 const styles = theme => ({
-  adWrapper: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center"
-  },
   button: {
     margin: theme.spacing.unit,
     position: "fixed",
@@ -58,6 +52,13 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center"
   },
+  myEventsSelector: {
+    width: "100%",
+    maxWidth: 1200,
+    margin: "16px auto 0 auto",
+    display: "flex",
+    alignItems: "center"
+  },
   nonCompetitiveEvent: {
     width: 12,
     height: 12,
@@ -80,7 +81,8 @@ class ScheduleLayout extends Component {
     eventTypes: {},
     sports: {},
     divisions: {},
-    ageGroups: {}
+    ageGroups: {},
+    showAllEvents: false
   };
 
   componentWillMount() {
@@ -222,19 +224,6 @@ class ScheduleLayout extends Component {
     });
   }
 
-  createAd() {
-    const { isMobile, isTablet } = this.props;
-
-    let ad = <LeaderboardAd />;
-    if (isMobile) {
-      ad = <LargeMobileBannerAd />;
-    } else if (isTablet) {
-      ad = <BannerAd />;
-    }
-
-    return ad;
-  }
-
   filterEvents() {
     const {
       eventType,
@@ -244,7 +233,8 @@ class ScheduleLayout extends Component {
       gender,
       searchText
     } = this.props.filters;
-    const { events, teams, coaches, managers } = this.props;
+    const { events, teams, coaches, managers, userID, role } = this.props;
+    const { showAllEvents } = this.state;
 
     return _.fromPairs(
       _.toPairs(events).filter(([id, info]) => {
@@ -252,10 +242,23 @@ class ScheduleLayout extends Component {
         let titleMatch = true;
         let coachMatch = true;
         let managerMatch = true;
+        let roleMatch = true;
 
         if (searchText !== "") {
           const eventTitle = _.toLower(info.requiredInfo.title);
           titleMatch = eventTitle.includes(_.toLower(searchText));
+        }
+
+        if (role === "coach" && !showAllEvents) {
+          const eventCoaches = _.keys(info.coaches);
+          roleMatch = false;
+          roleMatch = roleMatch || eventCoaches.includes(userID);
+        }
+
+        if (role === "manager" && !showAllEvents) {
+          const eventManagers = _.keys(info.managers);
+          roleMatch = false;
+          roleMatch = roleMatch || eventManagers.includes(userID);
         }
 
         if (eventType !== "All") {
@@ -302,7 +305,9 @@ class ScheduleLayout extends Component {
         });
 
         allowThroughFilter =
-          allowThroughFilter && (titleMatch || coachMatch || managerMatch);
+          allowThroughFilter &&
+          (titleMatch || coachMatch || managerMatch) &&
+          roleMatch;
 
         return allowThroughFilter;
       })
@@ -310,6 +315,7 @@ class ScheduleLayout extends Component {
   }
 
   renderView() {
+    const { showAllEvents } = this.state;
     const {
       isTablet,
       isMobile,
@@ -318,7 +324,9 @@ class ScheduleLayout extends Component {
       teams,
       staff,
       events,
-      filters
+      filters,
+      role,
+      userID
     } = this.props;
     const { dateSelected, eventID } = this.props.match.params;
     const {
@@ -409,7 +417,6 @@ class ScheduleLayout extends Component {
         "Please specify a name for your custom event type.";
     }
 
-    const ad = this.createAd();
     const filteredEvents = this.filterEvents();
     let isPastEvent = false;
     if (events[eventID]) {
@@ -443,6 +450,8 @@ class ScheduleLayout extends Component {
       return (
         <div className={classes.contentWrapper}>
           <EventInfo
+            userID={userID}
+            role={role}
             coaches={coaches}
             managers={managers}
             teams={teams}
@@ -518,107 +527,115 @@ class ScheduleLayout extends Component {
             heading="Uncancel Event"
             message="Are you sure you want to uncancel this event?"
           />
-          {coaches[selectedCoach] && (
-            <div>
-              {events[eventID].coaches[selectedCoach].attendance.substitute !==
-                "" && (
-                <DecisionModal
-                  isOpen={isReplacementCoachRemovalModalOpen}
-                  handleYesClick={() => {
-                    removeReplacementCoach(eventID, selectedCoach);
-                    closeReplacementCoachRemovalModal();
+          {coaches[selectedCoach] &&
+            events[eventID] && (
+              <div>
+                {events[eventID].coaches[selectedCoach].attendance
+                  .substitute !== "" && (
+                  <DecisionModal
+                    isOpen={isReplacementCoachRemovalModalOpen}
+                    handleYesClick={() => {
+                      removeReplacementCoach(eventID, selectedCoach);
+                      closeReplacementCoachRemovalModal();
+                    }}
+                    handleNoClick={closeReplacementCoachRemovalModal}
+                    heading="Remove Replacement Coach"
+                    message={`Are you sure you want to remove ${coaches[
+                      events[eventID].coaches[selectedCoach].attendance
+                        .substitute
+                    ].info.name} ${coaches[
+                      events[eventID].coaches[selectedCoach].attendance
+                        .substitute
+                    ].info.surname} as the replacement coach?`}
+                  />
+                )}
+                <ReplacementCoachModal
+                  isOpen={isReplacementCoachModalOpen}
+                  coaches={coaches}
+                  coachName={`${coaches[selectedCoach].info.name} ${coaches[
+                    selectedCoach
+                  ].info.surname}`}
+                  initialReplacementCoach={
+                    events[eventID].coaches[selectedCoach].attendance.substitute
+                  }
+                  originalCoachID={selectedCoach}
+                  actions={{
+                    updateReplacementCoach: replacementCoachID => {
+                      updateReplacementCoach(
+                        eventID,
+                        selectedCoach,
+                        replacementCoachID
+                      );
+                      closeReplacementCoachModal();
+                    },
+                    closeModal: () => closeReplacementCoachModal()
                   }}
-                  handleNoClick={closeReplacementCoachRemovalModal}
-                  heading="Remove Replacement Coach"
-                  message={`Are you sure you want to remove ${coaches[
-                    events[eventID].coaches[selectedCoach].attendance.substitute
-                  ].info.name} ${coaches[
-                    events[eventID].coaches[selectedCoach].attendance.substitute
-                  ].info.surname} as the replacement coach?`}
                 />
-              )}
-              <ReplacementCoachModal
-                isOpen={isReplacementCoachModalOpen}
-                coaches={coaches}
-                coachName={`${coaches[selectedCoach].info.name} ${coaches[
-                  selectedCoach
-                ].info.surname}`}
-                initialReplacementCoach={
-                  events[eventID].coaches[selectedCoach].attendance.substitute
-                }
-                originalCoachID={selectedCoach}
-                actions={{
-                  updateReplacementCoach: replacementCoachID => {
-                    updateReplacementCoach(
-                      eventID,
-                      selectedCoach,
-                      replacementCoachID
-                    );
-                    closeReplacementCoachModal();
-                  },
-                  closeModal: () => closeReplacementCoachModal()
-                }}
-              />
-              <MarkAbsentModal
-                isOpen={isMarkAbsentModalOpen}
-                coachName={`${coaches[selectedCoach].info.name} ${coaches[
-                  selectedCoach
-                ].info.surname}`}
-                actions={{
-                  markAbsent: (rating, reason) => {
-                    updateAbsent(
-                      eventID,
-                      selectedCoach,
-                      false,
-                      isPastEvent,
-                      rating,
-                      reason
-                    );
-                    closeMarkAbsentModal();
-                  },
-                  closeModal: () => closeMarkAbsentModal()
-                }}
-              />
-              <EditAbsentRatingModal
-                isOpen={isEditAbsentRatingModalOpen}
-                initialInfo={events[eventID].coaches[selectedCoach].absenteeism}
-                coachName={`${coaches[selectedCoach].info.name} ${coaches[
-                  selectedCoach
-                ].info.surname}`}
-                actions={{
-                  editAbsentRating: (rating, reason) => {
-                    editAbsentRating(eventID, selectedCoach, rating, reason);
-                    closeEditAbsentRatingModal();
-                  },
-                  closeModal: () => closeEditAbsentRatingModal()
-                }}
-              />
-              <DecisionModal
-                isOpen={isUnmarkAbsentModalOpen}
-                handleYesClick={() => {
-                  updateAbsent(eventID, selectedCoach, true, isPastEvent);
-                  closeUnmarkAbsentModal();
-                }}
-                handleNoClick={closeUnmarkAbsentModal}
-                heading={isPastEvent ? "Mark as Attended" : "Mark as Attending"}
-                message={
-                  isPastEvent
-                    ? `Are you sure ${coaches[selectedCoach].info
-                        .name} ${coaches[selectedCoach].info
-                        .surname} did attend?`
-                    : `Are you sure ${coaches[selectedCoach].info
-                        .name} ${coaches[selectedCoach].info
-                        .surname} will attend?`
-                }
-              />
-            </div>
-          )}
+                <MarkAbsentModal
+                  isOpen={isMarkAbsentModalOpen}
+                  coachName={`${coaches[selectedCoach].info.name} ${coaches[
+                    selectedCoach
+                  ].info.surname}`}
+                  actions={{
+                    markAbsent: (rating, reason) => {
+                      updateAbsent(
+                        eventID,
+                        selectedCoach,
+                        false,
+                        isPastEvent,
+                        rating,
+                        reason
+                      );
+                      closeMarkAbsentModal();
+                    },
+                    closeModal: () => closeMarkAbsentModal()
+                  }}
+                />
+                <EditAbsentRatingModal
+                  isOpen={isEditAbsentRatingModalOpen}
+                  initialInfo={
+                    events[eventID].coaches[selectedCoach].absenteeism
+                  }
+                  coachName={`${coaches[selectedCoach].info.name} ${coaches[
+                    selectedCoach
+                  ].info.surname}`}
+                  actions={{
+                    editAbsentRating: (rating, reason) => {
+                      editAbsentRating(eventID, selectedCoach, rating, reason);
+                      closeEditAbsentRatingModal();
+                    },
+                    closeModal: () => closeEditAbsentRatingModal()
+                  }}
+                />
+                <DecisionModal
+                  isOpen={isUnmarkAbsentModalOpen}
+                  handleYesClick={() => {
+                    updateAbsent(eventID, selectedCoach, true, isPastEvent);
+                    closeUnmarkAbsentModal();
+                  }}
+                  handleNoClick={closeUnmarkAbsentModal}
+                  heading={
+                    isPastEvent ? "Mark as Attended" : "Mark as Attending"
+                  }
+                  message={
+                    isPastEvent
+                      ? `Are you sure ${coaches[selectedCoach].info
+                          .name} ${coaches[selectedCoach].info
+                          .surname} did attend?`
+                      : `Are you sure ${coaches[selectedCoach].info
+                          .name} ${coaches[selectedCoach].info
+                          .surname} will attend?`
+                  }
+                />
+              </div>
+            )}
         </div>
       );
     } else {
       return (
         <div className={classes.contentWrapper}>
           <FiltersToolbar
+            role={role}
             eventTypes={_.keys(this.state.eventTypes)}
             sports={_.keys(this.state.sports)}
             divisions={_.keys(this.state.divisions)}
@@ -630,7 +647,22 @@ class ScheduleLayout extends Component {
             addEvent={openAddEventDialog}
             updateSearch={updateSearch}
           />
-          {!isMobile && <div className={classes.adWrapper}>{ad}</div>}
+          {(role === "coach" || role === "manager") && (
+            <div className={classes.myEventsSelector}>
+              <Switch
+                checked={showAllEvents}
+                onChange={(event, checked) =>
+                  this.setState({
+                    showAllEvents: checked
+                  })}
+              />
+              <Typography component="h3" type="headline">
+                {showAllEvents
+                  ? "All Events"
+                  : role === "coach" ? "Events I Coach" : "Events I Manage"}
+              </Typography>
+            </div>
+          )}
           <Calendar
             events={filteredEvents}
             minDate={minDate}

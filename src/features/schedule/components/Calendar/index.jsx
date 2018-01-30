@@ -114,7 +114,7 @@ const styles = theme => ({
     alignItems: "center"
   },
   loadingWrapper: {
-    height: "100%",
+    height: "calc(100% - 48px)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center"
@@ -139,17 +139,12 @@ const styles = theme => ({
     }
   },
   root: {
-    height: "100%",
-    width: "100%",
+    flex: 1,
     display: "flex",
     flexDirection: "column",
-    "@media (min-width: 960px)": {
-      margin: 48,
-      width: "calc(100% - 96px)"
-    },
     "@media (min-width: 1200px)": {
       width: 1200,
-      margin: "48px auto"
+      margin: "24px auto"
     }
   },
   selectedDate: {

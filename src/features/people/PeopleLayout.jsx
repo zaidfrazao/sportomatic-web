@@ -48,7 +48,8 @@ const styles = theme => ({
     width: "100%",
     maxWidth: 1200,
     margin: "0 auto",
-    display: "flex"
+    display: "flex",
+    alignItems: "center"
   },
   requestsTab: {
     flexGrow: 1,
