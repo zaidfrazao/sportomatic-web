@@ -67,7 +67,7 @@ const styles = theme => ({
 
 class SideMenu extends Component {
   render() {
-    const { classes, isOpen, isMobile, feature } = this.props;
+    const { classes, isOpen, isMobile, feature, role } = this.props;
     const { toggleSideMenu } = this.props.actions;
 
     return (
@@ -175,27 +175,29 @@ class SideMenu extends Component {
                 </ListItem>
               )}
             />
-            <Route
-              key={5}
-              render={({ history }) => (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push("/myaccount/wages");
-                    isMobile && toggleSideMenu();
-                  }}
-                  className={classNames(
-                    feature !== "Wages" && classes.unselectedItem,
-                    feature === "Wages" && classes.selectedItem
-                  )}
-                >
-                  <ListItemIcon>
-                    <WagesIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Wages" />
-                </ListItem>
-              )}
-            />
+            {(role === "admin" || role === "coach") && (
+              <Route
+                key={5}
+                render={({ history }) => (
+                  <ListItem
+                    button
+                    onClick={() => {
+                      history.push("/myaccount/wages");
+                      isMobile && toggleSideMenu();
+                    }}
+                    className={classNames(
+                      feature !== "Wages" && classes.unselectedItem,
+                      feature === "Wages" && classes.selectedItem
+                    )}
+                  >
+                    <ListItemIcon>
+                      <WagesIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Wages" />
+                  </ListItem>
+                )}
+              />
+            )}
             <Route
               key={6}
               render={({ history }) => (

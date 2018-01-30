@@ -9,7 +9,7 @@ import { grey, lightBlue } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import moment from "moment";
 import Paper from "material-ui/Paper";
-import { Route } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
 import Tabs, { Tab } from "material-ui/Tabs";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
@@ -295,12 +295,17 @@ class WagesLayout extends Component {
       isTablet,
       wagesByCoach,
       activeInstitutionID,
-      staff
+      staff,
+      role
     } = this.props;
     const { currentTab } = this.props.uiConfig;
     const { updateTab, loadWagesByCoach, updateSearch } = this.props.actions;
     const { coachID } = this.props.match.params;
     const { isWagesByCoachLoading, isStaffLoading } = this.props.loadingStatus;
+
+    if (role === "manager") {
+      return <Redirect to="/myaccount/dashboard" />;
+    }
 
     const ad = this.createAd();
 

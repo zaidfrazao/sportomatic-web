@@ -64,7 +64,7 @@ const styles = theme => ({
     fontSize: "0.9rem"
   },
   logo: {
-    width: "240px",
+    width: 240,
     height: "auto",
     margin: "10px auto"
   },

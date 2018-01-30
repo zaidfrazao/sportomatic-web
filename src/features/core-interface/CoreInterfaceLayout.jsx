@@ -7,6 +7,7 @@ import CustomAppBar from "./components/CustomAppBar";
 import Dashboard from "../dashboard/DashboardView";
 import DecisionModal from "../../components/DecisionModal";
 import Hours from "../hours/HoursView";
+import LoadingScreen from "./components/LoadingScreen";
 import NotificationModal from "../../components/NotificationModal";
 import Results from "../results/ResultsView";
 import People from "../people/PeopleView";
@@ -78,9 +79,13 @@ const styles = theme => ({
 });
 
 class CoreInterfaceLayout extends Component {
-  state = {
-    windowWidth: "0"
-  };
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      windowWidth: "0"
+    };
+    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+  }
 
   componentWillMount() {
     const { pathname } = this.props.location;
@@ -207,6 +212,10 @@ class CoreInterfaceLayout extends Component {
       return <Redirect to="/sign-in" />;
     }
 
+    if (isAccountInfoLoading) {
+      return <LoadingScreen />;
+    }
+
     return (
       <div className={classes.root}>
         <div className={classes.appFrame}>
@@ -236,16 +245,6 @@ class CoreInterfaceLayout extends Component {
           <div className={classes.content}>
             <div className={classes.main}>
               <Switch>
-                <Route>
-                  <Dashboard
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    userID={userID}
-                    activeInstitutionID={activeInstitutionID}
-                    accountInfo={accountInfo}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                  />
-                </Route>
                 <Route exact path={"/myaccount/"}>
                   <Dashboard
                     isMobile={isMobile}
@@ -372,6 +371,7 @@ class CoreInterfaceLayout extends Component {
                   <Wages
                     isMobile={isMobile}
                     isTablet={isTablet}
+                    role={role}
                     activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
@@ -380,7 +380,18 @@ class CoreInterfaceLayout extends Component {
                   <Wages
                     isMobile={isMobile}
                     isTablet={isTablet}
+                    role={role}
                     activeInstitutionID={activeInstitutionID}
+                    isAccountInfoLoading={isAccountInfoLoading}
+                  />
+                </Route>
+                <Route>
+                  <Dashboard
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                    activeInstitutionID={activeInstitutionID}
+                    accountInfo={accountInfo}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
