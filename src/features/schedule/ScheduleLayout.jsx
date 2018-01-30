@@ -659,7 +659,9 @@ class ScheduleLayout extends Component {
               <Typography component="h3" type="headline">
                 {showAllEvents
                   ? "All Events"
-                  : role === "coach" ? "Events I Coach" : "Events I Manage"}
+                  : role === "coach"
+                    ? "Events Where I Coach"
+                    : "Events Where I Manage"}
               </Typography>
             </div>
           )}
