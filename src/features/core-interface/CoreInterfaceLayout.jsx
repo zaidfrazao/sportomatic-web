@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
 import { Redirect, Route, Switch } from "react-router-dom";
@@ -113,7 +114,17 @@ class CoreInterfaceLayout extends Component {
       loadReadNotifications,
       loadAccountInfo
     } = nextProps.actions;
-    const { userID, isLoggedIn } = nextProps.uiConfig;
+    const { userID, isLoggedIn, accountInfo } = nextProps.uiConfig;
+    const { loadInstitutionInfo } = nextProps.actions;
+
+    if (
+      accountInfo !== this.props.uiConfig.accountInfo &&
+      accountInfo.institutions
+    ) {
+      _.toPairs(accountInfo.institutions).map(([id, info]) => {
+        loadInstitutionInfo(id);
+      });
+    }
 
     if (pathname !== this.props.location.pathname) {
       this.updateCoreUI(pathname);
@@ -178,7 +189,12 @@ class CoreInterfaceLayout extends Component {
   }
 
   render() {
-    const { classes, unreadNotifications, readNotifications } = this.props;
+    const {
+      classes,
+      unreadNotifications,
+      readNotifications,
+      institutions
+    } = this.props;
     const {
       toggleSideMenu,
       signOut,
@@ -191,7 +207,8 @@ class CoreInterfaceLayout extends Component {
     const { windowWidth } = this.state;
     const {
       isNotificationsLoading,
-      isAccountInfoLoading
+      isAccountInfoLoading,
+      isInstitutionsLoading
     } = this.props.loadingStatus;
     const {
       isLoggedIn,
@@ -212,7 +229,7 @@ class CoreInterfaceLayout extends Component {
       return <Redirect to="/sign-in" />;
     }
 
-    if (isAccountInfoLoading) {
+    if (isAccountInfoLoading || isInstitutionsLoading) {
       return <LoadingScreen />;
     }
 
@@ -232,6 +249,12 @@ class CoreInterfaceLayout extends Component {
             readNotifications={readNotifications}
             unreadNotifications={unreadNotifications}
             isNotificationsLoading={isNotificationsLoading}
+            emblemURL={
+              institutions[activeInstitutionID]
+                ? institutions[activeInstitutionID].emblemURL
+                : ""
+            }
+            role={role}
           />
           <SideMenu
             isOpen={isSideMenuOpen}
@@ -253,6 +276,7 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={activeInstitutionID}
                     accountInfo={accountInfo}
                     isAccountInfoLoading={isAccountInfoLoading}
+                    institutions={institutions}
                   />
                 </Route>
                 <Route exact path={"/myaccount/dashboard/"}>
@@ -263,6 +287,7 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={activeInstitutionID}
                     accountInfo={accountInfo}
                     isAccountInfoLoading={isAccountInfoLoading}
+                    institutions={institutions}
                   />
                 </Route>
                 <Route exact path={"/myaccount/hours/"}>
@@ -419,6 +444,7 @@ class CoreInterfaceLayout extends Component {
                     activeInstitutionID={activeInstitutionID}
                     accountInfo={accountInfo}
                     isAccountInfoLoading={isAccountInfoLoading}
+                    institutions={institutions}
                   />
                 </Route>
               </Switch>

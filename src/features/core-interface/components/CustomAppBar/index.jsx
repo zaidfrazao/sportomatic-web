@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import AppBar from "material-ui/AppBar";
 import AppBarMenuIcon from "material-ui-icons/MoreVert";
+import Avatar from "material-ui/Avatar";
 import classNames from "classnames";
 import { grey } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
@@ -13,6 +14,10 @@ import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
+import adminIcon from "./image/admin-icon.png";
+import coachIcon from "./image/coach-icon.png";
+import defaultEmblem from "./image/default-emblem.jpg";
+import managerIcon from "./image/manager-icon.png";
 import NotificationsTray from "./components/NotificationsTray";
 
 const drawerWidth = 240;
@@ -38,6 +43,11 @@ const styles = theme => ({
     display: "flex",
     alignItems: "center"
   },
+  avatar: {
+    width: 32,
+    height: 32,
+    margin: 8
+  },
   badgeColor: {
     backgroundColor: grey[50]
   },
@@ -58,7 +68,8 @@ const styles = theme => ({
   rightButtons: {
     marginRight: "20px",
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    alignItems: "center"
   },
   titleMargin: {
     marginLeft: theme.spacing.unit * 3
@@ -87,7 +98,9 @@ class CustomAppBar extends Component {
       isMobile,
       unreadNotifications,
       readNotifications,
-      isNotificationsLoading
+      isNotificationsLoading,
+      emblemURL,
+      role
     } = this.props;
     const {
       toggleSideMenu,
@@ -95,6 +108,13 @@ class CustomAppBar extends Component {
       openSettingsAlert,
       markNotificationsRead
     } = this.props.actions;
+
+    let roleIcon = adminIcon;
+    if (role === "coach") {
+      roleIcon = coachIcon;
+    } else if (role === "manager") {
+      roleIcon = managerIcon;
+    }
 
     return (
       <AppBar
@@ -127,6 +147,20 @@ class CustomAppBar extends Component {
             {title}
           </Typography>
           <div className={classes.rightButtons}>
+            {!isMobile && (
+              <Avatar
+                className={classes.avatar}
+                src={emblemURL === "" ? defaultEmblem : emblemURL}
+                aria-label="institution emblem"
+              />
+            )}
+            {!isMobile && (
+              <Avatar
+                src={roleIcon}
+                className={classes.avatar}
+                aria-label="role icon"
+              />
+            )}
             <NotificationsTray
               isMobile={isMobile}
               readNotifications={readNotifications}

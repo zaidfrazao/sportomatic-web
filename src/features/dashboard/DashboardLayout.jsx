@@ -1,7 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
-import { CircularProgress } from "material-ui/Progress";
 import { grey } from "material-ui/colors";
 import Toolbar from "material-ui/Toolbar";
 import { withStyles } from "material-ui/styles";
@@ -32,28 +31,6 @@ const styles = theme => ({
 });
 
 class DashboardLayout extends Component {
-  componentWillMount() {
-    const { accountInfo } = this.props;
-    const { loadInstitutionInfo } = this.props.actions;
-
-    if (accountInfo.institutions) {
-      _.toPairs(accountInfo.institutions).map(([id, info]) => {
-        loadInstitutionInfo(id);
-      });
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { accountInfo } = nextProps;
-    const { loadInstitutionInfo } = this.props.actions;
-
-    if (accountInfo !== this.props.accountInfo && accountInfo.institutions) {
-      _.toPairs(accountInfo.institutions).map(([id, info]) => {
-        loadInstitutionInfo(id);
-      });
-    }
-  }
-
   render() {
     const {
       classes,
@@ -63,7 +40,6 @@ class DashboardLayout extends Component {
       institutions,
       userID
     } = this.props;
-    const { isInstitutionsLoading } = this.props.loadingStatus;
     const { switchInstitution, switchRole } = this.props.actions;
 
     let active = {
@@ -99,76 +75,59 @@ class DashboardLayout extends Component {
       <div className={classes.root}>
         <Toolbar className={classes.toolbar}>
           <div className={classes.selectWrapper}>
-            {isInstitutionsLoading ||
-            accountInfo.lastAccessed.institutionID === "" ? (
-              <div className={classes.loaderWrapper}>
-                <CircularProgress />
-              </div>
-            ) : (
-              <InstitutionSelectCard
-                isMobile={isMobile}
-                isLoading={isInstitutionsLoading}
-                userID={userID}
-                activeInstitution={{
-                  id: active.id,
-                  name: active.institutionName
-                }}
-                institutions={_.fromPairs(
-                  _.toPairs(institutions).map(([id, info]) => {
-                    let rolesAvailable = {
-                      admin: false,
-                      coach: false,
-                      manager: false
+            <InstitutionSelectCard
+              isMobile={isMobile}
+              userID={userID}
+              activeInstitution={{
+                id: active.id,
+                name: active.institutionName
+              }}
+              institutions={_.fromPairs(
+                _.toPairs(institutions).map(([id, info]) => {
+                  let rolesAvailable = {
+                    admin: false,
+                    coach: false,
+                    manager: false
+                  };
+                  if (
+                    accountInfo.institutions &&
+                    accountInfo.institutions[id]
+                  ) {
+                    rolesAvailable = {
+                      admin:
+                        accountInfo.institutions[id].roles.admin === "APPROVED",
+                      coach:
+                        accountInfo.institutions[id].roles.coach === "APPROVED",
+                      manager:
+                        accountInfo.institutions[id].roles.manager ===
+                        "APPROVED"
                     };
-                    if (
-                      accountInfo.institutions &&
-                      accountInfo.institutions[id]
-                    ) {
-                      rolesAvailable = {
-                        admin:
-                          accountInfo.institutions[id].roles.admin ===
-                          "APPROVED",
-                        coach:
-                          accountInfo.institutions[id].roles.coach ===
-                          "APPROVED",
-                        manager:
-                          accountInfo.institutions[id].roles.manager ===
-                          "APPROVED"
-                      };
+                  }
+                  return [
+                    id,
+                    {
+                      name: info.name,
+                      rolesAvailable
                     }
-                    return [
-                      id,
-                      {
-                        name: info.name,
-                        rolesAvailable
-                      }
-                    ];
-                  })
-                )}
-                emblemURL={active.emblemURL}
-                actions={{
-                  switchInstitution
-                }}
-              />
-            )}
+                  ];
+                })
+              )}
+              emblemURL={active.emblemURL}
+              actions={{
+                switchInstitution
+              }}
+            />
           </div>
           <div className={classes.selectWrapper}>
-            {isInstitutionsLoading ||
-            accountInfo.lastAccessed.institutionID === "" ? (
-              <div className={classes.loaderWrapper}>
-                <CircularProgress />
-              </div>
-            ) : (
-              <RoleSelectCard
-                isMobile={isMobile}
-                userID={userID}
-                activeRole={active.role}
-                rolesAvailable={rolesAvailable}
-                actions={{
-                  switchRole
-                }}
-              />
-            )}
+            <RoleSelectCard
+              isMobile={isMobile}
+              userID={userID}
+              activeRole={active.role}
+              rolesAvailable={rolesAvailable}
+              actions={{
+                switchRole
+              }}
+            />
           </div>
         </Toolbar>
         <BannerCarousel isTablet={isTablet} />

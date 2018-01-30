@@ -26,6 +26,9 @@ export const ERROR_MARKING_NOTIFICATIONS_READ = `${NAMESPACE}/ERROR_MARKING_NOTI
 export const REQUEST_ACCOUNT_INFO = `${NAMESPACE}/REQUEST_ACCOUNT_INFO`;
 export const RECEIVE_ACCOUNT_INFO = `${NAMESPACE}/RECEIVE_ACCOUNT_INFO`;
 export const ERROR_LOADING_ACCOUNT_INFO = `${NAMESPACE}/ERROR_LOADING_ACCOUNT_INFO`;
+export const REQUEST_INSTITUTION_INFO = `${NAMESPACE}/REQUEST_INSTITUTION_INFO`;
+export const RECEIVE_INSTITUTION_INFO = `${NAMESPACE}/RECEIVE_INSTITUTION_INFO`;
+export const ERROR_LOADING_INSTITUTION_INFO = `${NAMESPACE}/ERROR_LOADING_INSTITUTION_INFO`;
 
 // Reducers
 
@@ -118,7 +121,8 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 
 export const loadingStatusInitialState = {
   isNotificationsLoading: false,
-  isAccountInfoLoading: false
+  isAccountInfoLoading: false,
+  isInstitutionsLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -148,20 +152,26 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isAccountInfoLoading: false
       };
+    case REQUEST_INSTITUTION_INFO:
+      return {
+        ...state,
+        isInstitutionsLoading: true
+      };
+    case ERROR_LOADING_INSTITUTION_INFO:
+    case RECEIVE_INSTITUTION_INFO:
+      return {
+        ...state,
+        isInstitutionsLoading: false
+      };
     default:
       return state;
   }
 }
 
-export const unreadNotificationsInitialState = [];
-
-function unreadNotificationsReducer(
-  state = unreadNotificationsInitialState,
-  action = {}
-) {
+function unreadNotificationsReducer(state = [], action = {}) {
   switch (action.type) {
     case SIGN_OUT:
-      return unreadNotificationsInitialState;
+      return [];
     case RECEIVE_UNREAD_NOTIFICATIONS:
       return action.payload.notifications;
     default:
@@ -169,17 +179,26 @@ function unreadNotificationsReducer(
   }
 }
 
-export const readNotificationsInitialState = [];
-
-function readNotificationsReducer(
-  state = readNotificationsInitialState,
-  action = {}
-) {
+function readNotificationsReducer(state = [], action = {}) {
   switch (action.type) {
     case SIGN_OUT:
-      return readNotificationsInitialState;
+      return [];
     case RECEIVE_READ_NOTIFICATIONS:
       return action.payload.notifications;
+    default:
+      return state;
+  }
+}
+
+function institutionsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_INSTITUTION_INFO:
+      return {
+        ...state,
+        [action.payload.id]: action.payload.info
+      };
     default:
       return state;
   }
@@ -190,7 +209,8 @@ export const coreInterfaceReducer = combineReducers({
   dialogs: dialogsReducer,
   loadingStatus: loadingStatusReducer,
   unreadNotifications: unreadNotificationsReducer,
-  readNotifications: readNotificationsReducer
+  readNotifications: readNotificationsReducer,
+  institutions: institutionsReducer
 });
 
 // Selectors
@@ -200,13 +220,15 @@ const dialogs = state => state.coreInterface.dialogs;
 const loadingStatus = state => state.coreInterface.loadingStatus;
 const unreadNotifications = state => state.coreInterface.unreadNotifications;
 const readNotifications = state => state.coreInterface.readNotifications;
+const institutions = state => state.coreInterface.institutions;
 
 export const selector = createStructuredSelector({
   uiConfig,
   dialogs,
   loadingStatus,
   unreadNotifications,
-  readNotifications
+  readNotifications,
+  institutions
 });
 
 // Action Creators
@@ -443,6 +465,49 @@ export function loadAccountInfo(userID) {
 
     return userRef.onSnapshot(doc => {
       dispatch(receiveAccountInfo(doc.data()));
+    });
+  };
+}
+
+export function requestInstitutionInfo() {
+  return {
+    type: REQUEST_INSTITUTION_INFO
+  };
+}
+
+export function receiveInstitutionInfo(id, info) {
+  return {
+    type: RECEIVE_INSTITUTION_INFO,
+    payload: {
+      id,
+      info
+    }
+  };
+}
+
+export function errorLoadingInstitutionInfo(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_INSTITUTION_INFO,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadInstitutionInfo(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestInstitutionInfo());
+
+    const institutionRef = firebase
+      .firestore()
+      .collection("institutions")
+      .doc(institutionID);
+
+    return institutionRef.onSnapshot(doc => {
+      dispatch(receiveInstitutionInfo(doc.id, doc.data().info));
     });
   };
 }
