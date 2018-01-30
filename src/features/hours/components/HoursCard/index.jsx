@@ -16,6 +16,7 @@ import SignOutIcon from "material-ui-icons/AssignmentReturn";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
+import defaultProfilePicture from "../../image/default-profile-picture.png";
 
 const styles = {
   absentButton: {
@@ -456,7 +457,11 @@ class HoursCard extends Component {
                 </Typography>
                 <img
                   alt={`${name} ${surname}`}
-                  src={profilePictureURL}
+                  src={
+                    profilePictureURL === ""
+                      ? defaultProfilePicture
+                      : profilePictureURL
+                  }
                   className={classes.profilePicture}
                 />
                 <div className={classes.timesWrapper}>
@@ -557,8 +562,12 @@ class HoursCard extends Component {
                 </Typography>
                 <img
                   alt={`${name} ${surname}`}
-                  src={profilePictureURL}
                   className={classes.profilePicture}
+                  src={
+                    profilePictureURL === ""
+                      ? defaultProfilePicture
+                      : profilePictureURL
+                  }
                 />
                 <div className={classes.timesWrapper}>
                   <form className={classes.timeWrapper}>
@@ -674,8 +683,12 @@ class HoursCard extends Component {
                 </Typography>
                 <img
                   alt={`${name} ${surname}`}
-                  src={profilePictureURL}
                   className={classes.profilePicture}
+                  src={
+                    profilePictureURL === ""
+                      ? defaultProfilePicture
+                      : profilePictureURL
+                  }
                 />
                 <div className={classes.timesWrapper}>
                   <form className={classes.timeWrapper}>
@@ -783,8 +796,12 @@ class HoursCard extends Component {
                 </Typography>
                 <img
                   alt={`${name} ${surname}`}
-                  src={profilePictureURL}
                   className={classes.profilePicture}
+                  src={
+                    profilePictureURL === ""
+                      ? defaultProfilePicture
+                      : profilePictureURL
+                  }
                 />
                 <div className={classes.timesWrapper}>
                   <form className={classes.timeWrapper}>
