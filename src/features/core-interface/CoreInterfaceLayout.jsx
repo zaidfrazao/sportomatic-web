@@ -385,6 +385,7 @@ class CoreInterfaceLayout extends Component {
                   <Wages
                     isMobile={isMobile}
                     isTablet={isTablet}
+                    userID={userID}
                     role={role}
                     activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
@@ -394,6 +395,7 @@ class CoreInterfaceLayout extends Component {
                   <Wages
                     isMobile={isMobile}
                     isTablet={isTablet}
+                    userID={userID}
                     role={role}
                     activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}

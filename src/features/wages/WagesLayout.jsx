@@ -296,7 +296,8 @@ class WagesLayout extends Component {
       wagesByCoach,
       activeInstitutionID,
       staff,
-      role
+      role,
+      userID
     } = this.props;
     const { currentTab } = this.props.uiConfig;
     const { updateTab, loadWagesByCoach, updateSearch } = this.props.actions;
@@ -310,6 +311,9 @@ class WagesLayout extends Component {
     const ad = this.createAd();
 
     if (coachID) {
+      if (role === "coach") {
+        return <Redirect to="/myaccount/wages" />;
+      }
       return (
         <div className={classes.outerWrapper}>
           <AppBar position="static" color="default">
@@ -357,6 +361,27 @@ class WagesLayout extends Component {
         </div>
       );
     } else {
+      if (role === "coach") {
+        return (
+          <div className={classes.root}>
+            <div className={classes.contentWrapper}>
+              <div className={classes.adWrapper}>{ad}</div>
+              <WageHistory
+                institutionID={activeInstitutionID}
+                isLoading={isWagesByCoachLoading || activeInstitutionID === ""}
+                isMobile={isMobile}
+                isTablet={isTablet}
+                wages={wagesByCoach}
+                coachID={userID}
+                minDate={new Date(2017, 11)}
+                actions={{
+                  loadWages: loadWagesByCoach
+                }}
+              />
+            </div>
+          </div>
+        );
+      }
       return (
         <div className={classes.root}>
           <div className={classes.contentWrapper}>
