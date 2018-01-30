@@ -97,7 +97,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/admin/dashboard");
+                    history.push("/myaccount/dashboard");
                     isMobile && toggleSideMenu();
                   }}
                   className={classNames(
@@ -118,7 +118,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/admin/schedule");
+                    history.push("/myaccount/schedule");
                     isMobile && toggleSideMenu();
                   }}
                   className={classNames(
@@ -139,7 +139,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/admin/hours");
+                    history.push("/myaccount/hours");
                     isMobile && toggleSideMenu();
                   }}
                   className={classNames(
@@ -160,7 +160,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/admin/results");
+                    history.push("/myaccount/results");
                     isMobile && toggleSideMenu();
                   }}
                   className={classNames(
@@ -181,7 +181,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/admin/wages");
+                    history.push("/myaccount/wages");
                     isMobile && toggleSideMenu();
                   }}
                   className={classNames(
@@ -202,7 +202,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/admin/people");
+                    history.push("/myaccount/people");
                     isMobile && toggleSideMenu();
                   }}
                   className={classNames(
@@ -223,7 +223,7 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/admin/teams");
+                    history.push("/myaccount/teams");
                     isMobile && toggleSideMenu();
                   }}
                   className={classNames(

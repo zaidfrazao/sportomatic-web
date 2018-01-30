@@ -118,7 +118,7 @@ class EventsList extends Component {
                   button
                   onClick={() => {
                     history.push(
-                      `/admin/schedule/${dateSelected}/${eventInfo.id}`
+                      `/myaccount/schedule/${dateSelected}/${eventInfo.id}`
                     );
                   }}
                 >
@@ -165,7 +165,7 @@ class EventsList extends Component {
                   button
                   onClick={() => {
                     history.push(
-                      `/admin/schedule/${dateSelected}/${eventInfo.id}`
+                      `/myaccount/schedule/${dateSelected}/${eventInfo.id}`
                     );
                   }}
                 >
@@ -212,7 +212,7 @@ class EventsList extends Component {
                   button
                   onClick={() => {
                     history.push(
-                      `/admin/schedule/${dateSelected}/${eventInfo.id}`
+                      `/myaccount/schedule/${dateSelected}/${eventInfo.id}`
                     );
                   }}
                 >
@@ -254,7 +254,7 @@ class EventsList extends Component {
                   button
                   onClick={() => {
                     history.push(
-                      `/admin/schedule/${dateSelected}/${eventInfo.id}`
+                      `/myaccount/schedule/${dateSelected}/${eventInfo.id}`
                     );
                   }}
                 >

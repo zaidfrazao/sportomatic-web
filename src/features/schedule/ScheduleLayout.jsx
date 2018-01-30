@@ -385,7 +385,7 @@ class ScheduleLayout extends Component {
     if (!dateSelected) {
       return (
         <Redirect
-          to={`/admin/schedule/${moment(currentDate).format("YYYY-MM-DD")}`}
+          to={`/myaccount/schedule/${moment(currentDate).format("YYYY-MM-DD")}`}
         />
       );
     }

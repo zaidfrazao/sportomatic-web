@@ -6,39 +6,28 @@ import { UserAlias } from "../../models/aliases";
 
 // Actions
 
-export const REQUEST_SIGN_IN = "sportomatic-web/sign-in/REQUEST_SIGN_IN";
-export const RECEIVE_SIGN_IN = "sportomatic-web/sign-in/RECEIVE_SIGN_IN";
-export const ERROR_SIGNING_IN = "sportomatic-web/sign-in/ERROR_SIGNING_IN";
-export const UPDATE_EMAIL = "sportomatic-web/sign-in/UPDATE_EMAIL";
-export const UPDATE_PASSWORD = "sportomatic-web/sign-in/UPDATE_PASSWORD";
-const UPDATE_PASSWORD_RESET_EMAIL_ADDRESS =
-  "sportomatic-web/sign-in/UPDATE_PASSWORD_RESET_EMAIL_ADDRESS";
-export const EMAIL_ERROR_CHECK = "sportomatic-web/sign-in/EMAIL_ERROR_CHECK";
-export const PASSWORD_ERROR_CHECK =
-  "sportomatic-web/sign-in/PASSWORD_ERROR_CHECK";
-export const REQUEST_ACCOUNT_INFO =
-  "sportomatic-web/sign-in/REQUEST_ACCOUNT_INFO";
-export const RECEIVE_ACCOUNT_INFO =
-  "sportomatic-web/sign-in/RECEIVE_ACCOUNT_INFO";
-export const ERROR_FETCHING_ACCOUNT_INFO =
-  "sportomatic-web/sign-in/ERROR_FETCHING_ACCOUNT_INFO";
-export const INIT_USER = "sportomatic-web/config/INIT_USER";
-export const OPEN_PASSWORD_RESET_DIALOG =
-  "sportomatic-web/sign-in/OPEN_PASSWORD_RESET_DIALOG";
-export const CLOSE_PASSWORD_RESET_DIALOG =
-  "sportomatic-web/sign-in/CLOSE_PASSWORD_RESET_DIALOG";
-export const UPDATE_PASSWORD_RESET_EMAIL =
-  "sportomatic-web/sign-in/UPDATE_PASSWORD_RESET_EMAIL";
-export const REQUEST_PASSWORD_RESET =
-  "sportomatic-web/sign-in/REQUEST_PASSWORD_RESET";
-export const RECEIVE_PASSWORD_RESET =
-  "sportomatic-web/sign-in/RECEIVE_PASSWORD_RESET";
-export const ERROR_RESETTING_PASSWORD =
-  "sportomatic-web/sign-in/ERROR_RESETTING_PASSWORD";
-const CLOSE_PASSWORD_RESET_SUCCESS_MODAL =
-  "sportomatic-web/sign-in/CLOSE_PASSWORD_RESET_SUCCESS_MODAL";
-export const CLOSE_NETWORK_FAILURE_MODAL =
-  "sportomatic-web/sign-in/CLOSE_NETWORK_FAILURE_MODAL";
+const NAMESPACE = "sportomatic-web/sign-in";
+
+export const REQUEST_SIGN_IN = `${NAMESPACE}/REQUEST_SIGN_IN`;
+export const RECEIVE_SIGN_IN = `${NAMESPACE}/RECEIVE_SIGN_IN`;
+export const ERROR_SIGNING_IN = `${NAMESPACE}/ERROR_SIGNING_IN`;
+export const UPDATE_EMAIL = `${NAMESPACE}/UPDATE_EMAIL`;
+export const UPDATE_PASSWORD = `${NAMESPACE}/UPDATE_PASSWORD`;
+export const UPDATE_PASSWORD_RESET_EMAIL_ADDRESS = `${NAMESPACE}/UPDATE_PASSWORD_RESET_EMAIL_ADDRESS`;
+export const EMAIL_ERROR_CHECK = `${NAMESPACE}/EMAIL_ERROR_CHECK`;
+export const PASSWORD_ERROR_CHECK = `${NAMESPACE}/PASSWORD_ERROR_CHECK`;
+export const REQUEST_ACCOUNT_INFO = `${NAMESPACE}/REQUEST_ACCOUNT_INFO`;
+export const RECEIVE_ACCOUNT_INFO = `${NAMESPACE}/RECEIVE_ACCOUNT_INFO`;
+export const ERROR_FETCHING_ACCOUNT_INFO = `${NAMESPACE}/ERROR_FETCHING_ACCOUNT_INFO`;
+export const OPEN_PASSWORD_RESET_DIALOG = `${NAMESPACE}/OPEN_PASSWORD_RESET_DIALOG`;
+export const CLOSE_PASSWORD_RESET_DIALOG = `${NAMESPACE}/CLOSE_PASSWORD_RESET_DIALOG`;
+export const UPDATE_PASSWORD_RESET_EMAIL = `${NAMESPACE}/UPDATE_PASSWORD_RESET_EMAIL`;
+export const REQUEST_PASSWORD_RESET = `${NAMESPACE}/REQUEST_PASSWORD_RESET`;
+export const RECEIVE_PASSWORD_RESET = `${NAMESPACE}/RECEIVE_PASSWORD_RESET`;
+export const ERROR_RESETTING_PASSWORD = `${NAMESPACE}/ERROR_RESETTING_PASSWORD`;
+export const CLOSE_PASSWORD_RESET_SUCCESS_MODAL = `${NAMESPACE}/CLOSE_PASSWORD_RESET_SUCCESS_MODAL`;
+export const CLOSE_NETWORK_FAILURE_MODAL = `${NAMESPACE}/CLOSE_NETWORK_FAILURE_MODAL`;
+export const INIT_USER = `${NAMESPACE}/INIT_USER`;
 
 // Reducers
 

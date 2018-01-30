@@ -292,7 +292,9 @@ class Calendar extends Component {
                       );
                     }
                     history.push(
-                      `/admin/schedule/${moment(newDate).format("YYYY-MM-DD")}`
+                      `/myaccount/schedule/${moment(newDate).format(
+                        "YYYY-MM-DD"
+                      )}`
                     );
                   }}
                 >
@@ -329,7 +331,9 @@ class Calendar extends Component {
                       2
                     );
                     history.push(
-                      `/admin/schedule/${moment(newDate).format("YYYY-MM-DD")}`
+                      `/myaccount/schedule/${moment(newDate).format(
+                        "YYYY-MM-DD"
+                      )}`
                     );
                   }}
                 >
@@ -469,7 +473,7 @@ class Calendar extends Component {
                           date.getDate()
                         );
                         history.push(
-                          `/admin/schedule/${moment(newDate).format(
+                          `/myaccount/schedule/${moment(newDate).format(
                             "YYYY-MM-DD"
                           )}`
                         );
@@ -597,7 +601,9 @@ class Calendar extends Component {
                     }
 
                     history.push(
-                      `/admin/schedule/${moment(newDate).format("YYYY-MM-DD")}`
+                      `/myaccount/schedule/${moment(newDate).format(
+                        "YYYY-MM-DD"
+                      )}`
                     );
                   }}
                 >
@@ -649,7 +655,9 @@ class Calendar extends Component {
                     }
 
                     history.push(
-                      `/admin/schedule/${moment(newDate).format("YYYY-MM-DD")}`
+                      `/myaccount/schedule/${moment(newDate).format(
+                        "YYYY-MM-DD"
+                      )}`
                     );
                   }}
                 >
@@ -749,7 +757,7 @@ class Calendar extends Component {
                             date.getDate()
                           );
                           history.push(
-                            `/admin/schedule/${moment(newDate).format(
+                            `/myaccount/schedule/${moment(newDate).format(
                               "YYYY-MM-DD"
                             )}`
                           );

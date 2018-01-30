@@ -619,7 +619,7 @@ class HoursCard extends Component {
               <Button
                 className={classes.eventInfoButton}
                 onClick={() =>
-                  history.push(`/admin/schedule/${eventDate}/${eventID}`)}
+                  history.push(`/myaccount/schedule/${eventDate}/${eventID}`)}
               >
                 View event info
               </Button>

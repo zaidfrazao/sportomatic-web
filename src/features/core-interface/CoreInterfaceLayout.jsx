@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import _ from "lodash";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import backgroundImage from "./images/background-image.jpeg";
@@ -77,11 +78,9 @@ const styles = theme => ({
 });
 
 class CoreInterfaceLayout extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { windowWidth: "0" };
-    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-  }
+  state = {
+    windowWidth: "0"
+  };
 
   componentWillMount() {
     const { pathname } = this.props.location;
@@ -92,6 +91,7 @@ class CoreInterfaceLayout extends Component {
       loadAccountInfo
     } = this.props.actions;
     const { userID, isLoggedIn } = this.props.uiConfig;
+
     initUser();
     if (userID !== "" && isLoggedIn) {
       loadUnreadNotifications(userID);
@@ -196,8 +196,12 @@ class CoreInterfaceLayout extends Component {
       userID
     } = this.props.uiConfig;
     const { isSettingsAlertOpen, isLogOutModalOpen } = this.props.dialogs;
+
     const isMobile = windowWidth < 600;
     const isTablet = windowWidth < 960;
+
+    const role = _.toLower(accountInfo.lastAccessed.role);
+    const activeInstitutionID = accountInfo.lastAccessed.institutionID;
 
     if (!isLoggedIn) {
       return <Redirect to="/sign-in" />;
@@ -227,174 +231,156 @@ class CoreInterfaceLayout extends Component {
             }}
             isMobile={isMobile}
             feature={appBarTitle}
+            role={role}
           />
           <div className={classes.content}>
             <div className={classes.main}>
               <Switch>
-                <Route exact path={"/admin/"}>
+                <Route>
                   <Dashboard
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={userID}
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     accountInfo={accountInfo}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={`/admin/dashboard/`}>
+                <Route exact path={"/myaccount/"}>
                   <Dashboard
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={userID}
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     accountInfo={accountInfo}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={`/admin/hours/`}>
+                <Route exact path={"/myaccount/dashboard/"}>
+                  <Dashboard
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                    activeInstitutionID={activeInstitutionID}
+                    accountInfo={accountInfo}
+                    isAccountInfoLoading={isAccountInfoLoading}
+                  />
+                </Route>
+                <Route exact path={"/myaccount/hours/"}>
                   <Hours
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={`/admin/hours/:coachID`}>
+                <Route exact path={"/myaccount/hours/:coachID"}>
                   <Hours
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={`/admin/results/`}>
+                <Route exact path={"/myaccount/results/"}>
                   <Results
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={`/admin/results/:teamID`}>
+                <Route exact path={"/myaccount/results/:teamID"}>
                   <Results
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={`/admin/results/:teamID/:eventID`}>
+                <Route exact path={"/myaccount/results/:teamID/:eventID"}>
                   <Results
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={`/admin/people/`}>
+                <Route exact path={"/myaccount/people/"}>
                   <People
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isMobile={isMobile}
                     isTablet={isTablet}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route path={`/admin/people/:personID`}>
+                <Route path={"/myaccount/people/:personID"}>
                   <People
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isMobile={isMobile}
                     isTablet={isTablet}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={`/admin/teams/`}>
+                <Route exact path={"/myaccount/teams/"}>
                   <Teams
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isMobile={isMobile}
                     isTablet={isTablet}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route path={`/admin/teams/:teamID`}>
+                <Route path={"/myaccount/teams/:teamID"}>
                   <Teams
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isMobile={isMobile}
                     isTablet={isTablet}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={`/admin/schedule/`}>
+                <Route exact path={"/myaccount/schedule/"}>
                   <Schedule
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={`/admin/schedule/:dateSelected`}>
+                <Route exact path={"/myaccount/schedule/:dateSelected"}>
                   <Schedule
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={`/admin/schedule/:dateSelected/:eventID`}>
+                <Route
+                  exact
+                  path={"/myaccount/schedule/:dateSelected/:eventID"}
+                >
                   <Schedule
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={`/admin/settings/`}>
+                <Route exact path={"/myaccount/settings/"}>
                   <Settings isAccountInfoLoading={isAccountInfoLoading} />
                 </Route>
-                <Route exact path={`/admin/wages`}>
+                <Route exact path={"/myaccount/wages"}>
                   <Wages
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route path={`/admin/wages/:coachID`}>
+                <Route path={"/myaccount/wages/:coachID"}>
                   <Wages
                     isMobile={isMobile}
                     isTablet={isTablet}
-                    activeInstitutionID={
-                      accountInfo.lastAccessed.institutionID || ""
-                    }
+                    activeInstitutionID={activeInstitutionID}
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>

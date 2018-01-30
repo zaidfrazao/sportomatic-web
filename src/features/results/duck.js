@@ -5,7 +5,7 @@ import firebase from "firebase";
 
 // Actions
 
-const NAMESPACE = "sportomatic-web/admin/results";
+const NAMESPACE = "sportomatic-web/results";
 
 export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
 export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
@@ -31,7 +31,8 @@ export const RECEIVE_INSTITUTION_EMBLEM = `${NAMESPACE}/RECEIVE_INSTITUTION_EMBL
 export const ERROR_FETCHING_INSTITUTION_EMBLEM = `${NAMESPACE}/ERROR_FETCHING_INSTITUTION_EMBLEM`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
-export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
+
+export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
 // Reducers
 

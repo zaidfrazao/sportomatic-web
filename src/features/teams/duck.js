@@ -5,7 +5,7 @@ import firebase from "firebase";
 
 // Actions
 
-const NAMESPACE = "sportomatic-web/admin/teams";
+const NAMESPACE = "sportomatic-web/teams";
 
 export const OPEN_ADD_TEAM_DIALOG = `${NAMESPACE}/OPEN_ADD_TEAM_DIALOG`;
 export const CLOSE_ADD_TEAM_DIALOG = `${NAMESPACE}/CLOSE_ADD_TEAM_DIALOG`;
@@ -39,7 +39,7 @@ export const REQUEST_EVENTS_BY_TEAM = `${NAMESPACE}/REQUEST_EVENTS_BY_TEAM`;
 export const RECEIVE_EVENTS_BY_TEAM = `${NAMESPACE}/RECEIVE_EVENTS_BY_TEAM`;
 export const ERROR_LOADING_EVENTS_BY_TEAM = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_TEAM`;
 
-export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
+export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
 // Reducers
 

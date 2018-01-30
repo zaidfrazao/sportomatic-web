@@ -5,7 +5,7 @@ import moment from "moment";
 
 // Actions
 
-const NAMESPACE = "sportomatic-web/admin/hours";
+const NAMESPACE = "sportomatic-web/hours";
 
 export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
 export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
@@ -28,7 +28,8 @@ export const RECEIVE_APPROVE_HOURS = `${NAMESPACE}/RECEIVE_APPROVE_HOURS`;
 export const ERROR_APPROVING_HOURS = `${NAMESPACE}/ERROR_APPROVING_HOURS`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
-export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
+
+export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
 // Reducers
 

@@ -457,7 +457,7 @@ class Generic extends Component {
                 color="contrast"
                 className={classes.viewStatsButton}
                 onClick={() =>
-                  history.push(`/admin/results/${teamID}/${eventID}`)}
+                  history.push(`/myaccount/results/${teamID}/${eventID}`)}
               >
                 View stats & commentary
               </Button>
@@ -710,7 +710,7 @@ class Generic extends Component {
                 color="contrast"
                 className={classes.viewStatsButton}
                 onClick={() =>
-                  history.push(`/admin/results/${teamID}/${eventID}`)}
+                  history.push(`/myaccount/results/${teamID}/${eventID}`)}
               >
                 View stats & commentary
               </Button>

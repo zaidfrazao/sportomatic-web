@@ -4,7 +4,7 @@ import firebase from "firebase";
 
 // Actions
 
-const NAMESPACE = "sportomatic-web/admin/wages";
+const NAMESPACE = "sportomatic-web/wages";
 
 export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
 export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
@@ -18,7 +18,8 @@ export const RECEIVE_WAGES_BY_COACH = `${NAMESPACE}/RECEIVE_WAGES_BY_COACH`;
 export const ERROR_LOADING_WAGES_BY_COACH = `${NAMESPACE}/ERROR_LOADING_WAGES_BY_COACH`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
-export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
+
+export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
 // Reducers
 

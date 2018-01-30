@@ -98,7 +98,7 @@ class TeamCard extends Component {
               <Button
                 dense
                 className={classes.viewButton}
-                onClick={() => history.push(`/admin/teams/${id}`)}
+                onClick={() => history.push(`/myaccount/teams/${id}`)}
               >
                 View
               </Button>

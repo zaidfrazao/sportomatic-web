@@ -4,7 +4,7 @@ import firebase from "firebase";
 
 // Actions
 
-const NAMESPACE = "sportomatic-web/admin/dashboard";
+const NAMESPACE = "sportomatic-web/dashboard";
 
 export const TOGGLE_SIDE_MENU = `${NAMESPACE}/TOGGLE_SIDE_MENU`;
 export const REQUEST_INSTITUTION_INFO = `${NAMESPACE}/REQUEST_INSTITUTION_INFO`;
@@ -16,7 +16,7 @@ export const ERROR_SWITCHING_INSTITUTION = `${NAMESPACE}/ERROR_SWITCHING_INSTITU
 export const REQUEST_SWITCH_ROLE = `${NAMESPACE}/REQUEST_SWITCH_ROLE`;
 export const RECEIVE_SWITCH_ROLE = `${NAMESPACE}/RECEIVE_SWITCH_ROLE`;
 export const ERROR_SWITCHING_ROLE = `${NAMESPACE}/ERROR_SWITCHING_ROLE`;
-export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
+export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
 // Reducers
 

@@ -3,10 +3,11 @@ import { createStructuredSelector } from "reselect";
 
 // Actions
 
-const NAMESPACE = "sportomatic-web/admin/settings";
+const NAMESPACE = "sportomatic-web/settings";
 
 export const TOGGLE_SIDE_MENU = `${NAMESPACE}/TOGGLE_SIDE_MENU`;
-export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
+
+export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
 // Reducers
 

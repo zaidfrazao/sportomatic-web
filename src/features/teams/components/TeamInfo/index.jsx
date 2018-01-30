@@ -407,7 +407,7 @@ class TeamInfo extends Component {
                       <ListItem
                         className={classes.inset}
                         button
-                        onClick={() => history.push(`/admin/people/${id}`)}
+                        onClick={() => history.push(`/myaccount/people/${id}`)}
                       >
                         <ListItemIcon>
                           <PersonIcon />
@@ -458,7 +458,7 @@ class TeamInfo extends Component {
                       <ListItem
                         className={classes.inset}
                         button
-                        onClick={() => history.push(`/admin/people/${id}`)}
+                        onClick={() => history.push(`/myaccount/people/${id}`)}
                       >
                         <ListItemIcon>
                           <PersonIcon />
@@ -505,7 +505,7 @@ class TeamInfo extends Component {
                           button
                           onClick={() =>
                             history.push(
-                              `/admin/schedule/${startTime.format(
+                              `/myaccount/schedule/${startTime.format(
                                 "YYYY-MM-DD"
                               )}/${id}`
                             )}
@@ -878,7 +878,7 @@ class TeamInfo extends Component {
                               button
                               onClick={() =>
                                 history.push(
-                                  `/admin/schedule/${startTime.format(
+                                  `/myaccount/schedule/${startTime.format(
                                     "YYYY-MM-DD"
                                   )}/${id}`
                                 )}
@@ -895,7 +895,7 @@ class TeamInfo extends Component {
                                   button
                                   onClick={() =>
                                     history.push(
-                                      `/admin/results/${teamID}/${id}`
+                                      `/myaccount/results/${teamID}/${id}`
                                     )}
                                 >
                                   <ListItemIcon>

@@ -675,7 +675,7 @@ class EventInfo extends Component {
                         <ListItem
                           className={classes.inset}
                           button
-                          onClick={() => history.push(`/admin/teams/${id}`)}
+                          onClick={() => history.push(`/myaccount/teams/${id}`)}
                         >
                           <ListItemIcon>
                             <TeamIcon />
@@ -688,7 +688,9 @@ class EventInfo extends Component {
                               className={classes.inset}
                               button
                               onClick={() =>
-                                history.push(`/admin/results/${id}/${eventID}`)}
+                                history.push(
+                                  `/myaccount/results/${id}/${eventID}`
+                                )}
                             >
                               <ListItemIcon>
                                 <ResultsIcon />
@@ -870,7 +872,7 @@ class EventInfo extends Component {
                       <ListItem
                         className={classes.inset}
                         button
-                        onClick={() => history.push(`/admin/people/${id}`)}
+                        onClick={() => history.push(`/myaccount/people/${id}`)}
                       >
                         <ListItemIcon>
                           <PersonIcon />
@@ -942,7 +944,7 @@ class EventInfo extends Component {
                           <ListItem
                             className={classes.inset}
                             button
-                            onClick={() => history.push("/admin/hours")}
+                            onClick={() => history.push("/myaccount/hours")}
                           >
                             <ListItemIcon>
                               <HoursIcon />
@@ -994,7 +996,7 @@ class EventInfo extends Component {
                       <ListItem
                         className={classes.inset}
                         button
-                        onClick={() => history.push(`/admin/people/${id}`)}
+                        onClick={() => history.push(`/myaccount/people/${id}`)}
                       >
                         <ListItemIcon>
                           <PersonIcon />

@@ -5,7 +5,7 @@ import firebase from "firebase";
 
 // Actions
 
-const NAMESPACE = "sportomatic-web/admin/core-interface";
+const NAMESPACE = "sportomatic-web/core-interface";
 
 export const TOGGLE_SIDE_MENU = `${NAMESPACE}/TOGGLE_SIDE_MENU`;
 export const UPDATE_APP_BAR_TITLE = `${NAMESPACE}/UPDATE_APP_BAR_TITLE`;
@@ -34,12 +34,11 @@ export const uiConfigInitialState = {
   bottomNavValue: "dashboard",
   isSideMenuOpen: false,
   isLoggedIn: true,
-  type: "ADMIN",
   userID: "",
   accountInfo: {
     lastAccessed: {
       institutionID: "",
-      accountType: "ADMIN"
+      role: "ADMIN"
     }
   }
 };

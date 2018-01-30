@@ -4,7 +4,7 @@ import firebase from "firebase";
 
 // Actions
 
-const NAMESPACE = "sportomatic-web/admin/schedule";
+const NAMESPACE = "sportomatic-web/schedule";
 
 export const OPEN_ADD_EVENT_DIALOG = `${NAMESPACE}/OPEN_ADD_EVENT_DIALOG`;
 export const CLOSE_ADD_EVENT_DIALOG = `${NAMESPACE}/CLOSE_ADD_EVENT_DIALOG`;
@@ -66,7 +66,7 @@ export const REQUEST_REPLACEMENT_COACH_REMOVAL = `${NAMESPACE}/REQUEST_REPLACEME
 export const RECEIVE_REPLACEMENT_COACH_REMOVAL = `${NAMESPACE}/RECEIVE_REPLACEMENT_COACH_REMOVAL`;
 export const ERROR_REMOVING_REPLACEMENT_COACH = `${NAMESPACE}/ERROR_REMOVING_REPLACEMENT_COACH`;
 
-export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
+export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
 // Reducers
 

@@ -156,7 +156,7 @@ class NotificationsTray extends Component<Props, State> {
                     onClick={() => {
                       this.handleMenuToggle(null);
                       history.push(
-                        `/admin/schedule/${currentDate}/${notification.objectID}`
+                        `/myaccount/schedule/${currentDate}/${notification.objectID}`
                       );
                     }}
                   >
@@ -184,7 +184,7 @@ class NotificationsTray extends Component<Props, State> {
                     button
                     onClick={() => {
                       this.handleMenuToggle(null);
-                      history.push(`/admin/hours/${notification.objectID}`);
+                      history.push(`/myaccount/hours/${notification.objectID}`);
                     }}
                   >
                     <Avatar
@@ -211,7 +211,9 @@ class NotificationsTray extends Component<Props, State> {
                     button
                     onClick={() => {
                       this.handleMenuToggle(null);
-                      history.push(`/admin/results/${notification.objectID}`);
+                      history.push(
+                        `/myaccount/results/${notification.objectID}`
+                      );
                     }}
                   >
                     <Avatar
@@ -238,7 +240,7 @@ class NotificationsTray extends Component<Props, State> {
                     button
                     onClick={() => {
                       this.handleMenuToggle(null);
-                      history.push(`/admin/wages/${notification.objectID}`);
+                      history.push(`/myaccount/wages/${notification.objectID}`);
                     }}
                   >
                     <Avatar
@@ -265,7 +267,9 @@ class NotificationsTray extends Component<Props, State> {
                     button
                     onClick={() => {
                       this.handleMenuToggle(null);
-                      history.push(`/admin/people/${notification.objectID}`);
+                      history.push(
+                        `/myaccount/people/${notification.objectID}`
+                      );
                     }}
                   >
                     <Avatar
@@ -292,7 +296,7 @@ class NotificationsTray extends Component<Props, State> {
                     button
                     onClick={() => {
                       this.handleMenuToggle(null);
-                      history.push(`/admin/teams/${notification.objectID}`);
+                      history.push(`/myaccount/teams/${notification.objectID}`);
                     }}
                   >
                     <Avatar

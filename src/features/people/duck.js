@@ -5,7 +5,7 @@ import { TeamAlias } from "../../models/aliases";
 
 // Actions
 
-const NAMESPACE = "sportomatic-web/admin/people";
+const NAMESPACE = "sportomatic-web/people";
 
 export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
 export const OPEN_DELETE_PERSON_ALERT = `${NAMESPACE}/OPEN_DELETE_PERSON_ALERT`;
@@ -50,7 +50,7 @@ export const REQUEST_EVENTS_BY_MANAGER = `${NAMESPACE}/REQUEST_EVENTS_BY_MANAGER
 export const RECEIVE_EVENTS_BY_MANAGER = `${NAMESPACE}/RECEIVE_EVENTS_BY_MANAGER`;
 export const ERROR_LOADING_EVENTS_BY_MANAGER = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_MANAGER`;
 
-export const SIGN_OUT = "sportomatic-web/admin/core-interface/SIGN_OUT";
+export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
 // Reducers
 
