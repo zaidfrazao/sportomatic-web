@@ -62,7 +62,7 @@ class BannerCarousel extends Component {
           <div className={classes.slide}>
             <div className={classes.slide1}>
               <h2 className={classes.updatesTitle}>
-                {"Welcome to Sportomatic v1.0"}
+                {"Welcome to Sportomatic"}
               </h2>
               {/*<Button raised color="accent">
                 Learn more

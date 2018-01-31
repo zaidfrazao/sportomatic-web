@@ -5,6 +5,7 @@ import Avatar from "material-ui/Avatar";
 import classNames from "classnames";
 import { grey } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
+import InstitutionsIcon from "material-ui-icons/AccountBalance";
 import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import LogOutIcon from "material-ui-icons/ExitToApp";
 import MenuIcon from "material-ui-icons/Menu";
@@ -106,7 +107,8 @@ class CustomAppBar extends Component {
       toggleSideMenu,
       openLogOutModal,
       openSettingsAlert,
-      markNotificationsRead
+      markNotificationsRead,
+      openManageInstitutionsDialog
     } = this.props.actions;
 
     let roleIcon = adminIcon;
@@ -194,7 +196,25 @@ class CustomAppBar extends Component {
                 }}
               >
                 <List className={classes.list}>
-                  <ListItem button onClick={() => openSettingsAlert()}>
+                  <ListItem
+                    button
+                    onClick={() => {
+                      this.handleRequestClose();
+                      openManageInstitutionsDialog();
+                    }}
+                  >
+                    <ListItemIcon>
+                      <InstitutionsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Manage institutions" />
+                  </ListItem>
+                  <ListItem
+                    button
+                    onClick={() => {
+                      this.handleRequestClose();
+                      openSettingsAlert();
+                    }}
+                  >
                     <ListItemIcon>
                       <SettingsIcon />
                     </ListItemIcon>

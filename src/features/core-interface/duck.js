@@ -12,6 +12,8 @@ export const UPDATE_APP_BAR_TITLE = `${NAMESPACE}/UPDATE_APP_BAR_TITLE`;
 export const UPDATE_BOTTOM_NAV_VALUE = `${NAMESPACE}/UPDATE_BOTTOM_NAV_VALUE`;
 export const SIGN_OUT = `${NAMESPACE}/SIGN_OUT`;
 export const INIT_USER = `${NAMESPACE}/INIT_USER`;
+export const OPEN_MANAGE_INSTITUTIONS_DIALOG = `${NAMESPACE}/OPEN_MANAGE_INSTITUTIONS_DIALOG`;
+export const CLOSE_MANAGE_INSTITUTIONS_DIALOG = `${NAMESPACE}/CLOSE_MANAGE_INSTITUTIONS_DIALOG`;
 export const OPEN_SETTINGS_ALERT = `${NAMESPACE}/OPEN_SETTINGS_ALERT`;
 export const CLOSE_SETTINGS_ALERT = `${NAMESPACE}/CLOSE_SETTINGS_ALERT`;
 export const OPEN_LOG_OUT_MODAL = `${NAMESPACE}/OPEN_LOG_OUT_MODAL`;
@@ -87,13 +89,24 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 
 export const dialogsInitialState = {
   isSettingsAlertOpen: false,
-  isLogOutModalOpen: false
+  isLogOutModalOpen: false,
+  isManageInstitutionsDialogOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
     case SIGN_OUT:
       return dialogsInitialState;
+    case OPEN_MANAGE_INSTITUTIONS_DIALOG:
+      return {
+        ...state,
+        isManageInstitutionsDialogOpen: true
+      };
+    case CLOSE_MANAGE_INSTITUTIONS_DIALOG:
+      return {
+        ...state,
+        isManageInstitutionsDialogOpen: false
+      };
     case OPEN_SETTINGS_ALERT:
       return {
         ...state,
@@ -277,6 +290,18 @@ export function signOut() {
   localStorage.setItem("isLoggedIn", "false");
   return {
     type: SIGN_OUT
+  };
+}
+
+export function openManageInstitutionsDialog() {
+  return {
+    type: OPEN_MANAGE_INSTITUTIONS_DIALOG
+  };
+}
+
+export function closeManageInstitutionsDialog() {
+  return {
+    type: CLOSE_MANAGE_INSTITUTIONS_DIALOG
   };
 }
 

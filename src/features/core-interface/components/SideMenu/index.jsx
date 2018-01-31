@@ -13,6 +13,7 @@ import { Route } from "react-router-dom";
 import PeopleIcon from "material-ui-icons/Person";
 import ScheduleIcon from "material-ui-icons/Event";
 import TeamsIcon from "material-ui-icons/People";
+import Typography from "material-ui/Typography";
 import WagesIcon from "material-ui-icons/AttachMoney";
 import { withStyles } from "material-ui/styles";
 import logo from "./images/logo.png";
@@ -38,7 +39,10 @@ const styles = theme => ({
     })
   },
   drawerInner: {
-    width: drawerWidth
+    height: "100%",
+    width: drawerWidth,
+    display: "flex",
+    flexDirection: "column"
   },
   drawerHeader: {
     display: "flex",
@@ -49,6 +53,9 @@ const styles = theme => ({
     [theme.breakpoints.up("sm")]: {
       height: 64
     }
+  },
+  featureList: {
+    flexGrow: 1
   },
   logo: {
     backgroundImage: `url(${logo})`,
@@ -62,12 +69,24 @@ const styles = theme => ({
   },
   unselectedItem: {
     backgroundColor: grey[0]
+  },
+  version: {
+    color: grey[500],
+    padding: 16,
+    textAlign: "center"
   }
 });
 
 class SideMenu extends Component {
   render() {
-    const { classes, isOpen, isMobile, feature, role } = this.props;
+    const {
+      classes,
+      isOpen,
+      isMobile,
+      feature,
+      role,
+      versionNumber
+    } = this.props;
     const { toggleSideMenu } = this.props.actions;
 
     return (
@@ -90,7 +109,7 @@ class SideMenu extends Component {
             </IconButton>
           </div>
           <Divider />
-          <List>
+          <List className={classes.featureList}>
             <Route
               key={1}
               render={({ history }) => (
@@ -241,6 +260,9 @@ class SideMenu extends Component {
               )}
             />
           </List>
+          <Typography type="body1" component="p" className={classes.version}>
+            {`v${versionNumber}`}
+          </Typography>
         </div>
       </Drawer>
     );

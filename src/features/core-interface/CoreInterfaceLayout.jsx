@@ -9,6 +9,7 @@ import Dashboard from "../dashboard/DashboardView";
 import DecisionModal from "../../components/DecisionModal";
 import Hours from "../hours/HoursView";
 import LoadingScreen from "./components/LoadingScreen";
+import ManageInstitutionsDialog from "./components/ManageInstitutionsDialog";
 import NotificationModal from "../../components/NotificationModal";
 import Results from "../results/ResultsView";
 import People from "../people/PeopleView";
@@ -202,7 +203,9 @@ class CoreInterfaceLayout extends Component {
       openSettingsAlert,
       openLogOutModal,
       closeLogOutModal,
-      markNotificationsRead
+      markNotificationsRead,
+      openManageInstitutionsDialog,
+      closeManageInstitutionsDialog
     } = this.props.actions;
     const { windowWidth } = this.state;
     const {
@@ -217,7 +220,11 @@ class CoreInterfaceLayout extends Component {
       isSideMenuOpen,
       userID
     } = this.props.uiConfig;
-    const { isSettingsAlertOpen, isLogOutModalOpen } = this.props.dialogs;
+    const {
+      isSettingsAlertOpen,
+      isLogOutModalOpen,
+      isManageInstitutionsDialogOpen
+    } = this.props.dialogs;
 
     const isMobile = windowWidth < 600;
     const isTablet = windowWidth < 960;
@@ -243,7 +250,8 @@ class CoreInterfaceLayout extends Component {
               toggleSideMenu,
               openLogOutModal,
               openSettingsAlert,
-              markNotificationsRead
+              markNotificationsRead,
+              openManageInstitutionsDialog
             }}
             isMobile={isMobile}
             readNotifications={readNotifications}
@@ -263,6 +271,7 @@ class CoreInterfaceLayout extends Component {
             }}
             isMobile={isMobile}
             feature={appBarTitle}
+            versionNumber="0.9.0"
             role={role}
           />
           <div className={classes.content}>
@@ -466,6 +475,12 @@ class CoreInterfaceLayout extends Component {
           handleNoClick={closeLogOutModal}
           heading="Log Out"
           message="Are you sure you want to log out?"
+        />
+        <ManageInstitutionsDialog
+          isOpen={isManageInstitutionsDialogOpen}
+          isMobile={isMobile}
+          institutions={institutions}
+          closeDialog={closeManageInstitutionsDialog}
         />
       </div>
     );
