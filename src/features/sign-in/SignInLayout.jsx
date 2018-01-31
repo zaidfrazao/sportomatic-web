@@ -32,7 +32,10 @@ const styles = theme => ({
     height: "4rem",
     textAlign: "right",
     backgroundColor: lightBlue[700],
-    borderTop: "1px solid #E0E0E0"
+    borderTop: "1px solid #E0E0E0",
+    "@media (max-width: 600px)": {
+      display: "none"
+    }
   },
   forgotPasswordLink: {
     width: "100%",
@@ -56,7 +59,10 @@ const styles = theme => ({
     height: "4rem",
     color: "#fff",
     paddingTop: "calc((4rem - 50px) / 2)",
-    borderBottom: "1px solid #E0E0E0"
+    borderBottom: "1px solid #E0E0E0",
+    "@media (max-width: 600px)": {
+      display: "none"
+    }
   },
   loginError: {
     color: red[500],
@@ -217,14 +223,18 @@ class SignInLayout extends Component {
                       )}
                     />
                     <br />
-                    <Button
-                      disabled
-                      raised
-                      color="accent"
-                      className={classes.button}
-                    >
-                      Create account
-                    </Button>
+                    <Route
+                      render={({ history }) => (
+                        <Button
+                          raised
+                          color="accent"
+                          className={classes.button}
+                          onClick={() => history.push("/sign-up")}
+                        >
+                          Create account
+                        </Button>
+                      )}
+                    />
                     <p
                       className={classes.forgotPasswordLink}
                       onClick={() => openPasswordResetDialog(email)}

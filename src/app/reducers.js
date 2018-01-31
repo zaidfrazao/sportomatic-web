@@ -7,11 +7,13 @@ import { resultsReducer } from "../features/results/duck";
 import { scheduleReducer } from "../features/schedule/duck";
 import { settingsReducer } from "../features/settings/duck";
 import { signInReducer } from "../features/sign-in/duck";
+import { signUpReducer } from "../features/sign-up/duck";
 import { teamsReducer } from "../features/teams/duck";
 import { wagesReducer } from "../features/wages/duck";
 
 export default combineReducers({
   signIn: signInReducer,
+  signUp: signUpReducer,
   coreInterface: coreInterfaceReducer,
   dashboard: dashboardReducer,
   hours: hoursReducer,

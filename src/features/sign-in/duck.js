@@ -589,7 +589,6 @@ export function receiveAccountInfo(
 ) {
   localStorage.setItem("email", email);
   localStorage.setItem("userID", userID);
-  localStorage.setItem("type", "ADMIN");
   localStorage.setItem("isLoggedIn", "true");
 
   return {
