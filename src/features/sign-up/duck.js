@@ -332,7 +332,7 @@ export function createAccount(
         }
       },
       lastAccessed: {
-        accountType: "ADMIN",
+        role: "ADMIN",
         institutionID: userID
       },
       metadata: {
