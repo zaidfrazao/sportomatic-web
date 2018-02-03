@@ -87,7 +87,7 @@ class RoleSelectCard extends Component {
             input={<Input id="institution selection" />}
           >
             {_.toPairs(institutions).map(([id, info]) => (
-              <option key={id} value={id}>
+              <option key={id} value={id} disabled={!info.isActive}>
                 {info.name}
               </option>
             ))}

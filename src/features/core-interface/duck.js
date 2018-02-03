@@ -31,6 +31,15 @@ export const ERROR_LOADING_ACCOUNT_INFO = `${NAMESPACE}/ERROR_LOADING_ACCOUNT_IN
 export const REQUEST_INSTITUTION_INFO = `${NAMESPACE}/REQUEST_INSTITUTION_INFO`;
 export const RECEIVE_INSTITUTION_INFO = `${NAMESPACE}/RECEIVE_INSTITUTION_INFO`;
 export const ERROR_LOADING_INSTITUTION_INFO = `${NAMESPACE}/ERROR_LOADING_INSTITUTION_INFO`;
+export const REQUEST_INSTITUTION_CREATION = `${NAMESPACE}/REQUEST_INSTITUTION_CREATION`;
+export const RECEIVE_INSTITUTION_CREATION = `${NAMESPACE}/RECEIVE_INSTITUTION_CREATION`;
+export const ERROR_CREATING_INSTITUTION = `${NAMESPACE}/ERROR_CREATING_INSTITUTION`;
+export const REQUEST_VERIFIED_INSTITUTIONS = `${NAMESPACE}/REQUEST_VERIFIED_INSTITUTIONS`;
+export const RECEIVE_VERIFIED_INSTITUTIONS = `${NAMESPACE}/RECEIVE_VERIFIED_INSTITUTIONS`;
+export const ERROR_LOADING_VERIFIED_INSTITUTIONS = `${NAMESPACE}/ERROR_LOADING_VERIFIED_INSTITUTIONS`;
+export const REQUEST_JOIN_INSTITUTION = `${NAMESPACE}/REQUEST_JOIN_INSTITUTION`;
+export const RECEIVE_JOIN_INSTITUTION = `${NAMESPACE}/RECEIVE_JOIN_INSTITUTION`;
+export const ERROR_JOINING_INSTITUTION = `${NAMESPACE}/ERROR_JOINING_INSTITUTION`;
 
 // Reducers
 
@@ -90,7 +99,9 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 export const dialogsInitialState = {
   isSettingsAlertOpen: false,
   isLogOutModalOpen: false,
-  isManageInstitutionsDialogOpen: false
+  isManageInstitutionsDialogOpen: false,
+  isInstitutionCreationSuccessModalOpen: false,
+  isInstitutionCreationFailureModalOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
@@ -127,6 +138,18 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
         ...state,
         isLogOutModalOpen: false
       };
+    case RECEIVE_INSTITUTION_CREATION:
+      return {
+        ...state,
+        isInstitutionCreationSuccessModalOpen: true,
+        isManageInstitutionsDialogOpen: false
+      };
+    case ERROR_CREATING_INSTITUTION:
+      return {
+        ...state,
+        isInstitutionCreationFailureModalOpen: true,
+        isManageInstitutionsDialogOpen: false
+      };
     default:
       return state;
   }
@@ -135,7 +158,10 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 export const loadingStatusInitialState = {
   isNotificationsLoading: false,
   isAccountInfoLoading: false,
-  isInstitutionsLoading: false
+  isInstitutionsLoading: false,
+  isInstitutionCreationLoading: false,
+  isVerifiedInstitutionsLoading: false,
+  isJoinInstitutionLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -175,6 +201,39 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isInstitutionsLoading: false
+      };
+    case REQUEST_INSTITUTION_CREATION:
+      return {
+        ...state,
+        isInstitutionCreationLoading: true
+      };
+    case ERROR_CREATING_INSTITUTION:
+    case RECEIVE_INSTITUTION_CREATION:
+      return {
+        ...state,
+        isInstitutionCreationLoading: false
+      };
+    case REQUEST_VERIFIED_INSTITUTIONS:
+      return {
+        ...state,
+        isVerifiedInstitutionsLoading: true
+      };
+    case ERROR_LOADING_VERIFIED_INSTITUTIONS:
+    case RECEIVE_VERIFIED_INSTITUTIONS:
+      return {
+        ...state,
+        isVerifiedInstitutionsLoading: false
+      };
+    case REQUEST_JOIN_INSTITUTION:
+      return {
+        ...state,
+        isJoinInstitutionLoading: true
+      };
+    case ERROR_JOINING_INSTITUTION:
+    case RECEIVE_JOIN_INSTITUTION:
+      return {
+        ...state,
+        isJoinInstitutionLoading: false
       };
     default:
       return state;
@@ -217,13 +276,25 @@ function institutionsReducer(state = {}, action = {}) {
   }
 }
 
+function verifiedInstitutionsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_VERIFIED_INSTITUTIONS:
+      return action.payload.institutions;
+    default:
+      return state;
+  }
+}
+
 export const coreInterfaceReducer = combineReducers({
   uiConfig: uiConfigReducer,
   dialogs: dialogsReducer,
   loadingStatus: loadingStatusReducer,
   unreadNotifications: unreadNotificationsReducer,
   readNotifications: readNotificationsReducer,
-  institutions: institutionsReducer
+  institutions: institutionsReducer,
+  verifiedInstitutions: verifiedInstitutionsReducer
 });
 
 // Selectors
@@ -234,6 +305,7 @@ const loadingStatus = state => state.coreInterface.loadingStatus;
 const unreadNotifications = state => state.coreInterface.unreadNotifications;
 const readNotifications = state => state.coreInterface.readNotifications;
 const institutions = state => state.coreInterface.institutions;
+const verifiedInstitutions = state => state.coreInterface.verifiedInstitutions;
 
 export const selector = createStructuredSelector({
   uiConfig,
@@ -241,7 +313,8 @@ export const selector = createStructuredSelector({
   loadingStatus,
   unreadNotifications,
   readNotifications,
-  institutions
+  institutions,
+  verifiedInstitutions
 });
 
 // Action Creators
@@ -532,7 +605,166 @@ export function loadInstitutionInfo(institutionID) {
       .doc(institutionID);
 
     return institutionRef.onSnapshot(doc => {
-      dispatch(receiveInstitutionInfo(doc.id, doc.data().info));
+      dispatch(receiveInstitutionInfo(doc.id, doc.data()));
     });
+  };
+}
+
+export function requestInstitutionCreation() {
+  return {
+    type: REQUEST_INSTITUTION_CREATION
+  };
+}
+
+export function receiveInstitutionCreation() {
+  return {
+    type: RECEIVE_INSTITUTION_CREATION
+  };
+}
+
+export function errorCreatingInstitution(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_CREATING_INSTITUTION,
+    payload: {
+      error
+    }
+  };
+}
+
+export function createInstitution(institutionInfo) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestInstitutionCreation());
+
+    const db = firebase.firestore();
+    let batch = db.batch();
+
+    const newInstitutionRef = db.collection("institutions").doc();
+    const newInstitutionID = newInstitutionRef._key.path.segments[1];
+    const creatorRef = db
+      .collection("users")
+      .doc(institutionInfo.metadata.createdBy);
+
+    batch.set(newInstitutionRef, institutionInfo);
+    batch.update(creatorRef, {
+      [`institutions.${newInstitutionID}`]: {
+        paymentDefaults: {
+          rates: institutionInfo.paymentDefaults.rates,
+          type: institutionInfo.paymentDefaults.type
+        },
+        roles: {
+          admin: "APPROVED",
+          coach: "N/A",
+          manager: "N/A"
+        },
+        status: "STAFF"
+      }
+    });
+
+    return batch
+      .commit()
+      .then(() => dispatch(receiveInstitutionCreation()))
+      .catch(error => dispatch(errorCreatingInstitution(error)));
+  };
+}
+
+export function requestVerifiedInstitutions() {
+  return {
+    type: REQUEST_VERIFIED_INSTITUTIONS
+  };
+}
+
+export function receiveVerifiedInstitutions(institutions) {
+  return {
+    type: RECEIVE_VERIFIED_INSTITUTIONS,
+    payload: {
+      institutions
+    }
+  };
+}
+
+export function errorLoadingVerifiedInstitutions(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_VERIFIED_INSTITUTIONS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadVerifiedInstitutions() {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestVerifiedInstitutions());
+
+    const institutionsRef = firebase
+      .firestore()
+      .collection("institutions")
+      .where("metadata.status", "==", "ACTIVE");
+
+    return institutionsRef.onSnapshot(querySnapshot => {
+      let institutions = {};
+      querySnapshot.forEach(doc => {
+        institutions[doc.id] = doc.data();
+      });
+      dispatch(receiveVerifiedInstitutions(institutions));
+    });
+  };
+}
+
+export function requestJoinInstitution() {
+  return {
+    type: REQUEST_JOIN_INSTITUTION
+  };
+}
+
+export function receiveJoinInstitution() {
+  return {
+    type: RECEIVE_JOIN_INSTITUTION
+  };
+}
+
+export function errorJoiningInstitution(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_JOINING_INSTITUTION,
+    payload: {
+      error
+    }
+  };
+}
+
+export function joinInstitution(userID, institutionID, roles) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestJoinInstitution());
+
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
+    console.log(roles);
+
+    return userRef
+      .update({
+        [`institutions.${institutionID}`]: {
+          paymentDefaults: {
+            rates: {
+              overtime: 150,
+              salary: 6000,
+              standard: 100
+            },
+            type: "HOURLY"
+          },
+          status: "REQUESTED",
+          roles
+        }
+      })
+      .then(() => dispatch(receiveJoinInstitution()))
+      .catch(error => dispatch(errorJoiningInstitution(error)));
   };
 }

@@ -327,54 +327,42 @@ class PeopleLayout extends Component {
       _.mapValues(requests, (value, key) => {
         let type = "";
         if (
-          value.institutions[activeInstitutionID].roles.admin ===
-          "AWAITING_APPROVAL"
+          value.institutions[activeInstitutionID].roles.admin === "REQUESTED"
         ) {
           type = "Admin";
         }
         if (
-          value.institutions[activeInstitutionID].roles.manager ===
-          "AWAITING_APPROVAL"
+          value.institutions[activeInstitutionID].roles.manager === "REQUESTED"
         ) {
           type = "Manager";
         }
         if (
-          value.institutions[activeInstitutionID].roles.coach ===
-          "AWAITING_APPROVAL"
+          value.institutions[activeInstitutionID].roles.coach === "REQUESTED"
         ) {
           type = "Coach";
         }
         if (
-          value.institutions[activeInstitutionID].roles.admin ===
-            "AWAITING_APPROVAL" &&
-          value.institutions[activeInstitutionID].roles.coach ===
-            "AWAITING_APPROVAL"
+          value.institutions[activeInstitutionID].roles.admin === "REQUESTED" &&
+          value.institutions[activeInstitutionID].roles.coach === "REQUESTED"
         ) {
           type = "Admin and Coach";
         }
         if (
-          value.institutions[activeInstitutionID].roles.coach ===
-            "AWAITING_APPROVAL" &&
-          value.institutions[activeInstitutionID].roles.manager ===
-            "AWAITING_APPROVAL"
+          value.institutions[activeInstitutionID].roles.coach === "REQUESTED" &&
+          value.institutions[activeInstitutionID].roles.manager === "REQUESTED"
         ) {
           type = "Manager and Coach";
         }
         if (
-          value.institutions[activeInstitutionID].roles.admin ===
-            "AWAITING_APPROVAL" &&
-          value.institutions[activeInstitutionID].roles.manager ===
-            "AWAITING_APPROVAL"
+          value.institutions[activeInstitutionID].roles.admin === "REQUESTED" &&
+          value.institutions[activeInstitutionID].roles.manager === "REQUESTED"
         ) {
           type = "Admin and Manager";
         }
         if (
-          value.institutions[activeInstitutionID].roles.admin ===
-            "AWAITING_APPROVAL" &&
-          value.institutions[activeInstitutionID].roles.coach ===
-            "AWAITING_APPROVAL" &&
-          value.institutions[activeInstitutionID].roles.manager ===
-            "AWAITING_APPROVAL"
+          value.institutions[activeInstitutionID].roles.admin === "REQUESTED" &&
+          value.institutions[activeInstitutionID].roles.coach === "REQUESTED" &&
+          value.institutions[activeInstitutionID].roles.manager === "REQUESTED"
         ) {
           type = "Admin, Coach and Manager";
         }

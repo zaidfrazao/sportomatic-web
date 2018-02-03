@@ -217,7 +217,7 @@ export function createAccount(
         divisions: ["1st Team", "2nd Team", "A", "B", "C", "D"],
         emblemURL: "",
         gender: "MIXED",
-        name: "Personal",
+        name: `${name[0]}${surname[0]} Personal`,
         phoneNumber: "",
         physicalAddress: "",
         publicEmail: email,

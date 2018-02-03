@@ -47,7 +47,8 @@ const styles = theme => ({
   avatar: {
     width: 32,
     height: 32,
-    margin: 8
+    margin: 8,
+    backgroundColor: grey[200]
   },
   badgeColor: {
     backgroundColor: grey[50]

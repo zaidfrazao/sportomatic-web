@@ -67,8 +67,8 @@ class DashboardLayout extends Component {
       };
     }
     if (institutions[active.id]) {
-      active.institutionName = institutions[active.id].name;
-      active.emblemURL = institutions[active.id].emblemURL;
+      active.institutionName = institutions[active.id].info.name;
+      active.emblemURL = institutions[active.id].info.emblemURL;
     }
 
     return (
@@ -89,6 +89,7 @@ class DashboardLayout extends Component {
                     coach: false,
                     manager: false
                   };
+                  let isActive = false;
                   if (
                     accountInfo.institutions &&
                     accountInfo.institutions[id]
@@ -102,11 +103,13 @@ class DashboardLayout extends Component {
                         accountInfo.institutions[id].roles.manager ===
                         "APPROVED"
                     };
+                    isActive = accountInfo.institutions[id].status === "STAFF";
                   }
                   return [
                     id,
                     {
-                      name: info.name,
+                      name: info.info.name,
+                      isActive,
                       rolesAvailable
                     }
                   ];

@@ -531,11 +531,7 @@ export function loadCoachRequests(institutionID) {
     const coachesRef = firebase
       .firestore()
       .collection("users")
-      .where(
-        `institutions.${institutionID}.roles.coach`,
-        "==",
-        "AWAITING_APPROVAL"
-      );
+      .where(`institutions.${institutionID}.roles.coach`, "==", "REQUESTED");
 
     return coachesRef.onSnapshot(querySnapshot => {
       let coaches = {};
@@ -603,11 +599,7 @@ export function loadManagerRequests(institutionID) {
     const managersRef = firebase
       .firestore()
       .collection("users")
-      .where(
-        `institutions.${institutionID}.roles.manager`,
-        "==",
-        "AWAITING_APPROVAL"
-      );
+      .where(`institutions.${institutionID}.roles.manager`, "==", "REQUESTED");
 
     return managersRef.onSnapshot(querySnapshot => {
       let managers = {};
@@ -675,11 +667,7 @@ export function loadAdminRequests(institutionID) {
     const adminsRef = firebase
       .firestore()
       .collection("users")
-      .where(
-        `institutions.${institutionID}.roles.admin`,
-        "==",
-        "AWAITING_APPROVAL"
-      );
+      .where(`institutions.${institutionID}.roles.admin`, "==", "REQUESTED");
 
     return adminsRef.onSnapshot(querySnapshot => {
       let admins = {};

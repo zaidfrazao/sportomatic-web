@@ -194,7 +194,8 @@ class CoreInterfaceLayout extends Component {
       classes,
       unreadNotifications,
       readNotifications,
-      institutions
+      institutions,
+      verifiedInstitutions
     } = this.props;
     const {
       toggleSideMenu,
@@ -205,13 +206,19 @@ class CoreInterfaceLayout extends Component {
       closeLogOutModal,
       markNotificationsRead,
       openManageInstitutionsDialog,
-      closeManageInstitutionsDialog
+      closeManageInstitutionsDialog,
+      createInstitution,
+      loadVerifiedInstitutions,
+      joinInstitution
     } = this.props.actions;
     const { windowWidth } = this.state;
     const {
       isNotificationsLoading,
       isAccountInfoLoading,
-      isInstitutionsLoading
+      isInstitutionsLoading,
+      isInstitutionCreationLoading,
+      isVerifiedInstitutionsLoading,
+      isJoinInstitutionLoading
     } = this.props.loadingStatus;
     const {
       isLoggedIn,
@@ -259,7 +266,7 @@ class CoreInterfaceLayout extends Component {
             isNotificationsLoading={isNotificationsLoading}
             emblemURL={
               institutions[activeInstitutionID]
-                ? institutions[activeInstitutionID].emblemURL
+                ? institutions[activeInstitutionID].info.emblemURL
                 : ""
             }
             role={role}
@@ -480,7 +487,19 @@ class CoreInterfaceLayout extends Component {
           isOpen={isManageInstitutionsDialogOpen}
           isMobile={isMobile}
           institutions={institutions}
-          closeDialog={closeManageInstitutionsDialog}
+          verifiedInstitutions={verifiedInstitutions}
+          isLoading={
+            isInstitutionCreationLoading ||
+            isVerifiedInstitutionsLoading ||
+            isJoinInstitutionLoading
+          }
+          userID={userID}
+          actions={{
+            createInstitution,
+            loadVerifiedInstitutions,
+            joinInstitution,
+            closeDialog: () => closeManageInstitutionsDialog()
+          }}
         />
       </div>
     );
