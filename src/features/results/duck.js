@@ -1,6 +1,7 @@
 /* eslint-disable array-callback-return */
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
+import moment from "moment";
 import firebase from "firebase";
 
 // Actions
@@ -524,7 +525,13 @@ export function loadEventsByDate(institutionID, startAfter = "") {
         .where("requiredInfo.isCompetitive", "==", true)
         .where("requiredInfo.status", "==", "ACTIVE")
         .where("institutionID", "==", institutionID)
-        .where("requiredInfo.times.start", "<", new Date(Date.now()));
+        .where(
+          "requiredInfo.times.start",
+          "<",
+          moment()
+            .endOf("day")
+            .toDate()
+        );
     } else {
       eventsRef = firebase
         .firestore()
@@ -535,7 +542,13 @@ export function loadEventsByDate(institutionID, startAfter = "") {
         .where("requiredInfo.isCompetitive", "==", true)
         .where("requiredInfo.status", "==", "ACTIVE")
         .where("institutionID", "==", institutionID)
-        .where("requiredInfo.times.start", "<", new Date(Date.now()));
+        .where(
+          "requiredInfo.times.start",
+          "<",
+          moment()
+            .endOf("day")
+            .toDate()
+        );
     }
 
     return eventsRef.onSnapshot(querySnapshot => {

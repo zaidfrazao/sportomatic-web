@@ -306,7 +306,13 @@ export function loadEventsByDate(institutionID, startAfter = "") {
         .limit(10)
         .where("requiredInfo.status", "==", "ACTIVE")
         .where("institutionID", "==", institutionID)
-        .where("requiredInfo.times.start", "<", new Date(Date.now()));
+        .where(
+          "requiredInfo.times.start",
+          "<",
+          moment()
+            .endOf("day")
+            .toDate()
+        );
     } else {
       eventsRef = firebase
         .firestore()
@@ -316,7 +322,13 @@ export function loadEventsByDate(institutionID, startAfter = "") {
         .limit(10)
         .where("requiredInfo.status", "==", "ACTIVE")
         .where("institutionID", "==", institutionID)
-        .where("requiredInfo.times.start", "<", new Date(Date.now()));
+        .where(
+          "requiredInfo.times.start",
+          "<",
+          moment()
+            .endOf("day")
+            .toDate()
+        );
     }
 
     return eventsRef.onSnapshot(querySnapshot => {
