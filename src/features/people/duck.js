@@ -49,6 +49,7 @@ export const ERROR_LOADING_EVENTS_BY_COACH = `${NAMESPACE}/ERROR_LOADING_EVENTS_
 export const REQUEST_EVENTS_BY_MANAGER = `${NAMESPACE}/REQUEST_EVENTS_BY_MANAGER`;
 export const RECEIVE_EVENTS_BY_MANAGER = `${NAMESPACE}/RECEIVE_EVENTS_BY_MANAGER`;
 export const ERROR_LOADING_EVENTS_BY_MANAGER = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_MANAGER`;
+export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -62,6 +63,7 @@ export const uiConfigInitialState = {
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return uiConfigInitialState;
     case UPDATE_TAB:
@@ -88,6 +90,7 @@ export const filtersInitialState = {
 
 function filterReducer(state = filtersInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return filtersInitialState;
     case APPLY_FILTERS:
@@ -113,6 +116,7 @@ export const dialogsInitialState = {
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return dialogsInitialState;
     case OPEN_DELETE_PERSON_ALERT:
@@ -164,6 +168,7 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 
 function staffReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_COACHES:
@@ -188,6 +193,7 @@ function staffReducer(state = {}, action = {}) {
 
 function requestsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_COACH_REQUESTS:
@@ -212,6 +218,7 @@ function requestsReducer(state = {}, action = {}) {
 
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_TEAMS:
@@ -240,6 +247,7 @@ function loadingStatusListReducer(
   action = {}
 ) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return loadingStatusInitialState;
     case REQUEST_COACH_REQUESTS:
@@ -345,6 +353,7 @@ function loadingStatusListReducer(
 
 function eventsByCoachReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case REQUEST_EVENTS_BY_COACH:
     case SIGN_OUT:
       return {};
@@ -357,6 +366,7 @@ function eventsByCoachReducer(state = {}, action = {}) {
 
 function eventsByManagerReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case REQUEST_EVENTS_BY_MANAGER:
     case SIGN_OUT:
       return {};
@@ -404,6 +414,12 @@ export const selector = createStructuredSelector({
 });
 
 // Action Creators
+
+export function resetState() {
+  return {
+    type: RESET_STATE
+  };
+}
 
 export function editRoles() {
   return {

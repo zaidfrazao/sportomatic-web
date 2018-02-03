@@ -40,6 +40,7 @@ export const ERROR_LOADING_VERIFIED_INSTITUTIONS = `${NAMESPACE}/ERROR_LOADING_V
 export const REQUEST_JOIN_INSTITUTION = `${NAMESPACE}/REQUEST_JOIN_INSTITUTION`;
 export const RECEIVE_JOIN_INSTITUTION = `${NAMESPACE}/RECEIVE_JOIN_INSTITUTION`;
 export const ERROR_JOINING_INSTITUTION = `${NAMESPACE}/ERROR_JOINING_INSTITUTION`;
+export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 
 // Reducers
 
@@ -59,6 +60,8 @@ export const uiConfigInitialState = {
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
+      return uiConfigInitialState;
     case INIT_USER:
       return {
         ...state,
@@ -106,6 +109,7 @@ export const dialogsInitialState = {
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return dialogsInitialState;
     case OPEN_MANAGE_INSTITUTIONS_DIALOG:
@@ -166,6 +170,7 @@ export const loadingStatusInitialState = {
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return loadingStatusInitialState;
     case REQUEST_READ_NOTIFICATIONS:
@@ -242,6 +247,7 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 
 function unreadNotificationsReducer(state = [], action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return [];
     case RECEIVE_UNREAD_NOTIFICATIONS:
@@ -253,6 +259,7 @@ function unreadNotificationsReducer(state = [], action = {}) {
 
 function readNotificationsReducer(state = [], action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return [];
     case RECEIVE_READ_NOTIFICATIONS:
@@ -264,6 +271,7 @@ function readNotificationsReducer(state = [], action = {}) {
 
 function institutionsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_INSTITUTION_INFO:
@@ -278,6 +286,7 @@ function institutionsReducer(state = {}, action = {}) {
 
 function verifiedInstitutionsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_VERIFIED_INSTITUTIONS:
@@ -318,6 +327,12 @@ export const selector = createStructuredSelector({
 });
 
 // Action Creators
+
+export function resetState() {
+  return {
+    type: RESET_STATE
+  };
+}
 
 export function initUser() {
   const user = {

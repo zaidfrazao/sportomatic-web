@@ -158,6 +158,11 @@ class TeamsLayout extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { resetState } = this.props.actions;
+    resetState();
+  }
+
   createAd() {
     const { isMobile, isTablet } = this.props;
 

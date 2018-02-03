@@ -28,6 +28,7 @@ export const ERROR_RESETTING_PASSWORD = `${NAMESPACE}/ERROR_RESETTING_PASSWORD`;
 export const CLOSE_PASSWORD_RESET_SUCCESS_MODAL = `${NAMESPACE}/CLOSE_PASSWORD_RESET_SUCCESS_MODAL`;
 export const CLOSE_NETWORK_FAILURE_MODAL = `${NAMESPACE}/CLOSE_NETWORK_FAILURE_MODAL`;
 export const INIT_USER = `${NAMESPACE}/INIT_USER`;
+export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 
 // Reducers
 
@@ -42,6 +43,8 @@ export const userInfoInitialState = {
 
 export function userInfoReducer(state = userInfoInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
+      return userInfoInitialState;
     case INIT_USER:
       return {
         ...state,
@@ -90,6 +93,8 @@ export const loadingStatusInitialState = {
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
+      return loadingStatusInitialState;
     case REQUEST_SIGN_IN:
       return {
         ...state,
@@ -139,6 +144,8 @@ export const errorsInitialState = {
 
 function errorsReducer(state = errorsInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
+      return errorsInitialState;
     case EMAIL_ERROR_CHECK:
       return {
         ...state,
@@ -176,6 +183,8 @@ export const dialogsInitialState = {
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
+      return dialogsInitialState;
     case OPEN_PASSWORD_RESET_DIALOG:
       return {
         ...state,
@@ -243,6 +252,12 @@ export const selector = createStructuredSelector({
 });
 
 // Action Creators
+
+export function resetState() {
+  return {
+    type: RESET_STATE
+  };
+}
 
 export function initUser() {
   const user = {

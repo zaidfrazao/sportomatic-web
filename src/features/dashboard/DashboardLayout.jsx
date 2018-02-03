@@ -7,7 +7,6 @@ import { withStyles } from "material-ui/styles";
 import BannerCarousel from "./components/BannerCarousel";
 import InstitutionSelectCard from "./components/InstitutionSelectCard";
 import RoleSelectCard from "./components/RoleSelectCard";
-// import Button from "material-ui/Button";
 
 const styles = theme => ({
   loaderWrapper: {
@@ -31,6 +30,11 @@ const styles = theme => ({
 });
 
 class DashboardLayout extends Component {
+  componentWillUnmount() {
+    const { resetState } = this.props.actions;
+    resetState();
+  }
+
   render() {
     const {
       classes,

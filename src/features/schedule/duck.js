@@ -65,6 +65,7 @@ export const CLOSE_REPLACEMENT_COACH_REMOVAL_MODAL = `${NAMESPACE}/CLOSE_REPLACE
 export const REQUEST_REPLACEMENT_COACH_REMOVAL = `${NAMESPACE}/REQUEST_REPLACEMENT_COACH_REMOVAL`;
 export const RECEIVE_REPLACEMENT_COACH_REMOVAL = `${NAMESPACE}/RECEIVE_REPLACEMENT_COACH_REMOVAL`;
 export const ERROR_REMOVING_REPLACEMENT_COACH = `${NAMESPACE}/ERROR_REMOVING_REPLACEMENT_COACH`;
+export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -80,6 +81,7 @@ export const uiConfigInitialState = {
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return uiConfigInitialState;
     case OPEN_MARK_ABSENT_MODAL:
@@ -149,6 +151,7 @@ export const dialogsInitialState = {
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return dialogsInitialState;
     case OPEN_REPLACEMENT_COACH_REMOVAL_MODAL:
@@ -275,6 +278,7 @@ export const filtersInitialState = {
 
 function filterReducer(state = filtersInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return filtersInitialState;
     case APPLY_FILTERS:
@@ -303,6 +307,7 @@ export const loadingStatusInitialState = {
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return loadingStatusInitialState;
     case REQUEST_ADD_EVENT:
@@ -390,6 +395,7 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 
 function eventsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_EVENTS:
@@ -404,6 +410,7 @@ function eventsReducer(state = {}, action = {}) {
 
 function staffReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_STAFF:
@@ -415,6 +422,7 @@ function staffReducer(state = {}, action = {}) {
 
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_TEAMS:
@@ -458,6 +466,12 @@ export const selector = createStructuredSelector({
 });
 
 // Action Creators
+
+export function resetState() {
+  return {
+    type: RESET_STATE
+  };
+}
 
 export function applyFilters(eventType, sport, division, ageGroup, gender) {
   return {

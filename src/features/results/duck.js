@@ -38,6 +38,7 @@ export const RECEIVE_INSTITUTION_EMBLEM = `${NAMESPACE}/RECEIVE_INSTITUTION_EMBL
 export const ERROR_FETCHING_INSTITUTION_EMBLEM = `${NAMESPACE}/ERROR_FETCHING_INSTITUTION_EMBLEM`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
+export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -52,6 +53,7 @@ export const uiConfigInitialState = {
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return uiConfigInitialState;
     case UPDATE_TAB:
@@ -76,6 +78,7 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_TEAMS:
@@ -95,6 +98,7 @@ export const loadingStatusInitialState = {
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return loadingStatusInitialState;
     case REQUEST_TEAMS:
@@ -159,6 +163,7 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 
 function eventsByDateReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_EVENTS_BY_DATE:
@@ -173,6 +178,7 @@ function eventsByDateReducer(state = {}, action = {}) {
 
 function eventsByTeamReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case REQUEST_EVENTS_BY_TEAM:
@@ -195,6 +201,7 @@ export const filtersInitialState = {
 
 function filterReducer(state = filtersInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return filtersInitialState;
     case APPLY_FILTERS:
@@ -214,6 +221,7 @@ function filterReducer(state = filtersInitialState, action = {}) {
 
 function coachesReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_COACHES:
@@ -228,6 +236,7 @@ function coachesReducer(state = {}, action = {}) {
 
 function managersReducer(state = {}, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_MANAGERS:
@@ -274,6 +283,12 @@ export const selector = createStructuredSelector({
 });
 
 // Action Creators
+
+export function resetState() {
+  return {
+    type: RESET_STATE
+  };
+}
 
 export function applyFilters(
   showDeletedTeams,

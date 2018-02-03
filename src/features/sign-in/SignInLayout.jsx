@@ -115,6 +115,11 @@ class SignInLayout extends Component {
     initUser();
   }
 
+  componentWillUnmount() {
+    const { resetState } = this.props.actions;
+    resetState();
+  }
+
   handleSubmit(e) {
     e.preventDefault();
     const { email, password } = this.props.userInfo;

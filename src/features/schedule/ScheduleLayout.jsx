@@ -224,6 +224,11 @@ class ScheduleLayout extends Component {
     });
   }
 
+  componentWillUnmount() {
+    const { resetState } = this.props.actions;
+    resetState();
+  }
+
   filterEvents() {
     const {
       eventType,

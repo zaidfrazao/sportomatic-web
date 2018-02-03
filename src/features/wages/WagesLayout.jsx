@@ -117,6 +117,11 @@ class WagesLayout extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { resetState } = this.props.actions;
+    resetState();
+  }
+
   renderWagesByDate() {
     const { classes, wagesByDate, staff, activeInstitutionID } = this.props;
     const { lastVisible } = this.props.uiConfig;

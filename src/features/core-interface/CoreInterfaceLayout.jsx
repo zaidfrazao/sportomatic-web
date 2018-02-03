@@ -144,6 +144,8 @@ class CoreInterfaceLayout extends Component {
   }
 
   componentWillUnmount() {
+    const { resetState } = this.props.actions;
+    resetState();
     window.removeEventListener("resize", this.updateWindowDimensions);
   }
 
@@ -278,7 +280,7 @@ class CoreInterfaceLayout extends Component {
             }}
             isMobile={isMobile}
             feature={appBarTitle}
-            versionNumber="0.9.1"
+            versionNumber="0.9.2"
             role={role}
           />
           <div className={classes.content}>

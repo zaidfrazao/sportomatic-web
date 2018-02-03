@@ -14,6 +14,7 @@ export const REQUEST_SWITCH_ROLE = `${NAMESPACE}/REQUEST_SWITCH_ROLE`;
 export const RECEIVE_SWITCH_ROLE = `${NAMESPACE}/RECEIVE_SWITCH_ROLE`;
 export const ERROR_SWITCHING_ROLE = `${NAMESPACE}/ERROR_SWITCHING_ROLE`;
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
+export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 
 // Reducers
 
@@ -25,6 +26,7 @@ export const uiConfigInitialState = {
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return uiConfigInitialState;
     case TOGGLE_SIDE_MENU:
@@ -50,6 +52,12 @@ export const selector = createStructuredSelector({
 });
 
 // Action Creators
+
+export function resetState() {
+  return {
+    type: RESET_STATE
+  };
+}
 
 export function toggleSideMenu() {
   return {

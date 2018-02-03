@@ -166,6 +166,11 @@ class HoursLayout extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { resetState } = this.props.actions;
+    resetState();
+  }
+
   renderHoursByDate() {
     const {
       classes,

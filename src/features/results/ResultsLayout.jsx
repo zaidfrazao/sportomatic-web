@@ -207,6 +207,11 @@ class ResultsLayout extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { resetState } = this.props.actions;
+    resetState();
+  }
+
   renderResultsByDate() {
     const { showAllTeams } = this.state;
     const {
