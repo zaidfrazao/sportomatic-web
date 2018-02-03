@@ -976,7 +976,7 @@ class ManageInstitutionsDialog extends Component {
                 metadata: {
                   creationDate: new Date(Date.now()),
                   createdBy: userID,
-                  status: "REQUESTED"
+                  status: "ACTIVE"
                 }
               });
             }}
