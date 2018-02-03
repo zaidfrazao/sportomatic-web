@@ -23,6 +23,7 @@ import wagesImage from "./images/wages.png";
 
 const styles = theme => ({
   content: {
+    flex: 1,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -465,56 +466,66 @@ class SignUpLayout extends Component {
             your own personalised Sportomatic account.
           </DialogContentText>
           <div className={classes.infoWrapper}>
-            <TextField
-              label="Name"
-              value={name}
-              error={errors["name"].hasError}
-              onChange={e => this.updateField(e.target.value, "name")}
-              onBlur={e => this.validateField(e.target.value, "name")}
-              helperText={errors["name"].message}
-              className={classes.textField}
-            />
-            <TextField
-              label="Surname"
-              value={surname}
-              error={errors["surname"].hasError}
-              onChange={e => this.updateField(e.target.value, "surname")}
-              onBlur={e => this.validateField(e.target.value, "surname")}
-              helperText={errors["surname"].message}
-              className={classes.textField}
-            />
-            <TextField
-              type="email"
-              label="Email"
-              value={email}
-              error={errors["email"].hasError}
-              onChange={e => this.updateField(e.target.value, "email")}
-              onBlur={e => this.validateField(e.target.value, "email")}
-              helperText={errors["email"].message}
-              className={classes.textField}
-            />
-            <TextField
-              type="password"
-              label="Password"
-              value={password}
-              error={errors["password"].hasError}
-              onChange={e => this.updateField(e.target.value, "password")}
-              onBlur={e => this.validateField(e.target.value, "password")}
-              helperText={errors["password"].message}
-              className={classes.textField}
-            />
-            <TextField
-              type="password"
-              label="Confirm password"
-              value={confirmPassword}
-              error={errors["confirmPassword"].hasError}
-              onChange={e =>
-                this.updateField(e.target.value, "confirmPassword")}
-              onBlur={e =>
-                this.validateField(e.target.value, "confirmPassword")}
-              helperText={errors["confirmPassword"].message}
-              className={classes.textField}
-            />
+            <div>
+              <TextField
+                label="Name"
+                value={name}
+                error={errors["name"].hasError}
+                onChange={e => this.updateField(e.target.value, "name")}
+                onBlur={e => this.validateField(e.target.value, "name")}
+                helperText={errors["name"].message}
+                className={classes.textField}
+              />
+            </div>
+            <div>
+              <TextField
+                label="Surname"
+                value={surname}
+                error={errors["surname"].hasError}
+                onChange={e => this.updateField(e.target.value, "surname")}
+                onBlur={e => this.validateField(e.target.value, "surname")}
+                helperText={errors["surname"].message}
+                className={classes.textField}
+              />
+            </div>
+            <div>
+              <TextField
+                type="email"
+                label="Email"
+                value={email}
+                error={errors["email"].hasError}
+                onChange={e => this.updateField(e.target.value, "email")}
+                onBlur={e => this.validateField(e.target.value, "email")}
+                helperText={errors["email"].message}
+                className={classes.textField}
+              />
+            </div>
+            <div>
+              <TextField
+                type="password"
+                label="Password"
+                value={password}
+                error={errors["password"].hasError}
+                onChange={e => this.updateField(e.target.value, "password")}
+                onBlur={e => this.validateField(e.target.value, "password")}
+                helperText={errors["password"].message}
+                className={classes.textField}
+              />
+            </div>
+            <div>
+              <TextField
+                type="password"
+                label="Confirm password"
+                value={confirmPassword}
+                error={errors["confirmPassword"].hasError}
+                onChange={e =>
+                  this.updateField(e.target.value, "confirmPassword")}
+                onBlur={e =>
+                  this.validateField(e.target.value, "confirmPassword")}
+                helperText={errors["confirmPassword"].message}
+                className={classes.textField}
+              />
+            </div>
           </div>
         </DialogContent>
         <DialogActions>
