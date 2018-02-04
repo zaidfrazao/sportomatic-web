@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import BackIcon from "material-ui-icons/ArrowBack";
+import Button from "material-ui/Button";
 import ForwardIcon from "material-ui-icons/ArrowForward";
 import { grey } from "material-ui/colors";
 import Paper from "material-ui/Paper";
 import Slider from "react-slick";
 import { withStyles } from "material-ui/styles";
 import backgroundImage from "./images/background-image.jpeg";
-// import DashboardDesktopAd from "../../../../components/DashboardDesktopAd";
-// import DashboardMobileAd from "../../../../components/DashboardMobileAd";
 
 const styles = {
   bannerWrapper: {
@@ -43,6 +42,8 @@ const styles = {
 class BannerCarousel extends Component {
   render() {
     const { classes } = this.props;
+    const { openUpdatesDialog } = this.props.actions;
+
     const settings = {
       dots: true,
       infinite: true,
@@ -64,9 +65,9 @@ class BannerCarousel extends Component {
               <h2 className={classes.updatesTitle}>
                 {"Welcome to Sportomatic"}
               </h2>
-              {/*<Button raised color="accent">
-                Learn more
-              </Button>*/}
+              <Button raised color="accent" onClick={() => openUpdatesDialog()}>
+                View updates
+              </Button>
             </div>
           </div>
           {/*<div className={classes.slide}>

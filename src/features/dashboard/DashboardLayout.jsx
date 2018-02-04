@@ -7,6 +7,7 @@ import { withStyles } from "material-ui/styles";
 import BannerCarousel from "./components/BannerCarousel";
 import InstitutionSelectCard from "./components/InstitutionSelectCard";
 import RoleSelectCard from "./components/RoleSelectCard";
+import UpdatesDialog from "./components/UpdatesDialog";
 
 const styles = theme => ({
   loaderWrapper: {
@@ -44,7 +45,13 @@ class DashboardLayout extends Component {
       institutions,
       userID
     } = this.props;
-    const { switchInstitution, switchRole } = this.props.actions;
+    const { isUpdatesDialogOpen } = this.props.dialogs;
+    const {
+      switchInstitution,
+      switchRole,
+      openUpdatesDialog,
+      closeUpdatesDialog
+    } = this.props.actions;
 
     let active = {
       id: "",
@@ -137,99 +144,18 @@ class DashboardLayout extends Component {
             />
           </div>
         </Toolbar>
-        <BannerCarousel isTablet={isTablet} />
-        {/*<Button
-          onClick={() =>
-            createInstitution({
-              info: {
-                abbreviation: "RWC",
-                ageGroups: [
-                  "Open",
-                  18,
-                  17,
-                  16,
-                  15,
-                  14,
-                  13,
-                  12,
-                  11,
-                  10,
-                  9,
-                  8,
-                  7,
-                  6
-                ],
-                divisions: ["1st Team", "2nd Team", "A", "B", "C", "D"],
-                emblemURL: "",
-                gender: "MIXED",
-                name: "Rowan's Personal Institution",
-                phoneNumber: "",
-                physicalAddress: "",
-                publicEmail: "",
-                sports: [
-                  "Athletics",
-                  "Cricket",
-                  "Hockey",
-                  "Netball",
-                  "Rugby",
-                  "Soccer",
-                  "Swimming",
-                  "Tennis"
-                ],
-                type: "Personal"
-              },
-              metadata: {
-                creationDate: new Date(Date.now()),
-                status: "ACTIVE"
-              },
-              paymentDefaults: {
-                hourlyRates: {
-                  overtime: 150,
-                  standard: 100,
-                  salaray: 6000
-                },
-                maxOvertimeHours: 3,
-                payDay: {
-                  day: 1,
-                  isEndOfTheMonth: false
-                },
-                type: "HOURLY"
-              },
-              permissions: {
-                coaches: {
-                  events: {
-                    canCancel: true,
-                    canCreate: true,
-                    canEdit: true
-                  },
-                  results: {
-                    canApprove: true,
-                    canEdit: true
-                  },
-                  teams: {
-                    canEdit: true
-                  }
-                },
-                managers: {
-                  events: {
-                    canCancel: true,
-                    canCreate: true,
-                    canEdit: true
-                  },
-                  teams: {
-                    canEdit: true
-                  },
-                  wages: {
-                    canCreate: true,
-                    canEdit: true,
-                    canView: true
-                  }
-                }
-              }
-            })}
-        >
-          Create institution
-        </Button>*/}
+        <BannerCarousel
+          isTablet={isTablet}
+          actions={{
+            openUpdatesDialog
+          }}
+        />
+        <UpdatesDialog
+          isOpen={isUpdatesDialogOpen}
+          actions={{
+            handleClose: () => closeUpdatesDialog()
+          }}
+        />
       </div>
     );
   }

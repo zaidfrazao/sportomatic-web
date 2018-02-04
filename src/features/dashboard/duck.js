@@ -13,8 +13,11 @@ export const ERROR_SWITCHING_INSTITUTION = `${NAMESPACE}/ERROR_SWITCHING_INSTITU
 export const REQUEST_SWITCH_ROLE = `${NAMESPACE}/REQUEST_SWITCH_ROLE`;
 export const RECEIVE_SWITCH_ROLE = `${NAMESPACE}/RECEIVE_SWITCH_ROLE`;
 export const ERROR_SWITCHING_ROLE = `${NAMESPACE}/ERROR_SWITCHING_ROLE`;
-export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
+export const OPEN_UPDATES_DIALOG = `${NAMESPACE}/OPEN_UPDATES_DIALOG`;
+export const CLOSE_UPDATES_DIALOG = `${NAMESPACE}/CLOSE_UPDATES_DIALOG`;
+
+export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
 // Reducers
 
@@ -39,19 +42,58 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   }
 }
 
+export const dialogsInitialState = {
+  isUpdatesDialogOpen: false
+};
+
+function dialogsReducer(state = dialogsInitialState, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case SIGN_OUT:
+      return dialogsInitialState;
+    case OPEN_UPDATES_DIALOG:
+      return {
+        ...state,
+        isUpdatesDialogOpen: true
+      };
+    case CLOSE_UPDATES_DIALOG:
+      return {
+        ...state,
+        isUpdatesDialogOpen: false
+      };
+    default:
+      return state;
+  }
+}
+
 export const dashboardReducer = combineReducers({
-  uiConfig: uiConfigReducer
+  uiConfig: uiConfigReducer,
+  dialogs: dialogsReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.dashboard.uiConfig;
+const dialogs = state => state.dashboard.dialogs;
 
 export const selector = createStructuredSelector({
-  uiConfig
+  uiConfig,
+  dialogs
 });
 
 // Action Creators
+
+export function openUpdatesDialog() {
+  return {
+    type: OPEN_UPDATES_DIALOG
+  };
+}
+
+export function closeUpdatesDialog() {
+  return {
+    type: CLOSE_UPDATES_DIALOG
+  };
+}
 
 export function resetState() {
   return {
