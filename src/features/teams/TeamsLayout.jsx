@@ -78,17 +78,11 @@ class TeamsLayout extends Component {
   componentWillMount() {
     const { activeInstitutionID } = this.props;
     const { teamID } = this.props.match.params;
-    const {
-      loadTeams,
-      loadCoaches,
-      loadManagers,
-      loadEventsByTeam
-    } = this.props.actions;
+    const { loadTeams, loadStaff, loadEventsByTeam } = this.props.actions;
 
     if (activeInstitutionID !== "") {
       loadTeams(activeInstitutionID);
-      loadCoaches(activeInstitutionID);
-      loadManagers(activeInstitutionID);
+      loadStaff(activeInstitutionID);
 
       if (teamID) {
         loadEventsByTeam(activeInstitutionID, teamID);
@@ -99,17 +93,11 @@ class TeamsLayout extends Component {
   componentWillReceiveProps(nextProps) {
     const { activeInstitutionID, teams } = nextProps;
     const { teamID } = nextProps.match.params;
-    const {
-      loadTeams,
-      loadCoaches,
-      loadManagers,
-      loadEventsByTeam
-    } = nextProps.actions;
+    const { loadTeams, loadStaff, loadEventsByTeam } = nextProps.actions;
 
     if (activeInstitutionID !== this.props.activeInstitutionID) {
       loadTeams(activeInstitutionID);
-      loadCoaches(activeInstitutionID);
-      loadManagers(activeInstitutionID);
+      loadStaff(activeInstitutionID);
 
       if (teamID) {
         loadEventsByTeam(activeInstitutionID, teamID);
@@ -196,7 +184,7 @@ class TeamsLayout extends Component {
       searchText,
       showDeletedTeams
     } = this.props.filters;
-    const { teams, coaches, managers, userID, role } = this.props;
+    const { teams, staff, userID, role } = this.props;
     const { showAllTeams } = this.state;
 
     return _.fromPairs(
@@ -218,15 +206,15 @@ class TeamsLayout extends Component {
 
           teamCoaches.map(coachID => {
             const coachName = `${_.toLower(
-              coaches[coachID].info.name
-            )} ${_.toLower(coaches[coachID].info.surname)}`;
+              staff[coachID].info.name
+            )} ${_.toLower(staff[coachID].info.surname)}`;
             coachMatch =
               coachMatch && coachName.includes(_.toLower(searchText));
           });
           teamManagers.map(managerID => {
             const managerName = `${_.toLower(
-              managers[managerID].info.name
-            )} ${_.toLower(managers[managerID].info.surname)}`;
+              staff[managerID].info.name
+            )} ${_.toLower(staff[managerID].info.surname)}`;
             managerMatch =
               managerMatch && managerName.includes(_.toLower(searchText));
           });
@@ -281,8 +269,7 @@ class TeamsLayout extends Component {
       classes,
       teams,
       options,
-      coaches,
-      managers,
+      staff,
       activeInstitutionID,
       isMobile,
       isTablet,
@@ -326,6 +313,21 @@ class TeamsLayout extends Component {
     const ad = this.createAd();
     const hasTeamsCreated = this.getTeamsList().length > 0;
     const filteredTeams = this.getTeamsList(this.filterTeams());
+
+    const coaches = _.fromPairs(
+      _.toPairs(staff).filter(([id, info]) => {
+        return (
+          info.institutions[activeInstitutionID].roles.coach === "APPROVED"
+        );
+      })
+    );
+    const managers = _.fromPairs(
+      _.toPairs(staff).filter(([id, info]) => {
+        return (
+          info.institutions[activeInstitutionID].roles.manager === "APPROVED"
+        );
+      })
+    );
 
     let teamErrorAlertHeading = "Team Name Required";
     let teamErrorAlertMessage =

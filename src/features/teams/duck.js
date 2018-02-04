@@ -9,12 +9,9 @@ const NAMESPACE = "sportomatic-web/teams";
 
 export const OPEN_ADD_TEAM_DIALOG = `${NAMESPACE}/OPEN_ADD_TEAM_DIALOG`;
 export const CLOSE_ADD_TEAM_DIALOG = `${NAMESPACE}/CLOSE_ADD_TEAM_DIALOG`;
-export const REQUEST_COACHES = `${NAMESPACE}/REQUEST_COACHES`;
-export const RECEIVE_COACHES = `${NAMESPACE}/RECEIVE_COACHES`;
-export const ERROR_LOADING_COACHES = `${NAMESPACE}/ERROR_LOADING_COACHES`;
-export const REQUEST_MANAGERS = `${NAMESPACE}/REQUEST_MANAGERS`;
-export const RECEIVE_MANAGERS = `${NAMESPACE}/RECEIVE_MANAGERS`;
-export const ERROR_LOADING_MANAGERS = `${NAMESPACE}/ERROR_LOADING_MANAGERS`;
+export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
+export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
+export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
 export const REQUEST_OPTIONS = `${NAMESPACE}/REQUEST_OPTIONS`;
 export const RECEIVE_OPTIONS = `${NAMESPACE}/RECEIVE_OPTIONS`;
 export const ERROR_LOADING_OPTIONS = `${NAMESPACE}/ERROR_LOADING_OPTIONS`;
@@ -194,8 +191,7 @@ export const loadingStatusInitialState = {
   isEditTeamDialogLoading: false,
   isTeamsLoading: false,
   isOptionsLoading: false,
-  isManagersLoading: false,
-  isCoachesLoading: false,
+  isStaffLoading: false,
   isEventsByTeamLoading: false
 };
 
@@ -248,27 +244,16 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isTeamsLoading: false
       };
-    case REQUEST_COACHES:
+    case REQUEST_STAFF:
       return {
         ...state,
-        isCoachesLoading: true
+        isStaffLoading: true
       };
-    case RECEIVE_COACHES:
-    case ERROR_LOADING_COACHES:
+    case RECEIVE_STAFF:
+    case ERROR_LOADING_STAFF:
       return {
         ...state,
-        isCoachesLoading: false
-      };
-    case REQUEST_MANAGERS:
-      return {
-        ...state,
-        isManagersLoading: true
-      };
-    case RECEIVE_MANAGERS:
-    case ERROR_LOADING_MANAGERS:
-      return {
-        ...state,
-        isManagersLoading: false
+        isStaffLoading: false
       };
     case REQUEST_EVENTS_BY_TEAM:
       return {
@@ -286,30 +271,15 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   }
 }
 
-function coachesReducer(state = {}, action = {}) {
+function staffReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
     case SIGN_OUT:
       return {};
-    case RECEIVE_COACHES:
+    case RECEIVE_STAFF:
       return {
         ...state,
-        ...action.payload.coaches
-      };
-    default:
-      return state;
-  }
-}
-
-function managersReducer(state = {}, action = {}) {
-  switch (action.type) {
-    case RESET_STATE:
-    case SIGN_OUT:
-      return {};
-    case RECEIVE_MANAGERS:
-      return {
-        ...state,
-        ...action.payload.managers
+        ...action.payload.staff
       };
     default:
       return state;
@@ -348,8 +318,7 @@ export const teamsReducer = combineReducers({
   dialogs: dialogsReducer,
   teamsList: teamsListReducer,
   options: optionsReducer,
-  coaches: coachesReducer,
-  managers: managersReducer,
+  staff: staffReducer,
   loadingStatus: loadingStatusReducer,
   filters: filterReducer,
   uiConfig: uiConfigReducer,
@@ -361,8 +330,7 @@ export const teamsReducer = combineReducers({
 const dialogs = state => state.teams.dialogs;
 const teams = state => state.teams.teamsList;
 const options = state => state.teams.options;
-const coaches = state => state.teams.coaches;
-const managers = state => state.teams.managers;
+const staff = state => state.teams.staff;
 const loadingStatus = state => state.teams.loadingStatus;
 const filters = state => state.teams.filters;
 const uiConfig = state => state.teams.uiConfig;
@@ -372,8 +340,7 @@ export const selector = createStructuredSelector({
   dialogs,
   teams,
   options,
-  coaches,
-  managers,
+  staff,
   loadingStatus,
   filters,
   uiConfig,
@@ -467,88 +434,45 @@ export function closeAddTeamDialog() {
   };
 }
 
-export function requestCoaches() {
+export function requestStaff() {
   return {
-    type: REQUEST_COACHES
+    type: REQUEST_STAFF
   };
 }
 
-export function receiveCoaches(coaches) {
+export function receiveStaff(staff) {
   return {
-    type: RECEIVE_COACHES,
+    type: RECEIVE_STAFF,
     payload: {
-      coaches
+      staff
     }
   };
 }
 
-export function errorLoadingCoaches(error: { code: string, message: string }) {
+export function errorLoadingStaff(error: { code: string, message: string }) {
   return {
-    type: ERROR_LOADING_COACHES,
+    type: ERROR_LOADING_STAFF,
     payload: {
       error
     }
   };
 }
 
-export function loadCoaches(institutionID) {
+export function loadStaff(institutionID) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestCoaches());
+    dispatch(requestStaff());
 
     const coachesRef = firebase
       .firestore()
       .collection("users")
-      .where(`institutions.${institutionID}.roles.coach`, "==", "APPROVED");
+      .where(`institutions.${institutionID}.status`, "==", "STAFF");
 
     return coachesRef.onSnapshot(querySnapshot => {
-      let coaches = {};
+      let staff = {};
       querySnapshot.forEach(doc => {
-        coaches[doc.id] = doc.data();
+        staff[doc.id] = doc.data();
       });
-      dispatch(receiveCoaches(coaches));
-    });
-  };
-}
-
-export function requestManagers() {
-  return {
-    type: REQUEST_MANAGERS
-  };
-}
-
-export function receiveManagers(managers) {
-  return {
-    type: RECEIVE_MANAGERS,
-    payload: {
-      managers
-    }
-  };
-}
-
-export function errorLoadingManagers(error: { code: string, message: string }) {
-  return {
-    type: ERROR_LOADING_MANAGERS,
-    payload: {
-      error
-    }
-  };
-}
-
-export function loadManagers(institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestManagers());
-
-    const managersRef = firebase
-      .firestore()
-      .collection("users")
-      .where(`institutions.${institutionID}.roles.manager`, "==", "APPROVED");
-
-    return managersRef.onSnapshot(querySnapshot => {
-      let managers = {};
-      querySnapshot.forEach(doc => {
-        managers[doc.id] = doc.data();
-      });
-      dispatch(receiveManagers(managers));
+      dispatch(receiveStaff(staff));
     });
   };
 }
