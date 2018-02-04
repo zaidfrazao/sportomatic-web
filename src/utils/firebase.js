@@ -10,12 +10,12 @@ export function initFirebase() {
     storageBucket: string,
     messagingSenderId: string
   } = {
-    apiKey: "AIzaSyDvXtkyZHPaz36m_VKG4-8SzERS8SAXJHE",
-    authDomain: "sportomatic-beta.firebaseapp.com",
-    databaseURL: "https://sportomatic-beta.firebaseio.com",
-    projectId: "sportomatic-beta",
-    storageBucket: "sportomatic-beta.appspot.com",
-    messagingSenderId: "205205196418"
+    apiKey: "AIzaSyA1jmyVuNB8qDq6wvRGeBi4VneAe-TDKiA",
+    authDomain: "sportomatic-5e646.firebaseapp.com",
+    databaseURL: "https://sportomatic-5e646.firebaseio.com",
+    projectId: "sportomatic-5e646",
+    storageBucket: "sportomatic-5e646.appspot.com",
+    messagingSenderId: "168504991467"
   };
 
   firebase.initializeApp(config);

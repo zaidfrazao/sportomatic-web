@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "sportomatic-beta"
+    "default": "sportomatic-5e646",
+    "release": "sportomatic-5e646"
   }
 }

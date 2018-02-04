@@ -762,8 +762,6 @@ export function joinInstitution(userID, institutionID, roles) {
     const db = firebase.firestore();
     const userRef = db.collection("users").doc(userID);
 
-    console.log(roles);
-
     return userRef
       .update({
         [`institutions.${institutionID}`]: {
