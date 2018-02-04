@@ -84,6 +84,19 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column"
   },
+  noCardsText: {
+    color: grey[500],
+    padding: 40,
+    border: `3px solid ${grey[300]}`
+  },
+  noCardsWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    maxWidth: 1200,
+    margin: "0 auto"
+  },
   resultInfoWrapper: {
     maxWidth: 1200,
     margin: "0 auto"
@@ -340,6 +353,18 @@ class ResultsLayout extends Component {
               <CircularProgress />
             </div>
           )}
+          {!isEventsByDateLoading &&
+            _.keys(groupedByDate).length === 0 && (
+              <div className={classes.noCardsWrapper}>
+                <Typography
+                  type="title"
+                  component="h3"
+                  className={classes.noCardsText}
+                >
+                  No results logged
+                </Typography>
+              </div>
+            )}
           <Button
             disabled={isEventsByDateLoading || activeInstitutionID === ""}
             className={classes.loadMoreButton}

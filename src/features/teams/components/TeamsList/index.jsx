@@ -7,10 +7,11 @@ import TeamCard from "./components/TeamCard";
 
 const styles = {
   noTeamsText: {
-    color: grey[600]
+    color: grey[500],
+    padding: 40,
+    border: `3px solid ${grey[300]}`
   },
   noTeamsWrapper: {
-    flexGrow: 1,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -25,7 +26,7 @@ const styles = {
 
 class TeamsList extends Component {
   render() {
-    const { classes, teams } = this.props;
+    const { classes, teams, hasTeamsCreated } = this.props;
     const { openDeleteTeamAlert } = this.props.actions;
 
     if (teams.length > 0) {
@@ -54,7 +55,9 @@ class TeamsList extends Component {
             component="h3"
             className={classes.noTeamsText}
           >
-            No teams
+            {hasTeamsCreated
+              ? "No teams found"
+              : 'Press "+" to create your first team'}
           </Typography>
         </div>
       );

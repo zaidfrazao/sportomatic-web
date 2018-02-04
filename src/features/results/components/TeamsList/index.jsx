@@ -6,15 +6,18 @@ import { withStyles } from "material-ui/styles";
 import TeamCard from "./components/TeamCard";
 
 const styles = {
-  noTeamsText: {
-    color: grey[600]
+  noCardsText: {
+    color: grey[500],
+    padding: 40,
+    border: `3px solid ${grey[300]}`
   },
-  noTeamsWrapper: {
+  noCardsWrapper: {
     flexGrow: 1,
     display: "flex",
-    flexDirection: "column",
+    alignItems: "center",
     justifyContent: "center",
-    alignItems: "center"
+    maxWidth: 1200,
+    margin: "0 auto"
   },
   wrapper: {
     padding: 24,
@@ -46,13 +49,13 @@ class TeamsList extends Component {
       );
     } else {
       return (
-        <div className={classes.noTeamsWrapper}>
+        <div className={classes.noCardsWrapper}>
           <Typography
             type="title"
             component="h3"
-            className={classes.noTeamsText}
+            className={classes.noCardsText}
           >
-            No teams
+            No teams found
           </Typography>
         </div>
       );

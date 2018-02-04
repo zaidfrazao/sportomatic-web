@@ -113,6 +113,19 @@ const styles = theme => ({
     width: "calc(100% - 48px)",
     textAlign: "center"
   },
+  noCardsText: {
+    color: grey[500],
+    padding: 40,
+    border: `3px solid ${grey[300]}`
+  },
+  noCardsWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    maxWidth: 1200,
+    margin: "0 auto"
+  },
   noEventsAwaitingApprovalWrapper: {
     flexGrow: 1,
     display: "flex",
@@ -292,6 +305,18 @@ class HoursLayout extends Component {
               <CircularProgress />
             </div>
           )}
+          {!isEventsByDateLoading &&
+            _.keys(groupedByDate).length === 0 && (
+              <div className={classes.noCardsWrapper}>
+                <Typography
+                  type="title"
+                  component="h3"
+                  className={classes.noCardsText}
+                >
+                  No hours logged
+                </Typography>
+              </div>
+            )}
           <Button
             disabled={isEventsByDateLoading}
             className={classes.loadMoreButton}

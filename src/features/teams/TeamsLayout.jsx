@@ -324,6 +324,7 @@ class TeamsLayout extends Component {
     const { teamID } = this.props.match.params;
 
     const ad = this.createAd();
+    const hasTeamsCreated = this.getTeamsList().length > 0;
     const filteredTeams = this.getTeamsList(this.filterTeams());
 
     let teamErrorAlertHeading = "Team Name Required";
@@ -430,6 +431,7 @@ class TeamsLayout extends Component {
                 )}
                 <TeamsList
                   teams={filteredTeams}
+                  hasTeamsCreated={hasTeamsCreated}
                   actions={{ openDeleteTeamAlert }}
                 />
               </div>

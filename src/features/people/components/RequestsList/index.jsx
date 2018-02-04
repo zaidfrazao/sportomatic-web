@@ -12,7 +12,9 @@ const styles = {
     margin: "0 auto"
   },
   noCardsText: {
-    color: grey[600]
+    color: grey[500],
+    padding: 40,
+    border: `3px solid ${grey[300]}`
   },
   noCardsWrapper: {
     flexGrow: 1,
@@ -64,7 +66,7 @@ class RequestsList extends Component {
             component="h3"
             className={classes.noCardsText}
           >
-            No staff members
+            No staff requests
           </Typography>
         </div>
       );

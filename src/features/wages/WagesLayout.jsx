@@ -65,6 +65,19 @@ const styles = theme => ({
     width: "calc(100% - 48px)",
     textAlign: "center"
   },
+  noCardsText: {
+    color: grey[500],
+    padding: 40,
+    border: `3px solid ${grey[300]}`
+  },
+  noCardsWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    maxWidth: 1200,
+    margin: "0 auto"
+  },
   outerWrapper: {
     width: "100%",
     height: "100%",
@@ -185,6 +198,18 @@ class WagesLayout extends Component {
               <CircularProgress />
             </div>
           )}
+          {!isWagesByDateLoading &&
+            _.keys(groupedByDate).length === 0 && (
+              <div className={classes.noCardsWrapper}>
+                <Typography
+                  type="title"
+                  component="h3"
+                  className={classes.noCardsText}
+                >
+                  No wages logged
+                </Typography>
+              </div>
+            )}
           <Button
             disabled={isWagesByDateLoading}
             className={classes.loadMoreButton}
