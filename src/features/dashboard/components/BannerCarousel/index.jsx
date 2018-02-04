@@ -6,8 +6,8 @@ import Paper from "material-ui/Paper";
 import Slider from "react-slick";
 import { withStyles } from "material-ui/styles";
 import backgroundImage from "./images/background-image.jpeg";
-import DashboardDesktopAd from "../../../../components/DashboardDesktopAd";
-import DashboardMobileAd from "../../../../components/DashboardMobileAd";
+// import DashboardDesktopAd from "../../../../components/DashboardDesktopAd";
+// import DashboardMobileAd from "../../../../components/DashboardMobileAd";
 
 const styles = {
   bannerWrapper: {
@@ -42,14 +42,14 @@ const styles = {
 
 class BannerCarousel extends Component {
   render() {
-    const { classes, isTablet } = this.props;
+    const { classes } = this.props;
     const settings = {
       dots: true,
       infinite: true,
       speed: 500,
       slidesToShow: 1,
       slidesToScroll: 1,
-      autoplay: true,
+      autoplay: false,
       autoplaySpeed: 10000,
       arrows: false,
       nextArrow: <ForwardIcon color={grey[800]} />,
@@ -69,9 +69,9 @@ class BannerCarousel extends Component {
               </Button>*/}
             </div>
           </div>
-          <div className={classes.slide}>
+          {/*<div className={classes.slide}>
             {isTablet ? <DashboardMobileAd /> : <DashboardDesktopAd />}
-          </div>
+          </div>*/}
         </Slider>
       </Paper>
     );
