@@ -37,6 +37,7 @@ class UpdatesDialog extends Component {
               Minor Changes
             </Typography>
             <Typography type="body1" component="ul">
+              <li>Move settings navigation to side menu.</li>
               <li>Fix "Soccer / Footbal" typo.</li>
             </Typography>
           </div>
