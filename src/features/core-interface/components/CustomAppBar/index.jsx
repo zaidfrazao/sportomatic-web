@@ -104,8 +104,7 @@ class CustomAppBar extends Component {
       readNotifications,
       isNotificationsLoading,
       emblemURL,
-      role,
-      history
+      role
     } = this.props;
     const {
       toggleSideMenu,
