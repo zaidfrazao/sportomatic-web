@@ -14,6 +14,9 @@ export const ERROR_UPDATING_BASIC_INFO = `${NAMESPACE}/ERROR_UPDATING_BASIC_INFO
 export const REQUEST_UPDATE_SPORTS = `${NAMESPACE}/REQUEST_UPDATE_SPORTS`;
 export const RECEIVE_UPDATE_SPORTS = `${NAMESPACE}/RECEIVE_UPDATE_SPORTS`;
 export const ERROR_UPDATING_SPORTS = `${NAMESPACE}/ERROR_UPDATING_SPORTS`;
+export const REQUEST_UPDATE_LOGIN_DETAILS = `${NAMESPACE}/REQUEST_UPDATE_LOGIN_DETAILS`;
+export const RECEIVE_UPDATE_LOGIN_DETAILS = `${NAMESPACE}/RECEIVE_UPDATE_LOGIN_DETAILS`;
+export const ERROR_UPDATING_LOGIN_DETAILS = `${NAMESPACE}/ERROR_UPDATING_LOGIN_DETAILS`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -40,7 +43,8 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 
 export const loadingStatusInitialState = {
   isUpdateBasicInfoLoading: false,
-  isUpdateSportsLoading: false
+  isUpdateSportsLoading: false,
+  isUpdateLoginDetailsLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -69,6 +73,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isUpdateSportsLoading: false
+      };
+    case REQUEST_UPDATE_LOGIN_DETAILS:
+      return {
+        ...state,
+        isUpdateLoginDetailsLoading: true
+      };
+    case RECEIVE_UPDATE_LOGIN_DETAILS:
+    case ERROR_UPDATING_LOGIN_DETAILS:
+      return {
+        ...state,
+        isUpdateLoginDetailsLoading: false
       };
     default:
       return state;
@@ -205,6 +220,65 @@ export function updateSports(userID, sports) {
       })
       .catch(error => {
         dispatch(errorUpdatingSports(error));
+      });
+  };
+}
+
+export function requestUpdateLoginDetails() {
+  return {
+    type: REQUEST_UPDATE_LOGIN_DETAILS
+  };
+}
+
+export function receiveUpdateLoginDetails() {
+  return {
+    type: RECEIVE_UPDATE_LOGIN_DETAILS
+  };
+}
+
+export function errorUpdatingLoginDetails(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_UPDATING_LOGIN_DETAILS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function updateLoginDetails(userID, email, password) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestUpdateLoginDetails());
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
+    return firebase
+      .auth()
+      .currentUser.updatePassword(password)
+      .then(() => {
+        firebase
+          .auth()
+          .currentUser.updateEmail(email)
+          .then(() => {
+            userRef
+              .update({
+                "info.email": email
+              })
+              .then(() => {
+                dispatch(receiveUpdateLoginDetails());
+              })
+              .catch(error => {
+                dispatch(errorUpdatingLoginDetails(error));
+              });
+          })
+          .catch(error => {
+            dispatch(errorUpdatingLoginDetails(error));
+          });
+      })
+      .catch(error => {
+        dispatch(errorUpdatingLoginDetails(error));
       });
   };
 }

@@ -450,12 +450,35 @@ class PersonInfo extends Component {
     );
   }
 
+  canSaveLoginDetails() {
+    const { accountInfo } = this.props;
+    const { errors, email, password, confirmPassword } = this.state;
+
+    if (accountInfo.info.email !== email) {
+      return (
+        !errors.email.hasError &&
+        password !== "" &&
+        !errors.password.hasError &&
+        confirmPassword !== "" &&
+        !errors.confirmPassword.hasError
+      );
+    } else {
+      return (
+        password !== "" &&
+        !errors.password.hasError &&
+        confirmPassword !== "" &&
+        !errors.confirmPassword.hasError
+      );
+    }
+  }
+
   render() {
     const {
       classes,
       accountInfo,
       isUpdateBasicInfoLoading,
       isUpdateSportsLoading,
+      isUpdateLoginDetailsLoading,
       userID
     } = this.props;
     const {
@@ -469,13 +492,21 @@ class PersonInfo extends Component {
       confirmPassword,
       errors
     } = this.state;
-    const { updateBasicInfo, updateSports } = this.props.actions;
+    const {
+      updateBasicInfo,
+      updateSports,
+      updateLoginDetails
+    } = this.props.actions;
 
     const ad = this.createAd();
 
     let canSaveBasicInfo = false;
     if (accountInfo.info) {
       canSaveBasicInfo = this.canSaveBasicInfo();
+    }
+    let canSaveLoginDetails = false;
+    if (accountInfo.info) {
+      canSaveLoginDetails = this.canSaveLoginDetails();
     }
 
     return (
@@ -629,8 +660,25 @@ class PersonInfo extends Component {
                       }}
                     />
                     <div className={classes.flexGrow} />
-                    <Button className={classes.button} color="primary">
-                      Save changes
+                    <Button
+                      className={classes.button}
+                      color="primary"
+                      disabled={
+                        !canSaveLoginDetails || isUpdateLoginDetailsLoading
+                      }
+                      onClick={() => {
+                        updateLoginDetails(userID, email, password);
+                        this.setState({
+                          password: "",
+                          confirmPassword: ""
+                        });
+                      }}
+                    >
+                      {isUpdateLoginDetailsLoading ? (
+                        <CircularProgress size={20} />
+                      ) : (
+                        "Save changes"
+                      )}
                     </Button>
                   </div>
                 </Paper>
@@ -691,7 +739,11 @@ class PersonInfo extends Component {
                         }
                       }}
                     >
-                      Save changes
+                      {isUpdateSportsLoading ? (
+                        <CircularProgress size={20} />
+                      ) : (
+                        "Save changes"
+                      )}
                     </Button>
                   </div>
                 </Paper>
