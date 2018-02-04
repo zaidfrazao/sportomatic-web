@@ -4,12 +4,14 @@ import AppBarMenuIcon from "material-ui-icons/MoreVert";
 import Avatar from "material-ui/Avatar";
 import classNames from "classnames";
 import { grey } from "material-ui/colors";
+import HomeIcon from "material-ui-icons/Home";
 import IconButton from "material-ui/IconButton";
 import InstitutionsIcon from "material-ui-icons/AccountBalance";
 import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
 import LogOutIcon from "material-ui-icons/ExitToApp";
 import MenuIcon from "material-ui-icons/Menu";
 import Popover from "material-ui/Popover";
+import { Route } from "react-router";
 import SettingsIcon from "material-ui-icons/Settings";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
@@ -102,7 +104,8 @@ class CustomAppBar extends Component {
       readNotifications,
       isNotificationsLoading,
       emblemURL,
-      role
+      role,
+      history
     } = this.props;
     const {
       toggleSideMenu,
@@ -163,6 +166,21 @@ class CustomAppBar extends Component {
                 className={classes.avatar}
                 aria-label="role icon"
               />
+            )}
+            {isMobile && (
+              <Tooltip title="Back to home" placement="bottom">
+                <Route
+                  render={({ history }) => (
+                    <IconButton
+                      color="contrast"
+                      aria-label="back to home"
+                      onClick={() => history.push("/myaccount/home")}
+                    >
+                      <HomeIcon />
+                    </IconButton>
+                  )}
+                />
+              </Tooltip>
             )}
             <NotificationsTray
               isMobile={isMobile}
