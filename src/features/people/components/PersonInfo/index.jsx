@@ -615,9 +615,9 @@ class PersonInfo extends Component {
                                 <ListItemText primary={sport} />
                               </ListItem>
                             );
-                          } else {
+                          } else if (sport === "Unknown") {
                             return (
-                              <ListItem className={classes.noItems}>
+                              <ListItem key={sport} className={classes.noItems}>
                                 <ListItemText primary="None" />
                               </ListItem>
                             );

@@ -11,6 +11,9 @@ export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 export const REQUEST_UPDATE_BASIC_INFO = `${NAMESPACE}/REQUEST_UPDATE_BASIC_INFO`;
 export const RECEIVE_UPDATE_BASIC_INFO = `${NAMESPACE}/RECEIVE_UPDATE_BASIC_INFO`;
 export const ERROR_UPDATING_BASIC_INFO = `${NAMESPACE}/ERROR_UPDATING_BASIC_INFO`;
+export const REQUEST_UPDATE_SPORTS = `${NAMESPACE}/REQUEST_UPDATE_SPORTS`;
+export const RECEIVE_UPDATE_SPORTS = `${NAMESPACE}/RECEIVE_UPDATE_SPORTS`;
+export const ERROR_UPDATING_SPORTS = `${NAMESPACE}/ERROR_UPDATING_SPORTS`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -36,7 +39,8 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 }
 
 export const loadingStatusInitialState = {
-  isUpdateBasicInfoLoading: false
+  isUpdateBasicInfoLoading: false,
+  isUpdateSportsLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -54,6 +58,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isUpdateBasicInfoLoading: false
+      };
+    case REQUEST_UPDATE_SPORTS:
+      return {
+        ...state,
+        isUpdateSportsLoading: true
+      };
+    case RECEIVE_UPDATE_SPORTS:
+    case ERROR_UPDATING_SPORTS:
+      return {
+        ...state,
+        isUpdateSportsLoading: false
       };
     default:
       return state;
@@ -150,6 +165,46 @@ export function updateBasicInfo(
       })
       .catch(error => {
         dispatch(errorUpdatingBasicInfo(error));
+      });
+  };
+}
+
+export function requestUpdateSports() {
+  return {
+    type: REQUEST_UPDATE_SPORTS
+  };
+}
+
+export function receiveUpdateSports() {
+  return {
+    type: RECEIVE_UPDATE_SPORTS
+  };
+}
+
+export function errorUpdatingSports(error: { code: string, message: string }) {
+  return {
+    type: ERROR_UPDATING_SPORTS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function updateSports(userID, sports) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestUpdateSports());
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
+    return userRef
+      .update({
+        "info.sports": sports
+      })
+      .then(user => {
+        dispatch(receiveUpdateSports());
+      })
+      .catch(error => {
+        dispatch(errorUpdatingSports(error));
       });
   };
 }

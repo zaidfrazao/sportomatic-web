@@ -32,8 +32,11 @@ class SettingsLayout extends Component {
       userID
     } = this.props;
     const { currentTab } = this.props.uiConfig;
-    const { isUpdateBasicInfoLoading } = this.props.loadingStatus;
-    const { updateTab, updateBasicInfo } = this.props.actions;
+    const {
+      isUpdateBasicInfoLoading,
+      isUpdateSportsLoading
+    } = this.props.loadingStatus;
+    const { updateTab, updateBasicInfo, updateSports } = this.props.actions;
 
     return (
       <div className={classes.root}>
@@ -59,10 +62,12 @@ class SettingsLayout extends Component {
             userID={userID}
             isAccountInfoLoading={isAccountInfoLoading}
             isUpdateBasicInfoLoading={isUpdateBasicInfoLoading}
+            isUpdateSportsLoading={isUpdateSportsLoading}
             isMobile={isMobile}
             isTablet={isTablet}
             actions={{
-              updateBasicInfo
+              updateBasicInfo,
+              updateSports
             }}
           />
         )}

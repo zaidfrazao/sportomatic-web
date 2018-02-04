@@ -39,6 +39,9 @@ const styles = theme => ({
       margin: "0 auto"
     }
   },
+  flexGrow: {
+    flexGrow: 2
+  },
   formControl: {
     marginBottom: 24,
     width: 240
@@ -452,6 +455,7 @@ class PersonInfo extends Component {
       classes,
       accountInfo,
       isUpdateBasicInfoLoading,
+      isUpdateSportsLoading,
       userID
     } = this.props;
     const {
@@ -465,7 +469,7 @@ class PersonInfo extends Component {
       confirmPassword,
       errors
     } = this.state;
-    const { updateBasicInfo } = this.props.actions;
+    const { updateBasicInfo, updateSports } = this.props.actions;
 
     const ad = this.createAd();
 
@@ -555,6 +559,7 @@ class PersonInfo extends Component {
                         }}
                       />
                     </FormControl>
+                    <div className={classes.flexGrow} />
                     <Button
                       className={classes.button}
                       color="primary"
@@ -623,6 +628,7 @@ class PersonInfo extends Component {
                         shrink: true
                       }}
                     />
+                    <div className={classes.flexGrow} />
                     <Button className={classes.button} color="primary">
                       Save changes
                     </Button>
@@ -666,7 +672,25 @@ class PersonInfo extends Component {
                         );
                       })}
                     </FormControl>
-                    <Button className={classes.button} color="primary">
+                    <Button
+                      className={classes.button}
+                      color="primary"
+                      disabled={isUpdateSportsLoading}
+                      onClick={() => {
+                        let sportsUnknown = true;
+                        _.toPairs(sports).map(([sport, selected]) => {
+                          if (selected) {
+                            sportsUnknown = false;
+                          }
+                        });
+
+                        if (sportsUnknown) {
+                          updateSports(userID, { Unknown: true });
+                        } else {
+                          updateSports(userID, sports);
+                        }
+                      }}
+                    >
                       Save changes
                     </Button>
                   </div>
