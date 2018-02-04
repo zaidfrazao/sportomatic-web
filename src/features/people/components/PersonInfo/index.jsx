@@ -609,12 +609,19 @@ class PersonInfo extends Component {
                     <List>
                       {sports && _.keys(sports).length > 0 ? (
                         _.toPairs(sports).map(([sport, exists]) => {
-                          if (exists)
+                          if (exists && sport !== "Unknown") {
                             return (
                               <ListItem key={sport}>
                                 <ListItemText primary={sport} />
                               </ListItem>
                             );
+                          } else {
+                            return (
+                              <ListItem className={classes.noItems}>
+                                <ListItemText primary="None" />
+                              </ListItem>
+                            );
+                          }
                         })
                       ) : (
                         <ListItem className={classes.noItems}>
@@ -690,7 +697,7 @@ class PersonInfo extends Component {
                         ))
                       ) : (
                         <ListItem className={classes.noItems}>
-                          <ListItemText primary="No teams" />
+                          <ListItemText primary="None" />
                         </ListItem>
                       )}
                     </List>
