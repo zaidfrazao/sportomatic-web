@@ -435,8 +435,25 @@ class PersonInfo extends Component {
     return ad;
   }
 
+  canSaveBasicInfo() {
+    const { accountInfo } = this.props;
+    const { errors, name, surname, phoneNumber } = this.state;
+
+    return (
+      (accountInfo.info.name !== name && !errors.name.hasError) ||
+      (accountInfo.info.surname !== surname && !errors.surname.hasError) ||
+      (accountInfo.info.phoneNumber !== phoneNumber &&
+        !errors.phoneNumber.hasError)
+    );
+  }
+
   render() {
-    const { classes } = this.props;
+    const {
+      classes,
+      accountInfo,
+      isUpdateBasicInfoLoading,
+      userID
+    } = this.props;
     const {
       name,
       surname,
@@ -448,8 +465,14 @@ class PersonInfo extends Component {
       confirmPassword,
       errors
     } = this.state;
+    const { updateBasicInfo } = this.props.actions;
 
     const ad = this.createAd();
+
+    let canSaveBasicInfo = false;
+    if (accountInfo.info) {
+      canSaveBasicInfo = this.canSaveBasicInfo();
+    }
 
     return (
       <div className={classes.root}>
@@ -532,8 +555,18 @@ class PersonInfo extends Component {
                         }}
                       />
                     </FormControl>
-                    <Button className={classes.button} color="primary">
-                      Save changes
+                    <Button
+                      className={classes.button}
+                      color="primary"
+                      disabled={!canSaveBasicInfo || isUpdateBasicInfoLoading}
+                      onClick={() =>
+                        updateBasicInfo(userID, name, surname, phoneNumber)}
+                    >
+                      {isUpdateBasicInfoLoading ? (
+                        <CircularProgress size={20} />
+                      ) : (
+                        "Save changes"
+                      )}
                     </Button>
                   </div>
                 </Paper>
