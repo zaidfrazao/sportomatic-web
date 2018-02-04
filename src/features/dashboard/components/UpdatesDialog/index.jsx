@@ -16,11 +16,11 @@ const styles = {
 
 class UpdatesDialog extends Component {
   render() {
-    const { isOpen, classes } = this.props;
+    const { isOpen, classes, isMobile } = this.props;
     const { handleClose } = this.props.actions;
 
     return (
-      <Dialog open={isOpen} onRequestClose={handleClose}>
+      <Dialog open={isOpen} fullScreen={isMobile} onRequestClose={handleClose}>
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">

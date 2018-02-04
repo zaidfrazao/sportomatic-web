@@ -152,6 +152,7 @@ class DashboardLayout extends Component {
         />
         <UpdatesDialog
           isOpen={isUpdatesDialogOpen}
+          isMobile={isMobile}
           actions={{
             handleClose: () => closeUpdatesDialog()
           }}
