@@ -1528,13 +1528,22 @@ class EditEventDialog extends Component {
                 const isCompetitive = this.isEventCompetitive();
                 const recurrencePattern = initialEventInfo.recurrencePattern;
 
+                const startTimeObject = moment(date)
+                  .hour(parseInt(startTime.slice(0, 2), 10))
+                  .minute(parseInt(startTime.slice(3, 5), 10))
+                  .toDate();
+                const endTimeObject = moment(date)
+                  .hour(parseInt(endTime.slice(0, 2), 10))
+                  .minute(parseInt(endTime.slice(3, 5), 10))
+                  .toDate();
+
                 const requiredInfo = {
                   isCompetitive,
                   title,
                   status: "ACTIVE",
                   times: {
-                    end: new Date(`${date}T${endTime}:00`),
-                    start: new Date(`${date}T${startTime}:00`)
+                    end: endTimeObject,
+                    start: startTimeObject
                   },
                   type: eventType
                 };
@@ -1583,8 +1592,8 @@ class EditEventDialog extends Component {
                       hours: {
                         status: "AWAITING_SIGN_IN",
                         times: {
-                          signIn: new Date(`${date}T${startTime}:00`),
-                          signOut: new Date(`${date}T${endTime}:00`)
+                          signIn: startTimeObject,
+                          signOut: endTimeObject
                         }
                       }
                     }
