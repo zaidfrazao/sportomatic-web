@@ -24,7 +24,24 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.7 (Current)"}
+            {"v0.9.8 (Current)"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              New Features
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>User can edit their personal settings.</li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Minor Changes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>Fix "Soccer / Footbal" typo.</li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.7"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">
