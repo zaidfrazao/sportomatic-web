@@ -22,7 +22,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     maxWidth: 1200,
-    margin: "0 auto"
+    margin: "24px auto"
   }
 };
 

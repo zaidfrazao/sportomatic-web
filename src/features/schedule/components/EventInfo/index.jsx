@@ -57,11 +57,10 @@ const styles = theme => ({
     backgroundColor: grey[200]
   },
   adWrapper: {
-    width: "100%",
-    height: "100%",
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    marginTop: 24
   },
   appBar: {
     display: "flex",
@@ -162,8 +161,6 @@ const styles = theme => ({
   },
   outerWrapper: {
     flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
     overflow: "auto"
   },
   picture: {
@@ -1152,8 +1149,8 @@ class EventInfo extends Component {
               </Tooltip>
             )}
           </Toolbar>
+          <div className={classes.adWrapper}>{ad}</div>
           <div className={classes.wrapper}>
-            <div className={classes.adWrapper}>{ad}</div>
             {info &&
               info.requiredInfo.status === "CANCELLED" && (
                 <div className={classes.cancelledEvent}>

@@ -15,7 +15,8 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    margin: 24
   },
   wrapper: {
     padding: 24,

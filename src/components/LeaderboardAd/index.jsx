@@ -24,18 +24,19 @@ class LeaderboardAd extends Component {
 
   render() {
     return (
-      <ins
-        className="adsbygoogle"
+      <div
         style={{
-          margin: 24,
-          display: "inline-block",
           width: 728,
           height: 90,
           backgroundColor: grey[300]
         }}
-        data-ad-client="ca-pub-7670057362856972"
-        data-ad-slot="2049039611"
-      />
+      >
+        <ins
+          className="adsbygoogle"
+          data-ad-client="ca-pub-7670057362856972"
+          data-ad-slot="2049039611"
+        />
+      </div>
     );
   }
 }

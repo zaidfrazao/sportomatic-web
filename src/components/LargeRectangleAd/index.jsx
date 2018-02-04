@@ -24,18 +24,19 @@ class LargeRectangleAd extends Component {
 
   render() {
     return (
-      <ins
-        className="adsbygoogle"
+      <div
         style={{
-          margin: 10,
-          display: "inline-block",
           width: 336,
           height: 280,
           backgroundColor: grey[300]
         }}
-        data-ad-client="ca-pub-7670057362856972"
-        data-ad-slot="8615900662"
-      />
+      >
+        <ins
+          className="adsbygoogle"
+          data-ad-client="ca-pub-7670057362856972"
+          data-ad-slot="8615900662"
+        />
+      </div>
     );
   }
 }

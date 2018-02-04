@@ -24,18 +24,19 @@ class LargeMobileBannerAd extends Component {
 
   render() {
     return (
-      <ins
-        className="adsbygoogle"
+      <div
         style={{
-          display: "inline-block",
           width: 320,
           height: 100,
-          margin: 10,
           backgroundColor: grey[300]
         }}
-        data-ad-client="ca-pub-7670057362856972"
-        data-ad-slot="8947288756"
-      />
+      >
+        <ins
+          className="adsbygoogle"
+          data-ad-client="ca-pub-7670057362856972"
+          data-ad-slot="8947288756"
+        />
+      </div>
     );
   }
 }

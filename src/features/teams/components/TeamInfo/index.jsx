@@ -42,7 +42,7 @@ const styles = theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    margin: "24px 0"
+    marginTop: 24
   },
   button: {
     "@media (max-width: 960px)": {
@@ -103,8 +103,6 @@ const styles = theme => ({
   },
   outerWrapper: {
     flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
     overflow: "auto"
   },
   placedFirstAvatar: {
@@ -1019,8 +1017,8 @@ class TeamInfo extends Component {
               </Tooltip>
             )}
           </Toolbar>
+          <div className={classes.adWrapper}>{ad}</div>
           <div className={classes.wrapper}>
-            <div className={classes.adWrapper}>{ad}</div>
             {info &&
               info.status === "DELETED" && (
                 <div className={classes.deletedTeam}>

@@ -31,7 +31,8 @@ const styles = theme => ({
   adWrapper: {
     width: "100%",
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
+    marginTop: 24
   },
   contentWrapper: {
     width: "100%",
@@ -61,7 +62,8 @@ const styles = theme => ({
     flexGrow: 1,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    margin: 24
   },
   loadMoreButton: {
     margin: 24
@@ -95,7 +97,7 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center",
     maxWidth: 1200,
-    margin: "0 auto"
+    margin: "24px auto"
   },
   resultInfoWrapper: {
     maxWidth: 1200,

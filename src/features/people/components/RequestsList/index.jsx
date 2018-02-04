@@ -17,12 +17,11 @@ const styles = {
     border: `3px solid ${grey[300]}`
   },
   noCardsWrapper: {
-    flexGrow: 1,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     maxWidth: 1200,
-    margin: "0 auto"
+    margin: "24px auto"
   }
 };
 

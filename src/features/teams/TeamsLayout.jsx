@@ -19,7 +19,8 @@ const styles = theme => ({
   adWrapper: {
     width: "100%",
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
+    marginTop: 24
   },
   button: {
     margin: theme.spacing.unit,
@@ -38,7 +39,8 @@ const styles = theme => ({
     flexGrow: 1,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    margin: 24
   },
   myTeamsSelector: {
     width: "100%",
@@ -311,7 +313,7 @@ class TeamsLayout extends Component {
     const { teamID } = this.props.match.params;
 
     const ad = this.createAd();
-    const hasTeamsCreated = this.getTeamsList().length > 0;
+    const hasTeamsCreated = this.getTeamsList(teams).length > 0;
     const filteredTeams = this.getTeamsList(this.filterTeams());
 
     const coaches = _.fromPairs(

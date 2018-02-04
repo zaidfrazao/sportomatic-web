@@ -24,18 +24,19 @@ class BannerAd extends Component {
 
   render() {
     return (
-      <ins
-        className="adsbygoogle"
+      <div
         style={{
-          margin: 10,
-          display: "inline-block",
           width: 468,
           height: 60,
           backgroundColor: grey[300]
         }}
-        data-ad-client="ca-pub-7670057362856972"
-        data-ad-slot="5860647331"
-      />
+      >
+        <ins
+          className="adsbygoogle"
+          data-ad-client="ca-pub-7670057362856972"
+          data-ad-slot="5860647331"
+        />
+      </div>
     );
   }
 }
