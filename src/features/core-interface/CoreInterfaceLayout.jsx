@@ -10,7 +10,6 @@ import DecisionModal from "../../components/DecisionModal";
 import Hours from "../hours/HoursView";
 import LoadingScreen from "./components/LoadingScreen";
 import ManageInstitutionsDialog from "./components/ManageInstitutionsDialog";
-import NotificationModal from "../../components/NotificationModal";
 import Results from "../results/ResultsView";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
@@ -202,8 +201,6 @@ class CoreInterfaceLayout extends Component {
     const {
       toggleSideMenu,
       signOut,
-      closeSettingsAlert,
-      openSettingsAlert,
       openLogOutModal,
       closeLogOutModal,
       markNotificationsRead,
@@ -230,7 +227,6 @@ class CoreInterfaceLayout extends Component {
       userID
     } = this.props.uiConfig;
     const {
-      isSettingsAlertOpen,
       isLogOutModalOpen,
       isManageInstitutionsDialogOpen
     } = this.props.dialogs;
@@ -258,7 +254,6 @@ class CoreInterfaceLayout extends Component {
             actions={{
               toggleSideMenu,
               openLogOutModal,
-              openSettingsAlert,
               markNotificationsRead,
               openManageInstitutionsDialog
             }}
@@ -299,6 +294,17 @@ class CoreInterfaceLayout extends Component {
                 </Route>
                 <Route exact path={"/myaccount/home/"}>
                   <Dashboard
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                    activeInstitutionID={activeInstitutionID}
+                    accountInfo={accountInfo}
+                    isAccountInfoLoading={isAccountInfoLoading}
+                    institutions={institutions}
+                  />
+                </Route>
+                <Route exact path={"/myaccount/settings/"}>
+                  <Settings
                     isMobile={isMobile}
                     isTablet={isTablet}
                     userID={userID}
@@ -431,9 +437,6 @@ class CoreInterfaceLayout extends Component {
                     isAccountInfoLoading={isAccountInfoLoading}
                   />
                 </Route>
-                <Route exact path={"/myaccount/settings/"}>
-                  <Settings isAccountInfoLoading={isAccountInfoLoading} />
-                </Route>
                 <Route exact path={"/myaccount/wages"}>
                   <Wages
                     isMobile={isMobile}
@@ -469,12 +472,6 @@ class CoreInterfaceLayout extends Component {
             </div>
           </div>
         </div>
-        <NotificationModal
-          isOpen={isSettingsAlertOpen}
-          handleOkClick={closeSettingsAlert}
-          heading="Unavailable in Beta"
-          message="The ability to edit account settings is unavailable in this version of the beta."
-        />
         <DecisionModal
           isOpen={isLogOutModalOpen}
           handleYesClick={() => {

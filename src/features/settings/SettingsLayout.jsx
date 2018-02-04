@@ -1,19 +1,64 @@
 import React, { Component } from "react";
+import AppBar from "material-ui/AppBar";
+import Tabs, { Tab } from "material-ui/Tabs";
 import { withStyles } from "material-ui/styles";
-import AccountInfo from "./components/AccountInfo";
+import PersonInfo from "./components/PersonInfo";
 
 const styles = theme => ({
   root: {
-    width: "100%"
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column"
+  },
+  tabs: {
+    height: 72
   }
 });
 
 class SettingsLayout extends Component {
+  componentWillUnmount() {
+    const { resetState } = this.props.actions;
+    resetState();
+  }
+
   render() {
-    const { classes, accountInfo } = this.props;
+    const {
+      classes,
+      accountInfo,
+      isAccountInfoLoading,
+      isMobile,
+      isTablet
+    } = this.props;
+    const { currentTab } = this.props.uiConfig;
+    const { updateTab } = this.props.actions;
+
     return (
       <div className={classes.root}>
-        <AccountInfo info={accountInfo} />
+        <AppBar position="static" color="default">
+          <Tabs
+            value={currentTab}
+            onChange={(event, newTab) => updateTab(newTab)}
+            indicatorColor="primary"
+            textColor="primary"
+            centered
+          >
+            <Tab label="Personal" value="PERSONAL" className={classes.tabs} />
+            <Tab
+              label="Institutions"
+              value="INSTITUTIONS"
+              className={classes.tabs}
+            />
+          </Tabs>
+        </AppBar>
+        {currentTab === "PERSONAL" && (
+          <PersonInfo
+            accountInfo={accountInfo}
+            isAccountInfoLoading={isAccountInfoLoading}
+            isMobile={isMobile}
+            isTablet={isTablet}
+          />
+        )}
       </div>
     );
   }

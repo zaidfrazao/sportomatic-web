@@ -5,93 +5,57 @@ import { createStructuredSelector } from "reselect";
 
 const NAMESPACE = "sportomatic-web/settings";
 
-export const TOGGLE_SIDE_MENU = `${NAMESPACE}/TOGGLE_SIDE_MENU`;
+export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
+export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
 // Reducers
 
 export const uiConfigInitialState = {
-  appBarTitle: "Dashboard",
-  bottomNavValue: "dashboard",
-  isSideMenuOpen: false
+  currentTab: "PERSONAL"
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case RESET_STATE:
     case SIGN_OUT:
       return uiConfigInitialState;
-    case TOGGLE_SIDE_MENU:
+    case UPDATE_TAB:
       return {
         ...state,
-        isSideMenuOpen: !state.isSideMenuOpen
+        currentTab: action.payload.newTab
       };
     default:
       return state;
   }
 }
 
-export const accountInfoInitialState = {
-  name: "Sportomatic Academy",
-  abbreviation: "SPCA",
-  email: "info@sportomaticapp.com",
-  phoneNumber: "(011) 283 - 8492",
-  physicalAddress: "63 Alexandra Street, Florida",
-  institutionType: "Sports Academy",
-  genders: "Mixed",
-  emblemURL: "",
-  sports: [
-    { name: "Athletics", numberOfTeams: 3 },
-    { name: "Cricket", numberOfTeams: 1 },
-    { name: "Rugby", numberOfTeams: 0 },
-    { name: "Soccer", numberOfTeams: 4 }
-  ],
-  ageGroups: [
-    { name: "U/16", numberOfTeams: 0 },
-    { name: "U/18", numberOfTeams: 7 }
-  ],
-  divisions: [
-    { name: "A", numberOfTeams: 2 },
-    { name: "B", numberOfTeams: 0 },
-    { name: "1st Team", numberOfTeams: 3 },
-    { name: "2nd Team", numberOfTeams: 2 }
-  ],
-  coachPaymentOptions: {
-    standardHourlyRate: 100,
-    overtimeHourlyRate: 150,
-    maxOvertimeHours: 3,
-    payDay: "End of the month"
-  }
-};
-
-function accountInfoReducer(state = accountInfoInitialState, action = {}) {
-  switch (action.type) {
-    case SIGN_OUT:
-      return accountInfoInitialState;
-    default:
-      return state;
-  }
-}
-
 export const settingsReducer = combineReducers({
-  uiConfig: uiConfigReducer,
-  accountInfo: accountInfoReducer
+  uiConfig: uiConfigReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.settings.uiConfig;
-const accountInfo = state => state.settings.accountInfo;
 
 export const selector = createStructuredSelector({
-  uiConfig,
-  accountInfo
+  uiConfig
 });
 
 // Action Creators
 
-export function toggleSideMenu() {
+export function resetState() {
   return {
-    type: TOGGLE_SIDE_MENU
+    type: RESET_STATE
+  };
+}
+
+export function updateTab(newTab) {
+  return {
+    type: UPDATE_TAB,
+    payload: {
+      newTab
+    }
   };
 }

@@ -109,7 +109,6 @@ class CustomAppBar extends Component {
     const {
       toggleSideMenu,
       openLogOutModal,
-      openSettingsAlert,
       markNotificationsRead,
       openManageInstitutionsDialog
     } = this.props.actions;
@@ -226,18 +225,22 @@ class CustomAppBar extends Component {
                     </ListItemIcon>
                     <ListItemText primary="Manage institutions" />
                   </ListItem>
-                  <ListItem
-                    button
-                    onClick={() => {
-                      this.handleRequestClose();
-                      openSettingsAlert();
-                    }}
-                  >
-                    <ListItemIcon>
-                      <SettingsIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Settings" />
-                  </ListItem>
+                  <Route
+                    render={({ history }) => (
+                      <ListItem
+                        button
+                        onClick={() => {
+                          this.handleRequestClose();
+                          history.push("/myaccount/settings");
+                        }}
+                      >
+                        <ListItemIcon>
+                          <SettingsIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Settings" />
+                      </ListItem>
+                    )}
+                  />
                   <ListItem
                     button
                     onClick={() => {
