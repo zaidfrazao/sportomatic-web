@@ -608,14 +608,14 @@ class SignUpLayout extends Component {
               conditions (“App Terms”) will automatically apply to you.
               Therefore you must make sure that you read them carefully before
               using the app. We are offering you this App to use for your own
-              personal use without cost, but you should be aware that you cannot
-              send it on to any third party, and you are not allowed to copy, or
-              modify the app, any part of the app, or our trademarks in any way.
-              You are not allowed to attempt to extract the source code of the
-              app, translate the app into other languages, or make derivative
-              versions. The App itself, and all the trade marks, copyright,
-              database rights and other intellectual property rights related to
-              it, still belong to SPORTOMATIC.
+              personal use without cost, you may invite third parties to use
+              this App however you should be aware that you are not allowed to
+              copy, or modify the app, any part of the app, or our trademarks in
+              any way. You are not allowed to attempt to extract the source code
+              of the app, translate the app into other languages, or make
+              derivative versions. The App itself, and all the trade marks,
+              copyright, database rights and other intellectual property rights
+              related to it, still belong to SPORTOMATIC.
             </Typography>
             <Typography type="body1" component="p" className={classes.terms}>
               2. Depending on the version of the Application you have
@@ -728,7 +728,7 @@ class SignUpLayout extends Component {
               other person;
             </Typography>
             <Typography type="body1" component="p">
-              9.7. is likely to disrupt our service in any way;
+              9.7. is likely to disrupt our service in any way; or
             </Typography>
             <Typography type="body1" component="p">
               9.8. advocates, promotes or assists any unlawful act such as (by
