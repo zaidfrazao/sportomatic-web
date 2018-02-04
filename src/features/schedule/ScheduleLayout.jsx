@@ -238,7 +238,7 @@ class ScheduleLayout extends Component {
       gender,
       searchText
     } = this.props.filters;
-    const { events, teams, coaches, managers, userID, role } = this.props;
+    const { events, teams, staff, userID, role } = this.props;
     const { showAllEvents } = this.state;
 
     return _.fromPairs(
@@ -266,31 +266,32 @@ class ScheduleLayout extends Component {
           roleMatch = roleMatch || eventManagers.includes(userID);
         }
 
+        if (searchText !== "") {
+          const eventCoaches = _.keys(info.coaches);
+          const eventManagers = _.keys(info.managers);
+          eventCoaches.map(coachID => {
+            const coachName = `${_.toLower(
+              staff[coachID].info.name
+            )} ${_.toLower(staff[coachID].info.surname)}`;
+            coachMatch =
+              coachMatch && coachName.includes(_.toLower(searchText));
+          });
+          eventManagers.map(managerID => {
+            const managerName = `${_.toLower(
+              staff[managerID].info.name
+            )} ${_.toLower(staff[managerID].info.surname)}`;
+            managerMatch =
+              managerMatch && managerName.includes(_.toLower(searchText));
+          });
+          if (eventCoaches.length === 0) coachMatch = false;
+          if (eventManagers.length === 0) managerMatch = false;
+        }
+
         if (eventType !== "All") {
           allowThroughFilter =
             allowThroughFilter && info.requiredInfo.type === eventType;
         }
         _.keys(info.teams).map(teamID => {
-          if (teams[teamID] && searchText !== "") {
-            const teamCoaches = _.keys(teams[teamID].coaches);
-            const teamManagers = _.keys(teams[teamID].managers);
-            teamCoaches.map(coachID => {
-              const coachName = `${_.toLower(
-                coaches[coachID].info.name
-              )} ${_.toLower(coaches[coachID].info.surname)}`;
-              coachMatch =
-                coachMatch && coachName.includes(_.toLower(searchText));
-            });
-            teamManagers.map(managerID => {
-              const managerName = `${_.toLower(
-                managers[managerID].info.name
-              )} ${_.toLower(managers[managerID].info.surname)}`;
-              managerMatch =
-                managerMatch && managerName.includes(_.toLower(searchText));
-            });
-            if (teamCoaches.length === 0) coachMatch = false;
-            if (teamManagers.length === 0) managerMatch = false;
-          }
           if (teams[teamID] && sport !== "All") {
             allowThroughFilter =
               allowThroughFilter && teams[teamID].info.sport === sport;

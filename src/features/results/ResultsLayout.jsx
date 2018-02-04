@@ -730,6 +730,18 @@ class ResultsLayout extends Component {
                     </Paper>
                   );
                 })}
+                {!isEventsByTeamLoading &&
+                  _.keys(groupedByDate).length === 0 && (
+                    <div className={classes.noCardsWrapper}>
+                      <Typography
+                        type="title"
+                        component="h3"
+                        className={classes.noCardsText}
+                      >
+                        No results logged for this team
+                      </Typography>
+                    </div>
+                  )}
                 {(isEventsByTeamLoading || activeInstitutionID === "") && (
                   <div className={classes.loaderWrapper}>
                     <CircularProgress />
