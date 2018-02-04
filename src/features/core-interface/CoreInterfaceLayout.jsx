@@ -275,7 +275,7 @@ class CoreInterfaceLayout extends Component {
             }}
             isMobile={isMobile}
             feature={appBarTitle}
-            versionNumber="0.9.8"
+            versionNumber="0.9.9"
             role={role}
           />
           <div className={classes.content}>
