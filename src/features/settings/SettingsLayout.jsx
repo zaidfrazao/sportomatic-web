@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import AppBar from "material-ui/AppBar";
+import { Redirect } from "react-router-dom";
 import Tabs, { Tab } from "material-ui/Tabs";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
@@ -92,6 +93,12 @@ class SettingsLayout extends Component {
     } = this.props.actions;
 
     const ad = this.createAd();
+
+    if (institutionID && accountInfo.institutions) {
+      if (accountInfo.institutions[institutionID].roles.admin !== "APPROVED") {
+        return <Redirect to="/myaccount/settings" />;
+      }
+    }
 
     return (
       <div className={classes.root}>
