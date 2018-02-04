@@ -170,7 +170,7 @@ class SignInLayout extends Component {
     }
 
     if (isLoggedIn) {
-      return <Redirect to="/admin/dashboard" />;
+      return <Redirect to="/myaccount/home" />;
     }
 
     return (

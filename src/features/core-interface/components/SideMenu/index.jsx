@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ChevronLeftIcon from "material-ui-icons/ChevronLeft";
 import classNames from "classnames";
-import DashboardIcon from "material-ui-icons/Dashboard";
+import HomeIcon from "material-ui-icons/Home";
 import Divider from "material-ui/Divider";
 import Drawer from "material-ui/Drawer";
 import { grey } from "material-ui/colors";
@@ -116,18 +116,18 @@ class SideMenu extends Component {
                 <ListItem
                   button
                   onClick={() => {
-                    history.push("/myaccount/dashboard");
+                    history.push("/myaccount/home");
                     isMobile && toggleSideMenu();
                   }}
                   className={classNames(
-                    feature !== "Dashboard" && classes.unselectedItem,
-                    feature === "Dashboard" && classes.selectedItem
+                    feature !== "Home" && classes.unselectedItem,
+                    feature === "Home" && classes.selectedItem
                   )}
                 >
                   <ListItemIcon>
-                    <DashboardIcon />
+                    <HomeIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Dashboard" />
+                  <ListItemText primary="Home" />
                 </ListItem>
               )}
             />

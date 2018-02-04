@@ -154,8 +154,8 @@ class CoreInterfaceLayout extends Component {
     const featureName = pathname.split("/")[2];
 
     switch (featureName) {
-      case "dashboard":
-        updateAppBarTitle("Dashboard");
+      case "home":
+        updateAppBarTitle("Home");
         break;
       case "schedule":
         updateAppBarTitle("Schedule");
@@ -182,7 +182,7 @@ class CoreInterfaceLayout extends Component {
         updateAppBarTitle("Results");
         break;
       default:
-        updateAppBarTitle("Dashboard");
+        updateAppBarTitle("Home");
         break;
     }
   }
@@ -297,7 +297,7 @@ class CoreInterfaceLayout extends Component {
                     institutions={institutions}
                   />
                 </Route>
-                <Route exact path={"/myaccount/dashboard/"}>
+                <Route exact path={"/myaccount/home/"}>
                   <Dashboard
                     isMobile={isMobile}
                     isTablet={isTablet}
