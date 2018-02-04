@@ -314,6 +314,17 @@ class CoreInterfaceLayout extends Component {
                     institutions={institutions}
                   />
                 </Route>
+                <Route exact path={"/myaccount/settings/:institutionID"}>
+                  <Settings
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    userID={userID}
+                    activeInstitutionID={activeInstitutionID}
+                    accountInfo={accountInfo}
+                    isAccountInfoLoading={isAccountInfoLoading}
+                    institutions={institutions}
+                  />
+                </Route>
                 <Route exact path={"/myaccount/hours/"}>
                   <Hours
                     isMobile={isMobile}
