@@ -12,7 +12,6 @@ import LogOutIcon from "material-ui-icons/ExitToApp";
 import MenuIcon from "material-ui-icons/Menu";
 import Popover from "material-ui/Popover";
 import { Route } from "react-router";
-import SettingsIcon from "material-ui-icons/Settings";
 import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
@@ -225,22 +224,6 @@ class CustomAppBar extends Component {
                     </ListItemIcon>
                     <ListItemText primary="Manage institutions" />
                   </ListItem>
-                  <Route
-                    render={({ history }) => (
-                      <ListItem
-                        button
-                        onClick={() => {
-                          this.handleRequestClose();
-                          history.push("/myaccount/settings");
-                        }}
-                      >
-                        <ListItemIcon>
-                          <SettingsIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Settings" />
-                      </ListItem>
-                    )}
-                  />
                   <ListItem
                     button
                     onClick={() => {

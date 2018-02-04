@@ -12,6 +12,7 @@ import ResultsIcon from "material-ui-icons/PlusOne";
 import { Route } from "react-router-dom";
 import PeopleIcon from "material-ui-icons/Person";
 import ScheduleIcon from "material-ui-icons/Event";
+import SettingsIcon from "material-ui-icons/Settings";
 import TeamsIcon from "material-ui-icons/People";
 import Typography from "material-ui/Typography";
 import WagesIcon from "material-ui-icons/AttachMoney";
@@ -256,6 +257,27 @@ class SideMenu extends Component {
                     <TeamsIcon />
                   </ListItemIcon>
                   <ListItemText primary="Teams" />
+                </ListItem>
+              )}
+            />
+            <Route
+              key={8}
+              render={({ history }) => (
+                <ListItem
+                  button
+                  onClick={() => {
+                    history.push("/myaccount/settings");
+                    isMobile && toggleSideMenu();
+                  }}
+                  className={classNames(
+                    feature !== "Settings" && classes.unselectedItem,
+                    feature === "Settings" && classes.selectedItem
+                  )}
+                >
+                  <ListItemIcon>
+                    <SettingsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Settings" />
                 </ListItem>
               )}
             />
