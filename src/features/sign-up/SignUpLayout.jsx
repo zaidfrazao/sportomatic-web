@@ -7,6 +7,7 @@ import Dialog, {
   DialogContentText,
   DialogTitle
 } from "material-ui/Dialog";
+import { Redirect } from "react-router-dom";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
@@ -143,14 +144,36 @@ class SignUpLayout extends Component {
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
   }
 
+  componentWillMount() {
+    const { userID } = this.props.match.params;
+    const { loadUserInfo } = this.props.actions;
+
+    if (userID) {
+      loadUserInfo(userID);
+      this.setState({
+        step: 0
+      });
+    }
+  }
+
   componentDidMount() {
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { accountSuccessfullyCreated } = nextProps.uiConfig;
+    const { accountSuccessfullyCreated, userInfo } = nextProps.uiConfig;
+    const { signIn } = nextProps.actions;
     const { history } = nextProps;
+
+    if (userInfo !== this.props.uiConfig.userInfo) {
+      signIn(userInfo.info.email, userInfo.metadata.tempPassword);
+      this.setState({
+        email: userInfo.info.email,
+        name: userInfo.info.name,
+        surname: userInfo.info.surname
+      });
+    }
 
     if (
       accountSuccessfullyCreated !==
@@ -313,22 +336,39 @@ class SignUpLayout extends Component {
 
   renderWelcome(isMobile) {
     const { classes } = this.props;
+    const { userInfo, institutionName } = this.props.uiConfig;
+    const {
+      isUserInfoLoading,
+      isInstitutionNameLoading,
+      isSignInLoading
+    } = this.props.loadingStatus;
 
     return (
       <Dialog open aria-labelledby="sign-up-dialog" fullScreen={isMobile}>
-        <DialogContent className={classes.content}>
-          <img src={logo} alt="Sportomatic Logo" className={classes.logo} />
-          <DialogContentText className={classes.textWrapper}>
-            Sportomatic is the best way to manage your sports. Whether you
-            manage or coach a team, or manage the sports programs for entire
-            institutions, Sportomatic has what you need to get your job done.
-          </DialogContentText>
-          <DialogContentText className={classes.textWrapper}>
-            And it's free!
-          </DialogContentText>
-        </DialogContent>
+        {isInstitutionNameLoading || isUserInfoLoading || isSignInLoading ? (
+          <DialogContent className={classes.content}>
+            <img src={logo} alt="Sportomatic Logo" className={classes.logo} />
+            <CircularProgress />
+          </DialogContent>
+        ) : (
+          <DialogContent className={classes.content}>
+            <img src={logo} alt="Sportomatic Logo" className={classes.logo} />
+            <DialogContentText className={classes.textWrapper}>
+              Hi {userInfo.info.name},
+            </DialogContentText>
+            <DialogContentText className={classes.textWrapper}>
+              In order to join {institutionName}, we need you to complete the
+              sign up process for your new account.
+            </DialogContentText>
+          </DialogContent>
+        )}
         <DialogActions>
-          <Button color="primary" onClick={() => this.updateStep(1)}>
+          <Button onClick={() => this.updateStep(1)}>More info</Button>
+          <Button
+            disabled={isUserInfoLoading || isInstitutionNameLoading}
+            color="primary"
+            onClick={() => this.updateStep(2)}
+          >
             Next
           </Button>
         </DialogActions>
@@ -438,9 +478,6 @@ class SignUpLayout extends Component {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => this.updateStep(0)}>Back</Button>
-          <Button color="primary" onClick={() => this.updateStep(2)}>
-            Next
-          </Button>
         </DialogActions>
       </Dialog>
     );
@@ -448,6 +485,7 @@ class SignUpLayout extends Component {
 
   renderPersonalInfo(isMobile) {
     const { classes, history } = this.props;
+    const { userID } = this.props.match.params;
     const {
       name,
       surname,
@@ -462,8 +500,8 @@ class SignUpLayout extends Component {
         <DialogTitle id="sign-up-dialog-title">Personal Info</DialogTitle>
         <DialogContent className={classes.content}>
           <DialogContentText className={classes.textWrapper}>
-            We just need a couple of pieces of information in order to create
-            your own personalised Sportomatic account.
+            We just need a few pieces of info in order to create your own
+            personalised Sportomatic account.
           </DialogContentText>
           <div className={classes.infoWrapper}>
             <div>
@@ -529,9 +567,13 @@ class SignUpLayout extends Component {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => history.push("/sign-in")}>
-            Back to sign in
-          </Button>
+          {userID ? (
+            <Button onClick={() => this.updateStep(0)}>Back</Button>
+          ) : (
+            <Button onClick={() => history.push("/sign-in")}>
+              Back to sign in
+            </Button>
+          )}
           <Button
             disabled={!this.canSignUp()}
             color="primary"
@@ -546,9 +588,10 @@ class SignUpLayout extends Component {
 
   renderTermsAndConditions(isMobile) {
     const { classes } = this.props;
+    const { userID } = this.props.match.params;
     const { isAccountCreationLoading } = this.props.loadingStatus;
     const { email, password, name, surname } = this.state;
-    const { createUser } = this.props.actions;
+    const { createUser, updateInvitedUser } = this.props.actions;
 
     return (
       <Dialog open aria-labelledby="sign-up-dialog" fullScreen={isMobile}>
@@ -702,16 +745,30 @@ class SignUpLayout extends Component {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => this.updateStep(2)}>Back</Button>
-          <Button
-            color="primary"
-            onClick={() => createUser(email, password, name, surname)}
-          >
-            {isAccountCreationLoading ? (
-              <CircularProgress size={20} />
-            ) : (
-              "Agree"
-            )}
-          </Button>
+          {userID ? (
+            <Button
+              color="primary"
+              onClick={() =>
+                updateInvitedUser(email, password, name, surname, userID)}
+            >
+              {isAccountCreationLoading ? (
+                <CircularProgress size={20} />
+              ) : (
+                "Agree"
+              )}
+            </Button>
+          ) : (
+            <Button
+              color="primary"
+              onClick={() => createUser(email, password, name, surname)}
+            >
+              {isAccountCreationLoading ? (
+                <CircularProgress size={20} />
+              ) : (
+                "Agree"
+              )}
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     );
@@ -719,8 +776,21 @@ class SignUpLayout extends Component {
 
   render() {
     const { classes, history } = this.props;
+    const { userInfo, invalidUserID } = this.props.uiConfig;
     const { isAccountExistsModalOpen } = this.props.dialogs;
+    const { resetUserID } = this.props.actions;
     const { windowWidth, step, email } = this.state;
+
+    if (
+      (userInfo.completeness && userInfo.completeness.hasPassword) ||
+      invalidUserID
+    ) {
+      resetUserID();
+      this.setState({
+        step: 2
+      });
+      return <Redirect to="/sign-up" />;
+    }
 
     const isMobile = windowWidth < 600;
     let render = this.renderWelcome(isMobile);

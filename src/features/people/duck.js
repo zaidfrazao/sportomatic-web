@@ -802,16 +802,29 @@ export function errorCreatingUser(error: { code: string, message: string }) {
   };
 }
 
-export function createUser(userInfo) {
+export function createUser(email, password, userInfo) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestCreateUser());
     const db = firebase.firestore();
 
-    return db
-      .collection("users")
-      .add(userInfo)
-      .then(() => dispatch(receiveCreateUser()))
-      .catch(error => dispatch(errorCreatingUser(error)));
+    console.log(email);
+    console.log(password);
+    console.log(userInfo);
+
+    return firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(user => {
+        db
+          .collection("users")
+          .doc(user.uid)
+          .set(userInfo)
+          .then(() => dispatch(receiveCreateUser()))
+          .catch(error => dispatch(errorCreatingUser(error)));
+      })
+      .catch(error => {
+        dispatch(errorCreatingUser(error));
+      });
   };
 }
 

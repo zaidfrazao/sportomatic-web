@@ -128,6 +128,17 @@ class InvitePersonModal extends Component {
     }
   }
 
+  generatePassword() {
+    var text = "";
+    var possible =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 10; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+  }
+
   getType() {
     const { inviteeInfo, institutionID } = this.props;
 
@@ -667,7 +678,17 @@ class InvitePersonModal extends Component {
             color="primary"
             onClick={() => {
               if (personStatus === "NEW_USER") {
-                createUser({
+                const tempPassword = this.generatePassword();
+                const userInfo = {
+                  completeness: {
+                    hasName: true,
+                    hasPassword: false,
+                    hasSurname: true,
+                    hasEmail: true,
+                    hasPhoneNumber: false,
+                    hasProfilePicture: false,
+                    hasSports: false
+                  },
                   info: {
                     email: emailEntered,
                     name: newUser.name,
@@ -696,9 +717,23 @@ class InvitePersonModal extends Component {
                   metadata: {
                     creationDate: new Date(Date.now()),
                     createdVia: "INVITE",
-                    status: "ACTIVE"
+                    createdBy: institutionID,
+                    status: "ACTIVE",
+                    tempPassword
+                  },
+                  tutorialStatus: {
+                    lessons: {
+                      dashboard: "NOT_STARTED",
+                      schedule: "NOT_STARTED",
+                      hours: "NOT_STARTED",
+                      results: "NOT_STARTED",
+                      wages: "NOT_STARTED",
+                      people: "NOT_STARTED",
+                      teams: "NOT_STARTED"
+                    }
                   }
-                });
+                };
+                createUser(emailEntered, tempPassword, userInfo);
               } else {
                 invitePerson(inviteeID, {
                   ...inviteeInfo,

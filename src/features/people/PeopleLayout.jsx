@@ -670,7 +670,8 @@ class PeopleLayout extends Component {
                   actions={{
                     editRoles: () => editRoles(),
                     invitePerson: (id, info) => invitePerson(id, info),
-                    createUser: userInfo => createUser(userInfo),
+                    createUser: (email, password, userInfo) =>
+                      createUser(email, password, userInfo),
                     fetchInviteeInfo: email => fetchInviteeInfo(email),
                     closeModal: () => closeInvitePersonModal()
                   }}
