@@ -289,8 +289,7 @@ class TeamsLayout extends Component {
       isAddTeamDialogLoading,
       isEditTeamDialogLoading,
       isTeamsLoading,
-      isManagersLoading,
-      isCoachesLoading,
+      isStaffLoading,
       isOptionsLoading,
       isEventsByTeamLoading
     } = this.props.loadingStatus;
@@ -347,8 +346,8 @@ class TeamsLayout extends Component {
             <TeamInfo
               role={role}
               isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
-              isCoachesLoading={isCoachesLoading}
-              isManagersLoading={isManagersLoading}
+              isCoachesLoading={isStaffLoading}
+              isManagersLoading={isStaffLoading}
               isEventsByTeamLoading={isEventsByTeamLoading}
               eventsByTeam={eventsByTeam}
               coaches={coaches}
@@ -399,7 +398,7 @@ class TeamsLayout extends Component {
               ageGroups={_.keys(this.state.ageGroups)}
               showDeletedTeams={this.state.showDeletedTeams}
               isMobile={isMobile}
-              isLoading={isManagersLoading || isCoachesLoading}
+              isLoading={isStaffLoading}
               initialFilters={filters}
               applyFilters={applyFilters}
               addTeam={() => {
