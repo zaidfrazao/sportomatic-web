@@ -23,6 +23,9 @@ export const ERROR_UPDATING_PAYMENT_DEFAULTS = `${NAMESPACE}/ERROR_UPDATING_PAYM
 export const REQUEST_UPDATE_PERMISSIONS = `${NAMESPACE}/REQUEST_UPDATE_PERMISSIONS`;
 export const RECEIVE_UPDATE_PERMISSIONS = `${NAMESPACE}/RECEIVE_UPDATE_PERMISSIONS`;
 export const ERROR_UPDATING_PERMISSIONS = `${NAMESPACE}/ERROR_UPDATING_PERMISSIONS`;
+export const REQUEST_UPDATE_PROFILE_PICTURE = `${NAMESPACE}/REQUEST_UPDATE_PROFILE_PICTURE`;
+export const RECEIVE_UPDATE_PROFILE_PICTURE = `${NAMESPACE}/RECEIVE_UPDATE_PROFILE_PICTURE`;
+export const ERROR_UPDATING_PROFILE_PICTURE = `${NAMESPACE}/ERROR_UPDATING_PROFILE_PICTURE`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -52,7 +55,8 @@ export const loadingStatusInitialState = {
   isUpdateSportsLoading: false,
   isUpdateLoginDetailsLoading: false,
   isUpdatePermissionsLoading: false,
-  isUpdatePaymentDefaultsLoading: false
+  isUpdatePaymentDefaultsLoading: false,
+  isUpdateProfilePictureLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -114,6 +118,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isUpdatePermissionsLoading: false
+      };
+    case REQUEST_UPDATE_PROFILE_PICTURE:
+      return {
+        ...state,
+        isUpdateProfilePictureLoading: true
+      };
+    case RECEIVE_UPDATE_PROFILE_PICTURE:
+    case ERROR_UPDATING_PROFILE_PICTURE:
+      return {
+        ...state,
+        isUpdateProfilePictureLoading: false
       };
     default:
       return state;
@@ -395,6 +410,57 @@ export function updatePaymentDefaults(institutionID, paymentDefaults) {
       })
       .catch(error => {
         dispatch(errorUpdatingPaymentDefaults(error));
+      });
+  };
+}
+
+export function requestUpdateProfilePicture() {
+  return {
+    type: REQUEST_UPDATE_PROFILE_PICTURE
+  };
+}
+
+export function receiveUpdateProfilePicture() {
+  return {
+    type: RECEIVE_UPDATE_PROFILE_PICTURE
+  };
+}
+
+export function errorUpdatingProfilePicture(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_UPDATING_PROFILE_PICTURE,
+    payload: {
+      error
+    }
+  };
+}
+
+export function updateProfilePicture(userID, blob) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestUpdateProfilePicture());
+
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+    const storageRef = firebase.storage().ref();
+    const newImageRef = storageRef.child(
+      `users/${userID}/profile-picture.jpeg`
+    );
+
+    return newImageRef
+      .put(blob)
+      .then(snapshot => {
+        userRef
+          .update({
+            "info.profilePictureURL": snapshot.downloadURL
+          })
+          .then(() => dispatch(receiveUpdateProfilePicture()))
+          .catch(error => dispatch(errorUpdatingProfilePicture(error)));
+      })
+      .catch(error => {
+        dispatch(errorUpdatingProfilePicture(error));
       });
   };
 }

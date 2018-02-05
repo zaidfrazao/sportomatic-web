@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
-import Avatar from "material-ui/Avatar";
+import AvatarEditor from "react-avatar-editor";
 import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import Checkbox from "material-ui/Checkbox";
@@ -57,6 +57,9 @@ const styles = theme => ({
     color: grey[50],
     borderBottom: `1px solid ${grey[200]}`
   },
+  input: {
+    display: "none"
+  },
   loaderWrapper: {
     flexGrow: 1,
     display: "flex",
@@ -72,9 +75,10 @@ const styles = theme => ({
   },
   picture: {
     backgroundColor: grey[300],
-    width: 240,
-    height: "auto",
     margin: 24
+  },
+  pictureUploader: {
+    margin: "16px 0"
   },
   pictureWrapper: {
     padding: 16,
@@ -152,6 +156,11 @@ class TextMaskCustom extends Component {
 
 class PersonInfo extends Component {
   state = {
+    allowZoomOut: false,
+    position: { x: 0.5, y: 0.5 },
+    scale: 1,
+    width: 220,
+    height: 220,
     name: "",
     surname: "",
     email: "",
@@ -472,6 +481,32 @@ class PersonInfo extends Component {
     }
   }
 
+  handleNewImage = e => {
+    this.setState({ image: e.target.files[0] });
+  };
+
+  handleSave = data => {
+    const { userID } = this.props;
+    const { updateProfilePicture } = this.props.actions;
+
+    this.editor.getImageScaledToCanvas().toBlob(blob => {
+      updateProfilePicture(userID, blob);
+    }, "image/jpeg");
+  };
+
+  handleScale = e => {
+    const scale = parseFloat(e.target.value);
+    this.setState({ scale });
+  };
+
+  setEditorRef = editor => {
+    if (editor) this.editor = editor;
+  };
+
+  handlePositionChange = position => {
+    this.setState({ position });
+  };
+
   render() {
     const {
       classes,
@@ -479,6 +514,7 @@ class PersonInfo extends Component {
       isUpdateBasicInfoLoading,
       isUpdateSportsLoading,
       isUpdateLoginDetailsLoading,
+      isUpdateProfilePictureLoading,
       userID
     } = this.props;
     const {
@@ -521,16 +557,66 @@ class PersonInfo extends Component {
             >
               <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
                 <div className={classes.pictureWrapper}>
-                  <Avatar
-                    src={
-                      profilePictureURL === ""
-                        ? defaultProfilePicture
-                        : profilePictureURL
-                    }
-                    className={classes.picture}
+                  <div className={classes.pictureUploader}>
+                    <AvatarEditor
+                      ref={this.setEditorRef}
+                      scale={parseFloat(this.state.scale)}
+                      width={this.state.width}
+                      height={this.state.height}
+                      border={16}
+                      position={this.state.position}
+                      onPositionChange={this.handlePositionChange}
+                      onSave={this.handleSave}
+                      image={
+                        this.state.image ||
+                        profilePictureURL ||
+                        defaultProfilePicture
+                      }
+                    />
+                  </div>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="zoom" shrink>
+                      Zoom
+                    </InputLabel>
+                    <Input
+                      name="scale"
+                      type="range"
+                      onChange={this.handleScale}
+                      inputProps={{
+                        min: this.state.allowZoomOut ? "0.1" : "1",
+                        max: "2",
+                        step: "0.01",
+                        defaultValue: "1"
+                      }}
+                    />
+                  </FormControl>
+                  <input
+                    accept="image/*"
+                    className={classes.input}
+                    id="icon-button-file"
+                    type="file"
+                    onChange={this.handleNewImage}
                   />
-                  <Button className={classes.button} color="primary">
-                    Change profile picture
+                  <label htmlFor="icon-button-file">
+                    <Button
+                      className={classes.button}
+                      color="primary"
+                      component="span"
+                    >
+                      Change profile picture
+                    </Button>
+                  </label>
+                  <Button
+                    disabled={!this.state.image}
+                    className={classes.button}
+                    color="primary"
+                    onClick={this.handleSave}
+                  >
+                    {isUpdateProfilePictureLoading ? (
+                      <CircularProgress size={20} />
+                    ) : (
+                      "Save new picture"
+                    )}
                   </Button>
                 </div>
               </Grid>

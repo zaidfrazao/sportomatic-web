@@ -101,7 +101,8 @@ class SettingsLayout extends Component {
       isUpdateSportsLoading,
       isUpdateLoginDetailsLoading,
       isUpdatePermissionsLoading,
-      isUpdatePaymentDefaultsLoading
+      isUpdatePaymentDefaultsLoading,
+      isUpdateProfilePictureLoading
     } = this.props.loadingStatus;
     const {
       updateTab,
@@ -109,7 +110,8 @@ class SettingsLayout extends Component {
       updateSports,
       updateLoginDetails,
       updatePermissions,
-      updatePaymentDefaults
+      updatePaymentDefaults,
+      updateProfilePicture
     } = this.props.actions;
 
     const ad = this.createAd();
@@ -180,12 +182,14 @@ class SettingsLayout extends Component {
               isUpdateBasicInfoLoading={isUpdateBasicInfoLoading}
               isUpdateSportsLoading={isUpdateSportsLoading}
               isUpdateLoginDetailsLoading={isUpdateLoginDetailsLoading}
+              isUpdateProfilePictureLoading={isUpdateProfilePictureLoading}
               isMobile={isMobile}
               isTablet={isTablet}
               actions={{
                 updateBasicInfo,
                 updateSports,
-                updateLoginDetails
+                updateLoginDetails,
+                updateProfilePicture
               }}
             />
           )}
