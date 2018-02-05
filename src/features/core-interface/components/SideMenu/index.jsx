@@ -86,7 +86,8 @@ class SideMenu extends Component {
       isMobile,
       feature,
       role,
-      versionNumber
+      versionNumber,
+      permissions
     } = this.props;
     const { toggleSideMenu } = this.props.actions;
 
@@ -195,7 +196,9 @@ class SideMenu extends Component {
                 </ListItem>
               )}
             />
-            {(role === "admin" || role === "coach") && (
+            {(role === "admin" ||
+              role === "coach" ||
+              (role === "manager" && permissions.managers.wages.canView)) && (
               <Route
                 key={5}
                 render={({ history }) => (

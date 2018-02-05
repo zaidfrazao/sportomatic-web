@@ -236,7 +236,8 @@ class ResultsLayout extends Component {
       isMobile,
       isTablet,
       teams,
-      role
+      role,
+      permissions
     } = this.props;
     const { lastVisible, institutionEmblemURL } = this.props.uiConfig;
     const {
@@ -331,7 +332,18 @@ class ResultsLayout extends Component {
                     return (
                       <ResultCard
                         key={`results-${eventID}`}
-                        role={role}
+                        canEdit={
+                          (role === "coach" &&
+                            permissions.coaches.results.canEdit) ||
+                          role === "admin" ||
+                          role === "manager"
+                        }
+                        canApprove={
+                          (role === "coach" &&
+                            permissions.coaches.results.canApprove) ||
+                          role === "admin" ||
+                          role === "manager"
+                        }
                         teams={teams}
                         isMobile={isMobile}
                         isTablet={isTablet}
@@ -556,7 +568,8 @@ class ResultsLayout extends Component {
       teams,
       filters,
       activeInstitutionID,
-      role
+      role,
+      permissions
     } = this.props;
     const { currentTab, institutionEmblemURL } = this.props.uiConfig;
     const {
@@ -713,13 +726,24 @@ class ResultsLayout extends Component {
                           return (
                             <ResultCard
                               key={`results-${eventID}`}
-                              role={role}
                               teams={teams}
                               isMobile={isMobile}
                               isTablet={isTablet}
                               eventID={eventID}
                               eventInfo={eventInfo}
                               institutionEmblemURL={institutionEmblemURL}
+                              canEdit={
+                                (role === "coach" &&
+                                  permissions.coaches.results.canEdit) ||
+                                role === "admin" ||
+                                role === "manager"
+                              }
+                              canApprove={
+                                (role === "coach" &&
+                                  permissions.coaches.results.canApprove) ||
+                                role === "admin" ||
+                                role === "manager"
+                              }
                               actions={{
                                 startLogging,
                                 finaliseResults,

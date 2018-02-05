@@ -55,7 +55,8 @@ class ResultCard extends Component {
       isTablet,
       eventID,
       institutionEmblemURL,
-      role
+      canEdit,
+      canApprove
     } = this.props;
     const { startLogging, finaliseResults, editResult } = this.props.actions;
 
@@ -78,7 +79,8 @@ class ResultCard extends Component {
               }}
               isMobile={isMobile}
               isTablet={isTablet}
-              role={role}
+              canEdit={canEdit}
+              canApprove={canApprove}
               actions={{
                 startLogging,
                 finaliseResults,

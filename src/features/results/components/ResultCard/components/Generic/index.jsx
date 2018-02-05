@@ -229,7 +229,14 @@ class Generic extends Component {
   }
 
   renderMobile() {
-    const { classes, teamID, eventID, resultsStatus, role } = this.props;
+    const {
+      classes,
+      teamID,
+      eventID,
+      resultsStatus,
+      canEdit,
+      canApprove
+    } = this.props;
     const { name, emblemURL } = this.props.ourTeam;
     const { startLogging, finaliseResults, editResult } = this.props.actions;
     const { opponents } = this.state;
@@ -343,6 +350,7 @@ class Generic extends Component {
                           ourScore,
                           theirScore
                         })}
+                      disabled={!canEdit}
                     />
                   </div>
                   <div className={classes.pointNameColumn}>
@@ -381,6 +389,7 @@ class Generic extends Component {
                           ourScore,
                           theirScore
                         })}
+                      disabled={!canEdit}
                     />
                   </div>
                 </div>
@@ -390,6 +399,7 @@ class Generic extends Component {
                   <div className={classes.commentaryInnerWrapper}>
                     <TextField
                       className={classes.commentaryTextField}
+                      disabled={!canEdit}
                       onChange={e =>
                         this.updateResult(opponentID, {
                           commentary: e.target.value,
@@ -422,6 +432,7 @@ class Generic extends Component {
         {resultsStatus === "AWAITING_START" && (
           <Button
             raised
+            disabled={!canEdit}
             className={classes.startButton}
             onClick={() =>
               startLogging(
@@ -436,19 +447,17 @@ class Generic extends Component {
                 _.keys(opponents)
               )}
           >
-            Log results
+            {canEdit ? "Log results" : "Awaiting results"}
           </Button>
         )}
         {resultsStatus === "AWAITING_FINALISE" && (
           <Button
             raised
-            disabled={role === "coach"}
+            disabled={!canApprove}
             className={classes.finaliseButton}
             onClick={() => finaliseResults(eventID, teamID)}
           >
-            {role === "admin" || role === "manager"
-              ? "Finalise results"
-              : "To be finalised"}
+            {canApprove ? "Finalise results" : "To be finalised"}
           </Button>
         )}
         {resultsStatus === "FINALISED" && (
@@ -472,7 +481,14 @@ class Generic extends Component {
   }
 
   renderDesktop() {
-    const { classes, teamID, eventID, resultsStatus, role } = this.props;
+    const {
+      classes,
+      teamID,
+      eventID,
+      resultsStatus,
+      canEdit,
+      canApprove
+    } = this.props;
     const { name, emblemURL } = this.props.ourTeam;
     const { startLogging, finaliseResults, editResult } = this.props.actions;
     const { opponents } = this.state;
@@ -570,6 +586,7 @@ class Generic extends Component {
                 <div className={classes.subPointWrapper}>
                   <div className={classes.subPointColumn}>
                     <TextField
+                      disabled={!canEdit}
                       type="number"
                       value={ourScore.requiredPoints.points}
                       inputProps={{
@@ -608,6 +625,7 @@ class Generic extends Component {
                   </div>
                   <div className={classes.subPointColumn}>
                     <TextField
+                      disabled={!canEdit}
                       type="number"
                       value={theirScore.requiredPoints.points}
                       inputProps={{
@@ -645,6 +663,7 @@ class Generic extends Component {
                 <div className={classes.commentaryWrapper}>
                   <div className={classes.commentaryInnerWrapper}>
                     <TextField
+                      disabled={!canEdit}
                       className={classes.commentaryTextField}
                       onChange={e =>
                         this.updateResult(opponentID, {
@@ -678,6 +697,7 @@ class Generic extends Component {
         {resultsStatus === "AWAITING_START" && (
           <Button
             raised
+            disabled={!canEdit}
             className={classes.startButton}
             onClick={() =>
               startLogging(
@@ -692,19 +712,17 @@ class Generic extends Component {
                 _.keys(opponents)
               )}
           >
-            Log results
+            {canEdit ? "Log results" : "Awaiting results"}
           </Button>
         )}
         {resultsStatus === "AWAITING_FINALISE" && (
           <Button
             raised
-            disabled={role === "coach"}
+            disabled={!canApprove}
             className={classes.finaliseButton}
             onClick={() => finaliseResults(eventID, teamID)}
           >
-            {role === "admin" || role === "manager"
-              ? "Finalise results"
-              : "To be finalised"}
+            {canApprove ? "Finalise results" : "To be finalised"}
           </Button>
         )}
         {resultsStatus === "FINALISED" && (

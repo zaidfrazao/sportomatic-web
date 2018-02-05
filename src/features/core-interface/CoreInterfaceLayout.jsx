@@ -237,282 +237,328 @@ class CoreInterfaceLayout extends Component {
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
 
+    let permissions = {
+      coaches: {
+        events: {
+          canCancel: false,
+          canCreate: false,
+          canEdit: false
+        },
+        results: {
+          canApprove: false,
+          canEdit: true
+        },
+        teams: {
+          canEdit: false
+        }
+      },
+      managers: {
+        events: {
+          canCancel: true,
+          canCreate: false,
+          canEdit: true
+        },
+        teams: {
+          canEdit: false
+        },
+        wages: {
+          canCreate: false,
+          canEdit: false,
+          canView: false
+        }
+      }
+    };
+    if (institutions[activeInstitutionID]) {
+      permissions = institutions[activeInstitutionID].permissions;
+    }
+
     if (!isLoggedIn) {
       return <Redirect to="/sign-in" />;
     }
 
     if (isAccountInfoLoading || isInstitutionsLoading) {
       return <LoadingScreen />;
-    }
-
-    return (
-      <div className={classes.root}>
-        <div className={classes.appFrame}>
-          <CustomAppBar
-            title={appBarTitle}
-            isSideMenuOpen={isSideMenuOpen}
-            actions={{
-              toggleSideMenu,
-              openLogOutModal,
-              markNotificationsRead,
-              openManageInstitutionsDialog
-            }}
-            isMobile={isMobile}
-            readNotifications={readNotifications}
-            unreadNotifications={unreadNotifications}
-            isNotificationsLoading={isNotificationsLoading}
-            emblemURL={
-              institutions[activeInstitutionID]
-                ? institutions[activeInstitutionID].info.emblemURL
-                : ""
-            }
-            role={role}
-          />
-          <SideMenu
-            isOpen={isSideMenuOpen}
-            actions={{
-              toggleSideMenu
-            }}
-            isMobile={isMobile}
-            feature={appBarTitle}
-            versionNumber="0.9.9"
-            role={role}
-          />
-          <div className={classes.content}>
-            <div className={classes.main}>
-              <Switch>
-                <Route exact path={"/myaccount/"}>
-                  <Dashboard
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    userID={userID}
-                    activeInstitutionID={activeInstitutionID}
-                    accountInfo={accountInfo}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                    institutions={institutions}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/home/"}>
-                  <Dashboard
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    userID={userID}
-                    activeInstitutionID={activeInstitutionID}
-                    accountInfo={accountInfo}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                    institutions={institutions}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/settings/"}>
-                  <Settings
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    userID={userID}
-                    activeInstitutionID={activeInstitutionID}
-                    accountInfo={accountInfo}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                    institutions={institutions}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/settings/:institutionID"}>
-                  <Settings
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    userID={userID}
-                    activeInstitutionID={activeInstitutionID}
-                    accountInfo={accountInfo}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                    institutions={institutions}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/hours/"}>
-                  <Hours
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    activeInstitutionID={activeInstitutionID}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                    userID={userID}
-                    role={role}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/hours/:coachID"}>
-                  <Hours
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    activeInstitutionID={activeInstitutionID}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                    userID={userID}
-                    role={role}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/results/"}>
-                  <Results
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    activeInstitutionID={activeInstitutionID}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                    userID={userID}
-                    role={role}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/results/:teamID"}>
-                  <Results
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    activeInstitutionID={activeInstitutionID}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                    userID={userID}
-                    role={role}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/results/:teamID/:eventID"}>
-                  <Results
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    activeInstitutionID={activeInstitutionID}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                    userID={userID}
-                    role={role}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/people/"}>
-                  <People
-                    activeInstitutionID={activeInstitutionID}
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                    userID={userID}
-                    role={role}
-                  />
-                </Route>
-                <Route path={"/myaccount/people/:personID"}>
-                  <People
-                    activeInstitutionID={activeInstitutionID}
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                    userID={userID}
-                    role={role}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/teams/"}>
-                  <Teams
-                    userID={userID}
-                    role={role}
-                    activeInstitutionID={activeInstitutionID}
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                  />
-                </Route>
-                <Route path={"/myaccount/teams/:teamID"}>
-                  <Teams
-                    userID={userID}
-                    role={role}
-                    activeInstitutionID={activeInstitutionID}
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/schedule/"}>
-                  <Schedule
-                    userID={userID}
-                    role={role}
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    activeInstitutionID={activeInstitutionID}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/schedule/:dateSelected"}>
-                  <Schedule
-                    userID={userID}
-                    role={role}
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    activeInstitutionID={activeInstitutionID}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                  />
-                </Route>
-                <Route
-                  exact
-                  path={"/myaccount/schedule/:dateSelected/:eventID"}
-                >
-                  <Schedule
-                    userID={userID}
-                    role={role}
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    activeInstitutionID={activeInstitutionID}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                  />
-                </Route>
-                <Route exact path={"/myaccount/wages"}>
-                  <Wages
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    userID={userID}
-                    role={role}
-                    activeInstitutionID={activeInstitutionID}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                  />
-                </Route>
-                <Route path={"/myaccount/wages/:coachID"}>
-                  <Wages
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    userID={userID}
-                    role={role}
-                    activeInstitutionID={activeInstitutionID}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                  />
-                </Route>
-                <Route>
-                  <Dashboard
-                    isMobile={isMobile}
-                    isTablet={isTablet}
-                    userID={userID}
-                    activeInstitutionID={activeInstitutionID}
-                    accountInfo={accountInfo}
-                    isAccountInfoLoading={isAccountInfoLoading}
-                    institutions={institutions}
-                  />
-                </Route>
-              </Switch>
+    } else {
+      return (
+        <div className={classes.root}>
+          <div className={classes.appFrame}>
+            <CustomAppBar
+              title={appBarTitle}
+              isSideMenuOpen={isSideMenuOpen}
+              actions={{
+                toggleSideMenu,
+                openLogOutModal,
+                markNotificationsRead,
+                openManageInstitutionsDialog
+              }}
+              isMobile={isMobile}
+              readNotifications={readNotifications}
+              unreadNotifications={unreadNotifications}
+              isNotificationsLoading={isNotificationsLoading}
+              emblemURL={
+                institutions[activeInstitutionID]
+                  ? institutions[activeInstitutionID].info.emblemURL
+                  : ""
+              }
+              role={role}
+            />
+            <SideMenu
+              isOpen={isSideMenuOpen}
+              actions={{
+                toggleSideMenu
+              }}
+              isMobile={isMobile}
+              feature={appBarTitle}
+              versionNumber="0.9.9"
+              role={role}
+              permissions={permissions}
+            />
+            <div className={classes.content}>
+              <div className={classes.main}>
+                <Switch>
+                  <Route exact path={"/myaccount/"}>
+                    <Dashboard
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      userID={userID}
+                      activeInstitutionID={activeInstitutionID}
+                      accountInfo={accountInfo}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      institutions={institutions}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/home/"}>
+                    <Dashboard
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      userID={userID}
+                      activeInstitutionID={activeInstitutionID}
+                      accountInfo={accountInfo}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      institutions={institutions}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/settings/"}>
+                    <Settings
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      userID={userID}
+                      activeInstitutionID={activeInstitutionID}
+                      accountInfo={accountInfo}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      institutions={institutions}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/settings/:institutionID"}>
+                    <Settings
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      userID={userID}
+                      activeInstitutionID={activeInstitutionID}
+                      accountInfo={accountInfo}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      institutions={institutions}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/hours/"}>
+                    <Hours
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      activeInstitutionID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      userID={userID}
+                      role={role}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/hours/:coachID"}>
+                    <Hours
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      activeInstitutionID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      userID={userID}
+                      role={role}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/results/"}>
+                    <Results
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      activeInstitutionID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      userID={userID}
+                      role={role}
+                      permissions={permissions}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/results/:teamID"}>
+                    <Results
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      activeInstitutionID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      userID={userID}
+                      role={role}
+                      permissions={permissions}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/results/:teamID/:eventID"}>
+                    <Results
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      activeInstitutionID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      userID={userID}
+                      role={role}
+                      permissions={permissions}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/people/"}>
+                    <People
+                      activeInstitutionID={activeInstitutionID}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      userID={userID}
+                      role={role}
+                    />
+                  </Route>
+                  <Route path={"/myaccount/people/:personID"}>
+                    <People
+                      activeInstitutionID={activeInstitutionID}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      userID={userID}
+                      role={role}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/teams/"}>
+                    <Teams
+                      userID={userID}
+                      role={role}
+                      activeInstitutionID={activeInstitutionID}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      permissions={permissions}
+                    />
+                  </Route>
+                  <Route path={"/myaccount/teams/:teamID"}>
+                    <Teams
+                      userID={userID}
+                      role={role}
+                      activeInstitutionID={activeInstitutionID}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      permissions={permissions}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/schedule/"}>
+                    <Schedule
+                      userID={userID}
+                      role={role}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      activeInstitutionID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      permissions={permissions}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/schedule/:dateSelected"}>
+                    <Schedule
+                      userID={userID}
+                      role={role}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      activeInstitutionID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      permissions={permissions}
+                    />
+                  </Route>
+                  <Route
+                    exact
+                    path={"/myaccount/schedule/:dateSelected/:eventID"}
+                  >
+                    <Schedule
+                      userID={userID}
+                      role={role}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      activeInstitutionID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      permissions={permissions}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/wages"}>
+                    <Wages
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      userID={userID}
+                      role={role}
+                      activeInstitutionID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      permissions={permissions}
+                    />
+                  </Route>
+                  <Route path={"/myaccount/wages/:coachID"}>
+                    <Wages
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      userID={userID}
+                      role={role}
+                      activeInstitutionID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      permissions={permissions}
+                    />
+                  </Route>
+                  <Route>
+                    <Dashboard
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      userID={userID}
+                      activeInstitutionID={activeInstitutionID}
+                      accountInfo={accountInfo}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      institutions={institutions}
+                    />
+                  </Route>
+                </Switch>
+              </div>
             </div>
           </div>
+          <DecisionModal
+            isOpen={isLogOutModalOpen}
+            handleYesClick={() => {
+              signOut();
+              closeLogOutModal();
+            }}
+            handleNoClick={closeLogOutModal}
+            heading="Log Out"
+            message="Are you sure you want to log out?"
+          />
+          <ManageInstitutionsDialog
+            isOpen={isManageInstitutionsDialogOpen}
+            isMobile={isMobile}
+            institutions={institutions}
+            verifiedInstitutions={verifiedInstitutions}
+            isLoading={
+              isInstitutionCreationLoading ||
+              isVerifiedInstitutionsLoading ||
+              isJoinInstitutionLoading
+            }
+            userID={userID}
+            actions={{
+              createInstitution,
+              loadVerifiedInstitutions,
+              joinInstitution,
+              closeDialog: () => closeManageInstitutionsDialog()
+            }}
+          />
         </div>
-        <DecisionModal
-          isOpen={isLogOutModalOpen}
-          handleYesClick={() => {
-            signOut();
-            closeLogOutModal();
-          }}
-          handleNoClick={closeLogOutModal}
-          heading="Log Out"
-          message="Are you sure you want to log out?"
-        />
-        <ManageInstitutionsDialog
-          isOpen={isManageInstitutionsDialogOpen}
-          isMobile={isMobile}
-          institutions={institutions}
-          verifiedInstitutions={verifiedInstitutions}
-          isLoading={
-            isInstitutionCreationLoading ||
-            isVerifiedInstitutionsLoading ||
-            isJoinInstitutionLoading
-          }
-          userID={userID}
-          actions={{
-            createInstitution,
-            loadVerifiedInstitutions,
-            joinInstitution,
-            closeDialog: () => closeManageInstitutionsDialog()
-          }}
-        />
-      </div>
-    );
+      );
+    }
   }
 }
 
