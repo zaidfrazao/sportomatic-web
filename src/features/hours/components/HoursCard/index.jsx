@@ -228,7 +228,8 @@ class HoursCard extends Component {
       staff,
       institutionID,
       role,
-      userID
+      userID,
+      paymentDefaults
     } = this.props;
     const { signIn, signOut, approveHours } = this.props.actions;
 
@@ -773,7 +774,8 @@ class HoursCard extends Component {
                           .paymentDefaults,
                         eventInfo,
                         moment(signInTime),
-                        moment(signOutTime)
+                        moment(signOutTime),
+                        paymentDefaults.maxOvertimeHours
                       )}
                   >
                     <ApproveIcon /> Approve

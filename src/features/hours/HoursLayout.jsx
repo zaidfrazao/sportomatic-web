@@ -194,7 +194,8 @@ class HoursLayout extends Component {
       staff,
       activeInstitutionID,
       role,
-      userID
+      userID,
+      paymentDefaults
     } = this.props;
     const { lastVisible } = this.props.uiConfig;
     const { isStaffLoading, isEventsByDateLoading } = this.props.loadingStatus;
@@ -288,6 +289,7 @@ class HoursLayout extends Component {
                         isTablet={isTablet}
                         eventID={eventID}
                         eventInfo={eventInfo}
+                        paymentDefaults={paymentDefaults}
                         institutionID={activeInstitutionID}
                         staff={staff}
                         actions={{

@@ -507,7 +507,8 @@ export function approveHours(
   paymentInfo,
   eventInfo,
   signInTime,
-  signOutTime
+  signOutTime,
+  maxOvertimeHours
 ) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestApproveHours());
@@ -525,6 +526,7 @@ export function approveHours(
 
       let standardHours = 0;
       let overtimeHours = 0;
+      let exceededMaxOvertimeHours = false;
       const startTime = moment(eventInfo.requiredInfo.times.start);
       const endTime = moment(eventInfo.requiredInfo.times.end);
       if (startTime.isBefore(signInTime)) {
@@ -547,6 +549,11 @@ export function approveHours(
         }
       }
 
+      if (overtimeHours > maxOvertimeHours) {
+        overtimeHours = maxOvertimeHours;
+        exceededMaxOvertimeHours = true;
+      }
+
       const wage =
         standardHours * paymentInfo.rates.standard +
         overtimeHours * paymentInfo.rates.overtime;
@@ -560,7 +567,8 @@ export function approveHours(
           date: eventInfo.requiredInfo.times.start,
           hours: {
             standard: standardHours,
-            overtime: overtimeHours
+            overtime: overtimeHours,
+            exceededMaxOvertimeHours
           },
           rates: paymentInfo.rates,
           title: eventInfo.requiredInfo.title,

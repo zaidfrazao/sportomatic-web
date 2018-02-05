@@ -268,8 +268,22 @@ class CoreInterfaceLayout extends Component {
         }
       }
     };
+    let paymentDefaults = {
+      maxOvertimeHours: 3,
+      payDay: {
+        day: 1,
+        isEndOfTheMonth: false
+      },
+      rates: {
+        overtime: 150,
+        salary: 6000,
+        standard: 100
+      },
+      type: "HOURLY"
+    };
     if (institutions[activeInstitutionID]) {
       permissions = institutions[activeInstitutionID].permissions;
+      paymentDefaults = institutions[activeInstitutionID].paymentDefaults;
     }
 
     if (!isLoggedIn) {
@@ -368,6 +382,7 @@ class CoreInterfaceLayout extends Component {
                       isAccountInfoLoading={isAccountInfoLoading}
                       userID={userID}
                       role={role}
+                      paymentDefaults={paymentDefaults}
                     />
                   </Route>
                   <Route exact path={"/myaccount/hours/:coachID"}>
@@ -378,6 +393,7 @@ class CoreInterfaceLayout extends Component {
                       isAccountInfoLoading={isAccountInfoLoading}
                       userID={userID}
                       role={role}
+                      paymentDefaults={paymentDefaults}
                     />
                   </Route>
                   <Route exact path={"/myaccount/results/"}>
