@@ -332,7 +332,8 @@ class ScheduleLayout extends Component {
       events,
       filters,
       role,
-      userID
+      userID,
+      permissions
     } = this.props;
     const { dateSelected, eventID } = this.props.match.params;
     const {
@@ -458,6 +459,16 @@ class ScheduleLayout extends Component {
           <EventInfo
             userID={userID}
             role={role}
+            canEdit={
+              role === "admin" ||
+              (role === "coach" && permissions.coaches.events.canEdit) ||
+              (role === "manager" && permissions.managers.events.canEdit)
+            }
+            canCancel={
+              role === "admin" ||
+              (role === "coach" && permissions.coaches.events.canCancel) ||
+              (role === "manager" && permissions.managers.events.canCancel)
+            }
             coaches={coaches}
             managers={managers}
             teams={teams}
@@ -641,7 +652,11 @@ class ScheduleLayout extends Component {
       return (
         <div className={classes.contentWrapper}>
           <FiltersToolbar
-            role={role}
+            canCreate={
+              role === "admin" ||
+              (role === "coach" && permissions.coaches.events.canCreate) ||
+              (role === "manager" && permissions.managers.events.canCreate)
+            }
             eventTypes={_.keys(this.state.eventTypes)}
             sports={_.keys(this.state.sports)}
             divisions={_.keys(this.state.divisions)}

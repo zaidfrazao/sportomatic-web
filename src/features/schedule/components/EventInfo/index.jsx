@@ -1039,7 +1039,7 @@ class EventInfo extends Component {
   }
 
   render() {
-    const { classes, info, isPastEvent, role } = this.props;
+    const { classes, info, isPastEvent, canCancel, canEdit } = this.props;
     const {
       updateView,
       editEvent,
@@ -1055,8 +1055,7 @@ class EventInfo extends Component {
 
     const ad = this.createAd();
     const { coaches, managers, teams } = this.getListItems();
-    const showButtons =
-      !isPastEvent && info && (role === "admin" || role === "manager");
+    const showButtons = !isPastEvent && info;
 
     let cancelButton = <div />;
     if (showButtons) {
@@ -1131,23 +1130,24 @@ class EventInfo extends Component {
               )}
             />
             <div className={classes.flexGrow} />
-            {showButtons && cancelButton}
-            {showButtons && (
-              <Tooltip title="Edit event" placement="bottom">
-                <IconButton
-                  disabled={
-                    isInfoLoading ||
-                    isCoachesLoading ||
-                    isManagersLoading ||
-                    isTeamsLoading
-                  }
-                  aria-label="edit event"
-                  onClick={() => editEvent()}
-                >
-                  <EditIcon />
-                </IconButton>
-              </Tooltip>
-            )}
+            {showButtons && canCancel && cancelButton}
+            {showButtons &&
+              canEdit && (
+                <Tooltip title="Edit event" placement="bottom">
+                  <IconButton
+                    disabled={
+                      isInfoLoading ||
+                      isCoachesLoading ||
+                      isManagersLoading ||
+                      isTeamsLoading
+                    }
+                    aria-label="edit event"
+                    onClick={() => editEvent()}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
           </Toolbar>
           <div className={classes.adWrapper}>{ad}</div>
           <div className={classes.wrapper}>

@@ -158,7 +158,7 @@ class FiltersToolbar extends Component {
       genders,
       applyFilters,
       addEvent,
-      role
+      canCreate
     } = this.props;
     const {
       searchText,
@@ -285,7 +285,7 @@ class FiltersToolbar extends Component {
               <FilterIcon />
             </IconButton>
           </Tooltip>
-          {role === "admin" && (
+          {canCreate && (
             <Tooltip title="Add new event" placement="bottom">
               <IconButton aria-label="add new event" onClick={() => addEvent()}>
                 <AddIcon />
