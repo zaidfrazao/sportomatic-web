@@ -498,6 +498,7 @@ class DashboardLayout extends Component {
                     };
                     isActive = accountInfo.institutions[id].status === "STAFF";
                   }
+                  isActive = institutions[id].metadata.status === "ACTIVE";
                   return [
                     id,
                     {
