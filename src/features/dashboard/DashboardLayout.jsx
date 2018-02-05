@@ -3,8 +3,13 @@ import React, { Component } from "react";
 import _ from "lodash";
 import accounting from "accounting";
 import Avatar from "material-ui/Avatar";
-import { grey, green, lightBlue, red } from "material-ui/colors";
+import AwaitingApprovalIcon from "material-ui-icons/AssignmentReturn";
+import AwaitingSignInIcon from "material-ui-icons/AssignmentLate";
+import AwaitingSignOutIcon from "material-ui-icons/AssignmentReturned";
+import Button from "material-ui/Button";
+import { grey, green, lightBlue, orange, red } from "material-ui/colors";
 import Grid from "material-ui/Grid";
+import HoursApprovedIcon from "material-ui-icons/AssignmentTurnedIn";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import moment from "moment";
 import Paper from "material-ui/Paper";
@@ -27,6 +32,15 @@ const styles = theme => ({
     justifyContent: "center",
     marginTop: 24
   },
+  awaitingApprovalAvatar: {
+    backgroundColor: lightBlue[500]
+  },
+  awaitingSignInAvatar: {
+    backgroundColor: red[500]
+  },
+  awaitingSignOutAvatar: {
+    backgroundColor: orange[500]
+  },
   contentWrapper: {
     "@media (min-width: 1200px)": {
       width: 1200,
@@ -47,6 +61,9 @@ const styles = theme => ({
     backgroundColor: grey[700],
     color: grey[50],
     borderBottom: `1px solid ${grey[200]}`
+  },
+  hoursApprovedAvatar: {
+    backgroundColor: green[500]
   },
   loaderWrapper: {
     margin: 12,
@@ -78,6 +95,10 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "stretch"
+  },
+  viewMoreButton: {
+    width: "calc(100% - 16px)",
+    margin: 8
   },
   widgetsWrapper: {
     padding: 24
@@ -244,7 +265,7 @@ class DashboardLayout extends Component {
             return _.values(teamInfo.opponents).map(resultInfo => {
               let primaryText = "Loading...";
               let secondaryText = `vs ${resultInfo.name} | ${date.fromNow()}`;
-              let link = `/myaccount/results/${id}`;
+              let link = `/myaccount/results/${teamID}/${id}`;
 
               let result = "drew";
               let avatarStyle = classes.draw;
@@ -286,6 +307,47 @@ class DashboardLayout extends Component {
     });
   }
 
+  getRecentHoursList() {
+    const { classes, pastEvents, history, staff } = this.props;
+
+    return _.toPairs(pastEvents).map(([id, info]) => {
+      return _.toPairs(info.coaches).map(([coachID, coachInfo]) => {
+        let primaryText = "Loading...";
+        let secondaryText = "Awaiting sign in";
+        let link = `/myaccount/hours/`;
+
+        let avatarStyle = classes.awaitingSignInAvatar;
+        let avatarIcon = <AwaitingSignInIcon />;
+        if (coachInfo.hours.status === "AWAITING_SIGN_OUT") {
+          secondaryText = "Awaiting sign out";
+          avatarStyle = classes.awaitingSignOutAvatar;
+          avatarIcon = <AwaitingSignOutIcon />;
+        } else if (coachInfo.hours.status === "AWAITING_APPROVAL") {
+          secondaryText = "Awaiting approval";
+          avatarStyle = classes.awaitingApprovalAvatar;
+          avatarIcon = <AwaitingApprovalIcon />;
+        } else if (coachInfo.hours.status === "APPROVED") {
+          secondaryText = "Approved";
+          avatarStyle = classes.hoursApprovedAvatar;
+          avatarIcon = <HoursApprovedIcon />;
+          link = `/myaccount/hours/${coachID}`;
+        }
+
+        if (staff[coachID]) {
+          primaryText = `${staff[coachID].info.name} ${staff[coachID].info
+            .surname} at ${info.requiredInfo.title}`;
+        }
+
+        return (
+          <ListItem key={id} button onClick={() => history.push(link)}>
+            <Avatar className={avatarStyle}>{avatarIcon}</Avatar>
+            <ListItemText primary={primaryText} secondary={secondaryText} />
+          </ListItem>
+        );
+      });
+    });
+  }
+
   render() {
     const {
       classes,
@@ -295,7 +357,8 @@ class DashboardLayout extends Component {
       institutions,
       userID,
       permissions,
-      role
+      role,
+      history
     } = this.props;
     const {
       isRecentWagesLoading,
@@ -331,6 +394,7 @@ class DashboardLayout extends Component {
     const recentWagesList = this.getRecentWagesList();
     const upcomingEventsList = this.getUpcomingEventsList().slice(0, 5);
     const recentResultsList = this.getRecentResultsList().slice(0, 5);
+    const recentHoursList = this.getRecentHoursList().slice(0, 5);
 
     if (accountInfo.lastAccessed) {
       active.id = accountInfo.lastAccessed.institutionID;
@@ -434,6 +498,12 @@ class DashboardLayout extends Component {
                 >
                   Upcoming Events
                 </Typography>
+                <Button
+                  className={classes.viewMoreButton}
+                  onClick={() => history.push("/myaccount/schedule")}
+                >
+                  View more
+                </Button>
                 {isUpcomingEventsLoading ? (
                   <List>
                     <ListItem className={classes.noItems}>
@@ -462,6 +532,12 @@ class DashboardLayout extends Component {
                 >
                   Recent Results
                 </Typography>
+                <Button
+                  className={classes.viewMoreButton}
+                  onClick={() => history.push("/myaccount/results")}
+                >
+                  View more
+                </Button>
                 {isPastEventsLoading ? (
                   <List>
                     <ListItem className={classes.noItems}>
@@ -490,6 +566,29 @@ class DashboardLayout extends Component {
                 >
                   Recent Hours
                 </Typography>
+                <Button
+                  className={classes.viewMoreButton}
+                  onClick={() => history.push("/myaccount/hours")}
+                >
+                  View more
+                </Button>
+                {isPastEventsLoading ? (
+                  <List>
+                    <ListItem className={classes.noItems}>
+                      <ListItemText primary="Loading..." />
+                    </ListItem>
+                  </List>
+                ) : (
+                  <List>
+                    {recentHoursList.length > 0 ? (
+                      recentHoursList
+                    ) : (
+                      <ListItem className={classes.noItems}>
+                        <ListItemText primary="None" />
+                      </ListItem>
+                    )}
+                  </List>
+                )}
               </Paper>
             </Grid>
             {showWages && (
@@ -502,6 +601,12 @@ class DashboardLayout extends Component {
                   >
                     Recent Wages
                   </Typography>
+                  <Button
+                    className={classes.viewMoreButton}
+                    onClick={() => history.push("/myaccount/wages")}
+                  >
+                    View more
+                  </Button>
                   {isRecentWagesLoading ? (
                     <List>
                       <ListItem className={classes.noItems}>
