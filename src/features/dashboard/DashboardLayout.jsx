@@ -79,10 +79,19 @@ const styles = theme => ({
 class DashboardLayout extends Component {
   componentWillMount() {
     const { activeInstitutionID, role, userID } = this.props;
-    const { loadRecentWages, loadStaff } = this.props.actions;
+    const {
+      loadRecentWages,
+      loadStaff,
+      loadUpcomingEvents,
+      loadPastEvents,
+      loadCurrentEvents
+    } = this.props.actions;
 
     if (activeInstitutionID && activeInstitutionID !== "" && userID !== "") {
       loadStaff(activeInstitutionID);
+      loadUpcomingEvents(activeInstitutionID);
+      loadPastEvents(activeInstitutionID);
+      // loadCurrentEvents(activeInstitutionID);
       if (role === "admin") {
         loadRecentWages(activeInstitutionID);
       } else if (role === "coach") {
@@ -93,7 +102,13 @@ class DashboardLayout extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { activeInstitutionID, role, userID } = nextProps;
-    const { loadRecentWages, loadStaff } = nextProps.actions;
+    const {
+      loadRecentWages,
+      loadStaff,
+      loadUpcomingEvents,
+      loadPastEvents,
+      loadCurrentEvents
+    } = nextProps.actions;
 
     if (
       activeInstitutionID !== this.props.activeInstitutionID &&
@@ -101,6 +116,9 @@ class DashboardLayout extends Component {
       activeInstitutionID !== ""
     ) {
       loadStaff(activeInstitutionID);
+      loadUpcomingEvents(activeInstitutionID);
+      loadPastEvents(activeInstitutionID);
+      // loadCurrentEvents(activeInstitutionID);
       if (role === "admin") {
         loadRecentWages(activeInstitutionID);
       } else if (role === "coach") {
@@ -142,12 +160,14 @@ class DashboardLayout extends Component {
   }
 
   getRecentWagesList() {
-    const { recentWages, staff, role } = this.props;
+    const { recentWages, staff, role, history } = this.props;
     const { isStaffLoading } = this.props.loadingStatus;
 
     return _.toPairs(recentWages).map(([id, info]) => {
       let primaryText = "";
       let secondaryText = "";
+      let link = `/myaccount/wages`;
+
       if (staff[info.coachID]) {
         secondaryText = moment(info.date).fromNow();
         if (role === "coach") {
@@ -155,10 +175,12 @@ class DashboardLayout extends Component {
         } else {
           primaryText = `${staff[info.coachID].info.name} ${staff[info.coachID]
             .info.surname} was paid ${accounting.formatMoney(info.wage, "R")}`;
+          link = `/myaccount/wages/${info.coachID}`;
         }
       }
+
       return (
-        <ListItem key={id} button>
+        <ListItem key={id} button onClick={() => history.push(link)}>
           {!isStaffLoading && (
             <Avatar
               src={
@@ -168,6 +190,26 @@ class DashboardLayout extends Component {
               }
             />
           )}
+          <ListItemText primary={primaryText} secondary={secondaryText} />
+        </ListItem>
+      );
+    });
+  }
+
+  getUpcomingEventsList() {
+    const { upcomingEvents, history } = this.props;
+
+    return _.toPairs(upcomingEvents).map(([id, info]) => {
+      const date = moment(info.requiredInfo.times.start);
+
+      let primaryText = info.requiredInfo.title;
+      let secondaryText = `${date.format(
+        "D MMM YYYY"
+      )} | Starts ${date.fromNow()}`;
+      let link = `/myaccount/schedule/${date.format("YYYY-MM-DD")}/${id}`;
+
+      return (
+        <ListItem key={id} button onClick={() => history.push(link)}>
           <ListItemText primary={primaryText} secondary={secondaryText} />
         </ListItem>
       );
@@ -185,7 +227,10 @@ class DashboardLayout extends Component {
       permissions,
       role
     } = this.props;
-    const { isRecentWagesLoading } = this.props.loadingStatus;
+    const {
+      isRecentWagesLoading,
+      isUpcomingEventsLoading
+    } = this.props.loadingStatus;
     const { isUpdatesDialogOpen } = this.props.dialogs;
     const {
       switchInstitution,
@@ -213,6 +258,7 @@ class DashboardLayout extends Component {
 
     const ad = this.createAd();
     const recentWagesList = this.getRecentWagesList();
+    const upcomingEventsList = this.getUpcomingEventsList().slice(0, 5);
 
     if (accountInfo.lastAccessed) {
       active.id = accountInfo.lastAccessed.institutionID;
@@ -316,7 +362,23 @@ class DashboardLayout extends Component {
                 >
                   Upcoming Events
                 </Typography>
-                <List />
+                {isUpcomingEventsLoading ? (
+                  <List>
+                    <ListItem className={classes.noItems}>
+                      <ListItemText primary="Loading..." />
+                    </ListItem>
+                  </List>
+                ) : (
+                  <List>
+                    {upcomingEventsList.length > 0 ? (
+                      upcomingEventsList
+                    ) : (
+                      <ListItem className={classes.noItems}>
+                        <ListItemText primary="None" />
+                      </ListItem>
+                    )}
+                  </List>
+                )}
               </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>

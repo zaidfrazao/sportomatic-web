@@ -194,12 +194,51 @@ function recentWagesReducer(state = {}, action = {}) {
   }
 }
 
+function upcomingEventsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_UPCOMING_EVENTS:
+      return action.payload.events;
+    default:
+      return state;
+  }
+}
+
+function pastEventsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_PAST_EVENTS:
+      return action.payload.events;
+    default:
+      return state;
+  }
+}
+
+function currentEventsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_CURRENT_EVENTS:
+      return action.payload.events;
+    default:
+      return state;
+  }
+}
+
 export const dashboardReducer = combineReducers({
   uiConfig: uiConfigReducer,
   dialogs: dialogsReducer,
   loadingStatus: loadingStatusReducer,
   recentWages: recentWagesReducer,
-  staff: staffReducer
+  staff: staffReducer,
+  upcomingEvents: upcomingEventsReducer,
+  pastEvents: pastEventsReducer,
+  currentEvents: currentEventsReducer
 });
 
 // Selectors
@@ -209,13 +248,19 @@ const dialogs = state => state.dashboard.dialogs;
 const loadingStatus = state => state.dashboard.loadingStatus;
 const staff = state => state.dashboard.staff;
 const recentWages = state => state.dashboard.recentWages;
+const upcomingEvents = state => state.dashboard.upcomingEvents;
+const pastEvents = state => state.dashboard.pastEvents;
+const currentEvents = state => state.dashboard.currentEvents;
 
 export const selector = createStructuredSelector({
   uiConfig,
   dialogs,
   loadingStatus,
   staff,
-  recentWages
+  recentWages,
+  upcomingEvents,
+  pastEvents,
+  currentEvents
 });
 
 // Action Creators
@@ -402,7 +447,7 @@ export function errorLoadingRecentWages(error: {
   };
 }
 
-export function loadRecentWages(institutionID, role, coachID = "") {
+export function loadRecentWages(institutionID, coachID = "") {
   return function(dispatch: DispatchAlias) {
     dispatch(requestRecentWages());
 
@@ -432,6 +477,157 @@ export function loadRecentWages(institutionID, role, coachID = "") {
         wages[doc.id] = doc.data();
       });
       dispatch(receiveRecentWages(wages));
+    });
+  };
+}
+
+export function requestPastEvents() {
+  return {
+    type: REQUEST_PAST_EVENTS
+  };
+}
+
+export function receivePastEvents(events) {
+  return {
+    type: RECEIVE_PAST_EVENTS,
+    payload: {
+      events
+    }
+  };
+}
+
+export function errorLoadingPastEvents(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_PAST_EVENTS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadPastEvents(institutionID, userID = "", role = "admin") {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestPastEvents());
+
+    let eventsRef = {};
+    eventsRef = firebase
+      .firestore()
+      .collection("events")
+      .orderBy("requiredInfo.times.end", "desc")
+      .limit(20)
+      .where("institutionID", "==", institutionID)
+      .where("requiredInfo.times.end", "<", moment().toDate());
+
+    return eventsRef.onSnapshot(querySnapshot => {
+      let events = {};
+      querySnapshot.forEach(doc => {
+        events[doc.id] = doc.data();
+      });
+      dispatch(receivePastEvents(events));
+    });
+  };
+}
+
+export function requestUpcomingEvents() {
+  return {
+    type: REQUEST_UPCOMING_EVENTS
+  };
+}
+
+export function receiveUpcomingEvents(events) {
+  return {
+    type: RECEIVE_UPCOMING_EVENTS,
+    payload: {
+      events
+    }
+  };
+}
+
+export function errorLoadingUpcomingEvents(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_UPCOMING_EVENTS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadUpcomingEvents(institutionID, userID = "", role = "admin") {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestUpcomingEvents());
+
+    let eventsRef = {};
+    eventsRef = firebase
+      .firestore()
+      .collection("events")
+      .orderBy("requiredInfo.times.start", "asc")
+      .limit(20)
+      .where("institutionID", "==", institutionID)
+      .where("requiredInfo.times.start", ">", moment().toDate());
+
+    return eventsRef.onSnapshot(querySnapshot => {
+      let events = {};
+      querySnapshot.forEach(doc => {
+        events[doc.id] = doc.data();
+      });
+      dispatch(receiveUpcomingEvents(events));
+    });
+  };
+}
+
+export function requestCurrentEvents() {
+  return {
+    type: REQUEST_CURRENT_EVENTS
+  };
+}
+
+export function receiveCurrentEvents(events) {
+  return {
+    type: RECEIVE_CURRENT_EVENTS,
+    payload: {
+      events
+    }
+  };
+}
+
+export function errorLoadingCurrentEvents(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_CURRENT_EVENTS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadCurrentEvents(institutionID, userID = "", role = "admin") {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestCurrentEvents());
+
+    const currentTime = moment().toDate();
+
+    let eventsRef = {};
+    eventsRef = firebase
+      .firestore()
+      .collection("events")
+      .where("institutionID", "==", institutionID)
+      .where("requiredInfo.times.start", "<=", currentTime)
+      .where("requiredInfo.times.end", ">=", currentTime);
+
+    return eventsRef.onSnapshot(querySnapshot => {
+      let events = {};
+      querySnapshot.forEach(doc => {
+        events[doc.id] = doc.data();
+      });
+      dispatch(receiveCurrentEvents(events));
     });
   };
 }
