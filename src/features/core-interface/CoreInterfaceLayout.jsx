@@ -335,10 +335,12 @@ class CoreInterfaceLayout extends Component {
                       isMobile={isMobile}
                       isTablet={isTablet}
                       userID={userID}
+                      role={role}
                       activeInstitutionID={activeInstitutionID}
                       accountInfo={accountInfo}
                       isAccountInfoLoading={isAccountInfoLoading}
                       institutions={institutions}
+                      permissions={permissions}
                     />
                   </Route>
                   <Route exact path={"/myaccount/home/"}>
@@ -346,10 +348,12 @@ class CoreInterfaceLayout extends Component {
                       isMobile={isMobile}
                       isTablet={isTablet}
                       userID={userID}
+                      role={role}
                       activeInstitutionID={activeInstitutionID}
                       accountInfo={accountInfo}
                       isAccountInfoLoading={isAccountInfoLoading}
                       institutions={institutions}
+                      permissions={permissions}
                     />
                   </Route>
                   <Route exact path={"/myaccount/settings/"}>
@@ -534,10 +538,12 @@ class CoreInterfaceLayout extends Component {
                       isMobile={isMobile}
                       isTablet={isTablet}
                       userID={userID}
+                      role={role}
                       activeInstitutionID={activeInstitutionID}
                       accountInfo={accountInfo}
                       isAccountInfoLoading={isAccountInfoLoading}
                       institutions={institutions}
+                      permissions={permissions}
                     />
                   </Route>
                 </Switch>

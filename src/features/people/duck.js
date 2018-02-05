@@ -807,10 +807,6 @@ export function createUser(email, password, userInfo) {
     dispatch(requestCreateUser());
     const db = firebase.firestore();
 
-    console.log(email);
-    console.log(password);
-    console.log(userInfo);
-
     return firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
