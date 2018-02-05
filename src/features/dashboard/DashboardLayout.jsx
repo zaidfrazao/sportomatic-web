@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import accounting from "accounting";
 import Avatar from "material-ui/Avatar";
-import { grey } from "material-ui/colors";
+import { grey, green, lightBlue, red } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import moment from "moment";
@@ -33,6 +33,10 @@ const styles = theme => ({
       margin: "0 auto"
     }
   },
+  draw: {
+    backgroundColor: lightBlue[500],
+    color: grey[50]
+  },
   heading: {
     fontWeight: "normal",
     fontSize: "1.2rem",
@@ -48,6 +52,10 @@ const styles = theme => ({
     margin: 12,
     width: "100%",
     textAlign: "center"
+  },
+  loss: {
+    backgroundColor: red[500],
+    color: grey[50]
   },
   noItems: {
     textAlign: "center"
@@ -73,6 +81,10 @@ const styles = theme => ({
   },
   widgetsWrapper: {
     padding: 24
+  },
+  win: {
+    backgroundColor: green[500],
+    color: grey[50]
   }
 });
 
@@ -82,6 +94,7 @@ class DashboardLayout extends Component {
     const {
       loadRecentWages,
       loadStaff,
+      loadTeams,
       loadUpcomingEvents,
       loadPastEvents,
       loadCurrentEvents
@@ -89,6 +102,7 @@ class DashboardLayout extends Component {
 
     if (activeInstitutionID && activeInstitutionID !== "" && userID !== "") {
       loadStaff(activeInstitutionID);
+      loadTeams(activeInstitutionID);
       loadUpcomingEvents(activeInstitutionID);
       loadPastEvents(activeInstitutionID);
       // loadCurrentEvents(activeInstitutionID);
@@ -105,6 +119,7 @@ class DashboardLayout extends Component {
     const {
       loadRecentWages,
       loadStaff,
+      loadTeams,
       loadUpcomingEvents,
       loadPastEvents,
       loadCurrentEvents
@@ -116,6 +131,7 @@ class DashboardLayout extends Component {
       activeInstitutionID !== ""
     ) {
       loadStaff(activeInstitutionID);
+      loadTeams(activeInstitutionID);
       loadUpcomingEvents(activeInstitutionID);
       loadPastEvents(activeInstitutionID);
       // loadCurrentEvents(activeInstitutionID);
@@ -216,6 +232,60 @@ class DashboardLayout extends Component {
     });
   }
 
+  getRecentResultsList() {
+    const { classes, pastEvents, history, teams } = this.props;
+
+    return _.toPairs(pastEvents).map(([id, info]) => {
+      const date = moment(info.requiredInfo.times.start);
+
+      if (info.requiredInfo.isCompetitive) {
+        return _.toPairs(info.teams).map(([teamID, teamInfo]) => {
+          if (teamInfo.resultsStatus === "FINALISED") {
+            return _.values(teamInfo.opponents).map(resultInfo => {
+              let primaryText = "Loading...";
+              let secondaryText = `vs ${resultInfo.name} | ${date.fromNow()}`;
+              let link = `/myaccount/results/${id}`;
+
+              let result = "drew";
+              let avatarStyle = classes.draw;
+              if (
+                resultInfo.ourScore.totalPoints >
+                resultInfo.theirScore.totalPoints
+              ) {
+                result = "won";
+                avatarStyle = classes.win;
+              } else if (
+                resultInfo.ourScore.totalPoints <
+                resultInfo.theirScore.totalPoints
+              ) {
+                result = "lost";
+                avatarStyle = classes.loss;
+              }
+
+              if (teams[teamID]) {
+                primaryText = `${teams[teamID].info.name} ${result} ${resultInfo
+                  .ourScore.totalPoints} - ${resultInfo.theirScore
+                  .totalPoints}`;
+              }
+
+              return (
+                <ListItem key={id} button onClick={() => history.push(link)}>
+                  <Avatar className={avatarStyle}>
+                    {_.upperCase(result[0])}
+                  </Avatar>
+                  <ListItemText
+                    primary={primaryText}
+                    secondary={secondaryText}
+                  />
+                </ListItem>
+              );
+            });
+          }
+        });
+      }
+    });
+  }
+
   render() {
     const {
       classes,
@@ -229,7 +299,8 @@ class DashboardLayout extends Component {
     } = this.props;
     const {
       isRecentWagesLoading,
-      isUpcomingEventsLoading
+      isUpcomingEventsLoading,
+      isPastEventsLoading
     } = this.props.loadingStatus;
     const { isUpdatesDialogOpen } = this.props.dialogs;
     const {
@@ -259,6 +330,7 @@ class DashboardLayout extends Component {
     const ad = this.createAd();
     const recentWagesList = this.getRecentWagesList();
     const upcomingEventsList = this.getUpcomingEventsList().slice(0, 5);
+    const recentResultsList = this.getRecentResultsList().slice(0, 5);
 
     if (accountInfo.lastAccessed) {
       active.id = accountInfo.lastAccessed.institutionID;
@@ -390,6 +462,23 @@ class DashboardLayout extends Component {
                 >
                   Recent Results
                 </Typography>
+                {isPastEventsLoading ? (
+                  <List>
+                    <ListItem className={classes.noItems}>
+                      <ListItemText primary="Loading..." />
+                    </ListItem>
+                  </List>
+                ) : (
+                  <List>
+                    {recentResultsList.length > 0 ? (
+                      recentResultsList
+                    ) : (
+                      <ListItem className={classes.noItems}>
+                        <ListItemText primary="None" />
+                      </ListItem>
+                    )}
+                  </List>
+                )}
               </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>

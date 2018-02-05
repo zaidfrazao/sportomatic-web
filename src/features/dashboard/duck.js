@@ -32,6 +32,9 @@ export const ERROR_LOADING_RECENT_WAGES = `${NAMESPACE}/ERROR_LOADING_RECENT_WAG
 export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
 export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
 export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
+export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
+export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
+export const ERROR_LOADING_TEAMS = `${NAMESPACE}/ERROR_LOADING_TEAMS`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -99,7 +102,8 @@ export const loadingStatusInitialState = {
   isPastEventsLoading: false,
   isCurrentEventsLoading: false,
   isRecentWagesLoading: false,
-  isStaffLoading: false
+  isStaffLoading: false,
+  isTeamsLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -162,6 +166,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isStaffLoading: false
       };
+    case REQUEST_TEAMS:
+      return {
+        ...state,
+        isTeamsLoading: true
+      };
+    case RECEIVE_TEAMS:
+    case ERROR_LOADING_TEAMS:
+      return {
+        ...state,
+        isTeamsLoading: false
+      };
     default:
       return state;
   }
@@ -173,10 +188,19 @@ function staffReducer(state = {}, action = {}) {
     case SIGN_OUT:
       return {};
     case RECEIVE_STAFF:
-      return {
-        ...state,
-        ...action.payload.staff
-      };
+      return action.payload.staff;
+    default:
+      return state;
+  }
+}
+
+function teamsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_TEAMS:
+      return action.payload.teams;
     default:
       return state;
   }
@@ -236,6 +260,7 @@ export const dashboardReducer = combineReducers({
   loadingStatus: loadingStatusReducer,
   recentWages: recentWagesReducer,
   staff: staffReducer,
+  teams: teamsReducer,
   upcomingEvents: upcomingEventsReducer,
   pastEvents: pastEventsReducer,
   currentEvents: currentEventsReducer
@@ -247,6 +272,7 @@ const uiConfig = state => state.dashboard.uiConfig;
 const dialogs = state => state.dashboard.dialogs;
 const loadingStatus = state => state.dashboard.loadingStatus;
 const staff = state => state.dashboard.staff;
+const teams = state => state.dashboard.teams;
 const recentWages = state => state.dashboard.recentWages;
 const upcomingEvents = state => state.dashboard.upcomingEvents;
 const pastEvents = state => state.dashboard.pastEvents;
@@ -257,6 +283,7 @@ export const selector = createStructuredSelector({
   dialogs,
   loadingStatus,
   staff,
+  teams,
   recentWages,
   upcomingEvents,
   pastEvents,
@@ -628,6 +655,49 @@ export function loadCurrentEvents(institutionID, userID = "", role = "admin") {
         events[doc.id] = doc.data();
       });
       dispatch(receiveCurrentEvents(events));
+    });
+  };
+}
+
+export function requestTeams() {
+  return {
+    type: REQUEST_TEAMS
+  };
+}
+
+export function receiveTeams(teams) {
+  return {
+    type: RECEIVE_TEAMS,
+    payload: {
+      teams
+    }
+  };
+}
+
+export function errorLoadingTeams(error: { code: string, message: string }) {
+  return {
+    type: ERROR_LOADING_TEAMS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadTeams(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestTeams());
+
+    const teamsRef = firebase
+      .firestore()
+      .collection("teams")
+      .where("institutionID", "==", institutionID);
+
+    return teamsRef.onSnapshot(querySnapshot => {
+      let teams = {};
+      querySnapshot.forEach(doc => {
+        teams[doc.id] = doc.data();
+      });
+      dispatch(receiveTeams(teams));
     });
   };
 }
