@@ -32,6 +32,7 @@ class UpdatesDialog extends Component {
             </Typography>
             <Typography type="body1" component="ul">
               <li>Admins can edit their institution settings.</li>
+              <li>Permissions have been implemented across app.</li>
             </Typography>
           </div>
           <Typography type="title" component="h2">
