@@ -277,7 +277,8 @@ class TeamsLayout extends Component {
       isTablet,
       filters,
       eventsByTeam,
-      role
+      role,
+      permissions
     } = this.props;
     const {
       isAddTeamDialogOpen,
@@ -345,6 +346,11 @@ class TeamsLayout extends Component {
           <div className={classes.infoWrapper}>
             <TeamInfo
               role={role}
+              canEdit={
+                role === "admin" ||
+                (role === "coach" && permissions.coaches.teams.canEdit) ||
+                (role === "manager" && permissions.managers.teams.canEdit)
+              }
               isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
               isCoachesLoading={isStaffLoading}
               isManagersLoading={isStaffLoading}

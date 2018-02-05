@@ -935,7 +935,7 @@ class TeamInfo extends Component {
   }
 
   render() {
-    const { classes, info, role } = this.props;
+    const { classes, info, canEdit } = this.props;
     const {
       isTeamsLoading,
       isCoachesLoading,
@@ -1003,7 +1003,7 @@ class TeamInfo extends Component {
               )}
             />
             <div className={classes.flexGrow} />
-            {role === "admin" && (
+            {canEdit && (
               <Tooltip title="Edit team" placement="bottom">
                 <IconButton
                   disabled={
