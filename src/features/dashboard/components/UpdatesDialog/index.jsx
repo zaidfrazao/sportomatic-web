@@ -24,7 +24,30 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.10 (Current)"}
+            {"v0.9.11 (Current)"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              New Features
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                User can change their profile picture and upload an emblem when
+                creating an institution.
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Minor Changes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>Widgets correctly show "None" when empty.</li>
+              <li>
+                Redundancy avatar on coach wages dashboard widget removed.
+              </li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.10"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">

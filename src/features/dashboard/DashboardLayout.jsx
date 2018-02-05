@@ -205,7 +205,8 @@ class DashboardLayout extends Component {
     const { recentWages, staff, role, history } = this.props;
     const { isStaffLoading } = this.props.loadingStatus;
 
-    return _.toPairs(recentWages).map(([id, info]) => {
+    let recentWagesList = [];
+    _.toPairs(recentWages).map(([id, info]) => {
       let primaryText = "";
       let secondaryText = "";
       let link = `/myaccount/wages`;
@@ -213,7 +214,10 @@ class DashboardLayout extends Component {
       if (staff[info.coachID]) {
         secondaryText = moment(info.date).fromNow();
         if (role === "coach") {
-          primaryText = `Paid ${accounting.formatMoney(info.wage, "R")}`;
+          primaryText = `You were paid ${accounting.formatMoney(
+            info.wage,
+            "R"
+          )}`;
         } else {
           primaryText = `${staff[info.coachID].info.name} ${staff[info.coachID]
             .info.surname} was paid ${accounting.formatMoney(info.wage, "R")}`;
@@ -221,31 +225,36 @@ class DashboardLayout extends Component {
         }
       }
 
-      return (
+      recentWagesList.push(
         <ListItem key={id} button onClick={() => history.push(link)}>
-          {!isStaffLoading && (
-            <Avatar
-              src={
-                staff[info.coachID].info.profilePictureURL === ""
-                  ? defaultProfilePicture
-                  : staff[info.coachID].info.profilePictureURL
-              }
-            />
-          )}
+          {!isStaffLoading &&
+            role !== "coach" && (
+              <Avatar
+                src={
+                  staff[info.coachID].info.profilePictureURL === ""
+                    ? defaultProfilePicture
+                    : staff[info.coachID].info.profilePictureURL
+                }
+              />
+            )}
           <ListItemText primary={primaryText} secondary={secondaryText} />
         </ListItem>
       );
     });
+
+    return recentWagesList;
   }
 
   getUpcomingEventsList() {
     const { upcomingEvents, history, role, userID } = this.props;
 
-    return _.toPairs(upcomingEvents).map(([id, info]) => {
+    let upcomingEventsList = [];
+    _.toPairs(upcomingEvents).map(([id, info]) => {
       if (
-        role === "admin" ||
-        (role === "coach" && info.coaches[userID]) ||
-        (role === "manager" && info.managers[userID])
+        (role === "admin" ||
+          (role === "coach" && info.coaches[userID]) ||
+          (role === "manager" && info.managers[userID])) &&
+        upcomingEventsList.length < 5
       ) {
         const date = moment(info.requiredInfo.times.start);
 
@@ -255,19 +264,22 @@ class DashboardLayout extends Component {
         )} | Starts ${date.fromNow()}`;
         let link = `/myaccount/schedule/${date.format("YYYY-MM-DD")}/${id}`;
 
-        return (
+        upcomingEventsList.push(
           <ListItem key={id} button onClick={() => history.push(link)}>
             <ListItemText primary={primaryText} secondary={secondaryText} />
           </ListItem>
         );
       }
     });
+
+    return upcomingEventsList;
   }
 
   getRecentResultsList() {
     const { classes, pastEvents, history, teams, role, userID } = this.props;
 
-    return _.toPairs(pastEvents).map(([id, info]) => {
+    let recentResultsList = [];
+    _.toPairs(pastEvents).map(([id, info]) => {
       const date = moment(info.requiredInfo.times.start);
 
       if (info.requiredInfo.isCompetitive) {
@@ -276,9 +288,12 @@ class DashboardLayout extends Component {
           (role === "coach" && info.coaches[userID]) ||
           (role === "manager" && info.managers[userID])
         ) {
-          return _.toPairs(info.teams).map(([teamID, teamInfo]) => {
-            if (teamInfo.resultsStatus === "FINALISED") {
-              return _.values(teamInfo.opponents).map(resultInfo => {
+          _.toPairs(info.teams).map(([teamID, teamInfo]) => {
+            if (
+              teamInfo.resultsStatus === "FINALISED" &&
+              recentResultsList.length < 5
+            ) {
+              _.values(teamInfo.opponents).map(resultInfo => {
                 let primaryText = "Loading...";
                 let secondaryText = `vs ${resultInfo.name} | ${date.fromNow()}`;
                 let link = `/myaccount/results/${teamID}/${id}`;
@@ -305,7 +320,7 @@ class DashboardLayout extends Component {
                     .totalPoints} - ${resultInfo.theirScore.totalPoints}`;
                 }
 
-                return (
+                recentResultsList.push(
                   <ListItem key={id} button onClick={() => history.push(link)}>
                     <Avatar className={avatarStyle}>
                       {_.upperCase(result[0])}
@@ -322,17 +337,21 @@ class DashboardLayout extends Component {
         }
       }
     });
+
+    return recentResultsList;
   }
 
   getRecentHoursList() {
     const { classes, pastEvents, history, staff, userID, role } = this.props;
 
-    return _.toPairs(pastEvents).map(([id, info]) => {
-      return _.toPairs(info.coaches).map(([coachID, coachInfo]) => {
+    let recentHoursList = [];
+    _.toPairs(pastEvents).map(([id, info]) => {
+      _.toPairs(info.coaches).map(([coachID, coachInfo]) => {
         if (
-          role === "admin" ||
-          (role === "manager" && info.managers[userID]) ||
-          (role === "coach" && coachID === userID)
+          (role === "admin" ||
+            (role === "manager" && info.managers[userID]) ||
+            (role === "coach" && coachID === userID)) &&
+          recentHoursList.length < 5
         ) {
           let primaryText = "Loading...";
           let secondaryText = "Awaiting sign in";
@@ -367,7 +386,7 @@ class DashboardLayout extends Component {
             }
           }
 
-          return (
+          recentHoursList.push(
             <ListItem key={id} button onClick={() => history.push(link)}>
               <Avatar className={avatarStyle}>{avatarIcon}</Avatar>
               <ListItemText primary={primaryText} secondary={secondaryText} />
@@ -376,6 +395,8 @@ class DashboardLayout extends Component {
         }
       });
     });
+
+    return recentHoursList;
   }
 
   render() {
@@ -421,16 +442,10 @@ class DashboardLayout extends Component {
       (role === "manager" && permissions.managers.wages.canView);
 
     const ad = this.createAd();
-    const recentWagesList = this.getRecentWagesList().filter(item => item);
-    const upcomingEventsList = this.getUpcomingEventsList()
-      .filter(item => item)
-      .slice(0, 5);
-    const recentResultsList = this.getRecentResultsList()
-      .filter(item => item)
-      .slice(0, 5);
-    const recentHoursList = this.getRecentHoursList()
-      .filter(item => item)
-      .slice(0, 5);
+    const recentWagesList = this.getRecentWagesList();
+    const upcomingEventsList = this.getUpcomingEventsList();
+    const recentResultsList = this.getRecentResultsList();
+    const recentHoursList = this.getRecentHoursList();
 
     if (accountInfo.lastAccessed) {
       active.id = accountInfo.lastAccessed.institutionID;
