@@ -17,6 +17,12 @@ export const ERROR_UPDATING_SPORTS = `${NAMESPACE}/ERROR_UPDATING_SPORTS`;
 export const REQUEST_UPDATE_LOGIN_DETAILS = `${NAMESPACE}/REQUEST_UPDATE_LOGIN_DETAILS`;
 export const RECEIVE_UPDATE_LOGIN_DETAILS = `${NAMESPACE}/RECEIVE_UPDATE_LOGIN_DETAILS`;
 export const ERROR_UPDATING_LOGIN_DETAILS = `${NAMESPACE}/ERROR_UPDATING_LOGIN_DETAILS`;
+export const REQUEST_UPDATE_PAYMENT_DEFAULTS = `${NAMESPACE}/REQUEST_UPDATE_PAYMENT_DEFAULTS`;
+export const RECEIVE_UPDATE_PAYMENT_DEFAULTS = `${NAMESPACE}/RECEIVE_UPDATE_PAYMENT_DEFAULTS`;
+export const ERROR_UPDATING_PAYMENT_DEFAULTS = `${NAMESPACE}/ERROR_UPDATING_PAYMENT_DEFAULTS`;
+export const REQUEST_UPDATE_PERMISSIONS = `${NAMESPACE}/REQUEST_UPDATE_PERMISSIONS`;
+export const RECEIVE_UPDATE_PERMISSIONS = `${NAMESPACE}/RECEIVE_UPDATE_PERMISSIONS`;
+export const ERROR_UPDATING_PERMISSIONS = `${NAMESPACE}/ERROR_UPDATING_PERMISSIONS`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -44,7 +50,9 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 export const loadingStatusInitialState = {
   isUpdateBasicInfoLoading: false,
   isUpdateSportsLoading: false,
-  isUpdateLoginDetailsLoading: false
+  isUpdateLoginDetailsLoading: false,
+  isUpdatePermissionsLoading: false,
+  isUpdatePaymentDefaultsLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -84,6 +92,28 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isUpdateLoginDetailsLoading: false
+      };
+    case REQUEST_UPDATE_PAYMENT_DEFAULTS:
+      return {
+        ...state,
+        isUpdatePaymentDefaultsLoading: true
+      };
+    case RECEIVE_UPDATE_PAYMENT_DEFAULTS:
+    case ERROR_UPDATING_PAYMENT_DEFAULTS:
+      return {
+        ...state,
+        isUpdatePaymentDefaultsLoading: false
+      };
+    case REQUEST_UPDATE_PERMISSIONS:
+      return {
+        ...state,
+        isUpdatePermissionsLoading: true
+      };
+    case RECEIVE_UPDATE_PERMISSIONS:
+    case ERROR_UPDATING_PERMISSIONS:
+      return {
+        ...state,
+        isUpdatePermissionsLoading: false
       };
     default:
       return state;
@@ -279,6 +309,92 @@ export function updateLoginDetails(userID, email, password) {
       })
       .catch(error => {
         dispatch(errorUpdatingLoginDetails(error));
+      });
+  };
+}
+
+export function requestUpdatePermissions() {
+  return {
+    type: REQUEST_UPDATE_PERMISSIONS
+  };
+}
+
+export function receiveUpdatePermissions() {
+  return {
+    type: RECEIVE_UPDATE_PERMISSIONS
+  };
+}
+
+export function errorUpdatingPermissions(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_UPDATING_PERMISSIONS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function updatePermissions(institutionID, permissions) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestUpdatePermissions());
+    const db = firebase.firestore();
+    const institutionRef = db.collection("institutions").doc(institutionID);
+
+    return institutionRef
+      .update({
+        permissions
+      })
+      .then(user => {
+        dispatch(receiveUpdatePermissions());
+      })
+      .catch(error => {
+        dispatch(errorUpdatingPermissions(error));
+      });
+  };
+}
+
+export function requestUpdatePaymentDefaults() {
+  return {
+    type: REQUEST_UPDATE_PAYMENT_DEFAULTS
+  };
+}
+
+export function receiveUpdatePaymentDefaults() {
+  return {
+    type: RECEIVE_UPDATE_PAYMENT_DEFAULTS
+  };
+}
+
+export function errorUpdatingPaymentDefaults(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_UPDATING_PAYMENT_DEFAULTS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function updatePaymentDefaults(institutionID, paymentDefaults) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestUpdatePaymentDefaults());
+    const db = firebase.firestore();
+    const institutionRef = db.collection("institutions").doc(institutionID);
+
+    return institutionRef
+      .update({
+        paymentDefaults
+      })
+      .then(user => {
+        dispatch(receiveUpdatePaymentDefaults());
+      })
+      .catch(error => {
+        dispatch(errorUpdatingPaymentDefaults(error));
       });
   };
 }

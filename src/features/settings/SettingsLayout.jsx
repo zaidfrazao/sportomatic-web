@@ -3,8 +3,10 @@ import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import { Redirect } from "react-router-dom";
 import Tabs, { Tab } from "material-ui/Tabs";
+import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
+import InstitutionInfo from "./components/InstitutionInfo";
 import InstitutionsList from "./components/InstitutionsList";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
@@ -16,6 +18,11 @@ const styles = theme => ({
     display: "flex",
     justifyContent: "center",
     marginTop: 24
+  },
+  name: {
+    margin: 24,
+    width: "calc(100% - 48px)",
+    textAlign: "center"
   },
   root: {
     width: "100%",
@@ -29,6 +36,15 @@ const styles = theme => ({
 });
 
 class SettingsLayout extends Component {
+  componentWillMount() {
+    const { institutionID } = this.props.match.params;
+    const { updateTab } = this.props.actions;
+
+    if (institutionID) {
+      updateTab("INSTITUTIONS");
+    }
+  }
+
   componentWillUnmount() {
     const { resetState } = this.props.actions;
     resetState();
@@ -83,13 +99,17 @@ class SettingsLayout extends Component {
     const {
       isUpdateBasicInfoLoading,
       isUpdateSportsLoading,
-      isUpdateLoginDetailsLoading
+      isUpdateLoginDetailsLoading,
+      isUpdatePermissionsLoading,
+      isUpdatePaymentDefaultsLoading
     } = this.props.loadingStatus;
     const {
       updateTab,
       updateBasicInfo,
       updateSports,
-      updateLoginDetails
+      updateLoginDetails,
+      updatePermissions,
+      updatePaymentDefaults
     } = this.props.actions;
 
     const ad = this.createAd();
@@ -100,55 +120,86 @@ class SettingsLayout extends Component {
       }
     }
 
-    return (
-      <div className={classes.root}>
-        <AppBar position="static" color="default">
-          <Tabs
-            value={currentTab}
-            onChange={(event, newTab) => {
-              history.push("/myaccount/settings");
-              updateTab(newTab);
-            }}
-            indicatorColor="primary"
-            textColor="primary"
-            centered
-          >
-            <Tab label="Personal" value="PERSONAL" className={classes.tabs} />
-            <Tab
-              label="Institutions"
-              value="INSTITUTIONS"
-              className={classes.tabs}
-            />
-          </Tabs>
-        </AppBar>
-        {currentTab === "PERSONAL" && (
-          <PersonInfo
-            accountInfo={accountInfo}
-            userID={userID}
-            isAccountInfoLoading={isAccountInfoLoading}
-            isUpdateBasicInfoLoading={isUpdateBasicInfoLoading}
-            isUpdateSportsLoading={isUpdateSportsLoading}
-            isUpdateLoginDetailsLoading={isUpdateLoginDetailsLoading}
+    if (institutionID) {
+      return (
+        <div className={classes.root}>
+          <AppBar position="static" color="default">
+            {!institutions[institutionID] ? (
+              <Typography className={classes.name} type="title" component="h2">
+                Loading...
+              </Typography>
+            ) : (
+              <Typography className={classes.name} type="title" component="h2">
+                {`${institutions[institutionID].info.name}`}
+              </Typography>
+            )}
+          </AppBar>
+          <InstitutionInfo
+            info={institutions[institutionID]}
+            institutionID={institutionID}
+            isUpdatePermissionsLoading={isUpdatePermissionsLoading}
+            isUpdatePaymentDefaultsLoading={isUpdatePaymentDefaultsLoading}
             isMobile={isMobile}
             isTablet={isTablet}
+            userID={userID}
             actions={{
-              updateBasicInfo,
-              updateSports,
-              updateLoginDetails
+              updatePermissions,
+              updatePaymentDefaults,
+              updateTab
             }}
           />
-        )}
-        {currentTab === "INSTITUTIONS" &&
-          (!institutionID && (
+        </div>
+      );
+    } else {
+      return (
+        <div className={classes.root}>
+          <AppBar position="static" color="default">
+            <Tabs
+              value={currentTab}
+              onChange={(event, newTab) => {
+                history.push("/myaccount/settings");
+                updateTab(newTab);
+              }}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+            >
+              <Tab label="Personal" value="PERSONAL" className={classes.tabs} />
+              <Tab
+                label="Institutions"
+                value="INSTITUTIONS"
+                className={classes.tabs}
+              />
+            </Tabs>
+          </AppBar>
+          {currentTab === "PERSONAL" && (
+            <PersonInfo
+              accountInfo={accountInfo}
+              userID={userID}
+              isAccountInfoLoading={isAccountInfoLoading}
+              isUpdateBasicInfoLoading={isUpdateBasicInfoLoading}
+              isUpdateSportsLoading={isUpdateSportsLoading}
+              isUpdateLoginDetailsLoading={isUpdateLoginDetailsLoading}
+              isMobile={isMobile}
+              isTablet={isTablet}
+              actions={{
+                updateBasicInfo,
+                updateSports,
+                updateLoginDetails
+              }}
+            />
+          )}
+          {currentTab === "INSTITUTIONS" && (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <InstitutionsList
                 institutions={this.getInstitutionCardsInfo(institutions)}
               />
             </div>
-          ))}
-      </div>
-    );
+          )}
+        </div>
+      );
+    }
   }
 }
 
