@@ -444,6 +444,7 @@ export function updateProfilePicture(userID, blob) {
 
     const db = firebase.firestore();
     const userRef = db.collection("users").doc(userID);
+    const institutionRef = db.collection("institutions").doc(userID);
     const storageRef = firebase.storage().ref();
     const newImageRef = storageRef.child(
       `users/${userID}/profile-picture.jpeg`
@@ -452,10 +453,17 @@ export function updateProfilePicture(userID, blob) {
     return newImageRef
       .put(blob)
       .then(snapshot => {
-        userRef
-          .update({
-            "info.profilePictureURL": snapshot.downloadURL
-          })
+        let batch = db.batch();
+
+        batch.update(userRef, {
+          "info.profilePictureURL": snapshot.downloadURL
+        });
+        batch.update(institutionRef, {
+          "info.emblemURL": snapshot.downloadURL
+        });
+
+        batch
+          .commit()
           .then(() => dispatch(receiveUpdateProfilePicture()))
           .catch(error => dispatch(errorUpdatingProfilePicture(error)));
       })

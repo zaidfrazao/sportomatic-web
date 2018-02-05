@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import Avatar from "material-ui/Avatar";
+import AvatarEditor from "react-avatar-editor";
 import Button from "material-ui/Button";
 import Checkbox from "material-ui/Checkbox";
 import { CircularProgress } from "material-ui/Progress";
@@ -63,6 +64,23 @@ const styles = {
     display: "flex",
     flexDirection: "column"
   },
+  input: {
+    display: "none"
+  },
+  picture: {
+    backgroundColor: grey[300],
+    margin: 24
+  },
+  pictureUploader: {
+    margin: "16px 0"
+  },
+  pictureWrapper: {
+    padding: 16,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center"
+  },
   subFormControl: {
     margin: "8px 0"
   }
@@ -108,6 +126,13 @@ class ManageInstitutionsDialog extends Component {
       coach: false,
       manager: false
     },
+    allowZoomOut: false,
+    position: { x: 0.5, y: 0.5 },
+    scale: 1,
+    width: 220,
+    height: 220,
+    image: null,
+    emblemBlob: null,
     name: "",
     abbreviation: "",
     publicEmail: "",
@@ -330,6 +355,34 @@ class ManageInstitutionsDialog extends Component {
       }
     });
   }
+
+  handleNewImage = e => {
+    this.setState({ image: e.target.files[0] });
+    this.handleSave();
+  };
+
+  handleSave = data => {
+    this.editor.getImageScaledToCanvas().toBlob(blob => {
+      this.setState({
+        emblemBlob: blob
+      });
+    }, "image/jpeg");
+  };
+
+  handleScale = e => {
+    const scale = parseFloat(e.target.value);
+    this.setState({ scale });
+    this.handleSave();
+  };
+
+  setEditorRef = editor => {
+    if (editor) this.editor = editor;
+  };
+
+  handlePositionChange = position => {
+    this.setState({ position });
+    this.handleSave();
+  };
 
   renderHomePage() {
     const { classes, isOpen, isMobile, institutions, userID } = this.props;
@@ -562,6 +615,53 @@ class ManageInstitutionsDialog extends Component {
       <Dialog open={isOpen} fullScreen={isMobile}>
         <DialogTitle>Create Institution</DialogTitle>
         <DialogContent>
+          <div className={classes.pictureWrapper}>
+            <div className={classes.pictureUploader}>
+              <AvatarEditor
+                ref={this.setEditorRef}
+                scale={parseFloat(this.state.scale)}
+                width={this.state.width}
+                height={this.state.height}
+                border={16}
+                position={this.state.position}
+                onPositionChange={this.handlePositionChange}
+                onSave={this.handleSave}
+                image={this.state.image || defaultEmblem}
+              />
+            </div>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="zoom" shrink>
+                Zoom
+              </InputLabel>
+              <Input
+                name="scale"
+                type="range"
+                onChange={this.handleScale}
+                inputProps={{
+                  min: this.state.allowZoomOut ? "0.1" : "1",
+                  max: "2",
+                  step: "0.01",
+                  defaultValue: "1"
+                }}
+              />
+            </FormControl>
+            <input
+              accept="image/*"
+              className={classes.input}
+              id="icon-button-file"
+              type="file"
+              onChange={this.handleNewImage}
+            />
+            <label htmlFor="icon-button-file">
+              <Button
+                className={classes.button}
+                color="primary"
+                component="span"
+              >
+                Change emblem
+              </Button>
+            </label>
+          </div>
           <form autoComplete="off" className={classes.formWrapper}>
             <TextField
               label="Name"
@@ -950,7 +1050,7 @@ class ManageInstitutionsDialog extends Component {
                 }
               });
 
-              createInstitution({
+              createInstitution(this.state.emblemBlob, {
                 paymentDefaults,
                 permissions,
                 completeness: {

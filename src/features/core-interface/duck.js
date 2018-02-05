@@ -649,7 +649,7 @@ export function errorCreatingInstitution(error: {
   };
 }
 
-export function createInstitution(institutionInfo) {
+export function createInstitution(emblemBlob, institutionInfo) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestInstitutionCreation());
 
@@ -662,25 +662,40 @@ export function createInstitution(institutionInfo) {
       .collection("users")
       .doc(institutionInfo.metadata.createdBy);
 
-    batch.set(newInstitutionRef, institutionInfo);
-    batch.update(creatorRef, {
-      [`institutions.${newInstitutionID}`]: {
-        paymentDefaults: {
-          rates: institutionInfo.paymentDefaults.rates,
-          type: institutionInfo.paymentDefaults.type
-        },
-        roles: {
-          admin: "APPROVED",
-          coach: "N/A",
-          manager: "N/A"
-        },
-        status: "STAFF"
-      }
-    });
+    const storageRef = firebase.storage().ref();
+    const newImageRef = storageRef.child(
+      `institutions/${newInstitutionID}/emblem.jpeg`
+    );
 
-    return batch
-      .commit()
-      .then(() => dispatch(receiveInstitutionCreation()))
+    return newImageRef
+      .put(emblemBlob)
+      .then(snapshot => {
+        batch.set(newInstitutionRef, {
+          ...institutionInfo,
+          info: {
+            ...institutionInfo.info,
+            emblemURL: snapshot.downloadURL
+          }
+        });
+        batch.update(creatorRef, {
+          [`institutions.${newInstitutionID}`]: {
+            paymentDefaults: {
+              rates: institutionInfo.paymentDefaults.rates,
+              type: institutionInfo.paymentDefaults.type
+            },
+            roles: {
+              admin: "APPROVED",
+              coach: "N/A",
+              manager: "N/A"
+            },
+            status: "STAFF"
+          }
+        });
+        return batch
+          .commit()
+          .then(() => dispatch(receiveInstitutionCreation()))
+          .catch(error => dispatch(errorCreatingInstitution(error)));
+      })
       .catch(error => dispatch(errorCreatingInstitution(error)));
   };
 }
