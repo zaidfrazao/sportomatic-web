@@ -24,7 +24,39 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.9 (Current)"}
+            {"v0.9.10 (Current)"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              New Features
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>Widgets added to the dashboard.</li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Minor Changes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Added ad below slider to substitute for the slider one for
+                usability and brand distinction.
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Notes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                The way the widgets load info is not ideal at the moment.
+                Basically, if the institution has enough events and wages,
+                certain coaches and managers might not have their info displayed
+                on their own accounts. I think I have a solution but it requires
+                a bit more thought.
+              </li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.9"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">
