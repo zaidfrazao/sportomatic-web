@@ -51,6 +51,9 @@ const styles = theme => ({
     backgroundColor: lightBlue[500],
     color: grey[50]
   },
+  flexGrow: {
+    flexGrow: 2
+  },
   heading: {
     fontWeight: "normal",
     fontSize: "1.2rem",
@@ -84,7 +87,9 @@ const styles = theme => ({
     backgroundColor: grey[50],
     border: `1px solid ${grey[200]}`,
     height: "100%",
-    width: "100%"
+    width: "100%",
+    display: "flex",
+    flexDirection: "column"
   },
   selectWrapper: {
     width: "50%"
@@ -234,116 +239,141 @@ class DashboardLayout extends Component {
   }
 
   getUpcomingEventsList() {
-    const { upcomingEvents, history } = this.props;
+    const { upcomingEvents, history, role, userID } = this.props;
 
     return _.toPairs(upcomingEvents).map(([id, info]) => {
-      const date = moment(info.requiredInfo.times.start);
+      if (
+        role === "admin" ||
+        (role === "coach" && info.coaches[userID]) ||
+        (role === "manager" && info.managers[userID])
+      ) {
+        const date = moment(info.requiredInfo.times.start);
 
-      let primaryText = info.requiredInfo.title;
-      let secondaryText = `${date.format(
-        "D MMM YYYY"
-      )} | Starts ${date.fromNow()}`;
-      let link = `/myaccount/schedule/${date.format("YYYY-MM-DD")}/${id}`;
+        let primaryText = info.requiredInfo.title;
+        let secondaryText = `${date.format(
+          "D MMM YYYY"
+        )} | Starts ${date.fromNow()}`;
+        let link = `/myaccount/schedule/${date.format("YYYY-MM-DD")}/${id}`;
 
-      return (
-        <ListItem key={id} button onClick={() => history.push(link)}>
-          <ListItemText primary={primaryText} secondary={secondaryText} />
-        </ListItem>
-      );
+        return (
+          <ListItem key={id} button onClick={() => history.push(link)}>
+            <ListItemText primary={primaryText} secondary={secondaryText} />
+          </ListItem>
+        );
+      }
     });
   }
 
   getRecentResultsList() {
-    const { classes, pastEvents, history, teams } = this.props;
+    const { classes, pastEvents, history, teams, role, userID } = this.props;
 
     return _.toPairs(pastEvents).map(([id, info]) => {
       const date = moment(info.requiredInfo.times.start);
 
       if (info.requiredInfo.isCompetitive) {
-        return _.toPairs(info.teams).map(([teamID, teamInfo]) => {
-          if (teamInfo.resultsStatus === "FINALISED") {
-            return _.values(teamInfo.opponents).map(resultInfo => {
-              let primaryText = "Loading...";
-              let secondaryText = `vs ${resultInfo.name} | ${date.fromNow()}`;
-              let link = `/myaccount/results/${teamID}/${id}`;
+        if (
+          role === "admin" ||
+          (role === "coach" && info.coaches[userID]) ||
+          (role === "manager" && info.managers[userID])
+        ) {
+          return _.toPairs(info.teams).map(([teamID, teamInfo]) => {
+            if (teamInfo.resultsStatus === "FINALISED") {
+              return _.values(teamInfo.opponents).map(resultInfo => {
+                let primaryText = "Loading...";
+                let secondaryText = `vs ${resultInfo.name} | ${date.fromNow()}`;
+                let link = `/myaccount/results/${teamID}/${id}`;
 
-              let result = "drew";
-              let avatarStyle = classes.draw;
-              if (
-                resultInfo.ourScore.totalPoints >
-                resultInfo.theirScore.totalPoints
-              ) {
-                result = "won";
-                avatarStyle = classes.win;
-              } else if (
-                resultInfo.ourScore.totalPoints <
-                resultInfo.theirScore.totalPoints
-              ) {
-                result = "lost";
-                avatarStyle = classes.loss;
-              }
+                let result = "drew";
+                let avatarStyle = classes.draw;
+                if (
+                  resultInfo.ourScore.totalPoints >
+                  resultInfo.theirScore.totalPoints
+                ) {
+                  result = "won";
+                  avatarStyle = classes.win;
+                } else if (
+                  resultInfo.ourScore.totalPoints <
+                  resultInfo.theirScore.totalPoints
+                ) {
+                  result = "lost";
+                  avatarStyle = classes.loss;
+                }
 
-              if (teams[teamID]) {
-                primaryText = `${teams[teamID].info.name} ${result} ${resultInfo
-                  .ourScore.totalPoints} - ${resultInfo.theirScore
-                  .totalPoints}`;
-              }
+                if (teams[teamID]) {
+                  primaryText = `${teams[teamID].info
+                    .name} ${result} ${resultInfo.ourScore
+                    .totalPoints} - ${resultInfo.theirScore.totalPoints}`;
+                }
 
-              return (
-                <ListItem key={id} button onClick={() => history.push(link)}>
-                  <Avatar className={avatarStyle}>
-                    {_.upperCase(result[0])}
-                  </Avatar>
-                  <ListItemText
-                    primary={primaryText}
-                    secondary={secondaryText}
-                  />
-                </ListItem>
-              );
-            });
-          }
-        });
+                return (
+                  <ListItem key={id} button onClick={() => history.push(link)}>
+                    <Avatar className={avatarStyle}>
+                      {_.upperCase(result[0])}
+                    </Avatar>
+                    <ListItemText
+                      primary={primaryText}
+                      secondary={secondaryText}
+                    />
+                  </ListItem>
+                );
+              });
+            }
+          });
+        }
       }
     });
   }
 
   getRecentHoursList() {
-    const { classes, pastEvents, history, staff } = this.props;
+    const { classes, pastEvents, history, staff, userID, role } = this.props;
 
     return _.toPairs(pastEvents).map(([id, info]) => {
       return _.toPairs(info.coaches).map(([coachID, coachInfo]) => {
-        let primaryText = "Loading...";
-        let secondaryText = "Awaiting sign in";
-        let link = `/myaccount/hours/`;
+        if (
+          role === "admin" ||
+          (role === "manager" && info.managers[userID]) ||
+          (role === "coach" && coachID === userID)
+        ) {
+          let primaryText = "Loading...";
+          let secondaryText = "Awaiting sign in";
+          let link = "/myaccount/hours/";
 
-        let avatarStyle = classes.awaitingSignInAvatar;
-        let avatarIcon = <AwaitingSignInIcon />;
-        if (coachInfo.hours.status === "AWAITING_SIGN_OUT") {
-          secondaryText = "Awaiting sign out";
-          avatarStyle = classes.awaitingSignOutAvatar;
-          avatarIcon = <AwaitingSignOutIcon />;
-        } else if (coachInfo.hours.status === "AWAITING_APPROVAL") {
-          secondaryText = "Awaiting approval";
-          avatarStyle = classes.awaitingApprovalAvatar;
-          avatarIcon = <AwaitingApprovalIcon />;
-        } else if (coachInfo.hours.status === "APPROVED") {
-          secondaryText = "Approved";
-          avatarStyle = classes.hoursApprovedAvatar;
-          avatarIcon = <HoursApprovedIcon />;
-          link = `/myaccount/hours/${coachID}`;
+          let avatarStyle = classes.awaitingSignInAvatar;
+          let avatarIcon = <AwaitingSignInIcon />;
+          if (coachInfo.hours.status === "AWAITING_SIGN_OUT") {
+            secondaryText = "Awaiting sign out";
+            avatarStyle = classes.awaitingSignOutAvatar;
+            avatarIcon = <AwaitingSignOutIcon />;
+          } else if (coachInfo.hours.status === "AWAITING_APPROVAL") {
+            secondaryText = "Awaiting approval";
+            avatarStyle = classes.awaitingApprovalAvatar;
+            avatarIcon = <AwaitingApprovalIcon />;
+          } else if (coachInfo.hours.status === "APPROVED") {
+            secondaryText = "Approved";
+            avatarStyle = classes.hoursApprovedAvatar;
+            avatarIcon = <HoursApprovedIcon />;
+
+            if (role !== "coach") {
+              link = `/myaccount/hours/${coachID}`;
+            }
+          }
+
+          if (staff[coachID]) {
+            if (role === "coach") {
+              primaryText = info.requiredInfo.title;
+            } else {
+              primaryText = `${staff[coachID].info.name} ${staff[coachID].info
+                .surname} at ${info.requiredInfo.title}`;
+            }
+          }
+
+          return (
+            <ListItem key={id} button onClick={() => history.push(link)}>
+              <Avatar className={avatarStyle}>{avatarIcon}</Avatar>
+              <ListItemText primary={primaryText} secondary={secondaryText} />
+            </ListItem>
+          );
         }
-
-        if (staff[coachID]) {
-          primaryText = `${staff[coachID].info.name} ${staff[coachID].info
-            .surname} at ${info.requiredInfo.title}`;
-        }
-
-        return (
-          <ListItem key={id} button onClick={() => history.push(link)}>
-            <Avatar className={avatarStyle}>{avatarIcon}</Avatar>
-            <ListItemText primary={primaryText} secondary={secondaryText} />
-          </ListItem>
-        );
       });
     });
   }
@@ -391,10 +421,16 @@ class DashboardLayout extends Component {
       (role === "manager" && permissions.managers.wages.canView);
 
     const ad = this.createAd();
-    const recentWagesList = this.getRecentWagesList();
-    const upcomingEventsList = this.getUpcomingEventsList().slice(0, 5);
-    const recentResultsList = this.getRecentResultsList().slice(0, 5);
-    const recentHoursList = this.getRecentHoursList().slice(0, 5);
+    const recentWagesList = this.getRecentWagesList().filter(item => item);
+    const upcomingEventsList = this.getUpcomingEventsList()
+      .filter(item => item)
+      .slice(0, 5);
+    const recentResultsList = this.getRecentResultsList()
+      .filter(item => item)
+      .slice(0, 5);
+    const recentHoursList = this.getRecentHoursList()
+      .filter(item => item)
+      .slice(0, 5);
 
     if (accountInfo.lastAccessed) {
       active.id = accountInfo.lastAccessed.institutionID;
@@ -498,12 +534,6 @@ class DashboardLayout extends Component {
                 >
                   Upcoming Events
                 </Typography>
-                <Button
-                  className={classes.viewMoreButton}
-                  onClick={() => history.push("/myaccount/schedule")}
-                >
-                  View more
-                </Button>
                 {isUpcomingEventsLoading ? (
                   <List>
                     <ListItem className={classes.noItems}>
@@ -521,6 +551,13 @@ class DashboardLayout extends Component {
                     )}
                   </List>
                 )}
+                <div className={classes.flexGrow} />
+                <Button
+                  className={classes.viewMoreButton}
+                  onClick={() => history.push("/myaccount/schedule")}
+                >
+                  View more
+                </Button>
               </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
@@ -532,12 +569,6 @@ class DashboardLayout extends Component {
                 >
                   Recent Results
                 </Typography>
-                <Button
-                  className={classes.viewMoreButton}
-                  onClick={() => history.push("/myaccount/results")}
-                >
-                  View more
-                </Button>
                 {isPastEventsLoading ? (
                   <List>
                     <ListItem className={classes.noItems}>
@@ -555,6 +586,13 @@ class DashboardLayout extends Component {
                     )}
                   </List>
                 )}
+                <div className={classes.flexGrow} />
+                <Button
+                  className={classes.viewMoreButton}
+                  onClick={() => history.push("/myaccount/results")}
+                >
+                  View more
+                </Button>
               </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
@@ -566,12 +604,6 @@ class DashboardLayout extends Component {
                 >
                   Recent Hours
                 </Typography>
-                <Button
-                  className={classes.viewMoreButton}
-                  onClick={() => history.push("/myaccount/hours")}
-                >
-                  View more
-                </Button>
                 {isPastEventsLoading ? (
                   <List>
                     <ListItem className={classes.noItems}>
@@ -589,6 +621,13 @@ class DashboardLayout extends Component {
                     )}
                   </List>
                 )}
+                <div className={classes.flexGrow} />
+                <Button
+                  className={classes.viewMoreButton}
+                  onClick={() => history.push("/myaccount/hours")}
+                >
+                  View more
+                </Button>
               </Paper>
             </Grid>
             {showWages && (
@@ -601,12 +640,6 @@ class DashboardLayout extends Component {
                   >
                     Recent Wages
                   </Typography>
-                  <Button
-                    className={classes.viewMoreButton}
-                    onClick={() => history.push("/myaccount/wages")}
-                  >
-                    View more
-                  </Button>
                   {isRecentWagesLoading ? (
                     <List>
                       <ListItem className={classes.noItems}>
@@ -624,6 +657,13 @@ class DashboardLayout extends Component {
                       )}
                     </List>
                   )}
+                  <div className={classes.flexGrow} />
+                  <Button
+                    className={classes.viewMoreButton}
+                    onClick={() => history.push("/myaccount/wages")}
+                  >
+                    View more
+                  </Button>
                 </Paper>
               </Grid>
             )}
