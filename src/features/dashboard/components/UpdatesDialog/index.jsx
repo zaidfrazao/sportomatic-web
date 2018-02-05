@@ -37,12 +37,26 @@ class UpdatesDialog extends Component {
               </li>
             </Typography>
             <Typography type="subheading" component="h3">
+              Bug Fixes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>Disable unapproved institutions.</li>
+            </Typography>
+            <Typography type="subheading" component="h3">
               Minor Changes
             </Typography>
             <Typography type="body1" component="ul">
               <li>Widgets correctly show "None" when empty.</li>
               <li>
                 Redundancy avatar on coach wages dashboard widget removed.
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Notes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Updating profile picture updates personal institution emblem.
               </li>
             </Typography>
           </div>
