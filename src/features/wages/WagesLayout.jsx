@@ -329,14 +329,15 @@ class WagesLayout extends Component {
       activeInstitutionID,
       staff,
       role,
-      userID
+      userID,
+      permissions
     } = this.props;
     const { currentTab } = this.props.uiConfig;
     const { updateTab, loadWagesByCoach, updateSearch } = this.props.actions;
     const { coachID } = this.props.match.params;
     const { isWagesByCoachLoading, isStaffLoading } = this.props.loadingStatus;
 
-    if (role === "manager") {
+    if (role === "manager" && !permissions.managers.wages.canView) {
       return <Redirect to="/myaccount/dashboard" />;
     }
 
