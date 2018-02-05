@@ -34,6 +34,15 @@ class UpdatesDialog extends Component {
               <li>Admins can edit their institution settings.</li>
               <li>Permissions have been implemented across app.</li>
             </Typography>
+            <Typography type="subheading" component="h3">
+              Bug Fix
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Overtime wage no longer exceed max overtime hours for
+                institution.
+              </li>
+            </Typography>
           </div>
           <Typography type="title" component="h2">
             {"v0.9.8"}
