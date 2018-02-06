@@ -81,13 +81,6 @@ class MarkAbsentModal extends Component {
     });
   }
 
-  resetState() {
-    this.setState({
-      rating: "",
-      reason: ""
-    });
-  }
-
   render() {
     const { isOpen, coachName, classes } = this.props;
     const { closeModal, markAbsent } = this.props.actions;
