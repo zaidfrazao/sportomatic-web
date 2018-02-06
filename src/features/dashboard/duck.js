@@ -543,10 +543,10 @@ export function loadPastEvents(institutionID, userID = "", role = "admin") {
     eventsRef = firebase
       .firestore()
       .collection("events")
-      .orderBy("requiredInfo.times.end", "desc")
+      .orderBy("requiredInfo.times.start", "desc")
       .limit(20)
       .where("institutionID", "==", institutionID)
-      .where("requiredInfo.times.end", "<", moment().toDate());
+      .where("requiredInfo.times.start", "<", moment().toDate());
 
     return eventsRef.onSnapshot(querySnapshot => {
       let events = {};
