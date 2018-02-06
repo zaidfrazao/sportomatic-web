@@ -40,6 +40,10 @@ class UpdatesDialog extends Component {
                 time when editing times as manager / admin.
               </li>
               <li>Add error-checking to hour logging.</li>
+              <li>
+                Include hours and results being logged for events in progress in
+                dashboard widgets.
+              </li>
             </Typography>
             <Typography type="subheading" component="h3">
               Minor Changes
