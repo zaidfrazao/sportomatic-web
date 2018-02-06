@@ -20,6 +20,14 @@ const styles = {
       width: 300
     }
   },
+  button: {
+    margin: 8
+  },
+  buttonsWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "stretch"
+  },
   slide: {
     height: 250
   },
@@ -65,14 +73,42 @@ class BannerCarousel extends Component {
               <h2 className={classes.updatesTitle}>
                 {"Welcome to Sportomatic"}
               </h2>
-              <Button raised color="accent" onClick={() => openUpdatesDialog()}>
-                View updates
-              </Button>
+              <div className={classes.buttonsWrapper}>
+                <Button
+                  raised
+                  color="primary"
+                  className={classes.button}
+                  onClick={() => openUpdatesDialog()}
+                >
+                  View updates
+                </Button>
+                <Button
+                  raised
+                  color="accent"
+                  className={classes.button}
+                  onClick={() =>
+                    window.open(
+                      "http://site.sportomaticapp.com/wp-content/uploads/2018/02/Sportomatic-Season-Setup-Guide.docx",
+                      "_blank"
+                    )}
+                >
+                  Download Season Setup Guide
+                </Button>
+                <Button
+                  raised
+                  color="accent"
+                  className={classes.button}
+                  onClick={() =>
+                    window.open(
+                      "http://site.sportomaticapp.com/wp-content/uploads/2018/02/Sportomatic-Userguide.docx",
+                      "_blank"
+                    )}
+                >
+                  Download User Guide
+                </Button>
+              </div>
             </div>
           </div>
-          {/*<div className={classes.slide}>
-            {isTablet ? <DashboardMobileAd /> : <DashboardDesktopAd />}
-          </div>*/}
         </Slider>
       </Paper>
     );
