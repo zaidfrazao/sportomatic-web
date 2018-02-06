@@ -39,6 +39,7 @@ class UpdatesDialog extends Component {
                 Fix visual bug where event start time changes to sign in / out
                 time when editing times as manager / admin.
               </li>
+              <li>Add error-checking to hour logging.</li>
             </Typography>
             <Typography type="subheading" component="h3">
               Minor Changes
