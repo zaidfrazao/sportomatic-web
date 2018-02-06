@@ -24,7 +24,18 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.13 (Current)"}
+            {"v0.9.14 (Current)"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              Bug Fixes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>All dialogs get reset when closed.</li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.13"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">
