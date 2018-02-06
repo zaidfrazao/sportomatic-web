@@ -28,6 +28,15 @@ class UpdatesDialog extends Component {
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">
+              Bug Fixes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Disallow user from submitting negative scores and improve
+                validation feedback when scores are invalid.
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
               Minor Changes
             </Typography>
             <Typography type="body1" component="ul">
