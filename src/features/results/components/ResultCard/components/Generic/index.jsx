@@ -196,7 +196,17 @@ const styles = theme => ({
 
 class Generic extends Component {
   state = {
-    opponents: {}
+    opponents: {},
+    errors: {
+      ourScore: {
+        hasError: false,
+        message: ""
+      },
+      theirScore: {
+        hasError: false,
+        message: ""
+      }
+    }
   };
 
   componentWillMount() {
@@ -228,6 +238,20 @@ class Generic extends Component {
     });
   }
 
+  updateError(field, hasError, message) {
+    const { errors } = this.state;
+
+    this.setState({
+      errors: {
+        ...errors,
+        [field]: {
+          hasError,
+          message
+        }
+      }
+    });
+  }
+
   renderMobile() {
     const {
       classes,
@@ -239,7 +263,7 @@ class Generic extends Component {
     } = this.props;
     const { name, emblemURL } = this.props.ourTeam;
     const { startLogging, finaliseResults, editResult } = this.props.actions;
-    const { opponents } = this.state;
+    const { opponents, errors } = this.state;
 
     return (
       <div key={`result-${teamID}`} className={classes.wrapper}>
@@ -294,7 +318,9 @@ class Generic extends Component {
                   {resultsStatus !== "AWAITING_START" && (
                     <div className={classes.goalsWrapper}>
                       <Typography type="title" component="p">
-                        {ourScore.totalPoints}
+                        {isNaN(ourScore.totalPoints)
+                          ? "?"
+                          : ourScore.totalPoints}
                       </Typography>
                     </div>
                   )}
@@ -311,7 +337,9 @@ class Generic extends Component {
                   {resultsStatus !== "AWAITING_START" && (
                     <div className={classes.goalsWrapper}>
                       <Typography type="title" component="p">
-                        {theirScore.totalPoints}
+                        {isNaN(theirScore.totalPoints)
+                          ? "?"
+                          : theirScore.totalPoints}
                       </Typography>
                     </div>
                   )}
@@ -326,11 +354,17 @@ class Generic extends Component {
                       inputProps={{
                         min: 0
                       }}
+                      error={errors.ourScore.hasError}
+                      helperText={errors.ourScore.message}
                       onChange={e => {
-                        const newValue =
-                          e.target.value === ""
-                            ? 0
-                            : parseInt(e.target.value, 10);
+                        const newValue = parseInt(e.target.value, 10);
+
+                        if (isNaN(newValue) || newValue < 0) {
+                          this.updateError("ourScore", true, "Invalid");
+                        } else {
+                          this.updateError("ourScore", false, "");
+                        }
+
                         this.updateResult(opponentID, {
                           commentary,
                           ourScore: {
@@ -344,12 +378,15 @@ class Generic extends Component {
                           isSignedUp: opponentInfo.isSignedUp
                         });
                       }}
-                      onBlur={() =>
-                        editResult(eventID, teamID, opponentID, {
-                          commentary,
-                          ourScore,
-                          theirScore
-                        })}
+                      onBlur={() => {
+                        if (!errors.ourScore.hasError) {
+                          editResult(eventID, teamID, opponentID, {
+                            commentary,
+                            ourScore,
+                            theirScore
+                          });
+                        }
+                      }}
                       disabled={!canEdit}
                     />
                   </div>
@@ -365,11 +402,17 @@ class Generic extends Component {
                       inputProps={{
                         min: 0
                       }}
+                      error={errors.theirScore.hasError}
+                      helperText={errors.theirScore.message}
                       onChange={e => {
-                        const newValue =
-                          e.target.value === ""
-                            ? 0
-                            : parseInt(e.target.value, 10);
+                        const newValue = parseInt(e.target.value, 10);
+
+                        if (isNaN(newValue) || newValue < 0) {
+                          this.updateError("theirScore", true, "Invalid");
+                        } else {
+                          this.updateError("theirScore", false, "");
+                        }
+
                         this.updateResult(opponentID, {
                           commentary,
                           ourScore,
@@ -383,12 +426,15 @@ class Generic extends Component {
                           isSignedUp: opponentInfo.isSignedUp
                         });
                       }}
-                      onBlur={() =>
-                        editResult(eventID, teamID, opponentID, {
-                          commentary,
-                          ourScore,
-                          theirScore
-                        })}
+                      onBlur={() => {
+                        if (!errors.theirScore.hasError) {
+                          editResult(eventID, teamID, opponentID, {
+                            commentary,
+                            ourScore,
+                            theirScore
+                          });
+                        }
+                      }}
                       disabled={!canEdit}
                     />
                   </div>
@@ -408,12 +454,18 @@ class Generic extends Component {
                           name: opponentInfo.name,
                           isSignedUp: opponentInfo.isSignedUp
                         })}
-                      onBlur={() =>
-                        editResult(eventID, teamID, opponentID, {
-                          commentary,
-                          ourScore,
-                          theirScore
-                        })}
+                      onBlur={() => {
+                        if (
+                          !errors.ourScore.hasError &&
+                          !errors.theirScore.hasError
+                        ) {
+                          editResult(eventID, teamID, opponentID, {
+                            commentary,
+                            ourScore,
+                            theirScore
+                          });
+                        }
+                      }}
                       label="Additional commentary"
                       value={commentary}
                       multiline
@@ -453,7 +505,11 @@ class Generic extends Component {
         {resultsStatus === "AWAITING_FINALISE" && (
           <Button
             raised
-            disabled={!canApprove}
+            disabled={
+              !canApprove ||
+              errors.ourScore.hasError ||
+              errors.theirScore.hasError
+            }
             className={classes.finaliseButton}
             onClick={() => finaliseResults(eventID, teamID)}
           >
@@ -491,7 +547,7 @@ class Generic extends Component {
     } = this.props;
     const { name, emblemURL } = this.props.ourTeam;
     const { startLogging, finaliseResults, editResult } = this.props.actions;
-    const { opponents } = this.state;
+    const { opponents, errors } = this.state;
 
     return (
       <div key={`result-${teamID}`} className={classes.wrapper}>
@@ -549,7 +605,9 @@ class Generic extends Component {
                     {resultsStatus !== "AWAITING_START" && (
                       <div className={classes.goalsWrapper}>
                         <Typography type="display2" component="p">
-                          {ourScore.totalPoints}
+                          {isNaN(ourScore.totalPoints)
+                            ? "?"
+                            : ourScore.totalPoints}
                         </Typography>
                       </div>
                     )}
@@ -565,7 +623,9 @@ class Generic extends Component {
                     {resultsStatus !== "AWAITING_START" && (
                       <div className={classes.goalsWrapper}>
                         <Typography type="display2" component="p">
-                          {theirScore.totalPoints}
+                          {isNaN(theirScore.totalPoints)
+                            ? "?"
+                            : theirScore.totalPoints}
                         </Typography>
                       </div>
                     )}
@@ -592,11 +652,17 @@ class Generic extends Component {
                       inputProps={{
                         min: 0
                       }}
+                      error={errors.ourScore.hasError}
+                      helperText={errors.ourScore.message}
                       onChange={e => {
-                        const newValue =
-                          e.target.value === ""
-                            ? 0
-                            : parseInt(e.target.value, 10);
+                        const newValue = parseInt(e.target.value, 10);
+
+                        if (isNaN(newValue) || newValue < 0) {
+                          this.updateError("ourScore", true, "Invalid");
+                        } else {
+                          this.updateError("ourScore", false, "");
+                        }
+
                         this.updateResult(opponentID, {
                           commentary,
                           ourScore: {
@@ -610,12 +676,15 @@ class Generic extends Component {
                           isSignedUp: opponentInfo.isSignedUp
                         });
                       }}
-                      onBlur={() =>
-                        editResult(eventID, teamID, opponentID, {
-                          commentary,
-                          ourScore,
-                          theirScore
-                        })}
+                      onBlur={() => {
+                        if (!errors.ourScore.hasError) {
+                          editResult(eventID, teamID, opponentID, {
+                            commentary,
+                            ourScore,
+                            theirScore
+                          });
+                        }
+                      }}
                     />
                   </div>
                   <div className={classes.pointNameColumn}>
@@ -631,11 +700,17 @@ class Generic extends Component {
                       inputProps={{
                         min: 0
                       }}
+                      error={errors.theirScore.hasError}
+                      helperText={errors.theirScore.message}
                       onChange={e => {
-                        const newValue =
-                          e.target.value === ""
-                            ? 0
-                            : parseInt(e.target.value, 10);
+                        const newValue = parseInt(e.target.value, 10);
+
+                        if (isNaN(newValue) || newValue < 0) {
+                          this.updateError("theirScore", true, "Invalid");
+                        } else {
+                          this.updateError("theirScore", false, "");
+                        }
+
                         this.updateResult(opponentID, {
                           commentary,
                           ourScore,
@@ -649,12 +724,15 @@ class Generic extends Component {
                           isSignedUp: opponentInfo.isSignedUp
                         });
                       }}
-                      onBlur={() =>
-                        editResult(eventID, teamID, opponentID, {
-                          commentary,
-                          ourScore,
-                          theirScore
-                        })}
+                      onBlur={() => {
+                        if (!errors.theirScore.hasError) {
+                          editResult(eventID, teamID, opponentID, {
+                            commentary,
+                            ourScore,
+                            theirScore
+                          });
+                        }
+                      }}
                     />
                   </div>
                 </div>
@@ -673,12 +751,18 @@ class Generic extends Component {
                           name: opponentInfo.name,
                           isSignedUp: opponentInfo.isSignedUp
                         })}
-                      onBlur={() =>
-                        editResult(eventID, teamID, opponentID, {
-                          commentary,
-                          ourScore,
-                          theirScore
-                        })}
+                      onBlur={() => {
+                        if (
+                          !errors.ourScore.hasError &&
+                          !errors.theirScore.hasError
+                        ) {
+                          editResult(eventID, teamID, opponentID, {
+                            commentary,
+                            ourScore,
+                            theirScore
+                          });
+                        }
+                      }}
                       label="Additional commentary"
                       value={commentary}
                       multiline
@@ -718,7 +802,11 @@ class Generic extends Component {
         {resultsStatus === "AWAITING_FINALISE" && (
           <Button
             raised
-            disabled={!canApprove}
+            disabled={
+              !canApprove ||
+              errors.ourScore.hasError ||
+              errors.theirScore.hasError
+            }
             className={classes.finaliseButton}
             onClick={() => finaliseResults(eventID, teamID)}
           >
