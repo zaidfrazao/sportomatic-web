@@ -142,10 +142,38 @@ class HoursCard extends Component {
     let coaches = {};
     let isOpen = false;
     if (role === "coach") {
+      let hasSignInError = false;
+      let signInErrorMessage = "";
+      let hasSignOutError = false;
+      let signOutErrorMessage = "";
+
+      const signInTime = moment(eventInfo.coaches[userID].hours.times.signIn);
+      const signOutTime = moment(eventInfo.coaches[userID].hours.times.signOut);
+      const startTime = moment(eventInfo.requiredInfo.times.start);
+
+      if (signInTime.diff(startTime, "hours") < -1) {
+        hasSignInError = true;
+        signInErrorMessage = "Too early";
+      }
+      if (signInTime.isAfter(signOutTime)) {
+        hasSignOutError = true;
+        signOutErrorMessage = "Before sign in";
+      }
+
       coaches[userID] = {
         signInTime: eventInfo.coaches[userID].hours.times.signIn,
         signOutTime: eventInfo.coaches[userID].hours.times.signOut,
-        status: eventInfo.coaches[userID].hours.status
+        status: eventInfo.coaches[userID].hours.status,
+        errors: {
+          signIn: {
+            hasError: hasSignInError,
+            message: signInErrorMessage
+          },
+          signOut: {
+            hasError: hasSignOutError,
+            message: signOutErrorMessage
+          }
+        }
       };
       if (eventInfo.coaches[userID].hours.status !== "APPROVED") {
         isOpen = true;
@@ -156,10 +184,38 @@ class HoursCard extends Component {
       });
     } else {
       _.toPairs(eventInfo.coaches).map(([coachID, coachInfo]) => {
+        let hasSignInError = false;
+        let signInErrorMessage = "";
+        let hasSignOutError = false;
+        let signOutErrorMessage = "";
+
+        const signInMoment = moment(coachInfo.hours.times.signIn);
+        const signOutMoment = moment(coachInfo.hours.times.signOut);
+        const startMoment = moment(eventInfo.requiredInfo.times.start);
+
+        if (signInMoment.diff(startMoment, "hours") < -1) {
+          hasSignInError = true;
+          signInErrorMessage = "Too early";
+        }
+        if (signInMoment.isAfter(signOutMoment)) {
+          hasSignOutError = true;
+          signOutErrorMessage = "Before sign in";
+        }
+
         coaches[coachID] = {
           signInTime: coachInfo.hours.times.signIn,
           signOutTime: coachInfo.hours.times.signOut,
-          status: coachInfo.hours.status
+          status: coachInfo.hours.status,
+          errors: {
+            signIn: {
+              hasError: hasSignInError,
+              message: signInErrorMessage
+            },
+            signOut: {
+              hasError: hasSignOutError,
+              message: signOutErrorMessage
+            }
+          }
         };
         if (coachInfo.hours.status !== "APPROVED") {
           isOpen = true;
@@ -182,20 +238,78 @@ class HoursCard extends Component {
     ) {
       let coaches = {};
       if (role === "coach") {
+        let hasSignInError = false;
+        let signInErrorMessage = "";
+        let hasSignOutError = false;
+        let signOutErrorMessage = "";
+
+        const signInTime = moment(eventInfo.coaches[userID].hours.times.signIn);
+        const signOutTime = moment(
+          eventInfo.coaches[userID].hours.times.signOut
+        );
+        const startTime = moment(eventInfo.requiredInfo.times.start);
+
+        if (signInTime.diff(startTime, "hours") < -1) {
+          hasSignInError = true;
+          signInErrorMessage = "Too early";
+        }
+        if (signInTime.isAfter(signOutTime)) {
+          hasSignOutError = true;
+          signOutErrorMessage = "Before sign in";
+        }
+
         coaches[userID] = {
           signInTime: eventInfo.coaches[userID].hours.times.signIn,
           signOutTime: eventInfo.coaches[userID].hours.times.signOut,
-          status: eventInfo.coaches[userID].hours.status
+          status: eventInfo.coaches[userID].hours.status,
+          errors: {
+            signIn: {
+              hasError: hasSignInError,
+              message: signInErrorMessage
+            },
+            signOut: {
+              hasError: hasSignOutError,
+              message: signOutErrorMessage
+            }
+          }
         };
         this.setState({
           coaches
         });
       } else {
         _.toPairs(eventInfo.coaches).map(([coachID, coachInfo]) => {
+          let hasSignInError = false;
+          let signInErrorMessage = "";
+          let hasSignOutError = false;
+          let signOutErrorMessage = "";
+
+          const signInTime = moment(coachInfo.hours.times.signIn);
+          const signOutTime = moment(coachInfo.hours.times.signOut);
+          const startTime = moment(eventInfo.requiredInfo.times.start);
+
+          if (signInTime.diff(startTime, "hours") < -1) {
+            hasSignInError = true;
+            signInErrorMessage = "Too early";
+          }
+          if (signInTime.isAfter(signOutTime)) {
+            hasSignOutError = true;
+            signOutErrorMessage = "Before sign in";
+          }
+
           coaches[coachID] = {
             signInTime: coachInfo.hours.times.signIn,
             signOutTime: coachInfo.hours.times.signOut,
-            status: coachInfo.hours.status
+            status: coachInfo.hours.status,
+            errors: {
+              signIn: {
+                hasError: hasSignInError,
+                message: signInErrorMessage
+              },
+              signOut: {
+                hasError: hasSignOutError,
+                message: signOutErrorMessage
+              }
+            }
           };
           this.setState({
             coaches
@@ -207,6 +321,25 @@ class HoursCard extends Component {
 
   updateCoachHours(eventID, coachID, signInTime, signOutTime, status) {
     const { coaches } = this.state;
+    const { eventInfo } = this.props;
+
+    let hasSignInError = false;
+    let signInErrorMessage = "";
+    let hasSignOutError = false;
+    let signOutErrorMessage = "";
+
+    const signInMoment = moment(signInTime);
+    const signOutMoment = moment(signOutTime);
+    const startMoment = moment(eventInfo.requiredInfo.times.start);
+
+    if (signInMoment.diff(startMoment, "hours") < -1) {
+      hasSignInError = true;
+      signInErrorMessage = "Too early";
+    }
+    if (signInMoment.isAfter(signOutMoment)) {
+      hasSignOutError = true;
+      signOutErrorMessage = "Before sign in";
+    }
 
     this.setState({
       coaches: {
@@ -214,7 +347,17 @@ class HoursCard extends Component {
         [coachID]: {
           signInTime,
           signOutTime,
-          status
+          status,
+          errors: {
+            signIn: {
+              hasError: hasSignInError,
+              message: signInErrorMessage
+            },
+            signOut: {
+              hasError: hasSignOutError,
+              message: signOutErrorMessage
+            }
+          }
         }
       }
     });
@@ -236,6 +379,7 @@ class HoursCard extends Component {
     if (role === "coach") {
       const signInTime = this.state.coaches[userID].signInTime;
       const signOutTime = this.state.coaches[userID].signOutTime;
+      const errors = this.state.coaches[userID].errors;
 
       switch (this.state.coaches[userID].status) {
         case "AWAITING_SIGN_IN":
@@ -307,6 +451,8 @@ class HoursCard extends Component {
                     disabled
                     value={moment(signInTime).format("HH:mm")}
                     className={classes.time}
+                    error={errors.signIn.hasError}
+                    helperText={errors.signIn.message}
                     InputLabelProps={{
                       shrink: true
                     }}
@@ -329,6 +475,7 @@ class HoursCard extends Component {
                 <Button
                   raised
                   className={classes.signOutButton}
+                  disabled={errors.signIn.hasError}
                   onClick={() => {
                     const currentTime = moment();
                     if (currentTime.isAfter(eventInfo.requiredInfo.times.end)) {
@@ -365,6 +512,8 @@ class HoursCard extends Component {
                     disabled
                     value={moment(signInTime).format("HH:mm")}
                     className={classes.time}
+                    error={errors.signIn.hasError}
+                    helperText={errors.signIn.message}
                     InputLabelProps={{
                       shrink: true
                     }}
@@ -378,6 +527,8 @@ class HoursCard extends Component {
                     disabled
                     value={moment(signOutTime).format("HH:mm")}
                     className={classes.time}
+                    error={errors.signOut.hasError}
+                    helperText={errors.signOut.message}
                     InputLabelProps={{
                       shrink: true
                     }}
@@ -441,6 +592,7 @@ class HoursCard extends Component {
         const { profilePictureURL, name, surname } = staff[coachID].info;
         const signInTime = this.state.coaches[coachID].signInTime;
         const signOutTime = this.state.coaches[coachID].signOutTime;
+        const errors = this.state.coaches[coachID].errors;
 
         switch (this.state.coaches[coachID].status) {
           case "AWAITING_SIGN_IN":
@@ -485,14 +637,19 @@ class HoursCard extends Component {
                           "AWAITING_SIGN_OUT"
                         );
                       }}
-                      onBlur={() =>
-                        signIn(
-                          eventID,
-                          coachID,
-                          signInTime,
-                          "AWAITING_SIGN_OUT"
-                        )}
+                      onBlur={() => {
+                        if (!errors.signIn.hasError) {
+                          signIn(
+                            eventID,
+                            coachID,
+                            signInTime,
+                            "AWAITING_SIGN_OUT"
+                          );
+                        }
+                      }}
                       className={classes.time}
+                      error={errors.signIn.hasError}
+                      helperText={errors.signIn.message}
                       InputLabelProps={{
                         shrink: true
                       }}
@@ -593,14 +750,19 @@ class HoursCard extends Component {
                           "AWAITING_SIGN_OUT"
                         );
                       }}
-                      onBlur={() =>
-                        signIn(
-                          eventID,
-                          coachID,
-                          signInTime,
-                          "AWAITING_SIGN_OUT"
-                        )}
+                      onBlur={() => {
+                        if (!errors.signIn.hasError) {
+                          signIn(
+                            eventID,
+                            coachID,
+                            signInTime,
+                            "AWAITING_SIGN_OUT"
+                          );
+                        }
+                      }}
                       className={classes.time}
+                      error={errors.signIn.hasError}
+                      helperText={errors.signIn.message}
                       InputLabelProps={{
                         shrink: true
                       }}
@@ -628,14 +790,19 @@ class HoursCard extends Component {
                           "AWAITING_APPROVAL"
                         );
                       }}
-                      onBlur={() =>
-                        signOut(
-                          eventID,
-                          coachID,
-                          signOutTime,
-                          "AWAITING_APPROVAL"
-                        )}
+                      onBlur={() => {
+                        if (!errors.signOut.hasError) {
+                          signOut(
+                            eventID,
+                            coachID,
+                            signOutTime,
+                            "AWAITING_APPROVAL"
+                          );
+                        }
+                      }}
                       className={classes.time}
+                      error={errors.signOut.hasError}
+                      helperText={errors.signOut.message}
                       InputLabelProps={{
                         shrink: true
                       }}
@@ -649,6 +816,7 @@ class HoursCard extends Component {
                   <Button
                     raised
                     className={classes.signOutButton}
+                    disabled={errors.signIn.hasError}
                     onClick={() => {
                       const currentTime = moment();
                       if (
@@ -726,6 +894,8 @@ class HoursCard extends Component {
                           "AWAITING_APPROVAL"
                         )}
                       className={classes.time}
+                      error={errors.signIn.hasError}
+                      helperText={errors.signIn.message}
                       InputLabelProps={{
                         shrink: true
                       }}
@@ -762,6 +932,8 @@ class HoursCard extends Component {
                           "AWAITING_APPROVAL"
                         )}
                       className={classes.time}
+                      error={errors.signOut.hasError}
+                      helperText={errors.signOut.message}
                       InputLabelProps={{
                         shrink: true
                       }}
@@ -775,6 +947,7 @@ class HoursCard extends Component {
                   <Button
                     raised
                     className={classes.approveButton}
+                    disabled={errors.signIn.hasError || errors.signOut.hasError}
                     onClick={() =>
                       approveHours(
                         institutionID,
@@ -890,9 +1063,6 @@ class HoursCard extends Component {
       "h:mm A"
     );
     const endTime = moment(eventInfo.requiredInfo.times.end).format("h:mm A");
-
-    console.log(eventInfo);
-    console.log(startTime);
 
     return (
       <div className={classes.rootWrapper}>
