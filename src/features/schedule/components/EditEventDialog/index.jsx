@@ -131,6 +131,7 @@ const styles = {
     border: `1px solid ${grey[200]}`
   },
   title: {
+    width: "100%",
     margin: 24,
     fontSize: "1.4rem"
   },
@@ -161,6 +162,40 @@ class EditEventDialog extends Component {
     selectedCoaches: [],
     isRecurringEventModalOpen: false,
     shouldEditAllEvents: false,
+    errors: {
+      date: {
+        hasError: false,
+        message: ""
+      },
+      startTime: {
+        hasError: false,
+        message: ""
+      },
+      endTime: {
+        hasError: false,
+        message: ""
+      },
+      title: {
+        hasError: false,
+        message: ""
+      },
+      numberOfEvents: {
+        hasError: false,
+        message: ""
+      },
+      notes: {
+        hasError: false,
+        message: ""
+      },
+      venue: {
+        hasError: false,
+        message: ""
+      },
+      otherEventType: {
+        hasError: false,
+        message: ""
+      }
+    },
     Transition: props => <Slide direction="up" {...props} />
   };
 
@@ -252,7 +287,41 @@ class EditEventDialog extends Component {
         notes: initialEventInfo.optionalInfo.notes,
         isOtherEventTypeCompetitive: isOtherEventTypeCompetitive,
         isRecurringEventModalOpen:
-          initialEventInfo.recurrencePattern.frequency !== "ONCE" && isOpen
+          initialEventInfo.recurrencePattern.frequency !== "ONCE" && isOpen,
+        errors: {
+          date: {
+            hasError: false,
+            message: ""
+          },
+          startTime: {
+            hasError: false,
+            message: ""
+          },
+          endTime: {
+            hasError: false,
+            message: ""
+          },
+          title: {
+            hasError: false,
+            message: ""
+          },
+          numberOfEvents: {
+            hasError: false,
+            message: ""
+          },
+          notes: {
+            hasError: false,
+            message: ""
+          },
+          venue: {
+            hasError: false,
+            message: ""
+          },
+          otherEventType: {
+            hasError: false,
+            message: ""
+          }
+        }
       });
     }
   }
@@ -345,7 +414,41 @@ class EditEventDialog extends Component {
         notes: initialEventInfo.optionalInfo.notes,
         isOtherEventTypeCompetitive: isOtherEventTypeCompetitive,
         isRecurringEventModalOpen:
-          initialEventInfo.recurrencePattern.frequency !== "ONCE" && isOpen
+          initialEventInfo.recurrencePattern.frequency !== "ONCE" && isOpen,
+        errors: {
+          date: {
+            hasError: false,
+            message: ""
+          },
+          startTime: {
+            hasError: false,
+            message: ""
+          },
+          endTime: {
+            hasError: false,
+            message: ""
+          },
+          title: {
+            hasError: false,
+            message: ""
+          },
+          numberOfEvents: {
+            hasError: false,
+            message: ""
+          },
+          notes: {
+            hasError: false,
+            message: ""
+          },
+          venue: {
+            hasError: false,
+            message: ""
+          },
+          otherEventType: {
+            hasError: false,
+            message: ""
+          }
+        }
       });
     }
 
@@ -731,25 +834,99 @@ class EditEventDialog extends Component {
     this.setState({ title: newTitle });
   }
 
-  handleChange = name => event => {
-    const { selectedTeams, startTime, endTime } = this.state;
-    switch (name) {
-      case "type":
-        this.setNewAutomatedTitle(selectedTeams, name, event.target.value);
-        break;
-      case "otherEventType":
-        this.setNewAutomatedTitle(selectedTeams, name, event.target.value);
+  validateField(field, value) {
+    const { minDate } = this.props;
+    const { errors, startTime, endTime } = this.state;
+
+    let hasError = false;
+    let message = "";
+
+    switch (field) {
+      case "date":
+        if (moment(minDate).isAfter(moment(value))) {
+          hasError = true;
+          message = "Cannot schedule events before today";
+        }
         break;
       case "startTime":
-        if (event.target.value > endTime)
-          this.setState({ endTime: event.target.value });
+        if (value >= endTime) {
+          hasError = true;
+          message = "Start time must be before end time";
+        }
         break;
       case "endTime":
-        if (event.target.value < startTime)
-          this.setState({ startTime: event.target.value });
+        if (value <= startTime) {
+          hasError = true;
+          message = "Start time must be before end time";
+        }
+        break;
+      case "title":
+        if (value === "") {
+          hasError = true;
+          message = "Please provide an event title";
+        } else if (value.length > 64) {
+          hasError = true;
+          message = "Event title too long";
+        }
+        break;
+      case "numberOfEvents":
+        if (parseInt(value, 10) < 1) {
+          hasError = true;
+          message = "Must be positive";
+        } else if (parseInt(value, 10) > 54) {
+          hasError = true;
+          message = "Max. of 54 events allowed";
+        }
+        break;
+      case "notes":
+        if (value.length > 250) {
+          hasError = true;
+          message = "Max. 250 characters allowed";
+        }
+        break;
+      case "venue":
+        if (value.length > 64) {
+          hasError = true;
+          message = "Venue location too long";
+        }
+        break;
+      case "otherEventType":
+        if (value === "") {
+          hasError = true;
+          message = "Please provide an event type";
+        } else if (value.length > 32) {
+          hasError = true;
+          message = "Event type too long";
+        }
+        break;
+      default:
+        console.log(`${field}: ${value}`);
+        break;
+    }
+
+    this.setState({
+      ...this.state,
+      errors: {
+        ...errors,
+        [field]: {
+          hasError,
+          message
+        }
+      }
+    });
+  }
+
+  handleChange(field, value) {
+    const { selectedTeams } = this.state;
+    switch (field) {
+      case "type":
+        this.setNewAutomatedTitle(selectedTeams, field, value);
+        break;
+      case "otherEventType":
+        this.setNewAutomatedTitle(selectedTeams, field, value);
         break;
       case "frequency":
-        if (event.target.value === "ONCE") {
+        if (value === "ONCE") {
           this.setState({ numberOfEvents: "1" });
         } else {
           this.setState({ numberOfEvents: "2" });
@@ -759,8 +936,8 @@ class EditEventDialog extends Component {
         break;
     }
 
-    this.setState({ [name]: event.target.value });
-  };
+    this.setState({ [field]: value });
+  }
 
   handleEditAllEvents() {
     this.setState({
@@ -1193,12 +1370,18 @@ class EditEventDialog extends Component {
     });
   }
 
+  hasErrors() {
+    const { errors } = this.state;
+    let hasErrors = false;
+    _.values(errors).map(error => (hasErrors = hasErrors || error.hasError));
+    return hasErrors;
+  }
+
   render() {
     const {
       classes,
       isOpen,
       isLoading,
-      minDate,
       institutionID,
       initialEventID,
       initialEventInfo,
@@ -1207,11 +1390,7 @@ class EditEventDialog extends Component {
       managers,
       isMobile
     } = this.props;
-    const {
-      handleClose,
-      editEvent,
-      openAddEventErrorAlert
-    } = this.props.actions;
+    const { handleClose, editEvent } = this.props.actions;
     const {
       title,
       type,
@@ -1228,17 +1407,14 @@ class EditEventDialog extends Component {
       selectedCoaches,
       selectedManagers,
       isRecurringEventModalOpen,
-      shouldEditAllEvents
+      shouldEditAllEvents,
+      errors
     } = this.state;
 
     const teamsList = this.createTeamsList();
     const coachesList = this.createCoachesList();
     const managersList = this.createManagersList();
-
-    const hasTitleError = title.length === 0;
-    const hasOtherEventTypeError =
-      type === "OTHER" && otherEventType.length === 0;
-    const hasDateError = new Date(date) < new Date(minDate);
+    const hasErrors = this.hasErrors();
 
     return (
       <div>
@@ -1278,7 +1454,17 @@ class EditEventDialog extends Component {
                         <Select
                           native
                           value={type}
-                          onChange={this.handleChange("type")}
+                          onChange={e => {
+                            if (e.target.value === "OTHER") {
+                              this.validateField(
+                                "otherEventType",
+                                otherEventType
+                              );
+                            } else {
+                              this.validateField("otherEventType", "N/A");
+                            }
+                            this.handleChange("type", e.target.value);
+                          }}
                           input={<Input id="type" />}
                         >
                           <optgroup label="Non-competitive">
@@ -1305,13 +1491,18 @@ class EditEventDialog extends Component {
                             label="Event type name"
                             value={otherEventType}
                             placeholder="E.g. Gym Session, Sports Day, Meeting"
-                            error={hasOtherEventTypeError}
-                            helperText={
-                              hasOtherEventTypeError
-                                ? "Please specify the event type"
-                                : ""
-                            }
-                            onChange={this.handleChange("otherEventType")}
+                            error={errors.otherEventType.hasError}
+                            helperText={errors.otherEventType.message}
+                            onChange={e => {
+                              this.validateField(
+                                "otherEventType",
+                                e.target.value
+                              );
+                              this.handleChange(
+                                "otherEventType",
+                                e.target.value
+                              );
+                            }}
                             InputLabelProps={{
                               shrink: true
                             }}
@@ -1340,13 +1531,12 @@ class EditEventDialog extends Component {
                           label="Date"
                           type="date"
                           value={date}
-                          error={hasDateError}
-                          helperText={
-                            hasDateError
-                              ? "You cannot schedule events in the past"
-                              : ""
-                          }
-                          onChange={this.handleChange("date")}
+                          error={errors.date.hasError}
+                          helperText={errors.date.message}
+                          onChange={e => {
+                            this.validateField("date", e.target.value);
+                            this.handleChange("date", e.target.value);
+                          }}
                           InputLabelProps={{
                             shrink: true
                           }}
@@ -1359,9 +1549,17 @@ class EditEventDialog extends Component {
                         label="Starts at"
                         type="time"
                         value={startTime}
-                        onChange={this.handleChange("startTime")}
+                        error={errors.startTime.hasError}
+                        helperText={errors.startTime.message}
+                        onChange={e => {
+                          this.validateField("startTime", e.target.value);
+                          this.handleChange("startTime", e.target.value);
+                        }}
                         InputLabelProps={{
                           shrink: true
+                        }}
+                        inputProps={{
+                          step: 300
                         }}
                       />
                     </FormControl>
@@ -1371,9 +1569,17 @@ class EditEventDialog extends Component {
                         label="Ends at"
                         type="time"
                         value={endTime}
-                        onChange={this.handleChange("endTime")}
+                        error={errors.endTime.hasError}
+                        helperText={errors.endTime.message}
+                        onChange={e => {
+                          this.validateField("endTime", e.target.value);
+                          this.handleChange("endTime", e.target.value);
+                        }}
                         InputLabelProps={{
                           shrink: true
+                        }}
+                        inputProps={{
+                          step: 300
                         }}
                       />
                     </FormControl>
@@ -1383,7 +1589,12 @@ class EditEventDialog extends Component {
                         label="Venue (Optional)"
                         value={venue}
                         placeholder="Currently unknown"
-                        onChange={this.handleChange("venue")}
+                        error={errors.venue.hasError}
+                        helperText={errors.venue.message}
+                        onChange={e => {
+                          this.validateField("venue", e.target.value);
+                          this.handleChange("venue", e.target.value);
+                        }}
                         InputLabelProps={{
                           shrink: true
                         }}
@@ -1433,7 +1644,12 @@ class EditEventDialog extends Component {
                         rows="4"
                         placeholder="E.g. Please remember to bring your A game."
                         value={notes}
-                        onChange={this.handleChange("notes")}
+                        error={errors.numberOfEvents.hasError}
+                        helperText={errors.numberOfEvents.message}
+                        onChange={e => {
+                          this.validateField("numberOfEvents", e.target.value);
+                          this.handleChange("numberOfEvents", e.target.value);
+                        }}
                         InputLabelProps={{
                           shrink: true
                         }}
@@ -1511,22 +1727,24 @@ class EditEventDialog extends Component {
                     label="Event title"
                     value={title}
                     multiline
-                    rows={title.length > 24 ? "2" : "1"}
                     className={classes.title}
-                    onChange={e => this.handleTitleUpdate(e.target.value)}
-                    error={hasTitleError}
-                    helperText={
-                      hasTitleError ? "Please provide an event title" : ""
-                    }
+                    onChange={e => {
+                      this.validateField("title", e.target.value);
+                      this.handleTitleUpdate(e.target.value);
+                    }}
+                    error={errors.title.hasError}
+                    helperText={errors.title.message}
                   />
                 </div>
               </div>
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => handleClose()}>Cancel</Button>
+            <Button disabled={isLoading} onClick={() => handleClose()}>
+              Cancel
+            </Button>
             <Button
-              disabled={isLoading}
+              disabled={isLoading || hasErrors}
               color="primary"
               onClick={() => {
                 let eventType = type;
@@ -1609,24 +1827,17 @@ class EditEventDialog extends Component {
                   ])
                 );
 
-                if (hasTitleError || hasOtherEventTypeError || hasDateError) {
-                  let errorType = "TITLE";
-                  if (hasOtherEventTypeError) errorType = "EVENT_TYPE";
-                  if (hasDateError) errorType = "DATE";
-                  openAddEventErrorAlert(errorType);
-                } else {
-                  editEvent(
-                    institutionID,
-                    initialEventID,
-                    requiredInfo,
-                    optionalInfo,
-                    recurrencePattern,
-                    eventTeams,
-                    eventManagers,
-                    eventCoaches,
-                    shouldEditAllEvents
-                  );
-                }
+                editEvent(
+                  institutionID,
+                  initialEventID,
+                  requiredInfo,
+                  optionalInfo,
+                  recurrencePattern,
+                  eventTeams,
+                  eventManagers,
+                  eventCoaches,
+                  shouldEditAllEvents
+                );
               }}
             >
               Save changes

@@ -32,6 +32,11 @@ class UpdatesDialog extends Component {
             </Typography>
             <Typography type="body1" component="ul">
               <li>All dialogs get reset when closed.</li>
+              <li>Properly validate event adding / editing dialogs.</li>
+              <li>
+                Widen event title textfield in event adding / editing on
+                desktop.
+              </li>
             </Typography>
           </div>
           <Typography type="title" component="h2">
