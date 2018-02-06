@@ -104,9 +104,26 @@ class AddTeamDialog extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { isOpen } = nextProps;
+
     if (nextProps.options !== this.props.options) {
       this.initDropDowns(nextProps.options);
     }
+    if (isOpen !== this.props.isOpen && !isOpen) {
+      this.resetState();
+    }
+  }
+
+  resetState() {
+    this.setState({
+      teamName: "U/12 A Cricket Boys",
+      ageGroup: 12,
+      division: "A",
+      sport: "Cricket",
+      gender: "Boys",
+      selectedManagers: {},
+      selectedCoaches: {}
+    });
   }
 
   handleChange = name => event => {

@@ -168,9 +168,35 @@ class AddEventDialog extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { isOpen } = nextProps;
+
     if (this.props.initialDate !== nextProps.initialDate) {
       this.setState({ date: nextProps.initialDate });
     }
+
+    if (isOpen !== this.props.isOpen && !isOpen) {
+      this.resetState();
+    }
+  }
+
+  resetState() {
+    this.setState({
+      title: "Practice",
+      type: "PRACTICE",
+      startTime: "12:00",
+      endTime: "13:00",
+      venue: "",
+      opponents: {},
+      homeAway: "UNKNOWN",
+      frequency: "ONCE",
+      numberOfEvents: "1",
+      otherEventType: "",
+      notes: "",
+      isOtherEventTypeCompetitive: false,
+      selectedTeams: {},
+      selectedManagers: {},
+      selectedCoaches: {}
+    });
   }
 
   isEventCompetitive() {

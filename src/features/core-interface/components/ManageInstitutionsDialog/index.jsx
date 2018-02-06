@@ -262,6 +262,152 @@ class ManageInstitutionsDialog extends Component {
     }
   };
 
+  resetState() {
+    this.setState({
+      page: "HOME",
+      institutionToJoin: "",
+      selectedRoles: {
+        admin: false,
+        coach: false,
+        manager: false
+      },
+      allowZoomOut: false,
+      position: { x: 0.5, y: 0.5 },
+      scale: 1,
+      width: 220,
+      height: 220,
+      image: null,
+      emblemBlob: null,
+      name: "",
+      abbreviation: "",
+      publicEmail: "",
+      phoneNumber: "(   )    -    ",
+      physicalAddress: "",
+      type: "High School",
+      gender: "MIXED",
+      sports: {
+        Aerobatics: false,
+        Athletics: true,
+        "Australian Rules Football": false,
+        Basketball: false,
+        Boxing: false,
+        Canoeing: false,
+        Chess: true,
+        Cricket: true,
+        "Cross Country": true,
+        Cycling: false,
+        Debating: false,
+        Equestrian: false,
+        "Field Hockey": true,
+        Golf: false,
+        Gymnastics: false,
+        "Major Production": false,
+        "Mind Sports": false,
+        "Mixed Martial Arts": false,
+        "Motor Sports": false,
+        Netball: true,
+        "Public Speaking": false,
+        Rugby: true,
+        Sailing: false,
+        "Skydiving and Parachuting": false,
+        "Obstacle Course Racing": false,
+        "Soccer / Football": true,
+        Surfing: false,
+        Swimming: true,
+        "Table Tennis": false,
+        Tennis: true,
+        Triathlon: false,
+        Waterpolo: false,
+        Other: false
+      },
+      ageGroups: {
+        from: 6,
+        to: 19,
+        includeOpen: true
+      },
+      divisions: {
+        letters: {
+          hasLetters: true,
+          to: "D"
+        },
+        numbers: {
+          hasNumbers: true,
+          to: "3rd"
+        }
+      },
+      paymentDefaults: {
+        maxOvertimeHours: 3,
+        payDay: {
+          day: 1,
+          isEndOfTheMonth: false
+        },
+        rates: {
+          overtime: 150,
+          standard: 100,
+          salary: 6000
+        },
+        type: "HOURLY"
+      },
+      permissions: {
+        coaches: {
+          events: {
+            canCancel: false,
+            canCreate: false,
+            canEdit: false
+          },
+          results: {
+            canApprove: false,
+            canEdit: true
+          },
+          teams: {
+            canEdit: false
+          }
+        },
+        managers: {
+          events: {
+            canCancel: true,
+            canCreate: false,
+            canEdit: true
+          },
+          teams: {
+            canEdit: false
+          },
+          wages: {
+            canCreate: false,
+            canEdit: false,
+            canView: false
+          }
+        }
+      },
+      errors: {
+        name: {
+          hasError: false,
+          message: ""
+        },
+        abbreviation: {
+          hasError: false,
+          message: ""
+        },
+        publicEmail: {
+          hasError: false,
+          message: ""
+        },
+        phoneNumber: {
+          hasError: false,
+          message: ""
+        },
+        physicalAddress: {
+          hasError: false,
+          message: ""
+        },
+        type: {
+          hasError: false,
+          message: ""
+        }
+      }
+    });
+  }
+
   updatePage(newPage) {
     this.setState({
       page: newPage
@@ -392,7 +538,10 @@ class ManageInstitutionsDialog extends Component {
       <Dialog
         open={isOpen}
         fullScreen={isMobile}
-        onRequestClose={() => closeDialog()}
+        onRequestClose={() => {
+          this.resetState();
+          closeDialog();
+        }}
       >
         <DialogTitle>Manage Institutions</DialogTitle>
         <DialogContent>
@@ -446,7 +595,14 @@ class ManageInstitutionsDialog extends Component {
           </List>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => closeDialog()}>Close</Button>
+          <Button
+            onClick={() => {
+              this.resetState();
+              closeDialog();
+            }}
+          >
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
     );

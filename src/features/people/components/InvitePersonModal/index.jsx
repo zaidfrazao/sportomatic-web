@@ -320,6 +320,10 @@ class InvitePersonModal extends Component {
       emailEntered: "",
       emailError: false,
       personStatus: "AWAITING_EMAIL",
+      newUser: {
+        name: "",
+        surname: ""
+      },
       paymentDefaults: {
         type: "N/A",
         rates: {

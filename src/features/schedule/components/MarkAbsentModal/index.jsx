@@ -54,6 +54,21 @@ class MarkAbsentModal extends Component {
     reason: ""
   };
 
+  componentWillReceiveProps(nextProps) {
+    const { isOpen } = nextProps;
+
+    if (isOpen !== this.props.isOpen && !isOpen) {
+      this.resetState();
+    }
+  }
+
+  resetState() {
+    this.setState({
+      rating: "",
+      reason: ""
+    });
+  }
+
   updateRating(newRating) {
     this.setState({
       rating: newRating
