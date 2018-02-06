@@ -49,6 +49,7 @@ class UpdatesDialog extends Component {
               <li>
                 Improve usability issues with how opponents are added to teams.
               </li>
+              <li>Update setup guide link.</li>
             </Typography>
           </div>
           <Typography type="title" component="h2">

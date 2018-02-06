@@ -122,8 +122,8 @@ class DashboardLayout extends Component {
       loadStaff,
       loadTeams,
       loadUpcomingEvents,
-      loadPastEvents,
-      loadCurrentEvents
+      loadPastEvents
+      // loadCurrentEvents
     } = this.props.actions;
 
     if (activeInstitutionID && activeInstitutionID !== "" && userID !== "") {
@@ -147,8 +147,8 @@ class DashboardLayout extends Component {
       loadStaff,
       loadTeams,
       loadUpcomingEvents,
-      loadPastEvents,
-      loadCurrentEvents
+      loadPastEvents
+      // loadCurrentEvents
     } = nextProps.actions;
 
     if (

@@ -88,7 +88,7 @@ class BannerCarousel extends Component {
                   className={classes.button}
                   onClick={() =>
                     window.open(
-                      "http://site.sportomaticapp.com/wp-content/uploads/2018/02/Sportomatic-Season-Setup-Guide.docx",
+                      "http://site.sportomaticapp.com/wp-content/uploads/2018/02/Sportomatic-Season-Setup-Guide-3.docx",
                       "_blank"
                     )}
                 >
