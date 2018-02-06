@@ -472,7 +472,9 @@ class HoursCard extends Component {
                       label="Signed in"
                       type="time"
                       onChange={e => {
-                        let signedInAt = eventInfo.requiredInfo.times.start;
+                        let signedInAt = new Date(
+                          eventInfo.requiredInfo.times.start
+                        );
                         signedInAt.setHours(e.target.value.slice(0, 2));
                         signedInAt.setMinutes(e.target.value.slice(3, 5));
                         this.updateCoachHours(
@@ -578,7 +580,9 @@ class HoursCard extends Component {
                       type="time"
                       value={moment(signInTime).format("HH:mm")}
                       onChange={e => {
-                        let signedInAt = eventInfo.requiredInfo.times.start;
+                        let signedInAt = new Date(
+                          eventInfo.requiredInfo.times.start
+                        );
                         signedInAt.setHours(e.target.value.slice(0, 2));
                         signedInAt.setMinutes(e.target.value.slice(3, 5));
                         this.updateCoachHours(
@@ -611,7 +615,9 @@ class HoursCard extends Component {
                       label="Signed out"
                       type="time"
                       onChange={e => {
-                        let signedOutAt = eventInfo.requiredInfo.times.start;
+                        let signedOutAt = new Date(
+                          eventInfo.requiredInfo.times.start
+                        );
                         signedOutAt.setHours(e.target.value.slice(0, 2));
                         signedOutAt.setMinutes(e.target.value.slice(3, 5));
                         this.updateCoachHours(
@@ -699,7 +705,9 @@ class HoursCard extends Component {
                       type="time"
                       value={moment(signInTime).format("HH:mm")}
                       onChange={e => {
-                        let signedInAt = eventInfo.requiredInfo.times.start;
+                        let signedInAt = new Date(
+                          eventInfo.requiredInfo.times.start
+                        );
                         signedInAt.setHours(e.target.value.slice(0, 2));
                         signedInAt.setMinutes(e.target.value.slice(3, 5));
                         this.updateCoachHours(
@@ -733,7 +741,9 @@ class HoursCard extends Component {
                       type="time"
                       value={moment(signOutTime).format("HH:mm")}
                       onChange={e => {
-                        let signedOutAt = eventInfo.requiredInfo.times.start;
+                        let signedOutAt = new Date(
+                          eventInfo.requiredInfo.times.start
+                        );
                         signedOutAt.setHours(e.target.value.slice(0, 2));
                         signedOutAt.setMinutes(e.target.value.slice(3, 5));
                         this.updateCoachHours(
@@ -880,6 +890,9 @@ class HoursCard extends Component {
       "h:mm A"
     );
     const endTime = moment(eventInfo.requiredInfo.times.end).format("h:mm A");
+
+    console.log(eventInfo);
+    console.log(startTime);
 
     return (
       <div className={classes.rootWrapper}>

@@ -35,6 +35,10 @@ class UpdatesDialog extends Component {
                 Disallow user from submitting negative scores and improve
                 validation feedback when scores are invalid.
               </li>
+              <li>
+                Fix visual bug where event start time changes to sign in / out
+                time when editing times as manager / admin.
+              </li>
             </Typography>
             <Typography type="subheading" component="h3">
               Minor Changes
