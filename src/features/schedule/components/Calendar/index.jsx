@@ -180,7 +180,7 @@ const styles = theme => ({
     width: 64,
     fontSize: 18,
     color: grey[900],
-    backgroundColor: grey[200],
+    backgroundColor: lightBlue[50],
     borderRadius: 32,
     "&:hover": {
       backgroundColor: `${grey[200]} !important`,
