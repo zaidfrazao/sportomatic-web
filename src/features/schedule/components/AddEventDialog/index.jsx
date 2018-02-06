@@ -99,8 +99,8 @@ const styles = {
     flexGrow: 1
   },
   opponentsTextFieldWrapper: {
-    width: "80%",
-    margin: "10px 10%",
+    width: "100%",
+    margin: 8,
     display: "flex",
     flexDirection: "row",
     alignItems: "center"
@@ -117,6 +117,13 @@ const styles = {
     width: "100%",
     textAlign: "center",
     margin: "24px 0"
+  },
+  teamButtonsWrapper: {
+    width: "100%",
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center"
   },
   teamWrapper: {
     backgroundColor: grey[100],
@@ -236,53 +243,55 @@ class AddEventDialog extends Component {
             </FormControl>
             {isCompetitive && (
               <div>
-                <div className={classes.opponentsHeadingWrapper}>
-                  <Typography
-                    className={classes.opponentsHeading}
-                    type="body1"
-                    component="h4"
-                  >
-                    Opponents
-                  </Typography>
-                  <Button
-                    aria-label="add opponent"
-                    onClick={() =>
-                      this.addOpponent(id, _.keys(opponents[id]).length)}
-                  >
-                    <AddIcon /> {isMobile ? "" : "Add opponent"}
-                  </Button>
-                </div>
-                {_.toPairs(opponents[id]).map(([opponentID, info], index) => (
-                  <FormControl
-                    className={classes.opponentsTextFieldWrapper}
-                    key={`${id}${opponentID}`}
-                  >
-                    <TextField
-                      id="opponents"
-                      className={classes.opponentsTextField}
-                      placeholder="Currently unknown"
-                      value={info.name}
-                      onChange={this.handleOpponentsChange(id, opponentID)}
-                    />
-                    <Tooltip title="Remove opponent" placement="bottom">
-                      <IconButton
-                        disabled={index === 0}
-                        aria-label="remove opponent"
-                        onClick={() => this.removeOpponent(id, opponentID)}
-                      >
-                        <RemoveIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </FormControl>
-                ))}
+                <FormControl
+                  component="fieldset"
+                  className={classes.formControl}
+                >
+                  <FormLabel component="legend">Opponents</FormLabel>
+                  {_.toPairs(opponents[id]).map(([opponentID, info], index) => (
+                    <FormControl
+                      className={classes.opponentsTextFieldWrapper}
+                      key={`${id}${opponentID}`}
+                    >
+                      <TextField
+                        id="opponents"
+                        className={classes.opponentsTextField}
+                        placeholder="Currently unknown"
+                        value={info.name}
+                        onChange={this.handleOpponentsChange(id, opponentID)}
+                      />
+                      <Tooltip title="Remove opponent" placement="bottom">
+                        <IconButton
+                          disabled={index === 0}
+                          aria-label="remove opponent"
+                          onClick={() => this.removeOpponent(id, opponentID)}
+                        >
+                          <RemoveIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </FormControl>
+                  ))}
+                </FormControl>
               </div>
             )}
-            <Button
-              aria-label="remove team"
-              onClick={() => this.removeTeam(id)}
-            >
-              Remove team
-            </Button>
+            <div className={classes.teamButtonsWrapper}>
+              <Button
+                aria-label="remove team"
+                onClick={() => this.removeTeam(id)}
+              >
+                Remove team
+              </Button>
+              {!isMobile && isCompetitive && <div className={classes.flex} />}
+              {isCompetitive && (
+                <Button
+                  aria-label="add opponent"
+                  onClick={() =>
+                    this.addOpponent(id, _.keys(opponents[id]).length)}
+                >
+                  <AddIcon /> Add opponent
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       );

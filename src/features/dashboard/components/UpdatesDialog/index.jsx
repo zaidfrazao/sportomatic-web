@@ -41,6 +41,9 @@ class UpdatesDialog extends Component {
             </Typography>
             <Typography type="body1" component="ul">
               <li>Make today indicator clearer on calendar.</li>
+              <li>
+                Improve usability issues with how opponents are added to teams.
+              </li>
             </Typography>
           </div>
           <Typography type="title" component="h2">
