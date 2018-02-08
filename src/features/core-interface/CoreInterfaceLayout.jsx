@@ -571,6 +571,7 @@ class CoreInterfaceLayout extends Component {
               isJoinInstitutionLoading
             }
             userID={userID}
+            userInfo={accountInfo}
             actions={{
               createInstitution,
               loadVerifiedInstitutions,

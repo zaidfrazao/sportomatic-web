@@ -17,7 +17,7 @@ import {
   FormGroup,
   FormLabel
 } from "material-ui/Form";
-import { grey } from "material-ui/colors";
+import { grey, lightBlue, red } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
 import LeaveIcon from "material-ui-icons/Clear";
@@ -67,6 +67,9 @@ const styles = {
   input: {
     display: "none"
   },
+  pendingText: {
+    color: lightBlue[500]
+  },
   picture: {
     backgroundColor: grey[300],
     margin: 24
@@ -81,8 +84,14 @@ const styles = {
     alignItems: "center",
     justifyContent: "center"
   },
+  standardText: {
+    color: grey[900]
+  },
   subFormControl: {
     margin: "8px 0"
+  },
+  warningText: {
+    color: red[500]
   }
 };
 
@@ -132,7 +141,6 @@ class ManageInstitutionsDialog extends Component {
     width: 220,
     height: 220,
     image: null,
-    emblemBlob: null,
     name: "",
     abbreviation: "",
     publicEmail: "",
@@ -277,7 +285,6 @@ class ManageInstitutionsDialog extends Component {
       width: 220,
       height: 220,
       image: null,
-      emblemBlob: null,
       name: "",
       abbreviation: "",
       publicEmail: "",
@@ -504,7 +511,6 @@ class ManageInstitutionsDialog extends Component {
 
   handleNewImage = e => {
     this.setState({ image: e.target.files[0] });
-    this.handleSave();
   };
 
   handleSave = data => {
@@ -518,7 +524,6 @@ class ManageInstitutionsDialog extends Component {
   handleScale = e => {
     const scale = parseFloat(e.target.value);
     this.setState({ scale });
-    this.handleSave();
   };
 
   setEditorRef = editor => {
@@ -527,11 +532,48 @@ class ManageInstitutionsDialog extends Component {
 
   handlePositionChange = position => {
     this.setState({ position });
-    this.handleSave();
   };
 
+  getType(roles) {
+    let type = "";
+    if (roles.admin === "APPROVED") {
+      type = "Admin";
+    }
+    if (roles.manager === "APPROVED") {
+      type = "Manager";
+    }
+    if (roles.coach === "APPROVED") {
+      type = "Coach";
+    }
+    if (roles.admin === "APPROVED" && roles.coach === "APPROVED") {
+      type = "Admin / Coach";
+    }
+    if (roles.coach === "APPROVED" && roles.manager === "APPROVED") {
+      type = "Manager / Coach";
+    }
+    if (roles.admin === "APPROVED" && roles.manager === "APPROVED") {
+      type = "Admin / Manager";
+    }
+    if (
+      roles.admin === "APPROVED" &&
+      roles.coach === "APPROVED" &&
+      roles.manager === "APPROVED"
+    ) {
+      type = "Admin / Coach / Manager";
+    }
+
+    return type;
+  }
+
   renderHomePage() {
-    const { classes, isOpen, isMobile, institutions, userID } = this.props;
+    const {
+      classes,
+      isOpen,
+      isMobile,
+      institutions,
+      userID,
+      userInfo
+    } = this.props;
     const { closeDialog, loadVerifiedInstitutions } = this.props.actions;
 
     return (
@@ -564,6 +606,37 @@ class ManageInstitutionsDialog extends Component {
           </div>
           <List>
             {_.toPairs(institutions).map(([id, info]) => {
+              const userInfoAtInstitution = userInfo.institutions[id];
+              const institutionStatus = info.metadata.status;
+
+              let secondaryText = "";
+              let secondaryTextStyle = "";
+              let showRemoveButton = true;
+
+              if (institutionStatus === "REQUESTED") {
+                secondaryText = "Institution awaiting verification";
+                secondaryTextStyle = classes.pendingText;
+                showRemoveButton = false;
+              } else if (institutionStatus === "REJECTED") {
+                secondaryText = "Institution application rejected";
+                secondaryTextStyle = classes.warningText;
+                showRemoveButton = true;
+              } else {
+                if (userInfoAtInstitution.status === "REQUESTED") {
+                  secondaryText = "Awaiting approval";
+                  secondaryTextStyle = classes.pendingText;
+                  showRemoveButton = false;
+                } else {
+                  secondaryText = this.getType(userInfoAtInstitution.roles);
+                  secondaryTextStyle = classes.standardText;
+                  showRemoveButton = true;
+                }
+              }
+
+              if (id === userID) {
+                showRemoveButton = false;
+              }
+
               return (
                 <ListItem key={id}>
                   <Avatar
@@ -575,20 +648,18 @@ class ManageInstitutionsDialog extends Component {
                   />
                   <ListItemText
                     primary={info.info.name}
-                    secondary={
-                      info.metadata.status === "REQUESTED"
-                        ? "Awaiting approval"
-                        : ""
-                    }
+                    secondary={secondaryText}
+                    classes={{
+                      text: secondaryTextStyle
+                    }}
                   />
-                  {id !== userID &&
-                    info.metadata.status === "ACTIVE" && (
-                      <ListItemSecondaryAction>
-                        <IconButton aria-label="leave institution">
-                          <LeaveIcon />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    )}
+                  {showRemoveButton && (
+                    <ListItemSecondaryAction>
+                      <IconButton aria-label="leave institution">
+                        <LeaveIcon />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  )}
                 </ListItem>
               );
             })}
@@ -1206,36 +1277,38 @@ class ManageInstitutionsDialog extends Component {
                 }
               });
 
-              createInstitution(this.state.emblemBlob, {
-                paymentDefaults,
-                permissions,
-                completeness: {
-                  hasEvents: false,
-                  hasHours: false,
-                  hasPeople: false,
-                  hasResults: false,
-                  hasTeams: false,
-                  hasWages: false
-                },
-                info: {
-                  abbreviation,
-                  name,
-                  phoneNumber,
-                  physicalAddress,
-                  publicEmail,
-                  type,
-                  gender,
-                  ageGroups: dbAgeGroups,
-                  divisions: dbDivisions,
-                  sports: dbSports,
-                  emblemURL: ""
-                },
-                metadata: {
-                  creationDate: new Date(Date.now()),
-                  createdBy: userID,
-                  status: "REQUESTED"
-                }
-              });
+              this.editor.getImageScaledToCanvas().toBlob(blob => {
+                createInstitution(blob, {
+                  paymentDefaults,
+                  permissions,
+                  completeness: {
+                    hasEvents: false,
+                    hasHours: false,
+                    hasPeople: false,
+                    hasResults: false,
+                    hasTeams: false,
+                    hasWages: false
+                  },
+                  info: {
+                    abbreviation,
+                    name,
+                    phoneNumber,
+                    physicalAddress,
+                    publicEmail,
+                    type,
+                    gender,
+                    ageGroups: dbAgeGroups,
+                    divisions: dbDivisions,
+                    sports: dbSports,
+                    emblemURL: ""
+                  },
+                  metadata: {
+                    creationDate: new Date(Date.now()),
+                    createdBy: userID,
+                    status: "REQUESTED"
+                  }
+                });
+              }, "image/png");
             }}
           >
             {isLoading ? <CircularProgress size={20} /> : "Create institution"}
