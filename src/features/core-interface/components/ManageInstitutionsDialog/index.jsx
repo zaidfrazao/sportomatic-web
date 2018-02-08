@@ -626,6 +626,14 @@ class ManageInstitutionsDialog extends Component {
                   secondaryText = "Awaiting approval";
                   secondaryTextStyle = classes.pendingText;
                   showRemoveButton = false;
+                } else if (userInfoAtInstitution.status === "REJECTED") {
+                  secondaryText = "Application rejected";
+                  secondaryTextStyle = classes.warningText;
+                  showRemoveButton = true;
+                } else if (userInfoAtInstitution.status === "REMOVED") {
+                  secondaryText = "Removed from institution";
+                  secondaryTextStyle = classes.warningText;
+                  showRemoveButton = true;
                 } else {
                   secondaryText = this.getType(userInfoAtInstitution.roles);
                   secondaryTextStyle = classes.standardText;

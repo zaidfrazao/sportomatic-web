@@ -24,7 +24,42 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.14 (Current)"}
+            {"v0.9.15 (Current)"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              Bug Fixes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                When creating an institution, the default emblem would be
+                selected even when a custom one was uploaded unless the user
+                adjusted the zoom or image position. This has been fixed.
+              </li>
+              <li>
+                Remove button in "Manage institutions" dialog now only appears
+                for institutions that the user has been accepted to, and that
+                aren't the user's personal institution.
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Minor Changes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Institutions list in the home page of the "Manage institutions"
+                dialog has been colour coded depending on approval status.
+              </li>
+              <li>
+                Institutions list in the home page of the "Manage institutions"
+                dialog has secondary text for each institution clarifying the
+                status of the user at the institution or the verification status
+                of the institution.
+              </li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.14"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">
