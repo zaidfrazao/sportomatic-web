@@ -37,9 +37,9 @@ class UpdatesDialog extends Component {
                 adjusted the zoom or image position. This has been fixed.
               </li>
               <li>
-                Remove button in "Manage institutions" dialog now only appears
-                for institutions that the user has been accepted to, and that
-                aren't the user's personal institution.
+                Remove button in "Manage institutions" dialog now only
+                disappears if a user's request to an institution is pending or
+                if an institution is awaiting verification.
               </li>
             </Typography>
             <Typography type="subheading" component="h3">
