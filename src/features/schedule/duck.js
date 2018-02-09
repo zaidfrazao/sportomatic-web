@@ -399,10 +399,7 @@ function eventsReducer(state = {}, action = {}) {
     case SIGN_OUT:
       return {};
     case RECEIVE_EVENTS:
-      return {
-        ...state,
-        ...action.payload.events
-      };
+      return action.payload.events;
     default:
       return state;
   }
@@ -414,7 +411,7 @@ function staffReducer(state = {}, action = {}) {
     case SIGN_OUT:
       return {};
     case RECEIVE_STAFF:
-      return { ...state, ...action.payload.staff };
+      return action.payload.staff;
     default:
       return state;
   }
@@ -426,10 +423,7 @@ function teamsReducer(state = {}, action = {}) {
     case SIGN_OUT:
       return {};
     case RECEIVE_TEAMS:
-      return {
-        ...state,
-        ...action.payload.teams
-      };
+      return action.payload.teams;
     default:
       return state;
   }

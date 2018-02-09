@@ -28,6 +28,14 @@ class UpdatesDialog extends Component {
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">
+              New Features
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Allow institution admins to accept and reject new members.
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
               Bug Fixes
             </Typography>
             <Typography type="body1" component="ul">
@@ -40,6 +48,10 @@ class UpdatesDialog extends Component {
                 Remove button in "Manage institutions" dialog now only
                 disappears if a user's request to an institution is pending or
                 if an institution is awaiting verification.
+              </li>
+              <li>
+                Fix start and end time form validation when creating or editing
+                events.
               </li>
             </Typography>
             <Typography type="subheading" component="h3">

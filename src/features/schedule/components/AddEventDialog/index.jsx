@@ -338,16 +338,33 @@ class AddEventDialog extends Component {
         break;
     }
 
-    this.setState({
-      ...this.state,
-      errors: {
-        ...errors,
-        [field]: {
-          hasError,
-          message
+    if (field === "startTime" || field === "endTime") {
+      this.setState({
+        ...this.state,
+        errors: {
+          ...errors,
+          startTime: {
+            hasError,
+            message
+          },
+          endTime: {
+            hasError,
+            message
+          }
         }
-      }
-    });
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        errors: {
+          ...errors,
+          [field]: {
+            hasError,
+            message
+          }
+        }
+      });
+    }
   }
 
   isEventCompetitive() {

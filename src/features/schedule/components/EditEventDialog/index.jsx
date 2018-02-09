@@ -904,16 +904,33 @@ class EditEventDialog extends Component {
         break;
     }
 
-    this.setState({
-      ...this.state,
-      errors: {
-        ...errors,
-        [field]: {
-          hasError,
-          message
+    if (field === "startTime" || field === "endTime") {
+      this.setState({
+        ...this.state,
+        errors: {
+          ...errors,
+          startTime: {
+            hasError,
+            message
+          },
+          endTime: {
+            hasError,
+            message
+          }
         }
-      }
-    });
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        errors: {
+          ...errors,
+          [field]: {
+            hasError,
+            message
+          }
+        }
+      });
+    }
   }
 
   handleChange(field, value) {
@@ -1611,7 +1628,7 @@ class EditEventDialog extends Component {
                             aria-label="home"
                             name="home"
                             value={homeAway}
-                            onChange={this.handleChange("homeAway")}
+                            onChange={() => this.handleChange("homeAway")}
                           >
                             <FormControlLabel
                               value="UNKNOWN"
