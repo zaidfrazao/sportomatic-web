@@ -12,18 +12,14 @@ export const OPEN_DELETE_PERSON_ALERT = `${NAMESPACE}/OPEN_DELETE_PERSON_ALERT`;
 export const CLOSE_DELETE_PERSON_ALERT = `${NAMESPACE}/CLOSE_DELETE_PERSON_ALERT`;
 export const OPEN_EDIT_PERSON_DIALOG = `${NAMESPACE}/OPEN_EDIT_PERSON_DIALOG`;
 export const CLOSE_EDIT_PERSON_DIALOG = `${NAMESPACE}/CLOSE_EDIT_PERSON_DIALOG`;
-export const REQUEST_COACHES = `${NAMESPACE}/REQUEST_COACHES`;
-export const RECEIVE_COACHES = `${NAMESPACE}/RECEIVE_COACHES`;
-export const REQUEST_MANAGERS = `${NAMESPACE}/REQUEST_MANAGERS`;
-export const RECEIVE_MANAGERS = `${NAMESPACE}/RECEIVE_MANAGERS`;
-export const REQUEST_ADMINS = `${NAMESPACE}/REQUEST_ADMINS`;
-export const RECEIVE_ADMINS = `${NAMESPACE}/RECEIVE_ADMINS`;
-export const REQUEST_COACH_REQUESTS = `${NAMESPACE}/REQUEST_COACH_REQUESTS`;
-export const RECEIVE_COACH_REQUESTS = `${NAMESPACE}/RECEIVE_COACH_REQUESTS`;
-export const REQUEST_MANAGER_REQUESTS = `${NAMESPACE}/REQUEST_MANAGER_REQUESTS`;
-export const RECEIVE_MANAGER_REQUESTS = `${NAMESPACE}/RECEIVE_MANAGER_REQUESTS`;
-export const REQUEST_ADMIN_REQUESTS = `${NAMESPACE}/REQUEST_ADMIN_REQUESTS`;
-export const RECEIVE_ADMIN_REQUESTS = `${NAMESPACE}/RECEIVE_ADMIN_REQUESTS`;
+export const OPEN_REJECT_PERSON_MODAL = `${NAMESPACE}/OPEN_REJECT_PERSON_MODAL`;
+export const CLOSE_REJECT_PERSON_MODAL = `${NAMESPACE}/CLOSE_REJECT_PERSON_MODAL`;
+export const OPEN_APPROVE_PERSON_MODAL = `${NAMESPACE}/OPEN_APPROVE_PERSON_MODAL`;
+export const CLOSE_APPROVE_PERSON_MODAL = `${NAMESPACE}/CLOSE_APPROVE_PERSON_MODAL`;
+export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
+export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
+export const REQUEST_STAFF_REQUESTS = `${NAMESPACE}/REQUEST_STAFF_REQUESTS`;
+export const RECEIVE_STAFF_REQUESTS = `${NAMESPACE}/RECEIVE_STAFF_REQUESTS`;
 export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
 export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
@@ -49,6 +45,12 @@ export const ERROR_LOADING_EVENTS_BY_COACH = `${NAMESPACE}/ERROR_LOADING_EVENTS_
 export const REQUEST_EVENTS_BY_MANAGER = `${NAMESPACE}/REQUEST_EVENTS_BY_MANAGER`;
 export const RECEIVE_EVENTS_BY_MANAGER = `${NAMESPACE}/RECEIVE_EVENTS_BY_MANAGER`;
 export const ERROR_LOADING_EVENTS_BY_MANAGER = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_MANAGER`;
+export const REQUEST_REJECT_PERSON = `${NAMESPACE}/REQUEST_REJECT_PERSON`;
+export const RECEIVE_REJECT_PERSON = `${NAMESPACE}/RECEIVE_REJECT_PERSON`;
+export const ERROR_REJECTING_PERSON = `${NAMESPACE}/ERROR_REJECTING_PERSON`;
+export const REQUEST_APPROVE_PERSON = `${NAMESPACE}/REQUEST_APPROVE_PERSON`;
+export const RECEIVE_APPROVE_PERSON = `${NAMESPACE}/RECEIVE_APPROVE_PERSON`;
+export const ERROR_APPROVING_PERSON = `${NAMESPACE}/ERROR_APPROVING_PERSON`;
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
@@ -58,7 +60,9 @@ export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 export const uiConfigInitialState = {
   currentTab: "STAFF",
   inviteeID: "",
-  inviteeInfo: {}
+  inviteeInfo: {},
+  applicantID: "",
+  isCoachApplication: false
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -76,6 +80,28 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         inviteeID: action.payload.id,
         inviteeInfo: action.payload.info
+      };
+    case OPEN_REJECT_PERSON_MODAL:
+      return {
+        ...state,
+        applicantID: action.payload.applicantID
+      };
+    case CLOSE_REJECT_PERSON_MODAL:
+      return {
+        ...state,
+        applicantID: ""
+      };
+    case OPEN_APPROVE_PERSON_MODAL:
+      return {
+        ...state,
+        applicantID: action.payload.applicantID,
+        isCoachApplication: action.payload.isCoachApplication
+      };
+    case CLOSE_APPROVE_PERSON_MODAL:
+      return {
+        ...state,
+        applicantID: "",
+        isCoachApplication: false
       };
     default:
       return state;
@@ -111,7 +137,9 @@ function filterReducer(state = filtersInitialState, action = {}) {
 export const dialogsInitialState = {
   isDeletPersonAlertOpen: false,
   isEditPersonDialogOpen: false,
-  isInvitePersonModalOpen: false
+  isInvitePersonModalOpen: false,
+  isRejectPersonModalOpen: false,
+  isApprovePersonModalOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
@@ -161,6 +189,26 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
         isEditPersonDialogOpen: true,
         isInvitePersonModalOpen: false
       };
+    case OPEN_REJECT_PERSON_MODAL:
+      return {
+        ...state,
+        isRejectPersonModalOpen: true
+      };
+    case CLOSE_REJECT_PERSON_MODAL:
+      return {
+        ...state,
+        isRejectPersonModalOpen: false
+      };
+    case OPEN_APPROVE_PERSON_MODAL:
+      return {
+        ...state,
+        isApprovePersonModalOpen: true
+      };
+    case CLOSE_APPROVE_PERSON_MODAL:
+      return {
+        ...state,
+        isApprovePersonModalOpen: false
+      };
     default:
       return state;
   }
@@ -171,21 +219,8 @@ function staffReducer(state = {}, action = {}) {
     case RESET_STATE:
     case SIGN_OUT:
       return {};
-    case RECEIVE_COACHES:
-      return {
-        ...state,
-        ...action.payload.coaches
-      };
-    case RECEIVE_MANAGERS:
-      return {
-        ...state,
-        ...action.payload.managers
-      };
-    case RECEIVE_ADMINS:
-      return {
-        ...state,
-        ...action.payload.admins
-      };
+    case RECEIVE_STAFF:
+      return action.payload.staff;
     default:
       return state;
   }
@@ -196,21 +231,8 @@ function requestsReducer(state = {}, action = {}) {
     case RESET_STATE:
     case SIGN_OUT:
       return {};
-    case RECEIVE_COACH_REQUESTS:
-      return {
-        ...state,
-        ...action.payload.coaches
-      };
-    case RECEIVE_MANAGER_REQUESTS:
-      return {
-        ...state,
-        ...action.payload.managers
-      };
-    case RECEIVE_ADMIN_REQUESTS:
-      return {
-        ...state,
-        ...action.payload.admins
-      };
+    case RECEIVE_STAFF_REQUESTS:
+      return action.payload.requests;
     default:
       return state;
   }
@@ -232,14 +254,14 @@ function teamsReducer(state = {}, action = {}) {
 }
 
 export const loadingStatusInitialState = {
-  isCoachesLoading: false,
-  isManagersLoading: false,
-  isAdminsLoading: false,
+  isStaffLoading: false,
+  isRequestsLoading: false,
   isTeamsLoading: false,
   isInviteeLoading: false,
   isEditPersonLoading: false,
   isEventsByCoachLoading: false,
-  isEventsByManagerLoading: false
+  isEventsByManagerLoading: false,
+  isApplicantResponseLoading: false
 };
 
 function loadingStatusListReducer(
@@ -250,41 +272,25 @@ function loadingStatusListReducer(
     case RESET_STATE:
     case SIGN_OUT:
       return loadingStatusInitialState;
-    case REQUEST_COACH_REQUESTS:
-    case REQUEST_COACHES:
+    case REQUEST_STAFF:
       return {
         ...state,
-        isCoachesLoading: true
+        isStaffLoading: true
       };
-    case REQUEST_MANAGER_REQUESTS:
-    case REQUEST_MANAGERS:
+    case RECEIVE_STAFF:
       return {
         ...state,
-        isManagersLoading: true
+        isStaffLoading: false
       };
-    case REQUEST_ADMIN_REQUESTS:
-    case REQUEST_ADMINS:
+    case REQUEST_STAFF_REQUESTS:
       return {
         ...state,
-        isAdminsLoading: true
+        isRequestsLoading: true
       };
-    case RECEIVE_COACH_REQUESTS:
-    case RECEIVE_COACHES:
+    case RECEIVE_STAFF_REQUESTS:
       return {
         ...state,
-        isCoachesLoading: false
-      };
-    case RECEIVE_MANAGER_REQUESTS:
-    case RECEIVE_MANAGERS:
-      return {
-        ...state,
-        isManagersLoading: false
-      };
-    case RECEIVE_ADMIN_REQUESTS:
-    case RECEIVE_ADMINS:
-      return {
-        ...state,
-        isAdminsLoading: false
+        isRequestsLoading: false
       };
     case REQUEST_TEAMS:
       return {
@@ -345,6 +351,20 @@ function loadingStatusListReducer(
       return {
         ...state,
         isEventsByManagerLoading: false
+      };
+    case REQUEST_APPROVE_PERSON:
+    case REQUEST_REJECT_PERSON:
+      return {
+        ...state,
+        isApplicantResponseLoading: true
+      };
+    case RECEIVE_APPROVE_PERSON:
+    case ERROR_APPROVING_PERSON:
+    case RECEIVE_REJECT_PERSON:
+    case ERROR_REJECTING_PERSON:
+      return {
+        ...state,
+        isApplicantResponseLoading: false
       };
     default:
       return state;
@@ -455,6 +475,37 @@ export function updateTab(newTab) {
   };
 }
 
+export function openApprovePersonModal(applicantID, isCoachApplication) {
+  return {
+    type: OPEN_APPROVE_PERSON_MODAL,
+    payload: {
+      applicantID,
+      isCoachApplication
+    }
+  };
+}
+
+export function closeApprovePersonModal() {
+  return {
+    type: CLOSE_APPROVE_PERSON_MODAL
+  };
+}
+
+export function openRejectPersonModal(applicantID) {
+  return {
+    type: OPEN_REJECT_PERSON_MODAL,
+    payload: {
+      applicantID
+    }
+  };
+}
+
+export function closeRejectPersonModal() {
+  return {
+    type: CLOSE_REJECT_PERSON_MODAL
+  };
+}
+
 export function openDeletePersonAlert() {
   return {
     type: OPEN_DELETE_PERSON_ALERT
@@ -491,206 +542,70 @@ export function closeInvitePersonModal() {
   };
 }
 
-export function requestCoaches() {
+export function requestStaff() {
   return {
-    type: REQUEST_COACHES
+    type: REQUEST_STAFF
   };
 }
 
-export function receiveCoaches(coaches) {
+export function receiveStaff(staff) {
   return {
-    type: RECEIVE_COACHES,
+    type: RECEIVE_STAFF,
     payload: {
-      coaches
+      staff
     }
   };
 }
 
-export function loadCoaches(institutionID) {
+export function loadStaff(institutionID) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestCoaches());
+    dispatch(requestStaff());
 
-    const coachesRef = firebase
+    const staffRef = firebase
       .firestore()
       .collection("users")
-      .where(`institutions.${institutionID}.roles.coach`, "==", "APPROVED");
+      .where(`institutions.${institutionID}.status`, "==", "STAFF");
 
-    return coachesRef.onSnapshot(querySnapshot => {
-      let coaches = {};
+    return staffRef.onSnapshot(querySnapshot => {
+      let staff = {};
       querySnapshot.forEach(doc => {
-        coaches[doc.id] = doc.data();
+        staff[doc.id] = doc.data();
       });
-      dispatch(receiveCoaches(coaches));
+      dispatch(receiveStaff(staff));
     });
   };
 }
 
-export function requestCoachRequests() {
+export function requestStaffRequests() {
   return {
-    type: REQUEST_COACH_REQUESTS
+    type: REQUEST_STAFF_REQUESTS
   };
 }
 
-export function receiveCoachRequests(coaches) {
+export function receiveStaffRequests(requests) {
   return {
-    type: RECEIVE_COACH_REQUESTS,
+    type: RECEIVE_STAFF_REQUESTS,
     payload: {
-      coaches
+      requests
     }
   };
 }
 
-export function loadCoachRequests(institutionID) {
+export function loadStaffRequests(institutionID) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestCoachRequests());
+    dispatch(requestStaffRequests());
 
-    const coachesRef = firebase
+    const requestsRef = firebase
       .firestore()
       .collection("users")
-      .where(`institutions.${institutionID}.roles.coach`, "==", "REQUESTED");
+      .where(`institutions.${institutionID}.status`, "==", "REQUESTED");
 
-    return coachesRef.onSnapshot(querySnapshot => {
-      let coaches = {};
+    return requestsRef.onSnapshot(querySnapshot => {
+      let requests = {};
       querySnapshot.forEach(doc => {
-        coaches[doc.id] = doc.data();
+        requests[doc.id] = doc.data();
       });
-      dispatch(receiveCoachRequests(coaches));
-    });
-  };
-}
-
-export function requestManagers() {
-  return {
-    type: REQUEST_MANAGERS
-  };
-}
-
-export function receiveManagers(managers) {
-  return {
-    type: RECEIVE_MANAGERS,
-    payload: {
-      managers
-    }
-  };
-}
-
-export function loadManagers(institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestManagers());
-
-    const managersRef = firebase
-      .firestore()
-      .collection("users")
-      .where(`institutions.${institutionID}.roles.manager`, "==", "APPROVED");
-
-    return managersRef.onSnapshot(querySnapshot => {
-      let managers = {};
-      querySnapshot.forEach(doc => {
-        managers[doc.id] = doc.data();
-      });
-      dispatch(receiveManagers(managers));
-    });
-  };
-}
-
-export function requestManagerRequests() {
-  return {
-    type: REQUEST_MANAGER_REQUESTS
-  };
-}
-
-export function receiveManagerRequests(managers) {
-  return {
-    type: RECEIVE_MANAGER_REQUESTS,
-    payload: {
-      managers
-    }
-  };
-}
-
-export function loadManagerRequests(institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestManagerRequests());
-
-    const managersRef = firebase
-      .firestore()
-      .collection("users")
-      .where(`institutions.${institutionID}.roles.manager`, "==", "REQUESTED");
-
-    return managersRef.onSnapshot(querySnapshot => {
-      let managers = {};
-      querySnapshot.forEach(doc => {
-        managers[doc.id] = doc.data();
-      });
-      dispatch(receiveManagerRequests(managers));
-    });
-  };
-}
-
-export function requestAdmins() {
-  return {
-    type: REQUEST_ADMINS
-  };
-}
-
-export function receiveAdmins(admins) {
-  return {
-    type: RECEIVE_ADMINS,
-    payload: {
-      admins
-    }
-  };
-}
-
-export function loadAdmins(institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestAdmins());
-
-    const adminsRef = firebase
-      .firestore()
-      .collection("users")
-      .where(`institutions.${institutionID}.roles.admin`, "==", "APPROVED");
-
-    return adminsRef.onSnapshot(querySnapshot => {
-      let admins = {};
-      querySnapshot.forEach(doc => {
-        admins[doc.id] = doc.data();
-      });
-      dispatch(receiveAdmins(admins));
-    });
-  };
-}
-
-export function requestAdminRequests() {
-  return {
-    type: REQUEST_ADMIN_REQUESTS
-  };
-}
-
-export function receiveAdminRequests(admins) {
-  return {
-    type: RECEIVE_ADMIN_REQUESTS,
-    payload: {
-      admins
-    }
-  };
-}
-
-export function loadAdminRequests(institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestAdminRequests());
-
-    const adminsRef = firebase
-      .firestore()
-      .collection("users")
-      .where(`institutions.${institutionID}.roles.admin`, "==", "REQUESTED");
-
-    return adminsRef.onSnapshot(querySnapshot => {
-      let admins = {};
-      querySnapshot.forEach(doc => {
-        admins[doc.id] = doc.data();
-      });
-      dispatch(receiveAdminRequests(admins));
+      dispatch(receiveStaffRequests(requests));
     });
   };
 }
@@ -889,6 +804,82 @@ export function editPerson(userID, info) {
       .set(info)
       .then(() => dispatch(receiveEditPerson()))
       .catch(error => dispatch(errorEdittingPerson(error)));
+  };
+}
+
+export function requestRejectPerson() {
+  return {
+    type: REQUEST_REJECT_PERSON
+  };
+}
+
+export function receiveRejectPerson() {
+  return {
+    type: RECEIVE_REJECT_PERSON
+  };
+}
+
+export function errorRejectingPerson(error: { code: string, message: string }) {
+  return {
+    type: ERROR_REJECTING_PERSON,
+    payload: {
+      error
+    }
+  };
+}
+
+export function rejectPerson(userID, institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestRejectPerson());
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
+    return userRef
+      .update({
+        [`institutions.${institutionID}.status`]: "REJECTED"
+      })
+      .then(() => dispatch(receiveRejectPerson()))
+      .catch(error => dispatch(errorRejectingPerson(error)));
+  };
+}
+
+export function requestApprovePerson() {
+  return {
+    type: REQUEST_APPROVE_PERSON
+  };
+}
+
+export function receiveApprovePerson() {
+  return {
+    type: RECEIVE_APPROVE_PERSON
+  };
+}
+
+export function errorApprovingPerson(error: { code: string, message: string }) {
+  return {
+    type: ERROR_APPROVING_PERSON,
+    payload: {
+      error
+    }
+  };
+}
+
+export function approvePerson(userID, institutionID, paymentDefaults, roles) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestApprovePerson());
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
+    return userRef
+      .update({
+        [`institutions.${institutionID}`]: {
+          paymentDefaults,
+          roles,
+          status: "STAFF"
+        }
+      })
+      .then(() => dispatch(receiveApprovePerson()))
+      .catch(error => dispatch(errorApprovingPerson(error)));
   };
 }
 

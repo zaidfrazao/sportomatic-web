@@ -23,7 +23,11 @@ const styles = {
 
 class PersonCard extends Component {
   render() {
-    const { classes, name, surname, profilePictureURL, type } = this.props;
+    const { classes, name, surname, profilePictureURL, type, id } = this.props;
+    const {
+      openRejectPersonModal,
+      openApprovePersonModal
+    } = this.props.actions;
 
     return (
       <div>
@@ -40,10 +44,19 @@ class PersonCard extends Component {
             <Typography component="p">Applying to be a {type}</Typography>
           </CardContent>
           <CardActions className={classes.buttons}>
-            <Button dense color="primary" className={classes.button}>
+            <Button
+              dense
+              color="primary"
+              className={classes.button}
+              onClick={() => openApprovePersonModal(id, type.includes("Coach"))}
+            >
               Accept
             </Button>
-            <Button dense className={classes.button}>
+            <Button
+              dense
+              className={classes.button}
+              onClick={() => openRejectPersonModal(id)}
+            >
               Reject
             </Button>
           </CardActions>

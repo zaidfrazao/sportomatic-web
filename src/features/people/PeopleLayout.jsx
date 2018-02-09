@@ -8,12 +8,13 @@ import Switch from "material-ui/Switch";
 import Tabs, { Tab } from "material-ui/Tabs";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
+import AcceptCoachModal from "./components/AcceptCoachModal";
 import BannerAd from "../../components/BannerAd";
+import DecisionModal from "../../components/DecisionModal";
 import EditPersonDialog from "./components/EditPersonDialog";
 import InvitePersonModal from "./components/InvitePersonModal";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
-import NotificationModal from "../../components/NotificationModal";
 import PeopleList from "./components/PeopleList";
 import RequestsList from "./components/RequestsList";
 import PersonInfo from "./components/PersonInfo";
@@ -95,24 +96,16 @@ class PeopleLayout extends Component {
     const { activeInstitutionID } = this.props;
     const { personID } = this.props.match.params;
     const {
-      loadCoaches,
-      loadManagers,
-      loadAdmins,
+      loadStaff,
+      loadStaffRequests,
       loadTeams,
-      loadCoachRequests,
-      loadManagerRequests,
-      loadAdminRequests,
       loadEventsByCoach,
       loadEventsByManager
     } = this.props.actions;
 
     if (activeInstitutionID !== "") {
-      loadCoaches(activeInstitutionID);
-      loadManagers(activeInstitutionID);
-      loadAdmins(activeInstitutionID);
-      loadCoachRequests(activeInstitutionID);
-      loadManagerRequests(activeInstitutionID);
-      loadAdminRequests(activeInstitutionID);
+      loadStaff(activeInstitutionID);
+      loadStaffRequests(activeInstitutionID);
       loadTeams(activeInstitutionID);
 
       if (personID) {
@@ -126,13 +119,9 @@ class PeopleLayout extends Component {
     const { activeInstitutionID, teams } = nextProps;
     const { personID } = nextProps.match.params;
     const {
-      loadCoaches,
-      loadManagers,
-      loadAdmins,
+      loadStaff,
+      loadStaffRequests,
       loadTeams,
-      loadCoachRequests,
-      loadManagerRequests,
-      loadAdminRequests,
       loadEventsByCoach,
       loadEventsByManager
     } = nextProps.actions;
@@ -153,12 +142,8 @@ class PeopleLayout extends Component {
       activeInstitutionID !== this.props.activeInstitutionID &&
       activeInstitutionID !== ""
     ) {
-      loadCoaches(activeInstitutionID);
-      loadManagers(activeInstitutionID);
-      loadAdmins(activeInstitutionID);
-      loadCoachRequests(activeInstitutionID);
-      loadManagerRequests(activeInstitutionID);
-      loadAdminRequests(activeInstitutionID);
+      loadStaff(activeInstitutionID);
+      loadStaffRequests(activeInstitutionID);
       loadTeams(activeInstitutionID);
 
       if (personID) {
@@ -489,7 +474,13 @@ class PeopleLayout extends Component {
       eventsByManager,
       role
     } = this.props;
-    const { currentTab, inviteeID, inviteeInfo } = this.props.uiConfig;
+    const {
+      currentTab,
+      inviteeID,
+      inviteeInfo,
+      applicantID,
+      isCoachApplication
+    } = this.props.uiConfig;
     const {
       isCoachesLoading,
       isManagersLoading,
@@ -498,14 +489,15 @@ class PeopleLayout extends Component {
       isInviteeLoading,
       isEditPersonLoading,
       isEventsByCoachLoading,
-      isEventsByManagerLoading
+      isEventsByManagerLoading,
+      isApplicantResponseLoading
     } = this.props.loadingStatus;
     const {
       updateTab,
       openEditPersonDialog,
       closeEditPersonDialog,
-      openDeletePersonAlert,
-      closeDeletePersonAlert,
+      openRejectPersonModal,
+      closeRejectPersonModal,
       openInvitePersonModal,
       closeInvitePersonModal,
       applyFilters,
@@ -514,12 +506,17 @@ class PeopleLayout extends Component {
       createUser,
       invitePerson,
       editPerson,
-      editRoles
+      editRoles,
+      rejectPerson,
+      approvePerson,
+      openApprovePersonModal,
+      closeApprovePersonModal
     } = this.props.actions;
     const {
-      isDeletPersonAlertOpen,
+      isRejectPersonModalOpen,
       isEditPersonDialogOpen,
-      isInvitePersonModalOpen
+      isInvitePersonModalOpen,
+      isApprovePersonModalOpen
     } = this.props.dialogs;
     const { personID } = this.props.match.params;
 
@@ -654,10 +651,7 @@ class PeopleLayout extends Component {
                         </Typography>
                       </div>
                     )}
-                    <PeopleList
-                      people={staffCardsInfo}
-                      actions={{ openDeletePersonAlert }}
-                    />
+                    <PeopleList people={staffCardsInfo} />
                   </div>
                 )}
                 <InvitePersonModal
@@ -697,16 +691,91 @@ class PeopleLayout extends Component {
                 ) : (
                   <RequestsList
                     people={requestsCardsInfo}
-                    actions={{ openDeletePersonAlert }}
+                    actions={{ openRejectPersonModal, openApprovePersonModal }}
                   />
                 )}
               </div>
             )}
-            <NotificationModal
-              isOpen={isDeletPersonAlertOpen}
-              handleOkClick={closeDeletePersonAlert}
-              heading="Unavailable in Beta"
-              message="The ability to delete staff members is unavailable in this version of the beta."
+            <AcceptCoachModal
+              isLoading={isApplicantResponseLoading}
+              isOpen={isApprovePersonModalOpen && isCoachApplication}
+              applicantID={applicantID}
+              institutionID={activeInstitutionID}
+              roles={{
+                admin:
+                  requests[applicantID] &&
+                  requests[applicantID].institutions[activeInstitutionID].roles
+                    .admin !== "N/A"
+                    ? "APPROVED"
+                    : "N/A",
+                coach:
+                  requests[applicantID] &&
+                  requests[applicantID].institutions[activeInstitutionID].roles
+                    .coach !== "N/A"
+                    ? "APPROVED"
+                    : "N/A",
+                manager:
+                  requests[applicantID] &&
+                  requests[applicantID].institutions[activeInstitutionID].roles
+                    .manager !== "N/A"
+                    ? "APPROVED"
+                    : "N/A"
+              }}
+              actions={{
+                approvePerson,
+                closeModal: () => closeApprovePersonModal()
+              }}
+            />
+            <DecisionModal
+              isOpen={isRejectPersonModalOpen}
+              handleYesClick={() => {
+                rejectPerson(applicantID, activeInstitutionID);
+                closeRejectPersonModal();
+              }}
+              handleNoClick={() => closeRejectPersonModal()}
+              heading="Reject Application"
+              message="Are you sure you want to reject this application?"
+            />
+            <DecisionModal
+              isOpen={isApprovePersonModalOpen && !isCoachApplication}
+              handleYesClick={() => {
+                approvePerson(
+                  applicantID,
+                  activeInstitutionID,
+                  {
+                    rates: {
+                      overtime: 150,
+                      salary: 6000,
+                      standard: 100
+                    },
+                    type: "HOURLY"
+                  },
+                  {
+                    admin:
+                      requests[applicantID] &&
+                      requests[applicantID].institutions[activeInstitutionID]
+                        .roles.admin !== "N/A"
+                        ? "APPROVED"
+                        : "N/A",
+                    coach:
+                      requests[applicantID] &&
+                      requests[applicantID].institutions[activeInstitutionID]
+                        .roles.coach !== "N/A"
+                        ? "APPROVED"
+                        : "N/A",
+                    manager:
+                      requests[applicantID] &&
+                      requests[applicantID].institutions[activeInstitutionID]
+                        .roles.manager !== "N/A"
+                        ? "APPROVED"
+                        : "N/A"
+                  }
+                );
+                closeApprovePersonModal();
+              }}
+              handleNoClick={() => closeApprovePersonModal()}
+              heading="Approve Application"
+              message="Are you sure you want to approve this application?"
             />
           </div>
         )}

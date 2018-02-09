@@ -28,7 +28,10 @@ const styles = {
 class RequestsList extends Component {
   render() {
     const { classes, people } = this.props;
-    const { openDeletePersonAlert } = this.props.actions;
+    const {
+      openRejectPersonModal,
+      openApprovePersonModal
+    } = this.props.actions;
 
     if (people.length > 0) {
       return (
@@ -49,7 +52,7 @@ class RequestsList extends Component {
                   surname={personInfo.surname}
                   profilePictureURL={personInfo.profilePictureURL}
                   type={personInfo.type}
-                  actions={{ openDeletePersonAlert }}
+                  actions={{ openRejectPersonModal, openApprovePersonModal }}
                   id={personInfo.id}
                 />
               </Grid>

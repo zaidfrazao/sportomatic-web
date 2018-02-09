@@ -29,7 +29,6 @@ const styles = {
 class PeopleList extends Component {
   render() {
     const { classes, people } = this.props;
-    const { openDeletePersonAlert } = this.props.actions;
 
     if (people.length > 0) {
       return (
@@ -50,7 +49,6 @@ class PeopleList extends Component {
                   surname={personInfo.surname}
                   profilePictureURL={personInfo.profilePictureURL}
                   type={personInfo.type}
-                  actions={{ openDeletePersonAlert }}
                   id={personInfo.id}
                 />
               </Grid>
