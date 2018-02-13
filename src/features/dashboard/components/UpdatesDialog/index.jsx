@@ -44,6 +44,14 @@ class UpdatesDialog extends Component {
                 the institution's creation date. (Issue #28)
               </li>
               <li>Make table totals clearer. (Issue #52)</li>
+              <li>
+                Remove sport categorisation when selecting teams, managers and
+                coaches for events and teams to remove confusion. (Issue #41)
+              </li>
+              <li>
+                Change opponent name placeholder from "Currently unknown" to
+                "Enter opponent name (Optional)" for improved clarity.
+              </li>
             </Typography>
           </div>
           <Typography type="title" component="h2">

@@ -226,22 +226,6 @@ class AddTeamDialog extends Component {
     const { classes, coaches } = this.props;
     const { selectedCoaches } = this.state;
 
-    let coachesBySport = {};
-    _.toPairs(coaches).map(([coachID, coachInfo]) => {
-      _.keys(coachInfo.info.sports).map(sport => {
-        if (coachesBySport[sport]) {
-          coachesBySport[sport] = {
-            ...coachesBySport[sport],
-            [coachID]: `${coachInfo.info.name} ${coachInfo.info.surname}`
-          };
-        } else {
-          coachesBySport[sport] = {
-            [coachID]: `${coachInfo.info.name} ${coachInfo.info.surname}`
-          };
-        }
-      });
-    });
-
     const listItems = _.toPairs(selectedCoaches).map(([id, info]) => {
       return (
         <div key={`selectedCoach:${id}`}>
@@ -254,24 +238,18 @@ class AddTeamDialog extends Component {
                 onChange={this.changeCoach(id)}
                 input={<Input id="coach selection" />}
               >
-                {_.toPairs(coachesBySport).map(([sport, sportCoaches]) => {
+                {_.toPairs(coaches).map(([coachID, coachInfo]) => {
                   return (
-                    <optgroup label={sport} key={`${id}${sport}`}>
-                      {_.toPairs(sportCoaches).map(([coachID, coachName]) => {
-                        return (
-                          <option
-                            key={`${id}${sport}${coachID}`}
-                            value={coachID}
-                            disabled={
-                              coachID !== id &&
-                              _.keys(selectedCoaches).includes(coachID)
-                            }
-                          >
-                            {coachName}
-                          </option>
-                        );
-                      })}
-                    </optgroup>
+                    <option
+                      key={`${id}-${coachID}`}
+                      value={coachID}
+                      disabled={
+                        coachID !== id &&
+                        _.keys(selectedCoaches).includes(coachID)
+                      }
+                    >
+                      {`${coachInfo.info.name} ${coachInfo.info.surname}`}
+                    </option>
                   );
                 })}
               </Select>
@@ -310,22 +288,6 @@ class AddTeamDialog extends Component {
     const { classes, managers } = this.props;
     const { selectedManagers } = this.state;
 
-    let managersBySport = {};
-    _.toPairs(managers).map(([managerID, managerInfo]) => {
-      _.keys(managerInfo.info.sports).map(sport => {
-        if (managersBySport[sport]) {
-          managersBySport[sport] = {
-            ...managersBySport[sport],
-            [managerID]: `${managerInfo.info.name} ${managerInfo.info.surname}`
-          };
-        } else {
-          managersBySport[sport] = {
-            [managerID]: `${managerInfo.info.name} ${managerInfo.info.surname}`
-          };
-        }
-      });
-    });
-
     const listItems = _.toPairs(selectedManagers).map(([id, info]) => {
       return (
         <div key={`selectedManager:${id}`}>
@@ -338,26 +300,18 @@ class AddTeamDialog extends Component {
                 onChange={this.changeManager(id)}
                 input={<Input id="manager selection" />}
               >
-                {_.toPairs(managersBySport).map(([sport, sportManagers]) => {
+                {_.toPairs(managers).map(([managerID, managerInfo]) => {
                   return (
-                    <optgroup label={sport} key={`${id}${sport}`}>
-                      {_.toPairs(
-                        sportManagers
-                      ).map(([managerID, managerName]) => {
-                        return (
-                          <option
-                            key={`${id}${sport}${managerID}`}
-                            value={managerID}
-                            disabled={
-                              managerID !== id &&
-                              _.keys(selectedManagers).includes(managerID)
-                            }
-                          >
-                            {managerName}
-                          </option>
-                        );
-                      })}
-                    </optgroup>
+                    <option
+                      key={`${id}-${managerID}`}
+                      value={managerID}
+                      disabled={
+                        managerID !== id &&
+                        _.keys(selectedManagers).includes(managerID)
+                      }
+                    >
+                      {`${managerInfo.info.name} ${managerInfo.info.surname}`}
+                    </option>
                   );
                 })}
               </Select>
