@@ -3,6 +3,7 @@ import Button from "material-ui/Button";
 import Card, { CardActions, CardContent, CardMedia } from "material-ui/Card";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
+import defaultProfilePicture from "../../../../image/default-profile-picture.png";
 
 const styles = {
   button: {
@@ -34,7 +35,11 @@ class PersonCard extends Component {
         <Card className={classes.card}>
           <CardMedia
             className={classes.media}
-            image={profilePictureURL}
+            image={
+              profilePictureURL === ""
+                ? defaultProfilePicture
+                : profilePictureURL
+            }
             title={name}
           />
           <CardContent>

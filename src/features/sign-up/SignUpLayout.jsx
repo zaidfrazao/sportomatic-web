@@ -509,8 +509,10 @@ class SignUpLayout extends Component {
                 label="Name"
                 value={name}
                 error={errors["name"].hasError}
-                onChange={e => this.updateField(e.target.value, "name")}
-                onBlur={e => this.validateField(e.target.value, "name")}
+                onChange={e => {
+                  this.updateField(e.target.value, "name");
+                  this.validateField(e.target.value, "name");
+                }}
                 helperText={errors["name"].message}
                 className={classes.textField}
               />
@@ -520,8 +522,10 @@ class SignUpLayout extends Component {
                 label="Surname"
                 value={surname}
                 error={errors["surname"].hasError}
-                onChange={e => this.updateField(e.target.value, "surname")}
-                onBlur={e => this.validateField(e.target.value, "surname")}
+                onChange={e => {
+                  this.updateField(e.target.value, "surname");
+                  this.validateField(e.target.value, "surname");
+                }}
                 helperText={errors["surname"].message}
                 className={classes.textField}
               />
@@ -556,10 +560,10 @@ class SignUpLayout extends Component {
                 label="Confirm password"
                 value={confirmPassword}
                 error={errors["confirmPassword"].hasError}
-                onChange={e =>
-                  this.updateField(e.target.value, "confirmPassword")}
-                onBlur={e =>
-                  this.validateField(e.target.value, "confirmPassword")}
+                onChange={e => {
+                  this.updateField(e.target.value, "confirmPassword");
+                  this.validateField(e.target.value, "confirmPassword");
+                }}
                 helperText={errors["confirmPassword"].message}
                 className={classes.textField}
               />

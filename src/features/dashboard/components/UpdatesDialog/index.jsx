@@ -51,6 +51,10 @@ class UpdatesDialog extends Component {
                 Set coach payment fields to institution defaults when accepting
                 or inviting coaches. (Issue #109)
               </li>
+              <li>
+                Enable "Sign up" button as soon as confirm password matches
+                password when creating an account. (Issue #99)
+              </li>
             </Typography>
             <Typography type="subheading" component="h3">
               Minor Changes
@@ -72,6 +76,10 @@ class UpdatesDialog extends Component {
               <li>
                 Collapse hour and results cards when approved to avoid clutter.
                 (Issue #82)
+              </li>
+              <li>
+                Show default profile picture in staff requests when user has no
+                profile picture.
               </li>
             </Typography>
           </div>
