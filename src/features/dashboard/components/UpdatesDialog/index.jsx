@@ -24,7 +24,39 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.16 (Current)"}
+            {"v0.9.17 (Current)"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              New Features
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Give "Mark absent" button on hours cards relevant functionality.
+                (Issue #12)
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Bug Fixes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Give "Mark absent" button on hours cards relevant functionality.
+                (Issue #12)
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Minor Changes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Institutions list in the home page of the "Manage institutions"
+                dialog has been colour coded depending on approval status.
+              </li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.16"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">

@@ -1096,7 +1096,7 @@ export function updateAbsent(
   coachID,
   newStatus,
   isPastEvent,
-  rating = "NEATURAL",
+  rating = "NEUTRAL",
   reason = ""
 ) {
   return function(dispatch: DispatchAlias) {

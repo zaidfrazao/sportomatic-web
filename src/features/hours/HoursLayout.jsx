@@ -17,11 +17,13 @@ import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
 import CoachesList from "./components/CoachesList";
+import DecisionModal from "../../components/DecisionModal";
 import FiltersToolbar from "./components/FiltersToolbar";
 import HoursCard from "./components/HoursCard";
 import HoursHistory from "./components/HoursHistory";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
+import MarkAbsentModal from "./components/MarkAbsentModal";
 
 const styles = theme => ({
   actionsBar: {
@@ -197,14 +199,30 @@ class HoursLayout extends Component {
       userID,
       paymentDefaults
     } = this.props;
-    const { lastVisible } = this.props.uiConfig;
+    const { lastVisible, selectedCoach, selectedEvent } = this.props.uiConfig;
     const { isStaffLoading, isEventsByDateLoading } = this.props.loadingStatus;
+    const {
+      isMarkAbsentModalOpen,
+      isUnmarkAbsentModalOpen
+    } = this.props.dialogs;
     const {
       loadEventsByDate,
       signIn,
       signOut,
-      approveHours
+      approveHours,
+      openMarkAbsentModal,
+      closeMarkAbsentModal,
+      openUnmarkAbsentModal,
+      closeUnmarkAbsentModal,
+      updateAbsent
     } = this.props.actions;
+
+    let selectedCoachName = "";
+    if (staff[selectedCoach]) {
+      selectedCoachName = `${staff[selectedCoach].info.name} ${staff[
+        selectedCoach
+      ].info.surname}`;
+    }
 
     if (isStaffLoading || activeInstitutionID === "") {
       return (
@@ -295,7 +313,9 @@ class HoursLayout extends Component {
                         actions={{
                           signIn,
                           signOut,
-                          approveHours
+                          approveHours,
+                          openMarkAbsentModal,
+                          openUnmarkAbsentModal
                         }}
                       />
                     );
@@ -329,6 +349,34 @@ class HoursLayout extends Component {
           >
             Load more...
           </Button>
+          <MarkAbsentModal
+            isOpen={isMarkAbsentModalOpen}
+            coachName={selectedCoachName}
+            actions={{
+              markAbsent: (rating, reason) => {
+                updateAbsent(
+                  selectedEvent,
+                  selectedCoach,
+                  false,
+                  true,
+                  rating,
+                  reason
+                );
+                closeMarkAbsentModal();
+              },
+              closeModal: () => closeMarkAbsentModal()
+            }}
+          />
+          <DecisionModal
+            isOpen={isUnmarkAbsentModalOpen}
+            handleYesClick={() => {
+              updateAbsent(selectedEvent, selectedCoach, true, true);
+              closeUnmarkAbsentModal();
+            }}
+            handleNoClick={closeUnmarkAbsentModal}
+            heading="Mark as Attended"
+            message={`Are you sure ${selectedCoachName} did attend?`}
+          />
         </div>
       );
     }

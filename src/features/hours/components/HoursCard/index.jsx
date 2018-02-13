@@ -7,7 +7,7 @@ import Button from "material-ui/Button";
 import Collapse from "material-ui/transitions/Collapse";
 import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
-import { green, grey, lightBlue, orange } from "material-ui/colors";
+import { green, grey, lightBlue, orange, red } from "material-ui/colors";
 import { ListItem, ListItemText } from "material-ui/List";
 import moment from "moment";
 import { Route } from "react-router";
@@ -15,6 +15,7 @@ import SignInIcon from "material-ui-icons/AssignmentReturned";
 import SignOutIcon from "material-ui-icons/AssignmentReturn";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
+import WarningIcon from "material-ui-icons/Warning";
 import { withStyles } from "material-ui/styles";
 import defaultProfilePicture from "../../image/default-profile-picture.png";
 
@@ -79,6 +80,16 @@ const styles = {
     backgroundColor: grey[100],
     margin: "16px 0"
   },
+  markedAbsentText: {
+    color: red[500]
+  },
+  markedAbsentTextWrapper: {
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+  },
   profilePicture: {
     backgroundColor: grey[50],
     border: `1px solid ${grey[300]}`,
@@ -127,6 +138,14 @@ const styles = {
     backgroundColor: grey[50],
     border: `1px solid ${grey[300]}`,
     padding: 0
+  },
+  unmarkAbsentButton: {
+    backgroundColor: grey[50],
+    flex: 1
+  },
+  warningIcon: {
+    color: red[500],
+    margin: 8
   }
 };
 
@@ -147,6 +166,9 @@ class HoursCard extends Component {
       let hasSignOutError = false;
       let signOutErrorMessage = "";
 
+      const isAbsent =
+        !eventInfo.coaches[userID].attendance.didAttend ||
+        !eventInfo.coaches[userID].attendance.willAttend;
       const signInTime = moment(eventInfo.coaches[userID].hours.times.signIn);
       const signOutTime = moment(eventInfo.coaches[userID].hours.times.signOut);
       const startTime = moment(eventInfo.requiredInfo.times.start);
@@ -172,6 +194,7 @@ class HoursCard extends Component {
         signInTime: eventInfo.coaches[userID].hours.times.signIn,
         signOutTime: eventInfo.coaches[userID].hours.times.signOut,
         status: eventInfo.coaches[userID].hours.status,
+        isAbsent,
         errors: {
           signIn: {
             hasError: hasSignInError,
@@ -184,7 +207,11 @@ class HoursCard extends Component {
         }
       };
       if (eventInfo.coaches[userID].hours.status !== "APPROVED") {
-        isOpen = true;
+        if (!isAbsent) {
+          isOpen = true;
+        } else if (startTime.isAfter(moment().startOf("day"))) {
+          isOpen = true;
+        }
       }
       this.setState({
         coaches,
@@ -197,6 +224,8 @@ class HoursCard extends Component {
         let hasSignOutError = false;
         let signOutErrorMessage = "";
 
+        const isAbsent =
+          !coachInfo.attendance.didAttend || !coachInfo.attendance.willAttend;
         const signInMoment = moment(coachInfo.hours.times.signIn);
         const signOutMoment = moment(coachInfo.hours.times.signOut);
         const startMoment = moment(eventInfo.requiredInfo.times.start);
@@ -222,6 +251,7 @@ class HoursCard extends Component {
           signInTime: coachInfo.hours.times.signIn,
           signOutTime: coachInfo.hours.times.signOut,
           status: coachInfo.hours.status,
+          isAbsent: !coachInfo.attendance.didAttend,
           errors: {
             signIn: {
               hasError: hasSignInError,
@@ -234,7 +264,11 @@ class HoursCard extends Component {
           }
         };
         if (coachInfo.hours.status !== "APPROVED") {
-          isOpen = true;
+          if (!isAbsent) {
+            isOpen = true;
+          } else if (startMoment.isAfter(moment().startOf("day"))) {
+            isOpen = true;
+          }
         }
         this.setState({
           coaches,
@@ -253,12 +287,16 @@ class HoursCard extends Component {
       userID !== this.props.userID
     ) {
       let coaches = {};
+      let isOpen = false;
       if (role === "coach") {
         let hasSignInError = false;
         let signInErrorMessage = "";
         let hasSignOutError = false;
         let signOutErrorMessage = "";
 
+        const isAbsent =
+          !eventInfo.coaches[userID].attendance.didAttend ||
+          !eventInfo.coaches[userID].attendance.willAttend;
         const signInTime = moment(eventInfo.coaches[userID].hours.times.signIn);
         const signOutTime = moment(
           eventInfo.coaches[userID].hours.times.signOut
@@ -286,6 +324,7 @@ class HoursCard extends Component {
           signInTime: eventInfo.coaches[userID].hours.times.signIn,
           signOutTime: eventInfo.coaches[userID].hours.times.signOut,
           status: eventInfo.coaches[userID].hours.status,
+          isAbsent,
           errors: {
             signIn: {
               hasError: hasSignInError,
@@ -297,8 +336,16 @@ class HoursCard extends Component {
             }
           }
         };
+        if (eventInfo.coaches[userID].hours.status !== "APPROVED") {
+          if (!isAbsent) {
+            isOpen = true;
+          } else if (startTime.isAfter(moment().startOf("day"))) {
+            isOpen = true;
+          }
+        }
         this.setState({
-          coaches
+          coaches,
+          isOpen
         });
       } else {
         _.toPairs(eventInfo.coaches).map(([coachID, coachInfo]) => {
@@ -307,6 +354,8 @@ class HoursCard extends Component {
           let hasSignOutError = false;
           let signOutErrorMessage = "";
 
+          const isAbsent =
+            !coachInfo.attendance.didAttend || !coachInfo.attendance.willAttend;
           const signInTime = moment(coachInfo.hours.times.signIn);
           const signOutTime = moment(coachInfo.hours.times.signOut);
           const startTime = moment(eventInfo.requiredInfo.times.start);
@@ -331,6 +380,7 @@ class HoursCard extends Component {
             signInTime: coachInfo.hours.times.signIn,
             signOutTime: coachInfo.hours.times.signOut,
             status: coachInfo.hours.status,
+            isAbsent: !coachInfo.attendance.didAttend,
             errors: {
               signIn: {
                 hasError: hasSignInError,
@@ -342,8 +392,16 @@ class HoursCard extends Component {
               }
             }
           };
+          if (coachInfo.hours.status !== "APPROVED") {
+            if (!isAbsent) {
+              isOpen = true;
+            } else if (startTime.isAfter(moment().startOf("day"))) {
+              isOpen = true;
+            }
+          }
           this.setState({
-            coaches
+            coaches,
+            isOpen
           });
         });
       }
@@ -387,6 +445,7 @@ class HoursCard extends Component {
           signInTime,
           signOutTime,
           status,
+          isAbsent: coaches[coachID].isAbsent,
           errors: {
             signIn: {
               hasError: hasSignInError,
@@ -413,46 +472,70 @@ class HoursCard extends Component {
       userID,
       paymentDefaults
     } = this.props;
-    const { signIn, signOut, approveHours } = this.props.actions;
+    const {
+      signIn,
+      signOut,
+      approveHours,
+      openMarkAbsentModal,
+      openUnmarkAbsentModal
+    } = this.props.actions;
 
     if (role === "coach") {
       const signInTime = this.state.coaches[userID].signInTime;
       const signOutTime = this.state.coaches[userID].signOutTime;
       const errors = this.state.coaches[userID].errors;
+      const isAbsent = this.state.coaches[userID].isAbsent;
 
       switch (this.state.coaches[userID].status) {
         case "AWAITING_SIGN_IN":
           return (
             <div className={classes.hoursWrapper}>
               <div className={classes.timesWrapper}>
-                <form className={classes.timeWrapper}>
-                  <TextField
-                    id="time"
-                    label="Signed in"
-                    type="time"
-                    disabled
-                    className={classes.time}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                  />
-                </form>
-                <form className={classes.timeWrapper}>
-                  <TextField
-                    id="time"
-                    label="Signed out"
-                    type="time"
-                    disabled
-                    className={classes.time}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                  />
-                </form>
+                {isAbsent && (
+                  <div className={classes.markedAbsentTextWrapper}>
+                    <WarningIcon className={classes.warningIcon} />
+                    <Typography
+                      type="headline"
+                      component="p"
+                      className={classes.markedAbsentText}
+                    >
+                      {"Marked absent"}
+                    </Typography>
+                  </div>
+                )}
+                {!isAbsent && (
+                  <form className={classes.timeWrapper}>
+                    <TextField
+                      id="time"
+                      label="Signed in"
+                      type="time"
+                      disabled
+                      className={classes.time}
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                    />
+                  </form>
+                )}
+                {!isAbsent && (
+                  <form className={classes.timeWrapper}>
+                    <TextField
+                      id="time"
+                      label="Signed out"
+                      type="time"
+                      disabled
+                      className={classes.time}
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                    />
+                  </form>
+                )}
               </div>
               <div className={classes.buttonWrapper}>
                 <Button
                   raised
+                  disabled={isAbsent}
                   className={classes.signInButton}
                   onClick={() => {
                     const currentTime = moment();
@@ -635,6 +718,7 @@ class HoursCard extends Component {
         const signInTime = this.state.coaches[coachID].signInTime;
         const signOutTime = this.state.coaches[coachID].signOutTime;
         const errors = this.state.coaches[coachID].errors;
+        const isAbsent = this.state.coaches[coachID].isAbsent;
 
         switch (this.state.coaches[coachID].status) {
           case "AWAITING_SIGN_IN":
@@ -660,92 +744,125 @@ class HoursCard extends Component {
                   className={classes.profilePicture}
                 />
                 <div className={classes.timesWrapper}>
-                  <form className={classes.timeWrapper}>
-                    <TextField
-                      id="time"
-                      label="Signed in"
-                      type="time"
-                      onChange={e => {
-                        let signedInAt = new Date(
-                          eventInfo.requiredInfo.times.start
-                        );
-                        signedInAt.setHours(e.target.value.slice(0, 2));
-                        signedInAt.setMinutes(e.target.value.slice(3, 5));
-                        this.updateCoachHours(
-                          eventID,
-                          coachID,
-                          signedInAt,
-                          signOutTime,
-                          "AWAITING_SIGN_OUT"
-                        );
-                      }}
-                      onBlur={() => {
-                        if (!errors.signIn.hasError) {
+                  {isAbsent && (
+                    <div className={classes.markedAbsentTextWrapper}>
+                      <WarningIcon className={classes.warningIcon} />
+                      <Typography
+                        type="headline"
+                        component="p"
+                        className={classes.markedAbsentText}
+                      >
+                        {"Marked absent"}
+                      </Typography>
+                    </div>
+                  )}
+                  {!isAbsent && (
+                    <form className={classes.timeWrapper}>
+                      <TextField
+                        id="time"
+                        label="Signed in"
+                        type="time"
+                        onChange={e => {
+                          let signedInAt = new Date(
+                            eventInfo.requiredInfo.times.start
+                          );
+                          signedInAt.setHours(e.target.value.slice(0, 2));
+                          signedInAt.setMinutes(e.target.value.slice(3, 5));
+                          this.updateCoachHours(
+                            eventID,
+                            coachID,
+                            signedInAt,
+                            signOutTime,
+                            "AWAITING_SIGN_OUT"
+                          );
+                        }}
+                        onBlur={() => {
+                          if (!errors.signIn.hasError) {
+                            signIn(
+                              eventID,
+                              coachID,
+                              signInTime,
+                              "AWAITING_SIGN_OUT"
+                            );
+                          }
+                        }}
+                        className={classes.time}
+                        error={errors.signIn.hasError}
+                        helperText={errors.signIn.message}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        inputProps={{
+                          step: 300
+                        }}
+                      />
+                    </form>
+                  )}
+                  {!isAbsent && (
+                    <form className={classes.timeWrapper}>
+                      <TextField
+                        id="time"
+                        label="Signed out"
+                        type="time"
+                        disabled
+                        className={classes.time}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        inputProps={{
+                          step: 300
+                        }}
+                      />
+                    </form>
+                  )}
+                </div>
+                <div className={classes.buttonWrapper}>
+                  {!isAbsent && (
+                    <Button
+                      raised
+                      className={classes.signInButton}
+                      onClick={() => {
+                        const currentTime = moment();
+                        if (
+                          currentTime.isAfter(eventInfo.requiredInfo.times.end)
+                        ) {
                           signIn(
                             eventID,
                             coachID,
-                            signInTime,
+                            eventInfo.requiredInfo.times.start,
+                            "AWAITING_SIGN_OUT"
+                          );
+                        } else {
+                          signIn(
+                            eventID,
+                            coachID,
+                            currentTime.toDate(),
                             "AWAITING_SIGN_OUT"
                           );
                         }
                       }}
-                      className={classes.time}
-                      error={errors.signIn.hasError}
-                      helperText={errors.signIn.message}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      inputProps={{
-                        step: 300
-                      }}
-                    />
-                  </form>
-                  <form className={classes.timeWrapper}>
-                    <TextField
-                      id="time"
-                      label="Signed out"
-                      type="time"
-                      disabled
-                      className={classes.time}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      inputProps={{
-                        step: 300
-                      }}
-                    />
-                  </form>
-                </div>
-                <div className={classes.buttonWrapper}>
-                  <Button
-                    raised
-                    className={classes.signInButton}
-                    onClick={() => {
-                      const currentTime = moment();
-                      if (
-                        currentTime.isAfter(eventInfo.requiredInfo.times.end)
-                      ) {
-                        signIn(
-                          eventID,
-                          coachID,
-                          eventInfo.requiredInfo.times.start,
-                          "AWAITING_SIGN_OUT"
-                        );
-                      } else {
-                        signIn(
-                          eventID,
-                          coachID,
-                          currentTime.toDate(),
-                          "AWAITING_SIGN_OUT"
-                        );
-                      }
-                    }}
-                  >
-                    <SignInIcon /> Sign in
-                  </Button>
-                  <Button raised className={classes.absentButton}>
-                    <AbsentIcon /> Mark absent
-                  </Button>
+                    >
+                      <SignInIcon /> Sign in
+                    </Button>
+                  )}
+                  {!isAbsent && (
+                    <Button
+                      raised
+                      className={classes.absentButton}
+                      onClick={() => openMarkAbsentModal(eventID, coachID)}
+                    >
+                      <AbsentIcon /> Mark absent
+                    </Button>
+                  )}
+                  {isAbsent && (
+                    <Button
+                      raised
+                      className={classes.unmarkAbsentButton}
+                      onClick={() => openUnmarkAbsentModal(eventID, coachID)}
+                    >
+                      <AbsentIcon /> Unmark absent
+                    </Button>
+                  )}
                 </div>
               </div>
             );

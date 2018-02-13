@@ -29,6 +29,13 @@ export const ERROR_APPROVING_HOURS = `${NAMESPACE}/ERROR_APPROVING_HOURS`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
+export const OPEN_MARK_ABSENT_MODAL = `${NAMESPACE}/OPEN_MARK_ABSENT_MODAL`;
+export const CLOSE_MARK_ABSENT_MODAL = `${NAMESPACE}/CLOSE_MARK_ABSENT_MODAL`;
+export const REQUEST_ABSENT_UPDATE = `${NAMESPACE}/REQUEST_ABSENT_UPDATE`;
+export const RECEIVE_ABSENT_UPDATE = `${NAMESPACE}/RECEIVE_ABSENT_UPDATE`;
+export const ERROR_UPDATING_ABSENT = `${NAMESPACE}/ERROR_UPDATING_ABSENT`;
+export const OPEN_UNMARK_ABSENT_MODAL = `${NAMESPACE}/OPEN_UNMARK_ABSENT_MODAL`;
+export const CLOSE_UNMARK_ABSENT_MODAL = `${NAMESPACE}/CLOSE_UNMARK_ABSENT_MODAL`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -37,7 +44,10 @@ export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 export const uiConfigInitialState = {
   isLoading: false,
   currentTab: "OVERVIEW",
-  lastVisible: ""
+  lastVisible: "",
+  selectedCoach: "",
+  selectedEvent: "",
+  newAbsentStatus: false
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -54,6 +64,55 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
       return {
         ...state,
         lastVisible: action.payload.lastVisible
+      };
+    case OPEN_MARK_ABSENT_MODAL:
+      return {
+        ...state,
+        selectedCoach: action.payload.coachID,
+        selectedEvent: action.payload.eventID,
+        newAbsentStatus: action.payload.newStatus
+      };
+    case OPEN_UNMARK_ABSENT_MODAL:
+      return {
+        ...state,
+        selectedCoach: action.payload.coachID,
+        selectedEvent: action.payload.eventID,
+        newAbsentStatus: action.payload.newStatus
+      };
+    default:
+      return state;
+  }
+}
+
+export const dialogsInitialState = {
+  isMarkAbsentModalOpen: false,
+  isUnmarkAbsentModalOpen: false
+};
+
+function dialogsReducer(state = dialogsInitialState, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case SIGN_OUT:
+      return dialogsInitialState;
+    case OPEN_MARK_ABSENT_MODAL:
+      return {
+        ...state,
+        isMarkAbsentModalOpen: true
+      };
+    case CLOSE_MARK_ABSENT_MODAL:
+      return {
+        ...state,
+        isMarkAbsentModalOpen: false
+      };
+    case OPEN_UNMARK_ABSENT_MODAL:
+      return {
+        ...state,
+        isUnmarkAbsentModalOpen: true
+      };
+    case CLOSE_UNMARK_ABSENT_MODAL:
+      return {
+        ...state,
+        isUnmarkAbsentModalOpen: false
       };
     default:
       return state;
@@ -182,7 +241,8 @@ export const hoursReducer = combineReducers({
   loadingStatus: loadingStatusReducer,
   eventsByDate: eventsByDateReducer,
   eventsByCoach: eventsByCoachReducer,
-  filters: filterReducer
+  filters: filterReducer,
+  dialogs: dialogsReducer
 });
 
 // Selectors
@@ -193,6 +253,7 @@ const loadingStatus = state => state.hours.loadingStatus;
 const eventsByDate = state => state.hours.eventsByDate;
 const eventsByCoach = state => state.hours.eventsByCoach;
 const filters = state => state.hours.filters;
+const dialogs = state => state.hours.dialogs;
 
 export const selector = createStructuredSelector({
   uiConfig,
@@ -200,7 +261,8 @@ export const selector = createStructuredSelector({
   loadingStatus,
   eventsByDate,
   eventsByCoach,
-  filters
+  filters,
+  dialogs
 });
 
 // Action Creators
@@ -208,6 +270,40 @@ export const selector = createStructuredSelector({
 export function resetState() {
   return {
     type: RESET_STATE
+  };
+}
+
+export function openMarkAbsentModal(eventID, coachID) {
+  return {
+    type: OPEN_MARK_ABSENT_MODAL,
+    payload: {
+      eventID,
+      coachID,
+      newStatus: false
+    }
+  };
+}
+
+export function closeMarkAbsentModal() {
+  return {
+    type: CLOSE_MARK_ABSENT_MODAL
+  };
+}
+
+export function openUnmarkAbsentModal(eventID, coachID) {
+  return {
+    type: OPEN_UNMARK_ABSENT_MODAL,
+    payload: {
+      eventID,
+      coachID,
+      newStatus: true
+    }
+  };
+}
+
+export function closeUnmarkAbsentModal() {
+  return {
+    type: CLOSE_UNMARK_ABSENT_MODAL
   };
 }
 
@@ -584,5 +680,61 @@ export function approveHours(
       .commit()
       .then(() => dispatch(receiveApproveHours()))
       .catch(error => dispatch(errorApprovingHours(error)));
+  };
+}
+
+export function requestAbsentUpdate() {
+  return {
+    type: REQUEST_ABSENT_UPDATE
+  };
+}
+
+export function receiveAbsentUpdate() {
+  return {
+    type: RECEIVE_ABSENT_UPDATE
+  };
+}
+
+export function errorUpdatingAbsent(error: { code: string, message: string }) {
+  return {
+    type: ERROR_UPDATING_ABSENT,
+    payload: {
+      error
+    }
+  };
+}
+
+export function updateAbsent(
+  eventID,
+  coachID,
+  newStatus,
+  isPastEvent,
+  rating = "NEUTRAL",
+  reason = ""
+) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestAbsentUpdate());
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    let updates = {
+      [`coaches.${coachID}.absenteeism.rating`]: rating,
+      [`coaches.${coachID}.absenteeism.reason`]: reason
+    };
+    if (isPastEvent) {
+      updates[`coaches.${coachID}.attendance.didAttend`] = newStatus;
+    } else {
+      updates[`coaches.${coachID}.attendance.didAttend`] = newStatus;
+      updates[`coaches.${coachID}.attendance.willAttend`] = newStatus;
+      if (newStatus) {
+        updates[`coaches.${coachID}.attendance.hasSubstitute`] = false;
+        updates[`coaches.${coachID}.attendance.substitute`] = "";
+      }
+    }
+
+    return eventRef
+      .update(updates)
+      .then(() => dispatch(receiveAbsentUpdate()))
+      .catch(error => dispatch(errorUpdatingAbsent(error)));
   };
 }
