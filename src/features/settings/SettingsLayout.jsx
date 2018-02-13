@@ -31,7 +31,7 @@ const styles = theme => ({
     flexDirection: "column"
   },
   tabs: {
-    height: 72
+    height: 64
   }
 });
 

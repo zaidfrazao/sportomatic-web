@@ -76,7 +76,7 @@ const styles = theme => ({
     overflow: "auto"
   },
   tabs: {
-    height: 72
+    height: 64
   },
   tabsWrapper: {
     height: "100%",

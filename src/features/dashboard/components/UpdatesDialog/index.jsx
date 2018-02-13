@@ -84,6 +84,8 @@ class UpdatesDialog extends Component {
                 Show default profile picture in staff requests when user has no
                 profile picture.
               </li>
+              <li>Lower tab height sligtly.</li>
+              <li>Fix spacing around wage table ad on mobile.</li>
             </Typography>
           </div>
           <Typography type="title" component="h2">
