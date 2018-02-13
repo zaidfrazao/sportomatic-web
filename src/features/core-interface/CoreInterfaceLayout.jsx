@@ -444,6 +444,7 @@ class CoreInterfaceLayout extends Component {
                       isMobile={isMobile}
                       isTablet={isTablet}
                       isAccountInfoLoading={isAccountInfoLoading}
+                      paymentDefaults={paymentDefaults}
                       userID={userID}
                       role={role}
                     />
@@ -454,6 +455,7 @@ class CoreInterfaceLayout extends Component {
                       isMobile={isMobile}
                       isTablet={isTablet}
                       isAccountInfoLoading={isAccountInfoLoading}
+                      paymentDefaults={paymentDefaults}
                       userID={userID}
                       role={role}
                     />

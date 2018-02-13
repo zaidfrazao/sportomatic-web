@@ -104,11 +104,31 @@ class InvitePersonModal extends Component {
     Transition: props => <Slide direction="up" {...props} />
   };
 
+  componentWillMount() {
+    const { paymentDefaults } = this.props;
+
+    this.setState({
+      paymentDefaults: {
+        type: paymentDefaults.type,
+        rates: paymentDefaults.rates
+      }
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
-    const { inviteeInfo, institutionID, isOpen } = nextProps;
+    const { inviteeInfo, institutionID, isOpen, paymentDefaults } = nextProps;
 
     if (isOpen !== this.props.isOpen && !isOpen) {
       this.resetState();
+    }
+
+    if (paymentDefaults !== this.props.paymentDefaults) {
+      this.setState({
+        paymentDefaults: {
+          type: paymentDefaults.type,
+          rates: paymentDefaults.rates
+        }
+      });
     }
 
     if (inviteeInfo !== this.props.inviteeInfo) {
@@ -197,16 +217,14 @@ class InvitePersonModal extends Component {
   }
 
   updateEmail(newEmail) {
+    const { paymentDefaults } = this.props;
+
     this.setState({
       personStatus: "AWAITING_EMAIL",
       emailEntered: newEmail,
       paymentDefaults: {
-        type: "N/A",
-        rates: {
-          standard: 100,
-          overtime: 150,
-          salary: 6000
-        }
+        type: paymentDefaults.type,
+        rates: paymentDefaults.rates
       },
       type: {
         coach: false,
@@ -289,6 +307,7 @@ class InvitePersonModal extends Component {
 
   checkEmail(e) {
     e.preventDefault();
+    const { paymentDefaults } = this.props;
     const { fetchInviteeInfo } = this.props.actions;
     const { emailEntered } = this.state;
     const emailEnteredValid = isValidEmail(emailEntered);
@@ -300,12 +319,8 @@ class InvitePersonModal extends Component {
     this.setState({
       emailError: !emailEnteredValid,
       paymentDefaults: {
-        type: "N/A",
-        rates: {
-          standard: 100,
-          overtime: 150,
-          salary: 6000
-        }
+        type: paymentDefaults.type,
+        rates: paymentDefaults.rates
       },
       type: {
         coach: false,
@@ -316,6 +331,8 @@ class InvitePersonModal extends Component {
   }
 
   resetState() {
+    const { paymentDefaults } = this.props;
+
     this.setState({
       emailEntered: "",
       emailError: false,
@@ -325,12 +342,8 @@ class InvitePersonModal extends Component {
         surname: ""
       },
       paymentDefaults: {
-        type: "N/A",
-        rates: {
-          standard: 100,
-          overtime: 150,
-          salary: 6000
-        }
+        type: paymentDefaults.type,
+        rates: paymentDefaults.rates
       },
       type: {
         coach: false,
@@ -364,6 +377,8 @@ class InvitePersonModal extends Component {
       newUser,
       paymentDefaults
     } = this.state;
+
+    console.log(paymentDefaults);
 
     return (
       <Dialog
@@ -530,19 +545,8 @@ class InvitePersonModal extends Component {
                           control={
                             <Checkbox
                               checked={type.coach}
-                              onChange={(e, isChecked) => {
-                                this.setState({
-                                  paymentDefaults: {
-                                    type: "N/A",
-                                    rates: {
-                                      standard: 100,
-                                      overtime: 150,
-                                      salary: 6000
-                                    }
-                                  }
-                                });
-                                this.updateType("coach", isChecked);
-                              }}
+                              onChange={(e, isChecked) =>
+                                this.updateType("coach", isChecked)}
                               value="coach"
                             />
                           }

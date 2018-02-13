@@ -47,6 +47,10 @@ class UpdatesDialog extends Component {
                 Hour logging disallows users from logging overtime hours that
                 exceed the max overtime hours for the institution.
               </li>
+              <li>
+                Set coach payment fields to institution defaults when accepting
+                or inviting coaches. (Issue #109)
+              </li>
             </Typography>
             <Typography type="subheading" component="h3">
               Minor Changes

@@ -472,7 +472,8 @@ class PeopleLayout extends Component {
       activeInstitutionID,
       eventsByCoach,
       eventsByManager,
-      role
+      role,
+      paymentDefaults
     } = this.props;
     const {
       currentTab,
@@ -661,6 +662,7 @@ class PeopleLayout extends Component {
                   inviteeID={inviteeID}
                   inviteeInfo={inviteeInfo}
                   institutionID={activeInstitutionID}
+                  paymentDefaults={paymentDefaults}
                   actions={{
                     editRoles: () => editRoles(),
                     invitePerson: (id, info) => invitePerson(id, info),
@@ -701,6 +703,7 @@ class PeopleLayout extends Component {
               isOpen={isApprovePersonModalOpen && isCoachApplication}
               applicantID={applicantID}
               institutionID={activeInstitutionID}
+              paymentDefaults={paymentDefaults}
               roles={{
                 admin:
                   requests[applicantID] &&

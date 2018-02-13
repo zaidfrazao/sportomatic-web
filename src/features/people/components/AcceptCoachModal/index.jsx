@@ -46,11 +46,31 @@ class AcceptCoachModal extends Component {
     Transition: props => <Slide direction="up" {...props} />
   };
 
+  componentWillMount() {
+    const { paymentDefaults } = this.props;
+
+    this.setState({
+      paymentDefaults: {
+        type: paymentDefaults.type,
+        rates: paymentDefaults.rates
+      }
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
-    const { isOpen } = nextProps;
+    const { isOpen, paymentDefaults } = nextProps;
 
     if (isOpen !== this.props.isOpen && !isOpen) {
       this.resetState();
+    }
+
+    if (paymentDefaults !== this.props.paymentDefaults) {
+      this.setState({
+        paymentDefaults: {
+          type: paymentDefaults.type,
+          rates: paymentDefaults.rates
+        }
+      });
     }
   }
 
@@ -108,14 +128,12 @@ class AcceptCoachModal extends Component {
   }
 
   resetState() {
+    const { paymentDefaults } = this.props;
+
     this.setState({
       paymentDefaults: {
-        type: "HOURLY",
-        rates: {
-          standard: 100,
-          overtime: 150,
-          salary: 6000
-        }
+        type: paymentDefaults.type,
+        rates: paymentDefaults.rates
       }
     });
   }
