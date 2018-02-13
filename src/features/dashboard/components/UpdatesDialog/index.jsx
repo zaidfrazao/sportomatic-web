@@ -36,6 +36,19 @@ class UpdatesDialog extends Component {
               </li>
             </Typography>
             <Typography type="subheading" component="h3">
+              Bug Fixes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Signing a coach out on the same day as the event always signs
+                out at the current time to allow for overtime hours. (Issue #61)
+              </li>
+              <li>
+                Hour logging disallows users from logging overtime hours that
+                exceed the max overtime hours for the institution.
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
               Minor Changes
             </Typography>
             <Typography type="body1" component="ul">
@@ -51,6 +64,10 @@ class UpdatesDialog extends Component {
               <li>
                 Change opponent name placeholder from "Currently unknown" to
                 "Enter opponent name (Optional)" for improved clarity.
+              </li>
+              <li>
+                Collapse hour and results cards when approved to avoid clutter.
+                (Issue #82)
               </li>
             </Typography>
           </div>

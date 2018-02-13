@@ -137,7 +137,7 @@ class HoursCard extends Component {
   };
 
   componentWillMount() {
-    const { eventInfo, role, userID } = this.props;
+    const { eventInfo, role, userID, paymentDefaults } = this.props;
 
     let coaches = {};
     let isOpen = false;
@@ -150,6 +150,10 @@ class HoursCard extends Component {
       const signInTime = moment(eventInfo.coaches[userID].hours.times.signIn);
       const signOutTime = moment(eventInfo.coaches[userID].hours.times.signOut);
       const startTime = moment(eventInfo.requiredInfo.times.start);
+      const maxOvertimeMoment = moment(eventInfo.requiredInfo.times.end).add(
+        paymentDefaults.maxOvertimeHours,
+        "hours"
+      );
 
       if (signInTime.diff(startTime, "hours") < -1) {
         hasSignInError = true;
@@ -158,6 +162,10 @@ class HoursCard extends Component {
       if (signInTime.isAfter(signOutTime)) {
         hasSignOutError = true;
         signOutErrorMessage = "Before sign in";
+      }
+      if (signOutTime.isAfter(maxOvertimeMoment)) {
+        hasSignOutError = true;
+        signOutErrorMessage = "Max overtime exceeded";
       }
 
       coaches[userID] = {
@@ -192,6 +200,10 @@ class HoursCard extends Component {
         const signInMoment = moment(coachInfo.hours.times.signIn);
         const signOutMoment = moment(coachInfo.hours.times.signOut);
         const startMoment = moment(eventInfo.requiredInfo.times.start);
+        const maxOvertimeMoment = moment(eventInfo.requiredInfo.times.end).add(
+          paymentDefaults.maxOvertimeHours,
+          "hours"
+        );
 
         if (signInMoment.diff(startMoment, "hours") < -1) {
           hasSignInError = true;
@@ -200,6 +212,10 @@ class HoursCard extends Component {
         if (signInMoment.isAfter(signOutMoment)) {
           hasSignOutError = true;
           signOutErrorMessage = "Before sign in";
+        }
+        if (signOutMoment.isAfter(maxOvertimeMoment)) {
+          hasSignOutError = true;
+          signOutErrorMessage = "Max overtime exceeded";
         }
 
         coaches[coachID] = {
@@ -229,7 +245,7 @@ class HoursCard extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { eventInfo, role, userID } = nextProps;
+    const { eventInfo, role, userID, paymentDefaults } = nextProps;
 
     if (
       eventInfo !== this.props.eventInfo ||
@@ -248,6 +264,10 @@ class HoursCard extends Component {
           eventInfo.coaches[userID].hours.times.signOut
         );
         const startTime = moment(eventInfo.requiredInfo.times.start);
+        const maxOvertimeMoment = moment(eventInfo.requiredInfo.times.end).add(
+          paymentDefaults.maxOvertimeHours,
+          "hours"
+        );
 
         if (signInTime.diff(startTime, "hours") < -1) {
           hasSignInError = true;
@@ -256,6 +276,10 @@ class HoursCard extends Component {
         if (signInTime.isAfter(signOutTime)) {
           hasSignOutError = true;
           signOutErrorMessage = "Before sign in";
+        }
+        if (signOutTime.isAfter(maxOvertimeMoment)) {
+          hasSignOutError = true;
+          signOutErrorMessage = "Max overtime exceeded";
         }
 
         coaches[userID] = {
@@ -286,6 +310,9 @@ class HoursCard extends Component {
           const signInTime = moment(coachInfo.hours.times.signIn);
           const signOutTime = moment(coachInfo.hours.times.signOut);
           const startTime = moment(eventInfo.requiredInfo.times.start);
+          const maxOvertimeMoment = moment(
+            eventInfo.requiredInfo.times.end
+          ).add(paymentDefaults.maxOvertimeHours, "hours");
 
           if (signInTime.diff(startTime, "hours") < -1) {
             hasSignInError = true;
@@ -294,6 +321,10 @@ class HoursCard extends Component {
           if (signInTime.isAfter(signOutTime)) {
             hasSignOutError = true;
             signOutErrorMessage = "Before sign in";
+          }
+          if (signOutTime.isAfter(maxOvertimeMoment)) {
+            hasSignOutError = true;
+            signOutErrorMessage = "Max overtime exceeded";
           }
 
           coaches[coachID] = {
@@ -321,7 +352,7 @@ class HoursCard extends Component {
 
   updateCoachHours(eventID, coachID, signInTime, signOutTime, status) {
     const { coaches } = this.state;
-    const { eventInfo } = this.props;
+    const { eventInfo, paymentDefaults } = this.props;
 
     let hasSignInError = false;
     let signInErrorMessage = "";
@@ -331,6 +362,10 @@ class HoursCard extends Component {
     const signInMoment = moment(signInTime);
     const signOutMoment = moment(signOutTime);
     const startMoment = moment(eventInfo.requiredInfo.times.start);
+    const maxOvertimeMoment = moment(eventInfo.requiredInfo.times.end).add(
+      paymentDefaults.maxOvertimeHours,
+      "hours"
+    );
 
     if (signInMoment.diff(startMoment, "hours") < -1) {
       hasSignInError = true;
@@ -339,6 +374,10 @@ class HoursCard extends Component {
     if (signInMoment.isAfter(signOutMoment)) {
       hasSignOutError = true;
       signOutErrorMessage = "Before sign in";
+    }
+    if (signOutMoment.isAfter(maxOvertimeMoment)) {
+      hasSignOutError = true;
+      signOutErrorMessage = "Max overtime exceeded";
     }
 
     this.setState({
@@ -478,7 +517,10 @@ class HoursCard extends Component {
                   disabled={errors.signIn.hasError}
                   onClick={() => {
                     const currentTime = moment();
-                    if (currentTime.isAfter(eventInfo.requiredInfo.times.end)) {
+                    const endOfEventDay = moment(
+                      eventInfo.requiredInfo.times.end
+                    ).endOf("day");
+                    if (currentTime.isAfter(endOfEventDay)) {
                       signOut(
                         eventID,
                         userID,
@@ -819,9 +861,10 @@ class HoursCard extends Component {
                     disabled={errors.signIn.hasError}
                     onClick={() => {
                       const currentTime = moment();
-                      if (
-                        currentTime.isAfter(eventInfo.requiredInfo.times.end)
-                      ) {
+                      const endOfEventDay = moment(
+                        eventInfo.requiredInfo.times.end
+                      ).endOf("day");
+                      if (currentTime.isAfter(endOfEventDay)) {
                         signOut(
                           eventID,
                           coachID,
@@ -886,13 +929,16 @@ class HoursCard extends Component {
                           "AWAITING_APPROVAL"
                         );
                       }}
-                      onBlur={() =>
-                        signIn(
-                          eventID,
-                          coachID,
-                          signInTime,
-                          "AWAITING_APPROVAL"
-                        )}
+                      onBlur={() => {
+                        if (!errors.signIn.hasError) {
+                          signIn(
+                            eventID,
+                            coachID,
+                            signInTime,
+                            "AWAITING_APPROVAL"
+                          );
+                        }
+                      }}
                       className={classes.time}
                       error={errors.signIn.hasError}
                       helperText={errors.signIn.message}
@@ -924,13 +970,16 @@ class HoursCard extends Component {
                           "AWAITING_APPROVAL"
                         );
                       }}
-                      onBlur={() =>
-                        signOut(
-                          eventID,
-                          coachID,
-                          signOutTime,
-                          "AWAITING_APPROVAL"
-                        )}
+                      onBlur={() => {
+                        if (!errors.signIn.hasError) {
+                          signOut(
+                            eventID,
+                            coachID,
+                            signOutTime,
+                            "AWAITING_APPROVAL"
+                          );
+                        }
+                      }}
                       className={classes.time}
                       error={errors.signOut.hasError}
                       helperText={errors.signOut.message}
@@ -948,7 +997,7 @@ class HoursCard extends Component {
                     raised
                     className={classes.approveButton}
                     disabled={errors.signIn.hasError || errors.signOut.hasError}
-                    onClick={() =>
+                    onClick={() => {
                       approveHours(
                         institutionID,
                         eventID,
@@ -959,7 +1008,11 @@ class HoursCard extends Component {
                         moment(signInTime),
                         moment(signOutTime),
                         paymentDefaults.maxOvertimeHours
-                      )}
+                      );
+                      this.setState({
+                        isOpen: false
+                      });
+                    }}
                   >
                     <ApproveIcon /> Approve
                   </Button>

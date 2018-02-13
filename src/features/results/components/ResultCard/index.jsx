@@ -47,6 +47,22 @@ class ResultCard extends Component {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { eventInfo } = nextProps;
+
+    if (eventInfo !== this.props.eventInfo) {
+      let isOpen = false;
+      _.toPairs(eventInfo.teams).map(([teamID, teamInfo]) => {
+        if (teamInfo.resultsStatus !== "FINALISED") {
+          isOpen = true;
+        }
+      });
+      this.setState({
+        isOpen
+      });
+    }
+  }
+
   renderCardContent() {
     const {
       eventInfo,
