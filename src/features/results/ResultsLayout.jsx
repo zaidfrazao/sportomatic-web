@@ -135,8 +135,7 @@ class ResultsLayout extends Component {
     const { teamID } = this.props.match.params;
     const {
       loadTeams,
-      loadCoaches,
-      loadManagers,
+      loadStaff,
       loadEventsByDate,
       fetchInstitutionEmblem,
       loadEventsByTeam
@@ -144,8 +143,7 @@ class ResultsLayout extends Component {
 
     if (activeInstitutionID !== "") {
       loadTeams(activeInstitutionID);
-      loadCoaches(activeInstitutionID);
-      loadManagers(activeInstitutionID);
+      loadStaff(activeInstitutionID);
       loadEventsByDate(activeInstitutionID);
       fetchInstitutionEmblem(activeInstitutionID);
       if (teamID) {
@@ -159,8 +157,7 @@ class ResultsLayout extends Component {
     const { teamID } = nextProps.match.params;
     const {
       loadTeams,
-      loadCoaches,
-      loadManagers,
+      loadStaff,
       loadEventsByDate,
       loadEventsByTeam,
       fetchInstitutionEmblem
@@ -179,8 +176,7 @@ class ResultsLayout extends Component {
       activeInstitutionID !== ""
     ) {
       loadTeams(activeInstitutionID);
-      loadCoaches(activeInstitutionID);
-      loadManagers(activeInstitutionID);
+      loadStaff(activeInstitutionID);
       loadEventsByDate(activeInstitutionID);
       fetchInstitutionEmblem(activeInstitutionID);
       if (teamID) {
@@ -243,8 +239,7 @@ class ResultsLayout extends Component {
     const {
       isTeamsLoading,
       isEventsByDateLoading,
-      isManagersLoading,
-      isCoachesLoading
+      isStaffLoading
     } = this.props.loadingStatus;
     const {
       loadEventsByDate,
@@ -253,12 +248,7 @@ class ResultsLayout extends Component {
       editResult
     } = this.props.actions;
 
-    if (
-      isTeamsLoading ||
-      isCoachesLoading ||
-      isManagersLoading ||
-      activeInstitutionID === ""
-    ) {
+    if (isTeamsLoading || isStaffLoading || activeInstitutionID === "") {
       return (
         <div className={classes.loaderWrapper}>
           <CircularProgress />
@@ -395,20 +385,11 @@ class ResultsLayout extends Component {
   renderLogs() {
     const { showAllTeams } = this.state;
     const { classes, activeInstitutionID, role } = this.props;
-    const {
-      isTeamsLoading,
-      isCoachesLoading,
-      isManagersLoading
-    } = this.props.loadingStatus;
+    const { isTeamsLoading, isStaffLoading } = this.props.loadingStatus;
 
     const ad = this.createAd();
 
-    if (
-      isTeamsLoading ||
-      isCoachesLoading ||
-      isManagersLoading ||
-      activeInstitutionID === ""
-    ) {
+    if (isTeamsLoading || isStaffLoading || activeInstitutionID === "") {
       return (
         <div>
           <div className={classes.adWrapper}>{ad}</div>
@@ -480,7 +461,7 @@ class ResultsLayout extends Component {
       searchText,
       showDeletedTeams
     } = this.props.filters;
-    const { teams, coaches, managers, userID, role } = this.props;
+    const { teams, staff, userID, role } = this.props;
     const { showAllTeams } = this.state;
 
     return _.fromPairs(
@@ -502,15 +483,15 @@ class ResultsLayout extends Component {
 
           teamCoaches.map(coachID => {
             const coachName = `${_.toLower(
-              coaches[coachID].info.name
-            )} ${_.toLower(coaches[coachID].info.surname)}`;
+              staff[coachID].info.name
+            )} ${_.toLower(staff[coachID].info.surname)}`;
             coachMatch =
               coachMatch && coachName.includes(_.toLower(searchText));
           });
           teamManagers.map(managerID => {
             const managerName = `${_.toLower(
-              managers[managerID].info.name
-            )} ${_.toLower(managers[managerID].info.surname)}`;
+              staff[managerID].info.name
+            )} ${_.toLower(staff[managerID].info.surname)}`;
             managerMatch =
               managerMatch && managerName.includes(_.toLower(searchText));
           });
