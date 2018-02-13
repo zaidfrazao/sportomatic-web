@@ -933,7 +933,6 @@ class ManageInstitutionsDialog extends Component {
                 inputComponent={TextMaskCustom}
                 onChange={e => this.updateField(e.target.value, "phoneNumber")}
                 onBlur={e => this.validateField(e.target.value, "phoneNumber")}
-                className={classes.input}
                 inputProps={{
                   "aria-label": "phone number"
                 }}

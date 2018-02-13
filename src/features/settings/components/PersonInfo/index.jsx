@@ -670,7 +670,6 @@ class PersonInfo extends Component {
                           this.updateField(e.target.value, "phoneNumber")}
                         onBlur={e =>
                           this.validateField(e.target.value, "phoneNumber")}
-                        className={classes.input}
                         inputProps={{
                           "aria-label": "phone number"
                         }}

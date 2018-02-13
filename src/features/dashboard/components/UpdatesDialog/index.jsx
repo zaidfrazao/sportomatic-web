@@ -28,14 +28,6 @@ class UpdatesDialog extends Component {
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">
-              New Features
-            </Typography>
-            <Typography type="body1" component="ul">
-              <li>
-                Allow institution admins to accept and reject new members.
-              </li>
-            </Typography>
-            <Typography type="subheading" component="h3">
               Bug Fixes
             </Typography>
             <Typography type="body1" component="ul">
@@ -58,6 +50,7 @@ class UpdatesDialog extends Component {
               <li>
                 Fix crash caused by switching institutions. (Issue #111, #113)
               </li>
+              <li>Fix blank phone number field. (Issue #107)</li>
             </Typography>
             <Typography type="subheading" component="h3">
               Minor Changes
