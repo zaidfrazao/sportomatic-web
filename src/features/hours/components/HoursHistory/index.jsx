@@ -75,6 +75,10 @@ const styles = theme => ({
     height: "100%",
     display: "flex",
     flexDirection: "column"
+  },
+  totals: {
+    color: grey[800],
+    fontWeight: "bold"
   }
 });
 
@@ -234,7 +238,7 @@ class HoursHistory extends Component {
             )}
           </TableBody>
           <TableFooter>
-            <TableRow>
+            <TableRow className={classes.totals}>
               <TableCell>TOTAL</TableCell>
               <TableCell numeric>{totalHoursLogged}</TableCell>
             </TableRow>
@@ -303,7 +307,7 @@ class HoursHistory extends Component {
             )}
           </TableBody>
           <TableFooter>
-            <TableRow>
+            <TableRow className={classes.totals}>
               <TableCell>TOTAL</TableCell>
               <TableCell />
               <TableCell />
@@ -376,7 +380,7 @@ class HoursHistory extends Component {
             )}
           </TableBody>
           <TableFooter>
-            <TableRow>
+            <TableRow className={classes.totals}>
               <TableCell>TOTAL</TableCell>
               <TableCell />
               <TableCell />

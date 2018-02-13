@@ -63,6 +63,10 @@ const styles = theme => ({
     height: "100%",
     display: "flex",
     flexDirection: "column"
+  },
+  totals: {
+    color: grey[800],
+    fontWeight: "bold"
   }
 });
 
@@ -193,7 +197,7 @@ class WageHistory extends Component {
             )}
           </TableBody>
           <TableFooter>
-            <TableRow>
+            <TableRow className={classes.totals}>
               <TableCell>TOTAL</TableCell>
               <TableCell numeric>
                 {accounting.formatMoney(totalWages, "R")}
@@ -238,7 +242,7 @@ class WageHistory extends Component {
             )}
           </TableBody>
           <TableFooter>
-            <TableRow>
+            <TableRow className={classes.totals}>
               <TableCell>TOTAL</TableCell>
               <TableCell numeric>{totalStandardHours}</TableCell>
               <TableCell numeric>{totalOvertimeHours}</TableCell>
@@ -287,7 +291,7 @@ class WageHistory extends Component {
             )}
           </TableBody>
           <TableFooter>
-            <TableRow>
+            <TableRow className={classes.totals}>
               <TableCell>TOTAL</TableCell>
               <TableCell />
               <TableCell numeric>{totalStandardHours}</TableCell>
