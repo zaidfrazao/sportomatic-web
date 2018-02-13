@@ -43,6 +43,7 @@ class UpdatesDialog extends Component {
                 Fix minimum date on hours and wages tables to be in line with
                 the institution's creation date. (Issue #28)
               </li>
+              <li>Make table totals clearer. (Issue #52)</li>
             </Typography>
           </div>
           <Typography type="title" component="h2">
