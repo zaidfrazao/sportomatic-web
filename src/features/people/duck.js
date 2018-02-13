@@ -247,10 +247,7 @@ function teamsReducer(state = {}, action = {}) {
     case SIGN_OUT:
       return {};
     case RECEIVE_TEAMS:
-      return {
-        ...state,
-        ...action.payload.teams
-      };
+      return action.payload.teams;
     default:
       return state;
   }

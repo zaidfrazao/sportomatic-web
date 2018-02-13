@@ -23,9 +23,6 @@ export const ERROR_LOADING_UPCOMING_EVENTS = `${NAMESPACE}/ERROR_LOADING_UPCOMIN
 export const REQUEST_PAST_EVENTS = `${NAMESPACE}/REQUEST_PAST_EVENTS`;
 export const RECEIVE_PAST_EVENTS = `${NAMESPACE}/RECEIVE_PAST_EVENTS`;
 export const ERROR_LOADING_PAST_EVENTS = `${NAMESPACE}/ERROR_LOADING_PAST_EVENTS`;
-export const REQUEST_CURRENT_EVENTS = `${NAMESPACE}/REQUEST_CURRENT_EVENTS`;
-export const RECEIVE_CURRENT_EVENTS = `${NAMESPACE}/RECEIVE_CURRENT_EVENTS`;
-export const ERROR_LOADING_CURRENT_EVENTS = `${NAMESPACE}/ERROR_LOADING_CURRENT_EVENTS`;
 export const REQUEST_RECENT_WAGES = `${NAMESPACE}/REQUEST_RECENT_WAGES`;
 export const RECEIVE_RECENT_WAGES = `${NAMESPACE}/RECEIVE_RECENT_WAGES`;
 export const ERROR_LOADING_RECENT_WAGES = `${NAMESPACE}/ERROR_LOADING_RECENT_WAGES`;
@@ -100,7 +97,6 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 export const loadingStatusInitialState = {
   isUpcomingEventsLoading: false,
   isPastEventsLoading: false,
-  isCurrentEventsLoading: false,
   isRecentWagesLoading: false,
   isStaffLoading: false,
   isTeamsLoading: false
@@ -132,17 +128,6 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isUpcomingEventsLoading: false
-      };
-    case REQUEST_CURRENT_EVENTS:
-      return {
-        ...state,
-        isCurrentEventsLoading: true
-      };
-    case RECEIVE_CURRENT_EVENTS:
-    case ERROR_LOADING_CURRENT_EVENTS:
-      return {
-        ...state,
-        isCurrentEventsLoading: false
       };
     case REQUEST_RECENT_WAGES:
       return {
@@ -247,19 +232,6 @@ function pastEventsReducer(state = {}, action = {}) {
   }
 }
 
-function currentEventsReducer(state = {}, action = {}) {
-  switch (action.type) {
-    case RESET_STATE:
-    case REQUEST_CURRENT_EVENTS:
-    case SIGN_OUT:
-      return {};
-    case RECEIVE_CURRENT_EVENTS:
-      return action.payload.events;
-    default:
-      return state;
-  }
-}
-
 export const dashboardReducer = combineReducers({
   uiConfig: uiConfigReducer,
   dialogs: dialogsReducer,
@@ -268,8 +240,7 @@ export const dashboardReducer = combineReducers({
   staff: staffReducer,
   teams: teamsReducer,
   upcomingEvents: upcomingEventsReducer,
-  pastEvents: pastEventsReducer,
-  currentEvents: currentEventsReducer
+  pastEvents: pastEventsReducer
 });
 
 // Selectors
@@ -282,7 +253,6 @@ const teams = state => state.dashboard.teams;
 const recentWages = state => state.dashboard.recentWages;
 const upcomingEvents = state => state.dashboard.upcomingEvents;
 const pastEvents = state => state.dashboard.pastEvents;
-const currentEvents = state => state.dashboard.currentEvents;
 
 export const selector = createStructuredSelector({
   uiConfig,
@@ -292,8 +262,7 @@ export const selector = createStructuredSelector({
   teams,
   recentWages,
   upcomingEvents,
-  pastEvents,
-  currentEvents
+  pastEvents
 });
 
 // Action Creators
@@ -610,57 +579,6 @@ export function loadUpcomingEvents(institutionID, userID = "", role = "admin") {
         events[doc.id] = doc.data();
       });
       dispatch(receiveUpcomingEvents(events));
-    });
-  };
-}
-
-export function requestCurrentEvents() {
-  return {
-    type: REQUEST_CURRENT_EVENTS
-  };
-}
-
-export function receiveCurrentEvents(events) {
-  return {
-    type: RECEIVE_CURRENT_EVENTS,
-    payload: {
-      events
-    }
-  };
-}
-
-export function errorLoadingCurrentEvents(error: {
-  code: string,
-  message: string
-}) {
-  return {
-    type: ERROR_LOADING_CURRENT_EVENTS,
-    payload: {
-      error
-    }
-  };
-}
-
-export function loadCurrentEvents(institutionID, userID = "", role = "admin") {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestCurrentEvents());
-
-    const currentTime = moment().toDate();
-
-    let eventsRef = {};
-    eventsRef = firebase
-      .firestore()
-      .collection("events")
-      .where("institutionID", "==", institutionID)
-      .where("requiredInfo.times.start", "<=", currentTime)
-      .where("requiredInfo.times.end", ">=", currentTime);
-
-    return eventsRef.onSnapshot(querySnapshot => {
-      let events = {};
-      querySnapshot.forEach(doc => {
-        events[doc.id] = doc.data();
-      });
-      dispatch(receiveCurrentEvents(events));
     });
   };
 }

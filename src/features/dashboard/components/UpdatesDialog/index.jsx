@@ -40,10 +40,7 @@ class UpdatesDialog extends Component {
               Bug Fixes
             </Typography>
             <Typography type="body1" component="ul">
-              <li>
-                Give "Mark absent" button on hours cards relevant functionality.
-                (Issue #12)
-              </li>
+              <li>Fix "Load more..." buttons. (Issue #114)</li>
             </Typography>
             <Typography type="subheading" component="h3">
               Minor Changes

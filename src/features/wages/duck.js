@@ -115,7 +115,6 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 function wagesByDateReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
-    case REQUEST_WAGES_BY_DATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_WAGES_BY_DATE:

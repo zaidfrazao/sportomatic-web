@@ -95,9 +95,15 @@ class TeamsLayout extends Component {
   componentWillReceiveProps(nextProps) {
     const { activeInstitutionID, teams } = nextProps;
     const { teamID } = nextProps.match.params;
-    const { loadTeams, loadStaff, loadEventsByTeam } = nextProps.actions;
+    const {
+      loadTeams,
+      loadStaff,
+      loadEventsByTeam,
+      resetState
+    } = nextProps.actions;
 
     if (activeInstitutionID !== this.props.activeInstitutionID) {
+      resetState();
       loadTeams(activeInstitutionID);
       loadStaff(activeInstitutionID);
 
@@ -318,16 +324,24 @@ class TeamsLayout extends Component {
 
     const coaches = _.fromPairs(
       _.toPairs(staff).filter(([id, info]) => {
-        return (
-          info.institutions[activeInstitutionID].roles.coach === "APPROVED"
-        );
+        if (info.institutions[activeInstitutionID]) {
+          return (
+            info.institutions[activeInstitutionID].roles.coach === "APPROVED"
+          );
+        } else {
+          return false;
+        }
       })
     );
     const managers = _.fromPairs(
       _.toPairs(staff).filter(([id, info]) => {
-        return (
-          info.institutions[activeInstitutionID].roles.manager === "APPROVED"
-        );
+        if (info.institutions[activeInstitutionID]) {
+          return (
+            info.institutions[activeInstitutionID].roles.manager === "APPROVED"
+          );
+        } else {
+          return false;
+        }
       })
     );
 

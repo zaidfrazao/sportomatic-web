@@ -172,12 +172,13 @@ class HoursLayout extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { activeInstitutionID } = nextProps;
-    const { loadStaff, loadEventsByDate } = nextProps.actions;
+    const { loadStaff, loadEventsByDate, resetState } = nextProps.actions;
 
     if (
       activeInstitutionID !== this.props.activeInstitutionID &&
       activeInstitutionID !== ""
     ) {
+      resetState();
       loadStaff(activeInstitutionID);
       loadEventsByDate(activeInstitutionID);
     }

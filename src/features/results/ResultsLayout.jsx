@@ -160,7 +160,8 @@ class ResultsLayout extends Component {
       loadStaff,
       loadEventsByDate,
       loadEventsByTeam,
-      fetchInstitutionEmblem
+      fetchInstitutionEmblem,
+      resetState
     } = nextProps.actions;
 
     if (
@@ -175,6 +176,7 @@ class ResultsLayout extends Component {
       activeInstitutionID !== this.props.activeInstitutionID &&
       activeInstitutionID !== ""
     ) {
+      resetState();
       loadTeams(activeInstitutionID);
       loadStaff(activeInstitutionID);
       loadEventsByDate(activeInstitutionID);

@@ -65,7 +65,7 @@ export const CLOSE_REPLACEMENT_COACH_REMOVAL_MODAL = `${NAMESPACE}/CLOSE_REPLACE
 export const REQUEST_REPLACEMENT_COACH_REMOVAL = `${NAMESPACE}/REQUEST_REPLACEMENT_COACH_REMOVAL`;
 export const RECEIVE_REPLACEMENT_COACH_REMOVAL = `${NAMESPACE}/RECEIVE_REPLACEMENT_COACH_REMOVAL`;
 export const ERROR_REMOVING_REPLACEMENT_COACH = `${NAMESPACE}/ERROR_REMOVING_REPLACEMENT_COACH`;
-export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
+export const RESET_SCHEDULE_STATE = `${NAMESPACE}/RESET_SCHEDULE_STATE`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -81,7 +81,7 @@ export const uiConfigInitialState = {
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
-    case RESET_STATE:
+    case RESET_SCHEDULE_STATE:
     case SIGN_OUT:
       return uiConfigInitialState;
     case OPEN_MARK_ABSENT_MODAL:
@@ -151,7 +151,7 @@ export const dialogsInitialState = {
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
   switch (action.type) {
-    case RESET_STATE:
+    case RESET_SCHEDULE_STATE:
     case SIGN_OUT:
       return dialogsInitialState;
     case OPEN_REPLACEMENT_COACH_REMOVAL_MODAL:
@@ -278,7 +278,7 @@ export const filtersInitialState = {
 
 function filterReducer(state = filtersInitialState, action = {}) {
   switch (action.type) {
-    case RESET_STATE:
+    case RESET_SCHEDULE_STATE:
     case SIGN_OUT:
       return filtersInitialState;
     case APPLY_FILTERS:
@@ -307,7 +307,7 @@ export const loadingStatusInitialState = {
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
-    case RESET_STATE:
+    case RESET_SCHEDULE_STATE:
     case SIGN_OUT:
       return loadingStatusInitialState;
     case REQUEST_ADD_EVENT:
@@ -395,7 +395,7 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 
 function eventsReducer(state = {}, action = {}) {
   switch (action.type) {
-    case RESET_STATE:
+    case RESET_SCHEDULE_STATE:
     case REQUEST_EVENTS:
     case SIGN_OUT:
       return {};
@@ -408,7 +408,7 @@ function eventsReducer(state = {}, action = {}) {
 
 function staffReducer(state = {}, action = {}) {
   switch (action.type) {
-    case RESET_STATE:
+    case RESET_SCHEDULE_STATE:
     case REQUEST_STAFF:
     case SIGN_OUT:
       return {};
@@ -421,7 +421,7 @@ function staffReducer(state = {}, action = {}) {
 
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
-    case RESET_STATE:
+    case RESET_SCHEDULE_STATE:
     case REQUEST_TEAMS:
     case SIGN_OUT:
       return {};
@@ -466,7 +466,7 @@ export const selector = createStructuredSelector({
 
 export function resetState() {
   return {
-    type: RESET_STATE
+    type: RESET_SCHEDULE_STATE
   };
 }
 
@@ -641,9 +641,12 @@ export function closeAddEventDialog() {
   };
 }
 
-export function requestEvents() {
+export function requestEvents(institutionID) {
   return {
-    type: REQUEST_EVENTS
+    type: REQUEST_EVENTS,
+    payload: {
+      institutionID
+    }
   };
 }
 
@@ -909,16 +912,20 @@ export function editEvent(
   };
 }
 
-export function requestStaff() {
+export function requestStaff(institutionID) {
   return {
-    type: REQUEST_STAFF
+    type: REQUEST_STAFF,
+    payload: {
+      institutionID
+    }
   };
 }
 
-export function receiveStaff(staff) {
+export function receiveStaff(institutionID, staff) {
   return {
     type: RECEIVE_STAFF,
     payload: {
+      institutionID,
       staff
     }
   };
@@ -935,7 +942,7 @@ export function errorLoadingStaff(error: { code: string, message: string }) {
 
 export function loadStaff(institutionID) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestStaff());
+    dispatch(requestStaff(institutionID));
 
     const staffRef = firebase
       .firestore()
@@ -947,14 +954,17 @@ export function loadStaff(institutionID) {
       querySnapshot.forEach(doc => {
         staff[doc.id] = doc.data();
       });
-      dispatch(receiveStaff(staff));
+      dispatch(receiveStaff(institutionID, staff));
     });
   };
 }
 
-export function requestTeams() {
+export function requestTeams(institutionID) {
   return {
-    type: REQUEST_TEAMS
+    type: REQUEST_TEAMS,
+    payload: {
+      institutionID
+    }
   };
 }
 
@@ -978,7 +988,7 @@ export function errorLoadingTeams(error: { code: string, message: string }) {
 
 export function loadTeams(institutionID) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestTeams());
+    dispatch(requestTeams(institutionID));
 
     const teamsRef = firebase
       .firestore()

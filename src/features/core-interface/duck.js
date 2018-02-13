@@ -160,7 +160,7 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 }
 
 export const loadingStatusInitialState = {
-  isNotificationsLoading: false,
+  isReadNotificationsLoading: false,
   isAccountInfoLoading: false,
   isInstitutionsLoading: false,
   isInstitutionCreationLoading: false,
@@ -248,6 +248,7 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 function unreadNotificationsReducer(state = [], action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_UNREAD_NOTIFICATIONS:
     case SIGN_OUT:
       return [];
     case RECEIVE_UNREAD_NOTIFICATIONS:
@@ -260,6 +261,7 @@ function unreadNotificationsReducer(state = [], action = {}) {
 function readNotificationsReducer(state = [], action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_READ_NOTIFICATIONS:
     case SIGN_OUT:
       return [];
     case RECEIVE_READ_NOTIFICATIONS:
@@ -287,6 +289,7 @@ function institutionsReducer(state = {}, action = {}) {
 function verifiedInstitutionsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_VERIFIED_INSTITUTIONS:
     case SIGN_OUT:
       return {};
     case RECEIVE_VERIFIED_INSTITUTIONS:

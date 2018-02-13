@@ -123,7 +123,6 @@ class DashboardLayout extends Component {
       loadTeams,
       loadUpcomingEvents,
       loadPastEvents
-      // loadCurrentEvents
     } = this.props.actions;
 
     if (activeInstitutionID && activeInstitutionID !== "" && userID !== "") {
@@ -131,7 +130,6 @@ class DashboardLayout extends Component {
       loadTeams(activeInstitutionID);
       loadUpcomingEvents(activeInstitutionID);
       loadPastEvents(activeInstitutionID);
-      // loadCurrentEvents(activeInstitutionID);
       if (role === "admin") {
         loadRecentWages(activeInstitutionID);
       } else if (role === "coach") {
@@ -147,8 +145,8 @@ class DashboardLayout extends Component {
       loadStaff,
       loadTeams,
       loadUpcomingEvents,
-      loadPastEvents
-      // loadCurrentEvents
+      loadPastEvents,
+      resetState
     } = nextProps.actions;
 
     if (
@@ -156,11 +154,11 @@ class DashboardLayout extends Component {
       activeInstitutionID &&
       activeInstitutionID !== ""
     ) {
+      resetState();
       loadStaff(activeInstitutionID);
       loadTeams(activeInstitutionID);
       loadUpcomingEvents(activeInstitutionID);
       loadPastEvents(activeInstitutionID);
-      // loadCurrentEvents(activeInstitutionID);
       if (role === "admin") {
         loadRecentWages(activeInstitutionID);
       } else if (role === "coach") {

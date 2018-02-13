@@ -121,12 +121,13 @@ class WagesLayout extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { activeInstitutionID } = nextProps;
-    const { loadStaff, loadWagesByDate } = nextProps.actions;
+    const { loadStaff, loadWagesByDate, resetState } = nextProps.actions;
 
     if (
       activeInstitutionID !== this.props.activeInstitutionID &&
       activeInstitutionID !== ""
     ) {
+      resetState();
       loadStaff(activeInstitutionID);
       loadWagesByDate(activeInstitutionID);
     }

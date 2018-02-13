@@ -123,7 +123,8 @@ class PeopleLayout extends Component {
       loadStaffRequests,
       loadTeams,
       loadEventsByCoach,
-      loadEventsByManager
+      loadEventsByManager,
+      resetState
     } = nextProps.actions;
 
     let sports = this.state.sports;
@@ -142,6 +143,7 @@ class PeopleLayout extends Component {
       activeInstitutionID !== this.props.activeInstitutionID &&
       activeInstitutionID !== ""
     ) {
+      resetState();
       loadStaff(activeInstitutionID);
       loadStaffRequests(activeInstitutionID);
       loadTeams(activeInstitutionID);
@@ -252,63 +254,72 @@ class PeopleLayout extends Component {
 
     return _.values(
       _.mapValues(staff, (value, key) => {
-        let type = "";
-        if (
-          value.institutions[activeInstitutionID].roles.admin === "APPROVED"
-        ) {
-          type = "Admin";
+        if (value.institutions[activeInstitutionID]) {
+          let type = "";
+          if (
+            value.institutions[activeInstitutionID].roles.admin === "APPROVED"
+          ) {
+            type = "Admin";
+          }
+          if (
+            value.institutions[activeInstitutionID].roles.manager === "APPROVED"
+          ) {
+            type = "Manager";
+          }
+          if (
+            value.institutions[activeInstitutionID].roles.coach === "APPROVED"
+          ) {
+            type = "Coach";
+          }
+          if (
+            value.institutions[activeInstitutionID].roles.admin ===
+              "APPROVED" &&
+            value.institutions[activeInstitutionID].roles.coach === "APPROVED"
+          ) {
+            type = "Admin / Coach";
+          }
+          if (
+            value.institutions[activeInstitutionID].roles.coach ===
+              "APPROVED" &&
+            value.institutions[activeInstitutionID].roles.manager === "APPROVED"
+          ) {
+            type = "Manager / Coach";
+          }
+          if (
+            value.institutions[activeInstitutionID].roles.admin ===
+              "APPROVED" &&
+            value.institutions[activeInstitutionID].roles.manager === "APPROVED"
+          ) {
+            type = "Admin / Manager";
+          }
+          if (
+            value.institutions[activeInstitutionID].roles.admin ===
+              "APPROVED" &&
+            value.institutions[activeInstitutionID].roles.coach ===
+              "APPROVED" &&
+            value.institutions[activeInstitutionID].roles.manager === "APPROVED"
+          ) {
+            type = "Admin / Coach / Manager";
+          }
+          return {
+            ...value,
+            id: key,
+            name: value.info.name,
+            surname: value.info.surname,
+            profilePictureURL: value.info.profilePictureURL,
+            type: type
+          };
         }
-        if (
-          value.institutions[activeInstitutionID].roles.manager === "APPROVED"
-        ) {
-          type = "Manager";
-        }
-        if (
-          value.institutions[activeInstitutionID].roles.coach === "APPROVED"
-        ) {
-          type = "Coach";
-        }
-        if (
-          value.institutions[activeInstitutionID].roles.admin === "APPROVED" &&
-          value.institutions[activeInstitutionID].roles.coach === "APPROVED"
-        ) {
-          type = "Admin / Coach";
-        }
-        if (
-          value.institutions[activeInstitutionID].roles.coach === "APPROVED" &&
-          value.institutions[activeInstitutionID].roles.manager === "APPROVED"
-        ) {
-          type = "Manager / Coach";
-        }
-        if (
-          value.institutions[activeInstitutionID].roles.admin === "APPROVED" &&
-          value.institutions[activeInstitutionID].roles.manager === "APPROVED"
-        ) {
-          type = "Admin / Manager";
-        }
-        if (
-          value.institutions[activeInstitutionID].roles.admin === "APPROVED" &&
-          value.institutions[activeInstitutionID].roles.coach === "APPROVED" &&
-          value.institutions[activeInstitutionID].roles.manager === "APPROVED"
-        ) {
-          type = "Admin / Coach / Manager";
-        }
-        return {
-          ...value,
-          id: key,
-          name: value.info.name,
-          surname: value.info.surname,
-          profilePictureURL: value.info.profilePictureURL,
-          type: type
-        };
       })
-    ).sort((personA, personB) => {
-      if (personA.info.name > personB.info.name) return +1;
-      if (personA.info.name < personB.info.name) return -1;
-      if (personA.info.surname > personB.info.surname) return +1;
-      if (personA.info.surname < personB.info.surname) return -1;
-      return 0;
-    });
+    )
+      .filter(person => person !== undefined)
+      .sort((personA, personB) => {
+        if (personA.info.name > personB.info.name) return +1;
+        if (personA.info.name < personB.info.name) return -1;
+        if (personA.info.surname > personB.info.surname) return +1;
+        if (personA.info.surname < personB.info.surname) return -1;
+        return 0;
+      });
   }
 
   getRequestsCardsInfo(requests) {
