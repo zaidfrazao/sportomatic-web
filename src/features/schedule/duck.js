@@ -396,6 +396,7 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 function eventsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_EVENTS:
     case SIGN_OUT:
       return {};
     case RECEIVE_EVENTS:
@@ -408,6 +409,7 @@ function eventsReducer(state = {}, action = {}) {
 function staffReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_STAFF:
     case SIGN_OUT:
       return {};
     case RECEIVE_STAFF:
@@ -420,6 +422,7 @@ function staffReducer(state = {}, action = {}) {
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_TEAMS:
     case SIGN_OUT:
       return {};
     case RECEIVE_TEAMS:

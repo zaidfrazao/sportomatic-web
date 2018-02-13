@@ -185,6 +185,7 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 function staffReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_STAFF:
     case SIGN_OUT:
       return {};
     case RECEIVE_STAFF:
@@ -197,6 +198,7 @@ function staffReducer(state = {}, action = {}) {
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_TEAMS:
     case SIGN_OUT:
       return {};
     case RECEIVE_TEAMS:
@@ -209,6 +211,7 @@ function teamsReducer(state = {}, action = {}) {
 function recentWagesReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_RECENT_WAGES:
     case SIGN_OUT:
       return {};
     case RECEIVE_RECENT_WAGES:
@@ -221,6 +224,7 @@ function recentWagesReducer(state = {}, action = {}) {
 function upcomingEventsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_UPCOMING_EVENTS:
     case SIGN_OUT:
       return {};
     case RECEIVE_UPCOMING_EVENTS:
@@ -233,6 +237,7 @@ function upcomingEventsReducer(state = {}, action = {}) {
 function pastEventsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_PAST_EVENTS:
     case SIGN_OUT:
       return {};
     case RECEIVE_PAST_EVENTS:
@@ -245,6 +250,7 @@ function pastEventsReducer(state = {}, action = {}) {
 function currentEventsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_CURRENT_EVENTS:
     case SIGN_OUT:
       return {};
     case RECEIVE_CURRENT_EVENTS:

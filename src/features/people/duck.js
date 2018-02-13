@@ -217,6 +217,7 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 function staffReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_STAFF:
     case SIGN_OUT:
       return {};
     case RECEIVE_STAFF:
@@ -229,6 +230,7 @@ function staffReducer(state = {}, action = {}) {
 function requestsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_STAFF_REQUESTS:
     case SIGN_OUT:
       return {};
     case RECEIVE_STAFF_REQUESTS:
@@ -241,6 +243,7 @@ function requestsReducer(state = {}, action = {}) {
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_TEAMS:
     case SIGN_OUT:
       return {};
     case RECEIVE_TEAMS:

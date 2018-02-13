@@ -55,6 +55,9 @@ class UpdatesDialog extends Component {
                 Enable "Sign up" button as soon as confirm password matches
                 password when creating an account. (Issue #99)
               </li>
+              <li>
+                Fix crash caused by switching institutions. (Issue #111, #113)
+              </li>
             </Typography>
             <Typography type="subheading" component="h3">
               Minor Changes

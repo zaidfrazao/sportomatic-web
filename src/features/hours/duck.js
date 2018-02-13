@@ -63,6 +63,7 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 function staffReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_STAFF:
     case SIGN_OUT:
       return {};
     case RECEIVE_STAFF:
@@ -124,6 +125,7 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 function eventsByDateReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_EVENTS_BY_DATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_EVENTS_BY_DATE:
@@ -139,6 +141,7 @@ function eventsByDateReducer(state = {}, action = {}) {
 function eventsByCoachReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_EVENTS_BY_COACH:
     case SIGN_OUT:
       return {};
     case RECEIVE_EVENTS_BY_COACH:

@@ -79,6 +79,7 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 function teamsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_TEAMS:
     case SIGN_OUT:
       return {};
     case RECEIVE_TEAMS:
@@ -164,6 +165,7 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 function eventsByDateReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
+    case REQUEST_EVENTS_BY_DATE:
     case SIGN_OUT:
       return {};
     case RECEIVE_EVENTS_BY_DATE:
@@ -179,9 +181,8 @@ function eventsByDateReducer(state = {}, action = {}) {
 function eventsByTeamReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
-    case SIGN_OUT:
-      return {};
     case REQUEST_EVENTS_BY_TEAM:
+    case SIGN_OUT:
       return {};
     case RECEIVE_EVENTS_BY_TEAM:
       return action.payload.events;
