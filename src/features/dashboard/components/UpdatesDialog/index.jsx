@@ -42,15 +42,6 @@ class UpdatesDialog extends Component {
             <Typography type="body1" component="ul">
               <li>Fix "Load more..." buttons. (Issue #114)</li>
             </Typography>
-            <Typography type="subheading" component="h3">
-              Minor Changes
-            </Typography>
-            <Typography type="body1" component="ul">
-              <li>
-                Institutions list in the home page of the "Manage institutions"
-                dialog has been colour coded depending on approval status.
-              </li>
-            </Typography>
           </div>
           <Typography type="title" component="h2">
             {"v0.9.16"}
