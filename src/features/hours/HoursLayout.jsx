@@ -343,7 +343,8 @@ class HoursLayout extends Component {
       isTablet,
       eventsByCoach,
       role,
-      userID
+      userID,
+      institutionCreationDate
     } = this.props;
     const { updateSearch, loadEventsByCoach } = this.props.actions;
     const { isStaffLoading, isEventsByCoachLoading } = this.props.loadingStatus;
@@ -373,7 +374,7 @@ class HoursLayout extends Component {
               isTablet={isTablet}
               events={eventsByCoach}
               coachID={userID}
-              minDate={new Date(2017, 11)}
+              minDate={institutionCreationDate}
               actions={{
                 loadEvents: loadEventsByCoach
               }}
@@ -465,7 +466,8 @@ class HoursLayout extends Component {
       eventsByCoach,
       activeInstitutionID,
       staff,
-      role
+      role,
+      institutionCreationDate
     } = this.props;
     const { currentTab } = this.props.uiConfig;
     const { updateTab, loadEventsByCoach } = this.props.actions;
@@ -517,7 +519,7 @@ class HoursLayout extends Component {
               isTablet={isTablet}
               events={eventsByCoach}
               coachID={coachID}
-              minDate={new Date(2017, 11)}
+              minDate={institutionCreationDate}
               actions={{
                 loadEvents: loadEventsByCoach
               }}

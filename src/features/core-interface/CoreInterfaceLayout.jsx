@@ -281,9 +281,12 @@ class CoreInterfaceLayout extends Component {
       },
       type: "HOURLY"
     };
+    let institutionCreationDate = new Date(Date.now());
     if (institutions[activeInstitutionID]) {
       permissions = institutions[activeInstitutionID].permissions;
       paymentDefaults = institutions[activeInstitutionID].paymentDefaults;
+      institutionCreationDate =
+        institutions[activeInstitutionID].metadata.creationDate;
     }
 
     if (!isLoggedIn) {
@@ -323,7 +326,7 @@ class CoreInterfaceLayout extends Component {
               }}
               isMobile={isMobile}
               feature={appBarTitle}
-              versionNumber="0.9.14"
+              versionNumber="0.9.16"
               role={role}
               permissions={permissions}
             />
@@ -387,6 +390,7 @@ class CoreInterfaceLayout extends Component {
                       userID={userID}
                       role={role}
                       paymentDefaults={paymentDefaults}
+                      institutionCreationDate={institutionCreationDate}
                     />
                   </Route>
                   <Route exact path={"/myaccount/hours/:coachID"}>
@@ -398,6 +402,7 @@ class CoreInterfaceLayout extends Component {
                       userID={userID}
                       role={role}
                       paymentDefaults={paymentDefaults}
+                      institutionCreationDate={institutionCreationDate}
                     />
                   </Route>
                   <Route exact path={"/myaccount/results/"}>
@@ -520,6 +525,7 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
+                      institutionCreationDate={institutionCreationDate}
                     />
                   </Route>
                   <Route path={"/myaccount/wages/:coachID"}>
@@ -531,6 +537,7 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
+                      institutionCreationDate={institutionCreationDate}
                     />
                   </Route>
                   <Route>

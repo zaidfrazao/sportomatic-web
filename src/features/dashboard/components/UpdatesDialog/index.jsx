@@ -24,7 +24,29 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.15 (Current)"}
+            {"v0.9.16 (Current)"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              New Features
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Allow institution admins to accept and reject new members.
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Minor Changes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Fix minimum date on hours and wages tables to be in line with
+                the institution's creation date. (Issue #28)
+              </li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.15"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">

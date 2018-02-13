@@ -330,7 +330,8 @@ class WagesLayout extends Component {
       staff,
       role,
       userID,
-      permissions
+      permissions,
+      institutionCreationDate
     } = this.props;
     const { currentTab } = this.props.uiConfig;
     const { updateTab, loadWagesByCoach, updateSearch } = this.props.actions;
@@ -385,7 +386,7 @@ class WagesLayout extends Component {
               isTablet={isTablet}
               wages={wagesByCoach}
               coachID={coachID}
-              minDate={new Date(2017, 11)}
+              minDate={institutionCreationDate}
               actions={{
                 loadWages: loadWagesByCoach
               }}
@@ -406,7 +407,7 @@ class WagesLayout extends Component {
                 isTablet={isTablet}
                 wages={wagesByCoach}
                 coachID={userID}
-                minDate={new Date(2017, 11)}
+                minDate={institutionCreationDate}
                 actions={{
                   loadWages: loadWagesByCoach
                 }}
