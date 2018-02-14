@@ -340,7 +340,9 @@ class ScheduleLayout extends Component {
       currentView,
       errorType,
       minDate,
-      selectedCoach
+      selectedCoach,
+      selectedReplacementCoach,
+      prevReplacementCoachID
     } = this.props.uiConfig;
     const {
       updateView,
@@ -552,7 +554,11 @@ class ScheduleLayout extends Component {
                   <DecisionModal
                     isOpen={isReplacementCoachRemovalModalOpen}
                     handleYesClick={() => {
-                      removeReplacementCoach(eventID, selectedCoach);
+                      removeReplacementCoach(
+                        eventID,
+                        selectedCoach,
+                        selectedReplacementCoach
+                      );
                       closeReplacementCoachRemovalModal();
                     }}
                     handleNoClick={closeReplacementCoachRemovalModal}
@@ -581,7 +587,8 @@ class ScheduleLayout extends Component {
                       updateReplacementCoach(
                         eventID,
                         selectedCoach,
-                        replacementCoachID
+                        replacementCoachID,
+                        prevReplacementCoachID
                       );
                       closeReplacementCoachModal();
                     },

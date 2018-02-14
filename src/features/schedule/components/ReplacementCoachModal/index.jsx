@@ -53,22 +53,6 @@ class ReplacementCoachModal extends Component {
     const { closeModal, updateReplacementCoach } = this.props.actions;
     const { selectedCoachID } = this.state;
 
-    let coachesBySport = {};
-    _.toPairs(coaches).map(([coachID, coachInfo]) => {
-      _.keys(coachInfo.info.sports).map(sport => {
-        if (coachesBySport[sport]) {
-          coachesBySport[sport] = {
-            ...coachesBySport[sport],
-            [coachID]: `${coachInfo.info.name} ${coachInfo.info.surname}`
-          };
-        } else {
-          coachesBySport[sport] = {
-            [coachID]: `${coachInfo.info.name} ${coachInfo.info.surname}`
-          };
-        }
-      });
-    });
-
     return (
       <Dialog open={isOpen}>
         <DialogTitle>Select Replacement Coach</DialogTitle>
@@ -84,21 +68,15 @@ class ReplacementCoachModal extends Component {
               input={<Input id="coach selection" />}
             >
               <option value={""}>No one selected</option>
-              {_.toPairs(coachesBySport).map(([sport, sportCoaches]) => {
+              {_.toPairs(coaches).map(([coachID, coachInfo]) => {
                 return (
-                  <optgroup label={sport} key={`replacementCoach${sport}`}>
-                    {_.toPairs(sportCoaches).map(([coachID, coachName]) => {
-                      return (
-                        <option
-                          key={`replacementCoach${sport}${coachID}`}
-                          value={coachID}
-                          disabled={coachID === originalCoachID}
-                        >
-                          {coachName}
-                        </option>
-                      );
-                    })}
-                  </optgroup>
+                  <option
+                    key={`replacementCoach-${coachID}`}
+                    value={coachID}
+                    disabled={coachID === originalCoachID}
+                  >
+                    {`${coachInfo.info.name} ${coachInfo.info.surname}`}
+                  </option>
                 );
               })}
             </Select>

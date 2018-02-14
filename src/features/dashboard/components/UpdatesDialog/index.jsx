@@ -41,6 +41,16 @@ class UpdatesDialog extends Component {
             </Typography>
             <Typography type="body1" component="ul">
               <li>Fix "Load more..." buttons. (Issue #114)</li>
+              <li>Fix substitution system. (Issue #114)</li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Minor Changes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Add text under coach name in event info if coach is marked
+                absent.
+              </li>
             </Typography>
           </div>
           <Typography type="title" component="h2">

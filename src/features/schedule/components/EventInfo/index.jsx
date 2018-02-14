@@ -710,6 +710,11 @@ class EventInfo extends Component {
       info &&
       _.toPairs(info.coaches).map(([id, coachEventInfo]) => {
         const coachInfo = coaches[id].info;
+        const isAbsent =
+          !coachEventInfo.attendance.didAttend ||
+          !coachEventInfo.attendance.willAttend;
+        const substitute = coachEventInfo.attendance.substitute;
+        const isSubstitute = coachEventInfo.attendance.isSubstitute;
         const showMarkAbsent =
           info.requiredInfo.status === "ACTIVE" &&
           (role === "admin" || role === "manager") &&
@@ -729,10 +734,8 @@ class EventInfo extends Component {
         const showHoursStatus =
           (role === "admin" || role === "manager" || id === userID) &&
           info.requiredInfo.status === "ACTIVE" &&
-          (coachEventInfo.attendance.didAttend ||
-            coachEventInfo.attendance.hasSubstitute) &&
-          (coachEventInfo.attendance.willAttend ||
-            coachEventInfo.attendance.hasSubstitute);
+          coachEventInfo.attendance.didAttend &&
+          coachEventInfo.attendance.willAttend;
         const showAbsenteeismStatus =
           info.requiredInfo.status === "ACTIVE" &&
           (!coachEventInfo.attendance.didAttend ||
@@ -766,6 +769,7 @@ class EventInfo extends Component {
           );
           hourLoggingStatusText = `Hours logged and approved`;
         }
+
         eventCoaches.push(
           <Route
             key={id}
@@ -782,7 +786,19 @@ class EventInfo extends Component {
                     />
                     <ListItemText
                       primary={`${coachInfo.name} ${coachInfo.surname}`}
-                      secondary={coachInfo.phoneNumber}
+                      secondary={
+                        isAbsent
+                          ? substitute === ""
+                            ? "Absent without replacement coach"
+                            : "Absent with replacement coach"
+                          : isSubstitute
+                            ? `Replacement for ${coaches[
+                                coachEventInfo.attendance.subbingFor
+                              ].info.name} ${coaches[
+                                coachEventInfo.attendance.subbingFor
+                              ].info.surname}`
+                            : ""
+                      }
                     />
                     {isCoachOpen[id] ? <ExpandLess /> : <ExpandMore />}
                   </ListItem>
@@ -800,11 +816,7 @@ class EventInfo extends Component {
                         <ListItem className={classes.inset}>
                           {hourLoggingStatusAvatar}
                           <ListItemText
-                            primary={
-                              coachEventInfo.attendance.hasSubstitute
-                                ? "Replacement Coach Hours"
-                                : "Hours"
-                            }
+                            primary="Hours"
                             secondary={hourLoggingStatusText}
                           />
                         </ListItem>
@@ -867,9 +879,7 @@ class EventInfo extends Component {
                                     coachEventInfo.attendance.substitute
                                   ].info.name} ${coaches[
                                     coachEventInfo.attendance.substitute
-                                  ].info.surname} | ${coaches[
-                                    coachEventInfo.attendance.substitute
-                                  ].info.phoneNumber}`
+                                  ].info.surname}`
                                 : "No replacement coach assigned"
                             }
                           />
@@ -879,7 +889,11 @@ class EventInfo extends Component {
                               <ListItemSecondaryAction>
                                 <IconButton
                                   aria-label="remove replacement coach"
-                                  onClick={() => removeReplacementCoach(id)}
+                                  onClick={() =>
+                                    removeReplacementCoach(
+                                      id,
+                                      coachEventInfo.attendance.substitute
+                                    )}
                                 >
                                   <CancelIcon />
                                 </IconButton>
@@ -932,7 +946,11 @@ class EventInfo extends Component {
                         <ListItem
                           className={classes.inset}
                           button
-                          onClick={() => updateReplacementCoach(id)}
+                          onClick={() =>
+                            updateReplacementCoach(
+                              id,
+                              coachEventInfo.attendance.substitute
+                            )}
                         >
                           <ListItemIcon>
                             <AddSubIcon />
@@ -987,7 +1005,6 @@ class EventInfo extends Component {
                     />
                     <ListItemText
                       primary={`${managerInfo.name} ${managerInfo.surname}`}
-                      secondary={managerInfo.phoneNumber}
                     />
                     {isManagerOpen[id] ? <ExpandLess /> : <ExpandMore />}
                   </ListItem>

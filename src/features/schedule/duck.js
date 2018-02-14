@@ -75,7 +75,9 @@ export const uiConfigInitialState = {
   currentView: "SCHEDULE",
   errorType: "NONE",
   minDate: new Date(2017, 1, 1),
-  selectedCoach: false,
+  selectedCoach: "",
+  selectedReplacementCoach: "",
+  prevReplacementCoachID: "",
   newAbsentStatus: false
 };
 
@@ -104,12 +106,14 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
     case OPEN_REPLACEMENT_COACH_MODAL:
       return {
         ...state,
-        selectedCoach: action.payload.coachID
+        selectedCoach: action.payload.coachID,
+        prevReplacementCoachID: action.payload.prevReplacementCoachID
       };
     case OPEN_REPLACEMENT_COACH_REMOVAL_MODAL:
       return {
         ...state,
-        selectedCoach: action.payload.coachID
+        selectedCoach: action.payload.coachID,
+        selectedReplacementCoach: action.payload.replacementCoachID
       };
     case RECEIVE_CREATION_DATE:
       return {
@@ -501,11 +505,12 @@ export function updateView(newView) {
   };
 }
 
-export function openReplacementCoachRemovalModal(coachID) {
+export function openReplacementCoachRemovalModal(coachID, replacementCoachID) {
   return {
     type: OPEN_REPLACEMENT_COACH_REMOVAL_MODAL,
     payload: {
-      coachID
+      coachID,
+      replacementCoachID
     }
   };
 }
@@ -516,11 +521,12 @@ export function closeReplacementCoachRemovalModal() {
   };
 }
 
-export function openReplacementCoachModal(coachID) {
+export function openReplacementCoachModal(coachID, prevReplacementCoachID) {
   return {
     type: OPEN_REPLACEMENT_COACH_MODAL,
     payload: {
-      coachID
+      coachID,
+      prevReplacementCoachID
     }
   };
 }
@@ -1202,16 +1208,50 @@ export function errorUpdatingReplacementCoach(error: {
   };
 }
 
-export function updateReplacementCoach(eventID, coachID, replacementCoachID) {
+export function updateReplacementCoach(
+  eventID,
+  coachID,
+  replacementCoachID,
+  prevReplacementCoachID
+) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestReplacementCoachUpdate());
     const db = firebase.firestore();
     const eventRef = db.collection("events").doc(eventID);
 
+    const currentTime = new Date(Date.now());
+
     let updates = {
       [`coaches.${coachID}.attendance.hasSubstitute`]: true,
-      [`coaches.${coachID}.attendance.substitute`]: replacementCoachID
+      [`coaches.${coachID}.attendance.substitute`]: replacementCoachID,
+      [`coaches.${replacementCoachID}`]: {
+        absenteeism: {
+          rating: "NEUTRAL",
+          reason: ""
+        },
+        attendance: {
+          didAttend: true,
+          hasSubstitute: false,
+          isSubstitute: true,
+          substitute: "",
+          subbingFor: coachID,
+          willAttend: true
+        },
+        hours: {
+          status: "AWAITING_SIGN_IN",
+          times: {
+            signIn: currentTime,
+            signOut: currentTime
+          }
+        },
+        status: "ACTIVE"
+      }
     };
+    if (prevReplacementCoachID !== "") {
+      updates[
+        `coaches.${prevReplacementCoachID}`
+      ] = firebase.firestore.FieldValue.delete();
+    }
 
     return eventRef
       .update(updates)
@@ -1244,7 +1284,7 @@ export function errorRemovingReplacementCoach(error: {
   };
 }
 
-export function removeReplacementCoach(eventID, coachID) {
+export function removeReplacementCoach(eventID, coachID, replacementCoachID) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestReplacementCoachRemoval());
     const db = firebase.firestore();
@@ -1252,7 +1292,8 @@ export function removeReplacementCoach(eventID, coachID) {
 
     let updates = {
       [`coaches.${coachID}.attendance.hasSubstitute`]: false,
-      [`coaches.${coachID}.attendance.substitute`]: ""
+      [`coaches.${coachID}.attendance.substitute`]: "",
+      [`coaches.${replacementCoachID}`]: firebase.firestore.FieldValue.delete()
     };
 
     return eventRef
