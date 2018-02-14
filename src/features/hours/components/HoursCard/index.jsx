@@ -160,7 +160,7 @@ class HoursCard extends Component {
 
     let coaches = {};
     let isOpen = false;
-    if (role === "coach") {
+    if (role === "coach" && eventInfo.coaches[userID]) {
       let hasSignInError = false;
       let signInErrorMessage = "";
       let hasSignOutError = false;
@@ -288,7 +288,7 @@ class HoursCard extends Component {
     ) {
       let coaches = {};
       let isOpen = false;
-      if (role === "coach") {
+      if (role === "coach" && eventInfo.coaches[userID]) {
         let hasSignInError = false;
         let signInErrorMessage = "";
         let hasSignOutError = false;
@@ -480,7 +480,7 @@ class HoursCard extends Component {
       openUnmarkAbsentModal
     } = this.props.actions;
 
-    if (role === "coach") {
+    if (role === "coach" && this.state.coaches[userID]) {
       const signInTime = this.state.coaches[userID].signInTime;
       const signOutTime = this.state.coaches[userID].signOutTime;
       const errors = this.state.coaches[userID].errors;
@@ -714,54 +714,190 @@ class HoursCard extends Component {
       }
     } else {
       return _.toPairs(eventInfo.coaches).map(([coachID, coachInfo]) => {
-        const { profilePictureURL, name, surname } = staff[coachID].info;
-        const signInTime = this.state.coaches[coachID].signInTime;
-        const signOutTime = this.state.coaches[coachID].signOutTime;
-        const errors = this.state.coaches[coachID].errors;
-        const isAbsent = this.state.coaches[coachID].isAbsent;
+        if (this.state.coaches[coachID]) {
+          const { profilePictureURL, name, surname } = staff[coachID].info;
+          const signInTime = this.state.coaches[coachID].signInTime;
+          const signOutTime = this.state.coaches[coachID].signOutTime;
+          const errors = this.state.coaches[coachID].errors;
+          const isAbsent = this.state.coaches[coachID].isAbsent;
 
-        switch (this.state.coaches[coachID].status) {
-          case "AWAITING_SIGN_IN":
-            return (
-              <div
-                className={classes.hoursWrapper}
-                key={`hours-${coachID}${eventID}`}
-              >
-                <Typography
-                  type="title"
-                  component="h3"
-                  className={classes.coachName}
+          switch (this.state.coaches[coachID].status) {
+            case "AWAITING_SIGN_IN":
+              return (
+                <div
+                  className={classes.hoursWrapper}
+                  key={`hours-${coachID}${eventID}`}
                 >
-                  {`${name} ${surname}`}
-                </Typography>
-                <img
-                  alt={`${name} ${surname}`}
-                  src={
-                    profilePictureURL === ""
-                      ? defaultProfilePicture
-                      : profilePictureURL
-                  }
-                  className={classes.profilePicture}
-                />
-                <div className={classes.timesWrapper}>
-                  {isAbsent && (
-                    <div className={classes.markedAbsentTextWrapper}>
-                      <WarningIcon className={classes.warningIcon} />
-                      <Typography
-                        type="headline"
-                        component="p"
-                        className={classes.markedAbsentText}
+                  <Typography
+                    type="title"
+                    component="h3"
+                    className={classes.coachName}
+                  >
+                    {`${name} ${surname}`}
+                  </Typography>
+                  <img
+                    alt={`${name} ${surname}`}
+                    src={
+                      profilePictureURL === ""
+                        ? defaultProfilePicture
+                        : profilePictureURL
+                    }
+                    className={classes.profilePicture}
+                  />
+                  <div className={classes.timesWrapper}>
+                    {isAbsent && (
+                      <div className={classes.markedAbsentTextWrapper}>
+                        <WarningIcon className={classes.warningIcon} />
+                        <Typography
+                          type="headline"
+                          component="p"
+                          className={classes.markedAbsentText}
+                        >
+                          {"Marked absent"}
+                        </Typography>
+                      </div>
+                    )}
+                    {!isAbsent && (
+                      <form className={classes.timeWrapper}>
+                        <TextField
+                          id="time"
+                          label="Signed in"
+                          type="time"
+                          onChange={e => {
+                            let signedInAt = new Date(
+                              eventInfo.requiredInfo.times.start
+                            );
+                            signedInAt.setHours(e.target.value.slice(0, 2));
+                            signedInAt.setMinutes(e.target.value.slice(3, 5));
+                            this.updateCoachHours(
+                              eventID,
+                              coachID,
+                              signedInAt,
+                              signOutTime,
+                              "AWAITING_SIGN_OUT"
+                            );
+                          }}
+                          onBlur={() => {
+                            if (!errors.signIn.hasError) {
+                              signIn(
+                                eventID,
+                                coachID,
+                                signInTime,
+                                "AWAITING_SIGN_OUT"
+                              );
+                            }
+                          }}
+                          className={classes.time}
+                          error={errors.signIn.hasError}
+                          helperText={errors.signIn.message}
+                          InputLabelProps={{
+                            shrink: true
+                          }}
+                          inputProps={{
+                            step: 300
+                          }}
+                        />
+                      </form>
+                    )}
+                    {!isAbsent && (
+                      <form className={classes.timeWrapper}>
+                        <TextField
+                          id="time"
+                          label="Signed out"
+                          type="time"
+                          disabled
+                          className={classes.time}
+                          InputLabelProps={{
+                            shrink: true
+                          }}
+                          inputProps={{
+                            step: 300
+                          }}
+                        />
+                      </form>
+                    )}
+                  </div>
+                  <div className={classes.buttonWrapper}>
+                    {!isAbsent && (
+                      <Button
+                        raised
+                        className={classes.signInButton}
+                        onClick={() => {
+                          const currentTime = moment();
+                          if (
+                            currentTime.isAfter(
+                              eventInfo.requiredInfo.times.end
+                            )
+                          ) {
+                            signIn(
+                              eventID,
+                              coachID,
+                              eventInfo.requiredInfo.times.start,
+                              "AWAITING_SIGN_OUT"
+                            );
+                          } else {
+                            signIn(
+                              eventID,
+                              coachID,
+                              currentTime.toDate(),
+                              "AWAITING_SIGN_OUT"
+                            );
+                          }
+                        }}
                       >
-                        {"Marked absent"}
-                      </Typography>
-                    </div>
-                  )}
-                  {!isAbsent && (
+                        <SignInIcon /> Sign in
+                      </Button>
+                    )}
+                    {!isAbsent && (
+                      <Button
+                        raised
+                        className={classes.absentButton}
+                        onClick={() => openMarkAbsentModal(eventID, coachID)}
+                      >
+                        <AbsentIcon /> Mark absent
+                      </Button>
+                    )}
+                    {isAbsent && (
+                      <Button
+                        raised
+                        className={classes.unmarkAbsentButton}
+                        onClick={() => openUnmarkAbsentModal(eventID, coachID)}
+                      >
+                        <AbsentIcon /> Unmark absent
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              );
+            case "AWAITING_SIGN_OUT":
+              return (
+                <div
+                  className={classes.hoursWrapper}
+                  key={`hours-${coachID}${eventID}`}
+                >
+                  <Typography
+                    type="title"
+                    component="h3"
+                    className={classes.coachName}
+                  >
+                    {`${name} ${surname}`}
+                  </Typography>
+                  <img
+                    alt={`${name} ${surname}`}
+                    className={classes.profilePicture}
+                    src={
+                      profilePictureURL === ""
+                        ? defaultProfilePicture
+                        : profilePictureURL
+                    }
+                  />
+                  <div className={classes.timesWrapper}>
                     <form className={classes.timeWrapper}>
                       <TextField
                         id="time"
                         label="Signed in"
                         type="time"
+                        value={moment(signInTime).format("HH:mm")}
                         onChange={e => {
                           let signedInAt = new Date(
                             eventInfo.requiredInfo.times.start
@@ -797,13 +933,243 @@ class HoursCard extends Component {
                         }}
                       />
                     </form>
-                  )}
-                  {!isAbsent && (
                     <form className={classes.timeWrapper}>
                       <TextField
                         id="time"
                         label="Signed out"
                         type="time"
+                        onChange={e => {
+                          let signedOutAt = new Date(
+                            eventInfo.requiredInfo.times.start
+                          );
+                          signedOutAt.setHours(e.target.value.slice(0, 2));
+                          signedOutAt.setMinutes(e.target.value.slice(3, 5));
+                          this.updateCoachHours(
+                            eventID,
+                            coachID,
+                            signInTime,
+                            signedOutAt,
+                            "AWAITING_APPROVAL"
+                          );
+                        }}
+                        onBlur={() => {
+                          if (!errors.signOut.hasError) {
+                            signOut(
+                              eventID,
+                              coachID,
+                              signOutTime,
+                              "AWAITING_APPROVAL"
+                            );
+                          }
+                        }}
+                        className={classes.time}
+                        error={errors.signOut.hasError}
+                        helperText={errors.signOut.message}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        inputProps={{
+                          step: 300
+                        }}
+                      />
+                    </form>
+                  </div>
+                  <div className={classes.buttonWrapper}>
+                    <Button
+                      raised
+                      className={classes.signOutButton}
+                      disabled={errors.signIn.hasError}
+                      onClick={() => {
+                        const currentTime = moment();
+                        const endOfEventDay = moment(
+                          eventInfo.requiredInfo.times.end
+                        ).endOf("day");
+                        if (currentTime.isAfter(endOfEventDay)) {
+                          signOut(
+                            eventID,
+                            coachID,
+                            eventInfo.requiredInfo.times.end,
+                            "AWAITING_APPROVAL"
+                          );
+                        } else {
+                          signOut(
+                            eventID,
+                            coachID,
+                            currentTime.toDate(),
+                            "AWAITING_APPROVAL"
+                          );
+                        }
+                      }}
+                    >
+                      <SignOutIcon /> Sign out
+                    </Button>
+                  </div>
+                </div>
+              );
+            case "AWAITING_APPROVAL":
+              return (
+                <div
+                  className={classes.hoursWrapper}
+                  key={`hours-${coachID}${eventID}`}
+                >
+                  <Typography
+                    type="title"
+                    component="h3"
+                    className={classes.coachName}
+                  >
+                    {`${name} ${surname}`}
+                  </Typography>
+                  <img
+                    alt={`${name} ${surname}`}
+                    className={classes.profilePicture}
+                    src={
+                      profilePictureURL === ""
+                        ? defaultProfilePicture
+                        : profilePictureURL
+                    }
+                  />
+                  <div className={classes.timesWrapper}>
+                    <form className={classes.timeWrapper}>
+                      <TextField
+                        id="time"
+                        label="Signed in"
+                        type="time"
+                        value={moment(signInTime).format("HH:mm")}
+                        onChange={e => {
+                          let signedInAt = new Date(
+                            eventInfo.requiredInfo.times.start
+                          );
+                          signedInAt.setHours(e.target.value.slice(0, 2));
+                          signedInAt.setMinutes(e.target.value.slice(3, 5));
+                          this.updateCoachHours(
+                            eventID,
+                            coachID,
+                            signedInAt,
+                            signOutTime,
+                            "AWAITING_APPROVAL"
+                          );
+                        }}
+                        onBlur={() => {
+                          if (!errors.signIn.hasError) {
+                            signIn(
+                              eventID,
+                              coachID,
+                              signInTime,
+                              "AWAITING_APPROVAL"
+                            );
+                          }
+                        }}
+                        className={classes.time}
+                        error={errors.signIn.hasError}
+                        helperText={errors.signIn.message}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        inputProps={{
+                          step: 300
+                        }}
+                      />
+                    </form>
+                    <form className={classes.timeWrapper}>
+                      <TextField
+                        id="time"
+                        label="Signed out"
+                        type="time"
+                        value={moment(signOutTime).format("HH:mm")}
+                        onChange={e => {
+                          let signedOutAt = new Date(
+                            eventInfo.requiredInfo.times.start
+                          );
+                          signedOutAt.setHours(e.target.value.slice(0, 2));
+                          signedOutAt.setMinutes(e.target.value.slice(3, 5));
+                          this.updateCoachHours(
+                            eventID,
+                            coachID,
+                            signInTime,
+                            signedOutAt,
+                            "AWAITING_APPROVAL"
+                          );
+                        }}
+                        onBlur={() => {
+                          if (!errors.signIn.hasError) {
+                            signOut(
+                              eventID,
+                              coachID,
+                              signOutTime,
+                              "AWAITING_APPROVAL"
+                            );
+                          }
+                        }}
+                        className={classes.time}
+                        error={errors.signOut.hasError}
+                        helperText={errors.signOut.message}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        inputProps={{
+                          step: 300
+                        }}
+                      />
+                    </form>
+                  </div>
+                  <div className={classes.buttonWrapper}>
+                    <Button
+                      raised
+                      className={classes.approveButton}
+                      disabled={
+                        errors.signIn.hasError || errors.signOut.hasError
+                      }
+                      onClick={() => {
+                        approveHours(
+                          institutionID,
+                          eventID,
+                          coachID,
+                          staff[coachID].institutions[institutionID]
+                            .paymentDefaults,
+                          eventInfo,
+                          moment(signInTime),
+                          moment(signOutTime),
+                          paymentDefaults.maxOvertimeHours
+                        );
+                        this.setState({
+                          isOpen: false
+                        });
+                      }}
+                    >
+                      <ApproveIcon /> Approve
+                    </Button>
+                  </div>
+                </div>
+              );
+            case "APPROVED":
+              return (
+                <div
+                  className={classes.hoursWrapper}
+                  key={`hours-${coachID}${eventID}`}
+                >
+                  <Typography
+                    type="title"
+                    component="h3"
+                    className={classes.coachName}
+                  >
+                    {`${name} ${surname}`}
+                  </Typography>
+                  <img
+                    alt={`${name} ${surname}`}
+                    className={classes.profilePicture}
+                    src={
+                      profilePictureURL === ""
+                        ? defaultProfilePicture
+                        : profilePictureURL
+                    }
+                  />
+                  <div className={classes.timesWrapper}>
+                    <form className={classes.timeWrapper}>
+                      <TextField
+                        id="time"
+                        label="Signed in"
+                        type="time"
+                        value={moment(signInTime).format("HH:mm")}
                         disabled
                         className={classes.time}
                         InputLabelProps={{
@@ -814,401 +1180,43 @@ class HoursCard extends Component {
                         }}
                       />
                     </form>
-                  )}
-                </div>
-                <div className={classes.buttonWrapper}>
-                  {!isAbsent && (
-                    <Button
-                      raised
-                      className={classes.signInButton}
-                      onClick={() => {
-                        const currentTime = moment();
-                        if (
-                          currentTime.isAfter(eventInfo.requiredInfo.times.end)
-                        ) {
-                          signIn(
-                            eventID,
-                            coachID,
-                            eventInfo.requiredInfo.times.start,
-                            "AWAITING_SIGN_OUT"
-                          );
-                        } else {
-                          signIn(
-                            eventID,
-                            coachID,
-                            currentTime.toDate(),
-                            "AWAITING_SIGN_OUT"
-                          );
-                        }
-                      }}
-                    >
-                      <SignInIcon /> Sign in
+                    <form className={classes.timeWrapper}>
+                      <TextField
+                        id="time"
+                        label="Signed out"
+                        type="time"
+                        value={moment(signOutTime).format("HH:mm")}
+                        disabled
+                        className={classes.time}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        inputProps={{
+                          step: 300
+                        }}
+                      />
+                    </form>
+                  </div>
+                  <div className={classes.buttonWrapper}>
+                    <Button raised disabled className={classes.approvedButton}>
+                      <ApproveIcon /> Approved
                     </Button>
-                  )}
-                  {!isAbsent && (
-                    <Button
-                      raised
-                      className={classes.absentButton}
-                      onClick={() => openMarkAbsentModal(eventID, coachID)}
-                    >
-                      <AbsentIcon /> Mark absent
-                    </Button>
-                  )}
-                  {isAbsent && (
-                    <Button
-                      raised
-                      className={classes.unmarkAbsentButton}
-                      onClick={() => openUnmarkAbsentModal(eventID, coachID)}
-                    >
-                      <AbsentIcon /> Unmark absent
-                    </Button>
-                  )}
+                  </div>
                 </div>
-              </div>
-            );
-          case "AWAITING_SIGN_OUT":
-            return (
-              <div
-                className={classes.hoursWrapper}
-                key={`hours-${coachID}${eventID}`}
-              >
+              );
+            default:
+              return (
                 <Typography
-                  type="title"
-                  component="h3"
-                  className={classes.coachName}
+                  type="body1"
+                  component="p"
+                  key={`hours-${coachID}${eventID}`}
                 >
-                  {`${name} ${surname}`}
+                  {`Invalid stage ${this.state.coaches[coachID].status}.`}
                 </Typography>
-                <img
-                  alt={`${name} ${surname}`}
-                  className={classes.profilePicture}
-                  src={
-                    profilePictureURL === ""
-                      ? defaultProfilePicture
-                      : profilePictureURL
-                  }
-                />
-                <div className={classes.timesWrapper}>
-                  <form className={classes.timeWrapper}>
-                    <TextField
-                      id="time"
-                      label="Signed in"
-                      type="time"
-                      value={moment(signInTime).format("HH:mm")}
-                      onChange={e => {
-                        let signedInAt = new Date(
-                          eventInfo.requiredInfo.times.start
-                        );
-                        signedInAt.setHours(e.target.value.slice(0, 2));
-                        signedInAt.setMinutes(e.target.value.slice(3, 5));
-                        this.updateCoachHours(
-                          eventID,
-                          coachID,
-                          signedInAt,
-                          signOutTime,
-                          "AWAITING_SIGN_OUT"
-                        );
-                      }}
-                      onBlur={() => {
-                        if (!errors.signIn.hasError) {
-                          signIn(
-                            eventID,
-                            coachID,
-                            signInTime,
-                            "AWAITING_SIGN_OUT"
-                          );
-                        }
-                      }}
-                      className={classes.time}
-                      error={errors.signIn.hasError}
-                      helperText={errors.signIn.message}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      inputProps={{
-                        step: 300
-                      }}
-                    />
-                  </form>
-                  <form className={classes.timeWrapper}>
-                    <TextField
-                      id="time"
-                      label="Signed out"
-                      type="time"
-                      onChange={e => {
-                        let signedOutAt = new Date(
-                          eventInfo.requiredInfo.times.start
-                        );
-                        signedOutAt.setHours(e.target.value.slice(0, 2));
-                        signedOutAt.setMinutes(e.target.value.slice(3, 5));
-                        this.updateCoachHours(
-                          eventID,
-                          coachID,
-                          signInTime,
-                          signedOutAt,
-                          "AWAITING_APPROVAL"
-                        );
-                      }}
-                      onBlur={() => {
-                        if (!errors.signOut.hasError) {
-                          signOut(
-                            eventID,
-                            coachID,
-                            signOutTime,
-                            "AWAITING_APPROVAL"
-                          );
-                        }
-                      }}
-                      className={classes.time}
-                      error={errors.signOut.hasError}
-                      helperText={errors.signOut.message}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      inputProps={{
-                        step: 300
-                      }}
-                    />
-                  </form>
-                </div>
-                <div className={classes.buttonWrapper}>
-                  <Button
-                    raised
-                    className={classes.signOutButton}
-                    disabled={errors.signIn.hasError}
-                    onClick={() => {
-                      const currentTime = moment();
-                      const endOfEventDay = moment(
-                        eventInfo.requiredInfo.times.end
-                      ).endOf("day");
-                      if (currentTime.isAfter(endOfEventDay)) {
-                        signOut(
-                          eventID,
-                          coachID,
-                          eventInfo.requiredInfo.times.end,
-                          "AWAITING_APPROVAL"
-                        );
-                      } else {
-                        signOut(
-                          eventID,
-                          coachID,
-                          currentTime.toDate(),
-                          "AWAITING_APPROVAL"
-                        );
-                      }
-                    }}
-                  >
-                    <SignOutIcon /> Sign out
-                  </Button>
-                </div>
-              </div>
-            );
-          case "AWAITING_APPROVAL":
-            return (
-              <div
-                className={classes.hoursWrapper}
-                key={`hours-${coachID}${eventID}`}
-              >
-                <Typography
-                  type="title"
-                  component="h3"
-                  className={classes.coachName}
-                >
-                  {`${name} ${surname}`}
-                </Typography>
-                <img
-                  alt={`${name} ${surname}`}
-                  className={classes.profilePicture}
-                  src={
-                    profilePictureURL === ""
-                      ? defaultProfilePicture
-                      : profilePictureURL
-                  }
-                />
-                <div className={classes.timesWrapper}>
-                  <form className={classes.timeWrapper}>
-                    <TextField
-                      id="time"
-                      label="Signed in"
-                      type="time"
-                      value={moment(signInTime).format("HH:mm")}
-                      onChange={e => {
-                        let signedInAt = new Date(
-                          eventInfo.requiredInfo.times.start
-                        );
-                        signedInAt.setHours(e.target.value.slice(0, 2));
-                        signedInAt.setMinutes(e.target.value.slice(3, 5));
-                        this.updateCoachHours(
-                          eventID,
-                          coachID,
-                          signedInAt,
-                          signOutTime,
-                          "AWAITING_APPROVAL"
-                        );
-                      }}
-                      onBlur={() => {
-                        if (!errors.signIn.hasError) {
-                          signIn(
-                            eventID,
-                            coachID,
-                            signInTime,
-                            "AWAITING_APPROVAL"
-                          );
-                        }
-                      }}
-                      className={classes.time}
-                      error={errors.signIn.hasError}
-                      helperText={errors.signIn.message}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      inputProps={{
-                        step: 300
-                      }}
-                    />
-                  </form>
-                  <form className={classes.timeWrapper}>
-                    <TextField
-                      id="time"
-                      label="Signed out"
-                      type="time"
-                      value={moment(signOutTime).format("HH:mm")}
-                      onChange={e => {
-                        let signedOutAt = new Date(
-                          eventInfo.requiredInfo.times.start
-                        );
-                        signedOutAt.setHours(e.target.value.slice(0, 2));
-                        signedOutAt.setMinutes(e.target.value.slice(3, 5));
-                        this.updateCoachHours(
-                          eventID,
-                          coachID,
-                          signInTime,
-                          signedOutAt,
-                          "AWAITING_APPROVAL"
-                        );
-                      }}
-                      onBlur={() => {
-                        if (!errors.signIn.hasError) {
-                          signOut(
-                            eventID,
-                            coachID,
-                            signOutTime,
-                            "AWAITING_APPROVAL"
-                          );
-                        }
-                      }}
-                      className={classes.time}
-                      error={errors.signOut.hasError}
-                      helperText={errors.signOut.message}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      inputProps={{
-                        step: 300
-                      }}
-                    />
-                  </form>
-                </div>
-                <div className={classes.buttonWrapper}>
-                  <Button
-                    raised
-                    className={classes.approveButton}
-                    disabled={errors.signIn.hasError || errors.signOut.hasError}
-                    onClick={() => {
-                      approveHours(
-                        institutionID,
-                        eventID,
-                        coachID,
-                        staff[coachID].institutions[institutionID]
-                          .paymentDefaults,
-                        eventInfo,
-                        moment(signInTime),
-                        moment(signOutTime),
-                        paymentDefaults.maxOvertimeHours
-                      );
-                      this.setState({
-                        isOpen: false
-                      });
-                    }}
-                  >
-                    <ApproveIcon /> Approve
-                  </Button>
-                </div>
-              </div>
-            );
-          case "APPROVED":
-            return (
-              <div
-                className={classes.hoursWrapper}
-                key={`hours-${coachID}${eventID}`}
-              >
-                <Typography
-                  type="title"
-                  component="h3"
-                  className={classes.coachName}
-                >
-                  {`${name} ${surname}`}
-                </Typography>
-                <img
-                  alt={`${name} ${surname}`}
-                  className={classes.profilePicture}
-                  src={
-                    profilePictureURL === ""
-                      ? defaultProfilePicture
-                      : profilePictureURL
-                  }
-                />
-                <div className={classes.timesWrapper}>
-                  <form className={classes.timeWrapper}>
-                    <TextField
-                      id="time"
-                      label="Signed in"
-                      type="time"
-                      value={moment(signInTime).format("HH:mm")}
-                      disabled
-                      className={classes.time}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      inputProps={{
-                        step: 300
-                      }}
-                    />
-                  </form>
-                  <form className={classes.timeWrapper}>
-                    <TextField
-                      id="time"
-                      label="Signed out"
-                      type="time"
-                      value={moment(signOutTime).format("HH:mm")}
-                      disabled
-                      className={classes.time}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      inputProps={{
-                        step: 300
-                      }}
-                    />
-                  </form>
-                </div>
-                <div className={classes.buttonWrapper}>
-                  <Button raised disabled className={classes.approvedButton}>
-                    <ApproveIcon /> Approved
-                  </Button>
-                </div>
-              </div>
-            );
-          default:
-            return (
-              <Typography
-                type="body1"
-                component="p"
-                key={`hours-${coachID}${eventID}`}
-              >
-                {`Invalid stage ${this.state.coaches[coachID].status}.`}
-              </Typography>
-            );
+              );
+          }
+        } else {
+          console.log(`Could not find ${coachID} in list of coaches.`);
         }
       });
     }

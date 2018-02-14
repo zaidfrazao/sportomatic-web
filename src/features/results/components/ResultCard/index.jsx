@@ -77,33 +77,35 @@ class ResultCard extends Component {
     const { startLogging, finaliseResults, editResult } = this.props.actions;
 
     return _.toPairs(eventInfo.teams).map(([teamID, teamInfo]) => {
-      const { name, sport } = teams[teamID].info;
-      const { opponents, resultsStatus } = teamInfo;
+      if (teams[teamID]) {
+        const { name, sport } = teams[teamID].info;
+        const { opponents, resultsStatus } = teamInfo;
 
-      switch (_.upperCase(sport)) {
-        default:
-          return (
-            <Generic
-              key={`result-${teamID}`}
-              teamID={teamID}
-              eventID={eventID}
-              resultsStatus={resultsStatus}
-              ourTeam={{
-                name,
-                opponents,
-                emblemURL: institutionEmblemURL
-              }}
-              isMobile={isMobile}
-              isTablet={isTablet}
-              canEdit={canEdit}
-              canApprove={canApprove}
-              actions={{
-                startLogging,
-                finaliseResults,
-                editResult
-              }}
-            />
-          );
+        switch (_.upperCase(sport)) {
+          default:
+            return (
+              <Generic
+                key={`result-${teamID}`}
+                teamID={teamID}
+                eventID={eventID}
+                resultsStatus={resultsStatus}
+                ourTeam={{
+                  name,
+                  opponents,
+                  emblemURL: institutionEmblemURL
+                }}
+                isMobile={isMobile}
+                isTablet={isTablet}
+                canEdit={canEdit}
+                canApprove={canApprove}
+                actions={{
+                  startLogging,
+                  finaliseResults,
+                  editResult
+                }}
+              />
+            );
+        }
       }
     });
   }

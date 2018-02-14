@@ -588,7 +588,7 @@ class ResultsLayout extends Component {
     });
 
     if (teamID) {
-      if (eventID) {
+      if (eventID && eventsByTeam[eventID]) {
         return (
           <div className={classes.outerWrapper}>
             <AppBar position="static" color="default">
@@ -653,113 +653,115 @@ class ResultsLayout extends Component {
           </div>
         );
       } else {
-        return (
-          <div className={classes.outerWrapper}>
-            <AppBar position="static" color="default">
-              {isTeamsLoading ||
-              !teams[teamID] ||
-              activeInstitutionID === "" ? (
-                <Typography
-                  className={classes.name}
-                  type="title"
-                  component="h2"
-                >
-                  Loading...
-                </Typography>
-              ) : (
-                <Typography
-                  className={classes.name}
-                  type="title"
-                  component="h2"
-                >
-                  {teams[teamID].info.name}
-                </Typography>
-              )}
-            </AppBar>
-            <div className={classes.innerWrapper}>
-              <Toolbar className={classes.actionsBar}>
-                <Route
-                  render={({ history }) => (
-                    <Tooltip title="Back" placement="bottom">
-                      <IconButton
-                        aria-label="back"
-                        onClick={() => {
-                          history.goBack();
-                        }}
-                      >
-                        <BackIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                />
-              </Toolbar>
-              <div className={classes.adWrapper}>{ad}</div>
-              <div className={classes.hoursByDateWrapper}>
-                {_.toPairs(groupedByDate).map(([date, events]) => {
-                  const currentDate = moment().format("YYYY-MM-DD");
-                  return (
-                    <Paper className={classes.dateWrapper} key={date}>
-                      <div className={classes.dateHeader}>
-                        {date === currentDate
-                          ? "Today"
-                          : moment(date).format("dddd, MMMM Do YYYY")}
+        if (teams[teamID]) {
+          return (
+            <div className={classes.outerWrapper}>
+              <AppBar position="static" color="default">
+                {isTeamsLoading ||
+                !teams[teamID] ||
+                activeInstitutionID === "" ? (
+                  <Typography
+                    className={classes.name}
+                    type="title"
+                    component="h2"
+                  >
+                    Loading...
+                  </Typography>
+                ) : (
+                  <Typography
+                    className={classes.name}
+                    type="title"
+                    component="h2"
+                  >
+                    {teams[teamID].info.name}
+                  </Typography>
+                )}
+              </AppBar>
+              <div className={classes.innerWrapper}>
+                <Toolbar className={classes.actionsBar}>
+                  <Route
+                    render={({ history }) => (
+                      <Tooltip title="Back" placement="bottom">
+                        <IconButton
+                          aria-label="back"
+                          onClick={() => {
+                            history.goBack();
+                          }}
+                        >
+                          <BackIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  />
+                </Toolbar>
+                <div className={classes.adWrapper}>{ad}</div>
+                <div className={classes.hoursByDateWrapper}>
+                  {_.toPairs(groupedByDate).map(([date, events]) => {
+                    const currentDate = moment().format("YYYY-MM-DD");
+                    return (
+                      <Paper className={classes.dateWrapper} key={date}>
+                        <div className={classes.dateHeader}>
+                          {date === currentDate
+                            ? "Today"
+                            : moment(date).format("dddd, MMMM Do YYYY")}
+                        </div>
+                        <div>
+                          {_.toPairs(events).map(([eventID, eventInfo]) => {
+                            return (
+                              <ResultCard
+                                key={`results-${eventID}`}
+                                teams={teams}
+                                isMobile={isMobile}
+                                isTablet={isTablet}
+                                eventID={eventID}
+                                eventInfo={eventInfo}
+                                institutionEmblemURL={institutionEmblemURL}
+                                canEdit={
+                                  (role === "coach" &&
+                                    permissions.coaches.results.canEdit) ||
+                                  role === "admin" ||
+                                  role === "manager"
+                                }
+                                canApprove={
+                                  (role === "coach" &&
+                                    permissions.coaches.results.canApprove) ||
+                                  role === "admin" ||
+                                  role === "manager"
+                                }
+                                actions={{
+                                  startLogging,
+                                  finaliseResults,
+                                  editResult
+                                }}
+                              />
+                            );
+                          })}
+                        </div>
+                      </Paper>
+                    );
+                  })}
+                  {!isEventsByTeamLoading &&
+                    _.keys(groupedByDate).length === 0 && (
+                      <div className={classes.noCardsWrapper}>
+                        <Typography
+                          type="title"
+                          component="h3"
+                          className={classes.noCardsText}
+                        >
+                          No results logged for this team
+                        </Typography>
                       </div>
-                      <div>
-                        {_.toPairs(events).map(([eventID, eventInfo]) => {
-                          return (
-                            <ResultCard
-                              key={`results-${eventID}`}
-                              teams={teams}
-                              isMobile={isMobile}
-                              isTablet={isTablet}
-                              eventID={eventID}
-                              eventInfo={eventInfo}
-                              institutionEmblemURL={institutionEmblemURL}
-                              canEdit={
-                                (role === "coach" &&
-                                  permissions.coaches.results.canEdit) ||
-                                role === "admin" ||
-                                role === "manager"
-                              }
-                              canApprove={
-                                (role === "coach" &&
-                                  permissions.coaches.results.canApprove) ||
-                                role === "admin" ||
-                                role === "manager"
-                              }
-                              actions={{
-                                startLogging,
-                                finaliseResults,
-                                editResult
-                              }}
-                            />
-                          );
-                        })}
-                      </div>
-                    </Paper>
-                  );
-                })}
-                {!isEventsByTeamLoading &&
-                  _.keys(groupedByDate).length === 0 && (
-                    <div className={classes.noCardsWrapper}>
-                      <Typography
-                        type="title"
-                        component="h3"
-                        className={classes.noCardsText}
-                      >
-                        No results logged for this team
-                      </Typography>
+                    )}
+                  {(isEventsByTeamLoading || activeInstitutionID === "") && (
+                    <div className={classes.loaderWrapper}>
+                      <CircularProgress />
                     </div>
                   )}
-                {(isEventsByTeamLoading || activeInstitutionID === "") && (
-                  <div className={classes.loaderWrapper}>
-                    <CircularProgress />
-                  </div>
-                )}
+                </div>
               </div>
             </div>
-          </div>
-        );
+          );
+        }
       }
     } else {
       return (
