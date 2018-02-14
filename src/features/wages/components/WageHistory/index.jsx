@@ -183,18 +183,29 @@ class WageHistory extends Component {
                 </TableCell>
               </TableRow>
             ) : (
-              _.toPairs(wagesThisMonth).map(([wageID, wageInfo]) => {
-                const { wage, date } = wageInfo;
+              _.toPairs(wagesThisMonth)
+                .sort(([wageIDA, wageInfoA], [wageIDB, wageInfoB]) => {
+                  const dateA = moment(wageInfoA.date);
+                  const dateB = moment(wageInfoB.date);
 
-                return (
-                  <TableRow key={wageID}>
-                    <TableCell>{moment(date).format("YYYY/MM/DD")}</TableCell>
-                    <TableCell numeric>
-                      {accounting.formatMoney(wage, "R")}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
+                  if (dateA.isAfter(dateB)) {
+                    return +1;
+                  } else {
+                    return -1;
+                  }
+                })
+                .map(([wageID, wageInfo]) => {
+                  const { wage, date } = wageInfo;
+
+                  return (
+                    <TableRow key={wageID}>
+                      <TableCell>{moment(date).format("YYYY/MM/DD")}</TableCell>
+                      <TableCell numeric>
+                        {accounting.formatMoney(wage, "R")}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
             )}
           </TableBody>
           <TableFooter>
@@ -226,20 +237,31 @@ class WageHistory extends Component {
                 </TableCell>
               </TableRow>
             ) : (
-              _.toPairs(wagesThisMonth).map(([wageID, wageInfo]) => {
-                const { wage, date, hours } = wageInfo;
+              _.toPairs(wagesThisMonth)
+                .sort(([wageIDA, wageInfoA], [wageIDB, wageInfoB]) => {
+                  const dateA = moment(wageInfoA.date);
+                  const dateB = moment(wageInfoB.date);
 
-                return (
-                  <TableRow key={wageID}>
-                    <TableCell>{moment(date).format("YYYY/MM/DD")}</TableCell>
-                    <TableCell numeric>{hours.standard}</TableCell>
-                    <TableCell numeric>{hours.overtime}</TableCell>
-                    <TableCell numeric>
-                      {accounting.formatMoney(wage, "R")}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
+                  if (dateA.isAfter(dateB)) {
+                    return +1;
+                  } else {
+                    return -1;
+                  }
+                })
+                .map(([wageID, wageInfo]) => {
+                  const { wage, date, hours } = wageInfo;
+
+                  return (
+                    <TableRow key={wageID}>
+                      <TableCell>{moment(date).format("YYYY/MM/DD")}</TableCell>
+                      <TableCell numeric>{hours.standard}</TableCell>
+                      <TableCell numeric>{hours.overtime}</TableCell>
+                      <TableCell numeric>
+                        {accounting.formatMoney(wage, "R")}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
             )}
           </TableBody>
           <TableFooter>
@@ -274,21 +296,32 @@ class WageHistory extends Component {
                 </TableCell>
               </TableRow>
             ) : (
-              _.toPairs(wagesThisMonth).map(([wageID, wageInfo]) => {
-                const { wage, date, hours, title } = wageInfo;
+              _.toPairs(wagesThisMonth)
+                .sort(([wageIDA, wageInfoA], [wageIDB, wageInfoB]) => {
+                  const dateA = moment(wageInfoA.date);
+                  const dateB = moment(wageInfoB.date);
 
-                return (
-                  <TableRow key={wageID}>
-                    <TableCell>{moment(date).format("YYYY/MM/DD")}</TableCell>
-                    <TableCell>{title}</TableCell>
-                    <TableCell numeric>{hours.standard}</TableCell>
-                    <TableCell numeric>{hours.overtime}</TableCell>
-                    <TableCell numeric>
-                      {accounting.formatMoney(wage, "R")}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
+                  if (dateA.isAfter(dateB)) {
+                    return +1;
+                  } else {
+                    return -1;
+                  }
+                })
+                .map(([wageID, wageInfo]) => {
+                  const { wage, date, hours, title } = wageInfo;
+
+                  return (
+                    <TableRow key={wageID}>
+                      <TableCell>{moment(date).format("YYYY/MM/DD")}</TableCell>
+                      <TableCell>{title}</TableCell>
+                      <TableCell numeric>{hours.standard}</TableCell>
+                      <TableCell numeric>{hours.overtime}</TableCell>
+                      <TableCell numeric>
+                        {accounting.formatMoney(wage, "R")}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
             )}
           </TableBody>
           <TableFooter>

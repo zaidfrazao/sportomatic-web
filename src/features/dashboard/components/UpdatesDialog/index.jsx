@@ -24,7 +24,7 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.17 (Current)"}
+            {"v0.9.17 (Current) - Deployed 14/02/2018"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">
@@ -32,8 +32,8 @@ class UpdatesDialog extends Component {
             </Typography>
             <Typography type="body1" component="ul">
               <li>
-                Give "Mark absent" button on hours cards relevant functionality.
-                (Issue #12)
+                Fully implement coach absenteeism and substitution system.
+                (Issue #12, #13)
               </li>
             </Typography>
             <Typography type="subheading" component="h3">
@@ -41,16 +41,25 @@ class UpdatesDialog extends Component {
             </Typography>
             <Typography type="body1" component="ul">
               <li>Fix "Load more..." buttons. (Issue #114)</li>
-              <li>Fix substitution system. (Issue #114)</li>
+              <li>
+                Only show hours and results on dashboard from events that are
+                not canceled.
+              </li>
             </Typography>
             <Typography type="subheading" component="h3">
               Minor Changes
             </Typography>
             <Typography type="body1" component="ul">
               <li>
+                Disabled clicking of notifications until crashing bug is fixed.
+              </li>
+              <li>
                 Add text under coach name in event info if coach is marked
                 absent.
               </li>
+              <li>Create dedicated updates slide.</li>
+              <li>Sort hours and wage tables chronologically. (Issue #16)</li>
+              <li>Adjust max width of results cards in the "Overview" tab.</li>
             </Typography>
           </div>
           <Typography type="title" component="h2">

@@ -143,7 +143,6 @@ class NotificationsTray extends Component<Props, State> {
     } else {
       return notifications.map((notification, index) => {
         const date = notification.metadata.creationDate;
-        const currentDate = moment().format("YYYY-MM-DD");
 
         switch (notification.feature) {
           case "SCHEDULE":
@@ -151,15 +150,7 @@ class NotificationsTray extends Component<Props, State> {
               <Route
                 key={notification.id}
                 render={({ history }) => (
-                  <ListItem
-                    button
-                    onClick={() => {
-                      this.handleMenuToggle(null);
-                      history.push(
-                        `/myaccount/schedule/${currentDate}/${notification.objectID}`
-                      );
-                    }}
-                  >
+                  <ListItem>
                     <Avatar
                       className={
                         notification.metadata.isRead ? "" : classes.unreadIcon
@@ -180,13 +171,7 @@ class NotificationsTray extends Component<Props, State> {
               <Route
                 key={notification.id}
                 render={({ history }) => (
-                  <ListItem
-                    button
-                    onClick={() => {
-                      this.handleMenuToggle(null);
-                      history.push(`/myaccount/hours/${notification.objectID}`);
-                    }}
-                  >
+                  <ListItem>
                     <Avatar
                       className={
                         notification.metadata.isRead ? "" : classes.unreadIcon
@@ -207,15 +192,7 @@ class NotificationsTray extends Component<Props, State> {
               <Route
                 key={notification.id}
                 render={({ history }) => (
-                  <ListItem
-                    button
-                    onClick={() => {
-                      this.handleMenuToggle(null);
-                      history.push(
-                        `/myaccount/results/${notification.objectID}`
-                      );
-                    }}
-                  >
+                  <ListItem>
                     <Avatar
                       className={
                         notification.metadata.isRead ? "" : classes.unreadIcon
@@ -236,13 +213,7 @@ class NotificationsTray extends Component<Props, State> {
               <Route
                 key={notification.id}
                 render={({ history }) => (
-                  <ListItem
-                    button
-                    onClick={() => {
-                      this.handleMenuToggle(null);
-                      history.push(`/myaccount/wages/${notification.objectID}`);
-                    }}
-                  >
+                  <ListItem>
                     <Avatar
                       className={
                         notification.metadata.isRead ? "" : classes.unreadIcon
@@ -263,15 +234,7 @@ class NotificationsTray extends Component<Props, State> {
               <Route
                 key={notification.id}
                 render={({ history }) => (
-                  <ListItem
-                    button
-                    onClick={() => {
-                      this.handleMenuToggle(null);
-                      history.push(
-                        `/myaccount/people/${notification.objectID}`
-                      );
-                    }}
-                  >
+                  <ListItem>
                     <Avatar
                       className={
                         notification.metadata.isRead ? "" : classes.unreadIcon
@@ -292,13 +255,7 @@ class NotificationsTray extends Component<Props, State> {
               <Route
                 key={notification.id}
                 render={({ history }) => (
-                  <ListItem
-                    button
-                    onClick={() => {
-                      this.handleMenuToggle(null);
-                      history.push(`/myaccount/teams/${notification.objectID}`);
-                    }}
-                  >
+                  <ListItem>
                     <Avatar
                       className={
                         notification.metadata.isRead ? "" : classes.unreadIcon

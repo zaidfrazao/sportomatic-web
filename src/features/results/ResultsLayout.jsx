@@ -47,7 +47,7 @@ const styles = theme => ({
   dateWrapper: {
     margin: 24,
     width: "calc(100% - 24px)",
-    maxWidth: 1200
+    maxWidth: 970
   },
   hoursByDateWrapper: {
     display: "flex",

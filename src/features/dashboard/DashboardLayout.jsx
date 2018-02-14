@@ -226,6 +226,7 @@ class DashboardLayout extends Component {
       recentWagesList.push(
         <ListItem key={id} button onClick={() => history.push(link)}>
           {!isStaffLoading &&
+            staff[info.coachID] &&
             role !== "coach" && (
               <Avatar
                 src={
@@ -280,7 +281,10 @@ class DashboardLayout extends Component {
     _.toPairs(pastEvents).map(([id, info]) => {
       const date = moment(info.requiredInfo.times.start);
 
-      if (info.requiredInfo.isCompetitive) {
+      if (
+        info.requiredInfo.isCompetitive &&
+        info.requiredInfo.status === "ACTIVE"
+      ) {
         if (
           role === "admin" ||
           (role === "coach" && info.coaches[userID]) ||
@@ -349,6 +353,8 @@ class DashboardLayout extends Component {
           (role === "admin" ||
             (role === "manager" && info.managers[userID]) ||
             (role === "coach" && coachID === userID)) &&
+          (coachInfo.attendance.willAttend || coachInfo.attendance.didAttend) &&
+          info.requiredInfo.status === "ACTIVE" &&
           recentHoursList.length < 5
         ) {
           let primaryText = "Loading...";
@@ -400,7 +406,6 @@ class DashboardLayout extends Component {
   render() {
     const {
       classes,
-      isTablet,
       isMobile,
       accountInfo,
       institutions,
@@ -526,7 +531,7 @@ class DashboardLayout extends Component {
           </div>
         </Toolbar>
         <BannerCarousel
-          isTablet={isTablet}
+          isMobile={isMobile}
           actions={{
             openUpdatesDialog
           }}

@@ -205,36 +205,51 @@ class HoursHistory extends Component {
                 </TableCell>
               </TableRow>
             ) : (
-              _.toPairs(eventsThisMonth).map(([eventID, eventInfo]) => {
-                let hoursLogged = 0;
-                const startTime = moment(eventInfo.requiredInfo.times.start);
-                const signInTime = moment(
-                  eventInfo.coaches[coachID].hours.times.signIn
-                );
-                const signOutTime = moment(
-                  eventInfo.coaches[coachID].hours.times.signOut
-                );
-                if (startTime > signInTime) {
-                  hoursLogged = Math.round(
-                    signOutTime.diff(startTime, "hours", true)
+              _.toPairs(eventsThisMonth)
+                .sort(([eventIDA, eventInfoA], [eventIDB, eventInfoB]) => {
+                  const startTimeA = moment(
+                    eventInfoA.requiredInfo.times.start
                   );
-                } else {
-                  hoursLogged = Math.round(
-                    signOutTime.diff(signInTime, "hours", true)
+                  const startTimeB = moment(
+                    eventInfoB.requiredInfo.times.start
                   );
-                }
 
-                return (
-                  <TableRow key={eventID}>
-                    <TableCell>
-                      {moment(eventInfo.requiredInfo.times.start).format(
-                        "YYYY/MM/DD"
-                      )}
-                    </TableCell>
-                    <TableCell numeric>{hoursLogged}</TableCell>
-                  </TableRow>
-                );
-              })
+                  if (startTimeA.isAfter(startTimeB)) {
+                    return +1;
+                  } else {
+                    return -1;
+                  }
+                })
+                .map(([eventID, eventInfo]) => {
+                  let hoursLogged = 0;
+                  const startTime = moment(eventInfo.requiredInfo.times.start);
+                  const signInTime = moment(
+                    eventInfo.coaches[coachID].hours.times.signIn
+                  );
+                  const signOutTime = moment(
+                    eventInfo.coaches[coachID].hours.times.signOut
+                  );
+                  if (startTime > signInTime) {
+                    hoursLogged = Math.round(
+                      signOutTime.diff(startTime, "hours", true)
+                    );
+                  } else {
+                    hoursLogged = Math.round(
+                      signOutTime.diff(signInTime, "hours", true)
+                    );
+                  }
+
+                  return (
+                    <TableRow key={eventID}>
+                      <TableCell>
+                        {moment(eventInfo.requiredInfo.times.start).format(
+                          "YYYY/MM/DD"
+                        )}
+                      </TableCell>
+                      <TableCell numeric>{hoursLogged}</TableCell>
+                    </TableRow>
+                  );
+                })
             )}
           </TableBody>
           <TableFooter>
@@ -264,46 +279,61 @@ class HoursHistory extends Component {
                 </TableCell>
               </TableRow>
             ) : (
-              _.toPairs(eventsThisMonth).map(([eventID, eventInfo]) => {
-                let hoursLogged = 0;
-                const startTime = moment(eventInfo.requiredInfo.times.start);
-                const signInTime = moment(
-                  eventInfo.coaches[coachID].hours.times.signIn
-                );
-                const signOutTime = moment(
-                  eventInfo.coaches[coachID].hours.times.signOut
-                );
-                if (startTime > signInTime) {
-                  hoursLogged = Math.round(
-                    signOutTime.diff(startTime, "hours", true)
+              _.toPairs(eventsThisMonth)
+                .sort(([eventIDA, eventInfoA], [eventIDB, eventInfoB]) => {
+                  const startTimeA = moment(
+                    eventInfoA.requiredInfo.times.start
                   );
-                } else {
-                  hoursLogged = Math.round(
-                    signOutTime.diff(signInTime, "hours", true)
+                  const startTimeB = moment(
+                    eventInfoB.requiredInfo.times.start
                   );
-                }
 
-                return (
-                  <TableRow key={eventID}>
-                    <TableCell>
-                      {moment(eventInfo.requiredInfo.times.start).format(
-                        "YYYY/MM/DD"
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {moment(
-                        eventInfo.coaches[coachID].hours.times.signIn
-                      ).format("h:mm A")}
-                    </TableCell>
-                    <TableCell>
-                      {moment(
-                        eventInfo.coaches[coachID].hours.times.signOut
-                      ).format("h:mm A")}
-                    </TableCell>
-                    <TableCell numeric>{hoursLogged}</TableCell>
-                  </TableRow>
-                );
-              })
+                  if (startTimeA.isAfter(startTimeB)) {
+                    return +1;
+                  } else {
+                    return -1;
+                  }
+                })
+                .map(([eventID, eventInfo]) => {
+                  let hoursLogged = 0;
+                  const startTime = moment(eventInfo.requiredInfo.times.start);
+                  const signInTime = moment(
+                    eventInfo.coaches[coachID].hours.times.signIn
+                  );
+                  const signOutTime = moment(
+                    eventInfo.coaches[coachID].hours.times.signOut
+                  );
+                  if (startTime > signInTime) {
+                    hoursLogged = Math.round(
+                      signOutTime.diff(startTime, "hours", true)
+                    );
+                  } else {
+                    hoursLogged = Math.round(
+                      signOutTime.diff(signInTime, "hours", true)
+                    );
+                  }
+
+                  return (
+                    <TableRow key={eventID}>
+                      <TableCell>
+                        {moment(eventInfo.requiredInfo.times.start).format(
+                          "YYYY/MM/DD"
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {moment(
+                          eventInfo.coaches[coachID].hours.times.signIn
+                        ).format("h:mm A")}
+                      </TableCell>
+                      <TableCell>
+                        {moment(
+                          eventInfo.coaches[coachID].hours.times.signOut
+                        ).format("h:mm A")}
+                      </TableCell>
+                      <TableCell numeric>{hoursLogged}</TableCell>
+                    </TableRow>
+                  );
+                })
             )}
           </TableBody>
           <TableFooter>
@@ -336,47 +366,62 @@ class HoursHistory extends Component {
                 </TableCell>
               </TableRow>
             ) : (
-              _.toPairs(eventsThisMonth).map(([eventID, eventInfo]) => {
-                let hoursLogged = 0;
-                const startTime = moment(eventInfo.requiredInfo.times.start);
-                const signInTime = moment(
-                  eventInfo.coaches[coachID].hours.times.signIn
-                );
-                const signOutTime = moment(
-                  eventInfo.coaches[coachID].hours.times.signOut
-                );
-                if (startTime > signInTime) {
-                  hoursLogged = Math.round(
-                    signOutTime.diff(startTime, "hours", true)
+              _.toPairs(eventsThisMonth)
+                .sort(([eventIDA, eventInfoA], [eventIDB, eventInfoB]) => {
+                  const startTimeA = moment(
+                    eventInfoA.requiredInfo.times.start
                   );
-                } else {
-                  hoursLogged = Math.round(
-                    signOutTime.diff(signInTime, "hours", true)
+                  const startTimeB = moment(
+                    eventInfoB.requiredInfo.times.start
                   );
-                }
 
-                return (
-                  <TableRow key={eventID}>
-                    <TableCell>
-                      {moment(eventInfo.requiredInfo.times.start).format(
-                        "YYYY/MM/DD"
-                      )}
-                    </TableCell>
-                    <TableCell>{eventInfo.requiredInfo.title}</TableCell>
-                    <TableCell>
-                      {moment(
-                        eventInfo.coaches[coachID].hours.times.signIn
-                      ).format("h:mm A")}
-                    </TableCell>
-                    <TableCell>
-                      {moment(
-                        eventInfo.coaches[coachID].hours.times.signOut
-                      ).format("h:mm A")}
-                    </TableCell>
-                    <TableCell numeric>{hoursLogged}</TableCell>
-                  </TableRow>
-                );
-              })
+                  if (startTimeA.isAfter(startTimeB)) {
+                    return +1;
+                  } else {
+                    return -1;
+                  }
+                })
+                .map(([eventID, eventInfo]) => {
+                  let hoursLogged = 0;
+                  const startTime = moment(eventInfo.requiredInfo.times.start);
+                  const signInTime = moment(
+                    eventInfo.coaches[coachID].hours.times.signIn
+                  );
+                  const signOutTime = moment(
+                    eventInfo.coaches[coachID].hours.times.signOut
+                  );
+                  if (startTime > signInTime) {
+                    hoursLogged = Math.round(
+                      signOutTime.diff(startTime, "hours", true)
+                    );
+                  } else {
+                    hoursLogged = Math.round(
+                      signOutTime.diff(signInTime, "hours", true)
+                    );
+                  }
+
+                  return (
+                    <TableRow key={eventID}>
+                      <TableCell>
+                        {moment(eventInfo.requiredInfo.times.start).format(
+                          "YYYY/MM/DD"
+                        )}
+                      </TableCell>
+                      <TableCell>{eventInfo.requiredInfo.title}</TableCell>
+                      <TableCell>
+                        {moment(
+                          eventInfo.coaches[coachID].hours.times.signIn
+                        ).format("h:mm A")}
+                      </TableCell>
+                      <TableCell>
+                        {moment(
+                          eventInfo.coaches[coachID].hours.times.signOut
+                        ).format("h:mm A")}
+                      </TableCell>
+                      <TableCell numeric>{hoursLogged}</TableCell>
+                    </TableRow>
+                  );
+                })
             )}
           </TableBody>
           <TableFooter>
