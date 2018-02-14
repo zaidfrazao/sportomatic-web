@@ -297,7 +297,9 @@ class DashboardLayout extends Component {
             ) {
               _.values(teamInfo.opponents).map(resultInfo => {
                 let primaryText = "Loading...";
-                let secondaryText = `vs ${resultInfo.name} | ${date.fromNow()}`;
+                let secondaryText = `vs ${resultInfo.name === ""
+                  ? "Unknown"
+                  : resultInfo.name} | ${date.fromNow()}`;
                 let link = `/myaccount/results/${teamID}/${id}`;
 
                 let result = "drew";

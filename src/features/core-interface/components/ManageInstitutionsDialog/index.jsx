@@ -67,6 +67,12 @@ const styles = {
   input: {
     display: "none"
   },
+  loaderWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
   pendingText: {
     color: lightBlue[500]
   },
@@ -729,7 +735,9 @@ class ManageInstitutionsDialog extends Component {
           <DialogTitle>Join Institution</DialogTitle>
           <DialogContent>
             {isLoading ? (
-              <CircularProgress />
+              <div className={classes.loaderWrapper}>
+                <CircularProgress />
+              </div>
             ) : listItems.length > 0 ? (
               listItems
             ) : (
@@ -981,7 +989,6 @@ class ManageInstitutionsDialog extends Component {
                 <option value="College">College</option>
                 <option value="Sports Academy">Sports Academy</option>
                 <option value="Sports Club">Sports Club</option>
-                <option value="Sports Academy">Sports Academy</option>
                 <option value="Other">Other</option>
               </Select>
             </FormControl>

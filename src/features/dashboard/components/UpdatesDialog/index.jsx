@@ -24,7 +24,40 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.17 (Current) - Deployed 14/02/2018"}
+            {"v0.9.18 (Current) - Deployed 14/02/2018"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              Bug Fixes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Fix known crashing bugs in hours and results. (Issue #118, #119)
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Minor Changes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Correctly display unknown opponents on recent results dashboard
+                widget. (Issue #115)
+              </li>
+              <li>
+                Fix spacing around ad above hours table on mobile. (Issue #116)
+              </li>
+              <li>
+                Fix loading indicator positioning in "Join Institution". (Issue
+                #117)
+              </li>
+              <li>
+                Remove extra "Sports Academy" from "Create Institution". (Issue
+                #120)
+              </li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.17 - Deployed 14/02/2018"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">

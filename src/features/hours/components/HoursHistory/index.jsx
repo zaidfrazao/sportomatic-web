@@ -55,7 +55,8 @@ const styles = theme => ({
     justifyContent: "center"
   },
   mobileRoot: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginTop: 24
   },
   noHoursText: {
     textAlign: "center"
