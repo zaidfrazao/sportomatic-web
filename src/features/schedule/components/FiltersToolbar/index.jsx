@@ -36,6 +36,9 @@ const styles = theme => ({
     width: "100%",
     margin: "8px 0"
   },
+  iconAdjacentText: {
+    marginRight: 8
+  },
   searchIcon: {
     width: 18,
     height: 18
@@ -277,21 +280,29 @@ class FiltersToolbar extends Component {
               )}
             </div>
           )}
-          <Tooltip title="Filter events" placement="bottom">
-            <IconButton
+          {isMobile ? (
+            <Tooltip title="Filter events" placement="bottom">
+              <IconButton
+                aria-label="filter events"
+                onClick={() => this.toggleDialog()}
+              >
+                <FilterIcon />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Button
               aria-label="filter events"
               onClick={() => this.toggleDialog()}
             >
-              <FilterIcon />
-            </IconButton>
-          </Tooltip>
-          {canCreate && (
-            <Tooltip title="Add new event" placement="bottom">
-              <IconButton aria-label="add new event" onClick={() => addEvent()}>
-                <AddIcon />
-              </IconButton>
-            </Tooltip>
+              <FilterIcon className={classes.iconAdjacentText} /> Set filters
+            </Button>
           )}
+          {canCreate &&
+            !isMobile && (
+              <Button aria-label="add event" onClick={() => addEvent()}>
+                <AddIcon className={classes.iconAdjacentText} /> Add new event
+              </Button>
+            )}
         </Toolbar>
         {isMobile && (
           <div className={classes.settingChips}>

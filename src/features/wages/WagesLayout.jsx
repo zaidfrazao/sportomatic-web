@@ -53,6 +53,9 @@ const styles = theme => ({
   flexGrow: {
     flex: 1
   },
+  iconAdjacentText: {
+    marginRight: 8
+  },
   innerWrapper: {
     flexGrow: 1,
     overflow: "auto"
@@ -397,14 +400,13 @@ class WagesLayout extends Component {
               />
               {role === "admin" && <div className={classes.flexGrow} />}
               {role === "admin" && (
-                <Tooltip title="Add custom wage" placement="bottom">
-                  <IconButton
-                    aria-label="add custom wage"
-                    onClick={() => openCustomWageDialog()}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </Tooltip>
+                <Button
+                  aria-label="log custom wage"
+                  onClick={() => openCustomWageDialog()}
+                >
+                  <AddIcon className={classes.iconAdjacentText} /> Log custom
+                  wage
+                </Button>
               )}
             </Toolbar>
             <div className={classes.adWrapper}>{ad}</div>
