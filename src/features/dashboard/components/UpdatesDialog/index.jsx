@@ -24,7 +24,28 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.18 (Current) - Deployed 14/02/2018"}
+            {"v0.9.19 (Current) - Deployed 19/02/2018"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              New Features
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Admins can now log custom wages for coaches. They can log them
+                based on hours given, add fixed amounts, and make wage
+                deductions. (Issue #38)
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Bug Fixes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>Fix bug preventing ads from showing.</li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.18 - Deployed 14/02/2018"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">

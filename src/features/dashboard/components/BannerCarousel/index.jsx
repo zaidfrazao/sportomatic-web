@@ -152,10 +152,10 @@ class BannerCarousel extends Component {
           </div>
           <div className={classes.slide}>
             <div className={classes.slide2}>
-              <h2 className={classes.updatesTitle}>{"Version 0.9.18"}</h2>
+              <h2 className={classes.updatesTitle}>{"Version 0.9.19"}</h2>
               {!isMobile && (
                 <div className={classes.updateBoxesWrapper}>
-                  {false && (
+                  {true && (
                     <div className={classes.updateBox}>
                       <Avatar className={classes.icon}>
                         <NewFeatureIcon />
@@ -165,34 +165,38 @@ class BannerCarousel extends Component {
                         type="title"
                         component="h3"
                       >
-                        Absenteeism System
+                        Custom Wages
                       </Typography>
                     </div>
                   )}
-                  <div className={classes.updateBox}>
-                    <Avatar className={classes.icon}>
-                      <BugIcon />
-                    </Avatar>
-                    <Typography
-                      className={classes.iconText}
-                      type="title"
-                      component="h3"
-                    >
-                      Bug Fixes
-                    </Typography>
-                  </div>
-                  <div className={classes.updateBox}>
-                    <Avatar className={classes.icon}>
-                      <MinorChangesIcon />
-                    </Avatar>
-                    <Typography
-                      className={classes.iconText}
-                      type="title"
-                      component="h3"
-                    >
-                      Minor Changes
-                    </Typography>
-                  </div>
+                  {true && (
+                    <div className={classes.updateBox}>
+                      <Avatar className={classes.icon}>
+                        <BugIcon />
+                      </Avatar>
+                      <Typography
+                        className={classes.iconText}
+                        type="title"
+                        component="h3"
+                      >
+                        Bug Fixes
+                      </Typography>
+                    </div>
+                  )}
+                  {true && (
+                    <div className={classes.updateBox}>
+                      <Avatar className={classes.icon}>
+                        <MinorChangesIcon />
+                      </Avatar>
+                      <Typography
+                        className={classes.iconText}
+                        type="title"
+                        component="h3"
+                      >
+                        Minor Changes
+                      </Typography>
+                    </div>
+                  )}
                 </div>
               )}
               <div className={classes.buttonsWrapper}>

@@ -1,6 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
+import AddIcon from "material-ui-icons/Add";
 import AppBar from "material-ui/AppBar";
 import BackIcon from "material-ui-icons/ArrowBack";
 import Button from "material-ui/Button";
@@ -17,6 +18,7 @@ import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
 import CoachesList from "./components/CoachesList";
+import CustomWageDialog from "./components/CustomWageDialog";
 import FiltersToolbar from "./components/FiltersToolbar";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
@@ -47,6 +49,9 @@ const styles = theme => ({
     margin: 24,
     width: "calc(100% - 24px)",
     maxWidth: 970
+  },
+  flexGrow: {
+    flex: 1
   },
   innerWrapper: {
     flexGrow: 1,
@@ -335,9 +340,21 @@ class WagesLayout extends Component {
       institutionCreationDate
     } = this.props;
     const { currentTab } = this.props.uiConfig;
-    const { updateTab, loadWagesByCoach, updateSearch } = this.props.actions;
+    const {
+      updateTab,
+      loadWagesByCoach,
+      updateSearch,
+      openCustomWageDialog,
+      closeCustomWageDialog,
+      logCustomWage
+    } = this.props.actions;
     const { coachID } = this.props.match.params;
-    const { isWagesByCoachLoading, isStaffLoading } = this.props.loadingStatus;
+    const {
+      isWagesByCoachLoading,
+      isStaffLoading,
+      isCustomWageLoading
+    } = this.props.loadingStatus;
+    const { isCustomWageDialogOpen } = this.props.dialogs;
 
     if (role === "manager" && !permissions.managers.wages.canView) {
       return <Redirect to="/myaccount/dashboard" />;
@@ -378,6 +395,17 @@ class WagesLayout extends Component {
                   </Tooltip>
                 )}
               />
+              {role === "admin" && <div className={classes.flexGrow} />}
+              {role === "admin" && (
+                <Tooltip title="Add custom wage" placement="bottom">
+                  <IconButton
+                    aria-label="add custom wage"
+                    onClick={() => openCustomWageDialog()}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Toolbar>
             <div className={classes.adWrapper}>{ad}</div>
             <WageHistory
@@ -393,6 +421,23 @@ class WagesLayout extends Component {
               }}
             />
           </div>
+          {staff[coachID] && (
+            <CustomWageDialog
+              isOpen={isCustomWageDialogOpen}
+              paymentDefaults={
+                staff[coachID].institutions[activeInstitutionID].paymentDefaults
+              }
+              coachID={coachID}
+              isLoading={isCustomWageLoading}
+              institutionID={activeInstitutionID}
+              coachName={`${staff[coachID].info.name} ${staff[coachID].info
+                .surname}`}
+              actions={{
+                closeDialog: () => closeCustomWageDialog(),
+                logCustomWage
+              }}
+            />
+          )}
         </div>
       );
     } else {

@@ -32,6 +32,11 @@ class LargeMobileBannerAd extends Component {
         }}
       >
         <ins
+          style={{
+            display: "inline-block",
+            width: 320,
+            height: 100
+          }}
           className="adsbygoogle"
           data-ad-client="ca-pub-7670057362856972"
           data-ad-slot="8947288756"

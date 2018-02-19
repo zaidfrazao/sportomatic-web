@@ -326,7 +326,7 @@ class CoreInterfaceLayout extends Component {
               }}
               isMobile={isMobile}
               feature={appBarTitle}
-              versionNumber="0.9.18"
+              versionNumber="0.9.19"
               role={role}
               permissions={permissions}
             />
@@ -528,6 +528,7 @@ class CoreInterfaceLayout extends Component {
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
                       institutionCreationDate={institutionCreationDate}
+                      paymentDefaults={paymentDefaults}
                     />
                   </Route>
                   <Route path={"/myaccount/wages/:coachID"}>
@@ -540,6 +541,7 @@ class CoreInterfaceLayout extends Component {
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
                       institutionCreationDate={institutionCreationDate}
+                      paymentDefaults={paymentDefaults}
                     />
                   </Route>
                   <Route>

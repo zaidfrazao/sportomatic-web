@@ -32,6 +32,11 @@ class BannerAd extends Component {
         }}
       >
         <ins
+          style={{
+            display: "inline-block",
+            width: 468,
+            height: 60
+          }}
           className="adsbygoogle"
           data-ad-client="ca-pub-7670057362856972"
           data-ad-slot="5860647331"

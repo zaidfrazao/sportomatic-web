@@ -32,6 +32,11 @@ class LeaderboardAd extends Component {
         }}
       >
         <ins
+          style={{
+            display: "inline-block",
+            width: 728,
+            height: 90
+          }}
           className="adsbygoogle"
           data-ad-client="ca-pub-7670057362856972"
           data-ad-slot="2049039611"

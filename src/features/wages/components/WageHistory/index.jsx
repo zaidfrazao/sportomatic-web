@@ -249,13 +249,17 @@ class WageHistory extends Component {
                   }
                 })
                 .map(([wageID, wageInfo]) => {
-                  const { wage, date, hours } = wageInfo;
+                  const { wage, date, hours, type } = wageInfo;
 
                   return (
                     <TableRow key={wageID}>
                       <TableCell>{moment(date).format("YYYY/MM/DD")}</TableCell>
-                      <TableCell numeric>{hours.standard}</TableCell>
-                      <TableCell numeric>{hours.overtime}</TableCell>
+                      <TableCell numeric>
+                        {type === "HOURLY" ? hours.standard : "-"}
+                      </TableCell>
+                      <TableCell numeric>
+                        {type === "HOURLY" ? hours.overtime : "-"}
+                      </TableCell>
                       <TableCell numeric>
                         {accounting.formatMoney(wage, "R")}
                       </TableCell>
@@ -308,14 +312,18 @@ class WageHistory extends Component {
                   }
                 })
                 .map(([wageID, wageInfo]) => {
-                  const { wage, date, hours, title } = wageInfo;
+                  const { wage, date, hours, title, type } = wageInfo;
 
                   return (
                     <TableRow key={wageID}>
                       <TableCell>{moment(date).format("YYYY/MM/DD")}</TableCell>
                       <TableCell>{title}</TableCell>
-                      <TableCell numeric>{hours.standard}</TableCell>
-                      <TableCell numeric>{hours.overtime}</TableCell>
+                      <TableCell numeric>
+                        {type === "HOURLY" ? hours.standard : "-"}
+                      </TableCell>
+                      <TableCell numeric>
+                        {type === "HOURLY" ? hours.overtime : "-"}
+                      </TableCell>
                       <TableCell numeric>
                         {accounting.formatMoney(wage, "R")}
                       </TableCell>

@@ -32,6 +32,11 @@ class LargeRectangleAd extends Component {
         }}
       >
         <ins
+          style={{
+            display: "inline-block",
+            width: 336,
+            height: 280
+          }}
           className="adsbygoogle"
           data-ad-client="ca-pub-7670057362856972"
           data-ad-slot="8615900662"

@@ -19,6 +19,11 @@ export const ERROR_LOADING_WAGES_BY_COACH = `${NAMESPACE}/ERROR_LOADING_WAGES_BY
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
+export const OPEN_CUSTOM_WAGE_DIALOG = `${NAMESPACE}/OPEN_CUSTOM_WAGE_DIALOG`;
+export const CLOSE_CUSTOM_WAGE_DIALOG = `${NAMESPACE}/CLOSE_CUSTOM_WAGE_DIALOG`;
+export const REQUEST_LOG_CUSTOM_WAGE = `${NAMESPACE}/REQUEST_LOG_CUSTOM_WAGE`;
+export const RECEIVE_LOG_CUSTOM_WAGE = `${NAMESPACE}/RECEIVE_LOG_CUSTOM_WAGE`;
+export const ERROR_LOGGING_CUSTOM_WAGE = `${NAMESPACE}/ERROR_LOGGING_CUSTOM_WAGE`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -66,7 +71,8 @@ function staffReducer(state = {}, action = {}) {
 export const loadingStatusInitialState = {
   isStaffLoading: false,
   isWagesByDateLoading: false,
-  isWagesByCoachLoading: false
+  isWagesByCoachLoading: false,
+  isCustomWageLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -106,6 +112,43 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isWagesByCoachLoading: false
+      };
+    case REQUEST_LOG_CUSTOM_WAGE:
+      return {
+        ...state,
+        isCustomWageLoading: true
+      };
+    case ERROR_LOGGING_CUSTOM_WAGE:
+    case RECEIVE_LOG_CUSTOM_WAGE:
+      return {
+        ...state,
+        isCustomWageLoading: false
+      };
+    default:
+      return state;
+  }
+}
+
+export const dialogsInitialState = {
+  isCustomWageDialogOpen: false
+};
+
+function dialogsReducer(state = dialogsInitialState, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case SIGN_OUT:
+      return dialogsInitialState;
+    case OPEN_CUSTOM_WAGE_DIALOG:
+      return {
+        ...state,
+        isCustomWageDialogOpen: true
+      };
+    case RECEIVE_LOG_CUSTOM_WAGE:
+    case ERROR_LOGGING_CUSTOM_WAGE:
+    case CLOSE_CUSTOM_WAGE_DIALOG:
+      return {
+        ...state,
+        isCustomWageDialogOpen: false
       };
     default:
       return state;
@@ -171,7 +214,8 @@ export const wagesReducer = combineReducers({
   loadingStatus: loadingStatusReducer,
   wagesByDate: wagesByDateReducer,
   wagesByCoach: wagesByCoachReducer,
-  filters: filterReducer
+  filters: filterReducer,
+  dialogs: dialogsReducer
 });
 
 // Selectors
@@ -182,6 +226,7 @@ const loadingStatus = state => state.wages.loadingStatus;
 const wagesByDate = state => state.wages.wagesByDate;
 const wagesByCoach = state => state.wages.wagesByCoach;
 const filters = state => state.wages.filters;
+const dialogs = state => state.wages.dialogs;
 
 export const selector = createStructuredSelector({
   uiConfig,
@@ -189,10 +234,23 @@ export const selector = createStructuredSelector({
   loadingStatus,
   wagesByDate,
   wagesByCoach,
-  filters
+  filters,
+  dialogs
 });
 
 // Action Creators
+
+export function openCustomWageDialog() {
+  return {
+    type: OPEN_CUSTOM_WAGE_DIALOG
+  };
+}
+
+export function closeCustomWageDialog() {
+  return {
+    type: CLOSE_CUSTOM_WAGE_DIALOG
+  };
+}
 
 export function resetState() {
   return {
@@ -378,5 +436,65 @@ export function loadWagesByCoach(institutionID, coachID) {
       });
       dispatch(receiveWagesByCoach(wages));
     });
+  };
+}
+
+export function requestLogCustomWage() {
+  return {
+    type: REQUEST_LOG_CUSTOM_WAGE
+  };
+}
+
+export function receiveLogCustomWage(customWage) {
+  return {
+    type: RECEIVE_LOG_CUSTOM_WAGE,
+    payload: {
+      customWage
+    }
+  };
+}
+
+export function errorLoggingCustomWage(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOGGING_CUSTOM_WAGE,
+    payload: {
+      error
+    }
+  };
+}
+
+export function logCustomWage(
+  coachID,
+  institutionID,
+  rates,
+  hours,
+  type,
+  wage,
+  details
+) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestLogCustomWage());
+
+    const wagesRef = firebase.firestore().collection("wages");
+
+    const customWage = {
+      coachID,
+      hours,
+      institutionID,
+      rates,
+      type,
+      wage,
+      title: details,
+      currency: "ZAR",
+      date: new Date(Date.now())
+    };
+
+    return wagesRef
+      .add(customWage)
+      .then(() => dispatch(receiveLogCustomWage(customWage)))
+      .catch(error => dispatch(errorLoggingCustomWage(error)));
   };
 }
