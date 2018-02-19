@@ -9,7 +9,6 @@ import { FormControl, FormControlLabel } from "material-ui/Form";
 import { grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import Input, { InputLabel } from "material-ui/Input";
-import MaskedInput from "react-text-mask";
 import Paper from "material-ui/Paper";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
@@ -19,6 +18,7 @@ import { isValidEmail } from "../../../../utils/validation";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LargeRectangleAd from "../../../../components/LargeRectangleAd";
 import defaultProfilePicture from "../../image/default-profile-picture.png";
+import { toPhoneFormat } from "../../../../utils/format";
 
 const styles = theme => ({
   adWrapper: {
@@ -123,37 +123,6 @@ const styles = theme => ({
   }
 });
 
-class TextMaskCustom extends Component {
-  render() {
-    const { inputRef, ...other } = this.props;
-
-    return (
-      <MaskedInput
-        {...other}
-        ref={inputRef}
-        mask={[
-          "(",
-          /[0-9]/,
-          /\d/,
-          /\d/,
-          ")",
-          " ",
-          /\d/,
-          /\d/,
-          /\d/,
-          "-",
-          /\d/,
-          /\d/,
-          /\d/,
-          /\d/
-        ]}
-        placeholderChar={"\u2000"}
-        showMask
-      />
-    );
-  }
-}
-
 class PersonInfo extends Component {
   state = {
     allowZoomOut: false,
@@ -165,7 +134,7 @@ class PersonInfo extends Component {
     surname: "",
     email: "",
     profilePictureURL: "",
-    phoneNumber: "(   )    -    ",
+    phoneNumber: "",
     password: "",
     confirmPassword: "",
     sports: {
@@ -389,12 +358,12 @@ class PersonInfo extends Component {
         }
         break;
       case "phoneNumber":
-        if (value === "(   )    -    ") {
+        if (value.length === 0) {
           hasError = true;
           message = "Please provide a phone number";
-        } else if (value.length > 36) {
+        } else if (value.length !== 14) {
           hasError = true;
-          message = "Max. 36 characters allowed";
+          message = "Must be 10 digits long";
         }
         break;
       case "password":
@@ -660,22 +629,27 @@ class PersonInfo extends Component {
                         shrink: true
                       }}
                     />
-                    <FormControl className={classes.formControl}>
-                      <InputLabel htmlFor="phoneNumber" shrink>
-                        Phone number
-                      </InputLabel>
-                      <Input
-                        value={phoneNumber}
-                        inputComponent={TextMaskCustom}
-                        onChange={e =>
-                          this.updateField(e.target.value, "phoneNumber")}
-                        onBlur={e =>
-                          this.validateField(e.target.value, "phoneNumber")}
-                        inputProps={{
-                          "aria-label": "phone number"
-                        }}
-                      />
-                    </FormControl>
+                    <TextField
+                      label="Phone number"
+                      value={phoneNumber}
+                      error={errors["phoneNumber"].hasError}
+                      placeholder="e.g. (011) 222-3333"
+                      onChange={e =>
+                        this.updateField(
+                          toPhoneFormat(e.target.value),
+                          "phoneNumber"
+                        )}
+                      onBlur={e =>
+                        this.validateField(
+                          toPhoneFormat(e.target.value),
+                          "phoneNumber"
+                        )}
+                      helperText={errors["phoneNumber"].message}
+                      className={classes.formControl}
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                    />
                     <div className={classes.flexGrow} />
                     <Button
                       className={classes.button}

@@ -26,7 +26,6 @@ import List, {
   ListItemSecondaryAction,
   ListItemText
 } from "material-ui/List";
-import MaskedInput from "react-text-mask";
 import Radio, { RadioGroup } from "material-ui/Radio";
 import Select from "material-ui/Select";
 import Switch from "material-ui/Switch";
@@ -34,6 +33,7 @@ import TextField from "material-ui/TextField";
 import { withStyles } from "material-ui/styles";
 import defaultEmblem from "../../images/default-emblem.jpg";
 import { isValidEmail } from "../../../../utils/validation";
+import { toPhoneFormat } from "../../../../utils/format";
 
 const styles = {
   button: {
@@ -101,37 +101,6 @@ const styles = {
   }
 };
 
-class TextMaskCustom extends Component {
-  render() {
-    const { inputRef, ...other } = this.props;
-
-    return (
-      <MaskedInput
-        {...other}
-        ref={inputRef}
-        mask={[
-          "(",
-          /[0-9]/,
-          /\d/,
-          /\d/,
-          ")",
-          " ",
-          /\d/,
-          /\d/,
-          /\d/,
-          "-",
-          /\d/,
-          /\d/,
-          /\d/,
-          /\d/
-        ]}
-        placeholderChar={"\u2000"}
-        showMask
-      />
-    );
-  }
-}
-
 class ManageInstitutionsDialog extends Component {
   state = {
     page: "HOME",
@@ -150,7 +119,7 @@ class ManageInstitutionsDialog extends Component {
     name: "",
     abbreviation: "",
     publicEmail: "",
-    phoneNumber: "(   )    -    ",
+    phoneNumber: "",
     physicalAddress: "",
     type: "High School",
     gender: "MIXED",
@@ -295,7 +264,7 @@ class ManageInstitutionsDialog extends Component {
       name: "",
       abbreviation: "",
       publicEmail: "",
-      phoneNumber: "(   )    -    ",
+      phoneNumber: "",
       physicalAddress: "",
       type: "High School",
       gender: "MIXED",
@@ -472,12 +441,12 @@ class ManageInstitutionsDialog extends Component {
         }
         break;
       case "phoneNumber":
-        if (value === "(   )    -    ") {
+        if (value.length === 0) {
           hasError = true;
           message = "Please provide a phone number";
-        } else if (value.length > 36) {
+        } else if (value.length !== 14) {
           hasError = true;
-          message = "Max. 36 characters allowed";
+          message = "Must be 10 digits long";
         }
         break;
       case "physicalAddress":
@@ -933,20 +902,24 @@ class ManageInstitutionsDialog extends Component {
                 shrink: true
               }}
             />
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="phoneNumber" shrink>
-                Phone number
-              </InputLabel>
-              <Input
-                value={phoneNumber}
-                inputComponent={TextMaskCustom}
-                onChange={e => this.updateField(e.target.value, "phoneNumber")}
-                onBlur={e => this.validateField(e.target.value, "phoneNumber")}
-                inputProps={{
-                  "aria-label": "phone number"
-                }}
-              />
-            </FormControl>
+            <TextField
+              label="Phone number"
+              value={phoneNumber}
+              error={errors["phoneNumber"].hasError}
+              placeholder="e.g. (011) 222-3333"
+              onChange={e =>
+                this.updateField(toPhoneFormat(e.target.value), "phoneNumber")}
+              onBlur={e =>
+                this.validateField(
+                  toPhoneFormat(e.target.value),
+                  "phoneNumber"
+                )}
+              helperText={errors["phoneNumber"].message}
+              className={classes.formControl}
+              InputLabelProps={{
+                shrink: true
+              }}
+            />
             <TextField
               label="Physical address"
               value={physicalAddress}
