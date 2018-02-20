@@ -4,6 +4,7 @@ import _ from "lodash";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import BackIcon from "material-ui-icons/ArrowBack";
+import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import Collapse from "material-ui/transitions/Collapse";
 import EditIcon from "material-ui-icons/Edit";
@@ -69,6 +70,9 @@ const styles = theme => ({
     backgroundColor: grey[700],
     color: grey[50],
     borderBottom: `1px solid ${grey[200]}`
+  },
+  iconAdjacentText: {
+    marginRight: 8
   },
   inset: {
     paddingLeft: theme.spacing.unit * 4
@@ -408,7 +412,8 @@ class PersonInfo extends Component {
       isEventsByPersonLoading,
       info,
       institutionID,
-      role
+      role,
+      isMobile
     } = this.props;
     const { isTeamOpen } = this.state;
     const { editPersonInfo } = this.props.actions;
@@ -504,17 +509,17 @@ class PersonInfo extends Component {
               )}
             />
             <div className={classes.flexGrow} />
-            {role === "admin" && (
-              <Tooltip title="Edit person info" placement="bottom">
-                <IconButton
+            {role === "admin" &&
+              !isMobile && (
+                <Button
                   disabled={isStaffLoading || isTeamsLoading}
                   aria-label="edit person info"
                   onClick={() => editPersonInfo()}
                 >
-                  <EditIcon />
-                </IconButton>
-              </Tooltip>
-            )}
+                  <EditIcon className={classes.iconAdjacentText} /> Edit person
+                  info
+                </Button>
+              )}
           </Toolbar>
           <div className={classes.wrapper}>
             <Grid

@@ -1,6 +1,9 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
+import AddIcon from "material-ui-icons/Add";
+import Button from "material-ui/Button";
+import EditIcon from "material-ui-icons/Edit";
 import { lightBlue, orange } from "material-ui/colors";
 import moment from "moment";
 import { Redirect } from "react-router-dom";
@@ -45,6 +48,12 @@ const styles = theme => ({
   },
   eventsListWrapper: {
     height: "calc(100% - 98px)"
+  },
+  fabPosition: {
+    position: "fixed",
+    right: "24px",
+    bottom: "24px",
+    zIndex: 10
   },
   loaderWrapper: {
     flexGrow: 1,
@@ -456,16 +465,17 @@ class ScheduleLayout extends Component {
     );
 
     if (currentView === "EVENT_INFO") {
+      const canEdit =
+        role === "admin" ||
+        (role === "coach" && permissions.coaches.events.canEdit) ||
+        (role === "manager" && permissions.managers.events.canEdit);
+
       return (
         <div className={classes.contentWrapper}>
           <EventInfo
             userID={userID}
             role={role}
-            canEdit={
-              role === "admin" ||
-              (role === "coach" && permissions.coaches.events.canEdit) ||
-              (role === "manager" && permissions.managers.events.canEdit)
-            }
+            canEdit={canEdit}
             canCancel={
               role === "admin" ||
               (role === "coach" && permissions.coaches.events.canCancel) ||
@@ -495,6 +505,19 @@ class ScheduleLayout extends Component {
               uncancelEvent: openUncancelEventAlert
             }}
           />
+          {canEdit &&
+            !isPastEvent &&
+            isMobile && (
+              <Button
+                fab
+                color="accent"
+                aria-label="edit event"
+                className={classes.fabPosition}
+                onClick={() => openEditEventDialog()}
+              >
+                <EditIcon />
+              </Button>
+            )}
           <EditEventDialog
             isOpen={isEditEventDialogOpen}
             isLoading={
@@ -656,14 +679,15 @@ class ScheduleLayout extends Component {
         </div>
       );
     } else {
+      const canCreate =
+        role === "admin" ||
+        (role === "coach" && permissions.coaches.events.canCreate) ||
+        (role === "manager" && permissions.managers.events.canCreate);
+
       return (
         <div className={classes.contentWrapper}>
           <FiltersToolbar
-            canCreate={
-              role === "admin" ||
-              (role === "coach" && permissions.coaches.events.canCreate) ||
-              (role === "manager" && permissions.managers.events.canCreate)
-            }
+            canCreate={canCreate}
             eventTypes={_.keys(this.state.eventTypes)}
             sports={_.keys(this.state.sports)}
             divisions={_.keys(this.state.divisions)}
@@ -738,6 +762,18 @@ class ScheduleLayout extends Component {
             heading={eventErrorAlertHeading}
             message={eventErrorAlertMessage}
           />
+          {canCreate &&
+            isMobile && (
+              <Button
+                fab
+                color="accent"
+                aria-label="add new event"
+                className={classes.fabPosition}
+                onClick={() => openAddEventDialog()}
+              >
+                <AddIcon />
+              </Button>
+            )}
         </div>
       );
     }

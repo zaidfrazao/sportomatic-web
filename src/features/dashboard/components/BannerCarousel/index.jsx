@@ -152,7 +152,7 @@ class BannerCarousel extends Component {
           </div>
           <div className={classes.slide}>
             <div className={classes.slide2}>
-              <h2 className={classes.updatesTitle}>{"Version 0.9.19"}</h2>
+              <h2 className={classes.updatesTitle}>{"Version 0.9.20"}</h2>
               {!isMobile && (
                 <div className={classes.updateBoxesWrapper}>
                   {true && (
@@ -165,7 +165,7 @@ class BannerCarousel extends Component {
                         type="title"
                         component="h3"
                       >
-                        Custom Wages
+                        Improved Taskbars
                       </Typography>
                     </div>
                   )}
@@ -183,7 +183,7 @@ class BannerCarousel extends Component {
                       </Typography>
                     </div>
                   )}
-                  {false && (
+                  {true && (
                     <div className={classes.updateBox}>
                       <Avatar className={classes.icon}>
                         <MinorChangesIcon />

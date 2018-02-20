@@ -37,6 +37,9 @@ const styles = theme => ({
     width: "100%",
     margin: "8px 0"
   },
+  iconAdjacentText: {
+    marginRight: 8
+  },
   searchIcon: {
     width: 18,
     height: 18
@@ -262,25 +265,33 @@ class FiltersToolbar extends Component {
               )}
             </div>
           )}
-          <Tooltip title="Filter teams" placement="bottom">
-            <IconButton
-              aria-label="filter teams"
-              onClick={() => this.toggleDialog()}
-            >
-              <FilterIcon />
-            </IconButton>
-          </Tooltip>
-          {role === "admin" && (
-            <Tooltip title="Add new team" placement="bottom">
+          {isMobile ? (
+            <Tooltip title="Filter events" placement="bottom">
               <IconButton
-                disabled={isLoading}
-                aria-label="add new team"
-                onClick={() => addTeam()}
+                aria-label="filter events"
+                onClick={() => this.toggleDialog()}
               >
-                <AddIcon />
+                <FilterIcon />
               </IconButton>
             </Tooltip>
+          ) : (
+            <Button
+              aria-label="filter events"
+              onClick={() => this.toggleDialog()}
+            >
+              <FilterIcon className={classes.iconAdjacentText} /> Set filters
+            </Button>
           )}
+          {role === "admin" &&
+            !isMobile && (
+              <Button
+                disabled={isLoading}
+                aria-label="add team"
+                onClick={() => addTeam()}
+              >
+                <AddIcon className={classes.iconAdjacentText} /> Add new team
+              </Button>
+            )}
         </Toolbar>
         {isMobile && (
           <div className={classes.settingChips}>

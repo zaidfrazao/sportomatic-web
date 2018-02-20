@@ -1528,14 +1528,12 @@ class AddEventDialog extends Component {
                 frequency,
                 numberOfEvents: parseInt(numberOfEvents, 10)
               };
-              const startTimeObject = moment(date)
-                .hour(parseInt(startTime.slice(0, 2), 10))
-                .minute(parseInt(startTime.slice(3, 5), 10))
-                .toDate();
-              const endTimeObject = moment(date)
-                .hour(parseInt(endTime.slice(0, 2), 10))
-                .minute(parseInt(endTime.slice(3, 5), 10))
-                .toDate();
+              let startTimeObject = new Date(date);
+              startTimeObject.setHours(startTime.slice(0, 2));
+              startTimeObject.setMinutes(startTime.slice(3, 5));
+              let endTimeObject = new Date(date);
+              endTimeObject.setHours(endTime.slice(0, 2));
+              endTimeObject.setMinutes(endTime.slice(3, 5));
 
               const requiredInfo = {
                 isCompetitive,
