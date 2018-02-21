@@ -24,7 +24,24 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.21 (Current) - Deployed 21/02/2018"}
+            {"v0.9.22 (Current) - Deployed 21/02/2018"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              Bug Fixes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>Fix Safari event time scheduling bug. (Issue #15)</li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Minor Changes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>Show full cancel / uncancel event button on mobile.</li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.21 - Deployed 21/02/2018"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">

@@ -152,10 +152,10 @@ class BannerCarousel extends Component {
           </div>
           <div className={classes.slide}>
             <div className={classes.slide2}>
-              <h2 className={classes.updatesTitle}>{"Version 0.9.21"}</h2>
+              <h2 className={classes.updatesTitle}>{"Version 0.9.22"}</h2>
               {!isMobile && (
                 <div className={classes.updateBoxesWrapper}>
-                  {true && (
+                  {false && (
                     <div className={classes.updateBox}>
                       <Avatar className={classes.icon}>
                         <NewFeatureIcon />

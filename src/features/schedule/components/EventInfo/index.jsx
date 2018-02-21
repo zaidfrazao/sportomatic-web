@@ -1088,74 +1088,35 @@ class EventInfo extends Component {
     let cancelButton = <div />;
     if (showButtons) {
       if (info.requiredInfo.status === "CANCELLED") {
-        if (isMobile) {
-          cancelButton = (
-            <Tooltip title="Uncancel event" placement="bottom">
-              <IconButton
-                disabled={
-                  isInfoLoading ||
-                  isCoachesLoading ||
-                  isManagersLoading ||
-                  isTeamsLoading
-                }
-                aria-label="uncancel event"
-                onClick={() => uncancelEvent()}
-              >
-                <UncancelIcon />
-              </IconButton>
-            </Tooltip>
-          );
-        } else {
-          cancelButton = (
-            <Button
-              disabled={
-                isInfoLoading ||
-                isCoachesLoading ||
-                isManagersLoading ||
-                isTeamsLoading
-              }
-              aria-label="uncancel event"
-              onClick={() => uncancelEvent()}
-            >
-              <UncancelIcon className={classes.iconAdjacentText} /> Uncancel
-              event
-            </Button>
-          );
-        }
+        cancelButton = (
+          <Button
+            disabled={
+              isInfoLoading ||
+              isCoachesLoading ||
+              isManagersLoading ||
+              isTeamsLoading
+            }
+            aria-label="uncancel event"
+            onClick={() => uncancelEvent()}
+          >
+            <UncancelIcon className={classes.iconAdjacentText} /> Uncancel event
+          </Button>
+        );
       } else {
-        if (isMobile) {
-          cancelButton = (
-            <Tooltip title="Cancel event" placement="bottom">
-              <IconButton
-                disabled={
-                  isInfoLoading ||
-                  isCoachesLoading ||
-                  isManagersLoading ||
-                  isTeamsLoading
-                }
-                aria-label="cancel event"
-                onClick={() => cancelEvent()}
-              >
-                <CancelIcon />
-              </IconButton>
-            </Tooltip>
-          );
-        } else {
-          cancelButton = (
-            <Button
-              disabled={
-                isInfoLoading ||
-                isCoachesLoading ||
-                isManagersLoading ||
-                isTeamsLoading
-              }
-              aria-label="cancel event"
-              onClick={() => cancelEvent()}
-            >
-              <CancelIcon className={classes.iconAdjacentText} /> Cancel event
-            </Button>
-          );
-        }
+        cancelButton = (
+          <Button
+            disabled={
+              isInfoLoading ||
+              isCoachesLoading ||
+              isManagersLoading ||
+              isTeamsLoading
+            }
+            aria-label="cancel event"
+            onClick={() => cancelEvent()}
+          >
+            <CancelIcon className={classes.iconAdjacentText} /> Cancel event
+          </Button>
+        );
       }
     }
 

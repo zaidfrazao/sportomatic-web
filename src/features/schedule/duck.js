@@ -768,7 +768,7 @@ export function addEvent(
     for (let i = 0; i < eventsToCreate.length; i++) {
       let eventDate = eventsToCreate[i].date;
       const year = eventDate.getFullYear();
-      const month = format2Digits(eventDate.getMonth() + 1);
+      const month = format2Digits(eventDate.getMonth());
       const day = format2Digits(eventDate.getDate());
       const start = {
         hours: format2Digits(requiredInfo.times.start.getHours()),
@@ -778,16 +778,16 @@ export function addEvent(
         hours: format2Digits(requiredInfo.times.end.getHours()),
         minutes: format2Digits(requiredInfo.times.end.getMinutes())
       };
-      const newStart = `${year}-${month}-${day}T${start.hours}:${start.minutes}:00`;
-      const newEnd = `${year}-${month}-${day}T${end.hours}:${end.minutes}:00`;
+      const newStart = new Date(year, month, day, start.hours, start.minutes);
+      const newEnd = new Date(year, month, day, end.hours, end.minutes);
 
       const newEventInfo = {
         institutionID,
         requiredInfo: {
           ...requiredInfo,
           times: {
-            end: new Date(newEnd),
-            start: new Date(newStart)
+            end: newEnd,
+            start: newStart
           }
         },
         optionalInfo,
@@ -875,7 +875,7 @@ export function editEvent(
     for (let i = 0; i < eventsToEdit.length; i++) {
       let eventDate = eventsToEdit[i].date;
       const year = eventDate.getFullYear();
-      const month = format2Digits(eventDate.getMonth() + 1);
+      const month = format2Digits(eventDate.getMonth());
       const day = format2Digits(eventDate.getDate());
       const start = {
         hours: format2Digits(requiredInfo.times.start.getHours()),
@@ -885,16 +885,16 @@ export function editEvent(
         hours: format2Digits(requiredInfo.times.end.getHours()),
         minutes: format2Digits(requiredInfo.times.end.getMinutes())
       };
-      const newStart = `${year}-${month}-${day}T${start.hours}:${start.minutes}:00`;
-      const newEnd = `${year}-${month}-${day}T${end.hours}:${end.minutes}:00`;
+      const newStart = new Date(year, month, day, start.hours, start.minutes);
+      const newEnd = new Date(year, month, day, end.hours, end.minutes);
 
       const newEventInfo = {
         institutionID,
         requiredInfo: {
           ...requiredInfo,
           times: {
-            end: new Date(newEnd),
-            start: new Date(newStart)
+            end: newEnd,
+            start: newStart
           }
         },
         optionalInfo,
