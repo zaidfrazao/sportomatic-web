@@ -11,7 +11,7 @@ import Dialog, {
   DialogTitle
 } from "material-ui/Dialog";
 import { FormLabel, FormControl, FormControlLabel } from "material-ui/Form";
-import { grey, lightBlue, orange } from "material-ui/colors";
+import { grey, lightBlue, orange, red } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import Input, { InputLabel } from "material-ui/Input";
 import { MenuItem } from "material-ui/Menu";
@@ -38,6 +38,12 @@ const styles = {
   competitiveEvent: {
     backgroundColor: orange[500],
     marginRight: 16
+  },
+  errorMessage: {
+    color: red[500],
+    fontSize: 12,
+    width: "80%",
+    margin: "0 8% 0 12%"
   },
   eventTypeControl: {
     flexGrow: 1
@@ -131,6 +137,17 @@ const styles = {
     margin: 24,
     border: `1px solid ${grey[200]}`
   },
+  timeInput: {
+    width: 56,
+    margin: "0 4px"
+  },
+  timeWrapper: {
+    width: "80%",
+    margin: "24px 10%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "baseline"
+  },
   title: {
     width: "100%",
     margin: 24,
@@ -148,8 +165,16 @@ class AddEventDialog extends Component {
     title: "Practice",
     type: "PRACTICE",
     date: moment().format("YYYY-MM-DD"),
-    startTime: "12:00",
-    endTime: "13:00",
+    startTime: {
+      hours: "01",
+      minutes: "00",
+      ampm: "PM"
+    },
+    endTime: {
+      hours: "02",
+      minutes: "00",
+      ampm: "PM"
+    },
     venue: "",
     opponents: {},
     homeAway: "UNKNOWN",
@@ -166,11 +191,7 @@ class AddEventDialog extends Component {
         hasError: false,
         message: ""
       },
-      startTime: {
-        hasError: false,
-        message: ""
-      },
-      endTime: {
+      times: {
         hasError: false,
         message: ""
       },
@@ -218,8 +239,16 @@ class AddEventDialog extends Component {
     this.setState({
       title: "Practice",
       type: "PRACTICE",
-      startTime: "12:00",
-      endTime: "13:00",
+      startTime: {
+        hours: "01",
+        minutes: "00",
+        ampm: "PM"
+      },
+      endTime: {
+        hours: "02",
+        minutes: "00",
+        ampm: "PM"
+      },
       venue: "",
       opponents: {},
       homeAway: "UNKNOWN",
@@ -236,11 +265,7 @@ class AddEventDialog extends Component {
           hasError: false,
           message: ""
         },
-        startTime: {
-          hasError: false,
-          message: ""
-        },
-        endTime: {
+        times: {
           hasError: false,
           message: ""
         },
@@ -270,7 +295,7 @@ class AddEventDialog extends Component {
 
   validateField(field, value) {
     const { minDate } = this.props;
-    const { errors, startTime, endTime } = this.state;
+    const { errors } = this.state;
 
     let hasError = false;
     let message = "";
@@ -280,18 +305,6 @@ class AddEventDialog extends Component {
         if (moment(minDate).isAfter(moment(value))) {
           hasError = true;
           message = "Cannot schedule events before today";
-        }
-        break;
-      case "startTime":
-        if (value >= endTime) {
-          hasError = true;
-          message = "Start time must be before end time";
-        }
-        break;
-      case "endTime":
-        if (value <= startTime) {
-          hasError = true;
-          message = "Start time must be before end time";
         }
         break;
       case "title":
@@ -338,33 +351,68 @@ class AddEventDialog extends Component {
         break;
     }
 
-    if (field === "startTime" || field === "endTime") {
-      this.setState({
-        ...this.state,
-        errors: {
-          ...errors,
-          startTime: {
-            hasError,
-            message
-          },
-          endTime: {
-            hasError,
-            message
-          }
+    this.setState({
+      ...this.state,
+      errors: {
+        ...errors,
+        [field]: {
+          hasError,
+          message
         }
-      });
-    } else {
-      this.setState({
-        ...this.state,
-        errors: {
-          ...errors,
-          [field]: {
-            hasError,
-            message
-          }
-        }
-      });
+      }
+    });
+  }
+
+  validateTimes(startTime, endTime) {
+    const startTimeMoment = moment()
+      .hour(
+        startTime.ampm === "AM" || parseInt(startTime.hours, 10) === 12
+          ? parseInt(startTime.hours, 10)
+          : parseInt(startTime.hours, 10) + 12
+      )
+      .minute(parseInt(startTime.minutes, 10));
+    const endTimeMoment = moment()
+      .hour(
+        endTime.ampm === "AM" || parseInt(endTime.hours, 10) === 12
+          ? parseInt(endTime.hours, 10)
+          : parseInt(endTime.hours, 10) + 12
+      )
+      .minute(parseInt(endTime.minutes, 10));
+
+    let hasError = false;
+    let message = "";
+
+    if (startTimeMoment.isAfter(endTimeMoment)) {
+      hasError = true;
+      message = "Start time must be before end time";
     }
+
+    this.setState({
+      errors: {
+        ...this.state.errors,
+        times: {
+          hasError,
+          message
+        }
+      }
+    });
+  }
+
+  handleTimeChange(timeType, timeSector, newValue) {
+    const { startTime, endTime } = this.state;
+
+    if (timeType === "startTime") {
+      this.validateTimes({ ...startTime, [timeSector]: newValue }, endTime);
+    } else {
+      this.validateTimes(startTime, { ...endTime, [timeSector]: newValue });
+    }
+
+    this.setState({
+      [timeType]: {
+        ...this.state[timeType],
+        [timeSector]: newValue
+      }
+    });
   }
 
   isEventCompetitive() {
@@ -1273,46 +1321,153 @@ class AddEventDialog extends Component {
                       }}
                     />
                   </FormControl>
-                  <FormControl className={classes.formControl}>
-                    <TextField
-                      id="time"
-                      label="Starts at"
-                      type="time"
-                      value={startTime}
-                      error={errors.startTime.hasError}
-                      helperText={errors.startTime.message}
-                      onChange={e => {
-                        this.validateField("startTime", e.target.value);
-                        this.handleChange("startTime", e.target.value);
-                      }}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      inputProps={{
-                        step: 300
-                      }}
-                    />
+                  <FormControl
+                    className={classes.timeWrapper}
+                    error={errors.times.hasError}
+                  >
+                    <InputLabel htmlFor="startTime">Start time</InputLabel>
+                    <Select
+                      native
+                      value={startTime.hours}
+                      input={<Input id="startTime-hours" />}
+                      onChange={e =>
+                        this.handleTimeChange(
+                          "startTime",
+                          "hours",
+                          e.target.value
+                        )}
+                      className={classes.timeInput}
+                    >
+                      <option value="12">{"12"}</option>
+                      <option value="01">{"01"}</option>
+                      <option value="02">{"02"}</option>
+                      <option value="03">{"03"}</option>
+                      <option value="04">{"04"}</option>
+                      <option value="05">{"05"}</option>
+                      <option value="06">{"06"}</option>
+                      <option value="07">{"07"}</option>
+                      <option value="08">{"08"}</option>
+                      <option value="09">{"09"}</option>
+                      <option value="10">{"10"}</option>
+                      <option value="11">{"11"}</option>
+                    </Select>
+                    <Select
+                      native
+                      value={startTime.minutes}
+                      input={<Input id="startTime-minutes" />}
+                      onChange={e =>
+                        this.handleTimeChange(
+                          "startTime",
+                          "minutes",
+                          e.target.value
+                        )}
+                      className={classes.timeInput}
+                    >
+                      <option value="00">{"00"}</option>
+                      <option value="05">{"05"}</option>
+                      <option value="10">{"10"}</option>
+                      <option value="15">{"15"}</option>
+                      <option value="20">{"20"}</option>
+                      <option value="25">{"25"}</option>
+                      <option value="30">{"30"}</option>
+                      <option value="35">{"35"}</option>
+                      <option value="40">{"40"}</option>
+                      <option value="45">{"45"}</option>
+                      <option value="50">{"50"}</option>
+                      <option value="55">{"55"}</option>
+                    </Select>
+                    <Select
+                      native
+                      value={startTime.ampm}
+                      input={<Input id="startTime-ampm" />}
+                      onChange={e =>
+                        this.handleTimeChange(
+                          "startTime",
+                          "ampm",
+                          e.target.value
+                        )}
+                      className={classes.timeInput}
+                    >
+                      <option value="AM">{"AM"}</option>
+                      <option value="PM">{"PM"}</option>
+                    </Select>
                   </FormControl>
-                  <FormControl className={classes.formControl}>
-                    <TextField
-                      id="time"
-                      label="Ends at"
-                      type="time"
-                      value={endTime}
-                      error={errors.endTime.hasError}
-                      helperText={errors.endTime.message}
-                      onChange={e => {
-                        this.validateField("endTime", e.target.value);
-                        this.handleChange("endTime", e.target.value);
-                      }}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      inputProps={{
-                        step: 300
-                      }}
-                    />
+                  <FormControl
+                    className={classes.timeWrapper}
+                    error={errors.times.hasError}
+                  >
+                    <InputLabel htmlFor="endTime">End time</InputLabel>
+                    <Select
+                      native
+                      value={endTime.hours}
+                      input={<Input id="endTime-hours" />}
+                      onChange={e =>
+                        this.handleTimeChange(
+                          "endTime",
+                          "hours",
+                          e.target.value
+                        )}
+                      className={classes.timeInput}
+                    >
+                      <option value="12">{"12"}</option>
+                      <option value="01">{"01"}</option>
+                      <option value="02">{"02"}</option>
+                      <option value="03">{"03"}</option>
+                      <option value="04">{"04"}</option>
+                      <option value="05">{"05"}</option>
+                      <option value="06">{"06"}</option>
+                      <option value="07">{"07"}</option>
+                      <option value="08">{"08"}</option>
+                      <option value="09">{"09"}</option>
+                      <option value="10">{"10"}</option>
+                      <option value="11">{"11"}</option>
+                    </Select>
+                    <Select
+                      native
+                      value={endTime.minutes}
+                      input={<Input id="endTime-minutes" />}
+                      onChange={e =>
+                        this.handleTimeChange(
+                          "endTime",
+                          "minutes",
+                          e.target.value
+                        )}
+                      className={classes.timeInput}
+                    >
+                      <option value="00">{"00"}</option>
+                      <option value="05">{"05"}</option>
+                      <option value="10">{"10"}</option>
+                      <option value="15">{"15"}</option>
+                      <option value="20">{"20"}</option>
+                      <option value="25">{"25"}</option>
+                      <option value="30">{"30"}</option>
+                      <option value="35">{"35"}</option>
+                      <option value="40">{"40"}</option>
+                      <option value="45">{"45"}</option>
+                      <option value="50">{"50"}</option>
+                      <option value="55">{"55"}</option>
+                    </Select>
+                    <Select
+                      native
+                      value={endTime.ampm}
+                      input={<Input id="endTime-ampm" />}
+                      onChange={e =>
+                        this.handleTimeChange(
+                          "endTime",
+                          "ampm",
+                          e.target.value
+                        )}
+                      className={classes.timeInput}
+                    >
+                      <option value="AM">{"AM"}</option>
+                      <option value="PM">{"PM"}</option>
+                    </Select>
                   </FormControl>
+                  {errors.times.hasError && (
+                    <p className={classes.errorMessage}>
+                      {errors.times.message}
+                    </p>
+                  )}
                   <FormControl className={classes.formControl}>
                     <TextField
                       id="venue"
@@ -1528,22 +1683,30 @@ class AddEventDialog extends Component {
                 frequency,
                 numberOfEvents: parseInt(numberOfEvents, 10)
               };
-              const startTimeObject = moment(date)
-                .hour(parseInt(startTime.slice(0, 2), 10))
-                .minute(parseInt(startTime.slice(3, 5), 10))
-                .toDate();
-              const endTimeObject = moment(date)
-                .hour(parseInt(endTime.slice(0, 2), 10))
-                .minute(parseInt(endTime.slice(3, 5), 10))
-                .toDate();
+
+              const startTimeMoment = moment(date)
+                .hour(
+                  startTime.ampm === "AM" ||
+                  parseInt(startTime.hours, 10) === 12
+                    ? parseInt(startTime.hours, 10)
+                    : parseInt(startTime.hours, 10) + 12
+                )
+                .minute(parseInt(startTime.minutes, 10));
+              const endTimeMoment = moment(date)
+                .hour(
+                  endTime.ampm === "AM" || parseInt(endTime.hours, 10) === 12
+                    ? parseInt(endTime.hours, 10)
+                    : parseInt(endTime.hours, 10) + 12
+                )
+                .minute(parseInt(endTime.minutes, 10));
 
               const requiredInfo = {
                 isCompetitive,
                 title,
                 status: "ACTIVE",
                 times: {
-                  end: endTimeObject,
-                  start: startTimeObject
+                  end: endTimeMoment.toDate(),
+                  start: startTimeMoment.toDate()
                 },
                 type: eventType
               };
@@ -1592,8 +1755,8 @@ class AddEventDialog extends Component {
                     hours: {
                       status: "AWAITING_SIGN_IN",
                       times: {
-                        signIn: startTimeObject,
-                        signOut: endTimeObject
+                        signIn: startTimeMoment.toDate(),
+                        signOut: endTimeMoment.toDate()
                       }
                     }
                   }
