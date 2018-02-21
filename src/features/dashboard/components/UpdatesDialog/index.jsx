@@ -24,7 +24,42 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.19 (Current) - Deployed 19/02/2018"}
+            {"v0.9.20 (Current) - Deployed 20/02/2018"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              New Features
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Rework taskbar buttons to be clearer in terms of functionality.
+                (Issue #77)
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Bug Fixes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>Fix Safari event time scheduling bug. (Issue #15)</li>
+              <li>
+                Do not show coaches marked absent in "Recent Hours" home widget.
+                (Issue #121)
+              </li>
+              <li>
+                Fix crash caused by clicking a list item on the "Recent Results"
+                widget. (Issue #124)
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Minor Changes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>Make phone number inputs more user-friendly. (Issue #122)</li>
+              <li>Add "Squash" to list of sports. (Issue #123)</li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.19 - Deployed 19/02/2018"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">

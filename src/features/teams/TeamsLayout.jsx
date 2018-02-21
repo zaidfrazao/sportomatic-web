@@ -1,7 +1,10 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
+import AddIcon from "material-ui-icons/Add";
+import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
+import EditIcon from "material-ui-icons/Edit";
 import Switch from "material-ui/Switch";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
@@ -30,6 +33,12 @@ const styles = theme => ({
     "@media (min-width: 600px)": {
       bottom: 24
     }
+  },
+  fabPosition: {
+    position: "fixed",
+    right: "24px",
+    bottom: "24px",
+    zIndex: 10
   },
   infoWrapper: {
     width: "100%",
@@ -403,6 +412,18 @@ class TeamsLayout extends Component {
                 openTeamErrorAlert
               }}
             />
+            {role === "admin" &&
+              isMobile && (
+                <Button
+                  fab
+                  color="accent"
+                  aria-label="edit team"
+                  className={classes.fabPosition}
+                  onClick={() => openEditTeamDialog()}
+                >
+                  <EditIcon />
+                </Button>
+              )}
           </div>
         ) : (
           <div
@@ -457,6 +478,18 @@ class TeamsLayout extends Component {
                   hasTeamsCreated={hasTeamsCreated}
                   actions={{ openDeleteTeamAlert }}
                 />
+                {role === "admin" &&
+                  isMobile && (
+                    <Button
+                      fab
+                      color="accent"
+                      aria-label="add new team"
+                      className={classes.fabPosition}
+                      onClick={() => openAddTeamDialog()}
+                    >
+                      <AddIcon />
+                    </Button>
+                  )}
               </div>
             )}
             <NotificationModal

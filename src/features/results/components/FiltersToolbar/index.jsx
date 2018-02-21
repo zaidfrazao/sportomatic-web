@@ -36,6 +36,9 @@ const styles = theme => ({
     width: "100%",
     margin: "8px 0"
   },
+  iconAdjacentText: {
+    marginRight: 8
+  },
   searchIcon: {
     width: 18,
     height: 18
@@ -258,14 +261,23 @@ class FiltersToolbar extends Component {
               )}
             </div>
           )}
-          <Tooltip title="Filter teams" placement="bottom">
-            <IconButton
-              aria-label="filter teams"
+          {isMobile ? (
+            <Tooltip title="Filter events" placement="bottom">
+              <IconButton
+                aria-label="filter events"
+                onClick={() => this.toggleDialog()}
+              >
+                <FilterIcon />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Button
+              aria-label="filter events"
               onClick={() => this.toggleDialog()}
             >
-              <FilterIcon />
-            </IconButton>
-          </Tooltip>
+              <FilterIcon className={classes.iconAdjacentText} /> Set filters
+            </Button>
+          )}
         </Toolbar>
         {isMobile && (
           <div className={classes.settingChips}>

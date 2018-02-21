@@ -1,9 +1,12 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
+import AddIcon from "material-ui-icons/Add";
 import AppBar from "material-ui/AppBar";
 import Badge from "material-ui/Badge";
+import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
+import EditIcon from "material-ui-icons/Edit";
 import Switch from "material-ui/Switch";
 import Tabs, { Tab } from "material-ui/Tabs";
 import Typography from "material-ui/Typography";
@@ -35,6 +38,12 @@ const styles = theme => ({
     "@media (min-width: 600px)": {
       bottom: 24
     }
+  },
+  fabPosition: {
+    position: "fixed",
+    right: "24px",
+    bottom: "24px",
+    zIndex: 10
   },
   infoWrapper: {
     height: "100%",
@@ -585,6 +594,18 @@ class PeopleLayout extends Component {
                 closeModal: () => closeEditPersonDialog()
               }}
             />
+            {role === "admin" &&
+              isMobile && (
+                <Button
+                  fab
+                  color="accent"
+                  aria-label="edit person info"
+                  className={classes.fabPosition}
+                  onClick={() => openEditPersonDialog()}
+                >
+                  <EditIcon />
+                </Button>
+              )}
           </div>
         ) : (
           <div className={classes.tabsWrapper}>
@@ -683,6 +704,18 @@ class PeopleLayout extends Component {
                     closeModal: () => closeInvitePersonModal()
                   }}
                 />
+                {role === "admin" &&
+                  isMobile && (
+                    <Button
+                      fab
+                      color="accent"
+                      aria-label="invite new person"
+                      className={classes.fabPosition}
+                      onClick={() => openInvitePersonModal()}
+                    >
+                      <AddIcon />
+                    </Button>
+                  )}
               </div>
             )}
             {currentTab === "REQUESTS" && (

@@ -355,7 +355,7 @@ class DashboardLayout extends Component {
           (role === "admin" ||
             (role === "manager" && info.managers[userID]) ||
             (role === "coach" && coachID === userID)) &&
-          (coachInfo.attendance.willAttend || coachInfo.attendance.didAttend) &&
+          (coachInfo.attendance.willAttend && coachInfo.attendance.didAttend) &&
           info.requiredInfo.status === "ACTIVE" &&
           recentHoursList.length < 5
         ) {

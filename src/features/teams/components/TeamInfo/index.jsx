@@ -5,6 +5,7 @@ import { amber, brown, green, grey, lightBlue, red } from "material-ui/colors";
 import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import BackIcon from "material-ui-icons/ArrowBack";
+import Button from "material-ui/Button";
 import Collapse from "material-ui/transitions/Collapse";
 import EditIcon from "material-ui-icons/Edit";
 import EventIcon from "material-ui-icons/Event";
@@ -83,6 +84,9 @@ const styles = theme => ({
     backgroundColor: grey[700],
     color: grey[50],
     borderBottom: `1px solid ${grey[200]}`
+  },
+  iconAdjacentText: {
+    marginRight: 8
   },
   inset: {
     paddingLeft: theme.spacing.unit * 4
@@ -935,7 +939,7 @@ class TeamInfo extends Component {
   }
 
   render() {
-    const { classes, info, canEdit } = this.props;
+    const { classes, info, canEdit, isMobile } = this.props;
     const {
       isTeamsLoading,
       isCoachesLoading,
@@ -1003,19 +1007,18 @@ class TeamInfo extends Component {
               )}
             />
             <div className={classes.flexGrow} />
-            {canEdit && (
-              <Tooltip title="Edit team" placement="bottom">
-                <IconButton
+            {canEdit &&
+              !isMobile && (
+                <Button
                   disabled={
                     isCoachesLoading || isManagersLoading || isTeamsLoading
                   }
                   aria-label="edit team"
                   onClick={() => editTeam()}
                 >
-                  <EditIcon />
-                </IconButton>
-              </Tooltip>
-            )}
+                  <EditIcon className={classes.iconAdjacentText} /> Edit team
+                </Button>
+              )}
           </Toolbar>
           <div className={classes.adWrapper}>{ad}</div>
           <div className={classes.wrapper}>

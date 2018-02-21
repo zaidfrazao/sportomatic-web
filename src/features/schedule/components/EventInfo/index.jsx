@@ -18,6 +18,7 @@ import AwaitingApprovalIcon from "material-ui-icons/AssignmentReturn";
 import AwaitingSignInIcon from "material-ui-icons/AssignmentLate";
 import AwaitingSignOutIcon from "material-ui-icons/AssignmentReturned";
 import BackIcon from "material-ui-icons/ArrowBack";
+import Button from "material-ui/Button";
 import CancelIcon from "material-ui-icons/Cancel";
 import Collapse from "material-ui/transitions/Collapse";
 import EditIcon from "material-ui-icons/Edit";
@@ -129,6 +130,9 @@ const styles = theme => ({
   },
   hoursApprovedAvatar: {
     backgroundColor: green[500]
+  },
+  iconAdjacentText: {
+    marginRight: 8
   },
   inset: {
     paddingLeft: theme.spacing.unit * 4
@@ -1056,7 +1060,14 @@ class EventInfo extends Component {
   }
 
   render() {
-    const { classes, info, isPastEvent, canCancel, canEdit } = this.props;
+    const {
+      classes,
+      info,
+      isPastEvent,
+      canCancel,
+      canEdit,
+      isMobile
+    } = this.props;
     const {
       updateView,
       editEvent,
@@ -1077,20 +1088,61 @@ class EventInfo extends Component {
     let cancelButton = <div />;
     if (showButtons) {
       if (info.requiredInfo.status === "CANCELLED") {
-        cancelButton = (
-          <Tooltip title="Uncancel event" placement="bottom">
-            <IconButton
+        if (isMobile) {
+          cancelButton = (
+            <Tooltip title="Uncancel event" placement="bottom">
+              <IconButton
+                disabled={
+                  isInfoLoading ||
+                  isCoachesLoading ||
+                  isManagersLoading ||
+                  isTeamsLoading
+                }
+                aria-label="uncancel event"
+                onClick={() => uncancelEvent()}
+              >
+                <UncancelIcon />
+              </IconButton>
+            </Tooltip>
+          );
+        } else {
+          cancelButton = (
+            <Button
+              disabled={
+                isInfoLoading ||
+                isCoachesLoading ||
+                isManagersLoading ||
+                isTeamsLoading
+              }
               aria-label="uncancel event"
               onClick={() => uncancelEvent()}
             >
-              <UncancelIcon />
-            </IconButton>
-          </Tooltip>
-        );
+              <UncancelIcon className={classes.iconAdjacentText} /> Uncancel
+              event
+            </Button>
+          );
+        }
       } else {
-        cancelButton = (
-          <Tooltip title="Cancel event" placement="bottom">
-            <IconButton
+        if (isMobile) {
+          cancelButton = (
+            <Tooltip title="Cancel event" placement="bottom">
+              <IconButton
+                disabled={
+                  isInfoLoading ||
+                  isCoachesLoading ||
+                  isManagersLoading ||
+                  isTeamsLoading
+                }
+                aria-label="cancel event"
+                onClick={() => cancelEvent()}
+              >
+                <CancelIcon />
+              </IconButton>
+            </Tooltip>
+          );
+        } else {
+          cancelButton = (
+            <Button
               disabled={
                 isInfoLoading ||
                 isCoachesLoading ||
@@ -1100,10 +1152,10 @@ class EventInfo extends Component {
               aria-label="cancel event"
               onClick={() => cancelEvent()}
             >
-              <CancelIcon />
-            </IconButton>
-          </Tooltip>
-        );
+              <CancelIcon className={classes.iconAdjacentText} /> Cancel event
+            </Button>
+          );
+        }
       }
     }
 
@@ -1149,21 +1201,11 @@ class EventInfo extends Component {
             <div className={classes.flexGrow} />
             {showButtons && canCancel && cancelButton}
             {showButtons &&
-              canEdit && (
-                <Tooltip title="Edit event" placement="bottom">
-                  <IconButton
-                    disabled={
-                      isInfoLoading ||
-                      isCoachesLoading ||
-                      isManagersLoading ||
-                      isTeamsLoading
-                    }
-                    aria-label="edit event"
-                    onClick={() => editEvent()}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </Tooltip>
+              canEdit &&
+              !isMobile && (
+                <Button aria-label="edit event" onClick={() => editEvent()}>
+                  <EditIcon className={classes.iconAdjacentText} /> Edit event
+                </Button>
               )}
           </Toolbar>
           <div className={classes.adWrapper}>{ad}</div>
