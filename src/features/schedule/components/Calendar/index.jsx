@@ -252,9 +252,10 @@ class Calendar extends Component {
     const dateSelectedObject = new Date(dateSelected);
     const prevDate = new Date(
       dateSelectedObject.getFullYear(),
-      dateSelectedObject.getMonth() - 1,
+      dateSelectedObject.getMonth(),
       1
     );
+
     let prevDisabled = isMinDateLoading;
     if (this.compareDates(minDate, prevDate) === +1) {
       prevDate.setDate(minDate.getDate());
