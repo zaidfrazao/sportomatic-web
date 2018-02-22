@@ -11,6 +11,7 @@ import moment from "moment";
 import { Route } from "react-router";
 import { withStyles } from "material-ui/styles";
 import Generic from "./components/Generic";
+import Soccer from "./components/Soccer";
 
 const styles = {
   contentWrapper: {
@@ -74,14 +75,45 @@ class ResultCard extends Component {
       canEdit,
       canApprove
     } = this.props;
-    const { startLogging, finaliseResults, editResult } = this.props.actions;
+    const {
+      startLogging,
+      finaliseResults,
+      editResult,
+      toggleOptionalStats
+    } = this.props.actions;
 
     return _.toPairs(eventInfo.teams).map(([teamID, teamInfo]) => {
       if (teams[teamID]) {
         const { name, sport } = teams[teamID].info;
         const { opponents, resultsStatus } = teamInfo;
 
-        switch (_.upperCase(sport)) {
+        switch (sport) {
+          case "Soccer / Football":
+          case "Soccer":
+          case "Football":
+            return (
+              <Soccer
+                key={`result-${teamID}`}
+                teamID={teamID}
+                eventID={eventID}
+                resultsStatus={resultsStatus}
+                ourTeam={{
+                  name,
+                  opponents,
+                  emblemURL: institutionEmblemURL
+                }}
+                isMobile={isMobile}
+                isTablet={isTablet}
+                canEdit={canEdit}
+                canApprove={canApprove}
+                actions={{
+                  startLogging,
+                  finaliseResults,
+                  editResult,
+                  toggleOptionalStats
+                }}
+              />
+            );
           default:
             return (
               <Generic

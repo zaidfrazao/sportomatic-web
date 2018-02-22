@@ -30,6 +30,9 @@ export const ERROR_FINALISING_RESULTS = `${NAMESPACE}/ERROR_FINALISING_RESULTS`;
 export const REQUEST_EDIT_RESULT = `${NAMESPACE}/REQUEST_EDIT_RESULT`;
 export const RECEIVE_EDIT_RESULT = `${NAMESPACE}/RECEIVE_EDIT_RESULT`;
 export const ERROR_EDITTING_RESULT = `${NAMESPACE}/ERROR_EDITTING_RESULT`;
+export const REQUEST_TOGGLE_OPTIONAL_STATS = `${NAMESPACE}/REQUEST_TOGGLE_OPTIONAL_STATS`;
+export const RECEIVE_TOGGLE_OPTIONAL_STATS = `${NAMESPACE}/RECEIVE_TOGGLE_OPTIONAL_STATS`;
+export const ERROR_TOGGLING_OPTIONAL_STATS = `${NAMESPACE}/ERROR_TOGGLING_OPTIONAL_STATS`;
 export const REQUEST_INSTITUTION_EMBLEM = `${NAMESPACE}/REQUEST_INSTITUTION_EMBLEM`;
 export const RECEIVE_INSTITUTION_EMBLEM = `${NAMESPACE}/RECEIVE_INSTITUTION_EMBLEM`;
 export const ERROR_FETCHING_INSTITUTION_EMBLEM = `${NAMESPACE}/ERROR_FETCHING_INSTITUTION_EMBLEM`;
@@ -583,12 +586,55 @@ export function startLogging(eventID, teamID, structure, opponentIDs) {
     opponentIDs.map(id => {
       updates[`teams.${teamID}.opponents.${id}.ourScore`] = structure;
       updates[`teams.${teamID}.opponents.${id}.theirScore`] = structure;
+      updates[`teams.${teamID}.opponents.${id}.trackOptionalStats`] = false;
     });
 
     return eventRef
       .update(updates)
       .then(() => dispatch(receiveStartLogging()))
       .catch(error => dispatch(errorStartingLogging(error)));
+  };
+}
+
+export function requestToggleOptionalStats() {
+  return {
+    type: REQUEST_TOGGLE_OPTIONAL_STATS
+  };
+}
+
+export function receiveToggleOptionalStats() {
+  return {
+    type: RECEIVE_TOGGLE_OPTIONAL_STATS
+  };
+}
+
+export function errorTogglingOptionalStats(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_TOGGLING_OPTIONAL_STATS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function toggleOptionalStats(eventID, teamID, opponentID, newState) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestToggleOptionalStats());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    const updates = {
+      [`teams.${teamID}.opponents.${opponentID}.trackOptionalStats`]: newState
+    };
+
+    return eventRef
+      .update(updates)
+      .then(() => dispatch(receiveToggleOptionalStats()))
+      .catch(error => dispatch(errorTogglingOptionalStats(error)));
   };
 }
 
