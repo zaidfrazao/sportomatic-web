@@ -573,36 +573,64 @@ class EventInfo extends Component {
                                 );
                               } else {
                                 if (showResults) {
-                                  if (
-                                    ourScore.totalPoints >
-                                    theirScore.totalPoints
-                                  ) {
-                                    resultAvatar = (
-                                      <Avatar className={classes.winAvatar}>
-                                        W
-                                      </Avatar>
-                                    );
-                                    resultText = `${teams[id].info
-                                      .name} won ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
-                                  } else if (
-                                    ourScore.totalPoints <
-                                    theirScore.totalPoints
-                                  ) {
-                                    resultAvatar = (
-                                      <Avatar className={classes.lossAvatar}>
-                                        L
-                                      </Avatar>
-                                    );
-                                    resultText = `${teams[id].info
-                                      .name} lost ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                  if (ourScore.finalScore !== undefined) {
+                                    if (
+                                      ourScore.finalScore >
+                                      theirScore.finalScore
+                                    ) {
+                                      resultAvatar = (
+                                        <Avatar className={classes.winAvatar}>
+                                          W
+                                        </Avatar>
+                                      );
+                                      resultText = `Won ${ourScore.finalScore} - ${theirScore.finalScore}`;
+                                    } else if (
+                                      ourScore.finalScore <
+                                      theirScore.finalScore
+                                    ) {
+                                      resultAvatar = (
+                                        <Avatar className={classes.lossAvatar}>
+                                          L
+                                        </Avatar>
+                                      );
+                                      resultText = `Lost ${ourScore.finalScore} - ${theirScore.finalScore}`;
+                                    } else {
+                                      resultAvatar = (
+                                        <Avatar className={classes.drawAvatar}>
+                                          D
+                                        </Avatar>
+                                      );
+                                      resultText = `Drew ${ourScore.finalScore} - ${theirScore.finalScore}`;
+                                    }
                                   } else {
-                                    resultAvatar = (
-                                      <Avatar className={classes.drawAvatar}>
-                                        D
-                                      </Avatar>
-                                    );
-                                    resultText = `${teams[id].info
-                                      .name} drew ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                    if (
+                                      ourScore.totalPoints >
+                                      theirScore.totalPoints
+                                    ) {
+                                      resultAvatar = (
+                                        <Avatar className={classes.winAvatar}>
+                                          W
+                                        </Avatar>
+                                      );
+                                      resultText = `Won ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                    } else if (
+                                      ourScore.totalPoints <
+                                      theirScore.totalPoints
+                                    ) {
+                                      resultAvatar = (
+                                        <Avatar className={classes.lossAvatar}>
+                                          L
+                                        </Avatar>
+                                      );
+                                      resultText = `Lost ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                    } else {
+                                      resultAvatar = (
+                                        <Avatar className={classes.drawAvatar}>
+                                          D
+                                        </Avatar>
+                                      );
+                                      resultText = `Drew ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                    }
                                   }
                                 }
                                 return (
@@ -624,34 +652,62 @@ class EventInfo extends Component {
                               }
                             } else {
                               if (showResults) {
-                                if (
-                                  ourScore.totalPoints > theirScore.totalPoints
-                                ) {
-                                  resultAvatar = (
-                                    <Avatar className={classes.winAvatar}>
-                                      W
-                                    </Avatar>
-                                  );
-                                  resultText = `${teams[id].info
-                                    .name} won ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
-                                } else if (
-                                  ourScore.totalPoints < theirScore.totalPoints
-                                ) {
-                                  resultAvatar = (
-                                    <Avatar className={classes.lossAvatar}>
-                                      L
-                                    </Avatar>
-                                  );
-                                  resultText = `${teams[id].info
-                                    .name} lost ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                if (ourScore.finalScore !== undefined) {
+                                  if (
+                                    ourScore.finalScore > theirScore.finalScore
+                                  ) {
+                                    resultAvatar = (
+                                      <Avatar className={classes.winAvatar}>
+                                        W
+                                      </Avatar>
+                                    );
+                                    resultText = `Won ${ourScore.finalScore} - ${theirScore.finalScore}`;
+                                  } else if (
+                                    ourScore.finalScore < theirScore.finalScore
+                                  ) {
+                                    resultAvatar = (
+                                      <Avatar className={classes.lossAvatar}>
+                                        L
+                                      </Avatar>
+                                    );
+                                    resultText = `Lost ${ourScore.finalScore} - ${theirScore.finalScore}`;
+                                  } else {
+                                    resultAvatar = (
+                                      <Avatar className={classes.drawAvatar}>
+                                        D
+                                      </Avatar>
+                                    );
+                                    resultText = `Drew ${ourScore.finalScore} - ${theirScore.finalScore}`;
+                                  }
                                 } else {
-                                  resultAvatar = (
-                                    <Avatar className={classes.drawAvatar}>
-                                      D
-                                    </Avatar>
-                                  );
-                                  resultText = `${teams[id].info
-                                    .name} drew ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                  if (
+                                    ourScore.totalPoints >
+                                    theirScore.totalPoints
+                                  ) {
+                                    resultAvatar = (
+                                      <Avatar className={classes.winAvatar}>
+                                        W
+                                      </Avatar>
+                                    );
+                                    resultText = `Won ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                  } else if (
+                                    ourScore.totalPoints <
+                                    theirScore.totalPoints
+                                  ) {
+                                    resultAvatar = (
+                                      <Avatar className={classes.lossAvatar}>
+                                        L
+                                      </Avatar>
+                                    );
+                                    resultText = `Lost ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                  } else {
+                                    resultAvatar = (
+                                      <Avatar className={classes.drawAvatar}>
+                                        D
+                                      </Avatar>
+                                    );
+                                    resultText = `Drew ${ourScore.totalPoints} - ${theirScore.totalPoints}`;
+                                  }
                                 }
                               }
 

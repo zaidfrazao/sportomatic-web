@@ -152,10 +152,10 @@ class BannerCarousel extends Component {
           </div>
           <div className={classes.slide}>
             <div className={classes.slide2}>
-              <h2 className={classes.updatesTitle}>{"Version 0.9.22"}</h2>
+              <h2 className={classes.updatesTitle}>{"Version 0.9.23"}</h2>
               {!isMobile && (
                 <div className={classes.updateBoxesWrapper}>
-                  {false && (
+                  {true && (
                     <div className={classes.updateBox}>
                       <Avatar className={classes.icon}>
                         <NewFeatureIcon />
@@ -165,11 +165,11 @@ class BannerCarousel extends Component {
                         type="title"
                         component="h3"
                       >
-                        Improved Event Scheduling
+                        Soccer & Rugby Scoring
                       </Typography>
                     </div>
                   )}
-                  {true && (
+                  {false && (
                     <div className={classes.updateBox}>
                       <Avatar className={classes.icon}>
                         <BugIcon />
@@ -183,7 +183,7 @@ class BannerCarousel extends Component {
                       </Typography>
                     </div>
                   )}
-                  {true && (
+                  {false && (
                     <div className={classes.updateBox}>
                       <Avatar className={classes.icon}>
                         <MinorChangesIcon />

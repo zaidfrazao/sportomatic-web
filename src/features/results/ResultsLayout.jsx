@@ -247,7 +247,8 @@ class ResultsLayout extends Component {
       loadEventsByDate,
       startLogging,
       finaliseResults,
-      editResult
+      editResult,
+      toggleOptionalStats
     } = this.props.actions;
 
     if (isTeamsLoading || isStaffLoading || activeInstitutionID === "") {
@@ -345,7 +346,8 @@ class ResultsLayout extends Component {
                         actions={{
                           startLogging,
                           finaliseResults,
-                          editResult
+                          editResult,
+                          toggleOptionalStats
                         }}
                       />
                     );

@@ -24,7 +24,24 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.22 (Current) - Deployed 21/02/2018"}
+            {"v0.9.23 (Current) - Deployed 22/02/2018"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              New Features
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                New interfaces for recording soccer and rugby results. Can track
+                import stats that determine the outcome of the match (e.g.
+                goals, tries, conversions, etc.), as well as optionally track
+                additional stats that do no determine the final score (e.g.
+                corner, cards, throw-ins, etc.)
+              </li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.22 - Deployed 21/02/2018"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">

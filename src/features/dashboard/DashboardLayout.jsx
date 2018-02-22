@@ -295,7 +295,7 @@ class DashboardLayout extends Component {
               teamInfo.resultsStatus === "FINALISED" &&
               recentResultsList.length < 5
             ) {
-              _.values(teamInfo.opponents).map(resultInfo => {
+              _.toPairs(teamInfo.opponents).map(([opponentID, resultInfo]) => {
                 let primaryText = "Loading...";
                 let secondaryText = `vs ${resultInfo.name === ""
                   ? "Unknown"
@@ -304,28 +304,53 @@ class DashboardLayout extends Component {
 
                 let result = "drew";
                 let avatarStyle = classes.draw;
-                if (
-                  resultInfo.ourScore.totalPoints >
-                  resultInfo.theirScore.totalPoints
-                ) {
-                  result = "won";
-                  avatarStyle = classes.win;
-                } else if (
-                  resultInfo.ourScore.totalPoints <
-                  resultInfo.theirScore.totalPoints
-                ) {
-                  result = "lost";
-                  avatarStyle = classes.loss;
-                }
 
                 if (teams[teamID]) {
-                  primaryText = `${teams[teamID].info
-                    .name} ${result} ${resultInfo.ourScore
-                    .totalPoints} - ${resultInfo.theirScore.totalPoints}`;
+                  if (resultInfo.ourScore.finalScore !== undefined) {
+                    primaryText = `${teams[teamID].info
+                      .name} ${result} ${resultInfo.ourScore
+                      .finalScore} - ${resultInfo.theirScore.finalScore}`;
+
+                    if (
+                      resultInfo.ourScore.finalScore >
+                      resultInfo.theirScore.finalScore
+                    ) {
+                      result = "won";
+                      avatarStyle = classes.win;
+                    } else if (
+                      resultInfo.ourScore.finalScore <
+                      resultInfo.theirScore.finalScore
+                    ) {
+                      result = "lost";
+                      avatarStyle = classes.loss;
+                    }
+                  } else {
+                    primaryText = `${teams[teamID].info
+                      .name} ${result} ${resultInfo.ourScore
+                      .totalPoints} - ${resultInfo.theirScore.totalPoints}`;
+
+                    if (
+                      resultInfo.ourScore.totalPoints >
+                      resultInfo.theirScore.totalPoints
+                    ) {
+                      result = "won";
+                      avatarStyle = classes.win;
+                    } else if (
+                      resultInfo.ourScore.totalPoints <
+                      resultInfo.theirScore.totalPoints
+                    ) {
+                      result = "lost";
+                      avatarStyle = classes.loss;
+                    }
+                  }
                 }
 
                 recentResultsList.push(
-                  <ListItem key={id} button onClick={() => history.push(link)}>
+                  <ListItem
+                    key={`${id}-${opponentID}`}
+                    button
+                    onClick={() => history.push(link)}
+                  >
                     <Avatar className={avatarStyle}>
                       {_.upperCase(result[0])}
                     </Avatar>
