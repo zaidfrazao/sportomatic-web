@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import { withStyles } from "material-ui/styles";
 import Generic from "./components/Generic";
+import Rugby from "./components/Rugby";
 import Soccer from "./components/Soccer";
 
 const styles = {
@@ -34,16 +35,54 @@ class ResultInfo extends Component {
     const { opponents, resultsStatus } = teamEventInfo;
 
     switch (sport) {
+      case "Rugby":
+        let showRugbyScorer = true;
+        _.toPairs(opponents).map(([opponentID, opponentInfo]) => {
+          if (opponentInfo.ourScore.finalScore === undefined)
+            showRugbyScorer = false;
+        });
+
+        if (showRugbyScorer) {
+          return (
+            <Rugby
+              teamID={teamID}
+              eventID={eventID}
+              resultsStatus={resultsStatus}
+              ourTeam={{
+                name,
+                opponents,
+                emblemURL: institutionEmblemURL
+              }}
+              isMobile={isMobile}
+              isTablet={isTablet}
+            />
+          );
+        } else {
+          return (
+            <Generic
+              teamID={teamID}
+              eventID={eventID}
+              resultsStatus={resultsStatus}
+              ourTeam={{
+                name,
+                opponents,
+                emblemURL: institutionEmblemURL
+              }}
+              isMobile={isMobile}
+              isTablet={isTablet}
+            />
+          );
+        }
       case "Soccer / Football":
       case "Soccer":
       case "Football":
-        let showCustomScorer = true;
+        let showSoccerScorer = true;
         _.toPairs(opponents).map(([opponentID, opponentInfo]) => {
           if (opponentInfo.ourScore.finalScore === undefined)
-            showCustomScorer = false;
+            showSoccerScorer = false;
         });
 
-        if (showCustomScorer) {
+        if (showSoccerScorer) {
           return (
             <Soccer
               teamID={teamID}
