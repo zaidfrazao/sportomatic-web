@@ -24,7 +24,31 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.23 (Current) - Deployed 22/02/2018"}
+            {"v0.9.24 (Current) - Deployed 23/02/2018"}
+          </Typography>
+          <div className={classes.section}>
+            <Typography type="subheading" component="h3">
+              New Features
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Implement a placement-based results system for sports like
+                swimming where teams are ranked (1st, 2nd, 3rd, etc) based on
+                the points they acquired.
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Minor Changes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Properly centre "Teams That I Manage" and "Teams That I Coach"
+                toggles for coaches and managers in results section.
+              </li>
+            </Typography>
+          </div>
+          <Typography type="title" component="h2">
+            {"v0.9.23 - Deployed 22/02/2018"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">
