@@ -45,6 +45,7 @@ class UpdatesDialog extends Component {
                 Properly centre "Teams That I Manage" and "Teams That I Coach"
                 toggles for coaches and managers in results section.
               </li>
+              <li>Change rugby "Throw-ins" to "Line-outs".</li>
             </Typography>
           </div>
           <Typography type="title" component="h2">

@@ -11,6 +11,7 @@ import moment from "moment";
 import { Route } from "react-router";
 import { withStyles } from "material-ui/styles";
 import Generic from "./components/Generic";
+import Ranking from "./components/Ranking";
 import Rugby from "./components/Rugby";
 import Soccer from "./components/Soccer";
 
@@ -89,6 +90,30 @@ class ResultCard extends Component {
         const { opponents, resultsStatus } = teamInfo;
 
         switch (sport) {
+          case "Athletics":
+          case "Swimming":
+            return (
+              <Ranking
+                key={`result-${teamID}`}
+                teamID={teamID}
+                eventID={eventID}
+                resultsStatus={resultsStatus}
+                ourTeam={{
+                  name,
+                  opponents,
+                  emblemURL: institutionEmblemURL
+                }}
+                isMobile={isMobile}
+                isTablet={isTablet}
+                canEdit={canEdit}
+                canApprove={canApprove}
+                actions={{
+                  startLogging,
+                  finaliseResults,
+                  editResult
+                }}
+              />
+            );
           case "Rugby":
             return (
               <Rugby

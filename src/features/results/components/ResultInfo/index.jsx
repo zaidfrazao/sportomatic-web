@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import { withStyles } from "material-ui/styles";
 import Generic from "./components/Generic";
+import Ranking from "./components/Ranking";
 import Rugby from "./components/Rugby";
 import Soccer from "./components/Soccer";
 
@@ -35,6 +36,22 @@ class ResultInfo extends Component {
     const { opponents, resultsStatus } = teamEventInfo;
 
     switch (sport) {
+      case "Athletics":
+      case "Swimming":
+        return (
+          <Ranking
+            teamID={teamID}
+            eventID={eventID}
+            resultsStatus={resultsStatus}
+            ourTeam={{
+              name,
+              opponents,
+              emblemURL: institutionEmblemURL
+            }}
+            isMobile={isMobile}
+            isTablet={isTablet}
+          />
+        );
       case "Rugby":
         let showRugbyScorer = true;
         _.toPairs(opponents).map(([opponentID, opponentInfo]) => {
