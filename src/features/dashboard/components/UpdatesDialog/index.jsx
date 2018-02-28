@@ -24,7 +24,7 @@ class UpdatesDialog extends Component {
         <DialogTitle>Software Updates</DialogTitle>
         <DialogContent>
           <Typography type="title" component="h2">
-            {"v0.9.24 (Current) - Deployed 23/02/2018"}
+            {"v0.9.24 (Current) - Deployed 28/02/2018"}
           </Typography>
           <div className={classes.section}>
             <Typography type="subheading" component="h3">
@@ -32,9 +32,18 @@ class UpdatesDialog extends Component {
             </Typography>
             <Typography type="body1" component="ul">
               <li>
-                Implement a placement-based results system for sports like
+                Implement a ranking-based results system for sports like
                 swimming where teams are ranked (1st, 2nd, 3rd, etc) based on
-                the points they acquired.
+                the points they acquired at an event.
+              </li>
+            </Typography>
+            <Typography type="subheading" component="h3">
+              Bug Fixes
+            </Typography>
+            <Typography type="body1" component="ul">
+              <li>
+                Events without teams were not being filterd properly. (Issue
+                #131)
               </li>
             </Typography>
             <Typography type="subheading" component="h3">
@@ -45,7 +54,8 @@ class UpdatesDialog extends Component {
                 Properly centre "Teams That I Manage" and "Teams That I Coach"
                 toggles for coaches and managers in results section.
               </li>
-              <li>Change rugby "Throw-ins" to "Line-outs".</li>
+              <li>Change rugby "Throw-ins" to "Line-outs". (Issue #130)</li>
+              <li>Add "Squash" as a sport option. (Issue #)</li>
             </Typography>
           </div>
           <Typography type="title" component="h2">

@@ -169,7 +169,7 @@ class BannerCarousel extends Component {
                       </Typography>
                     </div>
                   )}
-                  {false && (
+                  {true && (
                     <div className={classes.updateBox}>
                       <Avatar className={classes.icon}>
                         <BugIcon />
