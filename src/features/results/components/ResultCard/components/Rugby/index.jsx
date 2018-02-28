@@ -42,6 +42,7 @@ const styles = theme => ({
     width: "100%"
   },
   commentaryWrapper: {
+    border: `1px solid ${grey[300]}`,
     width: "100%",
     display: "flex",
     flexDirection: "row",
@@ -1373,8 +1374,6 @@ class Rugby extends Component {
       toggleOptionalStats
     } = this.props.actions;
     const { opponents, errors } = this.state;
-
-    console.log(opponents);
 
     return (
       <div key={`result-${teamID}`} className={classes.wrapper}>

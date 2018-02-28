@@ -42,6 +42,7 @@ const styles = theme => ({
     width: "100%"
   },
   commentaryWrapper: {
+    border: `1px solid ${grey[300]}`,
     width: "100%",
     display: "flex",
     flexDirection: "row",

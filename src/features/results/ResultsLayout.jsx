@@ -70,8 +70,8 @@ const styles = theme => ({
   },
   myTeamsSelector: {
     width: "100%",
-    maxWidth: 1200,
-    margin: "0 auto",
+    maxWidth: 970,
+    margin: "16px auto 0 auto",
     display: "flex",
     alignItems: "center"
   },

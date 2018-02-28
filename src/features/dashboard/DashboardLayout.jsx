@@ -7,7 +7,15 @@ import AwaitingApprovalIcon from "material-ui-icons/AssignmentReturn";
 import AwaitingSignInIcon from "material-ui-icons/AssignmentLate";
 import AwaitingSignOutIcon from "material-ui-icons/AssignmentReturned";
 import Button from "material-ui/Button";
-import { grey, green, lightBlue, orange, red } from "material-ui/colors";
+import {
+  amber,
+  brown,
+  grey,
+  green,
+  lightBlue,
+  orange,
+  red
+} from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import HoursApprovedIcon from "material-ui-icons/AssignmentTurnedIn";
 import List, { ListItem, ListItemText } from "material-ui/List";
@@ -79,6 +87,22 @@ const styles = theme => ({
   },
   noItems: {
     textAlign: "center"
+  },
+  placedFirst: {
+    backgroundColor: amber[500],
+    color: grey[50]
+  },
+  placedSecond: {
+    backgroundColor: grey[400],
+    color: grey[50]
+  },
+  placedThird: {
+    backgroundColor: brown[400],
+    color: grey[50]
+  },
+  placedOther: {
+    backgroundColor: grey[700],
+    color: grey[50]
   },
   root: {
     width: "100%"
@@ -295,72 +319,184 @@ class DashboardLayout extends Component {
               teamInfo.resultsStatus === "FINALISED" &&
               recentResultsList.length < 5
             ) {
-              _.toPairs(teamInfo.opponents).map(([opponentID, resultInfo]) => {
-                let primaryText = "Loading...";
-                let secondaryText = `vs ${resultInfo.name === ""
-                  ? "Unknown"
-                  : resultInfo.name} | ${date.fromNow()}`;
-                let link = `/myaccount/results/${teamID}/${id}`;
+              const sport = teams[teamID] ? teams[teamID].info.sport : "";
+              switch (sport) {
+                case "Athletics":
+                case "Swimming":
+                  let ourTotalPoints = 0;
+                  _.toPairs(
+                    teamInfo.opponents
+                  ).map(([opponentID, opponentInfo]) => {
+                    ourTotalPoints =
+                      opponentInfo.ourScore &&
+                      opponentInfo.ourScore.totalPoints;
+                  });
 
-                let result = "drew";
-                let avatarStyle = classes.draw;
+                  let scores = [{ id: teamID, score: ourTotalPoints }];
 
-                if (teams[teamID]) {
-                  if (resultInfo.ourScore.finalScore !== undefined) {
-                    primaryText = `${teams[teamID].info
-                      .name} ${result} ${resultInfo.ourScore
-                      .finalScore} - ${resultInfo.theirScore.finalScore}`;
+                  _.toPairs(
+                    teamInfo.opponents
+                  ).map(([opponentID, opponentInfo]) => {
+                    scores.push({
+                      id: opponentID,
+                      score: opponentInfo.theirScore.totalPoints
+                    });
+                  });
 
-                    if (
-                      resultInfo.ourScore.finalScore >
-                      resultInfo.theirScore.finalScore
-                    ) {
-                      result = "won";
-                      avatarStyle = classes.win;
-                    } else if (
-                      resultInfo.ourScore.finalScore <
-                      resultInfo.theirScore.finalScore
-                    ) {
-                      result = "lost";
-                      avatarStyle = classes.loss;
+                  scores.sort((scoreA, scoreB) => {
+                    if (scoreA.score > scoreB.score) {
+                      return -1;
+                    } else if (scoreA.score < scoreB.score) {
+                      return +1;
+                    } else {
+                      return 0;
                     }
-                  } else {
-                    primaryText = `${teams[teamID].info
-                      .name} ${result} ${resultInfo.ourScore
-                      .totalPoints} - ${resultInfo.theirScore.totalPoints}`;
+                  });
 
-                    if (
-                      resultInfo.ourScore.totalPoints >
-                      resultInfo.theirScore.totalPoints
-                    ) {
-                      result = "won";
-                      avatarStyle = classes.win;
-                    } else if (
-                      resultInfo.ourScore.totalPoints <
-                      resultInfo.theirScore.totalPoints
-                    ) {
-                      result = "lost";
-                      avatarStyle = classes.loss;
-                    }
+                  let placement = 1;
+                  let prevScore = scores[0].score;
+                  const placements = _.fromPairs(
+                    scores.map((score, index) => {
+                      if (index === 0) {
+                        prevScore = score.score;
+                        return [score.id, placement];
+                      } else {
+                        if (score.score === prevScore) {
+                          prevScore = score.score;
+                          return [score.id, placement];
+                        } else {
+                          placement = index + 1;
+                          prevScore = score.score;
+                          return [score.id, placement];
+                        }
+                      }
+                    })
+                  );
+
+                  let statusStyle = "";
+                  let resultText = "";
+                  let primaryText = "Loading...";
+                  let secondaryText = `${date.fromNow()}`;
+                  switch (placements[teamID]) {
+                    case 1:
+                      statusStyle = classes.placedFirst;
+                      resultText = "1";
+                      primaryText = `${teams[teamID].info.name} placed 1st`;
+                      break;
+                    case 2:
+                      statusStyle = classes.placedSecond;
+                      resultText = "2";
+                      primaryText = `${teams[teamID].info.name} placed 2nd`;
+                      break;
+                    case 3:
+                      statusStyle = classes.placedThird;
+                      resultText = "3";
+                      primaryText = `${teams[teamID].info.name} placed 3rd`;
+                      break;
+                    default:
+                      let suffix = "th";
+                      if (placements[teamID] > 20) {
+                        if (placements[teamID] % 10 === 1) {
+                          suffix = "st";
+                        } else if (placements[teamID] % 10 === 2) {
+                          suffix = "nd";
+                        } else if (placements[teamID] % 10 === 3) {
+                          suffix = "rd";
+                        }
+                      }
+                      statusStyle = classes.placedOther;
+                      resultText = `${placements[teamID]}`;
+                      primaryText = `${teams[teamID].info
+                        .name} placed ${placements[teamID]}${suffix}`;
+                      break;
                   }
-                }
 
-                recentResultsList.push(
-                  <ListItem
-                    key={`${id}-${opponentID}`}
-                    button
-                    onClick={() => history.push(link)}
-                  >
-                    <Avatar className={avatarStyle}>
-                      {_.upperCase(result[0])}
-                    </Avatar>
-                    <ListItemText
-                      primary={primaryText}
-                      secondary={secondaryText}
-                    />
-                  </ListItem>
-                );
-              });
+                  recentResultsList.push(
+                    <ListItem
+                      key={`rankingResult-${id}`}
+                      button
+                      onClick={() =>
+                        history.push(`/myaccount/results/${teamID}/${id}`)}
+                    >
+                      <Avatar className={statusStyle}>{resultText}</Avatar>
+                      <ListItemText
+                        primary={primaryText}
+                        secondary={secondaryText}
+                      />
+                    </ListItem>
+                  );
+                  break;
+                default:
+                  _.toPairs(
+                    teamInfo.opponents
+                  ).map(([opponentID, resultInfo]) => {
+                    let primaryText = "Loading...";
+                    let secondaryText = `vs ${resultInfo.name === ""
+                      ? "Unknown"
+                      : resultInfo.name} | ${date.fromNow()}`;
+                    let link = `/myaccount/results/${teamID}/${id}`;
+
+                    let result = "drew";
+                    let avatarStyle = classes.draw;
+
+                    if (teams[teamID]) {
+                      if (resultInfo.ourScore.finalScore !== undefined) {
+                        primaryText = `${teams[teamID].info
+                          .name} ${result} ${resultInfo.ourScore
+                          .finalScore} - ${resultInfo.theirScore.finalScore}`;
+
+                        if (
+                          resultInfo.ourScore.finalScore >
+                          resultInfo.theirScore.finalScore
+                        ) {
+                          result = "won";
+                          avatarStyle = classes.win;
+                        } else if (
+                          resultInfo.ourScore.finalScore <
+                          resultInfo.theirScore.finalScore
+                        ) {
+                          result = "lost";
+                          avatarStyle = classes.loss;
+                        }
+                      } else {
+                        primaryText = `${teams[teamID].info
+                          .name} ${result} ${resultInfo.ourScore
+                          .totalPoints} - ${resultInfo.theirScore.totalPoints}`;
+
+                        if (
+                          resultInfo.ourScore.totalPoints >
+                          resultInfo.theirScore.totalPoints
+                        ) {
+                          result = "won";
+                          avatarStyle = classes.win;
+                        } else if (
+                          resultInfo.ourScore.totalPoints <
+                          resultInfo.theirScore.totalPoints
+                        ) {
+                          result = "lost";
+                          avatarStyle = classes.loss;
+                        }
+                      }
+                    }
+
+                    recentResultsList.push(
+                      <ListItem
+                        key={`${id}-${opponentID}`}
+                        button
+                        onClick={() => history.push(link)}
+                      >
+                        <Avatar className={avatarStyle}>
+                          {_.upperCase(result[0])}
+                        </Avatar>
+                        <ListItemText
+                          primary={primaryText}
+                          secondary={secondaryText}
+                        />
+                      </ListItem>
+                    );
+                  });
+                  break;
+              }
             }
           });
         }

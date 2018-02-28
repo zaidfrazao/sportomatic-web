@@ -318,6 +318,16 @@ class ScheduleLayout extends Component {
               allowThroughFilter && teams[teamID].info.gender === gender;
           }
         });
+        if (_.keys(info.teams).length === 0) {
+          if (
+            sport !== "All" ||
+            division !== "All" ||
+            ageGroup !== "All" ||
+            gender !== "All"
+          ) {
+            allowThroughFilter = false;
+          }
+        }
 
         allowThroughFilter =
           allowThroughFilter &&
