@@ -55,7 +55,7 @@ class UpdatesDialog extends Component {
                 toggles for coaches and managers in results section.
               </li>
               <li>Change rugby "Throw-ins" to "Line-outs". (Issue #130)</li>
-              <li>Add "Squash" as a sport option. (Issue #)</li>
+              <li>Add "Squash" as a sport option. (Issue #123)</li>
             </Typography>
           </div>
           <Typography type="title" component="h2">

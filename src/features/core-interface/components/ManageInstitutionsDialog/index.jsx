@@ -295,6 +295,7 @@ class ManageInstitutionsDialog extends Component {
         "Skydiving and Parachuting": false,
         "Obstacle Course Racing": false,
         "Soccer / Football": true,
+        Squash: false,
         Surfing: false,
         Swimming: true,
         "Table Tennis": false,
