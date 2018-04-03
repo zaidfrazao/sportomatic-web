@@ -10,6 +10,7 @@ import { signInReducer } from "../features/sign-in/duck";
 import { signUpReducer } from "../features/sign-up/duck";
 import { teamsReducer } from "../features/teams/duck";
 import { wagesReducer } from "../features/wages/duck";
+import { landingPageReducer } from "../features/landing-page/duck";
 
 export default combineReducers({
   signIn: signInReducer,
@@ -22,5 +23,6 @@ export default combineReducers({
   schedule: scheduleReducer,
   settings: settingsReducer,
   teams: teamsReducer,
-  wages: wagesReducer
+  wages: wagesReducer,
+  landingPage: landingPageReducer
 });

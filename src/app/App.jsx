@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router-dom";
 import Account from "../features/core-interface/CoreInterfaceView";
 import SignIn from "../features/sign-in/SignInView";
 import SignUp from "../features/sign-up/SignUpView";
+import LandingPage from "../features/landing-page/LandingPageView";
 
 class App extends Component {
   render() {
@@ -12,6 +13,7 @@ class App extends Component {
         <Route exact path="/sign-in" component={SignIn} />
         <Route exact path="/sign-up" component={SignUp} />
         <Route exact path="/sign-up/:userID" component={SignUp} />
+        <Route exact path="/home" component={LandingPage} />
         <Route path="/myaccount" component={Account} />
         <Route component={Account} />
       </Switch>
