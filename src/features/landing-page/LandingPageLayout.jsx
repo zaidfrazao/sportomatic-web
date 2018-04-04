@@ -25,7 +25,7 @@ const styles = theme => ({
   },
   peopleWrapper: {
     padding: "0 54px",
-    background: `linear-gradient(${lightBlue[200]}, ${lightBlue[500]})`,
+    background: `linear-gradient(${lightBlue[300]}, ${lightBlue[500]})`,
     position: "relative"
   },
   roleBuffer: {
