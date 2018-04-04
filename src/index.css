@@ -64,11 +64,6 @@ select {
   display: inline;
   text-indent: 13px;
 }
-@media only screen and (max-width: 480px) {
-  .fadeIn {
-    text-indent: 100px;
-  }
-}
 .fadeIn span {
   animation: fadeEffect 12.5s linear infinite 0s;
   -ms-animation: fadeEffect 12.5s linear infinite 0s;
