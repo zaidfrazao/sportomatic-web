@@ -23,7 +23,7 @@ const styles = theme => ({
     borderRadius: 4,
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: blue[700]
+      backgroundColor: blue[800]
     }
   },
   fullWidth: {
@@ -38,7 +38,7 @@ const styles = theme => ({
     borderRadius: 4,
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: orange[700]
+      backgroundColor: orange[800]
     }
   },
   primaryFilled: {
@@ -46,8 +46,8 @@ const styles = theme => ({
     backgroundColor: lightBlue[500],
     border: `2px solid ${lightBlue[500]}`,
     "&:hover": {
-      border: `2px solid ${lightBlue[300]}`,
-      backgroundColor: lightBlue[300]
+      border: `2px solid ${lightBlue[400]}`,
+      backgroundColor: lightBlue[400]
     }
   },
   primaryOutlined: {
@@ -55,7 +55,7 @@ const styles = theme => ({
     backgroundColor: "rgba(0, 0, 0, 0)",
     border: `2px solid ${lightBlue[500]}`,
     "&:hover": {
-      backgroundColor: lightBlue[100]
+      backgroundColor: lightBlue[50]
     }
   },
   secondaryFilled: {
@@ -63,8 +63,8 @@ const styles = theme => ({
     backgroundColor: orange["A400"],
     border: `2px solid ${orange["A400"]}`,
     "&:hover": {
-      border: `2px solid ${orange["A100"]}`,
-      backgroundColor: orange["A100"]
+      border: `2px solid ${orange["A200"]}`,
+      backgroundColor: orange["A200"]
     }
   },
   secondaryOutlined: {
@@ -72,7 +72,7 @@ const styles = theme => ({
     backgroundColor: "rgba(0, 0, 0, 0)",
     border: `2px solid ${orange["A400"]}`,
     "&:hover": {
-      backgroundColor: orange["A100"]
+      backgroundColor: orange[50]
     }
   }
 });
