@@ -51,6 +51,11 @@ const styles = theme => ({
 });
 
 class SignInLayout extends Component {
+  goToSignUp() {
+    const { history } = this.props;
+    history.push("home/sign-up");
+  }
+
   render() {
     const { classes } = this.props;
     const { roleIndex } = this.props.uiConfig;
@@ -58,8 +63,8 @@ class SignInLayout extends Component {
 
     return (
       <div className={classes.wrapper}>
-        <AppBar />
-        <Banner />
+        <AppBar actions={{ goToSignUp: () => this.goToSignUp() }} />
+        <Banner actions={{ goToSignUp: () => this.goToSignUp() }} />
         <div className={classes.peopleWrapper}>
           <div className={classes.peopleContent}>
             <h1 className={classes.peopleHeadline}>
@@ -77,7 +82,10 @@ class SignInLayout extends Component {
           </div>
         </div>
         <div className={classes.roleBuffer} />
-        <Features roleIndex={roleIndex} />
+        <Features
+          roleIndex={roleIndex}
+          actions={{ goToSignUp: () => this.goToSignUp() }}
+        />
         <Footer />
       </div>
     );

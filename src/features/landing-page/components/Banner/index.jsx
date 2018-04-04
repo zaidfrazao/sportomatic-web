@@ -91,6 +91,9 @@ const styles = theme => ({
 });
 
 type Props = {
+  actions: {
+    goToSignUp: () => null
+  },
   classes: {
     content: string,
     formButtonMargin: string,
@@ -112,8 +115,15 @@ type Props = {
 };
 
 class Banner extends Component<Props> {
+  static defaultProps = {
+    actions: {
+      goToSignUp: () => console.log("User clicked to sign up")
+    }
+  };
+
   render() {
     const { classes } = this.props;
+    const { goToSignUp } = this.props.actions;
 
     return (
       <div className={classes.wrapper}>
@@ -142,10 +152,22 @@ class Banner extends Component<Props> {
               everyone on the same page at all times.
             </h3>
             <div className={classes.socialSignUpForm}>
-              <Button type="google" fullWidth>
+              <Button
+                type="google"
+                fullWidth
+                actions={{
+                  handleClick: () => goToSignUp()
+                }}
+              >
                 Sign up free with Google
               </Button>
-              <Button type="facebook" fullWidth>
+              <Button
+                type="facebook"
+                fullWidth
+                actions={{
+                  handleClick: () => goToSignUp()
+                }}
+              >
                 Sign up free with Facebook
               </Button>
             </div>
@@ -162,7 +184,14 @@ class Banner extends Component<Props> {
                 placeholder="Email"
               />
               <div className={classes.formButtonMargin}>
-                <Button colour="primary" filled fullWidth>
+                <Button
+                  colour="primary"
+                  filled
+                  fullWidth
+                  actions={{
+                    handleClick: () => goToSignUp()
+                  }}
+                >
                   Sign up for free
                 </Button>
               </div>

@@ -35,6 +35,9 @@ const styles = theme => ({
 });
 
 type Props = {
+  actions: {
+    goToSignUp: () => null
+  },
   classes: {
     appBar: string,
     appBarContent: string,
@@ -45,8 +48,15 @@ type Props = {
 };
 
 class AppBar extends Component<Props> {
+  static defaultProps = {
+    actions: {
+      goToSignUp: () => console.log("User clicked to sign up")
+    }
+  };
+
   render() {
     const { classes } = this.props;
+    const { goToSignUp } = this.props.actions;
 
     return (
       <div className={classes.appBar}>
@@ -58,7 +68,14 @@ class AppBar extends Component<Props> {
               Log in
             </Button>
             <div className={classes.signUpButtonWrapper}>
-              <Button colour="primary" filled slim>
+              <Button
+                colour="primary"
+                filled
+                slim
+                actions={{
+                  handleClick: () => goToSignUp()
+                }}
+              >
                 Sign up for free
               </Button>
             </div>

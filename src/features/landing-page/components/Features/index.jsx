@@ -75,6 +75,9 @@ const styles = theme => ({
 });
 
 type Props = {
+  actions: {
+    goToSignUp: () => null
+  },
   classes: {
     bodyText: string,
     buttonWrapper: string,
@@ -91,6 +94,9 @@ type Props = {
 
 class Features extends Component<Props> {
   static defaultProps = {
+    actions: {
+      goToSignUp: () => console.log("User clicked to sign up")
+    },
     index: 0
   };
 
@@ -113,6 +119,7 @@ class Features extends Component<Props> {
 
   render() {
     const { classes, roleIndex } = this.props;
+    const { goToSignUp } = this.props.actions;
 
     const roleCode = this.getRoleCode(roleIndex);
     const features = this.getFeatureExplanations(roleCode);
@@ -129,7 +136,13 @@ class Features extends Component<Props> {
                 <h2>{copy.headline}</h2>
                 <p className={classes.bodyText}>{copy.body}</p>
                 <div className={classes.buttonWrapper}>
-                  <Button colour="primary" filled>
+                  <Button
+                    colour="primary"
+                    filled
+                    actions={{
+                      handleClick: () => goToSignUp()
+                    }}
+                  >
                     Sign up for free
                   </Button>
                 </div>
@@ -162,7 +175,13 @@ class Features extends Component<Props> {
                 <h2>{copy.headline}</h2>
                 <p className={classes.bodyText}>{copy.body}</p>
                 <div className={classes.buttonWrapper}>
-                  <Button colour="primary" filled>
+                  <Button
+                    colour="primary"
+                    filled
+                    actions={{
+                      handleClick: () => goToSignUp()
+                    }}
+                  >
                     Sign up for free
                   </Button>
                 </div>

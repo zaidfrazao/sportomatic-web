@@ -78,6 +78,9 @@ const styles = theme => ({
 });
 
 type Props = {
+  actions: {
+    handleClick: () => null
+  },
   classes: {
     buttonNormal: string,
     buttonSlim: string,
@@ -98,6 +101,9 @@ type Props = {
 
 class Button extends Component<Props> {
   static defaultProps = {
+    actions: {
+      handleClick: () => console.log("A button was clicked")
+    },
     filled: false,
     fullWidth: false,
     slim: false,
@@ -106,6 +112,7 @@ class Button extends Component<Props> {
 
   getDefaultButton(colour, isFilled, isFullWidth, isSlim) {
     const { classes, children } = this.props;
+    const { handleClick } = this.props.actions;
 
     let styles = [];
     isSlim
@@ -119,17 +126,22 @@ class Button extends Component<Props> {
       styles.push(classes.secondaryOutlined);
     isFullWidth && styles.push(classes.fullWidth);
 
-    return <button className={_.join(styles, " ")}>{children}</button>;
+    return (
+      <button onClick={() => handleClick()} className={_.join(styles, " ")}>
+        {children}
+      </button>
+    );
   }
 
   getFacebookButton(isFullWidth) {
     const { classes, children } = this.props;
+    const { handleClick } = this.props.actions;
 
     let styles = [classes.facebookButton];
     isFullWidth && styles.push(classes.fullWidth);
 
     return (
-      <button className={_.join(styles, " ")}>
+      <button onClick={() => handleClick()} className={_.join(styles, " ")}>
         <i className="fab fa-facebook" /> {children}
       </button>
     );
@@ -137,12 +149,13 @@ class Button extends Component<Props> {
 
   getGoogleButton(isFullWidth) {
     const { classes, children } = this.props;
+    const { handleClick } = this.props.actions;
 
     let styles = [classes.googleButton];
     isFullWidth && styles.push(classes.fullWidth);
 
     return (
-      <button className={_.join(styles, " ")}>
+      <button onClick={() => handleClick()} className={_.join(styles, " ")}>
         <i className="fab fa-google" /> {children}
       </button>
     );
