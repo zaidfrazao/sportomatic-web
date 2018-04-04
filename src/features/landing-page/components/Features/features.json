@@ -1,119 +1,133 @@
 {
   "sports-director": [
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "Quickly set season schedules",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "For each of your teams, Sportomatic allows you to easily specify their entire season's schedule with only few a clicks.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Season setup"
     },
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "Manage staff effectively",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "You will be able to track your coaches' punctuality and absenteeism, and even log their hours so that wages can be automatically generated through the system.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Staff management"
     },
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "Keep results in one place",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "Managers and coaches will be able to log scores at events, which you can see as it's happening no matter where you are.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Results"
+    },
+    {
+      "headline": "Understand how to improve",
+      "body":
+        "Sportomatic tracks vital statistics about your staff, teams and players. You'll know which coaches are always late, which athletes never attend practice and which teams are crushing their competition.",
+      "imageURL": "http://via.placeholder.com/520x360",
+      "imageAlt": "Vital statistics"
+    },
+    {
+      "headline": "Everyone's always on the same page",
+      "body":
+        "Every manager, coach, athlete, parent and supporter in your community will have real-time access to all the changes they need to know about.",
+      "imageURL": "http://via.placeholder.com/520x360",
+      "imageAlt": "Connected community"
     }
   ],
   "team-manager": [
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "Maintain high-quality coaches",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "Sign coaches in and out, or mark them absent, with the tap of a button. Finding a replacement coach is just as simple. You'll know who's always late or never even shows up.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Coach management"
     },
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "Easily take attendance",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "When practice starts you can easily tick players off as they arrive. Each player will have attendance scores for the season. It's about time you left that clipboard at home.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Taking attendance"
+    },
+    {
+      "headline": "Track improvement",
+      "body":
+        "You'll be able to see how your team is performing in key metrics over time. This can help you decide if you need to switch tactics, or maybe make a more drastic change.",
+      "imageURL": "http://via.placeholder.com/520x360",
+      "imageAlt": "Vital statistics"
     }
   ],
   "coach": [
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "Get paid fairly and on time",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "Through Sportomatic, your wages can be automatically generated. You'll always know exactly how much you're owed and there's no excuse for missing pay day.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Wages"
     },
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "Always know where to be",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "Miscommunication is a thing of the past. Any time a practice is canceled or a match is moved later, you'll know instantly and can plan your life accordingly.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Event info"
     },
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "See the effects of training",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "You're able to track your team's performance over time in key metrics, so you know if you need to do the passing or shooting drill next practice.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
-    },
-    {
-      "headline": "Lorem ipsum dolor sit amet",
-      "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
-      "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Results analytics"
     }
   ],
   "athlete": [
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "Track your team's performance",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "You will always know how well your team is doing, and what your team is struggling with. You can use this info to become more competitive.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Team performance"
     },
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "Never miss a practice",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "It can be difficult to always know where to be, what time to be there, what to bring, etc. Not anymore. Now you'll always have all of that info right in your pocket at all times.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Event info"
     }
   ],
   "parent": [
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "Know where your kid needs to be",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "You'll always have all the info you need for your kid's schedule; date, time, venue, opponents, etc. As changes happen, you will be instantly notified.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Notification"
+    },
+    {
+      "headline": "All your kid's results in one place",
+      "body":
+        "Even when you're stuck at the office, you'll immediately know if your daughter won the tennis match she's been talking about all week.",
+      "imageURL": "http://via.placeholder.com/520x360",
+      "imageAlt": "Results"
     }
   ],
   "supporter": [
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "Attend your favourite team's games",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "You will be able to see the schedule for their entire season, including times, venues, opponents and more. True supporters never miss a game.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Event info"
     },
     {
-      "headline": "Lorem ipsum dolor sit amet",
+      "headline": "Follow results closely",
       "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
+        "You will immediately be able to see if your team won or lost today's game, and view their results history for the season. We've even thrown some bonus stats for the superfan.",
       "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
-    },
-    {
-      "headline": "Lorem ipsum dolor sit amet",
-      "body":
-        "Vestibulum non tempor dui. Nullam lobortis, odio at commodo convallis, magna erat mattis lorem, et commodo enim risus id erat. Nam pharetra justo dictum accumsan posuere. Vestibulum et tristique ligula. Aenean sit amet erat sagittis, tincidunt sapien non, laoreet purus. Donec dapibus id ex ac rhoncus.",
-      "imageURL": "http://via.placeholder.com/520x360",
-      "imageAlt": "Lorem ipsum"
+      "imageAlt": "Results"
     }
   ]
 }

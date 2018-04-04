@@ -53,7 +53,8 @@ const styles = theme => ({
 class SignInLayout extends Component {
   goToSignUp() {
     const { history } = this.props;
-    history.push("home/sign-up");
+    //history.push("home/sign-up");
+    console.log("User clicked a sign up button.");
   }
 
   render() {
@@ -68,7 +69,7 @@ class SignInLayout extends Component {
         <div className={classes.peopleWrapper}>
           <div className={classes.peopleContent}>
             <h1 className={classes.peopleHeadline}>
-              Connect Your Sports Community
+              Stay Connected to Your Sports Community
             </h1>
             <p className={classes.peopleSplurg}>
               Sportomatic is a system built to allow everyone involved in sports
