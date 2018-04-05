@@ -6,6 +6,7 @@ import Banner from "./components/Banner";
 import Features from "./components/Features";
 import Footer from "./components/Footer";
 import RoleSwitcher from "./components/RoleSwitcher";
+import UpcomingFeatures from "./components/UpcomingFeatures";
 
 const styles = theme => ({
   peopleContent: {
@@ -87,6 +88,7 @@ class SignInLayout extends Component {
           roleIndex={roleIndex}
           actions={{ goToSignUp: () => this.goToSignUp() }}
         />
+        <UpcomingFeatures />
         <Footer />
       </div>
     );
