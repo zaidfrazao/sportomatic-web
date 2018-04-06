@@ -72,7 +72,7 @@ class Banner extends Component<Props> {
             Copyright © 2018 Sportomatic Pty Ltd
           </span>
           <a className={classes.legalStuffLink} href="/terms">
-            Legal Stuff
+            Terms of Use
           </a>
           <a className={classes.privacyPolicyLink} href="/privacy-policy">
             Privacy Policy

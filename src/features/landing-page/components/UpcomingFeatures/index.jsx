@@ -1,13 +1,8 @@
 import React, { Component } from "react";
 import { grey, orange } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
-import Button from "../Button";
 
 const styles = theme => ({
-  buttonWrapper: {
-    padding: "28px 0",
-    textAlign: "center"
-  },
   content: {
     padding: "160px 0 180px 0",
     maxWidth: 800,
@@ -49,15 +44,12 @@ const styles = theme => ({
   },
   wrapper: {
     padding: "0 54px",
-    background: `linear-gradient(${orange["A200"]}, ${orange["A400"]})`,
+    background: `linear-gradient(${orange["A400"]}, ${orange["A700"]})`,
     position: "relative"
   }
 });
 
 type Props = {
-  actions: {
-    goToSignUp: () => null
-  },
   classes: {
     content: string,
     formButtonMargin: string,
@@ -79,15 +71,8 @@ type Props = {
 };
 
 class Banner extends Component<Props> {
-  static defaultProps = {
-    actions: {
-      goToSignUp: () => console.log("User clicked to sign up")
-    }
-  };
-
   render() {
     const { classes } = this.props;
-    const { goToSignUp } = this.props.actions;
 
     return (
       <div className={classes.wrapper}>
@@ -132,11 +117,6 @@ class Banner extends Component<Props> {
               <i className={`fas fa-search ${classes.icon}`} />
               <span className={classes.name}>Athlete Scouting</span>
             </div>
-          </div>
-          <div className={classes.buttonWrapper}>
-            <Button colour="primary" filled onClick={() => goToSignUp()}>
-              Sign up for free
-            </Button>
           </div>
         </div>
       </div>

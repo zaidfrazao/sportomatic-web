@@ -4,6 +4,12 @@ import { blue, grey, lightBlue, orange } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
+  buttonChunky: {
+    padding: "18px 24px",
+    borderRadius: 4,
+    cursor: "pointer",
+    fontSize: 20
+  },
   buttonNormal: {
     padding: "14px 20px",
     borderRadius: 4,
@@ -15,15 +21,12 @@ const styles = theme => ({
     cursor: "pointer"
   },
   darkButton: {
-    backgroundColor: grey[900],
+    backgroundColor: lightBlue[900],
     color: "white",
-    padding: "14px 20px",
     margin: "8px 0",
     border: "none",
-    borderRadius: 4,
-    cursor: "pointer",
     "&:hover": {
-      backgroundColor: grey[800]
+      backgroundColor: lightBlue[800]
     }
   },
   facebookButton: {
@@ -54,15 +57,15 @@ const styles = theme => ({
     }
   },
   lightButton: {
-    backgroundColor: orange[900],
-    color: "white",
+    backgroundColor: "white",
+    color: lightBlue[500],
     padding: "14px 20px",
     margin: "8px 0",
     border: "none",
     borderRadius: 4,
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: grey[800]
+      backgroundColor: grey[100]
     }
   },
   primaryFilled: {
@@ -199,11 +202,14 @@ class Button extends Component<Props> {
     );
   }
 
-  getDarkButton(isFullWidth) {
+  getDarkButton(isFullWidth, isChunky) {
     const { classes, children } = this.props;
     const { handleClick } = this.props.actions;
 
     let styles = [classes.darkButton];
+    isChunky
+      ? styles.push(classes.buttonChunky)
+      : styles.push(classes.buttonNormal);
     isFullWidth && styles.push(classes.fullWidth);
 
     return (
@@ -214,7 +220,7 @@ class Button extends Component<Props> {
   }
 
   render() {
-    const { colour, filled, fullWidth, slim, type } = this.props;
+    const { colour, filled, fullWidth, slim, chunky, type } = this.props;
 
     switch (type) {
       case "facebook":
@@ -224,7 +230,7 @@ class Button extends Component<Props> {
       case "light":
         return this.getLightButton(fullWidth);
       case "dark":
-        return this.getDarkButton(fullWidth);
+        return this.getDarkButton(fullWidth, chunky);
       default:
         return this.getDefaultButton(colour, filled, fullWidth, slim);
     }

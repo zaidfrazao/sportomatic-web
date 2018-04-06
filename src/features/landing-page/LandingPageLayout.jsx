@@ -52,10 +52,9 @@ const styles = theme => ({
 });
 
 class SignInLayout extends Component {
-  goToSignUp() {
+  goToSignUp(step) {
     const { history } = this.props;
-    //history.push("home/sign-up");
-    console.log("User clicked a sign up button.");
+    history.push(`home/sign-up/${step}`);
   }
 
   render() {
@@ -65,8 +64,15 @@ class SignInLayout extends Component {
 
     return (
       <div className={classes.wrapper}>
-        <AppBar actions={{ goToSignUp: () => this.goToSignUp() }} />
-        <Banner actions={{ goToSignUp: () => this.goToSignUp() }} />
+        <AppBar
+          actions={{ goToSignUp: () => this.goToSignUp("email-entry") }}
+        />
+        <Banner
+          actions={{
+            emailSignUp: () => this.goToSignUp("name-entry"),
+            socialSignUp: () => this.goToSignUp("create-or-join")
+          }}
+        />
         <div className={classes.peopleWrapper}>
           <div className={classes.peopleContent}>
             <h1 className={classes.peopleHeadline}>
@@ -86,7 +92,7 @@ class SignInLayout extends Component {
         <div className={classes.roleBuffer} />
         <Features
           roleIndex={roleIndex}
-          actions={{ goToSignUp: () => this.goToSignUp() }}
+          actions={{ goToSignUp: () => this.goToSignUp("email-entry") }}
         />
         <UpcomingFeatures />
         <Footer />

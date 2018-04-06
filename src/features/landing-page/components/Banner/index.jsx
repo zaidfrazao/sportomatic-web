@@ -92,7 +92,8 @@ const styles = theme => ({
 
 type Props = {
   actions: {
-    goToSignUp: () => null
+    emailSignUp: () => null,
+    socialSignUp: () => null
   },
   classes: {
     content: string,
@@ -117,13 +118,14 @@ type Props = {
 class Banner extends Component<Props> {
   static defaultProps = {
     actions: {
-      goToSignUp: () => console.log("User clicked to sign up")
+      emailSignUp: () => console.log("User clicked email sign up"),
+      socialSignUp: () => console.log("User clicked social sign up")
     }
   };
 
   render() {
     const { classes } = this.props;
-    const { goToSignUp } = this.props.actions;
+    const { emailSignUp, socialSignUp } = this.props.actions;
 
     return (
       <div className={classes.wrapper}>
@@ -156,7 +158,7 @@ class Banner extends Component<Props> {
                 type="google"
                 fullWidth
                 actions={{
-                  handleClick: () => goToSignUp()
+                  handleClick: () => socialSignUp()
                 }}
               >
                 Sign up free with Google
@@ -165,7 +167,7 @@ class Banner extends Component<Props> {
                 type="facebook"
                 fullWidth
                 actions={{
-                  handleClick: () => goToSignUp()
+                  handleClick: () => socialSignUp()
                 }}
               >
                 Sign up free with Facebook
@@ -189,7 +191,7 @@ class Banner extends Component<Props> {
                   filled
                   fullWidth
                   actions={{
-                    handleClick: () => goToSignUp()
+                    handleClick: () => emailSignUp()
                   }}
                 >
                   Sign up for free
