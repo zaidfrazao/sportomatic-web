@@ -10,14 +10,15 @@ const styles = theme => ({
   communityName: {
     color: grey[800],
     fontSize: 22,
+    lineHeight: "28px",
     textAlign: "center",
-    margin: "12px 0"
+    margin: "18px 0"
   },
   dot: {
     position: "absolute",
     width: 32,
     height: 32,
-    top: 40,
+    top: 60,
     left: "calc(50% + 40px)",
     backgroundColor: lightBlue[500],
     borderRadius: "50%"
@@ -37,7 +38,7 @@ const styles = theme => ({
   wrapper: {
     position: "relative",
     backgroundColor: lightBlue[50],
-    padding: 24,
+    padding: "48px 24px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",

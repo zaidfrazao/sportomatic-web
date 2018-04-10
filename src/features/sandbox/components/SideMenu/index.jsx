@@ -23,10 +23,13 @@ const styles = theme => ({
     padding: 0
   },
   menuItem: {
+    transition: "0.25s",
     backgroundColor: "white",
     fontSize: 16,
-    padding: "20px 42px",
+    padding: "24px 0",
+    margin: "0 24px",
     cursor: "pointer",
+    borderTop: `1px solid ${grey[100]}`,
     "&:hover": {
       fontWeight: "bold",
       color: grey[300]
@@ -39,7 +42,9 @@ const styles = theme => ({
     height: 25
   },
   menuItemSelected: {
-    padding: "24px 48px",
+    borderTop: `1px solid ${grey[100]}`,
+    transition: "0.25s",
+    padding: "24px 32px",
     fontSize: 18,
     position: "relative",
     fontWeight: "bold"
@@ -53,8 +58,8 @@ const styles = theme => ({
     overflowY: "auto",
     backgroundColor: "white",
     zIndex: 1000,
-    width: 240,
-    minHeight: "calc(100vh - 80px)"
+    width: 260,
+    height: "calc(100vh - 80px)"
   },
   wrapperMobileClosed: {
     transition: "0.5s",
@@ -62,8 +67,8 @@ const styles = theme => ({
     backgroundColor: "white",
     zIndex: 1000,
     position: "fixed",
-    width: 0,
-    height: "100%"
+    width: "100%",
+    height: 0
   },
   wrapperMobileOpen: {
     transition: "0.5s",
@@ -72,7 +77,7 @@ const styles = theme => ({
     zIndex: 1000,
     position: "fixed",
     width: "100%",
-    height: "100%"
+    height: "calc(100vh - 80px)"
   }
 });
 

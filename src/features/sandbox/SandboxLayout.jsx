@@ -67,29 +67,17 @@ class SandboxLayout extends Component<Props, State> {
         label: "Overview",
         icon: "fas fa-newspaper"
       },
-      teams: {
-        label: "Teams",
-        icon: "fas fa-users"
-      },
       schedule: {
-        label: "Schedule",
+        label: "Events",
         icon: "fas fa-calendar"
-      },
-      results: {
-        label: "Results",
-        icon: "fas fa-list-ol"
-      },
-      hours: {
-        label: "Hours",
-        icon: "fas fa-clock"
-      },
-      wages: {
-        label: "Wages",
-        icon: "fas fa-dollar-sign"
       },
       people: {
         label: "People",
         icon: "fas fa-user"
+      },
+      teams: {
+        label: "Teams",
+        icon: "fas fa-users"
       },
       settings: {
         label: "Settings",
