@@ -5,20 +5,34 @@ import { createStructuredSelector } from "reselect";
 
 const NAMESPACE = "sportomatic-web/sandbox";
 
-export const UPDATE_ROLE_INDEX = `${NAMESPACE}/UPDATE_ROLE_INDEX`;
+export const UPDATE_SIDE_MENU = `${NAMESPACE}/UPDATE_SIDE_MENU`;
+export const UPDATE_SPORT = `${NAMESPACE}/UPDATE_SPORT`;
+export const TOGGLE_SIDE_NAV = `${NAMESPACE}/TOGGLE_SIDE_NAV`;
 
 // Reducers
 
 export const uiConfigInitialState = {
-  roleIndex: 0
+  sideMenuItemSelected: "overview",
+  sportSelected: "all",
+  isSideMenuOpen: true
 };
 
 export function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
-    case UPDATE_ROLE_INDEX:
+    case UPDATE_SIDE_MENU:
       return {
         ...state,
-        roleIndex: action.payload.newIndex
+        sideMenuItemSelected: action.payload.newSelected
+      };
+    case UPDATE_SPORT:
+      return {
+        ...state,
+        sportSelected: action.payload.newSelected
+      };
+    case TOGGLE_SIDE_NAV:
+      return {
+        ...state,
+        isSideMenuOpen: !state.isSideMenuOpen
       };
     default:
       return state;
@@ -39,11 +53,26 @@ export const selector = createStructuredSelector({
 
 // Action Creators
 
-export function updateRoleIndex(newIndex) {
+export function updateSideMenu(newSelected) {
   return {
-    type: UPDATE_ROLE_INDEX,
+    type: UPDATE_SIDE_MENU,
     payload: {
-      newIndex
+      newSelected
     }
+  };
+}
+
+export function updateSport(newSelected) {
+  return {
+    type: UPDATE_SPORT,
+    payload: {
+      newSelected
+    }
+  };
+}
+
+export function toggleSideNav() {
+  return {
+    type: TOGGLE_SIDE_NAV
   };
 }

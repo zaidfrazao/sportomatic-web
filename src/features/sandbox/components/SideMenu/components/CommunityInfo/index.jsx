@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { grey } from "material-ui/colors";
+import { grey, lightBlue } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
 import Button from "../../../Button";
 
@@ -13,11 +13,21 @@ const styles = theme => ({
     textAlign: "center",
     margin: "12px 0"
   },
+  dot: {
+    position: "absolute",
+    width: 32,
+    height: 32,
+    top: 40,
+    left: "calc(50% + 40px)",
+    backgroundColor: lightBlue[500],
+    borderRadius: "50%"
+  },
   emblem: {
     borderRadius: "50%",
     width: 140,
     height: 140,
-    backgroundColor: "white"
+    padding: 8,
+    backgroundColor: lightBlue[500]
   },
   numberOfMembers: {
     color: grey[100],
@@ -25,7 +35,8 @@ const styles = theme => ({
     textAlign: "center"
   },
   wrapper: {
-    backgroundColor: grey[300],
+    position: "relative",
+    backgroundColor: lightBlue[50],
     padding: 24,
     display: "flex",
     flexDirection: "column",
@@ -46,6 +57,7 @@ class CommunityInfo extends Component<Props> {
 
     return (
       <div className={classes.wrapper}>
+        <span className={classes.dot} />
         <img src={emblem} alt={`${name} emblem`} className={classes.emblem} />
         <h2 className={classes.communityName}>{name}</h2>
         <Button colour="primary" filled slim>

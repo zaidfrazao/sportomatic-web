@@ -1,22 +1,35 @@
 import React, { Component } from "react";
+import _ from "lodash";
 import { grey } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
 import CommunityInfo from "./components/CommunityInfo";
 import emblem from "./images/emblem.png";
 
 const styles = theme => ({
+  arrow: {
+    position: "absolute",
+    content: "",
+    top: "calc(50% - 14px)",
+    left: "calc(100% - 28px)",
+    width: 0,
+    height: 0,
+    border: "14px solid transparent",
+    borderColor: `transparent ${grey[200]} transparent transparent`,
+    "@media (max-width: 800px)": {
+      display: "none"
+    }
+  },
   menu: {
     padding: 0
   },
   menuItem: {
     backgroundColor: "white",
-    fontSize: 18,
-    padding: "24px 48px",
-    borderRadius: "14px 0 0 14px",
+    fontSize: 16,
+    padding: "20px 42px",
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: grey[100],
-      marginLeft: 12
+      fontWeight: "bold",
+      color: grey[300]
     }
   },
   menuItemIcon: {
@@ -27,21 +40,39 @@ const styles = theme => ({
   },
   menuItemSelected: {
     padding: "24px 48px",
-    marginLeft: 18,
-    borderRadius: "14px 0 0 14px",
     fontSize: 18,
-    backgroundColor: grey[200]
+    position: "relative",
+    fontWeight: "bold"
   },
   menuItemText: {
     display: "flex",
     alignItems: "center",
     color: grey[800]
   },
-  wrapper: {
+  wrapperDesktop: {
+    overflowY: "auto",
+    backgroundColor: "white",
+    zIndex: 1000,
     width: 240,
-    overflow: "auto",
-    minHeight: "calc(100vh - 84px)",
-    backgroundColor: "white"
+    minHeight: "calc(100vh - 80px)"
+  },
+  wrapperMobileClosed: {
+    transition: "0.5s",
+    overflowY: "auto",
+    backgroundColor: "white",
+    zIndex: 1000,
+    position: "fixed",
+    width: 0,
+    height: "100%"
+  },
+  wrapperMobileOpen: {
+    transition: "0.5s",
+    overflowY: "auto",
+    backgroundColor: "white",
+    zIndex: 1000,
+    position: "fixed",
+    width: "100%",
+    height: "100%"
   }
 });
 
@@ -52,65 +83,38 @@ type Props = {
     menuItemIcon: string,
     menuItemSelected: string,
     wrapper: string
-  }
+  },
+  actions: {
+    changeSelected: (key: string) => {}
+  },
+  items: ArrayOf<{
+    key: string,
+    label: string,
+    icon: string
+  }>
 };
 
 class SideMenu extends Component<Props> {
+  static defaultProps = {
+    actions: {
+      changeSelected: key => console.log(`Selected item changed to ${key}`)
+    }
+  };
+
   getMenuItems() {
-    const { classes } = this.props;
-    const menuItemSelected = "schedule";
+    const { classes, selected, items, isMobile } = this.props;
+    const { changeSelected, toggleSideNav } = this.props.actions;
 
-    const items = [
-      {
-        key: "overview",
-        label: "Overview",
-        icon: "fas fa-newspaper"
-      },
-      {
-        key: "teams",
-        label: "Teams",
-        icon: "fas fa-users"
-      },
-      {
-        key: "schedule",
-        label: "Schedule",
-        icon: "fas fa-calendar"
-      },
-      {
-        key: "results",
-        label: "Results",
-        icon: "fas fa-list-ol"
-      },
-      {
-        key: "hours",
-        label: "Hours",
-        icon: "fas fa-clock"
-      },
-      {
-        key: "wages",
-        label: "Wages",
-        icon: "fas fa-dollar-sign"
-      },
-      {
-        key: "people",
-        label: "People",
-        icon: "fas fa-user"
-      },
-      {
-        key: "settings",
-        label: "Settings",
-        icon: "fas fa-cog"
-      }
-    ];
-
-    return items.map(item => (
+    return _.toPairs(items).map(([key, item]) => (
       <div
-        key={`side-menu-item-${item.key}`}
+        key={`side-menu-item-${key}`}
         className={
-          menuItemSelected === item.key
-            ? classes.menuItemSelected
-            : classes.menuItem
+          selected === key ? classes.menuItemSelected : classes.menuItem
         }
+        onClick={() => {
+          changeSelected(key);
+          isMobile && toggleSideNav();
+        }}
       >
         <span className={classes.menuItemText}>
           <span className={classes.menuItemIcon}>
@@ -118,22 +122,27 @@ class SideMenu extends Component<Props> {
           </span>
           {item.label}
         </span>
+        {selected === key && !isMobile && <span className={classes.arrow} />}
       </div>
     ));
   }
 
   render() {
-    const { classes } = this.props;
-
+    const { classes, isSideMenuOpen, isMobile } = this.props;
     const menuItems = this.getMenuItems();
 
+    let wrapperStyle = classes.wrapperDesktop;
+    if (isMobile) {
+      if (isSideMenuOpen) {
+        wrapperStyle = classes.wrapperMobileOpen;
+      } else {
+        wrapperStyle = classes.wrapperMobileClosed;
+      }
+    }
+
     return (
-      <div className={classes.wrapper}>
-        <CommunityInfo
-          emblem={emblem}
-          name="Northcliff High School"
-          numberOfMembers={1563}
-        />
+      <div className={wrapperStyle}>
+        <CommunityInfo emblem={emblem} name="Northcliff High School" />
         <div className={classes.menu}>{menuItems}</div>
       </div>
     );

@@ -1,9 +1,31 @@
 import React, { Component } from "react";
-import { grey } from "material-ui/colors";
+import _ from "lodash";
+import { grey, lightBlue } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
-import plusIcon from "./images/plus.png";
 
 const styles = theme => ({
+  arrowBlue: {
+    position: "absolute",
+    transition: "0.5s",
+    content: "",
+    top: "calc(100% - 36px)",
+    left: "calc(50% - 18px)",
+    width: 0,
+    height: 0,
+    border: "18px solid transparent",
+    borderColor: `transparent transparent ${lightBlue[50]} transparent`
+  },
+  arrowGrey: {
+    position: "absolute",
+    transition: "0.5s",
+    content: "",
+    top: "calc(100% - 36px)",
+    left: "calc(50% - 18px)",
+    width: 0,
+    height: 0,
+    border: "18px solid transparent",
+    borderColor: `transparent transparent ${grey[200]} transparent`
+  },
   addButton: {
     backgroundColor: "white",
     display: "flex",
@@ -14,123 +36,115 @@ const styles = theme => ({
     cursor: "pointer",
     width: 90
   },
-  all: {
-    width: 34,
-    height: 34,
-    borderRadius: "50%",
-    backgroundColor: "white",
-    padding: 14,
-    textAlign: "center",
-    fontWeight: "bold",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    "&:hover": {
-      padding: 8,
-      width: 40,
-      height: 40,
-      fontSize: 18
-    }
-  },
-  allSelected: {
-    width: 40,
-    height: 40,
-    borderRadius: "50%",
-    backgroundColor: "white",
-    padding: 8,
-    textAlign: "center",
-    fontWeight: "bold",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    fontSize: 18
-  },
   button: {
     backgroundColor: "white",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: "50% 50% 0 0",
     cursor: "pointer",
-    width: 90,
+    padding: "0 24px",
+    fontWeight: "bold",
+    fontSize: 18,
     "&:hover": {
-      backgroundColor: grey[100]
+      backgroundColor: lightBlue[300],
+      color: "white"
     }
   },
   buttonSelected: {
-    backgroundColor: grey[200],
+    position: "relative",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: "50% 50% 0 0",
-    width: 90
+    padding: "0 24px",
+    fontWeight: "bold",
+    fontSize: 18
   },
   icon: {
     width: 34,
     height: 34,
     borderRadius: "50%",
-    backgroundColor: "white",
-    padding: 14,
-    "&:hover": {
-      padding: 8,
-      width: 40,
-      height: 40
-    }
+    fontSize: 48
   },
   iconSelected: {
-    width: 40,
-    height: 40,
+    width: 34,
+    height: 34,
     borderRadius: "50%",
-    backgroundColor: "white",
-    padding: 8
+    fontSize: 48
   },
   wrapper: {
     height: "100%",
-    display: "flex"
+    display: "flex",
+    overflowX: "auto"
   }
 });
 
 type Props = {
+  actions: {
+    changeSelected: (key: string) => {}
+  },
   classes: {
     wrapper: string
   }
 };
 
 class SportsToolbar extends Component<Props> {
+  static defaultProps = {
+    changeSelected: key => console.log(`Sport changed to ${key}`)
+  };
+
   getSportButtons() {
-    const { classes, sports, selected } = this.props;
+    const { classes, sports, selected, isMobile, isSideMenuOpen } = this.props;
+    const { changeSelected, toggleSideNav } = this.props.actions;
+
+    let arrowStyle = classes.arrowGrey;
+    isMobile && isSideMenuOpen && (arrowStyle = classes.arrowBlue);
 
     let sportButtons = [
-      <div
-        key="sports-toolbar-all"
-        className={selected === "all" ? classes.buttonSelected : classes.button}
-      >
-        <span
-          className={selected === "all" ? classes.allSelected : classes.all}
-        >
-          All
-        </span>
-      </div>,
-      sports.map(item => (
-        <div
-          key={`sports-toolbar-${item.key}`}
-          className={
-            selected === item.key ? classes.buttonSelected : classes.button
-          }
-        >
-          <img
-            className={
-              selected === item.key ? classes.iconSelected : classes.icon
-            }
-            alt={`${item.label} icon`}
-            src={item.icon}
-          />
-        </div>
-      )),
-      <div key={`sports-toolbar-add`} className={classes.addButton}>
-        <img className={classes.icon} alt="Add icon" src={plusIcon} />
+      _.toPairs(sports).map(([key, item]) => {
+        if (key === "all") {
+          return (
+            <div
+              key="sports-toolbar-all"
+              className={
+                selected === "all" ? classes.buttonSelected : classes.button
+              }
+              onClick={() => {
+                changeSelected("all");
+                isMobile && isSideMenuOpen && toggleSideNav();
+              }}
+            >
+              <span>All</span>
+              {selected === "all" && <span className={arrowStyle} />}
+            </div>
+          );
+        } else {
+          return (
+            <div
+              key={`sports-toolbar-${key}`}
+              className={
+                selected === key ? classes.buttonSelected : classes.button
+              }
+              onClick={() => {
+                changeSelected(key);
+                isMobile && isSideMenuOpen && toggleSideNav();
+              }}
+            >
+              <img
+                className={
+                  selected === key ? classes.iconSelected : classes.icon
+                }
+                alt={`${item.label} icon`}
+                src={item.icon}
+              />
+              {selected === key && <span className={arrowStyle} />}
+            </div>
+          );
+        }
+      }),
+      <div key={`sports-toolbar-add`} className={classes.button}>
+        <i className={`fas fa-plus-circle ${classes.icon}`} />
       </div>
     ];
 
