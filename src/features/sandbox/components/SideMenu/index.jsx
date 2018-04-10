@@ -44,7 +44,8 @@ const styles = theme => ({
   menuItemSelected: {
     borderTop: `1px solid ${grey[100]}`,
     transition: "0.25s",
-    padding: "24px 32px",
+    padding: "24px 0",
+    margin: "0 0 0 40px",
     fontSize: 18,
     position: "relative",
     fontWeight: "bold"
