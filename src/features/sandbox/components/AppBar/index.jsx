@@ -20,7 +20,7 @@ const styles = theme => ({
     backgroundSize: "cover",
     width: 160,
     height: 30,
-    margin: "0 40px",
+    margin: "0 50px",
     "@media (max-width: 600px)": {
       display: "none"
     }
@@ -36,7 +36,7 @@ const styles = theme => ({
     color: lightBlue[500]
   },
   mobileMenuButton: {
-    boxShadow: `0 0 40px ${grey[500]}`,
+    boxShadow: `0 0 20px ${grey[500]}`,
     zIndex: 10,
     width: 80,
     height: "100%",

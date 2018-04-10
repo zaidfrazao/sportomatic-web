@@ -10,12 +10,12 @@ const styles = theme => ({
     position: "absolute",
     content: "",
     top: "calc(50% - 14px)",
-    left: "calc(100% - 28px)",
+    left: "calc(100% - 4px)",
     width: 0,
     height: 0,
     border: "14px solid transparent",
     borderColor: `transparent ${grey[200]} transparent transparent`,
-    "@media (max-width: 800px)": {
+    "@media (max-width: 600px)": {
       display: "none"
     }
   },
@@ -44,8 +44,8 @@ const styles = theme => ({
   menuItemSelected: {
     borderTop: `1px solid ${grey[100]}`,
     transition: "0.25s",
-    padding: "24px 0",
-    margin: "0 0 0 40px",
+    padding: "24px 0 24px 24px",
+    margin: "0 24px",
     fontSize: 18,
     position: "relative",
     fontWeight: "bold"

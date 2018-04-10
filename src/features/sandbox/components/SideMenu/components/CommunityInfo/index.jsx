@@ -16,24 +16,19 @@ const styles = theme => ({
   },
   dot: {
     position: "absolute",
-    width: 32,
-    height: 32,
+    width: 30,
+    height: 30,
     top: 60,
-    left: "calc(50% + 40px)",
+    left: "calc(50% + 26px)",
     backgroundColor: lightBlue[500],
     borderRadius: "50%"
   },
   emblem: {
     borderRadius: "50%",
-    width: 140,
-    height: 140,
+    width: 100,
+    height: 100,
     padding: 8,
     backgroundColor: lightBlue[500]
-  },
-  numberOfMembers: {
-    color: grey[100],
-    fontSize: 16,
-    textAlign: "center"
   },
   wrapper: {
     position: "relative",
@@ -42,7 +37,10 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    "@media (max-width: 600px)": {
+      boxShadow: `0 0 20px ${grey[500]}`
+    }
   }
 });
 

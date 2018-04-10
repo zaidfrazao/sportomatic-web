@@ -8,11 +8,11 @@ const styles = theme => ({
     position: "absolute",
     transition: "0.5s",
     content: "",
-    top: "calc(100% - 36px)",
-    left: "calc(50% - 18px)",
+    top: "calc(100% - 28px)",
+    left: "calc(50% - 14px)",
     width: 0,
     height: 0,
-    border: "18px solid transparent",
+    border: "14px solid transparent",
     borderColor: `transparent transparent ${lightBlue[50]} transparent`
   },
   arrowGrey: {
