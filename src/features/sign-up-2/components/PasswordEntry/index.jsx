@@ -75,13 +75,19 @@ class PasswordEntry extends Component<Props> {
             </div>
             <span className={classes.disclaimer}>
               By clicking "Sign up", you agree to our{" "}
-              <span className={classes.disclaimerLink} href="terms">
-                Terms of Use
-              </span>{" "}
+              <a
+                className={classes.disclaimerLink}
+                href="http://site.sportomaticapp.com/wp-content/uploads/2018/02/SPORTOMATIC-MOBILE-APP-TERMS-AND-CONDITIONS.pdf"
+              >
+                App Terms of Use
+              </a>{" "}
               and{" "}
-              <span className={classes.disclaimerLink} href="policy">
+              <a
+                className={classes.disclaimerLink}
+                href="http://site.sportomaticapp.com/wp-content/uploads/2018/02/SPORTOMATIC-PRIVACY-POLICY.pdf"
+              >
                 Privacy Policy
-              </span>
+              </a>
             </span>
           </div>
         </div>

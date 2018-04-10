@@ -4,6 +4,7 @@ import { dashboardReducer } from "../features/dashboard/duck";
 import { hoursReducer } from "../features/hours/duck";
 import { peopleReducer } from "../features/people/duck";
 import { resultsReducer } from "../features/results/duck";
+import { sandboxReducer } from "../features/sandbox/duck";
 import { scheduleReducer } from "../features/schedule/duck";
 import { settingsReducer } from "../features/settings/duck";
 import { signInReducer } from "../features/sign-in/duck";
@@ -14,6 +15,7 @@ import { wagesReducer } from "../features/wages/duck";
 import { landingPageReducer } from "../features/landing-page/duck";
 
 export default combineReducers({
+  sandbox: sandboxReducer,
   signIn: signInReducer,
   signUp: signUpReducer,
   signUp2: signUp2Reducer,

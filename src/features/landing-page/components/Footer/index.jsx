@@ -22,23 +22,13 @@ const styles = theme => ({
       textAlign: "center"
     }
   },
-  legalStuffLink: {
-    width: 120,
+  legalStuff: {
+    width: 140,
     color: lightBlue[500],
     textDecoration: "none",
     fontWeight: "bold",
     margin: "12px 0",
-    "&:hover": {
-      color: lightBlue[700],
-      cursor: "pointer"
-    }
-  },
-  privacyPolicyLink: {
-    width: 120,
-    color: lightBlue[500],
-    textDecoration: "none",
-    fontWeight: "bold",
-    margin: "12px 0",
+    textAlign: "center",
     "&:hover": {
       color: lightBlue[700],
       cursor: "pointer"
@@ -71,10 +61,22 @@ class Banner extends Component<Props> {
           <span className={classes.copyrightText}>
             Copyright © 2018 Sportomatic Pty Ltd
           </span>
-          <a className={classes.legalStuffLink} href="/terms">
-            Terms of Use
+          <a
+            className={classes.legalStuff}
+            href="http://site.sportomaticapp.com/wp-content/uploads/2018/02/SPORTOMATIC-WEBSITE-TERMS-AND-CONDITIONS.pdf"
+          >
+            Website Terms
           </a>
-          <a className={classes.privacyPolicyLink} href="/privacy-policy">
+          <a
+            className={classes.legalStuff}
+            href="http://site.sportomaticapp.com/wp-content/uploads/2018/02/SPORTOMATIC-MOBILE-APP-TERMS-AND-CONDITIONS.pdf"
+          >
+            App Terms
+          </a>
+          <a
+            className={classes.legalStuff}
+            href="http://site.sportomaticapp.com/wp-content/uploads/2018/02/SPORTOMATIC-PRIVACY-POLICY.pdf"
+          >
             Privacy Policy
           </a>
         </div>

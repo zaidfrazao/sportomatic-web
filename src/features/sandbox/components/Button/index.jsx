@@ -98,10 +98,6 @@ const styles = theme => ({
     "&:hover": {
       backgroundColor: orange[50]
     }
-  },
-  socialIcon: {
-    fontSize: 18,
-    marginRight: 8
   }
 });
 
@@ -170,7 +166,7 @@ class Button extends Component<Props> {
 
     return (
       <button onClick={() => handleClick()} className={_.join(styles, " ")}>
-        <i className={`fab fa-facebook ${classes.socialIcon}`} /> {children}
+        <i className="fab fa-facebook" /> {children}
       </button>
     );
   }
@@ -184,7 +180,7 @@ class Button extends Component<Props> {
 
     return (
       <button onClick={() => handleClick()} className={_.join(styles, " ")}>
-        <i className={`fab fa-google ${classes.socialIcon}`} /> {children}
+        <i className="fab fa-google" /> {children}
       </button>
     );
   }
