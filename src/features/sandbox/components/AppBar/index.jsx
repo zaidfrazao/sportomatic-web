@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { grey } from "material-ui/colors";
+import { grey, lightBlue } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
 import SportsToolbar from "./components/SportsToolbar";
 import logo from "./images/logo.png";
@@ -25,15 +25,26 @@ const styles = theme => ({
       display: "none"
     }
   },
-  menuIcon: {
-    height: "100%",
-    fontSize: 32
+  menuIconClosed: {
+    fontSize: 24,
+    transition: "0.5s",
+    color: grey[900]
+  },
+  menuIconOpen: {
+    fontSize: 28,
+    transition: "0.5s",
+    color: lightBlue[500]
   },
   mobileMenuButton: {
-    display: "block",
-    padding: "0 24px",
+    boxShadow: `0 0 40px ${grey[500]}`,
+    zIndex: 10,
+    width: 80,
     height: "100%",
     borderLeft: `1px solid ${grey[300]}`,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     "@media (min-width: 600px)": {
       display: "none"
     }
@@ -73,6 +84,13 @@ class AppBar extends Component<Props> {
     const { classes, selected, sports, isMobile, isSideMenuOpen } = this.props;
     const { changeSportSelected, toggleSideNav } = this.props.actions;
 
+    let menuIconStyle = classes.menuIconClosed;
+    if (isSideMenuOpen) {
+      menuIconStyle = classes.menuIconOpen;
+    }
+
+    console.log(menuIconStyle);
+
     return (
       <div className={classes.appBar}>
         <div className={classes.appBarContent}>
@@ -93,7 +111,9 @@ class AppBar extends Component<Props> {
             className={classes.mobileMenuButton}
             onClick={() => toggleSideNav()}
           >
-            <i className={`fas fa-bars ${classes.menuIcon}`} />
+            <span className={menuIconStyle}>
+              <i className="fas fa-bars" />
+            </span>
           </div>
         </div>
       </div>

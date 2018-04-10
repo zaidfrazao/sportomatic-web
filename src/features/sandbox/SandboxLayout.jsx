@@ -17,6 +17,8 @@ const styles = theme => ({
     textAlign: "center"
   },
   content: {
+    backgroundColor: grey[200],
+    zIndex: 20,
     padding: 24,
     flex: 1
   },
