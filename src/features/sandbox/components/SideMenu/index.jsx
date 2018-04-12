@@ -31,7 +31,7 @@ const styles = theme => ({
     transition: "0.25s",
     fontSize: 16,
     padding: "24px 0",
-    margin: "0 24px",
+    margin: "0 48px",
     cursor: "pointer",
     borderTop: `1px solid ${grey[100]}`,
     "@media (max-width: 600px)": {
@@ -60,24 +60,17 @@ const styles = theme => ({
     fontSize: 20,
     position: "relative",
     fontWeight: "bold",
-    "@media (min-width: 769px)": {
-      padding: "24px 0 24px 28px"
-    },
     "@media (max-width: 600px)": {
       border: `1px solid ${grey[100]}`,
       textAlign: "center",
-      width: "calc(50% - 2px)",
-      margin: 0,
-      padding: "32px 0"
+      width: "calc(50% - 2px)"
     }
   },
   menuItemText: {
     display: "flex",
     alignItems: "center",
     color: grey[800],
-    "@media (max-width: 768px)": {
-      justifyContent: "center"
-    }
+    justifyContent: "center"
   },
   wrapperDesktop: {
     overflowY: "auto",
