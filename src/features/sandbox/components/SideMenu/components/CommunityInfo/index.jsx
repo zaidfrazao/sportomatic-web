@@ -7,6 +7,10 @@ const styles = theme => ({
   buttonIcon: {
     marginRight: 8
   },
+  buttonWrapper: {
+    width: "100%",
+    margin: "4px 0"
+  },
   communityName: {
     color: grey[800],
     fontSize: 20,
@@ -41,7 +45,7 @@ const styles = theme => ({
   wrapper: {
     backgroundColor: lightBlue[50],
     zIndex: 1100,
-    padding: "24px 24px",
+    padding: 28,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -66,9 +70,18 @@ class CommunityInfo extends Component<Props> {
           <img src={emblem} alt={`${name} emblem`} className={classes.emblem} />
           <h2 className={classes.communityName}>{name}</h2>
         </div>
-        <Button colour="primary" filled slim>
-          <i className={`fas fa-edit ${classes.buttonIcon}`} /> Edit communities
-        </Button>
+        <div className={classes.buttonWrapper}>
+          <Button colour="primary" filled slim fullWidth>
+            <i className={`fas fa-exchange-alt ${classes.buttonIcon}`} /> Switch
+            community
+          </Button>
+        </div>
+        <div className={classes.buttonWrapper}>
+          <Button colour="primary" filled slim fullWidth>
+            <i className={`fas fa-edit ${classes.buttonIcon}`} /> Manage
+            communities
+          </Button>
+        </div>
       </div>
     );
   }
