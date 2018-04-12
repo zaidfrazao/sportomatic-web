@@ -44,7 +44,6 @@ const styles = theme => ({
   },
   wrapper: {
     backgroundColor: lightBlue[50],
-    zIndex: 1100,
     padding: 28,
     display: "flex",
     flexDirection: "column",

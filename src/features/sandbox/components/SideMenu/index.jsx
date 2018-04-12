@@ -75,27 +75,25 @@ const styles = theme => ({
     justifyContent: "center"
   },
   wrapperDesktop: {
-    overflowY: "auto",
     backgroundColor: "white",
-    zIndex: 1000,
     width: 320,
     height: "calc(100vh - 64px)"
   },
   wrapperMobileClosed: {
     transition: "0.5s",
-    overflowY: "auto",
     backgroundColor: "white",
+    position: "absolute",
     zIndex: 1000,
-    position: "fixed",
+    left: "calc(100% * -1)",
     width: "100%",
-    height: 0
+    height: "calc(100vh - 64px)"
   },
   wrapperMobileOpen: {
     transition: "0.5s",
-    overflowY: "auto",
     backgroundColor: "white",
+    left: 0,
     zIndex: 1000,
-    position: "fixed",
+    position: "absolute",
     width: "100%",
     height: "calc(100vh - 64px)"
   }
