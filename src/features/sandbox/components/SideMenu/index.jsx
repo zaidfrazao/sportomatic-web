@@ -39,7 +39,7 @@ const styles = theme => ({
       textAlign: "center",
       width: "calc(50% - 2px)",
       margin: 0,
-      padding: "28px 0"
+      padding: "24px 0"
     },
     "&:hover": {
       fontWeight: "bold",
@@ -65,7 +65,7 @@ const styles = theme => ({
       textAlign: "center",
       width: "calc(50% - 2px)",
       margin: 0,
-      padding: "28px 0"
+      padding: "24px 0"
     }
   },
   menuItemText: {
