@@ -9,38 +9,43 @@ const styles = theme => ({
   },
   communityName: {
     color: grey[800],
-    fontSize: 22,
+    fontSize: 20,
     lineHeight: "28px",
     textAlign: "center",
-    margin: "18px 0"
+    margin: 8
   },
   dot: {
     position: "absolute",
-    width: 30,
-    height: 30,
-    top: 60,
-    left: "calc(50% + 26px)",
+    width: 16,
+    height: 16,
+    top: "calc(50% - 22px)",
+    left: 50,
     backgroundColor: lightBlue[500],
     borderRadius: "50%"
   },
   emblem: {
     borderRadius: "50%",
-    width: 100,
-    height: 100,
-    padding: 8,
+    width: 48,
+    height: 48,
+    padding: 4,
+    margin: 8,
     backgroundColor: lightBlue[500]
   },
-  wrapper: {
+  nameEmblemWrapper: {
     position: "relative",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: "12px 0"
+  },
+  wrapper: {
     backgroundColor: lightBlue[50],
-    padding: "48px 24px",
+    zIndex: 1100,
+    padding: "24px 24px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center",
-    "@media (max-width: 600px)": {
-      boxShadow: `0 0 20px ${grey[500]}`
-    }
+    alignItems: "center"
   }
 });
 
@@ -56,9 +61,12 @@ class CommunityInfo extends Component<Props> {
 
     return (
       <div className={classes.wrapper}>
-        <span className={classes.dot} />
-        <img src={emblem} alt={`${name} emblem`} className={classes.emblem} />
-        <h2 className={classes.communityName}>{name}</h2>
+        <div className={classes.nameEmblemWrapper}>
+          <span className={classes.dot} />
+          <img src={emblem} alt={`${name} emblem`} className={classes.emblem} />
+          <h2 className={classes.communityName}>{name}</h2>
+        </div>
+
         <Button colour="primary" filled slim>
           <i className={`fas fa-edit ${classes.buttonIcon}`} /> Edit communities
         </Button>

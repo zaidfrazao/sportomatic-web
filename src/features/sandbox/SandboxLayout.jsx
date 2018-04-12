@@ -24,7 +24,10 @@ const styles = theme => ({
   },
   coreWrapper: {
     display: "flex",
-    minHeight: "calc(100vh - 80px)"
+    minHeight: "calc(100vh - 64px)"
+  },
+  sectionIcon: {
+    marginRight: 8
   },
   wrapper: {
     backgroundColor: grey[200]
@@ -81,6 +84,10 @@ class SandboxLayout extends Component<Props, State> {
         label: "Teams",
         icon: "fas fa-users"
       },
+      reports: {
+        label: "Reports",
+        icon: "fas fa-clipboard"
+      },
       settings: {
         label: "Settings",
         icon: "fas fa-cog"
@@ -121,15 +128,15 @@ class SandboxLayout extends Component<Props, State> {
     const sideMenuItems = this.getSideMenuItems();
     const sportsItems = this.getSportsItems();
 
-    const isMobile = windowWidth <= 600;
-    // const isTablet = windowWidth <= 768;
+    // const isMobile = windowWidth <= 600;
+    const isTablet = windowWidth <= 768;
 
     return (
       <div className={classes.wrapper}>
         <AppBar
           selected={sportSelected}
           sports={sportsItems}
-          isMobile={isMobile}
+          isTablet={isTablet}
           isSideMenuOpen={isSideMenuOpen}
           actions={{
             changeSportSelected: key => updateSport(key),
@@ -140,7 +147,7 @@ class SandboxLayout extends Component<Props, State> {
           <SideMenu
             selected={sideMenuItemSelected}
             items={sideMenuItems}
-            isMobile={isMobile}
+            isTablet={isTablet}
             isSideMenuOpen={isSideMenuOpen}
             actions={{
               changeSelected: key => updateSideMenu(key),
@@ -150,12 +157,22 @@ class SandboxLayout extends Component<Props, State> {
           <div className={classes.content}>
             {sportSelected === "all" ? (
               <h1 className={classes.breadcrumbText}>
+                <i
+                  className={`${sideMenuItems[sideMenuItemSelected]
+                    .icon} ${classes.sectionIcon}`}
+                />{" "}
                 {sideMenuItems[sideMenuItemSelected].label}
               </h1>
             ) : (
-              <h1 className={classes.breadcrumbText}>{`${sportsItems[
-                sportSelected
-              ].label} ${sideMenuItems[sideMenuItemSelected].label}`}</h1>
+              <h1 className={classes.breadcrumbText}>
+                <i
+                  className={`${sideMenuItems[sideMenuItemSelected]
+                    .icon} ${classes.sectionIcon}`}
+                />{" "}
+                {`${sportsItems[sportSelected].label} ${sideMenuItems[
+                  sideMenuItemSelected
+                ].label}`}
+              </h1>
             )}
           </div>
         </div>

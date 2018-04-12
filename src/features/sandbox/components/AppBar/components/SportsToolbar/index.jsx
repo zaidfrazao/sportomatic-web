@@ -19,11 +19,11 @@ const styles = theme => ({
     position: "absolute",
     transition: "0.5s",
     content: "",
-    top: "calc(100% - 36px)",
-    left: "calc(50% - 18px)",
+    top: "calc(100% - 28px)",
+    left: "calc(50% - 14px)",
     width: 0,
     height: 0,
-    border: "18px solid transparent",
+    border: "14px solid transparent",
     borderColor: `transparent transparent ${grey[200]} transparent`
   },
   addButton: {
@@ -43,9 +43,12 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
-    padding: "0 24px",
+    padding: "0 12px",
+    margin: 8,
     fontWeight: "bold",
+    borderRadius: 14,
     fontSize: 18,
+    transition: "0.125s",
     "&:hover": {
       backgroundColor: lightBlue[300],
       color: "white"
@@ -95,11 +98,11 @@ class SportsToolbar extends Component<Props> {
   };
 
   getSportButtons() {
-    const { classes, sports, selected, isMobile, isSideMenuOpen } = this.props;
+    const { classes, sports, selected, isTablet, isSideMenuOpen } = this.props;
     const { changeSelected, toggleSideNav } = this.props.actions;
 
     let arrowStyle = classes.arrowGrey;
-    isMobile && isSideMenuOpen && (arrowStyle = classes.arrowBlue);
+    isTablet && isSideMenuOpen && (arrowStyle = classes.arrowBlue);
 
     let sportButtons = [
       _.toPairs(sports).map(([key, item]) => {
@@ -112,7 +115,7 @@ class SportsToolbar extends Component<Props> {
               }
               onClick={() => {
                 changeSelected("all");
-                isMobile && isSideMenuOpen && toggleSideNav();
+                isTablet && isSideMenuOpen && toggleSideNav();
               }}
             >
               <span>All</span>
@@ -128,7 +131,7 @@ class SportsToolbar extends Component<Props> {
               }
               onClick={() => {
                 changeSelected(key);
-                isMobile && isSideMenuOpen && toggleSideNav();
+                isTablet && isSideMenuOpen && toggleSideNav();
               }}
             >
               <img
@@ -153,7 +156,6 @@ class SportsToolbar extends Component<Props> {
 
   render() {
     const { classes } = this.props;
-
     const sportButtons = this.getSportButtons();
 
     return <div className={classes.wrapper}>{sportButtons}</div>;

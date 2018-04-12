@@ -5,11 +5,8 @@ import SportsToolbar from "./components/SportsToolbar";
 import logo from "./images/logo.png";
 
 const styles = theme => ({
-  appBar: {
-    backgroundColor: "white"
-  },
-  appBarContent: {
-    height: 80,
+  content: {
+    height: 64,
     display: "flex",
     alignItems: "center"
   },
@@ -20,8 +17,8 @@ const styles = theme => ({
     backgroundSize: "cover",
     width: 160,
     height: 30,
-    margin: "0 50px",
-    "@media (max-width: 600px)": {
+    margin: "0 80px",
+    "@media (max-width: 768px)": {
       display: "none"
     }
   },
@@ -45,16 +42,19 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    "@media (min-width: 600px)": {
+    "@media (min-width: 769px)": {
       display: "none"
     }
   },
   sportsToolbarWrapper: {
     flexGrow: 2,
     height: "100%",
-    "@media (max-width: 600px)": {
+    "@media (max-width: 768px)": {
       width: "calc(100% - 78px)"
     }
+  },
+  wrapper: {
+    backgroundColor: "white"
   }
 });
 
@@ -81,7 +81,7 @@ class AppBar extends Component<Props> {
   };
 
   render() {
-    const { classes, selected, sports, isMobile, isSideMenuOpen } = this.props;
+    const { classes, selected, sports, isTablet, isSideMenuOpen } = this.props;
     const { changeSportSelected, toggleSideNav } = this.props.actions;
 
     let menuIconStyle = classes.menuIconClosed;
@@ -89,15 +89,13 @@ class AppBar extends Component<Props> {
       menuIconStyle = classes.menuIconOpen;
     }
 
-    console.log(menuIconStyle);
-
     return (
-      <div className={classes.appBar}>
-        <div className={classes.appBarContent}>
+      <div className={classes.wrapper}>
+        <div className={classes.content}>
           <div className={classes.logo} />
           <div className={classes.sportsToolbarWrapper}>
             <SportsToolbar
-              isMobile={isMobile}
+              isTablet={isTablet}
               isSideMenuOpen={isSideMenuOpen}
               sports={sports}
               selected={selected}

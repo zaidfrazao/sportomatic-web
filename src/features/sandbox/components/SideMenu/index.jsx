@@ -15,21 +15,32 @@ const styles = theme => ({
     height: 0,
     border: "14px solid transparent",
     borderColor: `transparent ${grey[200]} transparent transparent`,
-    "@media (max-width: 600px)": {
+    "@media (max-width: 768px)": {
       display: "none"
     }
   },
   menu: {
-    padding: 0
+    padding: 0,
+    flex: 1,
+    "@media (max-width: 600px)": {
+      display: "flex",
+      flexWrap: "wrap"
+    }
   },
   menuItem: {
     transition: "0.25s",
-    backgroundColor: "white",
     fontSize: 16,
     padding: "24px 0",
     margin: "0 24px",
     cursor: "pointer",
     borderTop: `1px solid ${grey[100]}`,
+    "@media (max-width: 600px)": {
+      border: `1px solid ${grey[100]}`,
+      textAlign: "center",
+      width: "calc(50% - 2px)",
+      margin: 0,
+      padding: "32px 0"
+    },
     "&:hover": {
       fontWeight: "bold",
       color: grey[300]
@@ -44,23 +55,36 @@ const styles = theme => ({
   menuItemSelected: {
     borderTop: `1px solid ${grey[100]}`,
     transition: "0.25s",
-    padding: "24px 0 24px 24px",
+    padding: "24px 0",
     margin: "0 24px",
-    fontSize: 18,
+    fontSize: 20,
     position: "relative",
-    fontWeight: "bold"
+    fontWeight: "bold",
+    "@media (min-width: 769px)": {
+      padding: "24px 0 24px 28px"
+    },
+    "@media (max-width: 600px)": {
+      border: `1px solid ${grey[100]}`,
+      textAlign: "center",
+      width: "calc(50% - 2px)",
+      margin: 0,
+      padding: "32px 0"
+    }
   },
   menuItemText: {
     display: "flex",
     alignItems: "center",
-    color: grey[800]
+    color: grey[800],
+    "@media (max-width: 768px)": {
+      justifyContent: "center"
+    }
   },
   wrapperDesktop: {
     overflowY: "auto",
     backgroundColor: "white",
     zIndex: 1000,
-    width: 260,
-    height: "calc(100vh - 80px)"
+    width: 320,
+    height: "calc(100vh - 64px)"
   },
   wrapperMobileClosed: {
     transition: "0.5s",
@@ -78,7 +102,7 @@ const styles = theme => ({
     zIndex: 1000,
     position: "fixed",
     width: "100%",
-    height: "calc(100vh - 80px)"
+    height: "calc(100vh - 64px)"
   }
 });
 
@@ -108,7 +132,7 @@ class SideMenu extends Component<Props> {
   };
 
   getMenuItems() {
-    const { classes, selected, items, isMobile } = this.props;
+    const { classes, selected, items, isTablet } = this.props;
     const { changeSelected, toggleSideNav } = this.props.actions;
 
     return _.toPairs(items).map(([key, item]) => (
@@ -119,7 +143,7 @@ class SideMenu extends Component<Props> {
         }
         onClick={() => {
           changeSelected(key);
-          isMobile && toggleSideNav();
+          isTablet && toggleSideNav();
         }}
       >
         <span className={classes.menuItemText}>
@@ -128,17 +152,17 @@ class SideMenu extends Component<Props> {
           </span>
           {item.label}
         </span>
-        {selected === key && !isMobile && <span className={classes.arrow} />}
+        {selected === key && !isTablet && <span className={classes.arrow} />}
       </div>
     ));
   }
 
   render() {
-    const { classes, isSideMenuOpen, isMobile } = this.props;
+    const { classes, isSideMenuOpen, isTablet } = this.props;
     const menuItems = this.getMenuItems();
 
     let wrapperStyle = classes.wrapperDesktop;
-    if (isMobile) {
+    if (isTablet) {
       if (isSideMenuOpen) {
         wrapperStyle = classes.wrapperMobileOpen;
       } else {
@@ -148,7 +172,7 @@ class SideMenu extends Component<Props> {
 
     return (
       <div className={wrapperStyle}>
-        <CommunityInfo emblem={emblem} name="Northcliff High School" />
+        <CommunityInfo emblem={emblem} name="Weltevreden Park Primary School" />
         <div className={classes.menu}>{menuItems}</div>
       </div>
     );
