@@ -66,7 +66,6 @@ class CommunityInfo extends Component<Props> {
           <img src={emblem} alt={`${name} emblem`} className={classes.emblem} />
           <h2 className={classes.communityName}>{name}</h2>
         </div>
-
         <Button colour="primary" filled slim>
           <i className={`fas fa-edit ${classes.buttonIcon}`} /> Edit communities
         </Button>

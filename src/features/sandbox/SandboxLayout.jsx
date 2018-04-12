@@ -8,23 +8,25 @@ import soccerIcon from "./images/soccer.png";
 import tennisIcon from "./images/tennis-ball.png";
 
 const styles = theme => ({
-  breadcrumbText: {
+  content: {
+    backgroundColor: grey[200],
+    zIndex: 20,
+    padding: 24,
+    flex: 1,
+    maxWidth: 1200,
+    margin: "0 auto"
+  },
+  coreWrapper: {
+    display: "flex",
+    minHeight: "calc(100vh - 64px)"
+  },
+  headerText: {
     fontSize: 24,
     backgroundColor: "white",
     borderRadius: 12,
     margin: 0,
     padding: "4px 18px",
     textAlign: "center"
-  },
-  content: {
-    backgroundColor: grey[200],
-    zIndex: 20,
-    padding: 24,
-    flex: 1
-  },
-  coreWrapper: {
-    display: "flex",
-    minHeight: "calc(100vh - 64px)"
   },
   sectionIcon: {
     marginRight: 8
@@ -156,7 +158,7 @@ class SandboxLayout extends Component<Props, State> {
           />
           <div className={classes.content}>
             {sportSelected === "all" ? (
-              <h1 className={classes.breadcrumbText}>
+              <h1 className={classes.headerText}>
                 <i
                   className={`${sideMenuItems[sideMenuItemSelected]
                     .icon} ${classes.sectionIcon}`}
@@ -164,7 +166,7 @@ class SandboxLayout extends Component<Props, State> {
                 {sideMenuItems[sideMenuItemSelected].label}
               </h1>
             ) : (
-              <h1 className={classes.breadcrumbText}>
+              <h1 className={classes.headerText}>
                 <i
                   className={`${sideMenuItems[sideMenuItemSelected]
                     .icon} ${classes.sectionIcon}`}

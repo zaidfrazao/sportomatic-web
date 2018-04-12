@@ -50,8 +50,7 @@ const styles = theme => ({
     fontSize: 18,
     transition: "0.125s",
     "&:hover": {
-      backgroundColor: lightBlue[300],
-      color: "white"
+      backgroundColor: grey[200]
     }
   },
   buttonSelected: {
