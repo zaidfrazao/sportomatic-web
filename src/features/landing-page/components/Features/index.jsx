@@ -3,6 +3,7 @@ import { grey } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
 import Button from "../Button";
 import features from "./features.json";
+import BrowserWindow from "./components/BrowserWindow";
 
 const styles = theme => ({
   bodyText: {
@@ -28,13 +29,9 @@ const styles = theme => ({
     alignItems: "center"
   },
   image: {
-    width: "calc(100% - 48px)",
     maxWidth: 520,
     height: "auto",
-    margin: 48,
-    "@media (max-width: 800px)": {
-      width: "100%"
-    }
+    width: "100%"
   },
   imageWrapperDark: {
     display: "flex",
@@ -42,6 +39,7 @@ const styles = theme => ({
     alignItems: "center",
     width: "50%",
     order: 3,
+    margin: 32,
     "@media (max-width: 580px)": {
       display: "none"
     },
@@ -56,6 +54,7 @@ const styles = theme => ({
     alignItems: "center",
     width: "50%",
     order: 1,
+    margin: 32,
     "@media (max-width: 580px)": {
       display: "none"
     },
@@ -148,11 +147,13 @@ class Features extends Component<Props> {
                 </div>
               </div>
               <div className={classes.imageWrapperLight}>
-                <img
-                  src={copy.imageURL}
-                  alt={copy.imageAlt}
-                  className={classes.image}
-                />
+                <BrowserWindow>
+                  <img
+                    src={copy.imageURL}
+                    alt={copy.imageAlt}
+                    className={classes.image}
+                  />
+                </BrowserWindow>
               </div>
             </div>
           </div>
@@ -165,11 +166,13 @@ class Features extends Component<Props> {
           >
             <div className={classes.featureWrapper}>
               <div className={classes.imageWrapperDark}>
-                <img
-                  src={copy.imageURL}
-                  alt={copy.imageAlt}
-                  className={classes.image}
-                />
+                <BrowserWindow isLight>
+                  <img
+                    src={copy.imageURL}
+                    alt={copy.imageAlt}
+                    className={classes.image}
+                  />
+                </BrowserWindow>
               </div>
               <div className={classes.textWrapper}>
                 <h2>{copy.headline}</h2>
