@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import { grey, lightBlue } from "material-ui/colors";
-import { withStyles } from "material-ui/styles";
-import Button from "../Button";
-import Select from "../Select";
+import injectSheet from "react-jss";
+import { common, grey, lightBlue } from "../../../../utils/colours";
+import Button from "../../../../components/Button";
+import Select from "../../../../components/Select";
+import TextField from "../../../../components/TextField";
 
 const styles = theme => ({
   buttonIcon: {
@@ -17,13 +18,33 @@ const styles = theme => ({
     maxWidth: 800,
     margin: "0 auto"
   },
+  dotHighlighted: {
+    width: 16,
+    height: 16,
+    borderRadius: "50%",
+    margin: 4,
+    backgroundColor: common["white"]
+  },
+  dotNotHighlighted: {
+    width: 16,
+    height: 16,
+    borderRadius: "50%",
+    margin: 4,
+    backgroundColor: grey[300]
+  },
+  dotsWrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    margin: "16px 0"
+  },
   form: {
     color: grey[100],
     width: 260,
     margin: "0 auto"
   },
   headline: {
-    color: "white",
+    color: common["white"],
     textAlign: "center",
     margin: 24
   },
@@ -49,9 +70,7 @@ const styles = theme => ({
   }
 });
 
-type Props = {
-  classes: {}
-};
+type Props = {};
 
 type State = {
   selectedType: string,
@@ -64,20 +83,38 @@ type State = {
 
 class CreateCommunity extends Component<Props, State> {
   state = {
-    selectedType: {
-      key: "none",
-      label: "N/A"
+    communityType: {
+      value: "none",
+      label: "N/A",
+      validation: "default",
+      helperText: ""
     },
-    selectedSubType: {
-      key: "none",
-      label: "N/A"
+    subType: {
+      value: "none",
+      label: "N/A",
+      validation: "default",
+      helperText: ""
     },
-    communityName: "",
-    abbreviation: "",
-    otherText: "",
-    selectedGender: {
-      key: "none",
-      label: "N/A"
+    communityName: {
+      value: "",
+      validation: "default",
+      helperText: ""
+    },
+    abbreviation: {
+      value: "",
+      validation: "default",
+      helperText: ""
+    },
+    otherText: {
+      value: "",
+      validation: "default",
+      helperText: ""
+    },
+    athleteGender: {
+      value: "none",
+      label: "N/A",
+      validation: "default",
+      helperText: ""
     },
     typeItems: [
       {
@@ -126,18 +163,28 @@ class CreateCommunity extends Component<Props, State> {
   handleTypeChange(key, label) {
     const coreChanges = {
       showOther: false,
-      otherText: "",
-      selectedSubType: {
-        key: "none",
-        label: "N/A"
+      otherText: {
+        value: "",
+        validation: "default",
+        helperText: ""
       },
-      selectedType: {
-        key,
-        label
+      subType: {
+        value: "none",
+        label: "N/A",
+        validation: "default",
+        helperText: ""
       },
-      selectedGender: {
-        key: "none",
-        label: "N/A"
+      communityType: {
+        label,
+        value: key,
+        validation: "default",
+        helperText: ""
+      },
+      athleteGender: {
+        value: "none",
+        label: "N/A",
+        validation: "default",
+        helperText: ""
       },
       genderItems: [
         {
@@ -213,7 +260,7 @@ class CreateCommunity extends Component<Props, State> {
       case "personal":
         additionalChanges = {
           showSubType: true,
-          subTypePlaceholder: "Type of community",
+          subTypePlaceholder: "Type of personal community",
           subTypeItems: [
             {
               key: "work-colleagues",
@@ -292,14 +339,23 @@ class CreateCommunity extends Component<Props, State> {
     const coreChanges = {
       showNameAndAbbrev: true,
       showOther: false,
-      otherText: "",
-      selectedSubType: {
-        key,
-        label
+      otherText: {
+        value: "none",
+        label: "N/A",
+        validation: "default",
+        helperText: ""
       },
-      selectedGender: {
-        key: "none",
-        label: "N/A"
+      subType: {
+        label,
+        value: key,
+        validation: "default",
+        helperText: ""
+      },
+      athleteGender: {
+        value: "none",
+        label: "N/A",
+        validation: "default",
+        helperText: ""
       }
     };
     let additionalChanges = {};
@@ -359,12 +415,20 @@ class CreateCommunity extends Component<Props, State> {
     if (text.length === 0) {
       this.setState({
         showNameAndAbbrev: false,
-        otherText: text
+        otherText: {
+          value: text,
+          validation: "default",
+          helperText: ""
+        }
       });
     } else {
       this.setState({
         showNameAndAbbrev: true,
-        otherText: text
+        otherText: {
+          value: text,
+          validation: "default",
+          helperText: ""
+        }
       });
     }
   }
@@ -373,18 +437,50 @@ class CreateCommunity extends Component<Props, State> {
     if (text.length === 0) {
       this.setState({
         showGender: false,
-        communityName: text,
-        abbreviation: "",
-        selectedGender: {
-          key: "none",
-          label: "N/A"
+        communityName: {
+          value: text,
+          validation: "default",
+          helperText: ""
+        },
+        abbreviation: {
+          value: "",
+          validation: "default",
+          helperText: ""
+        },
+        athleteGender: {
+          value: "none",
+          label: "N/A",
+          validation: "default",
+          helperText: ""
+        }
+      });
+    } else if (text !== _.startCase(text) && text !== `${_.startCase(text)} `) {
+      this.setState({
+        showGender: true,
+        communityName: {
+          value: text,
+          validation: "warning",
+          helperText: "Community names are usually capitalised"
+        },
+        abbreviation: {
+          value: this.getAbbreviation(text),
+          validation: "default",
+          helperText: ""
         }
       });
     } else {
       this.setState({
         showGender: true,
-        communityName: text,
-        abbreviation: this.getAbbreviation(text)
+        communityName: {
+          value: text,
+          validation: "default",
+          helperText: ""
+        },
+        abbreviation: {
+          value: this.getAbbreviation(text),
+          validation: "default",
+          helperText: ""
+        }
       });
     }
   }
@@ -393,25 +489,46 @@ class CreateCommunity extends Component<Props, State> {
     if (text.length === 0) {
       this.setState({
         showGender: false,
-        abbreviation: text,
-        selectedGender: {
-          key: "none",
-          label: "N/A"
+        abbreviation: {
+          value: text,
+          validation: "default",
+          helperText: ""
+        },
+        athleteGender: {
+          value: "none",
+          label: "N/A",
+          validation: "default",
+          helperText: ""
+        }
+      });
+    } else if (text !== _.toUpper(text)) {
+      this.setState({
+        showGender: true,
+        abbreviation: {
+          value: text,
+          validation: "warning",
+          helperText: "Abbreviations are usually upper-case"
         }
       });
     } else {
       this.setState({
         showGender: true,
-        abbreviation: text
+        abbreviation: {
+          value: text,
+          validation: "default",
+          helperText: ""
+        }
       });
     }
   }
 
   handleGenderChange(key, label) {
     this.setState({
-      selectedGender: {
-        key,
-        label
+      athleteGender: {
+        label,
+        value: key,
+        validation: "default",
+        helperText: ""
       }
     });
   }
@@ -421,6 +538,107 @@ class CreateCommunity extends Component<Props, State> {
     return words.reduce((abbrev, word) => abbrev + _.upperFirst(word)[0], "");
   }
 
+  validateForm() {
+    let isFormValid = true;
+    let communityType = {
+      value: this.state.communityType.value,
+      label: this.state.communityType.label,
+      helperText: "",
+      validation: "default"
+    };
+    let subType = {
+      value: this.state.subType.value,
+      label: this.state.subType.label,
+      helperText: "",
+      validation: "default"
+    };
+    let communityName = {
+      value: this.state.communityName.value,
+      helperText: "",
+      validation: "default"
+    };
+    let abbreviation = {
+      value: this.state.abbreviation.value,
+      helperText: "",
+      validation: "default"
+    };
+    let otherText = {
+      value: this.state.otherText.value,
+      validation: "default",
+      helperText: ""
+    };
+    let athleteGender = {
+      value: this.state.athleteGender.value,
+      label: this.state.athleteGender.label,
+      validation: "default",
+      helperText: ""
+    };
+
+    if (communityType.value === "none") {
+      communityType = {
+        value: "none",
+        label: "N/A",
+        helperText: "Please specify a community type",
+        validation: "error"
+      };
+      isFormValid = false;
+    }
+    if (subType.value === "none") {
+      subType = {
+        value: "none",
+        label: "N/A",
+        helperText: "Please specify the sub-type",
+        validation: "error"
+      };
+      isFormValid = false;
+    }
+    if (communityName.value === "") {
+      communityName = {
+        value: "",
+        helperText: "Please specify the name of your community",
+        validation: "error"
+      };
+      isFormValid = false;
+    }
+    if (abbreviation.value === "") {
+      abbreviation = {
+        value: "",
+        helperText: "Please specify your community's abbreviation",
+        validation: "error"
+      };
+      isFormValid = false;
+    }
+    if (otherText.value === "") {
+      otherText = {
+        value: "",
+        helperText: "Please specify the type of your community",
+        validation: "error"
+      };
+      isFormValid = false;
+    }
+    if (athleteGender.value === "none") {
+      athleteGender = {
+        value: "none",
+        label: "N/A",
+        helperText: "Please specify the age of athletes in your community",
+        validation: "error"
+      };
+      isFormValid = false;
+    }
+
+    this.setState({
+      ...this.state,
+      communityType,
+      subType,
+      communityName,
+      abbreviation,
+      otherText,
+      athleteGender
+    });
+
+    return isFormValid;
+  }
+
   render() {
     const { classes } = this.props;
     const { handleNextClick } = this.props.actions;
@@ -428,13 +646,13 @@ class CreateCommunity extends Component<Props, State> {
       showSubType,
       showNameAndAbbrev,
       showGender,
-      selectedType,
-      selectedGender,
+      communityType,
+      athleteGender,
       typeItems,
       genderItems,
       subTypePlaceholder,
       subTypeItems,
-      selectedSubType,
+      subType,
       showOther,
       otherText,
       communityName,
@@ -445,10 +663,14 @@ class CreateCommunity extends Component<Props, State> {
       <div className={classes.wrapper}>
         <div className={classes.content}>
           <h1 className={classes.headline}>What kind of community is it?</h1>
-          <div className={classes.form}>
+          <form className={classes.form}>
             <Select
+              helperText={communityType.helperText}
               placeholder="Type of community"
-              selectedItem={selectedType}
+              selectedItem={{
+                key: communityType.value,
+                label: communityType.label
+              }}
               items={typeItems}
               actions={{
                 handleChange: (key, label) => this.handleTypeChange(key, label)
@@ -460,8 +682,12 @@ class CreateCommunity extends Component<Props, State> {
               !showOther && <div className={classes.inputMask} />}
             {showSubType && (
               <Select
+                helperText={subType.helperText}
                 placeholder={subTypePlaceholder}
-                selectedItem={selectedSubType}
+                selectedItem={{
+                  key: subType.value,
+                  label: subType.label
+                }}
                 items={subTypeItems}
                 actions={{
                   handleChange: (key, label) =>
@@ -470,42 +696,52 @@ class CreateCommunity extends Component<Props, State> {
               />
             )}
             {showOther && (
-              <input
+              <TextField
                 type="text"
-                id="other"
-                name="other"
                 placeholder="Please specify"
-                value={otherText}
-                onChange={e => this.handleOtherTextChange(e.target.value)}
+                value={otherText.value}
+                validation={otherText.validation}
+                helperText={otherText.helperText}
+                actions={{
+                  handleChange: value => this.handleOtherTextChange(value)
+                }}
               />
             )}
             {!showNameAndAbbrev && <div className={classes.inputMask} />}
             {!showNameAndAbbrev && <div className={classes.inputMask} />}
             {showNameAndAbbrev && (
-              <input
+              <TextField
                 type="text"
-                id="communityname"
-                name="communityname"
                 placeholder="Name of community"
-                value={communityName}
-                onChange={e => this.handleCommunityNameChange(e.target.value)}
+                value={communityName.value}
+                validation={communityName.validation}
+                helperText={communityName.helperText}
+                actions={{
+                  handleChange: value => this.handleCommunityNameChange(value)
+                }}
               />
             )}
             {showNameAndAbbrev && (
-              <input
+              <TextField
                 type="text"
-                id="abbreviation"
-                name="abbreviation"
                 placeholder="Abbreviation"
-                value={abbreviation}
-                onChange={e => this.handleAbbreviationChange(e.target.value)}
+                value={abbreviation.value}
+                validation={abbreviation.validation}
+                helperText={abbreviation.helperText}
+                actions={{
+                  handleChange: value => this.handleAbbreviationChange(value)
+                }}
               />
             )}
             {!showGender && <div className={classes.inputMask} />}
             {showGender && (
               <Select
+                helperText={athleteGender.helperText}
                 placeholder="Gender of athletes"
-                selectedItem={selectedGender}
+                selectedItem={{
+                  key: athleteGender.value,
+                  label: athleteGender.label
+                }}
                 items={genderItems}
                 actions={{
                   handleChange: (key, label) =>
@@ -517,12 +753,30 @@ class CreateCommunity extends Component<Props, State> {
               <Button
                 type="dark"
                 fullWidth
-                actions={{ handleClick: handleNextClick }}
+                actions={{
+                  handleClick: () => {
+                    const isFormValid = this.validateForm();
+                    isFormValid &&
+                      handleNextClick(
+                        communityType.label,
+                        subType.label,
+                        otherText.value,
+                        communityName.value,
+                        abbreviation.value,
+                        athleteGender.label
+                      );
+                  }
+                }}
               >
                 Next{" "}
                 <i className={`fas fa-arrow-right ${classes.buttonIcon}`} />
               </Button>
             </div>
+          </form>
+          <div className={classes.dotsWrapper}>
+            <span className={classes.dotHighlighted} />
+            <span className={classes.dotHighlighted} />
+            <span className={classes.dotNotHighlighted} />
           </div>
         </div>
       </div>
@@ -530,4 +784,4 @@ class CreateCommunity extends Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(CreateCommunity);
+export default injectSheet(styles)(CreateCommunity);

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { grey, lightBlue } from "material-ui/colors";
-import { withStyles } from "material-ui/styles";
-import Button from "../Button";
+import injectSheet from "react-jss";
+import { common, grey, lightBlue } from "../../../../utils/colours";
+import Button from "../../../../components/Button";
 
 const styles = theme => ({
   buttonIcon: {
@@ -18,6 +18,26 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center"
   },
+  dotHighlighted: {
+    width: 16,
+    height: 16,
+    borderRadius: "50%",
+    margin: 4,
+    backgroundColor: common["white"]
+  },
+  dotNotHighlighted: {
+    width: 16,
+    height: 16,
+    borderRadius: "50%",
+    margin: 4,
+    backgroundColor: grey[300]
+  },
+  dotsWrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    margin: "16px 0"
+  },
   explanation: {
     color: grey[100],
     textAlign: "center",
@@ -29,12 +49,12 @@ const styles = theme => ({
     margin: "0 auto"
   },
   headline: {
-    color: "white",
+    color: common["white"],
     textAlign: "center",
     margin: "0 24px"
   },
   icon: {
-    color: "white",
+    color: common["white"],
     fontSize: 120,
     margin: 24
   },
@@ -47,9 +67,7 @@ const styles = theme => ({
   }
 });
 
-type Props = {
-  classes: {}
-};
+type Props = {};
 
 class CreateOrJoin extends Component<Props> {
   render() {
@@ -92,10 +110,15 @@ class CreateOrJoin extends Component<Props> {
               </Button>
             </div>
           </div>
+          <div className={classes.dotsWrapper}>
+            <span className={classes.dotHighlighted} />
+            <span className={classes.dotNotHighlighted} />
+            <span className={classes.dotNotHighlighted} />
+          </div>
         </div>
       </div>
     );
   }
 }
 
-export default withStyles(styles)(CreateOrJoin);
+export default injectSheet(styles)(CreateOrJoin);

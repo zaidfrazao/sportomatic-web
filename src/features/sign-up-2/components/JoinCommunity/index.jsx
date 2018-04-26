@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { grey, lightBlue } from "material-ui/colors";
-import { withStyles } from "material-ui/styles";
-import Button from "../Button";
+import injectSheet from "react-jss";
+import { common, grey, lightBlue } from "../../../../utils/colours";
+import Button from "../../../../components/Button";
 
 const styles = theme => ({
   buttonIcon: {
@@ -29,12 +29,12 @@ const styles = theme => ({
     margin: "0 auto"
   },
   headline: {
-    color: "white",
+    color: common["white"],
     textAlign: "center",
     margin: "0 24px"
   },
   icon: {
-    color: "white",
+    color: common["white"],
     fontSize: 120,
     margin: 24
   },
@@ -47,9 +47,7 @@ const styles = theme => ({
   }
 });
 
-type Props = {
-  classes: {}
-};
+type Props = {};
 
 class JoinCommunity extends Component<Props> {
   render() {
@@ -85,4 +83,4 @@ class JoinCommunity extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(JoinCommunity);
+export default injectSheet(styles)(JoinCommunity);

@@ -1,15 +1,9 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import { blue, grey, lightBlue, orange } from "material-ui/colors";
-import { withStyles } from "material-ui/styles";
+import injectSheet from "react-jss";
+import { blue, common, grey, lightBlue, orange } from "../../utils/colours";
 
 const styles = theme => ({
-  buttonChunky: {
-    padding: "18px 24px",
-    borderRadius: 4,
-    cursor: "pointer",
-    fontSize: 20
-  },
   buttonNormal: {
     padding: "14px 20px",
     borderRadius: 4,
@@ -22,16 +16,19 @@ const styles = theme => ({
   },
   darkButton: {
     backgroundColor: lightBlue[900],
-    color: "white",
+    color: common["white"],
+    padding: "14px 20px",
     margin: "8px 0",
     border: "none",
+    borderRadius: 4,
+    cursor: "pointer",
     "&:hover": {
       backgroundColor: lightBlue[800]
     }
   },
   facebookButton: {
     backgroundColor: blue[900],
-    color: "white",
+    color: common["white"],
     padding: "14px 20px",
     margin: "8px 0",
     border: "none",
@@ -46,7 +43,7 @@ const styles = theme => ({
   },
   googleButton: {
     backgroundColor: orange[900],
-    color: "white",
+    color: common["white"],
     padding: "14px 20px",
     margin: "8px 0",
     border: "none",
@@ -57,19 +54,19 @@ const styles = theme => ({
     }
   },
   lightButton: {
-    backgroundColor: "white",
-    color: lightBlue[500],
+    backgroundColor: orange[900],
+    color: common["white"],
     padding: "14px 20px",
     margin: "8px 0",
     border: "none",
     borderRadius: 4,
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: grey[100]
+      backgroundColor: grey[800]
     }
   },
   primaryFilled: {
-    color: "white",
+    color: common["white"],
     backgroundColor: lightBlue[500],
     border: `2px solid ${lightBlue[500]}`,
     "&:hover": {
@@ -86,7 +83,7 @@ const styles = theme => ({
     }
   },
   secondaryFilled: {
-    color: "white",
+    color: common["white"],
     backgroundColor: orange["A400"],
     border: `2px solid ${orange["A400"]}`,
     "&:hover": {
@@ -101,23 +98,16 @@ const styles = theme => ({
     "&:hover": {
       backgroundColor: orange[50]
     }
+  },
+  socialIcon: {
+    fontSize: 18,
+    marginRight: 8
   }
 });
 
 type Props = {
   actions: {
     handleClick: () => null
-  },
-  classes: {
-    buttonNormal: string,
-    buttonSlim: string,
-    facebookButton: string,
-    fullWidth: string,
-    googleButton: string,
-    primaryFilled: string,
-    primaryOutlined: string,
-    secondaryFilled: string,
-    secondaryOutlined: string
   },
   colour: string,
   filled: boolean,
@@ -137,9 +127,14 @@ class Button extends Component<Props> {
     type: "default"
   };
 
+  handleSubmit(e) {
+    const { handleClick } = this.props.actions;
+    e.preventDefault();
+    handleClick();
+  }
+
   getDefaultButton(colour, isFilled, isFullWidth, isSlim) {
     const { classes, children } = this.props;
-    const { handleClick } = this.props.actions;
 
     let styles = [];
     isSlim
@@ -154,7 +149,10 @@ class Button extends Component<Props> {
     isFullWidth && styles.push(classes.fullWidth);
 
     return (
-      <button onClick={() => handleClick()} className={_.join(styles, " ")}>
+      <button
+        onClick={e => this.handleSubmit(e)}
+        className={_.join(styles, " ")}
+      >
         {children}
       </button>
     );
@@ -162,65 +160,70 @@ class Button extends Component<Props> {
 
   getFacebookButton(isFullWidth) {
     const { classes, children } = this.props;
-    const { handleClick } = this.props.actions;
 
     let styles = [classes.facebookButton];
     isFullWidth && styles.push(classes.fullWidth);
 
     return (
-      <button onClick={() => handleClick()} className={_.join(styles, " ")}>
-        <i className="fab fa-facebook" /> {children}
+      <button
+        onClick={e => this.handleSubmit(e)}
+        className={_.join(styles, " ")}
+      >
+        <i className={`fab fa-facebook ${classes.socialIcon}`} /> {children}
       </button>
     );
   }
 
   getGoogleButton(isFullWidth) {
     const { classes, children } = this.props;
-    const { handleClick } = this.props.actions;
 
     let styles = [classes.googleButton];
     isFullWidth && styles.push(classes.fullWidth);
 
     return (
-      <button onClick={() => handleClick()} className={_.join(styles, " ")}>
-        <i className="fab fa-google" /> {children}
+      <button
+        onClick={e => this.handleSubmit(e)}
+        className={_.join(styles, " ")}
+      >
+        <i className={`fab fa-google ${classes.socialIcon}`} /> {children}
       </button>
     );
   }
 
   getLightButton(isFullWidth) {
     const { classes, children } = this.props;
-    const { handleClick } = this.props.actions;
 
     let styles = [classes.lightButton];
     isFullWidth && styles.push(classes.fullWidth);
 
     return (
-      <button onClick={() => handleClick()} className={_.join(styles, " ")}>
+      <button
+        onClick={e => this.handleSubmit(e)}
+        className={_.join(styles, " ")}
+      >
         {children}
       </button>
     );
   }
 
-  getDarkButton(isFullWidth, isChunky) {
+  getDarkButton(isFullWidth) {
     const { classes, children } = this.props;
-    const { handleClick } = this.props.actions;
 
     let styles = [classes.darkButton];
-    isChunky
-      ? styles.push(classes.buttonChunky)
-      : styles.push(classes.buttonNormal);
     isFullWidth && styles.push(classes.fullWidth);
 
     return (
-      <button onClick={() => handleClick()} className={_.join(styles, " ")}>
+      <button
+        onClick={e => this.handleSubmit(e)}
+        className={_.join(styles, " ")}
+      >
         {children}
       </button>
     );
   }
 
   render() {
-    const { colour, filled, fullWidth, slim, chunky, type } = this.props;
+    const { colour, filled, fullWidth, slim, type } = this.props;
 
     switch (type) {
       case "facebook":
@@ -230,11 +233,11 @@ class Button extends Component<Props> {
       case "light":
         return this.getLightButton(fullWidth);
       case "dark":
-        return this.getDarkButton(fullWidth, chunky);
+        return this.getDarkButton(fullWidth);
       default:
         return this.getDefaultButton(colour, filled, fullWidth, slim);
     }
   }
 }
 
-export default withStyles(styles)(Button);
+export default injectSheet(styles)(Button);

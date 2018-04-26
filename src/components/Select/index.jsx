@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { grey } from "material-ui/colors";
-import { withStyles } from "material-ui/styles";
+import _ from "lodash";
+import injectSheet from "react-jss";
+import { common, grey, red } from "../../utils/colours";
 
 const styles = theme => ({
   arrowDown: {
@@ -11,7 +12,17 @@ const styles = theme => ({
     width: 0,
     height: 0,
     border: "6px solid transparent",
-    borderColor: "#999 transparent transparent transparent"
+    borderColor: `${common["black"]} transparent transparent transparent`
+  },
+  arrowDownError: {
+    position: "absolute",
+    content: "",
+    top: 20,
+    right: 18,
+    width: 0,
+    height: 0,
+    border: "6px solid transparent",
+    borderColor: `${red[500]} transparent transparent transparent`
   },
   arrowUp: {
     position: "absolute",
@@ -21,7 +32,17 @@ const styles = theme => ({
     width: 0,
     height: 0,
     border: "6px solid transparent",
-    borderColor: "transparent transparent #999 transparent"
+    borderColor: `transparent transparent ${common["black"]} transparent`
+  },
+  arrowUpError: {
+    position: "absolute",
+    content: "",
+    top: 12,
+    right: 18,
+    width: 0,
+    height: 0,
+    border: "6px solid transparent",
+    borderColor: `transparent transparent ${red[500]} transparent`
   },
   itemSelected: {
     color: grey[900],
@@ -29,12 +50,36 @@ const styles = theme => ({
     fontSize: 16,
     lineHeight: "23px"
   },
+  helperText: {
+    width: "calc(100% - 16px)",
+    textAlign: "center",
+    fontSize: 14,
+    lineHeight: "18px",
+    backgroundColor: common["white"],
+    borderRadius: 4,
+    margin: 0,
+    padding: 8,
+    color: red[400]
+  },
+  helperTextArrowUp: {
+    position: "absolute",
+    content: "",
+    top: -12,
+    left: "calc(50% - 3px)",
+    width: 0,
+    height: 0,
+    border: "6px solid transparent",
+    borderColor: `transparent transparent ${common["white"]} transparent`
+  },
+  helperTextWrapper: {
+    position: "relative"
+  },
   menu: {
     position: "absolute",
     top: 60,
     width: "100%",
     backgroundColor: grey[100],
-    border: `2px solid white`,
+    border: `2px solid ${common["white"]}`,
     zIndex: 1000,
     borderRadius: 4,
     boxShadow:
@@ -42,7 +87,7 @@ const styles = theme => ({
   },
   menuItem: {
     padding: "12px 20px",
-    border: `1px solid white`,
+    border: `1px solid ${common["white"]}`,
     cursor: "pointer",
     "&:hover": {
       backgroundColor: "rgba(0, 0, 0, 0.1)"
@@ -66,12 +111,17 @@ const styles = theme => ({
     padding: "12px 20px",
     margin: "8px 0",
     display: "inline-block",
-    border: "1px solid #ccc",
     borderRadius: 4,
     boxSizing: "border-box",
-    backgroundColor: "white",
+    backgroundColor: common["white"],
     position: "relative",
     cursor: "pointer"
+  },
+  selectBasic: {
+    border: `1px solid ${grey[400]}`
+  },
+  selectError: {
+    border: `1px solid ${red[500]}`
   },
   selectText: {
     color: grey[900],
@@ -88,7 +138,7 @@ type Props = {
   actions: {
     handleClick: () => null
   },
-  classes: {},
+  helperText: string,
   placeholder: string,
   items: ArrayOf<{
     key: string,
@@ -109,6 +159,7 @@ class Select extends Component<Props, State> {
     actions: {
       handleClick: () => console.log("A button was clicked")
     },
+    helperText: "",
     placeholder: "Select an item",
     items: [],
     selectedItem: {
@@ -129,14 +180,39 @@ class Select extends Component<Props, State> {
     }
   }
 
+  getSelectStyle() {
+    const { classes, helperText } = this.props;
+
+    let styles = [classes.select];
+    if (helperText.length > 0) {
+      styles.push(classes.selectError);
+    } else {
+      styles.push(classes.selectBasic);
+    }
+
+    return _.join(styles, " ");
+  }
+
   getArrow() {
-    const { classes } = this.props;
+    const { classes, helperText } = this.props;
     const { menuOpen } = this.state;
 
     if (menuOpen) {
-      return <span className={classes.arrowUp} />;
+      return (
+        <span
+          className={
+            helperText.length > 0 ? classes.arrowUpError : classes.arrowUp
+          }
+        />
+      );
     } else {
-      return <span className={classes.arrowDown} />;
+      return (
+        <span
+          className={
+            helperText.length > 0 ? classes.arrowDownError : classes.arrowDown
+          }
+        />
+      );
     }
   }
 
@@ -191,12 +267,14 @@ class Select extends Component<Props, State> {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, helperText } = this.props;
     const { menuOpen } = this.state;
 
     const arrow = this.getArrow();
     const menuItems = this.getMenuItems();
     const selectText = this.getSelectText();
+    const selectStyle = this.getSelectStyle();
+    const showHelperText = helperText.length > 0;
 
     return (
       <div
@@ -205,14 +283,20 @@ class Select extends Component<Props, State> {
           this.node = node;
         }}
       >
-        <div className={classes.select} onClick={() => this.toggleMenu()}>
+        <div className={selectStyle} onClick={() => this.toggleMenu()}>
           {selectText}
           {arrow}
         </div>
+        {showHelperText && (
+          <div className={classes.helperTextWrapper}>
+            <span className={classes.helperTextArrowUp} />
+            <p className={classes.helperText}>{helperText}</p>
+          </div>
+        )}
         {menuOpen && <div className={classes.menu}>{menuItems}</div>}
       </div>
     );
   }
 }
 
-export default withStyles(styles)(Select);
+export default injectSheet(styles)(Select);

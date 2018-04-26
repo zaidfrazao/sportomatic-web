@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { grey, lightBlue } from "material-ui/colors";
-import { withStyles } from "material-ui/styles";
-import Button from "../Button";
+import injectSheet from "react-jss";
+import { common, grey, lightBlue } from "../../../../utils/colours";
+import Button from "../../../../components/Button";
+import TextField from "../../../../components/TextField";
 
 const styles = theme => ({
   buttonWrapper: {
@@ -17,13 +18,26 @@ const styles = theme => ({
     display: "inline-block",
     textAlign: "center",
     fontSize: 14,
-    color: grey[800]
+    color: grey[100]
   },
   disclaimerLink: {
     fontWeight: "bold",
     fontSize: 16,
-    color: grey[900],
+    color: lightBlue[900],
     cursor: "pointer"
+  },
+  dotHighlighted: {
+    width: 16,
+    height: 16,
+    borderRadius: "50%",
+    margin: 4,
+    backgroundColor: common["white"]
+  },
+  dotsWrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    margin: "16px 0"
   },
   form: {
     color: grey[100],
@@ -31,7 +45,7 @@ const styles = theme => ({
     margin: "0 auto"
   },
   headline: {
-    color: "white",
+    color: common["white"],
     textAlign: "center",
     margin: 24
   },
@@ -44,31 +58,97 @@ const styles = theme => ({
   }
 });
 
-type Props = {
-  classes: {}
+type Props = {};
+
+type State = {
+  password: {
+    value: string,
+    helperText: string,
+    validation: string
+  }
 };
 
-class PasswordEntry extends Component<Props> {
+class PasswordEntry extends Component<Props, State> {
+  state = {
+    password: {
+      value: "",
+      helperText: "",
+      validation: "default"
+    }
+  };
+
+  handlePasswordChange(text) {
+    this.setState({
+      ...this.state,
+      password: {
+        value: text,
+        helperText: "",
+        validation: "default"
+      }
+    });
+  }
+
+  validateForm() {
+    let isFormValid = true;
+    let password = {
+      value: this.state.password.value,
+      helperText: "",
+      validation: "approved"
+    };
+
+    if (password.value.length === 0) {
+      password = {
+        value: "",
+        helperText: "Please enter a password",
+        validation: "error"
+      };
+      isFormValid = false;
+    } else if (password.value.length < 6) {
+      password = {
+        value: "",
+        helperText: "Your password must be at least 6 characters long",
+        validation: "error"
+      };
+      isFormValid = false;
+    }
+
+    this.setState({
+      password
+    });
+
+    return isFormValid;
+  }
+
   render() {
     const { classes } = this.props;
     const { handleSignUpClick } = this.props.actions;
+    const { password } = this.state;
 
     return (
       <div className={classes.wrapper}>
         <div className={classes.content}>
           <h1 className={classes.headline}>Lastly, you need a password</h1>
-          <div className={classes.form}>
-            <input
+          <form className={classes.form}>
+            <TextField
               type="password"
-              id="password"
-              name="password"
               placeholder="Password"
+              value={password.value}
+              helperText={password.helperText}
+              validation={password.validation}
+              actions={{
+                handleChange: value => this.handlePasswordChange(value)
+              }}
             />
             <div className={classes.buttonWrapper}>
               <Button
                 type="dark"
                 fullWidth
-                actions={{ handleClick: handleSignUpClick }}
+                actions={{
+                  handleClick: () => {
+                    const isFormValid = this.validateForm();
+                    isFormValid && handleSignUpClick(password.value);
+                  }
+                }}
               >
                 Sign up
               </Button>
@@ -89,6 +169,11 @@ class PasswordEntry extends Component<Props> {
                 Privacy Policy
               </a>
             </span>
+          </form>
+          <div className={classes.dotsWrapper}>
+            <span className={classes.dotHighlighted} />
+            <span className={classes.dotHighlighted} />
+            <span className={classes.dotHighlighted} />
           </div>
         </div>
       </div>
@@ -96,4 +181,4 @@ class PasswordEntry extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(PasswordEntry);
+export default injectSheet(styles)(PasswordEntry);

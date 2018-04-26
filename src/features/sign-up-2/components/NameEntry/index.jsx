@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { grey, lightBlue } from "material-ui/colors";
-import { withStyles } from "material-ui/styles";
-import Button from "../Button";
+import _ from "lodash";
+import injectSheet from "react-jss";
+import { common, grey, lightBlue } from "../../../../utils/colours";
+import Button from "../../../../components/Button";
+import TextField from "../../../../components/TextField";
 
 const styles = theme => ({
   buttonIcon: {
@@ -21,7 +23,7 @@ const styles = theme => ({
     margin: "0 auto"
   },
   headline: {
-    color: "white",
+    color: common["white"],
     textAlign: "center",
     margin: 24
   },
@@ -34,47 +36,174 @@ const styles = theme => ({
   }
 });
 
-type Props = {
-  classes: {}
+type Props = {};
+
+type State = {
+  firstName: {
+    value: string,
+    helperText: string,
+    validation: string
+  },
+  lastName: {
+    value: string,
+    helperText: string,
+    validation: string
+  }
 };
 
-class NameEntry extends Component<Props> {
+class NameEntry extends Component<Props, State> {
+  state = {
+    firstName: {
+      value: "",
+      helperText: "",
+      validation: "default"
+    },
+    lastName: {
+      value: "",
+      helperText: "",
+      validation: "default"
+    }
+  };
+
+  handleFirstNameChange(text) {
+    if (
+      text.length > 0 &&
+      (text !== _.startCase(text) && text !== `${_.startCase(text)} `)
+    ) {
+      this.setState({
+        ...this.state,
+        firstName: {
+          value: text,
+          helperText: "Names are usually capitalised",
+          validation: "warning"
+        }
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        firstName: {
+          value: text,
+          helperText: "",
+          validation: "default"
+        }
+      });
+    }
+  }
+
+  handleLastNameChange(text) {
+    if (
+      text.length > 0 &&
+      (text !== _.startCase(text) && text !== `${_.startCase(text)} `)
+    ) {
+      this.setState({
+        ...this.state,
+        lastName: {
+          value: text,
+          helperText: "Names are usually capitalised",
+          validation: "warning"
+        }
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        lastName: {
+          value: text,
+          helperText: "",
+          validation: "default"
+        }
+      });
+    }
+  }
+
+  validateForm() {
+    let isFormValid = true;
+    let firstName = {
+      value: this.state.firstName.value,
+      helperText: "",
+      validation: "approved"
+    };
+    let lastName = {
+      value: this.state.lastName.value,
+      helperText: "",
+      validation: "approved"
+    };
+
+    if (firstName.value.length === 0) {
+      firstName = {
+        value: "",
+        helperText: "Please provide your first name",
+        validation: "error"
+      };
+      isFormValid = false;
+    }
+    if (lastName.value.length === 0) {
+      lastName = {
+        value: "",
+        helperText: "Please provide your last name",
+        validation: "error"
+      };
+      isFormValid = false;
+    }
+
+    this.setState({
+      firstName,
+      lastName
+    });
+
+    return isFormValid;
+  }
+
   render() {
     const { classes } = this.props;
     const { handleNextClick } = this.props.actions;
+    const { firstName, lastName } = this.state;
 
     return (
       <div className={classes.wrapper}>
         <div className={classes.content}>
           <h1 className={classes.headline}>Tell us about yourself</h1>
-          <div className={classes.form}>
-            <input
+          <form className={classes.form}>
+            <TextField
               type="text"
-              id="firstname"
-              name="firstname"
               placeholder="First name"
+              value={firstName.value}
+              helperText={firstName.helperText}
+              validation={firstName.validation}
+              actions={{
+                handleChange: value => this.handleFirstNameChange(value)
+              }}
             />
-            <input
+            <TextField
               type="text"
-              id="lastname"
-              name="lastname"
               placeholder="Last name"
+              value={lastName.value}
+              helperText={lastName.helperText}
+              validation={lastName.validation}
+              actions={{
+                handleChange: value => this.handleLastNameChange(value)
+              }}
             />
             <div className={classes.buttonWrapper}>
               <Button
                 type="dark"
                 fullWidth
-                actions={{ handleClick: handleNextClick }}
+                actions={{
+                  handleClick: () => {
+                    const isFormValid = this.validateForm();
+                    isFormValid &&
+                      handleNextClick(firstName.value, lastName.value);
+                  }
+                }}
               >
                 Next{" "}
                 <i className={`fas fa-arrow-right ${classes.buttonIcon}`} />
               </Button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     );
   }
 }
 
-export default withStyles(styles)(NameEntry);
+export default injectSheet(styles)(NameEntry);
