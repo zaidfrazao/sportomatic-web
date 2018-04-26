@@ -22,11 +22,11 @@ const styles = theme => ({
   iconApproved: {
     color: green[400]
   },
-  iconBasic: {
-    color: grey[400]
-  },
   iconError: {
     color: red[400]
+  },
+  iconHidden: {
+    display: "none"
   },
   iconWarning: {
     color: yellow[600]
@@ -184,7 +184,7 @@ class TextField extends Component<Props> {
         icon = <i className="fas fa-check" />;
         break;
       default:
-        iconStyle.push(classes.iconBasic);
+        iconStyle.push(classes.iconHidden);
         icon = <i />;
         break;
     }
