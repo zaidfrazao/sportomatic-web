@@ -172,11 +172,31 @@ class Select extends Component<Props, State> {
     menuOpen: false
   };
 
+  componentDidMount() {
+    document.addEventListener(
+      "click",
+      event => this.outsideClickListener(event),
+      false
+    );
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener(
+      "click",
+      event => this.outsideClickListener(event),
+      false
+    );
+  }
+
   outsideClickListener(event) {
-    if (!this.node.contains(event.target)) {
+    const { menuOpen } = this.state;
+
+    if (menuOpen) {
       this.toggleMenu();
     } else {
-      this.toggleMenu();
+      if (this.node.contains(event.target)) {
+        this.toggleMenu();
+      }
     }
   }
 
@@ -219,20 +239,8 @@ class Select extends Component<Props, State> {
   toggleMenu() {
     const { menuOpen } = this.state;
 
-    const isNowOpen = !menuOpen;
-
-    // if (isNowOpen) {
-    //   document.addEventListener("click", event =>
-    //     this.outsideClickListener(event), false
-    //   );
-    // } else {
-    //   document.removeEventListener("click", event =>
-    //     this.outsideClickListener(event), false
-    //   );
-    // }
-
     this.setState({
-      menuOpen: isNowOpen
+      menuOpen: !menuOpen
     });
   }
 
@@ -283,7 +291,7 @@ class Select extends Component<Props, State> {
           this.node = node;
         }}
       >
-        <div className={selectStyle} onClick={() => this.toggleMenu()}>
+        <div className={selectStyle}>
           {selectText}
           {arrow}
         </div>
