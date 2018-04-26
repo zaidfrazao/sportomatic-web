@@ -69,7 +69,8 @@ class JoinCommunity extends Component<Props> {
             <div className={classes.buttonWrapper}>
               <Button
                 type="dark"
-                chunky
+                colour="primary"
+                filled
                 fullWidth
                 actions={{ handleClick: handleBackClick }}
               >

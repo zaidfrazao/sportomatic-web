@@ -752,6 +752,8 @@ class CreateCommunity extends Component<Props, State> {
             <div className={classes.buttonWrapper}>
               <Button
                 type="dark"
+                colour="primary"
+                filled
                 fullWidth
                 actions={{
                   handleClick: () => {

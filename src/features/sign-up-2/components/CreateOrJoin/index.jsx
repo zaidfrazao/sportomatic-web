@@ -7,8 +7,11 @@ const styles = theme => ({
   buttonIcon: {
     marginRight: 12
   },
-  buttonWrapper: {
+  buttonGroupWrapper: {
     margin: "24px 0"
+  },
+  buttonWrapper: {
+    margin: "14px 0"
   },
   content: {
     padding: "60px 0 60px 0",
@@ -85,29 +88,35 @@ class CreateOrJoin extends Component<Props> {
             academies, or even just your work soccer league.
           </p>
           <div className={classes.form}>
-            <div className={classes.buttonWrapper}>
-              <Button
-                type="dark"
-                chunky
-                fullWidth
-                actions={{ handleClick: handleCreateClick }}
-              >
-                <i
-                  className={`fas fa-plus-square ${classes.buttonIcon}`}
-                />{" "}
-                Create a community
-              </Button>
-              <Button
-                type="dark"
-                chunky
-                fullWidth
-                actions={{ handleClick: handleJoinClick }}
-              >
-                <i
-                  className={`fas fa-sign-in-alt ${classes.buttonIcon}`}
-                />{" "}
-                Join a community
-              </Button>
+            <div className={classes.buttonGroupWrapper}>
+              <div className={classes.buttonWrapper}>
+                <Button
+                  type="dark"
+                  colour="primary"
+                  filled
+                  fullWidth
+                  actions={{ handleClick: handleCreateClick }}
+                >
+                  <i
+                    className={`fas fa-plus-square ${classes.buttonIcon}`}
+                  />{" "}
+                  Create a community
+                </Button>
+              </div>
+              <div className={classes.buttonWrapper}>
+                <Button
+                  type="dark"
+                  colour="primary"
+                  filled
+                  fullWidth
+                  actions={{ handleClick: handleJoinClick }}
+                >
+                  <i
+                    className={`fas fa-sign-in-alt ${classes.buttonIcon}`}
+                  />{" "}
+                  Join a community
+                </Button>
+              </div>
             </div>
           </div>
           <div className={classes.dotsWrapper}>
