@@ -6,6 +6,17 @@ import firebase from "firebase";
 
 const NAMESPACE = "sportomatic-web/sign-up";
 
+export const UPDATE_STEP = `${NAMESPACE}/UPDATE_STEP`;
+export const UPDATE_EMAIL = `${NAMESPACE}/UPDATE_EMAIL`;
+export const UPDATE_FIRST_NAME = `${NAMESPACE}/UPDATE_FIRST_NAME`;
+export const UPDATE_LAST_NAME = `${NAMESPACE}/UPDATE_LAST_NAME`;
+export const UPDATE_COMMUNITY_TYPE = `${NAMESPACE}/UPDATE_COMMUNITY_TYPE`;
+export const UPDATE_SUB_TYPE = `${NAMESPACE}/UPDATE_SUB_TYPE`;
+export const UPDATE_OTHER_TYPE = `${NAMESPACE}/UPDATE_OTHER_TYPE`;
+export const UPDATE_COMMUNITY_NAME = `${NAMESPACE}/UPDATE_COMMUNITY_NAME`;
+export const UPDATE_ABBREVIATION = `${NAMESPACE}/UPDATE_ABBREVIATION`;
+export const UPDATE_ATHLETE_GENDER = `${NAMESPACE}/UPDATE_ATHLETE_GENDER`;
+export const UPDATE_PASSWORD = `${NAMESPACE}/UPDATE_PASSWORD`;
 export const REQUEST_SIGN_IN = `${NAMESPACE}/REQUEST_SIGN_IN`;
 export const RECEIVE_SIGN_IN = `${NAMESPACE}/RECEIVE_SIGN_IN`;
 export const ERROR_SIGNING_IN = `${NAMESPACE}/ERROR_SIGNING_IN`;
@@ -28,26 +39,25 @@ export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 export const REQUEST_USER_INFO = `${NAMESPACE}/REQUEST_USER_INFO`;
 export const RECEIVE_USER_INFO = `${NAMESPACE}/RECEIVE_USER_INFO`;
 export const ERROR_LOADING_USER_INFO = `${NAMESPACE}/ERROR_LOADING_USER_INFO`;
-export const REQUEST_INSTITUTION_NAME = `${NAMESPACE}/REQUEST_INSTITUTION_NAME`;
-export const RECEIVE_INSTITUTION_NAME = `${NAMESPACE}/RECEIVE_INSTITUTION_NAME`;
-export const ERROR_LOADING_INSTITUTION_NAME = `${NAMESPACE}/ERROR_LOADING_INSTITUTION_NAME`;
 export const RESET_USER_ID = `${NAMESPACE}/RESET_USER_ID`;
 
 // Reducers
 
 export const uiConfigInitialState = {
+  currentStep: "email-entry",
   accountSuccessfullyCreated: false,
-  userInfo: {
-    info: {
-      name: ""
-    }
-  },
-  institutionName: "",
+  invitedUserID: "",
+  isJoining: false,
   invalidUserID: false
 };
 
-function uiConfigReducer(state = uiConfigInitialState, action = {}) {
+export function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
+    case UPDATE_STEP:
+      return {
+        ...state,
+        currentStep: action.payload.newStep
+      };
     case RESET_STATE:
       return uiConfigInitialState;
     case RECEIVE_UPDATE_ACCOUNT:
@@ -56,16 +66,13 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         accountSuccessfullyCreated: true
       };
-    case RECEIVE_USER_INFO:
+    case REQUEST_USER_INFO:
       return {
         ...state,
-        userInfo: action.payload.userInfo
+        invitedUserID: action.payload.userID,
+        isJoining: true
       };
-    case RECEIVE_INSTITUTION_NAME:
-      return {
-        ...state,
-        institutionName: action.payload.name
-      };
+    case ERROR_SIGNING_IN:
     case ERROR_LOADING_USER_INFO:
       return {
         ...state,
@@ -76,6 +83,87 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         invalidUserID: false
       };
+    default:
+      return state;
+  }
+}
+
+export const formInfoInitialState = {
+  email: "",
+  firstName: "",
+  lastName: "",
+  communityType: "",
+  subType: "",
+  otherType: "",
+  communityName: "",
+  abbreviation: "",
+  athleteGender: "",
+  password: "",
+  tempPassword: ""
+};
+
+export function formInfoReducer(state = formInfoInitialState, action = {}) {
+  switch (action.type) {
+    case RECEIVE_USER_INFO:
+      return {
+        ...state,
+        email: action.payload.userInfo.info.email,
+        firstName: action.payload.userInfo.info.name,
+        lastName: action.payload.userInfo.info.surname,
+        tempPassword: action.payload.userInfo.metadata.tempPassword
+      };
+    case UPDATE_EMAIL:
+      return {
+        ...state,
+        email: action.payload.newEmail
+      };
+    case UPDATE_FIRST_NAME:
+      return {
+        ...state,
+        firstName: action.payload.newFirstName
+      };
+    case UPDATE_LAST_NAME:
+      return {
+        ...state,
+        lastName: action.payload.newLastName
+      };
+    case UPDATE_COMMUNITY_TYPE:
+      return {
+        ...state,
+        communityType: action.payload.newCommunityType
+      };
+    case UPDATE_SUB_TYPE:
+      return {
+        ...state,
+        subType: action.payload.newSubType
+      };
+    case UPDATE_OTHER_TYPE:
+      return {
+        ...state,
+        otherType: action.payload.newOtherType
+      };
+    case UPDATE_COMMUNITY_NAME:
+      return {
+        ...state,
+        communityName: action.payload.newCommunityName
+      };
+    case UPDATE_ABBREVIATION:
+      return {
+        ...state,
+        abbreviation: action.payload.newAbbreviation
+      };
+    case UPDATE_ATHLETE_GENDER:
+      return {
+        ...state,
+        athleteGender: action.payload.newAthleteGender
+      };
+    case UPDATE_PASSWORD:
+      return {
+        ...state,
+        password: action.payload.newPassword
+      };
+    case RESET_STATE:
+      return formInfoInitialState;
     default:
       return state;
   }
@@ -132,60 +220,129 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isUserInfoLoading: false
       };
-    case REQUEST_INSTITUTION_NAME:
-      return {
-        ...state,
-        isInstitutionNameLoading: true
-      };
-    case RECEIVE_INSTITUTION_NAME:
-    case ERROR_LOADING_INSTITUTION_NAME:
-      return {
-        ...state,
-        isInstitutionNameLoading: false
-      };
-    default:
-      return state;
-  }
-}
-
-export const dialogsInitialState = {
-  isAccountExistsModalOpen: false
-};
-
-function dialogsReducer(state = dialogsInitialState, action = {}) {
-  switch (action.type) {
-    case RESET_STATE:
-      return dialogsInitialState;
-    case ERROR_UPDATING_INVITED_USER:
-    case ERROR_CREATING_USER:
-      return {
-        ...state,
-        isAccountExistsModalOpen: true
-      };
     default:
       return state;
   }
 }
 
 export const signUpReducer = combineReducers({
-  dialogs: dialogsReducer,
-  loadingStatus: loadingStatusReducer,
-  uiConfig: uiConfigReducer
+  uiConfig: uiConfigReducer,
+  formInfo: formInfoReducer,
+  loadingStatus: loadingStatusReducer
 });
 
 // Selectors
 
-const loadingStatus = state => state.signUp.loadingStatus;
-const dialogs = state => state.signUp.dialogs;
 const uiConfig = state => state.signUp.uiConfig;
+const formInfo = state => state.signUp.formInfo;
+const loadingStatus = state => state.signUp.loadingStatus;
 
 export const selector = createStructuredSelector({
-  loadingStatus,
-  dialogs,
-  uiConfig
+  uiConfig,
+  formInfo,
+  loadingStatus
 });
 
 // Action Creators
+
+export function updateStep(newStep) {
+  return {
+    type: UPDATE_STEP,
+    payload: {
+      newStep
+    }
+  };
+}
+
+export function updateEmail(newEmail) {
+  return {
+    type: UPDATE_EMAIL,
+    payload: {
+      newEmail
+    }
+  };
+}
+
+export function updateFirstName(newFirstName) {
+  return {
+    type: UPDATE_FIRST_NAME,
+    payload: {
+      newFirstName
+    }
+  };
+}
+
+export function updateLastName(newLastName) {
+  return {
+    type: UPDATE_LAST_NAME,
+    payload: {
+      newLastName
+    }
+  };
+}
+
+export function updateCommunityType(newCommunityType) {
+  return {
+    type: UPDATE_COMMUNITY_TYPE,
+    payload: {
+      newCommunityType
+    }
+  };
+}
+
+export function updateSubType(newSubType) {
+  return {
+    type: UPDATE_SUB_TYPE,
+    payload: {
+      newSubType
+    }
+  };
+}
+
+export function updateOtherType(newOtherType) {
+  return {
+    type: UPDATE_OTHER_TYPE,
+    payload: {
+      newOtherType
+    }
+  };
+}
+
+export function updateCommunityName(newCommunityName) {
+  return {
+    type: UPDATE_COMMUNITY_NAME,
+    payload: {
+      newCommunityName
+    }
+  };
+}
+
+export function updateAbbreviation(newAbbreviation) {
+  return {
+    type: UPDATE_ABBREVIATION,
+    payload: {
+      newAbbreviation
+    }
+  };
+}
+
+export function updateAthleteGender(newAthleteGender) {
+  return {
+    type: UPDATE_ATHLETE_GENDER,
+    payload: {
+      newAthleteGender
+    }
+  };
+}
+
+export function updatePassword(newPassword) {
+  return {
+    type: UPDATE_PASSWORD,
+    payload: {
+      newPassword
+    }
+  };
+}
 
 export function resetUserID() {
   return {
@@ -224,7 +381,15 @@ export function createUser(
   email: string,
   password: string,
   name: string,
-  surname: string
+  surname: string,
+  communityInfo: {
+    type: string,
+    subType: string,
+    otherType: string,
+    name: string,
+    abbreviation: string,
+    athleteGender: string
+  }
 ) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestCreateUser());
@@ -234,7 +399,7 @@ export function createUser(
       .createUserWithEmailAndPassword(email, password)
       .then(user => {
         firebase.auth().signInWithEmailAndPassword(email, password);
-        dispatch(createAccount(user.uid, email, name, surname));
+        dispatch(createAccount(user.uid, email, name, surname, communityInfo));
       })
       .catch(error => {
         dispatch(errorCreatingUser(error));
@@ -332,87 +497,6 @@ export function updateAccount(
     const db = firebase.firestore();
     let batch = db.batch();
 
-    const newInstitutionRef = db.collection("institutions").doc(userID);
-    batch.set(newInstitutionRef, {
-      completeness: {
-        hasTeams: false,
-        hasPeople: false,
-        hasEvents: false,
-        hasHours: false,
-        hasResults: false,
-        hasWages: false
-      },
-      info: {
-        abbreviation: `${name[0]}${surname[0]}`,
-        ageGroups: ["Open", 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6],
-        divisions: ["1st Team", "2nd Team", "A", "B", "C", "D"],
-        emblemURL: "",
-        gender: "MIXED",
-        name: `${name[0]}${surname[0]} Personal`,
-        phoneNumber: "",
-        physicalAddress: "",
-        publicEmail: email,
-        sports: [
-          "Athletics",
-          "Cricket",
-          "Hockey",
-          "Netball",
-          "Rugby",
-          "Soccer",
-          "Swimming",
-          "Tennis"
-        ],
-        type: "Personal"
-      },
-      metadata: {
-        creationDate: new Date(Date.now()),
-        status: "ACTIVE"
-      },
-      paymentDefaults: {
-        rates: {
-          overtime: 150,
-          standard: 100,
-          salary: 6000
-        },
-        maxOvertimeHours: 3,
-        payDay: {
-          day: 1,
-          isEndOfTheMonth: false
-        },
-        type: "HOURLY"
-      },
-      permissions: {
-        coaches: {
-          events: {
-            canCancel: false,
-            canCreate: false,
-            canEdit: false
-          },
-          results: {
-            canApprove: false,
-            canEdit: true
-          },
-          teams: {
-            canEdit: false
-          }
-        },
-        managers: {
-          events: {
-            canCancel: true,
-            canCreate: false,
-            canEdit: true
-          },
-          teams: {
-            canEdit: false
-          },
-          wages: {
-            canCreate: false,
-            canEdit: false,
-            canView: false
-          }
-        }
-      }
-    });
     const newUserRef = db.collection("users").doc(userID);
     batch.update(newUserRef, {
       "completeness.hasPassword": true,
@@ -441,20 +525,16 @@ export function updateAccount(
         sports: {
           Unknown: true
         }
-      },
-      lastAccessed: {
-        role: "ADMIN",
-        institutionID: userID
       }
     });
 
     return batch
       .commit()
       .then(user => {
-        dispatch(receiveCreateAccount(email, userID));
+        dispatch(receiveUpdateAccount(email, userID));
       })
       .catch(error => {
-        dispatch(errorCreatingAccount(error));
+        dispatch(errorUpdatingAccount(error));
       });
   };
 }
@@ -488,14 +568,51 @@ export function createAccount(
   userID: string,
   email: string,
   name: string,
-  surname: string
+  surname: string,
+  communityInfo: {
+    type: string,
+    subType: string,
+    otherType: string,
+    name: string,
+    abbreviation: string,
+    athleteGender: string
+  }
 ) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestCreateAccount());
     const db = firebase.firestore();
     let batch = db.batch();
 
-    const newInstitutionRef = db.collection("institutions").doc(userID);
+    let subType = communityInfo.subType;
+    if (subType === "") {
+      subType = communityInfo.otherType;
+    }
+
+    let ageGroups = [];
+    switch (subType) {
+      case "Primary School":
+      case "Preparatory School":
+        ageGroups = ["Open", 13, 12, 11, 10, 9, 8, 7, 6];
+        break;
+      case "High School":
+        ageGroups = ["Open", 19, 18, 17, 16, 15, 14, 13];
+        break;
+      case "College":
+      case "U/18's":
+        ageGroups = ["Open", 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6];
+        break;
+      case "University":
+      case "Adults":
+        ageGroups = ["Open", "Seniors", "Juniors", 24, 23, 22, 21, 20, 19, 18];
+        break;
+      default:
+        ageGroups = ["Open", "Seniors", "Juniors"];
+        break;
+    }
+
+    const newInstitutionRef = db.collection("institutions").doc();
+    const newInstitutionID = newInstitutionRef._key.path.segments[1];
+
     batch.set(newInstitutionRef, {
       completeness: {
         hasTeams: false,
@@ -506,15 +623,17 @@ export function createAccount(
         hasWages: false
       },
       info: {
-        abbreviation: `${name[0]}${surname[0]}`,
-        ageGroups: ["Open", 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6],
+        ageGroups,
+        subType,
+        abbreviation: communityInfo.abbreviation,
+        gender: communityInfo.athleteGender,
+        name: communityInfo.name,
+        type: communityInfo.type,
         divisions: ["1st Team", "2nd Team", "A", "B", "C", "D"],
         emblemURL: "",
-        gender: "MIXED",
-        name: `${name[0]}${surname[0]} Personal`,
         phoneNumber: "",
         physicalAddress: "",
-        publicEmail: email,
+        publicEmail: "",
         sports: [
           "Athletics",
           "Cricket",
@@ -524,8 +643,7 @@ export function createAccount(
           "Soccer",
           "Swimming",
           "Tennis"
-        ],
-        type: "Personal"
+        ]
       },
       metadata: {
         creationDate: new Date(Date.now()),
@@ -576,27 +694,14 @@ export function createAccount(
         }
       }
     });
+
     const newUserRef = db.collection("users").doc(userID);
     batch.set(newUserRef, {
       completeness: {
-        hasName: true,
         hasPassword: true,
-        hasSurname: true,
-        hasEmail: true,
         hasPhoneNumber: false,
         hasProfilePicture: false,
         hasSports: false
-      },
-      tutorialStatus: {
-        lessons: {
-          dashboard: "NOT_STARTED",
-          schedule: "NOT_STARTED",
-          hours: "NOT_STARTED",
-          results: "NOT_STARTED",
-          wages: "NOT_STARTED",
-          people: "NOT_STARTED",
-          teams: "NOT_STARTED"
-        }
       },
       info: {
         name,
@@ -609,7 +714,7 @@ export function createAccount(
         }
       },
       institutions: {
-        [userID]: {
+        [newInstitutionID]: {
           paymentDefaults: {
             rates: {
               overtime: 150,
@@ -628,12 +733,23 @@ export function createAccount(
       },
       lastAccessed: {
         role: "ADMIN",
-        institutionID: userID
+        institutionID: newInstitutionID
       },
       metadata: {
         createdVia: "SIGN_UP",
         creationDate: new Date(Date.now()),
         status: "ACTIVE"
+      },
+      tutorialStatus: {
+        lessons: {
+          dashboard: "NOT_STARTED",
+          hours: "NOT_STARTED",
+          people: "NOT_STARTED",
+          results: "NOT_STARTED",
+          schedule: "NOT_STARTED",
+          teams: "NOT_STARTED",
+          wages: "NOT_STARTED"
+        }
       }
     });
 
@@ -648,9 +764,12 @@ export function createAccount(
   };
 }
 
-export function requestUserInfo() {
+export function requestUserInfo(userID) {
   return {
-    type: REQUEST_USER_INFO
+    type: REQUEST_USER_INFO,
+    payload: {
+      userID
+    }
   };
 }
 
@@ -671,7 +790,7 @@ export function errorLoadingUserInfo() {
 
 export function loadUserInfo(userID: string) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestUserInfo());
+    dispatch(requestUserInfo(userID));
     const userRef = firebase
       .firestore()
       .collection("users")
@@ -682,57 +801,12 @@ export function loadUserInfo(userID: string) {
       .then(userDoc => {
         if (userDoc.exists) {
           dispatch(receiveUserInfo(userDoc.data()));
-          dispatch(loadInstitutionName(userDoc.data().metadata.createdBy));
         } else {
           dispatch(errorLoadingUserInfo());
         }
       })
       .catch(() => {
         dispatch(errorLoadingUserInfo());
-      });
-  };
-}
-
-export function requestInstitutionName() {
-  return {
-    type: REQUEST_INSTITUTION_NAME
-  };
-}
-
-export function receiveInstitutionName(name) {
-  return {
-    type: RECEIVE_INSTITUTION_NAME,
-    payload: {
-      name
-    }
-  };
-}
-
-export function errorLoadingInstitutionName() {
-  return {
-    type: ERROR_LOADING_INSTITUTION_NAME
-  };
-}
-
-export function loadInstitutionName(institutionID: string) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestInstitutionName());
-    const institutionRef = firebase
-      .firestore()
-      .collection("institutions")
-      .doc(institutionID);
-
-    institutionRef
-      .get()
-      .then(doc => {
-        if (doc.exists) {
-          dispatch(receiveInstitutionName(doc.data().info.name));
-        } else {
-          dispatch(errorLoadingInstitutionName());
-        }
-      })
-      .catch(() => {
-        dispatch(errorLoadingInstitutionName());
       });
   };
 }
