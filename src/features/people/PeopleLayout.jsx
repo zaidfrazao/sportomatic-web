@@ -609,39 +609,40 @@ class PeopleLayout extends Component {
           </div>
         ) : (
           <div className={classes.tabsWrapper}>
-            {role === "admin" && (
-              <AppBar position="static" color="default">
-                <Tabs
-                  value={currentTab}
-                  onChange={(event, newTab) => updateTab(newTab)}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  centered
-                >
-                  <Tab label="Staff" value="STAFF" className={classes.tabs} />
-                  {requestsCardsInfo.length > 0 ? (
-                    <Tab
-                      label={
-                        <Badge
-                          badgeContent={requestsCardsInfo.length}
-                          color="accent"
-                        >
-                          Requests
-                        </Badge>
-                      }
-                      value="REQUESTS"
-                      className={classes.tabs}
-                    />
-                  ) : (
-                    <Tab
-                      label="Requests"
-                      value="REQUESTS"
-                      className={classes.tabs}
-                    />
-                  )}
-                </Tabs>
-              </AppBar>
-            )}
+            {false &&
+              role === "admin" && (
+                <AppBar position="static" color="default">
+                  <Tabs
+                    value={currentTab}
+                    onChange={(event, newTab) => updateTab(newTab)}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    centered
+                  >
+                    <Tab label="Staff" value="STAFF" className={classes.tabs} />
+                    {requestsCardsInfo.length > 0 ? (
+                      <Tab
+                        label={
+                          <Badge
+                            badgeContent={requestsCardsInfo.length}
+                            color="accent"
+                          >
+                            Requests
+                          </Badge>
+                        }
+                        value="REQUESTS"
+                        className={classes.tabs}
+                      />
+                    ) : (
+                      <Tab
+                        label="Requests"
+                        value="REQUESTS"
+                        className={classes.tabs}
+                      />
+                    )}
+                  </Tabs>
+                </AppBar>
+              )}
             {currentTab === "STAFF" && (
               <div
                 className={

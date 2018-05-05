@@ -413,7 +413,7 @@ class ManageInstitutionsDialog extends Component {
       case "name":
         if (value.length === 0) {
           hasError = true;
-          message = "Please provide the institution's full name";
+          message = "Please provide the community's full name";
         } else if (value.length > 64) {
           hasError = true;
           message = "Max. 64 characters allowed";
@@ -422,7 +422,7 @@ class ManageInstitutionsDialog extends Component {
       case "abbreviation":
         if (value.length === 0) {
           hasError = true;
-          message = "Please provide the institution's abbreviation";
+          message = "Please provide the community's abbreviation";
         } else if (value.length > 10) {
           hasError = true;
           message = "Max. 10 characters allowed";
@@ -432,7 +432,7 @@ class ManageInstitutionsDialog extends Component {
         if (value.length === 0) {
           hasError = true;
           message =
-            "Please provide the email address used to contact the institution";
+            "Please provide the email address used to contact the community";
         } else if (value.length > 36) {
           hasError = true;
           message = "Max. 36 characters allowed";

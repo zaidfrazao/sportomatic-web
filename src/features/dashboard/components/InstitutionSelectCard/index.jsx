@@ -63,7 +63,7 @@ class RoleSelectCard extends Component {
         <div className={classes.textWrapper}>
           {!isMobile && (
             <Typography type="headline" component="h2">
-              {"Institution"}
+              {"Community"}
             </Typography>
           )}
           <Select

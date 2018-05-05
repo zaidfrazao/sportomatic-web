@@ -156,23 +156,31 @@ class SettingsLayout extends Component {
       return (
         <div className={classes.root}>
           <AppBar position="static" color="default">
-            <Tabs
-              value={currentTab}
-              onChange={(event, newTab) => {
-                history.push("/myaccount/settings");
-                updateTab(newTab);
-              }}
-              indicatorColor="primary"
-              textColor="primary"
-              centered
-            >
-              <Tab label="Personal" value="PERSONAL" className={classes.tabs} />
-              <Tab
-                label="Institutions"
-                value="INSTITUTIONS"
-                className={classes.tabs}
-              />
-            </Tabs>
+            {false && (
+              <Tabs
+                value={currentTab}
+                onChange={(event, newTab) => {
+                  history.push("/myaccount/settings");
+                  updateTab(newTab);
+                }}
+                indicatorColor="primary"
+                textColor="primary"
+                centered
+              >
+                <Tab
+                  label="Personal"
+                  value="PERSONAL"
+                  className={classes.tabs}
+                />
+                {false && (
+                  <Tab
+                    label="Institutions"
+                    value="INSTITUTIONS"
+                    className={classes.tabs}
+                  />
+                )}
+              </Tabs>
+            )}
           </AppBar>
           {currentTab === "PERSONAL" && (
             <PersonInfo

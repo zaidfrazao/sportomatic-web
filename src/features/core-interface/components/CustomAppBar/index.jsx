@@ -154,7 +154,7 @@ class CustomAppBar extends Component {
               <Avatar
                 className={classes.avatar}
                 src={emblemURL === "" ? defaultEmblem : emblemURL}
-                aria-label="institution emblem"
+                aria-label="community emblem"
               />
             )}
             {!isMobile && (
@@ -212,18 +212,20 @@ class CustomAppBar extends Component {
                 }}
               >
                 <List className={classes.list}>
-                  <ListItem
-                    button
-                    onClick={() => {
-                      this.handleRequestClose();
-                      openManageInstitutionsDialog();
-                    }}
-                  >
-                    <ListItemIcon>
-                      <InstitutionsIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Manage institutions" />
-                  </ListItem>
+                  {false && (
+                    <ListItem
+                      button
+                      onClick={() => {
+                        this.handleRequestClose();
+                        openManageInstitutionsDialog();
+                      }}
+                    >
+                      <ListItemIcon>
+                        <InstitutionsIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Manage communities" />
+                    </ListItem>
+                  )}
                   <ListItem
                     button
                     onClick={() => {
