@@ -6,21 +6,8 @@ import CommunityInfo from "./components/CommunityInfo";
 import emblem from "./images/emblem.png";
 
 const styles = theme => ({
-  arrow: {
-    position: "absolute",
-    content: "",
-    top: "calc(50% - 14px)",
-    left: "calc(100% - 4px)",
-    width: 0,
-    height: 0,
-    border: "14px solid transparent",
-    borderColor: `transparent ${grey[200]} transparent transparent`,
-    "@media (max-width: 768px)": {
-      display: "none"
-    }
-  },
   menu: {
-    padding: 0,
+    padding: "12px 0",
     flex: 1,
     "@media (max-width: 600px)": {
       display: "flex",
@@ -29,54 +16,55 @@ const styles = theme => ({
   },
   menuItem: {
     transition: "0.25s",
-    fontSize: 16,
-    padding: "24px 0",
-    margin: "0 48px",
+    fontSize: 14,
+    padding: "18px 0",
+    margin: "8px 18px",
+    borderRadius: 8,
     cursor: "pointer",
-    borderTop: `1px solid ${grey[100]}`,
     "@media (max-width: 600px)": {
-      border: `1px solid ${grey[100]}`,
       textAlign: "center",
-      width: "calc(50% - 2px)",
-      margin: 0,
-      padding: "24px 0"
+      width: "calc(50% - 24px)",
+      margin: 8,
+      padding: "14px 0"
     },
     "&:hover": {
-      fontWeight: "bold",
-      color: grey[300]
+      backgroundColor: grey[100]
     }
   },
   menuItemIcon: {
-    textAlign: "center",
-    marginRight: 14,
+    margin: "0 12px 0 24px",
     width: 25,
-    height: 25
+    height: 25,
+    "@media (max-width: 600px)": {
+      margin: "0 12px 0 0"
+    }
   },
   menuItemSelected: {
-    borderTop: `1px solid ${grey[100]}`,
     transition: "0.25s",
-    padding: "24px 0",
-    margin: "0 24px",
-    fontSize: 18,
+    borderRadius: 8,
+    padding: "18px 0",
+    margin: "8px 18px",
+    fontSize: 16,
     position: "relative",
     fontWeight: "bold",
+    cursor: "pointer",
+    backgroundColor: grey[200],
     "@media (max-width: 600px)": {
-      border: `1px solid ${grey[100]}`,
       textAlign: "center",
-      width: "calc(50% - 2px)",
-      margin: 0,
-      padding: "24px 0"
+      width: "calc(50% - 24px)",
+      margin: 8,
+      padding: "14px 0"
+    },
+    "&:hover": {
+      backgroundColor: grey[200]
     }
   },
   menuItemText: {
-    display: "flex",
-    alignItems: "center",
-    color: grey[800],
-    justifyContent: "center"
+    color: grey[800]
   },
   wrapperDesktop: {
     backgroundColor: "white",
-    width: 320,
+    width: 240,
     height: "calc(100vh - 64px)"
   },
   wrapperMobileClosed: {
@@ -165,7 +153,7 @@ class SideMenu extends Component<Props> {
 
     return (
       <div className={wrapperStyle}>
-        <CommunityInfo emblem={emblem} name="Weltevreden Park Primary School" />
+        <CommunityInfo emblem={emblem} name="Northcliff High School" />
         <div className={classes.menu}>{menuItems}</div>
       </div>
     );

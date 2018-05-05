@@ -6,6 +6,7 @@ import CreateCommunity from "./components/CreateCommunity";
 import CreateOrJoin from "./components/CreateOrJoin";
 import EmailEntry from "./components/EmailEntry";
 import JoinCommunity from "./components/JoinCommunity";
+import LoadingScreen from "../../components/LoadingScreen";
 import NameEntry from "./components/NameEntry";
 import PasswordEntry from "./components/PasswordEntry";
 
@@ -18,9 +19,57 @@ const styles = theme => ({
 });
 
 class SignUpLayout extends Component {
+  componentWillMount() {
+    const { userID } = this.props.match.params;
+    const { loadUserInfo } = this.props.actions;
+
+    if (userID) {
+      loadUserInfo(userID);
+      this.setState({
+        step: 0
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { accountSuccessfullyCreated, isJoining } = nextProps.uiConfig;
+    const { email, tempPassword } = nextProps.formInfo;
+    const { signIn } = nextProps.actions;
+    const { history } = nextProps;
+
+    if (email !== this.props.formInfo.email && isJoining) {
+      signIn(email, tempPassword);
+    }
+
+    if (
+      accountSuccessfullyCreated !==
+        this.props.uiConfig.accountSuccessfullyCreated &&
+      accountSuccessfullyCreated
+    ) {
+      history.push("/sign-in");
+    }
+  }
+
+  componentWillUnmount() {
+    const { resetState } = this.props.actions;
+    resetState();
+  }
+
   getStep() {
     const { currentStep } = this.props.match.params;
-    const { email } = this.props.formInfo;
+    const { isJoining, invitedUserID } = this.props.uiConfig;
+    const {
+      email,
+      firstName,
+      lastName,
+      communityType,
+      subType,
+      otherType,
+      communityName,
+      abbreviation,
+      athleteGender
+    } = this.props.formInfo;
+    const { isAccountCreationLoading } = this.props.loadingStatus;
     const {
       updateEmail,
       updateFirstName,
@@ -31,7 +80,9 @@ class SignUpLayout extends Component {
       updateCommunityName,
       updateAbbreviation,
       updateAthleteGender,
-      updatePassword
+      updatePassword,
+      updateInvitedUser,
+      createUser
     } = this.props.actions;
 
     switch (currentStep) {
@@ -48,64 +99,101 @@ class SignUpLayout extends Component {
           />
         );
       case "name-entry":
+        let nextStep = "create-or-join";
+        if (isJoining) {
+          nextStep = "password-entry";
+        }
         return (
           <NameEntry
+            firstName={firstName}
+            lastName={lastName}
             actions={{
               handleNextClick: (newFirstName, newLastName) => {
                 updateFirstName(newFirstName);
                 updateLastName(newLastName);
-                this.updateStep("create-or-join");
+                this.updateStep(nextStep);
               }
             }}
           />
         );
       case "create-or-join":
-        return (
-          <CreateOrJoin
-            actions={{
-              handleCreateClick: () => this.updateStep("create-community"),
-              handleJoinClick: () => this.updateStep("join-community")
-            }}
-          />
-        );
+        if (isJoining) {
+          return <Redirect to="/sign-up/new/email-entry" />;
+        } else {
+          return (
+            <CreateOrJoin
+              actions={{
+                handleCreateClick: () => this.updateStep("create-community"),
+                handleJoinClick: () => this.updateStep("join-community")
+              }}
+            />
+          );
+        }
       case "create-community":
-        return (
-          <CreateCommunity
-            actions={{
-              handleNextClick: (
-                newCommunityType,
-                newSubType,
-                newOtherType,
-                newCommunityName,
-                newAbbreviation,
-                newAthleteGender
-              ) => {
-                updateCommunityType(newCommunityType);
-                updateSubType(newSubType);
-                updateOtherType(newOtherType);
-                updateCommunityName(newCommunityName);
-                updateAbbreviation(newAbbreviation);
-                updateAthleteGender(newAthleteGender);
-                this.updateStep("password-entry");
-              }
-            }}
-          />
-        );
+        if (isJoining) {
+          return <Redirect to="/sign-up/new/email-entry" />;
+        } else {
+          return (
+            <CreateCommunity
+              actions={{
+                handleNextClick: (
+                  newCommunityType,
+                  newSubType,
+                  newOtherType,
+                  newCommunityName,
+                  newAbbreviation,
+                  newAthleteGender
+                ) => {
+                  updateCommunityType(newCommunityType);
+                  updateSubType(newSubType);
+                  updateOtherType(newOtherType);
+                  updateCommunityName(newCommunityName);
+                  updateAbbreviation(newAbbreviation);
+                  updateAthleteGender(newAthleteGender);
+                  this.updateStep("password-entry");
+                }
+              }}
+            />
+          );
+        }
       case "join-community":
-        return (
-          <JoinCommunity
-            actions={{
-              handleBackClick: () => this.goBack()
-            }}
-          />
-        );
+        if (isJoining) {
+          return <Redirect to="/sign-up/new/email-entry" />;
+        } else {
+          return (
+            <JoinCommunity
+              actions={{
+                handleBackClick: () => this.goBack()
+              }}
+            />
+          );
+        }
       case "password-entry":
         return (
           <PasswordEntry
+            showDots={!isJoining}
+            isLoading={isAccountCreationLoading}
             actions={{
               handleSignUpClick: newPassword => {
                 updatePassword(newPassword);
-                this.updateStep("create-or-join");
+                if (isJoining) {
+                  updateInvitedUser(
+                    email,
+                    newPassword,
+                    firstName,
+                    lastName,
+                    invitedUserID
+                  );
+                } else {
+                  createUser(email, newPassword, firstName, lastName, {
+                    subType,
+                    otherType,
+                    athleteGender,
+                    type: communityType,
+                    name: communityName,
+                    abbreviation: abbreviation
+                  });
+                }
               }
             }}
           />
@@ -113,7 +201,13 @@ class SignUpLayout extends Component {
       default:
         return (
           <EmailEntry
-            actions={{ handleNextClick: () => this.updateStep("name-entry") }}
+            email={email}
+            actions={{
+              handleNextClick: newEmail => {
+                updateEmail(newEmail);
+                this.updateStep("name-entry");
+              }
+            }}
           />
         );
     }
@@ -140,6 +234,7 @@ class SignUpLayout extends Component {
       case "standard":
       case "email":
       case "social":
+      case "join":
       case "new":
         return true;
       default:
@@ -163,6 +258,7 @@ class SignUpLayout extends Component {
 
   checkAppropriateCurrentStep(currentStep) {
     const { email, firstName, lastName, communityName } = this.props.formInfo;
+    const { isJoining } = this.props.uiConfig;
 
     switch (currentStep) {
       case "name-entry":
@@ -185,7 +281,7 @@ class SignUpLayout extends Component {
           email.length === 0 ||
           firstName.length === 0 ||
           lastName.length === 0 ||
-          communityName.length === 0
+          (!isJoining && communityName.length === 0)
         ) {
           return false;
         }
@@ -201,7 +297,7 @@ class SignUpLayout extends Component {
       currentStep,
       optionalParameters
     } = this.props.match.params;
-    const { updateEmail } = this.props.actions;
+    const { updateEmail, loadUserInfo } = this.props.actions;
 
     if (!initiation) {
       return "/sign-up/new/email-entry";
@@ -220,6 +316,13 @@ class SignUpLayout extends Component {
       } else {
         return "/sign-up/new/email-entry";
       }
+    } else if (initiation === "join") {
+      if (!optionalParameters) {
+        return "/sign-up/new/email-entry";
+      } else {
+        loadUserInfo(optionalParameters);
+        return "/sign-up/new/email-entry";
+      }
     } else if (initiation !== "new") {
       return `/sign-up/new/${currentStep}`;
     } else if (!this.checkAppropriateCurrentStep(currentStep)) {
@@ -231,11 +334,14 @@ class SignUpLayout extends Component {
 
   render() {
     const { classes } = this.props;
+    const { isUserInfoLoading, isSignInLoading } = this.props.loadingStatus;
 
     const redirectTo = this.shouldRedirectTo();
 
     if (redirectTo !== "no-redirect") {
       return <Redirect to={redirectTo} />;
+    } else if (isUserInfoLoading || isSignInLoading) {
+      return <LoadingScreen />;
     } else {
       return <div className={classes.wrapper}>{this.getStep()}</div>;
     }

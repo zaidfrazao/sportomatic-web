@@ -120,7 +120,7 @@ class PasswordEntry extends Component<Props, State> {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, showDots, isLoading } = this.props;
     const { handleSignUpClick } = this.props.actions;
     const { password } = this.state;
 
@@ -143,6 +143,7 @@ class PasswordEntry extends Component<Props, State> {
               <Button
                 type="dark"
                 colour="primary"
+                loading={isLoading}
                 filled
                 fullWidth
                 actions={{
@@ -172,11 +173,13 @@ class PasswordEntry extends Component<Props, State> {
               </a>
             </span>
           </form>
-          <div className={classes.dotsWrapper}>
-            <span className={classes.dotHighlighted} />
-            <span className={classes.dotHighlighted} />
-            <span className={classes.dotHighlighted} />
-          </div>
+          {showDots && (
+            <div className={classes.dotsWrapper}>
+              <span className={classes.dotHighlighted} />
+              <span className={classes.dotHighlighted} />
+              <span className={classes.dotHighlighted} />
+            </div>
+          )}
         </div>
       </div>
     );

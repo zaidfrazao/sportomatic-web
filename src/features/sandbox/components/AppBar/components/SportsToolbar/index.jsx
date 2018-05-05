@@ -64,16 +64,16 @@ const styles = theme => ({
     fontSize: 18
   },
   icon: {
-    width: 34,
-    height: 34,
+    width: 28,
+    height: 28,
     borderRadius: "50%",
-    fontSize: 48
+    fontSize: 32
   },
   iconSelected: {
-    width: 34,
-    height: 34,
+    width: 32,
+    height: 32,
     borderRadius: "50%",
-    fontSize: 48
+    fontSize: 32
   },
   wrapper: {
     height: "100%",

@@ -130,7 +130,7 @@ class SandboxLayout extends Component<Props, State> {
     const sideMenuItems = this.getSideMenuItems();
     const sportsItems = this.getSportsItems();
 
-    // const isMobile = windowWidth <= 600;
+    const isMobile = windowWidth <= 600;
     const isTablet = windowWidth <= 768;
 
     return (
@@ -138,7 +138,7 @@ class SandboxLayout extends Component<Props, State> {
         <AppBar
           selected={sportSelected}
           sports={sportsItems}
-          isTablet={isTablet}
+          isTablet={isMobile}
           isSideMenuOpen={isSideMenuOpen}
           actions={{
             changeSportSelected: key => updateSport(key),
@@ -149,7 +149,7 @@ class SandboxLayout extends Component<Props, State> {
           <SideMenu
             selected={sideMenuItemSelected}
             items={sideMenuItems}
-            isTablet={isTablet}
+            isTablet={isMobile}
             isSideMenuOpen={isSideMenuOpen}
             actions={{
               changeSelected: key => updateSideMenu(key),

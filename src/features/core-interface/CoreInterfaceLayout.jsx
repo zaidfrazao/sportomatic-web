@@ -117,6 +117,8 @@ class CoreInterfaceLayout extends Component {
     const { userID, isLoggedIn, accountInfo } = nextProps.uiConfig;
     const { loadInstitutionInfo } = nextProps.actions;
 
+    console.log(accountInfo);
+
     if (
       accountInfo !== this.props.uiConfig.accountInfo &&
       accountInfo.institutions

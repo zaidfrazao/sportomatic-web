@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { grey, lightBlue } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
-import Button from "../../../Button";
 
 const styles = theme => ({
   buttonIcon: {
@@ -9,28 +8,29 @@ const styles = theme => ({
   },
   buttonWrapper: {
     width: "100%",
+    textAlign: "center",
     margin: "4px 0"
   },
   communityName: {
     color: grey[800],
-    fontSize: 20,
-    lineHeight: "28px",
+    fontSize: 15,
+    lineHeight: "20px",
     textAlign: "center",
-    margin: 8
+    margin: 4
   },
   dot: {
     position: "absolute",
-    width: 16,
-    height: 16,
-    top: "calc(50% - 22px)",
-    left: 50,
+    width: 12,
+    height: 12,
+    top: "calc(50% - 16px)",
+    left: 36,
     backgroundColor: lightBlue[500],
     borderRadius: "50%"
   },
   emblem: {
     borderRadius: "50%",
-    width: 48,
-    height: 48,
+    width: 32,
+    height: 32,
     padding: 4,
     margin: 8,
     backgroundColor: lightBlue[500]
@@ -40,7 +40,7 @@ const styles = theme => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    margin: "12px 0"
+    marginBottom: 12
   },
   wrapper: {
     backgroundColor: lightBlue[50],
@@ -69,18 +69,7 @@ class CommunityInfo extends Component<Props> {
           <img src={emblem} alt={`${name} emblem`} className={classes.emblem} />
           <h2 className={classes.communityName}>{name}</h2>
         </div>
-        <div className={classes.buttonWrapper}>
-          <Button colour="primary" filled slim fullWidth>
-            <i className={`fas fa-exchange-alt ${classes.buttonIcon}`} /> Switch
-            community
-          </Button>
-        </div>
-        <div className={classes.buttonWrapper}>
-          <Button colour="primary" filled slim fullWidth>
-            <i className={`fas fa-edit ${classes.buttonIcon}`} /> Manage
-            communities
-          </Button>
-        </div>
+        <div className={classes.buttonWrapper} />
       </div>
     );
   }

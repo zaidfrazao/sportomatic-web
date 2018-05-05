@@ -17,8 +17,8 @@ const styles = theme => ({
     backgroundSize: "cover",
     width: 160,
     height: 30,
-    margin: "0 80px",
-    "@media (max-width: 768px)": {
+    margin: "0 40px",
+    "@media (max-width: 600px)": {
       display: "none"
     }
   },
@@ -42,14 +42,14 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    "@media (min-width: 769px)": {
+    "@media (min-width: 600px)": {
       display: "none"
     }
   },
   sportsToolbarWrapper: {
     flexGrow: 2,
     height: "100%",
-    "@media (max-width: 768px)": {
+    "@media (max-width: 600px)": {
       width: "calc(100% - 78px)"
     }
   },

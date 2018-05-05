@@ -65,6 +65,14 @@ class NameEntry extends Component<Props, State> {
     }
   };
 
+  componentWillMount() {
+    const { firstName, lastName } = this.props;
+
+    if (firstName.length > 0 && lastName.length > 0) {
+      this.validateForm(firstName, lastName);
+    }
+  }
+
   handleFirstNameChange(text) {
     if (
       text.length > 0 &&
@@ -115,29 +123,29 @@ class NameEntry extends Component<Props, State> {
     }
   }
 
-  validateForm() {
+  validateForm(firstName, lastName) {
     let isFormValid = true;
-    let firstName = {
-      value: this.state.firstName.value,
+    let newFirstName = {
+      value: firstName,
       helperText: "",
       validation: "approved"
     };
-    let lastName = {
-      value: this.state.lastName.value,
+    let newLastName = {
+      value: lastName,
       helperText: "",
       validation: "approved"
     };
 
-    if (firstName.value.length === 0) {
-      firstName = {
+    if (newFirstName.value.length === 0) {
+      newFirstName = {
         value: "",
         helperText: "Please provide your first name",
         validation: "error"
       };
       isFormValid = false;
     }
-    if (lastName.value.length === 0) {
-      lastName = {
+    if (newLastName.value.length === 0) {
+      newLastName = {
         value: "",
         helperText: "Please provide your last name",
         validation: "error"
@@ -146,8 +154,8 @@ class NameEntry extends Component<Props, State> {
     }
 
     this.setState({
-      firstName,
-      lastName
+      firstName: newFirstName,
+      lastName: newLastName
     });
 
     return isFormValid;
@@ -191,7 +199,10 @@ class NameEntry extends Component<Props, State> {
                 fullWidth
                 actions={{
                   handleClick: () => {
-                    const isFormValid = this.validateForm();
+                    const isFormValid = this.validateForm(
+                      firstName.value,
+                      lastName.value
+                    );
                     isFormValid &&
                       handleNextClick(firstName.value, lastName.value);
                   }
