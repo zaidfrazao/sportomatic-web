@@ -5,7 +5,7 @@ import Dialog, {
   DialogTitle
 } from "material-ui/Dialog";
 import Typography from "material-ui/Typography";
-import { withStyles } from "material-ui/styles";
+import injectSheet from "react-jss";
 import Button from "../../../../components/Button";
 import TextField from "../../../../components/TextField";
 
@@ -90,4 +90,4 @@ class PasswordResetDialog extends Component {
   }
 }
 
-export default withStyles(styles)(PasswordResetDialog);
+export default injectSheet(styles)(PasswordResetDialog);

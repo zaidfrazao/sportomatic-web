@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { common, grey, lightBlue, red } from "material-ui/colors";
+import { common, grey, lightBlue } from "material-ui/colors";
 import { Redirect } from "react-router-dom";
-import { withStyles } from "material-ui/styles";
+import injectSheet from "react-jss";
 import logo from "./images/logo.png";
 import Button from "../../components/Button";
 import LoadingScreen from "../../components/LoadingScreen";
@@ -11,11 +11,10 @@ import TextField from "../../components/TextField";
 
 const styles = theme => ({
   button: {
-    margin: 10,
-    width: "10rem"
+    margin: 10
   },
   buttons: {
-    margin: 20
+    margin: 18
   },
   buttonSeparator: {
     height: 14
@@ -31,7 +30,7 @@ const styles = theme => ({
   footer: {
     display: "block",
     width: "100%",
-    height: "4rem",
+    height: 60,
     backgroundColor: lightBlue[700],
     borderTop: "1px solid #E0E0E0",
     "@media (max-width: 600px)": {
@@ -42,7 +41,7 @@ const styles = theme => ({
     width: "100%",
     textAlign: "center",
     margin: 10,
-    fontSize: "0.9rem",
+    fontSize: 14,
     textDecoration: "none",
     cursor: "pointer",
     "&:hover": {
@@ -57,17 +56,11 @@ const styles = theme => ({
   header: {
     display: "block",
     backgroundColor: lightBlue[700],
-    height: "4rem",
-    color: "#fff",
+    height: 60,
     borderBottom: "1px solid #E0E0E0",
     "@media (max-width: 600px)": {
       display: "none"
     }
-  },
-  loginError: {
-    color: red[500],
-    textAlign: "center",
-    fontSize: "0.9rem"
   },
   logo: {
     width: 240,
@@ -82,17 +75,8 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     "@media (min-width: 768px)": {
-      maxWidth: "30rem",
+      maxWidth: 400,
       height: "auto"
-    }
-  },
-  paperPositioner: {
-    width: "100%",
-    height: "100%",
-    minWidth: "300px",
-    flex: 1,
-    "@media (min-width: 768px)": {
-      maxWidth: "30rem"
     }
   },
   orLine: {
@@ -332,4 +316,4 @@ class SignInLayout extends Component {
   }
 }
 
-export default withStyles(styles)(SignInLayout);
+export default injectSheet(styles)(SignInLayout);
