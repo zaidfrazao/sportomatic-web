@@ -20,8 +20,38 @@ const styles = theme => ({
 
 class SignUpLayout extends Component {
   componentWillMount() {
-    const { userID } = this.props.match.params;
-    const { loadUserInfo } = this.props.actions;
+    const { history } = this.props;
+    const {
+      userID,
+      initiation,
+      optionalParameters,
+      stage
+    } = this.props.match.params;
+    const {
+      loadUserInfo,
+      promptGoogleSignIn,
+      promptFacebookSignIn,
+      signInWithSocial
+    } = this.props.actions;
+
+    if (initiation === "social") {
+      if (stage === "start") {
+        if (optionalParameters === "google") {
+          history.push("/sign-up/social/name-entry/google/pullInfo");
+          promptGoogleSignIn();
+        } else if (optionalParameters === "facebook") {
+          history.push("/sign-up/social/name-entry/facebook/pullInfo");
+          promptFacebookSignIn();
+        } else {
+          history.push("/sign-up/new/email-entry/");
+        }
+      } else if (stage === "pullInfo") {
+        history.push("/sign-up/new/name-entry/");
+        signInWithSocial(optionalParameters);
+      } else {
+        history.push("/sign-up/new/email-entry/");
+      }
+    }
 
     if (userID) {
       loadUserInfo(userID);
@@ -67,7 +97,11 @@ class SignUpLayout extends Component {
       otherType,
       communityName,
       abbreviation,
-      athleteGender
+      athleteGender,
+      profilePictureURL,
+      phoneNumber,
+      signInMethod,
+      id
     } = this.props.formInfo;
     const { isAccountCreationLoading } = this.props.loadingStatus;
     const {
@@ -172,6 +206,7 @@ class SignUpLayout extends Component {
         return (
           <PasswordEntry
             showDots={!isJoining}
+            showPasswordEntry={signInMethod === "email"}
             isLoading={isAccountCreationLoading}
             actions={{
               handleSignUpClick: newPassword => {
@@ -185,14 +220,24 @@ class SignUpLayout extends Component {
                     invitedUserID
                   );
                 } else {
-                  createUser(email, newPassword, firstName, lastName, {
-                    subType,
-                    otherType,
-                    athleteGender,
-                    type: communityType,
-                    name: communityName,
-                    abbreviation: abbreviation
-                  });
+                  createUser(
+                    id,
+                    email,
+                    newPassword,
+                    firstName,
+                    lastName,
+                    profilePictureURL,
+                    phoneNumber,
+                    signInMethod,
+                    {
+                      subType,
+                      otherType,
+                      athleteGender,
+                      type: communityType,
+                      name: communityName,
+                      abbreviation: abbreviation
+                    }
+                  );
                 }
               }
             }}
@@ -297,6 +342,7 @@ class SignUpLayout extends Component {
       currentStep,
       optionalParameters
     } = this.props.match.params;
+    const { isSocialSignInLoading } = this.props.loadingStatus;
     const { updateEmail, loadUserInfo } = this.props.actions;
 
     if (!initiation) {
@@ -312,9 +358,12 @@ class SignUpLayout extends Component {
         if (!isValidEmail(optionalParameters)) {
           updateEmail(optionalParameters);
           return "/sign-up/new/email-entry/";
+        } else {
+          updateEmail(optionalParameters);
+          return "/sign-up/new/name-entry/";
         }
       } else {
-        return "/sign-up/new/email-entry";
+        return "/sign-up/new/email-entry/";
       }
     } else if (initiation === "join") {
       if (!optionalParameters) {
@@ -323,9 +372,14 @@ class SignUpLayout extends Component {
         loadUserInfo(optionalParameters);
         return "/sign-up/new/email-entry";
       }
-    } else if (initiation !== "new") {
+    } else if (initiation === "social") {
+      return "no-redirect";
+    } else if (initiation !== "new" && initiation !== "social") {
       return `/sign-up/new/${currentStep}`;
-    } else if (!this.checkAppropriateCurrentStep(currentStep)) {
+    } else if (
+      !isSocialSignInLoading &&
+      !this.checkAppropriateCurrentStep(currentStep)
+    ) {
       return "/sign-up/new/email-entry";
     } else {
       return "no-redirect";
@@ -334,13 +388,24 @@ class SignUpLayout extends Component {
 
   render() {
     const { classes } = this.props;
-    const { isUserInfoLoading, isSignInLoading } = this.props.loadingStatus;
+    const { stage } = this.props.match.params;
+    const {
+      isUserInfoLoading,
+      isSignInLoading,
+      isSocialSignInLoading
+    } = this.props.loadingStatus;
 
     const redirectTo = this.shouldRedirectTo();
 
     if (redirectTo !== "no-redirect") {
       return <Redirect to={redirectTo} />;
-    } else if (isUserInfoLoading || isSignInLoading) {
+    } else if (
+      isUserInfoLoading ||
+      isSignInLoading ||
+      isSocialSignInLoading ||
+      stage === "start" ||
+      stage === "pullInfo"
+    ) {
       return <LoadingScreen />;
     } else {
       return <div className={classes.wrapper}>{this.getStep()}</div>;

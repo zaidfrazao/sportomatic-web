@@ -43,7 +43,8 @@ export const userInfoInitialState = {
   passwordResetEmail: "",
   isLoggedIn: false,
   type: "",
-  status: "ACTIVE"
+  status: "ACTIVE",
+  triggerSocialSignup: false
 };
 
 export function userInfoReducer(state = userInfoInitialState, action = {}) {
@@ -85,6 +86,11 @@ export function userInfoReducer(state = userInfoInitialState, action = {}) {
       return {
         ...state,
         passwordResetEmail: action.payload.initEmail
+      };
+    case ERROR_FETCHING_ACCOUNT_INFO:
+      return {
+        ...state,
+        triggerSocialSignup: true
       };
     default:
       return state;
@@ -173,15 +179,6 @@ function errorsReducer(state = errorsInitialState, action = {}) {
     case ERROR_RESETTING_PASSWORD:
     case ERROR_SIGNING_IN_WITH_SOCIAL:
       return action.payload.errors;
-    case ERROR_FETCHING_ACCOUNT_INFO:
-      return {
-        ...state,
-        networkErrors: {
-          hasError: true,
-          message:
-            "You have been disconnected from the internet. Please reconnect and try again."
-        }
-      };
     case RECEIVE_ACCOUNT_INFO:
       return errorsInitialState;
     default:

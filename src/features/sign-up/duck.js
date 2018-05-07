@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
@@ -40,6 +41,11 @@ export const REQUEST_USER_INFO = `${NAMESPACE}/REQUEST_USER_INFO`;
 export const RECEIVE_USER_INFO = `${NAMESPACE}/RECEIVE_USER_INFO`;
 export const ERROR_LOADING_USER_INFO = `${NAMESPACE}/ERROR_LOADING_USER_INFO`;
 export const RESET_USER_ID = `${NAMESPACE}/RESET_USER_ID`;
+export const REQUEST_SIGN_IN_WITH_SOCIAL = `${NAMESPACE}/REQUEST_SIGN_IN_WITH_SOCIAL`;
+export const RECEIVE_SIGN_IN_WITH_SOCIAL = `${NAMESPACE}/RECEIVE_SIGN_IN_WITH_SOCIAL`;
+export const ERROR_SIGNING_IN_WITH_SOCIAL = `${NAMESPACE}/ERROR_SIGNING_IN_WITH_SOCIAL`;
+export const GOOGLE_SIGN_IN_PROMPTED = `${NAMESPACE}/GOOGLE_SIGN_IN_PROMPTED`;
+export const FACEBOOK_SIGN_IN_PROMPTED = `${NAMESPACE}/FACEBOOK_SIGN_IN_PROMPTED`;
 
 // Reducers
 
@@ -99,11 +105,26 @@ export const formInfoInitialState = {
   abbreviation: "",
   athleteGender: "",
   password: "",
-  tempPassword: ""
+  tempPassword: "",
+  profilePictureURL: "",
+  phoneNumber: "",
+  id: "",
+  signInMethod: "email"
 };
 
 export function formInfoReducer(state = formInfoInitialState, action = {}) {
   switch (action.type) {
+    case RECEIVE_SIGN_IN_WITH_SOCIAL:
+      return {
+        ...state,
+        email: action.payload.email,
+        firstName: action.payload.firstName,
+        lastName: action.payload.lastName,
+        id: action.payload.id,
+        profilePictureURL: action.payload.profilePictureURL,
+        phoneNumber: action.payload.phoneNumber,
+        signInMethod: action.payload.method
+      };
     case RECEIVE_USER_INFO:
       return {
         ...state,
@@ -172,6 +193,7 @@ export function formInfoReducer(state = formInfoInitialState, action = {}) {
 export const loadingStatusInitialState = {
   isAccountCreationLoading: false,
   isSignInLoading: false,
+  isSocialSignInLoading: false,
   isUserInfoLoading: false,
   isInstitutionNameLoading: false
 };
@@ -189,9 +211,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
     case RECEIVE_ACCOUNT_INFO:
     case ERROR_FETCHING_ACCOUNT_INFO:
     case ERROR_SIGNING_IN:
+    case RECEIVE_SIGN_IN_WITH_SOCIAL:
+    case ERROR_SIGNING_IN_WITH_SOCIAL:
       return {
         ...state,
-        isSignInLoading: false
+        isSignInLoading: false,
+        isSocialSignInLoading: false
+      };
+    case REQUEST_SIGN_IN_WITH_SOCIAL:
+      return {
+        ...state,
+        isSocialSignInLoading: true
       };
     case REQUEST_UPDATE_INVITED_USER:
     case REQUEST_CREATE_USER:
@@ -378,10 +408,14 @@ export function errorCreatingUser(error: { code: string, message: string }) {
 }
 
 export function createUser(
+  id: string,
   email: string,
   password: string,
   name: string,
   surname: string,
+  profilePictureURL: string,
+  phoneNumber: string,
+  signInMethod: string,
   communityInfo: {
     type: string,
     subType: string,
@@ -394,16 +428,42 @@ export function createUser(
   return function(dispatch: DispatchAlias) {
     dispatch(requestCreateUser());
 
-    return firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(user => {
-        firebase.auth().signInWithEmailAndPassword(email, password);
-        dispatch(createAccount(user.uid, email, name, surname, communityInfo));
-      })
-      .catch(error => {
-        dispatch(errorCreatingUser(error));
-      });
+    if (signInMethod === "email") {
+      return firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(user => {
+          firebase.auth().signInWithEmailAndPassword(email, password);
+          dispatch(
+            createAccount(
+              user.uid,
+              email,
+              name,
+              surname,
+              "",
+              "",
+              "email",
+              communityInfo
+            )
+          );
+        })
+        .catch(error => {
+          dispatch(errorCreatingUser(error));
+        });
+    } else {
+      dispatch(
+        createAccount(
+          id,
+          email,
+          name,
+          surname,
+          profilePictureURL,
+          phoneNumber,
+          signInMethod,
+          communityInfo
+        )
+      );
+    }
   };
 }
 
@@ -569,6 +629,9 @@ export function createAccount(
   email: string,
   name: string,
   surname: string,
+  profilePictureURL: string,
+  phoneNumber: string,
+  signInMethod: string,
   communityInfo: {
     type: string,
     subType: string,
@@ -699,16 +762,16 @@ export function createAccount(
     batch.set(newUserRef, {
       completeness: {
         hasPassword: true,
-        hasPhoneNumber: false,
-        hasProfilePicture: false,
+        hasPhoneNumber: phoneNumber !== "",
+        hasProfilePicture: profilePictureURL !== "",
         hasSports: false
       },
       info: {
         name,
         surname,
         email,
-        phoneNumber: "",
-        profilePictureURL: "",
+        phoneNumber,
+        profilePictureURL,
         sports: {
           Unknown: true
         }
@@ -736,6 +799,7 @@ export function createAccount(
         institutionID: newInstitutionID
       },
       metadata: {
+        signInMethod,
         createdVia: "SIGN_UP",
         creationDate: new Date(Date.now()),
         status: "ACTIVE"
@@ -913,5 +977,174 @@ export function signIn(email: string, password: string) {
       .catch(error => {
         dispatch(errorSigningIn(error));
       });
+  };
+}
+
+export function requestSignInWithSocial() {
+  return {
+    type: REQUEST_SIGN_IN_WITH_SOCIAL
+  };
+}
+
+export function receiveSignInWithSocial(
+  email,
+  id,
+  displayName,
+  profilePictureURL,
+  phoneNumber,
+  method
+) {
+  const names = _.split(displayName, " ", 2);
+
+  return {
+    type: RECEIVE_SIGN_IN_WITH_SOCIAL,
+    payload: {
+      email,
+      id,
+      method,
+      profilePictureURL: profilePictureURL ? profilePictureURL : "",
+      phoneNumber: phoneNumber ? phoneNumber : "",
+      firstName: names[0],
+      lastName: names[1]
+    }
+  };
+}
+
+export function errorSigningInWithSocial(error: {
+  code: string,
+  message: string
+}) {
+  let errors = {
+    emailErrors: {
+      hasError: false,
+      message: ""
+    },
+    passwordErrors: {
+      hasError: false,
+      message: ""
+    },
+    passwordResetEmailErrors: {
+      hasError: false,
+      message: ""
+    },
+    networkErrors: {
+      hasError: false,
+      message: ""
+    }
+  };
+
+  switch (error.code) {
+    case "auth/wrong-password":
+      errors = {
+        ...errors,
+        passwordErrors: {
+          hasError: true,
+          message: "Password entered is incorrect"
+        }
+      };
+      break;
+    case "auth/user-not-found":
+      errors = {
+        ...errors,
+        emailErrors: {
+          hasError: true,
+          message: "No account registered for this email address"
+        }
+      };
+      break;
+    case "auth/network-request-failed":
+      errors = {
+        ...errors,
+        networkErrors: {
+          hasError: true,
+          message:
+            "You are currently offline. Please check your internet connection."
+        }
+      };
+      break;
+    case "auth/invalid-email":
+      errors = {
+        ...errors,
+        emailErrors: {
+          hasError: true,
+          message: "This is not a valid email address"
+        }
+      };
+      break;
+    case "auth/account-exists-with-different-credential":
+      errors = {
+        ...errors,
+        emailErrors: {
+          hasError: true,
+          message: "This account is linked to a different sign in method."
+        }
+      };
+      break;
+    default:
+      errors = {
+        ...errors,
+        otherErrors: {
+          code: error.code,
+          hasError: true,
+          message: error.message
+        }
+      };
+      break;
+  }
+
+  return {
+    type: ERROR_SIGNING_IN_WITH_SOCIAL,
+    payload: {
+      errors
+    }
+  };
+}
+
+export function signInWithSocial(method) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestSignInWithSocial());
+
+    return firebase
+      .auth()
+      .getRedirectResult()
+      .then(result => {
+        const user = result.user;
+        let profilePictureURL = user.photoURL;
+        if (method === "facebook") {
+          profilePictureURL = `https://graph.facebook.com/${result
+            .additionalUserInfo.profile.id}/picture?height=500`;
+        }
+        dispatch(
+          receiveSignInWithSocial(
+            user.email,
+            user.uid,
+            user.displayName,
+            profilePictureURL,
+            user.phoneNumber,
+            method
+          )
+        );
+      })
+      .catch(error => {
+        dispatch(errorSigningInWithSocial(error));
+      });
+  };
+}
+
+export function promptGoogleSignIn() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithRedirect(provider);
+
+  return {
+    type: GOOGLE_SIGN_IN_PROMPTED
+  };
+}
+
+export function promptFacebookSignIn() {
+  const provider = new firebase.auth.FacebookAuthProvider();
+  firebase.auth().signInWithRedirect(provider);
+
+  return {
+    type: GOOGLE_SIGN_IN_PROMPTED
   };
 }

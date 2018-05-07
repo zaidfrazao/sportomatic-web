@@ -24,6 +24,11 @@ class App extends Component {
           path="/sign-up/:initiation/:currentStep/:optionalParameters"
           component={SignUp}
         />
+        <Route
+          exact
+          path="/sign-up/:initiation/:currentStep/:optionalParameters/:stage"
+          component={SignUp}
+        />
         <Route exact path="/sandbox" component={Sandbox} />
         <Route path="/myaccount" component={Account} />
         <Route component={Account} />

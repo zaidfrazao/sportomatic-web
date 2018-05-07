@@ -583,7 +583,7 @@ class CreateCommunity extends Component<Props, State> {
       };
       isFormValid = false;
     }
-    if (subType.value === "none") {
+    if (communityType.value !== "other" && subType.value === "none") {
       subType = {
         value: "none",
         label: "N/A",
@@ -608,7 +608,7 @@ class CreateCommunity extends Component<Props, State> {
       };
       isFormValid = false;
     }
-    if (otherText.value === "") {
+    if (communityType.value === "other" && otherText.value === "") {
       otherText = {
         value: "",
         helperText: "Please specify the type of your community",
@@ -751,6 +751,7 @@ class CreateCommunity extends Component<Props, State> {
                 fullWidth
                 handleClick={() => {
                   const isFormValid = this.validateForm();
+                  console.log(isFormValid);
                   isFormValid &&
                     handleNextClick(
                       communityType.label,

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
-import { common, lightBlue, orange } from "../../../../utils/colours";
+import { common, grey, lightBlue, orange } from "../../../../utils/colours";
 
 const styles = theme => ({
   fullWidth: {
@@ -26,7 +26,7 @@ const styles = theme => ({
     backgroundColor: "rgba(0, 0, 0, 0)",
     border: `2px solid ${lightBlue[500]}`,
     "&:hover": {
-      backgroundColor: lightBlue[50]
+      backgroundColor: grey[100]
     }
   },
   secondaryFilled: {
@@ -43,7 +43,7 @@ const styles = theme => ({
     backgroundColor: "rgba(0, 0, 0, 0)",
     border: `2px solid ${orange["A400"]}`,
     "&:hover": {
-      backgroundColor: orange[50]
+      backgroundColor: grey[100]
     }
   },
   slim: {

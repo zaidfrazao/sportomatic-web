@@ -4,14 +4,13 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from "material-ui/Dialog";
-import Typography from "material-ui/Typography";
 import injectSheet from "react-jss";
 import Button from "../../../../components/Button";
 import TextField from "../../../../components/TextField";
 
 const styles = {
   textFieldWrapper: {
-    margin: "24px 0"
+    margin: "18px 0"
   }
 };
 
@@ -56,10 +55,10 @@ class PasswordResetDialog extends Component {
       <Dialog open={isOpen} onRequestClose={() => closeDialog()}>
         <DialogTitle>Reset Password</DialogTitle>
         <DialogContent>
-          <Typography type="body1" component="p">
+          <span>
             Please specify the email address of the account for which you'd like
             to reset the password.
-          </Typography>
+          </span>
           <div className={classes.textFieldWrapper}>
             <TextField
               type="email"

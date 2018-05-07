@@ -120,23 +120,29 @@ class PasswordEntry extends Component<Props, State> {
   }
 
   render() {
-    const { classes, showDots, isLoading } = this.props;
+    const { classes, showDots, isLoading, showPasswordEntry } = this.props;
     const { handleSignUpClick } = this.props.actions;
     const { password } = this.state;
 
     return (
       <div className={classes.wrapper}>
         <div className={classes.content}>
-          <h1 className={classes.headline}>Lastly, you need a password</h1>
+          {showPasswordEntry ? (
+            <h1 className={classes.headline}>Lastly, you need a password</h1>
+          ) : (
+            <h1 className={classes.headline}>And you're done</h1>
+          )}
           <form className={classes.form}>
-            <TextField
-              type="password"
-              placeholder="Password"
-              value={password.value}
-              helperText={password.helperText}
-              validation={password.validation}
-              handleChange={value => this.handlePasswordChange(value)}
-            />
+            {showPasswordEntry && (
+              <TextField
+                type="password"
+                placeholder="Password"
+                value={password.value}
+                helperText={password.helperText}
+                validation={password.validation}
+                handleChange={value => this.handlePasswordChange(value)}
+              />
+            )}
             <div className={classes.buttonWrapper}>
               <Button
                 type="dark"
@@ -145,8 +151,12 @@ class PasswordEntry extends Component<Props, State> {
                 filled
                 fullWidth
                 handleClick={() => {
-                  const isFormValid = this.validateForm();
-                  isFormValid && handleSignUpClick(password.value);
+                  if (showPasswordEntry) {
+                    const isFormValid = this.validateForm();
+                    isFormValid && handleSignUpClick(password.value);
+                  } else {
+                    handleSignUpClick(password.value);
+                  }
                 }}
               >
                 Sign up

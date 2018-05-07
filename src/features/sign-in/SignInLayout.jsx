@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { common, grey, lightBlue } from "material-ui/colors";
 import { Redirect } from "react-router-dom";
 import injectSheet from "react-jss";
 import logo from "./images/logo.png";
 import Button from "../../components/Button";
+import { common, grey, lightBlue } from "../../utils/colours";
 import LoadingScreen from "../../components/LoadingScreen";
 import NotificationModal from "../../components/NotificationModal";
 import PasswordResetDialog from "./components/PasswordResetDialog";
@@ -14,7 +14,8 @@ const styles = theme => ({
     margin: 10
   },
   buttons: {
-    margin: 18
+    width: 260,
+    margin: "18px 0"
   },
   buttonSeparator: {
     height: 14
@@ -41,7 +42,8 @@ const styles = theme => ({
     width: "100%",
     textAlign: "center",
     margin: 10,
-    fontSize: 14,
+    fontSize: 16,
+    color: grey[900],
     textDecoration: "none",
     cursor: "pointer",
     "&:hover": {
@@ -65,7 +67,7 @@ const styles = theme => ({
   logo: {
     width: 240,
     height: "auto",
-    margin: "24px auto"
+    margin: "24px auto 12px auto"
   },
   paper: {
     backgroundColor: common["white"],
@@ -75,7 +77,7 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     "@media (min-width: 768px)": {
-      maxWidth: 400,
+      maxWidth: 480,
       height: "auto"
     }
   },
@@ -97,6 +99,7 @@ const styles = theme => ({
     margin: "14px 0"
   },
   socialSignUpForm: {
+    width: 260,
     paddingBottom: 12
   },
   textFieldsWrapper: {
@@ -145,6 +148,7 @@ class SignInLayout extends Component {
 
   render() {
     const { classes, history } = this.props;
+    const { social } = this.props.match.params;
     const { pathname } = this.props.location;
     const {
       updateEmail,
@@ -179,7 +183,8 @@ class SignInLayout extends Component {
       email,
       password,
       passwordResetEmail,
-      isLoggedIn
+      isLoggedIn,
+      triggerSocialSignup
     } = this.props.userInfo;
 
     if (!pathname.includes("sign-in")) {
@@ -192,6 +197,12 @@ class SignInLayout extends Component {
 
     if (isSocialSignInLoading) {
       return <LoadingScreen />;
+    }
+
+    if (social && triggerSocialSignup) {
+      return (
+        <Redirect to={`/sign-up/social/create-or-join/${social}/pullInfo`} />
+      );
     }
 
     return (
@@ -263,15 +274,13 @@ class SignInLayout extends Component {
                     colour="primary"
                     fullWidth
                     filled
-                    slim
                     handleClick={() => this.handleSubmit()}
                   >
                     Sign in
                   </Button>
                   <div className={classes.buttonSeparator} />
                   <Button
-                    colour="secondary"
-                    filled
+                    colour="primary"
                     fullWidth
                     slim
                     handleClick={() => history.push("/sign-up")}
