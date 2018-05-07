@@ -101,24 +101,25 @@ const styles = theme => ({
 });
 
 type Props = {
-  actions: {
-    handleChange: (value: string) => null
-  },
+  handleChange: (value: string) => null,
+  handleBlur: (value: string) => null,
   type: string,
   placeholder: string,
   validation: string,
-  helperText: string
+  helperText: string,
+  value: string
 };
 
 class TextField extends Component<Props> {
   static defaultProps = {
-    actions: {
-      handleChange: value => console.log(`Input value was changed to ${value}.`)
-    },
+    handleChange: value => console.log(`Input value was changed to ${value}.`),
+    handleBlur: value =>
+      console.log(`Input was blurred with the value ${value}.`),
     type: "text",
     placeholder: "Example",
     validation: "default",
-    helperText: ""
+    helperText: "",
+    value: ""
   };
 
   getInputStyle() {
@@ -193,8 +194,15 @@ class TextField extends Component<Props> {
   }
 
   render() {
-    const { classes, type, placeholder, helperText, value } = this.props;
-    const { handleChange } = this.props.actions;
+    const {
+      classes,
+      type,
+      placeholder,
+      helperText,
+      value,
+      handleBlur,
+      handleChange
+    } = this.props;
 
     const inputStyle = this.getInputStyle();
     const helperTextStyle = this.getHelperTextStyle();
@@ -209,6 +217,7 @@ class TextField extends Component<Props> {
           placeholder={placeholder}
           value={value}
           onChange={e => handleChange(e.target.value)}
+          onBlur={e => handleBlur(e.target.value)}
         />
         {showHelperText && (
           <div className={classes.helperTextWrapper}>

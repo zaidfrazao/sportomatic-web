@@ -19,9 +19,7 @@ type Props = {
 
 class Button extends Component<Props> {
   static defaultProps = {
-    actions: {
-      handleClick: () => console.log("A button was clicked")
-    },
+    handleClick: () => console.log("A button was clicked"),
     disabled: false,
     loading: false,
     filled: false,
@@ -40,9 +38,9 @@ class Button extends Component<Props> {
       fullWidth,
       slim,
       type,
-      children
+      children,
+      handleClick
     } = this.props;
-    const { handleClick } = this.props.actions;
 
     if (disabled) {
       return (

@@ -135,9 +135,7 @@ class PasswordEntry extends Component<Props, State> {
               value={password.value}
               helperText={password.helperText}
               validation={password.validation}
-              actions={{
-                handleChange: value => this.handlePasswordChange(value)
-              }}
+              handleChange={value => this.handlePasswordChange(value)}
             />
             <div className={classes.buttonWrapper}>
               <Button
@@ -146,11 +144,9 @@ class PasswordEntry extends Component<Props, State> {
                 loading={isLoading}
                 filled
                 fullWidth
-                actions={{
-                  handleClick: () => {
-                    const isFormValid = this.validateForm();
-                    isFormValid && handleSignUpClick(password.value);
-                  }
+                handleClick={() => {
+                  const isFormValid = this.validateForm();
+                  isFormValid && handleSignUpClick(password.value);
                 }}
               >
                 Sign up

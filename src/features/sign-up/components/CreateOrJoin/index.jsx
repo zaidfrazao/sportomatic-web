@@ -95,7 +95,7 @@ class CreateOrJoin extends Component<Props> {
                   colour="primary"
                   filled
                   fullWidth
-                  actions={{ handleClick: handleCreateClick }}
+                  handleClick={() => handleCreateClick()}
                 >
                   <i
                     className={`fas fa-plus-square ${classes.buttonIcon}`}
@@ -109,7 +109,7 @@ class CreateOrJoin extends Component<Props> {
                   colour="primary"
                   filled
                   fullWidth
-                  actions={{ handleClick: handleJoinClick }}
+                  handleClick={() => handleJoinClick()}
                 >
                   <i
                     className={`fas fa-sign-in-alt ${classes.buttonIcon}`}

@@ -72,7 +72,7 @@ class JoinCommunity extends Component<Props> {
                 colour="primary"
                 filled
                 fullWidth
-                actions={{ handleClick: handleBackClick }}
+                handleClick={() => handleBackClick()}
               >
                 <i className={`fas fa-arrow-left ${classes.buttonIcon}`} /> Back
               </Button>

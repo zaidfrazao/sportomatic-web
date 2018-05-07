@@ -1,15 +1,13 @@
 import React, { Component } from "react";
-import Button from "material-ui/Button";
-import { CircularProgress } from "material-ui/Progress";
 import { lightBlue, red } from "material-ui/colors";
 import Paper from "material-ui/Paper";
-import { Redirect, Route } from "react-router-dom";
-import TextField from "material-ui/TextField";
+import { Redirect } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
-import backgroundImage from "./images/background-image.jpeg";
 import logo from "./images/logo.png";
+import Button from "../../components/Button";
 import NotificationModal from "../../components/NotificationModal";
 import PasswordResetDialog from "./components/PasswordResetDialog";
+import TextField from "../../components/TextField";
 
 const styles = theme => ({
   button: {
@@ -18,6 +16,9 @@ const styles = theme => ({
   },
   buttons: {
     margin: 20
+  },
+  buttonSeparator: {
+    height: 14
   },
   content: {
     flexGrow: 2,
@@ -103,8 +104,7 @@ const styles = theme => ({
     justifyContent: "center",
     height: "100vh",
     transition: "all ease-in-out 0.5s",
-    backgroundImage: `url(${backgroundImage})`,
-    backgroundColor: "#fff"
+    background: `linear-gradient(${lightBlue[300]}, ${lightBlue[500]})`
   }
 });
 
@@ -120,8 +120,7 @@ class SignInLayout extends Component {
     resetState();
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit() {
     const { email, password } = this.props.userInfo;
     const { updatePassword, signIn } = this.props.actions;
 
@@ -130,7 +129,7 @@ class SignInLayout extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, history } = this.props;
     const { pathname } = this.props.location;
     const {
       updateEmail,
@@ -189,57 +188,46 @@ class SignInLayout extends Component {
                   <div className={classes.textFieldWrapper}>
                     <TextField
                       type="email"
-                      label="Email"
+                      placeholder="Email"
                       value={email}
-                      error={emailErrors.hasError}
-                      onChange={e => updateEmail(e.target.value)}
-                      onBlur={e => checkEmail(e.target.value)}
+                      validation={emailErrors.hasError ? "error" : "default"}
                       helperText={emailErrors.message}
+                      handleChange={value => updateEmail(value)}
+                      handleBlur={value => checkEmail(value)}
                     />
                   </div>
                   <div className={classes.textFieldWrapper}>
                     <TextField
                       type="password"
-                      label="Password"
+                      placeholder="Password"
                       value={password}
-                      error={passwordErrors.hasError}
-                      onChange={e => updatePassword(e.target.value)}
-                      onBlur={e => checkPassword(e.target.value)}
+                      validation={passwordErrors.hasError ? "error" : "default"}
                       helperText={passwordErrors.message}
+                      handleChange={value => updatePassword(value)}
+                      handleBlur={value => checkPassword(value)}
                     />
                   </div>
                   <div className={classes.buttons}>
-                    <Route
-                      render={({ history }) => (
-                        <Button
-                          raised
-                          disabled={isSignInLoading}
-                          type="submit"
-                          color="primary"
-                          className={classes.button}
-                          onClick={e => this.handleSubmit(e)}
-                        >
-                          {isSignInLoading ? (
-                            <CircularProgress size={20} />
-                          ) : (
-                            "Sign in"
-                          )}
-                        </Button>
-                      )}
-                    />
-                    <br />
-                    <Route
-                      render={({ history }) => (
-                        <Button
-                          raised
-                          color="accent"
-                          className={classes.button}
-                          onClick={() => history.push("/sign-up")}
-                        >
-                          Create account
-                        </Button>
-                      )}
-                    />
+                    <Button
+                      loading={isSignInLoading}
+                      colour="primary"
+                      fullWidth
+                      filled
+                      slim
+                      handleClick={() => this.handleSubmit()}
+                    >
+                      Sign in
+                    </Button>
+                    <div className={classes.buttonSeparator} />
+                    <Button
+                      colour="secondary"
+                      filled
+                      fullWidth
+                      slim
+                      handleClick={() => history.push("/sign-up")}
+                    >
+                      Sign up for free
+                    </Button>
                     <p
                       className={classes.forgotPasswordLink}
                       onClick={() => openPasswordResetDialog(email)}

@@ -177,9 +177,7 @@ class NameEntry extends Component<Props, State> {
               value={firstName.value}
               helperText={firstName.helperText}
               validation={firstName.validation}
-              actions={{
-                handleChange: value => this.handleFirstNameChange(value)
-              }}
+              handleChange={value => this.handleFirstNameChange(value)}
             />
             <TextField
               type="text"
@@ -187,9 +185,7 @@ class NameEntry extends Component<Props, State> {
               value={lastName.value}
               helperText={lastName.helperText}
               validation={lastName.validation}
-              actions={{
-                handleChange: value => this.handleLastNameChange(value)
-              }}
+              handleChange={value => this.handleLastNameChange(value)}
             />
             <div className={classes.buttonWrapper}>
               <Button
@@ -197,15 +193,13 @@ class NameEntry extends Component<Props, State> {
                 colour="primary"
                 filled
                 fullWidth
-                actions={{
-                  handleClick: () => {
-                    const isFormValid = this.validateForm(
-                      firstName.value,
-                      lastName.value
-                    );
-                    isFormValid &&
-                      handleNextClick(firstName.value, lastName.value);
-                  }
+                handleClick={() => {
+                  const isFormValid = this.validateForm(
+                    firstName.value,
+                    lastName.value
+                  );
+                  isFormValid &&
+                    handleNextClick(firstName.value, lastName.value);
                 }}
               >
                 Next{" "}

@@ -702,9 +702,7 @@ class CreateCommunity extends Component<Props, State> {
                 value={otherText.value}
                 validation={otherText.validation}
                 helperText={otherText.helperText}
-                actions={{
-                  handleChange: value => this.handleOtherTextChange(value)
-                }}
+                handleChange={value => this.handleOtherTextChange(value)}
               />
             )}
             {!showNameAndAbbrev && <div className={classes.inputMask} />}
@@ -716,9 +714,7 @@ class CreateCommunity extends Component<Props, State> {
                 value={communityName.value}
                 validation={communityName.validation}
                 helperText={communityName.helperText}
-                actions={{
-                  handleChange: value => this.handleCommunityNameChange(value)
-                }}
+                handleChange={value => this.handleCommunityNameChange(value)}
               />
             )}
             {showNameAndAbbrev && (
@@ -728,9 +724,7 @@ class CreateCommunity extends Component<Props, State> {
                 value={abbreviation.value}
                 validation={abbreviation.validation}
                 helperText={abbreviation.helperText}
-                actions={{
-                  handleChange: value => this.handleAbbreviationChange(value)
-                }}
+                handleChange={value => this.handleAbbreviationChange(value)}
               />
             )}
             {!showGender && <div className={classes.inputMask} />}
@@ -743,10 +737,8 @@ class CreateCommunity extends Component<Props, State> {
                   label: athleteGender.label
                 }}
                 items={genderItems}
-                actions={{
-                  handleChange: (key, label) =>
-                    this.handleGenderChange(key, label)
-                }}
+                handleChange={(key, label) =>
+                  this.handleGenderChange(key, label)}
               />
             )}
             <div className={classes.buttonWrapper}>
@@ -755,19 +747,17 @@ class CreateCommunity extends Component<Props, State> {
                 colour="primary"
                 filled
                 fullWidth
-                actions={{
-                  handleClick: () => {
-                    const isFormValid = this.validateForm();
-                    isFormValid &&
-                      handleNextClick(
-                        communityType.label,
-                        subType.label,
-                        otherText.value,
-                        communityName.value,
-                        abbreviation.value,
-                        athleteGender.label
-                      );
-                  }
+                handleClick={() => {
+                  const isFormValid = this.validateForm();
+                  isFormValid &&
+                    handleNextClick(
+                      communityType.label,
+                      subType.label,
+                      otherText.value,
+                      communityName.value,
+                      abbreviation.value,
+                      athleteGender.label
+                    );
                 }}
               >
                 Next{" "}

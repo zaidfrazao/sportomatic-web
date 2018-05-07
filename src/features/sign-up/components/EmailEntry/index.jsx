@@ -120,9 +120,7 @@ class EmailEntry extends Component<Props, State> {
               value={email.value}
               helperText={email.helperText}
               validation={email.validation}
-              actions={{
-                handleChange: value => this.handleEmailChange(value)
-              }}
+              handleChange={value => this.handleEmailChange(value)}
             />
             <div className={classes.buttonWrapper}>
               <Button
@@ -130,11 +128,9 @@ class EmailEntry extends Component<Props, State> {
                 colour="primary"
                 filled
                 fullWidth
-                actions={{
-                  handleClick: () => {
-                    const isFormValid = this.validateForm(email.value);
-                    isFormValid && handleNextClick(email.value);
-                  }
+                handleClick={() => {
+                  const isFormValid = this.validateForm(email.value);
+                  isFormValid && handleNextClick(email.value);
                 }}
               >
                 Next{" "}

@@ -407,7 +407,7 @@ class InstitutionInfo extends Component {
           <div className={classes.wrapper}>
             <div className={classes.adWrapper}>{ad}</div>
             <Typography type="title" component="p" className={classes.message}>
-              If you would like to change more of the institution's details,
+              If you would like to change more of the community's details,
               please contact us at{" "}
               <span className={classes.bold}>support@sportomaticapp.com</span>
             </Typography>

@@ -1,18 +1,17 @@
 import React, { Component } from "react";
-import Button from "material-ui/Button";
-import { CircularProgress } from "material-ui/Progress";
 import Dialog, {
   DialogActions,
   DialogContent,
   DialogTitle
 } from "material-ui/Dialog";
-import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
+import Button from "../../../../components/Button";
+import TextField from "../../../../components/TextField";
 
 const styles = {
-  emailTextField: {
-    margin: 24
+  textFieldWrapper: {
+    margin: "24px 0"
   }
 };
 
@@ -61,24 +60,29 @@ class PasswordResetDialog extends Component {
             Please specify the email address of the account for which you'd like
             to reset the password.
           </Typography>
-          <TextField
-            type="email"
-            value={email}
-            label="Email"
-            error={emailError.hasError}
-            helperText={emailError.message}
-            className={classes.emailTextField}
-            onChange={e => updateEmail(e.target.value)}
-          />
+          <div className={classes.textFieldWrapper}>
+            <TextField
+              type="email"
+              value={email}
+              placeholder="Email"
+              validation={emailError.hasError ? "error" : "default"}
+              helperText={emailError.message}
+              handleChange={value => updateEmail(value)}
+            />
+          </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => closeDialog()}>Cancel</Button>
+          <Button colour="primary" slim handleClick={() => closeDialog()}>
+            Cancel
+          </Button>
           <Button
-            disabled={isLoading}
-            color="primary"
-            onClick={() => sendEmail(email)}
+            loading={isLoading}
+            colour="primary"
+            slim
+            filled
+            handleClick={() => sendEmail(email)}
           >
-            {isLoading ? <CircularProgress size={20} /> : "Send"}
+            Send
           </Button>
         </DialogActions>
       </Dialog>
