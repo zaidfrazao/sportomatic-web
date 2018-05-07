@@ -737,8 +737,10 @@ class CreateCommunity extends Component<Props, State> {
                   label: athleteGender.label
                 }}
                 items={genderItems}
-                handleChange={(key, label) =>
-                  this.handleGenderChange(key, label)}
+                actions={{
+                  handleChange: (key, label) =>
+                    this.handleGenderChange(key, label)
+                }}
               />
             )}
             <div className={classes.buttonWrapper}>

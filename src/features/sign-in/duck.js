@@ -11,6 +11,9 @@ const NAMESPACE = "sportomatic-web/sign-in";
 export const REQUEST_SIGN_IN = `${NAMESPACE}/REQUEST_SIGN_IN`;
 export const RECEIVE_SIGN_IN = `${NAMESPACE}/RECEIVE_SIGN_IN`;
 export const ERROR_SIGNING_IN = `${NAMESPACE}/ERROR_SIGNING_IN`;
+export const REQUEST_SIGN_IN_WITH_SOCIAL = `${NAMESPACE}/REQUEST_SIGN_IN_WITH_SOCIAL`;
+export const RECEIVE_SIGN_IN_WITH_SOCIAL = `${NAMESPACE}/RECEIVE_SIGN_IN_WITH_SOCIAL`;
+export const ERROR_SIGNING_IN_WITH_SOCIAL = `${NAMESPACE}/ERROR_SIGNING_IN_WITH_SOCIAL`;
 export const UPDATE_EMAIL = `${NAMESPACE}/UPDATE_EMAIL`;
 export const UPDATE_PASSWORD = `${NAMESPACE}/UPDATE_PASSWORD`;
 export const UPDATE_PASSWORD_RESET_EMAIL_ADDRESS = `${NAMESPACE}/UPDATE_PASSWORD_RESET_EMAIL_ADDRESS`;
@@ -28,6 +31,8 @@ export const ERROR_RESETTING_PASSWORD = `${NAMESPACE}/ERROR_RESETTING_PASSWORD`;
 export const CLOSE_PASSWORD_RESET_SUCCESS_MODAL = `${NAMESPACE}/CLOSE_PASSWORD_RESET_SUCCESS_MODAL`;
 export const CLOSE_NETWORK_FAILURE_MODAL = `${NAMESPACE}/CLOSE_NETWORK_FAILURE_MODAL`;
 export const INIT_USER = `${NAMESPACE}/INIT_USER`;
+export const GOOGLE_SIGN_IN_PROMPTED = `${NAMESPACE}/GOOGLE_SIGN_IN_PROMPTED`;
+export const FACEBOOK_SIGN_IN_PROMPTED = `${NAMESPACE}/FACEBOOK_SIGN_IN_PROMPTED`;
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 
 // Reducers
@@ -88,6 +93,7 @@ export function userInfoReducer(state = userInfoInitialState, action = {}) {
 
 export const loadingStatusInitialState = {
   isSignInLoading: false,
+  isSocialSignInLoading: false,
   isPasswordResetLoading: false
 };
 
@@ -103,9 +109,16 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
     case RECEIVE_ACCOUNT_INFO:
     case ERROR_FETCHING_ACCOUNT_INFO:
     case ERROR_SIGNING_IN:
+    case ERROR_SIGNING_IN_WITH_SOCIAL:
       return {
         ...state,
-        isSignInLoading: false
+        isSignInLoading: false,
+        isSocialSignInLoading: false
+      };
+    case REQUEST_SIGN_IN_WITH_SOCIAL:
+      return {
+        ...state,
+        isSocialSignInLoading: true
       };
     case REQUEST_PASSWORD_RESET:
       return {
@@ -158,6 +171,7 @@ function errorsReducer(state = errorsInitialState, action = {}) {
       };
     case ERROR_SIGNING_IN:
     case ERROR_RESETTING_PASSWORD:
+    case ERROR_SIGNING_IN_WITH_SOCIAL:
       return action.payload.errors;
     case ERROR_FETCHING_ACCOUNT_INFO:
       return {
@@ -275,6 +289,24 @@ export function initUser() {
   };
 }
 
+export function promptGoogleSignIn() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithRedirect(provider);
+
+  return {
+    type: GOOGLE_SIGN_IN_PROMPTED
+  };
+}
+
+export function promptFacebookSignIn() {
+  const provider = new firebase.auth.FacebookAuthProvider();
+  firebase.auth().signInWithRedirect(provider);
+
+  return {
+    type: GOOGLE_SIGN_IN_PROMPTED
+  };
+}
+
 export function openPasswordResetDialog(initEmail: string) {
   return {
     type: OPEN_PASSWORD_RESET_DIALOG,
@@ -359,6 +391,127 @@ export function checkPassword(password: string) {
   };
 }
 
+export function requestSignInWithSocial() {
+  return {
+    type: REQUEST_SIGN_IN_WITH_SOCIAL
+  };
+}
+
+export function receiveSignInWithSocial() {
+  return {
+    type: RECEIVE_SIGN_IN_WITH_SOCIAL
+  };
+}
+
+export function errorSigningInWithSocial(error: {
+  code: string,
+  message: string
+}) {
+  let errors = {
+    emailErrors: {
+      hasError: false,
+      message: ""
+    },
+    passwordErrors: {
+      hasError: false,
+      message: ""
+    },
+    passwordResetEmailErrors: {
+      hasError: false,
+      message: ""
+    },
+    networkErrors: {
+      hasError: false,
+      message: ""
+    }
+  };
+
+  switch (error.code) {
+    case "auth/wrong-password":
+      errors = {
+        ...errors,
+        passwordErrors: {
+          hasError: true,
+          message: "Password entered is incorrect"
+        }
+      };
+      break;
+    case "auth/user-not-found":
+      errors = {
+        ...errors,
+        emailErrors: {
+          hasError: true,
+          message: "No account registered for this email address"
+        }
+      };
+      break;
+    case "auth/network-request-failed":
+      errors = {
+        ...errors,
+        networkErrors: {
+          hasError: true,
+          message:
+            "You are currently offline. Please check your internet connection."
+        }
+      };
+      break;
+    case "auth/invalid-email":
+      errors = {
+        ...errors,
+        emailErrors: {
+          hasError: true,
+          message: "This is not a valid email address"
+        }
+      };
+      break;
+    case "auth/account-exists-with-different-credential":
+      errors = {
+        ...errors,
+        emailErrors: {
+          hasError: true,
+          message: "This account is linked to a different sign in method."
+        }
+      };
+      break;
+    default:
+      errors = {
+        ...errors,
+        otherErrors: {
+          code: error.code,
+          hasError: true,
+          message: error.message
+        }
+      };
+      break;
+  }
+
+  return {
+    type: ERROR_SIGNING_IN_WITH_SOCIAL,
+    payload: {
+      errors
+    }
+  };
+}
+
+export function signInWithSocial() {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestSignInWithSocial());
+
+    return firebase
+      .auth()
+      .getRedirectResult()
+      .then(result => {
+        const user = result.user;
+        console.log(user);
+        dispatch(fetchAccountInfo(user.uid, user.email));
+        dispatch(receiveSignInWithSocial());
+      })
+      .catch(error => {
+        dispatch(errorSigningInWithSocial(error));
+      });
+  };
+}
+
 export function requestSignIn() {
   return {
     type: REQUEST_SIGN_IN
@@ -433,6 +586,7 @@ export function errorSigningIn(error: { code: string, message: string }) {
       errors = {
         ...errors,
         otherErrors: {
+          code: error.code,
           hasError: true,
           message: error.message
         }

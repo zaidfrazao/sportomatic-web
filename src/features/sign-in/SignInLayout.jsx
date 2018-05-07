@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { lightBlue, red } from "material-ui/colors";
-import Paper from "material-ui/Paper";
+import { common, grey, lightBlue, red } from "material-ui/colors";
 import { Redirect } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import logo from "./images/logo.png";
 import Button from "../../components/Button";
+import LoadingScreen from "../../components/LoadingScreen";
 import NotificationModal from "../../components/NotificationModal";
 import PasswordResetDialog from "./components/PasswordResetDialog";
 import TextField from "../../components/TextField";
@@ -21,17 +21,17 @@ const styles = theme => ({
     height: 14
   },
   content: {
-    flexGrow: 2,
+    height: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "column",
     overflow: "auto"
   },
   footer: {
     display: "block",
     width: "100%",
     height: "4rem",
-    textAlign: "right",
     backgroundColor: lightBlue[700],
     borderTop: "1px solid #E0E0E0",
     "@media (max-width: 600px)": {
@@ -59,7 +59,6 @@ const styles = theme => ({
     backgroundColor: lightBlue[700],
     height: "4rem",
     color: "#fff",
-    paddingTop: "calc((4rem - 50px) / 2)",
     borderBottom: "1px solid #E0E0E0",
     "@media (max-width: 600px)": {
       display: "none"
@@ -73,15 +72,19 @@ const styles = theme => ({
   logo: {
     width: 240,
     height: "auto",
-    margin: "10px auto"
+    margin: "24px auto"
   },
   paper: {
+    backgroundColor: common["white"],
     textAlign: "center",
-    fontFamily: "Roboto, sans-serif",
     width: "100%",
     height: "100%",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    "@media (min-width: 768px)": {
+      maxWidth: "30rem",
+      height: "auto"
+    }
   },
   paperPositioner: {
     width: "100%",
@@ -89,13 +92,32 @@ const styles = theme => ({
     minWidth: "300px",
     flex: 1,
     "@media (min-width: 768px)": {
-      maxWidth: "30rem",
-      maxHeight: "40rem"
+      maxWidth: "30rem"
     }
   },
-  textFieldWrapper: {
+  orLine: {
+    height: 1,
+    flex: 1,
+    backgroundColor: grey[400]
+  },
+  orText: {
+    color: grey[400],
+    margin: "0 12px"
+  },
+  separator: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center"
+  },
+  signUpButtonWrapper: {
+    margin: "14px 0"
+  },
+  socialSignUpForm: {
+    paddingBottom: 12
+  },
+  textFieldsWrapper: {
     width: 260,
-    margin: 10
+    margin: "12px 0"
   },
   wrapper: {
     display: "flex",
@@ -103,20 +125,29 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center",
     height: "100vh",
-    transition: "all ease-in-out 0.5s",
     background: `linear-gradient(${lightBlue[300]}, ${lightBlue[500]})`
   }
 });
 
 class SignInLayout extends Component {
   componentWillMount() {
-    const { initUser } = this.props.actions;
+    const { social } = this.props.match.params;
+    const { initUser, signInWithSocial } = this.props.actions;
 
-    initUser();
+    switch (social) {
+      case "google":
+      case "facebook":
+        signInWithSocial();
+        break;
+      default:
+        initUser();
+        break;
+    }
   }
 
   componentWillUnmount() {
     const { resetState } = this.props.actions;
+
     resetState();
   }
 
@@ -141,10 +172,13 @@ class SignInLayout extends Component {
       updatePasswordResetEmail,
       closePasswordResetSuccessModal,
       closeNetworkFailureModal,
-      sendPasswordResetEmail
+      sendPasswordResetEmail,
+      promptGoogleSignIn,
+      promptFacebookSignIn
     } = this.props.actions;
     const {
       isSignInLoading,
+      isSocialSignInLoading,
       isPasswordResetLoading
     } = this.props.loadingStatus;
     const {
@@ -172,74 +206,105 @@ class SignInLayout extends Component {
       return <Redirect to="/myaccount/home" />;
     }
 
+    if (isSocialSignInLoading) {
+      return <LoadingScreen />;
+    }
+
     return (
       <div className={classes.wrapper}>
-        <div className={classes.paperPositioner}>
-          <Paper className={classes.paper}>
-            <div className={classes.header} />
-            <div className={classes.content}>
-              <form className={classes.form}>
-                <img
-                  src={logo}
-                  alt="Sportomatic Logo"
-                  className={classes.logo}
-                />
-                <div>
-                  <div className={classes.textFieldWrapper}>
-                    <TextField
-                      type="email"
-                      placeholder="Email"
-                      value={email}
-                      validation={emailErrors.hasError ? "error" : "default"}
-                      helperText={emailErrors.message}
-                      handleChange={value => updateEmail(value)}
-                      handleBlur={value => checkEmail(value)}
-                    />
-                  </div>
-                  <div className={classes.textFieldWrapper}>
-                    <TextField
-                      type="password"
-                      placeholder="Password"
-                      value={password}
-                      validation={passwordErrors.hasError ? "error" : "default"}
-                      helperText={passwordErrors.message}
-                      handleChange={value => updatePassword(value)}
-                      handleBlur={value => checkPassword(value)}
-                    />
-                  </div>
-                  <div className={classes.buttons}>
-                    <Button
-                      loading={isSignInLoading}
-                      colour="primary"
-                      fullWidth
-                      filled
-                      slim
-                      handleClick={() => this.handleSubmit()}
-                    >
-                      Sign in
-                    </Button>
-                    <div className={classes.buttonSeparator} />
-                    <Button
-                      colour="secondary"
-                      filled
-                      fullWidth
-                      slim
-                      handleClick={() => history.push("/sign-up")}
-                    >
-                      Sign up for free
-                    </Button>
-                    <p
-                      className={classes.forgotPasswordLink}
-                      onClick={() => openPasswordResetDialog(email)}
-                    >
-                      Forgot password?
-                    </p>
-                  </div>
-                </div>
-              </form>
+        <div className={classes.paper}>
+          <div className={classes.header} />
+          <div className={classes.content}>
+            <img src={logo} alt="Sportomatic Logo" className={classes.logo} />
+            <div className={classes.socialSignUpForm}>
+              <div className={classes.signUpButtonWrapper}>
+                <Button
+                  type="google"
+                  filled
+                  fullWidth
+                  slim
+                  handleClick={() => {
+                    history.push("/sign-in/google");
+                    promptGoogleSignIn();
+                  }}
+                >
+                  Sign in with Google
+                </Button>
+              </div>
+              <div className={classes.signUpButtonWrapper}>
+                <Button
+                  type="facebook"
+                  filled
+                  fullWidth
+                  slim
+                  handleClick={() => {
+                    history.push("/sign-in/facebook");
+                    promptFacebookSignIn();
+                  }}
+                >
+                  Sign in with Facebook
+                </Button>
+              </div>
             </div>
-            <div className={classes.footer} />
-          </Paper>
+            <form className={classes.form}>
+              <div className={classes.separator}>
+                <div className={classes.orLine} />
+                <div className={classes.orText}>Or</div>
+                <div className={classes.orLine} />
+              </div>
+              <div>
+                <div className={classes.textFieldsWrapper}>
+                  <TextField
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    validation={emailErrors.hasError ? "error" : "default"}
+                    helperText={emailErrors.message}
+                    handleChange={value => updateEmail(value)}
+                    handleBlur={value => checkEmail(value)}
+                  />
+                  <TextField
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    validation={passwordErrors.hasError ? "error" : "default"}
+                    helperText={passwordErrors.message}
+                    handleChange={value => updatePassword(value)}
+                    handleBlur={value => checkPassword(value)}
+                  />
+                </div>
+                <div className={classes.buttons}>
+                  <Button
+                    loading={isSignInLoading}
+                    colour="primary"
+                    fullWidth
+                    filled
+                    slim
+                    handleClick={() => this.handleSubmit()}
+                  >
+                    Sign in
+                  </Button>
+                  <div className={classes.buttonSeparator} />
+                  <Button
+                    colour="secondary"
+                    filled
+                    fullWidth
+                    slim
+                    handleClick={() => history.push("/sign-up")}
+                  >
+                    Sign up for free
+                  </Button>
+                  <p
+                    className={classes.forgotPasswordLink}
+                    onClick={() => openPasswordResetDialog(email)}
+                  >
+                    Forgot password?
+                  </p>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div className={classes.footer} />
         </div>
         <PasswordResetDialog
           isOpen={isPasswordResetDialogOpen}
