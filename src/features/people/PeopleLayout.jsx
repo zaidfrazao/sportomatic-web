@@ -493,7 +493,8 @@ class PeopleLayout extends Component {
       eventsByCoach,
       eventsByManager,
       role,
-      paymentDefaults
+      paymentDefaults,
+      userID
     } = this.props;
     const {
       currentTab,
@@ -693,6 +694,7 @@ class PeopleLayout extends Component {
                   isMobile={isMobile}
                   isLoading={isInviteeLoading || activeInstitutionID === ""}
                   inviteeID={inviteeID}
+                  userID={userID}
                   inviteeInfo={inviteeInfo}
                   institutionID={activeInstitutionID}
                   paymentDefaults={paymentDefaults}

@@ -361,7 +361,8 @@ class InvitePersonModal extends Component {
       inviteeID,
       inviteeInfo,
       institutionID,
-      isMobile
+      isMobile,
+      userID
     } = this.props;
     const {
       closeModal,
@@ -377,8 +378,6 @@ class InvitePersonModal extends Component {
       newUser,
       paymentDefaults
     } = this.state;
-
-    console.log(paymentDefaults);
 
     return (
       <Dialog
@@ -725,7 +724,8 @@ class InvitePersonModal extends Component {
                   metadata: {
                     creationDate: new Date(Date.now()),
                     createdVia: "INVITE",
-                    createdBy: institutionID,
+                    createdByInstition: institutionID,
+                    createdByUser: userID,
                     status: "ACTIVE",
                     tempPassword
                   },
