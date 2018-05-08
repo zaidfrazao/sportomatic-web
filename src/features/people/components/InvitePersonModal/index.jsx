@@ -724,7 +724,7 @@ class InvitePersonModal extends Component {
                   metadata: {
                     creationDate: new Date(Date.now()),
                     createdVia: "INVITE",
-                    createdByInstition: institutionID,
+                    createdByInstitution: institutionID,
                     createdByUser: userID,
                     status: "ACTIVE",
                     tempPassword

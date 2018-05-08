@@ -179,7 +179,7 @@ class CustomAppBar extends Component {
                 />
               </Tooltip>
             )}
-            <NotificationsTray
+            {/*<NotificationsTray
               isMobile={isMobile}
               readNotifications={readNotifications}
               unreadNotifications={unreadNotifications}
@@ -187,7 +187,7 @@ class CustomAppBar extends Component {
               actions={{
                 markNotificationsRead
               }}
-            />
+            />*/}
             <div>
               <Tooltip title="Options" placement="bottom">
                 <IconButton
