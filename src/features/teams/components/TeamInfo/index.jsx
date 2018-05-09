@@ -2,7 +2,6 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import { amber, brown, green, grey, lightBlue, red } from "material-ui/colors";
-import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import BackIcon from "material-ui-icons/ArrowBack";
 import Button from "material-ui/Button";
@@ -24,7 +23,6 @@ import Paper from "material-ui/Paper";
 import PersonIcon from "material-ui-icons/Person";
 import ResultsIcon from "material-ui-icons/PlusOne";
 import { Route } from "react-router-dom";
-import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import WarningIcon from "material-ui-icons/Warning";
@@ -36,7 +34,8 @@ import LeaderboardAd from "../../../../components/LeaderboardAd";
 
 const styles = theme => ({
   actionsBar: {
-    backgroundColor: grey[200]
+    display: "flex",
+    justifyContent: "space-between"
   },
   adWrapper: {
     width: "100%",
@@ -914,19 +913,17 @@ class TeamInfo extends Component {
 
     return (
       <div className={classes.root}>
-        <AppBar position="static" color="default">
-          {isTeamsLoading ? (
-            <Typography className={classes.name} type="title" component="h2">
-              Loading...
-            </Typography>
-          ) : (
-            <Typography className={classes.name} type="title" component="h2">
-              {name}
-            </Typography>
-          )}
-        </AppBar>
+        {isTeamsLoading ? (
+          <Typography className={classes.name} type="title" component="h2">
+            Loading...
+          </Typography>
+        ) : (
+          <Typography className={classes.name} type="title" component="h2">
+            {name}
+          </Typography>
+        )}
         <div className={classes.outerWrapper}>
-          <Toolbar className={classes.actionsBar}>
+          <div className={classes.actionsBar}>
             <Route
               render={({ history }) => (
                 <Tooltip title="Back" placement="bottom">
@@ -954,7 +951,7 @@ class TeamInfo extends Component {
                   <EditIcon className={classes.iconAdjacentText} /> Edit team
                 </Button>
               )}
-          </Toolbar>
+          </div>
           <div className={classes.adWrapper}>{ad}</div>
           <div className={classes.wrapper}>
             {info &&

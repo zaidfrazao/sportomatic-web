@@ -131,7 +131,7 @@ class SandboxLayout extends Component<Props, State> {
     const sportsItems = this.getSportsItems();
 
     const isMobile = windowWidth <= 600;
-    const isTablet = windowWidth <= 768;
+    // const isTablet = windowWidth <= 768;
 
     return (
       <div className={classes.wrapper}>

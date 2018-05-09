@@ -11,21 +11,7 @@
     "headers": [
       {
         "source": "/service-worker.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-store"
-          }
-        ]
-      },
-      {
-        "source": "/index.html",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-store"
-          }
-        ]
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
       }
     ]
   }

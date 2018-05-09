@@ -7,8 +7,6 @@ import EditIcon from "material-ui-icons/Edit";
 import { lightBlue, orange } from "material-ui/colors";
 import moment from "moment";
 import { Redirect } from "react-router-dom";
-import Switch from "material-ui/Switch";
-import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import AddEventDialog from "./components/AddEventDialog";
 import Calendar from "./components/Calendar";
@@ -90,8 +88,7 @@ class ScheduleLayout extends Component {
     eventTypes: {},
     sports: {},
     divisions: {},
-    ageGroups: {},
-    showAllEvents: false
+    ageGroups: {}
   };
 
   componentWillMount() {
@@ -247,8 +244,7 @@ class ScheduleLayout extends Component {
       gender,
       searchText
     } = this.props.filters;
-    const { events, teams, staff, userID, role } = this.props;
-    const { showAllEvents } = this.state;
+    const { events, teams, staff, userID, role, meAllFilter } = this.props;
 
     return _.fromPairs(
       _.toPairs(events).filter(([id, info]) => {
@@ -263,13 +259,13 @@ class ScheduleLayout extends Component {
           titleMatch = eventTitle.includes(_.toLower(searchText));
         }
 
-        if (role === "coach" && !showAllEvents) {
+        if (role === "coach" && meAllFilter === "me") {
           const eventCoaches = _.keys(info.coaches);
           roleMatch = false;
           roleMatch = roleMatch || eventCoaches.includes(userID);
         }
 
-        if (role === "manager" && !showAllEvents) {
+        if (role === "manager" && meAllFilter === "me") {
           const eventManagers = _.keys(info.managers);
           roleMatch = false;
           roleMatch = roleMatch || eventManagers.includes(userID);
@@ -340,7 +336,6 @@ class ScheduleLayout extends Component {
   }
 
   renderView() {
-    const { showAllEvents } = this.state;
     const {
       isTablet,
       isMobile,
@@ -709,24 +704,6 @@ class ScheduleLayout extends Component {
             addEvent={openAddEventDialog}
             updateSearch={updateSearch}
           />
-          {(role === "coach" || role === "manager") && (
-            <div className={classes.myEventsSelector}>
-              <Switch
-                checked={showAllEvents}
-                onChange={(event, checked) =>
-                  this.setState({
-                    showAllEvents: checked
-                  })}
-              />
-              <Typography component="h3" type="headline">
-                {showAllEvents
-                  ? "All Events"
-                  : role === "coach"
-                    ? "Events Where I Coach"
-                    : "Events Where I Manage"}
-              </Typography>
-            </div>
-          )}
           <Calendar
             events={filteredEvents}
             minDate={minDate}

@@ -1,295 +1,207 @@
 import React, { Component } from "react";
-import ChevronLeftIcon from "material-ui-icons/ChevronLeft";
-import classNames from "classnames";
-import HomeIcon from "material-ui-icons/Home";
-import Divider from "material-ui/Divider";
-import Drawer from "material-ui/Drawer";
-import { grey } from "material-ui/colors";
-import HoursIcon from "material-ui-icons/Alarm";
-import IconButton from "material-ui/IconButton";
-import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
-import ResultsIcon from "material-ui-icons/PlusOne";
-import { Route } from "react-router-dom";
-import PeopleIcon from "material-ui-icons/Person";
-import ScheduleIcon from "material-ui-icons/Event";
-import SettingsIcon from "material-ui-icons/Settings";
-import TeamsIcon from "material-ui-icons/People";
-import Typography from "material-ui/Typography";
-import WagesIcon from "material-ui-icons/AttachMoney";
+import _ from "lodash";
+import { common, grey, lightBlue } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
-import logo from "./images/logo.png";
-
-const drawerWidth = 240;
+import CommunityInfo from "./components/CommunityInfo";
+import defaultEmblem from "./images/default-emblem.jpg";
 
 const styles = theme => ({
-  drawerPaper: {
-    position: "relative",
-    height: "100%",
-    width: drawerWidth,
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
+  menu: {
+    padding: "12px 0",
+    flex: 1
   },
-  drawerPaperClose: {
-    width: 60,
-    overflowX: "hidden",
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
-  },
-  drawerInner: {
-    height: "100%",
-    width: drawerWidth,
-    display: "flex",
-    flexDirection: "column"
-  },
-  drawerHeader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    padding: "0 8px",
-    height: 56,
-    [theme.breakpoints.up("sm")]: {
-      height: 64
+  menuItem: {
+    transition: "0.25s",
+    fontSize: 14,
+    padding: "18px 0",
+    margin: "16px 18px",
+    borderRadius: 16,
+    cursor: "pointer",
+    backgroundColor: grey[100],
+    "@media (max-width: 600px)": {
+      textAlign: "center",
+      margin: "20px 18px",
+      padding: "22px 0",
+      fontSize: 20
+    },
+    "&:hover": {
+      backgroundColor: grey[200]
     }
   },
-  featureList: {
-    flexGrow: 1
+  menuItemIcon: {
+    margin: "0 12px 0 24px",
+    width: 25,
+    height: 25,
+    "@media (max-width: 600px)": {
+      margin: "0 12px 0 0"
+    }
   },
-  logo: {
-    backgroundImage: `url(${logo})`,
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-    width: 160,
-    height: 30
+  menuItemSelected: {
+    transition: "0.25s",
+    borderRadius: 16,
+    padding: "18px 0",
+    margin: "16px 18px",
+    fontSize: 16,
+    position: "relative",
+    fontWeight: "bold",
+    cursor: "pointer",
+    backgroundColor: lightBlue[800],
+    "@media (max-width: 600px)": {
+      textAlign: "center",
+      margin: "20px 18px",
+      padding: "22px 0",
+      fontSize: 20
+    },
+    "&:hover": {
+      backgroundColor: lightBlue[700]
+    }
   },
-  selectedItem: {
-    backgroundColor: grey[300]
+  menuItemText: {
+    color: common["black"]
   },
-  unselectedItem: {
-    backgroundColor: grey[0]
+  menuItemTextSelected: {
+    color: common["white"]
   },
-  version: {
-    color: grey[500],
-    padding: 16,
-    textAlign: "center"
+  wrapperDesktop: {
+    backgroundColor: "white",
+    width: 240,
+    height: "calc(100vh - 64px)",
+    overflow: "auto",
+    borderRight: `2px solid ${grey[300]}`
+  },
+  wrapperMobileClosed: {
+    transition: "0.5s",
+    backgroundColor: "white",
+    position: "absolute",
+    zIndex: 1000,
+    left: "calc(100% * -1)",
+    width: "100%",
+    height: "calc(100vh - 64px)",
+    overflow: "auto"
+  },
+  wrapperMobileOpen: {
+    transition: "0.5s",
+    backgroundColor: "white",
+    left: 0,
+    zIndex: 1000,
+    position: "absolute",
+    width: "100%",
+    height: "calc(100vh - 64px)",
+    overflow: "auto"
   }
 });
 
-class SideMenu extends Component {
+type Props = {
+  classes: {
+    menu: string,
+    menuItem: string,
+    menuItemIcon: string,
+    menuItemSelected: string,
+    wrapper: string
+  },
+  actions: {
+    changeSelected: (key: string) => {}
+  },
+  communityName: string,
+  emblem: string,
+  items: ArrayOf<{
+    key: string,
+    label: string,
+    icon: string
+  }>
+};
+
+class SideMenu extends Component<Props> {
+  static defaultProps = {
+    actions: {
+      changeSelected: key => console.log(`Selected item changed to ${key}`)
+    },
+    communityName: "Example Community",
+    emblem: defaultEmblem
+  };
+
+  getMenuItems() {
+    const { classes, selected, items, isTablet } = this.props;
+    const { changeSelected, toggleSideNav } = this.props.actions;
+
+    return _.toPairs(items).map(([key, item]) => (
+      <div
+        key={`side-menu-item-${key}`}
+        className={
+          selected === key ? classes.menuItemSelected : classes.menuItem
+        }
+        onClick={() => {
+          changeSelected(key);
+          isTablet && toggleSideNav();
+        }}
+      >
+        <span
+          className={
+            selected === key
+              ? classes.menuItemTextSelected
+              : classes.menuItemText
+          }
+        >
+          <span className={classes.menuItemIcon}>
+            <i className={item.icon} />
+          </span>
+          {item.label}
+        </span>
+        {selected === key && !isTablet && <span className={classes.arrow} />}
+      </div>
+    ));
+  }
+
   render() {
     const {
       classes,
-      isOpen,
-      isMobile,
-      feature,
-      role,
-      versionNumber,
-      permissions
+      isSideMenuOpen,
+      isTablet,
+      communityName,
+      emblem,
+      selectedRole,
+      availableRoles,
+      meAllFilter
     } = this.props;
-    const { toggleSideMenu } = this.props.actions;
+    const {
+      switchRoles,
+      toggleSideNav,
+      logOut,
+      changeMeAllFilter,
+      switchCommunities
+    } = this.props.actions;
+    const menuItems = this.getMenuItems();
+
+    let wrapperStyle = classes.wrapperDesktop;
+    if (isTablet) {
+      if (isSideMenuOpen) {
+        wrapperStyle = classes.wrapperMobileOpen;
+      } else {
+        wrapperStyle = classes.wrapperMobileClosed;
+      }
+    }
 
     return (
-      <Drawer
-        type={isMobile ? "temporary" : "permanent"}
-        classes={{
-          paper: classNames(
-            !isMobile && classes.drawerPaper,
-            !isMobile && !isOpen && classes.drawerPaperClose
-          )
-        }}
-        onRequestClose={() => toggleSideMenu()}
-        open={isOpen}
-      >
-        <div className={classes.drawerInner}>
-          <div className={classes.drawerHeader}>
-            <div className={classes.logo} />
-            <IconButton onClick={() => toggleSideMenu()}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </div>
-          <Divider />
-          <List className={classes.featureList}>
-            <Route
-              key={1}
-              render={({ history }) => (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push("/myaccount/home");
-                    isMobile && toggleSideMenu();
-                  }}
-                  className={classNames(
-                    feature !== "Home" && classes.unselectedItem,
-                    feature === "Home" && classes.selectedItem
-                  )}
-                >
-                  <ListItemIcon>
-                    <HomeIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Home" />
-                </ListItem>
-              )}
-            />
-            <Route
-              key={2}
-              render={({ history }) => (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push("/myaccount/schedule");
-                    isMobile && toggleSideMenu();
-                  }}
-                  className={classNames(
-                    feature !== "Schedule" && classes.unselectedItem,
-                    feature === "Schedule" && classes.selectedItem
-                  )}
-                >
-                  <ListItemIcon>
-                    <ScheduleIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Schedule" />
-                </ListItem>
-              )}
-            />
-            <Route
-              key={3}
-              render={({ history }) => (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push("/myaccount/hours");
-                    isMobile && toggleSideMenu();
-                  }}
-                  className={classNames(
-                    feature !== "Hours" && classes.unselectedItem,
-                    feature === "Hours" && classes.selectedItem
-                  )}
-                >
-                  <ListItemIcon>
-                    <HoursIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Hours" />
-                </ListItem>
-              )}
-            />
-            <Route
-              key={4}
-              render={({ history }) => (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push("/myaccount/results");
-                    isMobile && toggleSideMenu();
-                  }}
-                  className={classNames(
-                    feature !== "Results" && classes.unselectedItem,
-                    feature === "Results" && classes.selectedItem
-                  )}
-                >
-                  <ListItemIcon>
-                    <ResultsIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Results" />
-                </ListItem>
-              )}
-            />
-            {(role === "admin" ||
-              role === "coach" ||
-              (role === "manager" && permissions.managers.wages.canView)) && (
-              <Route
-                key={5}
-                render={({ history }) => (
-                  <ListItem
-                    button
-                    onClick={() => {
-                      history.push("/myaccount/wages");
-                      isMobile && toggleSideMenu();
-                    }}
-                    className={classNames(
-                      feature !== "Wages" && classes.unselectedItem,
-                      feature === "Wages" && classes.selectedItem
-                    )}
-                  >
-                    <ListItemIcon>
-                      <WagesIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Wages" />
-                  </ListItem>
-                )}
-              />
-            )}
-            <Route
-              key={6}
-              render={({ history }) => (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push("/myaccount/people");
-                    isMobile && toggleSideMenu();
-                  }}
-                  className={classNames(
-                    feature !== "People" && classes.unselectedItem,
-                    feature === "People" && classes.selectedItem
-                  )}
-                >
-                  <ListItemIcon>
-                    <PeopleIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="People" />
-                </ListItem>
-              )}
-            />
-            <Route
-              key={7}
-              render={({ history }) => (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push("/myaccount/teams");
-                    isMobile && toggleSideMenu();
-                  }}
-                  className={classNames(
-                    feature !== "Teams" && classes.unselectedItem,
-                    feature === "Teams" && classes.selectedItem
-                  )}
-                >
-                  <ListItemIcon>
-                    <TeamsIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Teams" />
-                </ListItem>
-              )}
-            />
-            <Route
-              key={8}
-              render={({ history }) => (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push("/myaccount/settings");
-                    isMobile && toggleSideMenu();
-                  }}
-                  className={classNames(
-                    feature !== "Settings" && classes.unselectedItem,
-                    feature === "Settings" && classes.selectedItem
-                  )}
-                >
-                  <ListItemIcon>
-                    <SettingsIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Settings" />
-                </ListItem>
-              )}
-            />
-          </List>
-          <Typography type="body1" component="p" className={classes.version}>
-            {`v${versionNumber}`}
-          </Typography>
-        </div>
-      </Drawer>
+      <div className={wrapperStyle}>
+        <CommunityInfo
+          emblem={emblem}
+          name={communityName}
+          selectedRole={selectedRole}
+          switchCommunities={switchCommunities}
+          switchRoles={newRole => {
+            toggleSideNav();
+            switchRoles(newRole);
+          }}
+          changeMeAllFilter={newFilter => {
+            toggleSideNav();
+            changeMeAllFilter(newFilter);
+          }}
+          meAllFilter={meAllFilter}
+          logOut={() => logOut()}
+          availableRoles={availableRoles}
+        />
+        <div className={classes.menu}>{menuItems}</div>
+      </div>
     );
   }
 }

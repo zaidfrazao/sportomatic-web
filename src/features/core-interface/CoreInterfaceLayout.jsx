@@ -3,13 +3,13 @@ import React, { Component } from "react";
 import _ from "lodash";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
-import backgroundImage from "./images/background-image.jpeg";
-import CustomAppBar from "./components/CustomAppBar";
+import { grey } from "../../utils/colours";
+import AppBar from "./components/AppBar";
 import Dashboard from "../dashboard/DashboardView";
 import DecisionModal from "../../components/DecisionModal";
 import Hours from "../hours/HoursView";
 import LoadingScreen from "./components/LoadingScreen";
-import ManageInstitutionsDialog from "./components/ManageInstitutionsDialog";
+import SwitchCommunitiesDialog from "./components/SwitchCommunitiesDialog";
 import Results from "../results/ResultsView";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
@@ -17,65 +17,43 @@ import Settings from "../settings/SettingsView";
 import SideMenu from "./components/SideMenu";
 import Teams from "../teams/TeamsView";
 import Wages from "../wages/WagesView";
-
-const drawerWidth = 240;
+import rugbyIcon from "./images/rugby.png";
+import soccerIcon from "./images/soccer.png";
+import tennisIcon from "./images/tennis-ball.png";
 
 const styles = theme => ({
-  appBar: {
-    position: "absolute",
-    zIndex: theme.zIndex.navDrawer + 1,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  appFrame: {
-    position: "relative",
-    display: "flex",
-    width: "100%",
-    height: "100%"
-  },
   content: {
-    width: "100%",
-    flexGrow: 1,
+    maxWidth: 1200,
+    margin: "0 auto"
+  },
+  contentWrapper: {
+    flex: 1,
+    zIndex: 20,
+    overflow: "auto",
+    borderTop: `2px solid ${grey[300]}`,
+    backgroundColor: grey[200]
+  },
+  coreWrapper: {
     display: "flex",
-    flexDirection: "column",
-    backgroundColor: theme.palette.background.default,
-    padding: 0,
-    height: "calc(100% - 56px)",
-    marginTop: 56,
-    backgroundImage: `url(${backgroundImage})`,
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-    [theme.breakpoints.up("sm")]: {
-      height: "calc(100% - 64px)",
-      marginTop: 64
-    }
+    height: "calc(100vh - 64px)"
   },
   hide: {
     display: "none"
   },
-  main: {
-    height: "100%",
-    overflow: "auto"
+  headerText: {
+    fontSize: 24,
+    margin: 24,
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: "4px 18px",
+    textAlign: "center"
   },
   menuButton: {
     marginLeft: 12,
     marginRight: 36
   },
-  root: {
-    width: "100%",
-    height: "100vh",
-    zIndex: 1,
-    overflow: "hidden"
+  wrapper: {
+    backgroundColor: grey[200]
   }
 });
 
@@ -117,8 +95,6 @@ class CoreInterfaceLayout extends Component {
     const { userID, isLoggedIn, accountInfo } = nextProps.uiConfig;
     const { loadInstitutionInfo } = nextProps.actions;
 
-    console.log(accountInfo);
-
     if (
       accountInfo !== this.props.uiConfig.accountInfo &&
       accountInfo.institutions
@@ -151,39 +127,39 @@ class CoreInterfaceLayout extends Component {
   }
 
   updateCoreUI(pathname) {
-    const { updateAppBarTitle } = this.props.actions;
+    const { updateSideMenu } = this.props.actions;
     const featureName = pathname.split("/")[2];
 
     switch (featureName) {
-      case "home":
-        updateAppBarTitle("Home");
+      case "overview":
+        updateSideMenu("overview");
         break;
       case "schedule":
-        updateAppBarTitle("Schedule");
+        updateSideMenu("schedule");
         break;
       case "hours":
-        updateAppBarTitle("Hours");
+        updateSideMenu("hours");
         break;
       case "wages":
-        updateAppBarTitle("Wages");
+        updateSideMenu("wages");
         break;
       case "reports":
-        updateAppBarTitle("Reports");
+        updateSideMenu("reports");
         break;
       case "people":
-        updateAppBarTitle("People");
+        updateSideMenu("people");
         break;
       case "teams":
-        updateAppBarTitle("Teams");
+        updateSideMenu("teams");
         break;
       case "settings":
-        updateAppBarTitle("Settings");
+        updateSideMenu("settings");
         break;
       case "results":
-        updateAppBarTitle("Results");
+        updateSideMenu("results");
         break;
       default:
-        updateAppBarTitle("Home");
+        updateSideMenu("overview");
         break;
     }
   }
@@ -192,41 +168,157 @@ class CoreInterfaceLayout extends Component {
     this.setState({ windowWidth: window.innerWidth });
   }
 
+  getSideMenuItems() {
+    const { accountInfo } = this.props.uiConfig;
+
+    const role = _.toLower(accountInfo.lastAccessed.role);
+
+    switch (role) {
+      case "admin":
+      case "coach":
+        return {
+          overview: {
+            label: "Overview",
+            icon: "fas fa-newspaper"
+          },
+          schedule: {
+            label: "Schedule",
+            icon: "fas fa-calendar"
+          },
+          hours: {
+            label: "Hours",
+            icon: "fas fa-calendar"
+          },
+          results: {
+            label: "Results",
+            icon: "fas fa-list-ol"
+          },
+          wages: {
+            label: "Wages",
+            icon: "fas fa-money-bill-alt"
+          },
+          people: {
+            label: "People",
+            icon: "fas fa-user"
+          },
+          teams: {
+            label: "Teams",
+            icon: "fas fa-users"
+          },
+          settings: {
+            label: "Settings",
+            icon: "fas fa-cog"
+          }
+        };
+      case "manager":
+        return {
+          overview: {
+            label: "Overview",
+            icon: "fas fa-newspaper"
+          },
+          schedule: {
+            label: "Schedule",
+            icon: "fas fa-calendar"
+          },
+          hours: {
+            label: "Hours",
+            icon: "fas fa-clock"
+          },
+          results: {
+            label: "Results",
+            icon: "fas fa-list-ol"
+          },
+          people: {
+            label: "People",
+            icon: "fas fa-user"
+          },
+          teams: {
+            label: "Teams",
+            icon: "fas fa-users"
+          },
+          settings: {
+            label: "Settings",
+            icon: "fas fa-cog"
+          }
+        };
+      default:
+        return {
+          overview: {
+            label: "Overview",
+            icon: "fas fa-newspaper"
+          },
+          schedule: {
+            label: "Schedule",
+            icon: "fas fa-calendar"
+          },
+          results: {
+            label: "Results",
+            icon: "fas fa-list-ol"
+          },
+          people: {
+            label: "People",
+            icon: "fas fa-user"
+          },
+          teams: {
+            label: "Teams",
+            icon: "fas fa-users"
+          },
+          settings: {
+            label: "Settings",
+            icon: "fas fa-cog"
+          }
+        };
+    }
+  }
+
+  getSportsItems() {
+    return {
+      all: {
+        label: "All",
+        icon: "N/A"
+      },
+      rugby: {
+        label: "Rugby",
+        icon: rugbyIcon
+      },
+      soccer: {
+        label: "Soccer",
+        icon: soccerIcon
+      },
+      tennis: {
+        label: "Tennis",
+        icon: tennisIcon
+      }
+    };
+  }
+
   render() {
-    const {
-      classes,
-      unreadNotifications,
-      readNotifications,
-      institutions,
-      verifiedInstitutions
-    } = this.props;
+    const { classes, institutions, history } = this.props;
     const {
       toggleSideMenu,
       signOut,
       openLogOutModal,
       closeLogOutModal,
-      markNotificationsRead,
       openManageInstitutionsDialog,
       closeManageInstitutionsDialog,
-      createInstitution,
-      loadVerifiedInstitutions,
-      joinInstitution
+      updateSport,
+      switchRole,
+      changeMeAllFilter,
+      switchInstitution
     } = this.props.actions;
     const { windowWidth } = this.state;
     const {
-      isNotificationsLoading,
       isAccountInfoLoading,
-      isInstitutionsLoading,
-      isInstitutionCreationLoading,
-      isVerifiedInstitutionsLoading,
-      isJoinInstitutionLoading
+      isInstitutionsLoading
     } = this.props.loadingStatus;
     const {
       isLoggedIn,
       accountInfo,
-      appBarTitle,
       isSideMenuOpen,
-      userID
+      userID,
+      sportSelected,
+      sideMenuItemSelected,
+      meAllFilter
     } = this.props.uiConfig;
     const {
       isLogOutModalOpen,
@@ -238,7 +330,38 @@ class CoreInterfaceLayout extends Component {
 
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
+    const sideMenuItems = this.getSideMenuItems();
+    const sportsItems = this.getSportsItems();
+    const switchCommunityInfo = _.toPairs(institutions)
+      .map(([id, info]) => {
+        return {
+          id,
+          emblem: info.info.emblemURL,
+          name: info.info.name
+        };
+      })
+      .sort((communityA, communityB) => {
+        if (communityA.name > communityB.name) return +1;
+        if (communityA.name < communityB.name) return -1;
+        return 0;
+      });
 
+    let communityName = "Default";
+    let emblem = "";
+    let availableRoles = [
+      {
+        key: "admin",
+        label: "Administrator"
+      },
+      {
+        key: "coach",
+        label: "Coach"
+      },
+      {
+        key: "manager",
+        label: "Manager"
+      }
+    ];
     let permissions = {
       coaches: {
         events: {
@@ -285,6 +408,26 @@ class CoreInterfaceLayout extends Component {
     };
     let institutionCreationDate = new Date(Date.now());
     if (institutions[activeInstitutionID]) {
+      const institutionRoles =
+        accountInfo.institutions[activeInstitutionID].roles;
+      availableRoles = [];
+      institutionRoles.admin === "APPROVED" &&
+        availableRoles.push({
+          key: "admin",
+          label: "Administrator"
+        });
+      institutionRoles.coach === "APPROVED" &&
+        availableRoles.push({
+          key: "coach",
+          label: "Coach"
+        });
+      institutionRoles.manager === "APPROVED" &&
+        availableRoles.push({
+          key: "manager",
+          label: "Manager"
+        });
+      communityName = institutions[activeInstitutionID].info.name;
+      emblem = institutions[activeInstitutionID].info.emblemURL;
       permissions = institutions[activeInstitutionID].permissions;
       paymentDefaults = institutions[activeInstitutionID].paymentDefaults;
       institutionCreationDate =
@@ -299,41 +442,50 @@ class CoreInterfaceLayout extends Component {
       return <LoadingScreen />;
     } else {
       return (
-        <div className={classes.root}>
-          <div className={classes.appFrame}>
-            <CustomAppBar
-              title={appBarTitle}
-              isSideMenuOpen={isSideMenuOpen}
-              actions={{
-                toggleSideMenu,
-                openLogOutModal,
-                markNotificationsRead,
-                openManageInstitutionsDialog
-              }}
-              isMobile={isMobile}
-              readNotifications={readNotifications}
-              unreadNotifications={unreadNotifications}
-              isNotificationsLoading={isNotificationsLoading}
-              emblemURL={
-                institutions[activeInstitutionID]
-                  ? institutions[activeInstitutionID].info.emblemURL
-                  : ""
-              }
-              role={role}
-            />
+        <div className={classes.wrapper}>
+          <AppBar
+            selected={sportSelected}
+            sports={sportsItems}
+            isTablet={isMobile}
+            isSideMenuOpen={isSideMenuOpen}
+            actions={{
+              changeSportSelected: key => updateSport(key),
+              toggleSideNav: () => toggleSideMenu()
+            }}
+          />
+          <div className={classes.coreWrapper}>
             <SideMenu
-              isOpen={isSideMenuOpen}
+              selected={sideMenuItemSelected}
+              items={sideMenuItems}
+              isTablet={isMobile}
+              isSideMenuOpen={isSideMenuOpen}
+              communityName={communityName}
+              emblem={emblem}
+              selectedRole={role}
+              availableRoles={availableRoles}
+              meAllFilter={meAllFilter}
               actions={{
-                toggleSideMenu
+                switchCommunities: () => openManageInstitutionsDialog(),
+                changeMeAllFilter: newFilter => changeMeAllFilter(newFilter),
+                logOut: () => openLogOutModal(),
+                changeSelected: key => history.push(`/myaccount/${key}`),
+                toggleSideNav: () => toggleSideMenu(),
+                switchRoles: newRole => switchRole(userID, newRole)
               }}
-              isMobile={isMobile}
-              feature={appBarTitle}
-              versionNumber="0.9.24"
-              role={role}
-              permissions={permissions}
             />
-            <div className={classes.content}>
-              <div className={classes.main}>
+            <div className={classes.contentWrapper}>
+              <div className={classes.content}>
+                {sportSelected === "all" ? (
+                  <h1 className={classes.headerText}>
+                    {sideMenuItems[sideMenuItemSelected].label}
+                  </h1>
+                ) : (
+                  <h1 className={classes.headerText}>
+                    {`${sportsItems[sportSelected].label} ${sideMenuItems[
+                      sideMenuItemSelected
+                    ].label}`}
+                  </h1>
+                )}
                 <Switch>
                   <Route exact path={"/myaccount/"}>
                     <Dashboard
@@ -348,7 +500,7 @@ class CoreInterfaceLayout extends Component {
                       permissions={permissions}
                     />
                   </Route>
-                  <Route exact path={"/myaccount/home/"}>
+                  <Route exact path={"/myaccount/overview/"}>
                     <Dashboard
                       isMobile={isMobile}
                       isTablet={isTablet}
@@ -411,6 +563,7 @@ class CoreInterfaceLayout extends Component {
                     <Results
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       userID={userID}
@@ -422,6 +575,7 @@ class CoreInterfaceLayout extends Component {
                     <Results
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       userID={userID}
@@ -433,6 +587,7 @@ class CoreInterfaceLayout extends Component {
                     <Results
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       userID={userID}
@@ -445,6 +600,7 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
                       paymentDefaults={paymentDefaults}
                       userID={userID}
@@ -456,6 +612,7 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
                       paymentDefaults={paymentDefaults}
                       userID={userID}
@@ -469,6 +626,7 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
                     />
@@ -480,6 +638,7 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
                     />
@@ -490,6 +649,7 @@ class CoreInterfaceLayout extends Component {
                       role={role}
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
@@ -501,6 +661,7 @@ class CoreInterfaceLayout extends Component {
                       role={role}
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
@@ -515,6 +676,7 @@ class CoreInterfaceLayout extends Component {
                       role={role}
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
@@ -573,23 +735,17 @@ class CoreInterfaceLayout extends Component {
             heading="Log Out"
             message="Are you sure you want to log out?"
           />
-          <ManageInstitutionsDialog
+          <SwitchCommunitiesDialog
             isOpen={isManageInstitutionsDialogOpen}
             isMobile={isMobile}
-            institutions={institutions}
-            verifiedInstitutions={verifiedInstitutions}
-            isLoading={
-              isInstitutionCreationLoading ||
-              isVerifiedInstitutionsLoading ||
-              isJoinInstitutionLoading
-            }
-            userID={userID}
-            userInfo={accountInfo}
+            communities={switchCommunityInfo}
+            activeCommunityID={activeInstitutionID}
             actions={{
-              createInstitution,
-              loadVerifiedInstitutions,
-              joinInstitution,
-              closeDialog: () => closeManageInstitutionsDialog()
+              closeDialog: () => closeManageInstitutionsDialog(),
+              updateActiveCommunity: newCommunityID => {
+                switchInstitution(userID, newCommunityID, role);
+                closeManageInstitutionsDialog();
+              }
             }}
           />
         </div>

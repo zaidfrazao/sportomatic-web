@@ -5,8 +5,6 @@ import AddIcon from "material-ui-icons/Add";
 import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import EditIcon from "material-ui-icons/Edit";
-import Switch from "material-ui/Switch";
-import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import AddTeamDialog from "./components/AddTeamDialog";
 import BannerAd from "../../components/BannerAd";
@@ -82,8 +80,7 @@ class TeamsLayout extends Component {
     sports: {},
     divisions: {},
     ageGroups: {},
-    showDeletedTeams: false,
-    showAllTeams: false
+    showDeletedTeams: false
   };
 
   componentWillMount() {
@@ -201,8 +198,7 @@ class TeamsLayout extends Component {
       searchText,
       showDeletedTeams
     } = this.props.filters;
-    const { teams, staff, userID, role } = this.props;
-    const { showAllTeams } = this.state;
+    const { teams, staff, userID, role, meAllFilter } = this.props;
 
     return _.fromPairs(
       _.toPairs(teams).filter(([teamID, teamInfo]) => {
@@ -241,13 +237,13 @@ class TeamsLayout extends Component {
           titleMatch = teamName.includes(_.toLower(searchText));
         }
 
-        if (role === "coach" && !showAllTeams) {
+        if (role === "coach" && meAllFilter === "me") {
           const teamCoaches = _.keys(teamInfo.coaches);
           roleMatch = false;
           roleMatch = roleMatch || teamCoaches.includes(userID);
         }
 
-        if (role === "manager" && !showAllTeams) {
+        if (role === "manager" && meAllFilter === "me") {
           const teamManagers = _.keys(teamInfo.managers);
           roleMatch = false;
           roleMatch = roleMatch || teamManagers.includes(userID);
@@ -281,7 +277,6 @@ class TeamsLayout extends Component {
   }
 
   render() {
-    const { showAllTeams } = this.state;
     const {
       classes,
       teams,
@@ -455,24 +450,6 @@ class TeamsLayout extends Component {
               </div>
             ) : (
               <div>
-                {(role === "coach" || role === "manager") && (
-                  <div className={classes.myTeamsSelector}>
-                    <Switch
-                      checked={showAllTeams}
-                      onChange={(event, checked) =>
-                        this.setState({
-                          showAllTeams: checked
-                        })}
-                    />
-                    <Typography component="h3" type="headline">
-                      {showAllTeams
-                        ? "All Teams"
-                        : role === "coach"
-                          ? "Teams That I Coach"
-                          : "Teams That I Manage"}
-                    </Typography>
-                  </div>
-                )}
                 <TeamsList
                   teams={filteredTeams}
                   hasTeamsCreated={hasTeamsCreated}

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import AppBar from "material-ui/AppBar";
 import { Redirect } from "react-router-dom";
 import Tabs, { Tab } from "material-ui/Tabs";
 import Typography from "material-ui/Typography";
@@ -125,17 +124,15 @@ class SettingsLayout extends Component {
     if (institutionID) {
       return (
         <div className={classes.root}>
-          <AppBar position="static" color="default">
-            {!institutions[institutionID] ? (
-              <Typography className={classes.name} type="title" component="h2">
-                Loading...
-              </Typography>
-            ) : (
-              <Typography className={classes.name} type="title" component="h2">
-                {`${institutions[institutionID].info.name}`}
-              </Typography>
-            )}
-          </AppBar>
+          {!institutions[institutionID] ? (
+            <Typography className={classes.name} type="title" component="h2">
+              Loading...
+            </Typography>
+          ) : (
+            <Typography className={classes.name} type="title" component="h2">
+              {`${institutions[institutionID].info.name}`}
+            </Typography>
+          )}
           <InstitutionInfo
             info={institutions[institutionID]}
             institutionID={institutionID}
@@ -155,25 +152,23 @@ class SettingsLayout extends Component {
     } else {
       return (
         <div className={classes.root}>
-          <AppBar position="static" color="default">
-            <Tabs
-              value={currentTab}
-              onChange={(event, newTab) => {
-                history.push("/myaccount/settings");
-                updateTab(newTab);
-              }}
-              indicatorColor="primary"
-              textColor="primary"
-              centered
-            >
-              <Tab label="Personal" value="PERSONAL" className={classes.tabs} />
-              <Tab
-                label="Communities"
-                value="INSTITUTIONS"
-                className={classes.tabs}
-              />
-            </Tabs>
-          </AppBar>
+          <Tabs
+            value={currentTab}
+            onChange={(event, newTab) => {
+              history.push("/myaccount/settings");
+              updateTab(newTab);
+            }}
+            indicatorColor="primary"
+            textColor="primary"
+            centered
+          >
+            <Tab label="Personal" value="PERSONAL" className={classes.tabs} />
+            <Tab
+              label="Communities"
+              value="INSTITUTIONS"
+              className={classes.tabs}
+            />
+          </Tabs>
           {currentTab === "PERSONAL" && (
             <PersonInfo
               accountInfo={accountInfo}

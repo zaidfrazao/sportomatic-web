@@ -1,18 +1,14 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
-import AppBar from "material-ui/AppBar";
 import BackIcon from "material-ui-icons/ArrowBack";
 import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import { grey, lightBlue } from "material-ui/colors";
-import IconButton from "material-ui/IconButton";
 import moment from "moment";
 import Paper from "material-ui/Paper";
 import { Redirect, Route } from "react-router-dom";
 import Tabs, { Tab } from "material-ui/Tabs";
-import Toolbar from "material-ui/Toolbar";
-import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
@@ -532,34 +528,23 @@ class HoursLayout extends Component {
 
       return (
         <div className={classes.outerWrapper}>
-          <AppBar position="static" color="default">
-            {isStaffLoading || !staff[coachID] || activeInstitutionID === "" ? (
-              <Typography className={classes.name} type="title" component="h2">
-                Loading...
-              </Typography>
-            ) : (
-              <Typography className={classes.name} type="title" component="h2">
-                {`${staff[coachID].info.name} ${staff[coachID].info.surname}`}
-              </Typography>
-            )}
-          </AppBar>
+          {isStaffLoading || !staff[coachID] || activeInstitutionID === "" ? (
+            <Typography className={classes.name} type="title" component="h2">
+              Loading...
+            </Typography>
+          ) : (
+            <Typography className={classes.name} type="title" component="h2">
+              {`${staff[coachID].info.name} ${staff[coachID].info.surname}`}
+            </Typography>
+          )}
           <div className={classes.innerWrapper}>
-            <Toolbar className={classes.actionsBar}>
-              <Route
-                render={({ history }) => (
-                  <Tooltip title="Back" placement="bottom">
-                    <IconButton
-                      aria-label="back"
-                      onClick={() => {
-                        history.goBack();
-                      }}
-                    >
-                      <BackIcon />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              />
-            </Toolbar>
+            <Route
+              render={({ history }) => (
+                <Button aria-label="back" onClick={() => history.goBack()}>
+                  <BackIcon className={classes.iconAdjacentText} /> Back
+                </Button>
+              )}
+            />
             <div className={classes.adWrapper}>{ad}</div>
             <HoursHistory
               institutionID={activeInstitutionID}
@@ -582,22 +567,20 @@ class HoursLayout extends Component {
           <div className={classes.contentWrapper}>
             <div className={classes.tabsWrapper}>
               {(role === "admin" || role === "coach") && (
-                <AppBar position="static" color="default">
-                  <Tabs
-                    value={currentTab}
-                    onChange={(event, newTab) => updateTab(newTab)}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                  >
-                    <Tab
-                      label="Overview"
-                      value="OVERVIEW"
-                      className={classes.tabs}
-                    />
-                    <Tab label="Logs" value="LOGS" className={classes.tabs} />
-                  </Tabs>
-                </AppBar>
+                <Tabs
+                  value={currentTab}
+                  onChange={(event, newTab) => updateTab(newTab)}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab
+                    label="Overview"
+                    value="OVERVIEW"
+                    className={classes.tabs}
+                  />
+                  <Tab label="Logs" value="LOGS" className={classes.tabs} />
+                </Tabs>
               )}
               {currentTab === "OVERVIEW" && (
                 <div className={classes.contentWrapper}>

@@ -11,9 +11,6 @@ export const TOGGLE_SIDE_MENU = `${NAMESPACE}/TOGGLE_SIDE_MENU`;
 export const REQUEST_SWITCH_INSTITUTION = `${NAMESPACE}/REQUEST_SWITCH_INSTITUTION`;
 export const RECEIVE_SWITCH_INSTITUTION = `${NAMESPACE}/RECEIVE_SWITCH_INSTITUTION`;
 export const ERROR_SWITCHING_INSTITUTION = `${NAMESPACE}/ERROR_SWITCHING_INSTITUTION`;
-export const REQUEST_SWITCH_ROLE = `${NAMESPACE}/REQUEST_SWITCH_ROLE`;
-export const RECEIVE_SWITCH_ROLE = `${NAMESPACE}/RECEIVE_SWITCH_ROLE`;
-export const ERROR_SWITCHING_ROLE = `${NAMESPACE}/ERROR_SWITCHING_ROLE`;
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 export const OPEN_UPDATES_DIALOG = `${NAMESPACE}/OPEN_UPDATES_DIALOG`;
 export const CLOSE_UPDATES_DIALOG = `${NAMESPACE}/CLOSE_UPDATES_DIALOG`;
@@ -336,43 +333,6 @@ export function switchInstitution(userID, institutionID, role) {
           institutionID,
           role
         }
-      })
-      .then(() => dispatch(receiveSwitchInstitution()))
-      .catch(error => dispatch(errorSwitchingInstitution(error)));
-  };
-}
-
-export function requestSwitchRole() {
-  return {
-    type: REQUEST_SWITCH_ROLE
-  };
-}
-
-export function receiveSwitchRole() {
-  return {
-    type: RECEIVE_SWITCH_ROLE
-  };
-}
-
-export function errorSwitchingRole(error: { code: string, message: string }) {
-  return {
-    type: ERROR_SWITCHING_ROLE,
-    payload: {
-      error
-    }
-  };
-}
-
-export function switchRole(userID, role) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestSwitchInstitution());
-
-    const db = firebase.firestore();
-    const userRef = db.collection("users").doc(userID);
-
-    return userRef
-      .update({
-        "lastAccessed.role": role
       })
       .then(() => dispatch(receiveSwitchInstitution()))
       .catch(error => dispatch(errorSwitchingInstitution(error)));

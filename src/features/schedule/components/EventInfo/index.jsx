@@ -12,7 +12,6 @@ import {
   orange,
   red
 } from "material-ui/colors";
-import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import AwaitingApprovalIcon from "material-ui-icons/AssignmentReturn";
 import AwaitingSignInIcon from "material-ui-icons/AssignmentLate";
@@ -42,8 +41,6 @@ import PersonIcon from "material-ui-icons/Person";
 import ResultsIcon from "material-ui-icons/PlusOne";
 import { Route } from "react-router-dom";
 import TeamIcon from "material-ui-icons/Group";
-import Toolbar from "material-ui/Toolbar";
-import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import UncancelIcon from "material-ui-icons/Undo";
 import WarningIcon from "material-ui-icons/Warning";
@@ -56,7 +53,9 @@ import defaultProfilePicture from "../../image/default-profile-picture.png";
 
 const styles = theme => ({
   actionsBar: {
-    backgroundColor: grey[200]
+    backgroundColor: grey[200],
+    display: "flex",
+    justifyContent: "center"
   },
   adWrapper: {
     display: "flex",
@@ -1109,13 +1108,13 @@ class EventInfo extends Component {
     return (
       <div className={classes.root}>
         {isInfoLoading || !info ? (
-          <AppBar position="static" color="default" className={classes.appBar}>
+          <div className={classes.appBar}>
             <Typography className={classes.name} type="title" component="h2">
               Loading...
             </Typography>
-          </AppBar>
+          </div>
         ) : (
-          <AppBar position="static" color="default" className={classes.appBar}>
+          <div className={classes.appBar}>
             <Avatar
               className={
                 info.requiredInfo.isCompetitive
@@ -1126,26 +1125,23 @@ class EventInfo extends Component {
             <Typography className={classes.name} type="title" component="h2">
               {info.requiredInfo.title}
             </Typography>
-          </AppBar>
+          </div>
         )}
         <div className={classes.outerWrapper}>
-          <Toolbar className={classes.actionsBar}>
+          <div className={classes.actionsBar}>
             <Route
               render={({ history }) => (
-                <Tooltip title="Back" placement="bottom">
-                  <IconButton
-                    aria-label="back"
-                    onClick={() => {
-                      history.goBack();
-                      updateView("EVENTS_LIST");
-                    }}
-                  >
-                    <BackIcon />
-                  </IconButton>
-                </Tooltip>
+                <Button
+                  aria-label="back"
+                  onClick={() => {
+                    history.goBack();
+                    updateView("EVENTS_LIST");
+                  }}
+                >
+                  <BackIcon className={classes.iconAdjacentText} /> Back
+                </Button>
               )}
             />
-            <div className={classes.flexGrow} />
             {showButtons && canCancel && cancelButton}
             {showButtons &&
               canEdit &&
@@ -1154,7 +1150,7 @@ class EventInfo extends Component {
                   <EditIcon className={classes.iconAdjacentText} /> Edit event
                 </Button>
               )}
-          </Toolbar>
+          </div>
           <div className={classes.adWrapper}>{ad}</div>
           <div className={classes.wrapper}>
             {info &&

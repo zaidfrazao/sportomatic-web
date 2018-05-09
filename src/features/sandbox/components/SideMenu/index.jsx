@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import { grey } from "material-ui/colors";
+import { common, grey, lightBlue } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
 import CommunityInfo from "./components/CommunityInfo";
 import emblem from "./images/emblem.png";
@@ -8,27 +8,24 @@ import emblem from "./images/emblem.png";
 const styles = theme => ({
   menu: {
     padding: "12px 0",
-    flex: 1,
-    "@media (max-width: 600px)": {
-      display: "flex",
-      flexWrap: "wrap"
-    }
+    flex: 1
   },
   menuItem: {
     transition: "0.25s",
     fontSize: 14,
     padding: "18px 0",
-    margin: "8px 18px",
-    borderRadius: 8,
+    margin: "16px 18px",
+    borderRadius: 16,
     cursor: "pointer",
+    backgroundColor: grey[100],
     "@media (max-width: 600px)": {
       textAlign: "center",
-      width: "calc(50% - 24px)",
-      margin: 8,
-      padding: "14px 0"
+      margin: "20px 18px",
+      padding: "22px 0",
+      fontSize: 20
     },
     "&:hover": {
-      backgroundColor: grey[100]
+      backgroundColor: grey[200]
     }
   },
   menuItemIcon: {
@@ -41,26 +38,29 @@ const styles = theme => ({
   },
   menuItemSelected: {
     transition: "0.25s",
-    borderRadius: 8,
+    borderRadius: 16,
     padding: "18px 0",
-    margin: "8px 18px",
+    margin: "16px 18px",
     fontSize: 16,
     position: "relative",
     fontWeight: "bold",
     cursor: "pointer",
-    backgroundColor: grey[200],
+    backgroundColor: lightBlue[800],
     "@media (max-width: 600px)": {
       textAlign: "center",
-      width: "calc(50% - 24px)",
-      margin: 8,
-      padding: "14px 0"
+      margin: "20px 18px",
+      padding: "22px 0",
+      fontSize: 20
     },
     "&:hover": {
-      backgroundColor: grey[200]
+      backgroundColor: lightBlue[700]
     }
   },
   menuItemText: {
-    color: grey[800]
+    color: common["black"]
+  },
+  menuItemTextSelected: {
+    color: common["white"]
   },
   wrapperDesktop: {
     backgroundColor: "white",
@@ -74,7 +74,8 @@ const styles = theme => ({
     zIndex: 1000,
     left: "calc(100% * -1)",
     width: "100%",
-    height: "calc(100vh - 64px)"
+    height: "calc(100vh - 64px)",
+    overflow: "auto"
   },
   wrapperMobileOpen: {
     transition: "0.5s",
@@ -83,7 +84,8 @@ const styles = theme => ({
     zIndex: 1000,
     position: "absolute",
     width: "100%",
-    height: "calc(100vh - 64px)"
+    height: "calc(100vh - 64px)",
+    overflow: "auto"
   }
 });
 
@@ -127,7 +129,13 @@ class SideMenu extends Component<Props> {
           isTablet && toggleSideNav();
         }}
       >
-        <span className={classes.menuItemText}>
+        <span
+          className={
+            selected === key
+              ? classes.menuItemTextSelected
+              : classes.menuItemText
+          }
+        >
           <span className={classes.menuItemIcon}>
             <i className={item.icon} />
           </span>

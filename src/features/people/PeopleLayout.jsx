@@ -2,14 +2,11 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import AddIcon from "material-ui-icons/Add";
-import AppBar from "material-ui/AppBar";
 import Badge from "material-ui/Badge";
 import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import EditIcon from "material-ui-icons/Edit";
-import Switch from "material-ui/Switch";
 import Tabs, { Tab } from "material-ui/Tabs";
-import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import AcceptCoachModal from "./components/AcceptCoachModal";
 import BannerAd from "../../components/BannerAd";
@@ -97,8 +94,7 @@ const styles = theme => ({
 class PeopleLayout extends Component {
   state = {
     sports: {},
-    types: { Admin: true, Coach: true, Manager: true },
-    showAllPeople: false
+    types: { Admin: true, Coach: true, Manager: true }
   };
 
   componentWillMount() {
@@ -397,8 +393,13 @@ class PeopleLayout extends Component {
 
   filterPeople(staff) {
     const { sport, type, searchText } = this.props.filters;
-    const { teams, activeInstitutionID, userID, role } = this.props;
-    const { showAllPeople } = this.state;
+    const {
+      teams,
+      activeInstitutionID,
+      userID,
+      role,
+      meAllFilter
+    } = this.props;
 
     return _.fromPairs(
       _.toPairs(staff).filter(([staffID, personInfo]) => {
@@ -428,8 +429,8 @@ class PeopleLayout extends Component {
           });
         }
 
-        if ((role === "coach" || role === "manager") && !showAllPeople) {
-          if (!showAllPeople) {
+        if ((role === "coach" || role === "manager") && meAllFilter === "me") {
+          if (meAllFilter === "me") {
             roleMatch = false;
             _.values(teams).map(teamInfo => {
               const teamCoaches = _.keys(teamInfo.coaches);
@@ -480,7 +481,6 @@ class PeopleLayout extends Component {
   }
 
   render() {
-    const { showAllPeople } = this.state;
     const {
       classes,
       staff,
@@ -612,37 +612,35 @@ class PeopleLayout extends Component {
           <div className={classes.tabsWrapper}>
             {false &&
               role === "admin" && (
-                <AppBar position="static" color="default">
-                  <Tabs
-                    value={currentTab}
-                    onChange={(event, newTab) => updateTab(newTab)}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                  >
-                    <Tab label="Staff" value="STAFF" className={classes.tabs} />
-                    {requestsCardsInfo.length > 0 ? (
-                      <Tab
-                        label={
-                          <Badge
-                            badgeContent={requestsCardsInfo.length}
-                            color="accent"
-                          >
-                            Requests
-                          </Badge>
-                        }
-                        value="REQUESTS"
-                        className={classes.tabs}
-                      />
-                    ) : (
-                      <Tab
-                        label="Requests"
-                        value="REQUESTS"
-                        className={classes.tabs}
-                      />
-                    )}
-                  </Tabs>
-                </AppBar>
+                <Tabs
+                  value={currentTab}
+                  onChange={(event, newTab) => updateTab(newTab)}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab label="Staff" value="STAFF" className={classes.tabs} />
+                  {requestsCardsInfo.length > 0 ? (
+                    <Tab
+                      label={
+                        <Badge
+                          badgeContent={requestsCardsInfo.length}
+                          color="accent"
+                        >
+                          Requests
+                        </Badge>
+                      }
+                      value="REQUESTS"
+                      className={classes.tabs}
+                    />
+                  ) : (
+                    <Tab
+                      label="Requests"
+                      value="REQUESTS"
+                      className={classes.tabs}
+                    />
+                  )}
+                </Tabs>
               )}
             {currentTab === "STAFF" && (
               <div
@@ -672,20 +670,6 @@ class PeopleLayout extends Component {
                   </div>
                 ) : (
                   <div>
-                    {(role === "coach" || role === "manager") && (
-                      <div className={classes.myPeopleSelector}>
-                        <Switch
-                          checked={showAllPeople}
-                          onChange={(event, checked) =>
-                            this.setState({
-                              showAllPeople: checked
-                            })}
-                        />
-                        <Typography component="h3" type="headline">
-                          {showAllPeople ? "All People" : "My Team Members"}
-                        </Typography>
-                      </div>
-                    )}
                     <PeopleList people={staffCardsInfo} />
                   </div>
                 )}

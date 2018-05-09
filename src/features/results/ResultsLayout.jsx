@@ -1,7 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
-import AppBar from "material-ui/AppBar";
 import BackIcon from "material-ui-icons/ArrowBack";
 import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
@@ -10,9 +9,7 @@ import IconButton from "material-ui/IconButton";
 import moment from "moment";
 import Paper from "material-ui/Paper";
 import { Route } from "react-router-dom";
-import Switch from "material-ui/Switch";
 import Tabs, { Tab } from "material-ui/Tabs";
-import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
@@ -126,8 +123,7 @@ class ResultsLayout extends Component {
     sports: {},
     divisions: {},
     ageGroups: {},
-    showDeletedTeams: false,
-    showAllTeams: false
+    showDeletedTeams: false
   };
 
   componentWillMount() {
@@ -226,7 +222,6 @@ class ResultsLayout extends Component {
   }
 
   renderResultsByDate() {
-    const { showAllTeams } = this.state;
     const {
       classes,
       eventsByDate,
@@ -293,24 +288,6 @@ class ResultsLayout extends Component {
 
       return (
         <div className={classes.hoursByDateWrapper}>
-          {(role === "coach" || role === "manager") && (
-            <div className={classes.myTeamsSelector}>
-              <Switch
-                checked={showAllTeams}
-                onChange={(event, checked) =>
-                  this.setState({
-                    showAllTeams: checked
-                  })}
-              />
-              <Typography component="h3" type="headline">
-                {showAllTeams
-                  ? "All Teams"
-                  : role === "coach"
-                    ? "Teams That I Coach"
-                    : "Teams That I Manage"}
-              </Typography>
-            </div>
-          )}
           {_.toPairs(groupedByDate).map(([date, events]) => {
             const currentDate = moment().format("YYYY-MM-DD");
             return (
@@ -387,8 +364,7 @@ class ResultsLayout extends Component {
   }
 
   renderLogs() {
-    const { showAllTeams } = this.state;
-    const { classes, activeInstitutionID, role } = this.props;
+    const { classes, activeInstitutionID } = this.props;
     const { isTeamsLoading, isStaffLoading } = this.props.loadingStatus;
 
     const ad = this.createAd();
@@ -408,24 +384,6 @@ class ResultsLayout extends Component {
       return (
         <div>
           <div className={classes.adWrapper}>{ad}</div>
-          {(role === "coach" || role === "manager") && (
-            <div className={classes.myTeamsSelector}>
-              <Switch
-                checked={showAllTeams}
-                onChange={(event, checked) =>
-                  this.setState({
-                    showAllTeams: checked
-                  })}
-              />
-              <Typography component="h3" type="headline">
-                {showAllTeams
-                  ? "All Teams"
-                  : role === "coach"
-                    ? "Teams That I Coach"
-                    : "Teams That I Manage"}
-              </Typography>
-            </div>
-          )}
           <TeamsList teams={filteredTeams} />
         </div>
       );
@@ -465,8 +423,7 @@ class ResultsLayout extends Component {
       searchText,
       showDeletedTeams
     } = this.props.filters;
-    const { teams, staff, userID, role } = this.props;
-    const { showAllTeams } = this.state;
+    const { teams, staff, userID, role, meAllFilter } = this.props;
 
     return _.fromPairs(
       _.toPairs(teams).filter(([teamID, teamInfo]) => {
@@ -505,13 +462,13 @@ class ResultsLayout extends Component {
           titleMatch = teamName.includes(_.toLower(searchText));
         }
 
-        if (role === "coach" && !showAllTeams) {
+        if (role === "coach" && meAllFilter === "me") {
           const teamCoaches = _.keys(teamInfo.coaches);
           roleMatch = false;
           roleMatch = roleMatch || teamCoaches.includes(userID);
         }
 
-        if (role === "manager" && !showAllTeams) {
+        if (role === "manager" && meAllFilter === "me") {
           const teamManagers = _.keys(teamInfo.managers);
           roleMatch = false;
           roleMatch = roleMatch || teamManagers.includes(userID);
@@ -593,44 +550,32 @@ class ResultsLayout extends Component {
       if (eventID && eventsByTeam[eventID]) {
         return (
           <div className={classes.outerWrapper}>
-            <AppBar position="static" color="default">
-              {isEventsByTeamLoading ||
-              !eventsByTeam[eventID] ||
-              activeInstitutionID === "" ? (
-                <Typography
-                  className={classes.name}
-                  type="title"
-                  component="h2"
-                >
-                  Loading...
-                </Typography>
-              ) : (
-                <Typography
-                  className={classes.name}
-                  type="title"
-                  component="h2"
-                >
-                  {eventsByTeam[eventID].requiredInfo.title}
-                </Typography>
-              )}
-            </AppBar>
+            {isEventsByTeamLoading ||
+            !eventsByTeam[eventID] ||
+            activeInstitutionID === "" ? (
+              <Typography className={classes.name} type="title" component="h2">
+                Loading...
+              </Typography>
+            ) : (
+              <Typography className={classes.name} type="title" component="h2">
+                {eventsByTeam[eventID].requiredInfo.title}
+              </Typography>
+            )}
             <div className={classes.innerWrapper}>
-              <Toolbar className={classes.actionsBar}>
-                <Route
-                  render={({ history }) => (
-                    <Tooltip title="Back" placement="bottom">
-                      <IconButton
-                        aria-label="back"
-                        onClick={() => {
-                          history.goBack();
-                        }}
-                      >
-                        <BackIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                />
-              </Toolbar>
+              <Route
+                render={({ history }) => (
+                  <Tooltip title="Back" placement="bottom">
+                    <IconButton
+                      aria-label="back"
+                      onClick={() => {
+                        history.goBack();
+                      }}
+                    >
+                      <BackIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              />
               <div className={classes.adWrapper}>{ad}</div>
               <div className={classes.resultInfoWrapper}>
                 {isEventsByTeamLoading ||
@@ -657,44 +602,30 @@ class ResultsLayout extends Component {
       } else {
         return (
           <div className={classes.outerWrapper}>
-            <AppBar position="static" color="default">
-              {isTeamsLoading ||
-              !teams[teamID] ||
-              activeInstitutionID === "" ? (
-                <Typography
-                  className={classes.name}
-                  type="title"
-                  component="h2"
-                >
-                  Loading...
-                </Typography>
-              ) : (
-                <Typography
-                  className={classes.name}
-                  type="title"
-                  component="h2"
-                >
-                  {teams[teamID].info.name}
-                </Typography>
-              )}
-            </AppBar>
+            {isTeamsLoading || !teams[teamID] || activeInstitutionID === "" ? (
+              <Typography className={classes.name} type="title" component="h2">
+                Loading...
+              </Typography>
+            ) : (
+              <Typography className={classes.name} type="title" component="h2">
+                {teams[teamID].info.name}
+              </Typography>
+            )}
             <div className={classes.innerWrapper}>
-              <Toolbar className={classes.actionsBar}>
-                <Route
-                  render={({ history }) => (
-                    <Tooltip title="Back" placement="bottom">
-                      <IconButton
-                        aria-label="back"
-                        onClick={() => {
-                          history.goBack();
-                        }}
-                      >
-                        <BackIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                />
-              </Toolbar>
+              <Route
+                render={({ history }) => (
+                  <Tooltip title="Back" placement="bottom">
+                    <IconButton
+                      aria-label="back"
+                      onClick={() => {
+                        history.goBack();
+                      }}
+                    >
+                      <BackIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              />
               <div className={classes.adWrapper}>{ad}</div>
               <div className={classes.hoursByDateWrapper}>
                 {_.toPairs(groupedByDate).map(([date, events]) => {
@@ -768,22 +699,20 @@ class ResultsLayout extends Component {
         <div className={classes.root}>
           <div className={classes.contentWrapper}>
             <div className={classes.tabsWrapper}>
-              <AppBar position="static" color="default">
-                <Tabs
-                  value={currentTab}
-                  onChange={(event, newTab) => updateTab(newTab)}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  centered
-                >
-                  <Tab
-                    label="Overview"
-                    value="OVERVIEW"
-                    className={classes.tabs}
-                  />
-                  <Tab label="Logs" value="LOGS" className={classes.tabs} />
-                </Tabs>
-              </AppBar>
+              <Tabs
+                value={currentTab}
+                onChange={(event, newTab) => updateTab(newTab)}
+                indicatorColor="primary"
+                textColor="primary"
+                centered
+              >
+                <Tab
+                  label="Overview"
+                  value="OVERVIEW"
+                  className={classes.tabs}
+                />
+                <Tab label="Logs" value="LOGS" className={classes.tabs} />
+              </Tabs>
               {currentTab === "OVERVIEW" && (
                 <div className={classes.contentWrapper}>
                   <FiltersToolbar

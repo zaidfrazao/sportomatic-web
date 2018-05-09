@@ -143,7 +143,7 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     "@media (min-width: 1200px)": {
-      width: 1200,
+      width: 900,
       margin: "24px auto"
     }
   },

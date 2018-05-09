@@ -21,16 +21,12 @@ import HoursApprovedIcon from "material-ui-icons/AssignmentTurnedIn";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import moment from "moment";
 import Paper from "material-ui/Paper";
-import Toolbar from "material-ui/Toolbar";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
-import BannerCarousel from "./components/BannerCarousel";
 import defaultProfilePicture from "./image/default-profile-picture.png";
-import InstitutionSelectCard from "./components/InstitutionSelectCard";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
-import RoleSelectCard from "./components/RoleSelectCard";
 import UpdatesDialog from "./components/UpdatesDialog";
 
 const styles = theme => ({
@@ -48,12 +44,6 @@ const styles = theme => ({
   },
   awaitingSignOutAvatar: {
     backgroundColor: orange[500]
-  },
-  contentWrapper: {
-    "@media (min-width: 1200px)": {
-      width: 1200,
-      margin: "0 auto"
-    }
   },
   draw: {
     backgroundColor: lightBlue[500],
@@ -572,7 +562,6 @@ class DashboardLayout extends Component {
       isMobile,
       accountInfo,
       institutions,
-      userID,
       permissions,
       role,
       history
@@ -583,23 +572,13 @@ class DashboardLayout extends Component {
       isPastEventsLoading
     } = this.props.loadingStatus;
     const { isUpdatesDialogOpen } = this.props.dialogs;
-    const {
-      switchInstitution,
-      switchRole,
-      openUpdatesDialog,
-      closeUpdatesDialog
-    } = this.props.actions;
+    const { closeUpdatesDialog } = this.props.actions;
 
     let active = {
       id: "",
       role: "ADMIN",
       institutionName: "",
       emblemURL: ""
-    };
-    let rolesAvailable = {
-      admin: false,
-      coach: false,
-      manager: false
     };
 
     let showWages =
@@ -617,14 +596,7 @@ class DashboardLayout extends Component {
       active.id = accountInfo.lastAccessed.institutionID;
       active.role = accountInfo.lastAccessed.role;
     }
-    if (accountInfo.institutions && accountInfo.institutions[active.id]) {
-      rolesAvailable = {
-        admin: accountInfo.institutions[active.id].roles.admin === "APPROVED",
-        coach: accountInfo.institutions[active.id].roles.coach === "APPROVED",
-        manager:
-          accountInfo.institutions[active.id].roles.manager === "APPROVED"
-      };
-    }
+
     if (institutions[active.id]) {
       active.institutionName = institutions[active.id].info.name;
       active.emblemURL = institutions[active.id].info.emblemURL;
@@ -632,73 +604,6 @@ class DashboardLayout extends Component {
 
     return (
       <div className={classes.root}>
-        <Toolbar className={classes.toolbar}>
-          <div className={classes.selectWrapper}>
-            <InstitutionSelectCard
-              isMobile={isMobile}
-              userID={userID}
-              activeInstitution={{
-                id: active.id,
-                name: active.institutionName
-              }}
-              institutions={_.fromPairs(
-                _.toPairs(institutions).map(([id, info]) => {
-                  let rolesAvailable = {
-                    admin: false,
-                    coach: false,
-                    manager: false
-                  };
-                  let isActive = false;
-                  if (
-                    accountInfo.institutions &&
-                    accountInfo.institutions[id]
-                  ) {
-                    rolesAvailable = {
-                      admin:
-                        accountInfo.institutions[id].roles.admin === "APPROVED",
-                      coach:
-                        accountInfo.institutions[id].roles.coach === "APPROVED",
-                      manager:
-                        accountInfo.institutions[id].roles.manager ===
-                        "APPROVED"
-                    };
-                    isActive = accountInfo.institutions[id].status === "STAFF";
-                  }
-                  isActive = institutions[id].metadata.status === "ACTIVE";
-                  return [
-                    id,
-                    {
-                      name: info.info.name,
-                      isActive,
-                      rolesAvailable
-                    }
-                  ];
-                })
-              )}
-              emblemURL={active.emblemURL}
-              actions={{
-                switchInstitution
-              }}
-            />
-          </div>
-          <div className={classes.selectWrapper}>
-            <RoleSelectCard
-              isMobile={isMobile}
-              userID={userID}
-              activeRole={active.role}
-              rolesAvailable={rolesAvailable}
-              actions={{
-                switchRole
-              }}
-            />
-          </div>
-        </Toolbar>
-        <BannerCarousel
-          isMobile={isMobile}
-          actions={{
-            openUpdatesDialog
-          }}
-        />
         <div className={classes.adWrapper}>{ad}</div>
         <div className={classes.widgetsWrapper}>
           <Grid

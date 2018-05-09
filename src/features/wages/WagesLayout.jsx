@@ -2,7 +2,6 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import AddIcon from "material-ui-icons/Add";
-import AppBar from "material-ui/AppBar";
 import BackIcon from "material-ui-icons/ArrowBack";
 import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
@@ -12,7 +11,6 @@ import moment from "moment";
 import Paper from "material-ui/Paper";
 import { Redirect, Route } from "react-router-dom";
 import Tabs, { Tab } from "material-ui/Tabs";
-import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
@@ -371,44 +369,39 @@ class WagesLayout extends Component {
       }
       return (
         <div className={classes.outerWrapper}>
-          <AppBar position="static" color="default">
-            {isStaffLoading || !staff[coachID] || activeInstitutionID === "" ? (
-              <Typography className={classes.name} type="title" component="h2">
-                Loading...
-              </Typography>
-            ) : (
-              <Typography className={classes.name} type="title" component="h2">
-                {`${staff[coachID].info.name} ${staff[coachID].info.surname}`}
-              </Typography>
-            )}
-          </AppBar>
+          {isStaffLoading || !staff[coachID] || activeInstitutionID === "" ? (
+            <Typography className={classes.name} type="title" component="h2">
+              Loading...
+            </Typography>
+          ) : (
+            <Typography className={classes.name} type="title" component="h2">
+              {`${staff[coachID].info.name} ${staff[coachID].info.surname}`}
+            </Typography>
+          )}
           <div className={classes.innerWrapper}>
-            <Toolbar className={classes.actionsBar}>
-              <Route
-                render={({ history }) => (
-                  <Tooltip title="Back" placement="bottom">
-                    <IconButton
-                      aria-label="back"
-                      onClick={() => {
-                        history.goBack();
-                      }}
-                    >
-                      <BackIcon />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              />
-              {role === "admin" && <div className={classes.flexGrow} />}
-              {role === "admin" && (
-                <Button
-                  aria-label="log custom wage"
-                  onClick={() => openCustomWageDialog()}
-                >
-                  <AddIcon className={classes.iconAdjacentText} /> Log custom
-                  wage
-                </Button>
+            <Route
+              render={({ history }) => (
+                <Tooltip title="Back" placement="bottom">
+                  <IconButton
+                    aria-label="back"
+                    onClick={() => {
+                      history.goBack();
+                    }}
+                  >
+                    <BackIcon />
+                  </IconButton>
+                </Tooltip>
               )}
-            </Toolbar>
+            />
+            {role === "admin" && <div className={classes.flexGrow} />}
+            {role === "admin" && (
+              <Button
+                aria-label="log custom wage"
+                onClick={() => openCustomWageDialog()}
+              >
+                <AddIcon className={classes.iconAdjacentText} /> Log custom wage
+              </Button>
+            )}
             <div className={classes.adWrapper}>{ad}</div>
             <WageHistory
               institutionID={activeInstitutionID}
@@ -468,22 +461,20 @@ class WagesLayout extends Component {
         <div className={classes.root}>
           <div className={classes.contentWrapper}>
             <div className={classes.tabsWrapper}>
-              <AppBar position="static" color="default">
-                <Tabs
-                  value={currentTab}
-                  onChange={(event, newTab) => updateTab(newTab)}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  centered
-                >
-                  <Tab
-                    label="Overview"
-                    value="OVERVIEW"
-                    className={classes.tabs}
-                  />
-                  <Tab label="Logs" value="LOGS" className={classes.tabs} />
-                </Tabs>
-              </AppBar>
+              <Tabs
+                value={currentTab}
+                onChange={(event, newTab) => updateTab(newTab)}
+                indicatorColor="primary"
+                textColor="primary"
+                centered
+              >
+                <Tab
+                  label="Overview"
+                  value="OVERVIEW"
+                  className={classes.tabs}
+                />
+                <Tab label="Logs" value="LOGS" className={classes.tabs} />
+              </Tabs>
               {currentTab === "OVERVIEW" && (
                 <div className={classes.contentWrapper}>
                   <div className={classes.adWrapper}>{ad}</div>

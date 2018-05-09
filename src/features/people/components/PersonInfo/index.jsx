@@ -1,7 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
-import AppBar from "material-ui/AppBar";
 import Avatar from "material-ui/Avatar";
 import BackIcon from "material-ui-icons/ArrowBack";
 import Button from "material-ui/Button";
@@ -24,7 +23,6 @@ import moment from "moment";
 import Paper from "material-ui/Paper";
 import { Route } from "react-router-dom";
 import TeamIcon from "material-ui-icons/Group";
-import Toolbar from "material-ui/Toolbar";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
@@ -35,7 +33,8 @@ import defaultProfilePicture from "../../image/default-profile-picture.png";
 
 const styles = theme => ({
   actionsBar: {
-    backgroundColor: grey[200]
+    display: "flex",
+    justifyContent: "space-between"
   },
   adWrapper: {
     width: "100%",
@@ -481,19 +480,17 @@ class PersonInfo extends Component {
 
     return (
       <div className={classes.root}>
-        <AppBar position="static" color="default">
-          {isStaffLoading ? (
-            <Typography className={classes.name} type="title" component="h2">
-              Loading...
-            </Typography>
-          ) : (
-            <Typography className={classes.name} type="title" component="h2">
-              {`${name} ${surname}`}
-            </Typography>
-          )}
-        </AppBar>
+        {isStaffLoading ? (
+          <Typography className={classes.name} type="title" component="h2">
+            Loading...
+          </Typography>
+        ) : (
+          <Typography className={classes.name} type="title" component="h2">
+            {`${name} ${surname}`}
+          </Typography>
+        )}
         <div className={classes.outerWrapper}>
-          <Toolbar className={classes.actionsBar}>
+          <div className={classes.actionsBar}>
             <Route
               render={({ history }) => (
                 <Tooltip title="Back" placement="bottom">
@@ -520,7 +517,7 @@ class PersonInfo extends Component {
                   info
                 </Button>
               )}
-          </Toolbar>
+          </div>
           <div className={classes.wrapper}>
             <Grid
               container

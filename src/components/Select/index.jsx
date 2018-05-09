@@ -3,6 +3,24 @@ import _ from "lodash";
 import injectSheet from "react-jss";
 import { common, grey, red } from "../../utils/colours";
 
+type Props = {
+  handleChange: (key: string, label: string) => null,
+  helperText: string,
+  placeholder: string,
+  items: ArrayOf<{
+    key: string,
+    label: string
+  }>,
+  selectedItem: {
+    key: string,
+    label: string
+  }
+};
+
+type State = {
+  menuOpen: boolean
+};
+
 const styles = theme => ({
   arrowDown: {
     position: "absolute",
@@ -136,31 +154,10 @@ const styles = theme => ({
   }
 });
 
-type Props = {
-  actions: {
-    handleClick: () => null
-  },
-  helperText: string,
-  placeholder: string,
-  items: ArrayOf<{
-    key: string,
-    label: string
-  }>,
-  selectedItem: {
-    key: string,
-    label: string
-  }
-};
-
-type State = {
-  menuOpen: boolean
-};
-
 class Select extends Component<Props, State> {
   static defaultProps = {
-    actions: {
-      handleClick: () => console.log("A button was clicked")
-    },
+    handleChange: (key, label) =>
+      console.log(`Item with key ${key} and label ${label} selected.`),
     helperText: "",
     placeholder: "Select an item",
     items: [],
@@ -247,8 +244,7 @@ class Select extends Component<Props, State> {
   }
 
   getMenuItems() {
-    const { classes, items } = this.props;
-    const { handleChange } = this.props.actions;
+    const { classes, items, handleChange } = this.props;
 
     return items.map(item => {
       return (

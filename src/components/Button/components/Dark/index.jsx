@@ -14,17 +14,17 @@ const styles = theme => ({
   },
   primaryFilled: {
     color: common["white"],
-    backgroundColor: lightBlue[900],
-    border: `2px solid ${lightBlue[900]}`,
+    backgroundColor: lightBlue[800],
+    border: `2px solid ${lightBlue[800]}`,
     "&:hover": {
-      border: `2px solid ${lightBlue[800]}`,
-      backgroundColor: lightBlue[800]
+      border: `2px solid ${lightBlue[700]}`,
+      backgroundColor: lightBlue[700]
     }
   },
   primaryOutlined: {
-    color: lightBlue[900],
+    color: lightBlue[800],
     backgroundColor: "rgba(0, 0, 0, 0)",
-    border: `2px solid ${lightBlue[900]}`,
+    border: `2px solid ${lightBlue[800]}`,
     "&:hover": {
       backgroundColor: lightBlue[50]
     }

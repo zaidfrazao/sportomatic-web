@@ -7,9 +7,15 @@ import firebase from "firebase";
 
 const NAMESPACE = "sportomatic-web/core-interface";
 
+export const REQUEST_SWITCH_INSTITUTION = `${NAMESPACE}/REQUEST_SWITCH_INSTITUTION`;
+export const RECEIVE_SWITCH_INSTITUTION = `${NAMESPACE}/RECEIVE_SWITCH_INSTITUTION`;
+export const ERROR_SWITCHING_INSTITUTION = `${NAMESPACE}/ERROR_SWITCHING_INSTITUTION`;
+export const REQUEST_SWITCH_ROLE = `${NAMESPACE}/REQUEST_SWITCH_ROLE`;
+export const RECEIVE_SWITCH_ROLE = `${NAMESPACE}/RECEIVE_SWITCH_ROLE`;
+export const ERROR_SWITCHING_ROLE = `${NAMESPACE}/ERROR_SWITCHING_ROLE`;
 export const TOGGLE_SIDE_MENU = `${NAMESPACE}/TOGGLE_SIDE_MENU`;
-export const UPDATE_APP_BAR_TITLE = `${NAMESPACE}/UPDATE_APP_BAR_TITLE`;
-export const UPDATE_BOTTOM_NAV_VALUE = `${NAMESPACE}/UPDATE_BOTTOM_NAV_VALUE`;
+export const UPDATE_SIDE_MENU = `${NAMESPACE}/UPDATE_SIDE_MENU`;
+export const CHANGE_ME_ALL_FILTER = `${NAMESPACE}/CHANGE_ME_ALL_FILTER`;
 export const SIGN_OUT = `${NAMESPACE}/SIGN_OUT`;
 export const INIT_USER = `${NAMESPACE}/INIT_USER`;
 export const OPEN_MANAGE_INSTITUTIONS_DIALOG = `${NAMESPACE}/OPEN_MANAGE_INSTITUTIONS_DIALOG`;
@@ -41,15 +47,17 @@ export const REQUEST_JOIN_INSTITUTION = `${NAMESPACE}/REQUEST_JOIN_INSTITUTION`;
 export const RECEIVE_JOIN_INSTITUTION = `${NAMESPACE}/RECEIVE_JOIN_INSTITUTION`;
 export const ERROR_JOINING_INSTITUTION = `${NAMESPACE}/ERROR_JOINING_INSTITUTION`;
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
+export const UPDATE_SPORT = `${NAMESPACE}/UPDATE_SPORT`;
 
 // Reducers
 
 export const uiConfigInitialState = {
-  appBarTitle: "Dashboard",
-  bottomNavValue: "dashboard",
+  sideMenuItemSelected: "overview",
   isSideMenuOpen: false,
   isLoggedIn: true,
   userID: "",
+  sportSelected: "all",
+  meAllFilter: "me",
   accountInfo: {
     lastAccessed: {
       institutionID: "",
@@ -62,6 +70,21 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
   switch (action.type) {
     case RESET_STATE:
       return uiConfigInitialState;
+    case CHANGE_ME_ALL_FILTER:
+      return {
+        ...state,
+        meAllFilter: action.payload.newFilter
+      };
+    case UPDATE_SIDE_MENU:
+      return {
+        ...state,
+        sideMenuItemSelected: action.payload.newSelected
+      };
+    case UPDATE_SPORT:
+      return {
+        ...state,
+        sportSelected: action.payload.newSelected
+      };
     case INIT_USER:
       return {
         ...state,
@@ -83,16 +106,6 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
       return {
         ...state,
         isSideMenuOpen: !state.isSideMenuOpen
-      };
-    case UPDATE_APP_BAR_TITLE:
-      return {
-        ...state,
-        appBarTitle: action.payload.newTitle
-      };
-    case UPDATE_BOTTOM_NAV_VALUE:
-      return {
-        ...state,
-        bottomNavValue: action.payload.newValue
       };
     default:
       return state;
@@ -337,6 +350,33 @@ export function resetState() {
   };
 }
 
+export function changeMeAllFilter(newFilter) {
+  return {
+    type: CHANGE_ME_ALL_FILTER,
+    payload: {
+      newFilter
+    }
+  };
+}
+
+export function updateSideMenu(newSelected) {
+  return {
+    type: UPDATE_SIDE_MENU,
+    payload: {
+      newSelected
+    }
+  };
+}
+
+export function updateSport(newSelected) {
+  return {
+    type: UPDATE_SPORT,
+    payload: {
+      newSelected
+    }
+  };
+}
+
 export function initUser() {
   const user = {
     id: localStorage.userID || "",
@@ -356,24 +396,6 @@ export function initUser() {
 export function toggleSideMenu() {
   return {
     type: TOGGLE_SIDE_MENU
-  };
-}
-
-export function updateAppBarTitle(newTitle) {
-  return {
-    type: UPDATE_APP_BAR_TITLE,
-    payload: {
-      newTitle
-    }
-  };
-}
-
-export function updateBottomNavValue(newValue) {
-  return {
-    type: UPDATE_BOTTOM_NAV_VALUE,
-    payload: {
-      newValue
-    }
   };
 }
 
@@ -797,5 +819,85 @@ export function joinInstitution(userID, institutionID, roles) {
       })
       .then(() => dispatch(receiveJoinInstitution()))
       .catch(error => dispatch(errorJoiningInstitution(error)));
+  };
+}
+
+export function requestSwitchRole() {
+  return {
+    type: REQUEST_SWITCH_ROLE
+  };
+}
+
+export function receiveSwitchRole() {
+  return {
+    type: RECEIVE_SWITCH_ROLE
+  };
+}
+
+export function errorSwitchingRole(error: { code: string, message: string }) {
+  return {
+    type: ERROR_SWITCHING_ROLE,
+    payload: {
+      error
+    }
+  };
+}
+
+export function switchRole(userID, role) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestSwitchRole());
+
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
+    return userRef
+      .update({
+        "lastAccessed.role": role
+      })
+      .then(() => dispatch(receiveSwitchRole()))
+      .catch(error => dispatch(errorSwitchingRole(error)));
+  };
+}
+
+export function requestSwitchInstitution() {
+  return {
+    type: REQUEST_SWITCH_INSTITUTION
+  };
+}
+
+export function receiveSwitchInstitution() {
+  return {
+    type: RECEIVE_SWITCH_INSTITUTION
+  };
+}
+
+export function errorSwitchingInstitution(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_SWITCHING_INSTITUTION,
+    payload: {
+      error
+    }
+  };
+}
+
+export function switchInstitution(userID, institutionID, role) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestSwitchInstitution());
+
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
+    return userRef
+      .update({
+        lastAccessed: {
+          institutionID,
+          role
+        }
+      })
+      .then(() => dispatch(receiveSwitchInstitution()))
+      .catch(error => dispatch(errorSwitchingInstitution(error)));
   };
 }

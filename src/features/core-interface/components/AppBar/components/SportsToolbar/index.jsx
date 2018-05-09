@@ -1,43 +1,11 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import { common, grey } from "material-ui/colors";
+import { common, grey, lightBlue } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
-  arrowBlue: {
-    position: "absolute",
-    transition: "0.5s",
-    content: "",
-    top: "calc(100% - 28px)",
-    left: "calc(50% - 14px)",
-    width: 0,
-    height: 0,
-    border: "14px solid transparent",
-    borderColor: `transparent transparent ${common["white"]} transparent`
-  },
-  arrowGrey: {
-    position: "absolute",
-    transition: "0.5s",
-    content: "",
-    top: "calc(100% - 28px)",
-    left: "calc(50% - 14px)",
-    width: 0,
-    height: 0,
-    border: "14px solid transparent",
-    borderColor: `transparent transparent ${grey[200]} transparent`
-  },
-  addButton: {
-    backgroundColor: "white",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: "50% 50% 0 0",
-    cursor: "pointer",
-    width: 90
-  },
   button: {
-    backgroundColor: "white",
+    transition: "0.25s",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -48,20 +16,28 @@ const styles = theme => ({
     fontWeight: "bold",
     borderRadius: 14,
     fontSize: 18,
-    transition: "0.125s",
+    backgroundColor: grey[100],
     "&:hover": {
       backgroundColor: grey[200]
     }
   },
   buttonSelected: {
+    transition: "0.25s",
     position: "relative",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    padding: "0 24px",
+    padding: "0 18px",
+    margin: 8,
     fontWeight: "bold",
-    fontSize: 18
+    borderRadius: 14,
+    fontSize: 18,
+    color: common["white"],
+    backgroundColor: lightBlue[800],
+    "&:hover": {
+      backgroundColor: lightBlue[700]
+    }
   },
   icon: {
     width: 28,
@@ -100,9 +76,6 @@ class SportsToolbar extends Component<Props> {
     const { classes, sports, selected, isTablet, isSideMenuOpen } = this.props;
     const { changeSelected, toggleSideNav } = this.props.actions;
 
-    let arrowStyle = classes.arrowGrey;
-    isTablet && isSideMenuOpen && (arrowStyle = classes.arrowBlue);
-
     let sportButtons = [
       _.toPairs(sports).map(([key, item]) => {
         if (key === "all") {
@@ -118,7 +91,6 @@ class SportsToolbar extends Component<Props> {
               }}
             >
               <span>All</span>
-              {selected === "all" && <span className={arrowStyle} />}
             </div>
           );
         } else {
@@ -140,7 +112,6 @@ class SportsToolbar extends Component<Props> {
                 alt={`${item.label} icon`}
                 src={item.icon}
               />
-              {selected === key && <span className={arrowStyle} />}
             </div>
           );
         }

@@ -672,9 +672,7 @@ class CreateCommunity extends Component<Props, State> {
                 label: communityType.label
               }}
               items={typeItems}
-              actions={{
-                handleChange: (key, label) => this.handleTypeChange(key, label)
-              }}
+              handleChange={(key, label) => this.handleTypeChange(key, label)}
             />
             {!showSubType &&
               !showOther && <div className={classes.inputMask} />}
@@ -689,10 +687,8 @@ class CreateCommunity extends Component<Props, State> {
                   label: subType.label
                 }}
                 items={subTypeItems}
-                actions={{
-                  handleChange: (key, label) =>
-                    this.handleSubTypeChange(key, label)
-                }}
+                handleChange={(key, label) =>
+                  this.handleSubTypeChange(key, label)}
               />
             )}
             {showOther && (
@@ -737,10 +733,8 @@ class CreateCommunity extends Component<Props, State> {
                   label: athleteGender.label
                 }}
                 items={genderItems}
-                actions={{
-                  handleChange: (key, label) =>
-                    this.handleGenderChange(key, label)
-                }}
+                handleChange={(key, label) =>
+                  this.handleGenderChange(key, label)}
               />
             )}
             <div className={classes.buttonWrapper}>
