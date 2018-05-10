@@ -11,7 +11,6 @@ const styles = theme => ({
     alignItems: "center"
   },
   logo: {
-    display: "block",
     backgroundImage: `url(${logo})`,
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
@@ -47,7 +46,7 @@ const styles = theme => ({
     }
   },
   sportsToolbarWrapper: {
-    flexGrow: 2,
+    width: "calc(100% - 240px)",
     height: "100%",
     "@media (max-width: 600px)": {
       width: "calc(100% - 78px)"

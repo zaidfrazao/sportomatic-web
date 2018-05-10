@@ -392,7 +392,8 @@ class PeopleLayout extends Component {
   }
 
   filterPeople(staff) {
-    const { sport, type, searchText } = this.props.filters;
+    const { sportFilter } = this.props;
+    const { type, searchText } = this.props.filters;
     const {
       teams,
       activeInstitutionID,
@@ -449,9 +450,34 @@ class PeopleLayout extends Component {
           }
         }
 
-        if (sport !== "All") {
-          allowThroughFilter =
-            allowThroughFilter && personInfo.info.sports[sport];
+        if (sportFilter !== "all") {
+          if (sportFilter === "other") {
+            const supportedSports = ["netball", "rugby", "soccer"];
+            let doesSport = false;
+            _.toPairs(personInfo.info.sports).map(([sport, isPreferred]) => {
+              let reformattedSport = _.toLower(sport);
+              if (reformattedSport === "soccer / football") {
+                reformattedSport = "soccer";
+              }
+              if (
+                !supportedSports.includes(reformattedSport) &&
+                isPreferred &&
+                reformattedSport !== "unknown"
+              ) {
+                doesSport = true;
+              }
+            });
+            allowThroughFilter = allowThroughFilter && doesSport;
+          } else {
+            let doesSport = false;
+            _.toPairs(personInfo.info.sports).map(([sport, isPreferred]) => {
+              if (isPreferred) {
+                doesSport =
+                  doesSport || _.lowerCase(sport).includes(sportFilter);
+              }
+            });
+            allowThroughFilter = allowThroughFilter && doesSport;
+          }
         }
         if (type !== "All") {
           if (type === "Admin") {

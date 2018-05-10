@@ -85,6 +85,9 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center"
   },
+  iconAdjacentText: {
+    marginRight: 8
+  },
   innerWrapper: {
     flexGrow: 1,
     overflow: "auto"

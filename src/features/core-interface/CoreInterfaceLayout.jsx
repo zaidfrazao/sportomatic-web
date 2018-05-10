@@ -17,9 +17,10 @@ import Settings from "../settings/SettingsView";
 import SideMenu from "./components/SideMenu";
 import Teams from "../teams/TeamsView";
 import Wages from "../wages/WagesView";
+import netballIcon from "./images/netball.png";
+import otherIcon from "./images/other.png";
 import rugbyIcon from "./images/rugby.png";
 import soccerIcon from "./images/soccer.png";
-import tennisIcon from "./images/tennis-ball.png";
 
 const styles = theme => ({
   content: {
@@ -43,9 +44,10 @@ const styles = theme => ({
   headerText: {
     fontSize: 24,
     margin: 24,
+    lineHeight: "36px",
     backgroundColor: "white",
     borderRadius: 12,
-    padding: "4px 18px",
+    padding: "12px 18px",
     textAlign: "center"
   },
   menuButton: {
@@ -277,6 +279,10 @@ class CoreInterfaceLayout extends Component {
         label: "All",
         icon: "N/A"
       },
+      netball: {
+        label: "Netball",
+        icon: netballIcon
+      },
       rugby: {
         label: "Rugby",
         icon: rugbyIcon
@@ -285,9 +291,9 @@ class CoreInterfaceLayout extends Component {
         label: "Soccer",
         icon: soccerIcon
       },
-      tennis: {
-        label: "Tennis",
-        icon: tennisIcon
+      other: {
+        label: "Other Sports",
+        icon: otherIcon
       }
     };
   }
@@ -416,16 +422,25 @@ class CoreInterfaceLayout extends Component {
           key: "admin",
           label: "Administrator"
         });
-      institutionRoles.coach === "APPROVED" &&
-        availableRoles.push({
-          key: "coach",
-          label: "Coach"
-        });
       institutionRoles.manager === "APPROVED" &&
         availableRoles.push({
           key: "manager",
           label: "Manager"
         });
+      institutionRoles.coach === "APPROVED" &&
+        availableRoles.push({
+          key: "coach",
+          label: "Coach"
+        });
+
+      let validRoleSelected = false;
+      availableRoles.map(availableRole => {
+        if (availableRole.key === role) validRoleSelected = true;
+      });
+      if (!validRoleSelected) {
+        switchRole(userID, availableRoles[0].key);
+      }
+
       communityName = institutions[activeInstitutionID].info.name;
       emblem = institutions[activeInstitutionID].info.emblemURL;
       permissions = institutions[activeInstitutionID].permissions;
@@ -493,6 +508,7 @@ class CoreInterfaceLayout extends Component {
                       isTablet={isTablet}
                       userID={userID}
                       role={role}
+                      sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
                       accountInfo={accountInfo}
                       isAccountInfoLoading={isAccountInfoLoading}
@@ -506,6 +522,7 @@ class CoreInterfaceLayout extends Component {
                       isTablet={isTablet}
                       userID={userID}
                       role={role}
+                      sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
                       accountInfo={accountInfo}
                       isAccountInfoLoading={isAccountInfoLoading}
@@ -539,6 +556,7 @@ class CoreInterfaceLayout extends Component {
                     <Hours
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       userID={userID}
@@ -551,6 +569,7 @@ class CoreInterfaceLayout extends Component {
                     <Hours
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       userID={userID}
@@ -563,6 +582,7 @@ class CoreInterfaceLayout extends Component {
                     <Results
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      sportFilter={sportSelected}
                       meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
@@ -575,6 +595,7 @@ class CoreInterfaceLayout extends Component {
                     <Results
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      sportFilter={sportSelected}
                       meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
@@ -587,6 +608,7 @@ class CoreInterfaceLayout extends Component {
                     <Results
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      sportFilter={sportSelected}
                       meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
@@ -600,6 +622,7 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      sportFilter={sportSelected}
                       meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
                       paymentDefaults={paymentDefaults}
@@ -612,6 +635,7 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
+                      sportFilter={sportSelected}
                       meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
                       paymentDefaults={paymentDefaults}
@@ -623,6 +647,7 @@ class CoreInterfaceLayout extends Component {
                     <Teams
                       userID={userID}
                       role={role}
+                      sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
@@ -635,6 +660,7 @@ class CoreInterfaceLayout extends Component {
                     <Teams
                       userID={userID}
                       role={role}
+                      sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
@@ -647,6 +673,7 @@ class CoreInterfaceLayout extends Component {
                     <Schedule
                       userID={userID}
                       role={role}
+                      sportFilter={sportSelected}
                       isMobile={isMobile}
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
@@ -659,6 +686,7 @@ class CoreInterfaceLayout extends Component {
                     <Schedule
                       userID={userID}
                       role={role}
+                      sportFilter={sportSelected}
                       isMobile={isMobile}
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
@@ -674,6 +702,7 @@ class CoreInterfaceLayout extends Component {
                     <Schedule
                       userID={userID}
                       role={role}
+                      sportFilter={sportSelected}
                       isMobile={isMobile}
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
@@ -688,6 +717,7 @@ class CoreInterfaceLayout extends Component {
                       isTablet={isTablet}
                       userID={userID}
                       role={role}
+                      sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
@@ -701,6 +731,7 @@ class CoreInterfaceLayout extends Component {
                       isTablet={isTablet}
                       userID={userID}
                       role={role}
+                      sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
@@ -714,6 +745,7 @@ class CoreInterfaceLayout extends Component {
                       isTablet={isTablet}
                       userID={userID}
                       role={role}
+                      sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
                       accountInfo={accountInfo}
                       isAccountInfoLoading={isAccountInfoLoading}

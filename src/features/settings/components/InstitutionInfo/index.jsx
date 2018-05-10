@@ -12,7 +12,6 @@ import {
 } from "material-ui/Form";
 import { grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
-import IconButton from "material-ui/IconButton";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
 import Paper from "material-ui/Paper";
 import { Route } from "react-router-dom";
@@ -20,7 +19,6 @@ import Select from "material-ui/Select";
 import Switch from "material-ui/Switch";
 import TextField from "material-ui/TextField";
 import Toolbar from "material-ui/Toolbar";
-import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../components/BannerAd";
@@ -67,6 +65,9 @@ const styles = theme => ({
     backgroundColor: grey[700],
     color: grey[50],
     borderBottom: `1px solid ${grey[200]}`
+  },
+  iconAdjacentText: {
+    marginRight: 8
   },
   loaderWrapper: {
     flexGrow: 1,
@@ -390,17 +391,15 @@ class InstitutionInfo extends Component {
           <Toolbar className={classes.actionsBar}>
             <Route
               render={({ history }) => (
-                <Tooltip title="Back" placement="bottom">
-                  <IconButton
-                    aria-label="back"
-                    onClick={() => {
-                      updateTab("INSTITUTIONS");
-                      history.push("/myaccount/settings");
-                    }}
-                  >
-                    <BackIcon />
-                  </IconButton>
-                </Tooltip>
+                <Button
+                  aria-label="back"
+                  onClick={() => {
+                    updateTab("INSTITUTIONS");
+                    history.push("/myaccount/settings");
+                  }}
+                >
+                  <BackIcon className={classes.iconAdjacentText} /> Back
+                </Button>
               )}
             />
           </Toolbar>

@@ -11,7 +11,6 @@ import EventIcon from "material-ui-icons/Event";
 import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
 import Grid from "material-ui/Grid";
-import IconButton from "material-ui/IconButton";
 import List, {
   ListItem,
   ListItemIcon,
@@ -23,7 +22,6 @@ import Paper from "material-ui/Paper";
 import PersonIcon from "material-ui-icons/Person";
 import ResultsIcon from "material-ui-icons/PlusOne";
 import { Route } from "react-router-dom";
-import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import WarningIcon from "material-ui-icons/Warning";
 import { withStyles } from "material-ui/styles";
@@ -926,16 +924,9 @@ class TeamInfo extends Component {
           <div className={classes.actionsBar}>
             <Route
               render={({ history }) => (
-                <Tooltip title="Back" placement="bottom">
-                  <IconButton
-                    aria-label="back"
-                    onClick={() => {
-                      history.goBack();
-                    }}
-                  >
-                    <BackIcon />
-                  </IconButton>
-                </Tooltip>
+                <Button aria-label="back" onClick={() => history.goBack()}>
+                  <BackIcon className={classes.iconAdjacentText} /> Back
+                </Button>
               )}
             />
             <div className={classes.flexGrow} />

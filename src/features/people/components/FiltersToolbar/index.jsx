@@ -152,47 +152,6 @@ class FiltersToolbar extends Component {
             />
           </FormControl>
           <div className={classes.flexGrow} />
-          {!isMobile && (
-            <div className={classes.settingChips}>
-              {confirmedSport !== "All" && (
-                <Chip
-                  label={confirmedSport}
-                  onRequestDelete={() => {
-                    this.handleDeleteFilter("Sport");
-                    applyFilters("All", confirmedType);
-                  }}
-                  className={classes.chip}
-                />
-              )}
-              {confirmedType !== "All" && (
-                <Chip
-                  label={confirmedType}
-                  onRequestDelete={() => {
-                    this.handleDeleteFilter("Type");
-                    applyFilters(confirmedSport, "All");
-                  }}
-                  className={classes.chip}
-                />
-              )}
-            </div>
-          )}
-          {isMobile ? (
-            <Tooltip title="Filter events" placement="bottom">
-              <IconButton
-                aria-label="filter events"
-                onClick={() => this.toggleDialog()}
-              >
-                <FilterIcon />
-              </IconButton>
-            </Tooltip>
-          ) : (
-            <Button
-              aria-label="filter events"
-              onClick={() => this.toggleDialog()}
-            >
-              <FilterIcon className={classes.iconAdjacentText} /> Set filters
-            </Button>
-          )}
           {role === "admin" &&
             !isMobile && (
               <Button

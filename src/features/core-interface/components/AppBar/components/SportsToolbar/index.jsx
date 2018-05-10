@@ -52,6 +52,7 @@ const styles = theme => ({
     fontSize: 32
   },
   wrapper: {
+    width: "100%",
     height: "100%",
     display: "flex",
     overflowX: "auto"

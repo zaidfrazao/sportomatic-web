@@ -12,7 +12,6 @@ import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
 import { grey, red } from "material-ui/colors";
 import Grid from "material-ui/Grid";
-import IconButton from "material-ui/IconButton";
 import List, {
   ListItem,
   ListItemIcon,
@@ -23,7 +22,6 @@ import moment from "moment";
 import Paper from "material-ui/Paper";
 import { Route } from "react-router-dom";
 import TeamIcon from "material-ui-icons/Group";
-import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../components/BannerAd";
@@ -493,16 +491,9 @@ class PersonInfo extends Component {
           <div className={classes.actionsBar}>
             <Route
               render={({ history }) => (
-                <Tooltip title="Back" placement="bottom">
-                  <IconButton
-                    aria-label="back"
-                    onClick={() => {
-                      history.goBack();
-                    }}
-                  >
-                    <BackIcon />
-                  </IconButton>
-                </Tooltip>
+                <Button aria-label="back" onClick={() => history.goBack()}>
+                  <BackIcon className={classes.iconAdjacentText} /> Back
+                </Button>
               )}
             />
             <div className={classes.flexGrow} />

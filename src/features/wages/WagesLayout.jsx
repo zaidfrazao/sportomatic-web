@@ -6,12 +6,10 @@ import BackIcon from "material-ui-icons/ArrowBack";
 import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import { grey, lightBlue } from "material-ui/colors";
-import IconButton from "material-ui/IconButton";
 import moment from "moment";
 import Paper from "material-ui/Paper";
 import { Redirect, Route } from "react-router-dom";
 import Tabs, { Tab } from "material-ui/Tabs";
-import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
@@ -25,7 +23,7 @@ import WageHistory from "./components/WageHistory";
 
 const styles = theme => ({
   actionsBar: {
-    backgroundColor: grey[200]
+    display: "flex"
   },
   adWrapper: {
     width: "100%",
@@ -379,29 +377,25 @@ class WagesLayout extends Component {
             </Typography>
           )}
           <div className={classes.innerWrapper}>
-            <Route
-              render={({ history }) => (
-                <Tooltip title="Back" placement="bottom">
-                  <IconButton
-                    aria-label="back"
-                    onClick={() => {
-                      history.goBack();
-                    }}
-                  >
-                    <BackIcon />
-                  </IconButton>
-                </Tooltip>
+            <div className={classes.actionsBar}>
+              <Route
+                render={({ history }) => (
+                  <Button aria-label="back" onClick={() => history.goBack()}>
+                    <BackIcon className={classes.iconAdjacentText} /> Back
+                  </Button>
+                )}
+              />
+              <div className={classes.flexGrow} />
+              {role === "admin" && (
+                <Button
+                  aria-label="log custom wage"
+                  onClick={() => openCustomWageDialog()}
+                >
+                  <AddIcon className={classes.iconAdjacentText} /> Log custom
+                  wage
+                </Button>
               )}
-            />
-            {role === "admin" && <div className={classes.flexGrow} />}
-            {role === "admin" && (
-              <Button
-                aria-label="log custom wage"
-                onClick={() => openCustomWageDialog()}
-              >
-                <AddIcon className={classes.iconAdjacentText} /> Log custom wage
-              </Button>
-            )}
+            </div>
             <div className={classes.adWrapper}>{ad}</div>
             <WageHistory
               institutionID={activeInstitutionID}

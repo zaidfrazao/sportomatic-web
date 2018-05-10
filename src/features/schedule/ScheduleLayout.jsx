@@ -236,9 +236,9 @@ class ScheduleLayout extends Component {
   }
 
   filterEvents() {
+    const { sportFilter } = this.props;
     const {
       eventType,
-      sport,
       division,
       ageGroup,
       gender,
@@ -297,9 +297,21 @@ class ScheduleLayout extends Component {
             allowThroughFilter && info.requiredInfo.type === eventType;
         }
         _.keys(info.teams).map(teamID => {
-          if (teams[teamID] && sport !== "All") {
-            allowThroughFilter =
-              allowThroughFilter && teams[teamID].info.sport === sport;
+          if (teams[teamID] && sportFilter !== "all") {
+            if (sportFilter === "other") {
+              let teamSport = teams[teamID].info.sport;
+              if (teamSport === "Soccer / Football") {
+                teamSport = "soccer";
+              }
+              const supportedSports = ["netball", "rugby", "soccer"];
+              allowThroughFilter =
+                allowThroughFilter &&
+                !supportedSports.includes(_.lowerCase(teamSport));
+            } else {
+              allowThroughFilter =
+                allowThroughFilter &&
+                _.lowerCase(teams[teamID].info.sport).includes(sportFilter);
+            }
           }
           if (teams[teamID] && division !== "All") {
             allowThroughFilter =
@@ -316,7 +328,7 @@ class ScheduleLayout extends Component {
         });
         if (_.keys(info.teams).length === 0) {
           if (
-            sport !== "All" ||
+            sportFilter !== "all" ||
             division !== "All" ||
             ageGroup !== "All" ||
             gender !== "All"

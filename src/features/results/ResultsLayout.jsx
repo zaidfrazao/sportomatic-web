@@ -5,12 +5,10 @@ import BackIcon from "material-ui-icons/ArrowBack";
 import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import { grey, lightBlue } from "material-ui/colors";
-import IconButton from "material-ui/IconButton";
 import moment from "moment";
 import Paper from "material-ui/Paper";
 import { Route } from "react-router-dom";
 import Tabs, { Tab } from "material-ui/Tabs";
-import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
@@ -50,6 +48,9 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center"
+  },
+  iconAdjacentText: {
+    marginRight: 8
   },
   innerWrapper: {
     flexGrow: 1,
@@ -564,16 +565,9 @@ class ResultsLayout extends Component {
             <div className={classes.innerWrapper}>
               <Route
                 render={({ history }) => (
-                  <Tooltip title="Back" placement="bottom">
-                    <IconButton
-                      aria-label="back"
-                      onClick={() => {
-                        history.goBack();
-                      }}
-                    >
-                      <BackIcon />
-                    </IconButton>
-                  </Tooltip>
+                  <Button aria-label="back" onClick={() => history.goBack()}>
+                    <BackIcon className={classes.iconAdjacentText} /> Back
+                  </Button>
                 )}
               />
               <div className={classes.adWrapper}>{ad}</div>
@@ -614,16 +608,9 @@ class ResultsLayout extends Component {
             <div className={classes.innerWrapper}>
               <Route
                 render={({ history }) => (
-                  <Tooltip title="Back" placement="bottom">
-                    <IconButton
-                      aria-label="back"
-                      onClick={() => {
-                        history.goBack();
-                      }}
-                    >
-                      <BackIcon />
-                    </IconButton>
-                  </Tooltip>
+                  <Button aria-label="back" onClick={() => history.goBack()}>
+                    <BackIcon className={classes.iconAdjacentText} /> Back
+                  </Button>
                 )}
               />
               <div className={classes.adWrapper}>{ad}</div>
