@@ -11,6 +11,8 @@ import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import defaultEmblemURL from "../../../../images/default-emblem-url.png";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   additionalStatsHeading: {
     backgroundColor: grey[400],
@@ -54,7 +56,7 @@ const styles = theme => ({
     fontSize: 14,
     padding: "8px 0",
     textAlign: "center",
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "100%"
     }
   },
@@ -63,7 +65,7 @@ const styles = theme => ({
     maxWidth: 100,
     margin: 10,
     height: "auto",
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: 40,
       margin: 10,
       height: "auto"
@@ -85,7 +87,7 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "auto",
       padding: 16,
       display: "block"
@@ -105,7 +107,7 @@ const styles = theme => ({
     fontSize: 14,
     padding: "8px 0",
     textAlign: "center",
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "100%"
     }
   },
@@ -114,7 +116,7 @@ const styles = theme => ({
     textAlign: "center",
     padding: 24,
     backgroundColor: grey[100],
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "50%"
     }
   },
@@ -123,7 +125,7 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "row",
     backgroundColor: "white",
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       flexDirection: "column"
     }
   },
@@ -156,7 +158,7 @@ const styles = theme => ({
     width: "100%",
     textAlign: "center",
     color: grey[600],
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       textAlign: "left",
       flexGrow: 1
     }
@@ -176,7 +178,7 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: grey[100],
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "100%",
       padding: "8px 0",
       flexDirection: "row",
@@ -206,7 +208,7 @@ const styles = theme => ({
     fontSize: 14,
     padding: "8px 0",
     textAlign: "center",
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "100%"
     }
   },

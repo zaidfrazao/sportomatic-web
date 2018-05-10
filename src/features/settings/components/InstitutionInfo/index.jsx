@@ -42,12 +42,6 @@ const styles = theme => ({
   button: {
     width: "100%"
   },
-  contentWrapper: {
-    "@media (min-width: 1200px)": {
-      width: 1200,
-      margin: "0 auto"
-    }
-  },
   flexGrow: {
     flexGrow: 2
   },

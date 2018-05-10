@@ -7,16 +7,13 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from "material-ui/Dialog";
-import FilterIcon from "material-ui-icons/FilterList";
 import { FormControl } from "material-ui/Form";
 import { grey } from "material-ui/colors";
-import IconButton from "material-ui/IconButton";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
 import SearchIcon from "material-ui-icons/Search";
 import Select from "material-ui/Select";
 import Slide from "material-ui/transitions/Slide";
 import Toolbar from "material-ui/Toolbar";
-import Tooltip from "material-ui/Tooltip";
 import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({

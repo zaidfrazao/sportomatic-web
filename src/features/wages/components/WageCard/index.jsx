@@ -5,6 +5,8 @@ import { grey } from "material-ui/colors";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 
+const mobileBreakpoint = 800;
+
 const styles = {
   amountText: {
     padding: 16,
@@ -16,7 +18,7 @@ const styles = {
     justifyContent: "center",
     backgroundColor: grey[100],
     border: `1px solid ${grey[300]}`,
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "100%"
     }
   },
@@ -32,14 +34,14 @@ const styles = {
     justifyContent: "center",
     backgroundColor: grey[200],
     border: `1px solid ${grey[300]}`,
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "100%"
     }
   },
   explanationText: {
     padding: 16,
     textAlign: "left",
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       textAlign: "center"
     }
   },

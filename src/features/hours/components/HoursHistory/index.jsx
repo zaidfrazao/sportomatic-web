@@ -64,7 +64,6 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     padding: "24px 40px 40px 40px",
-    maxWidth: 970,
     margin: "0 auto"
   },
   tableBody: {

@@ -19,6 +19,9 @@ import WarningIcon from "material-ui-icons/Warning";
 import { withStyles } from "material-ui/styles";
 import defaultProfilePicture from "../../image/default-profile-picture.png";
 
+const mobileBreakpoint = 800;
+const tabletBreakpoint = 1080;
+
 const styles = {
   absentButton: {
     backgroundColor: grey[50]
@@ -39,7 +42,7 @@ const styles = {
     height: "auto",
     display: "flex",
     flexDirection: "column",
-    "@media (min-width: 904px)": {
+    [`@media (min-width: ${tabletBreakpoint}px)`]: {
       width: 200,
       height: 140
     }
@@ -94,7 +97,7 @@ const styles = {
     backgroundColor: grey[50],
     border: `1px solid ${grey[300]}`,
     display: "none",
-    "@media (min-width: 704px)": {
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
       display: "block",
       height: 140,
       width: 140

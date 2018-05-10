@@ -8,7 +8,7 @@ import AppBar from "./components/AppBar";
 import Dashboard from "../dashboard/DashboardView";
 import DecisionModal from "../../components/DecisionModal";
 import Hours from "../hours/HoursView";
-import LoadingScreen from "./components/LoadingScreen";
+import LoadingScreen from "../../components/LoadingScreen";
 import SwitchCommunitiesDialog from "./components/SwitchCommunitiesDialog";
 import Results from "../results/ResultsView";
 import People from "../people/PeopleView";
@@ -331,8 +331,8 @@ class CoreInterfaceLayout extends Component {
       isManageInstitutionsDialogOpen
     } = this.props.dialogs;
 
-    const isMobile = windowWidth < 600;
-    const isTablet = windowWidth < 960;
+    const isMobile = windowWidth < 800;
+    const isTablet = windowWidth < 1080;
 
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;

@@ -29,6 +29,8 @@ import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LargeRectangleAd from "../../../../components/LargeRectangleAd";
 import defaultProfilePicture from "../../image/default-profile-picture.png";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   actionsBar: {
     display: "flex",
@@ -37,21 +39,13 @@ const styles = theme => ({
   adWrapper: {
     width: "100%",
     height: "100%",
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[200]}`,
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
   },
   button: {
-    "@media (max-width: 960px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "100%"
-    }
-  },
-  contentWrapper: {
-    "@media (min-width: 1200px)": {
-      width: 1200,
-      margin: "0 auto"
     }
   },
   flexGrow: {
@@ -516,7 +510,7 @@ class PersonInfo extends Component {
               align="stretch"
               className={classes.contentWrapper}
             >
-              <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+              <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
                 {isStaffLoading ? (
                   <div className={classes.loaderWrapper}>
                     <CircularProgress />
@@ -534,7 +528,7 @@ class PersonInfo extends Component {
                   </div>
                 )}
               </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+              <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
                 <div className={classes.adWrapper}>{ad}</div>
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>

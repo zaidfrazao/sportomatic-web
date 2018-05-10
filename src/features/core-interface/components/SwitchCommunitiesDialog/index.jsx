@@ -9,6 +9,8 @@ import Dialog, {
 import { common, grey, lightBlue } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
 
+const mobileBreakpoint = 800;
+
 const styles = {
   community: {
     transition: "0.25s",
@@ -53,7 +55,7 @@ const styles = {
     width: 32,
     ehgiht: 32,
     backgroundColor: common["white"],
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       margin: 14
     }
   }
@@ -85,6 +87,7 @@ class SwitchCommunitiesDialog extends Component {
     return communities.map(info => {
       return (
         <div
+          key={`switch-comunity-${info.id}`}
           className={
             selectedCommunityID === info.id
               ? classes.communitySelected

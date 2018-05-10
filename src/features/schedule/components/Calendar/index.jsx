@@ -17,6 +17,8 @@ import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import EventsList from "../EventsList";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   arrow: {
     color: grey[50],
@@ -142,15 +144,12 @@ const styles = theme => ({
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    "@media (min-width: 1200px)": {
-      width: 900,
-      margin: "24px auto"
-    }
+    margin: 24
   },
   selectedDate: {
     fontSize: 24,
     color: grey[50],
-    "@media (min-width: 600px)": {
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
       fontSize: 32
     }
   },
@@ -171,7 +170,7 @@ const styles = theme => ({
   selectedYear: {
     fontSize: 14,
     color: grey[100],
-    "@media (min-width: 600px)": {
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
       fontSize: 18
     }
   },

@@ -51,6 +51,9 @@ import LeaderboardAd from "../../../../components/LeaderboardAd";
 import defaultEmblem from "../../image/default-emblem.jpg";
 import defaultProfilePicture from "../../image/default-profile-picture.png";
 
+const mobileBreakpoint = 800;
+const tabletBreakpoint = 1080;
+
 const styles = theme => ({
   actionsBar: {
     backgroundColor: grey[200],
@@ -82,7 +85,7 @@ const styles = theme => ({
     backgroundColor: red[500]
   },
   button: {
-    "@media (max-width: 960px)": {
+    [`@media (max-width: ${tabletBreakpoint}px)`]: {
       width: "100%"
     }
   },
@@ -101,12 +104,6 @@ const styles = theme => ({
   competitiveEvent: {
     backgroundColor: orange[500],
     marginLeft: 16
-  },
-  contentWrapper: {
-    "@media (min-width: 1200px)": {
-      width: 1200,
-      margin: "0 auto"
-    }
   },
   draw: {
     backgroundColor: lightBlue[500]

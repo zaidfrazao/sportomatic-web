@@ -4,6 +4,8 @@ import { withStyles } from "material-ui/styles";
 import SportsToolbar from "./components/SportsToolbar";
 import logo from "./images/logo.png";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   content: {
     height: 64,
@@ -17,7 +19,7 @@ const styles = theme => ({
     width: 160,
     height: 30,
     margin: "0 40px",
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       display: "none"
     }
   },
@@ -41,14 +43,14 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    "@media (min-width: 600px)": {
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
       display: "none"
     }
   },
   sportsToolbarWrapper: {
     width: "calc(100% - 240px)",
     height: "100%",
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "calc(100% - 78px)"
     }
   },

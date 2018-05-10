@@ -16,6 +16,8 @@ import NotificationModal from "../../components/NotificationModal";
 import TeamInfo from "./components/TeamInfo";
 import TeamsList from "./components/TeamsList";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   adWrapper: {
     width: "100%",
@@ -28,7 +30,7 @@ const styles = theme => ({
     position: "fixed",
     bottom: 72,
     right: 24,
-    "@media (min-width: 600px)": {
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
       bottom: 24
     }
   },

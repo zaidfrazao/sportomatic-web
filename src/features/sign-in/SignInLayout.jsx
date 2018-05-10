@@ -9,6 +9,8 @@ import NotificationModal from "../../components/NotificationModal";
 import PasswordResetDialog from "./components/PasswordResetDialog";
 import TextField from "../../components/TextField";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   button: {
     margin: 10
@@ -34,7 +36,7 @@ const styles = theme => ({
     height: 60,
     backgroundColor: lightBlue[700],
     borderTop: "1px solid #E0E0E0",
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       display: "none"
     }
   },
@@ -60,7 +62,7 @@ const styles = theme => ({
     backgroundColor: lightBlue[700],
     height: 60,
     borderBottom: "1px solid #E0E0E0",
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       display: "none"
     }
   },
@@ -76,7 +78,7 @@ const styles = theme => ({
     height: "100%",
     display: "flex",
     flexDirection: "column",
-    "@media (min-width: 768px)": {
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
       maxWidth: 480,
       height: "auto"
     }

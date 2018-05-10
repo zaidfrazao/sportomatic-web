@@ -8,7 +8,6 @@ import PersonCard from "./components/PersonCard";
 const styles = {
   cardsWrapper: {
     padding: 24,
-    maxWidth: 1200,
     margin: "0 auto"
   },
   noCardsText: {
@@ -20,7 +19,6 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    maxWidth: 1200,
     margin: "24px auto"
   }
 };

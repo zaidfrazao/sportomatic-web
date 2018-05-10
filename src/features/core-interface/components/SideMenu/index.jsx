@@ -5,6 +5,8 @@ import { withStyles } from "material-ui/styles";
 import CommunityInfo from "./components/CommunityInfo";
 import defaultEmblem from "./images/default-emblem.jpg";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   menu: {
     padding: "12px 0",
@@ -18,7 +20,7 @@ const styles = theme => ({
     borderRadius: 16,
     cursor: "pointer",
     backgroundColor: grey[100],
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       textAlign: "center",
       margin: "20px 18px",
       padding: "22px 0",
@@ -32,7 +34,7 @@ const styles = theme => ({
     margin: "0 12px 0 24px",
     width: 25,
     height: 25,
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       margin: "0 12px 0 0"
     }
   },
@@ -46,7 +48,7 @@ const styles = theme => ({
     fontWeight: "bold",
     cursor: "pointer",
     backgroundColor: lightBlue[800],
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       textAlign: "center",
       margin: "20px 18px",
       padding: "22px 0",

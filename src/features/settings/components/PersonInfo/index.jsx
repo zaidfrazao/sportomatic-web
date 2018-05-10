@@ -24,20 +24,12 @@ const styles = theme => ({
   adWrapper: {
     width: "100%",
     height: "100%",
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[200]}`,
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
   },
   button: {
     width: "100%"
-  },
-  contentWrapper: {
-    "@media (min-width: 1200px)": {
-      width: 1200,
-      margin: "0 auto"
-    }
   },
   flexGrow: {
     flexGrow: 2

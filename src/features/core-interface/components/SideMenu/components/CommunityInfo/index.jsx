@@ -5,6 +5,8 @@ import Button from "../../../../../../components/Button";
 import PersonalAllSwitch from "./components/PersonalAllSwitch";
 import RoleSwitcher from "./components/RoleSwitcher";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   buttonIcon: {
     marginRight: 8
@@ -19,7 +21,7 @@ const styles = theme => ({
     fontSize: 16,
     lineHeight: "20px",
     margin: 4,
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       fontSize: 20,
       lineHeight: "28px"
     }

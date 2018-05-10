@@ -10,6 +10,8 @@ import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import defaultEmblemURL from "../../../../images/default-emblem-url.png";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   commentaryInnerWrapper: {
     flexGrow: 1,
@@ -30,7 +32,7 @@ const styles = theme => ({
     maxWidth: 80,
     margin: 10,
     height: "auto",
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: 40,
       margin: 10,
       height: "auto"
@@ -52,7 +54,7 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: grey[100],
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       padding: 16,
       width: "auto",
       display: "block"
@@ -95,7 +97,7 @@ const styles = theme => ({
     textAlign: "center",
     padding: 24,
     backgroundColor: grey[100],
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "75%"
     }
   },
@@ -132,7 +134,7 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    "@media (min-width: 600px)": {
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
       fontSize: 20,
       paddingLeft: 8
     }

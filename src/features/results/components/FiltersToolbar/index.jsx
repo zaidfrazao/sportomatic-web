@@ -1,22 +1,18 @@
 import React, { Component } from "react";
 import Button from "material-ui/Button";
-import Chip from "material-ui/Chip";
 import Dialog, {
   DialogActions,
   DialogContent,
   DialogTitle
 } from "material-ui/Dialog";
-import FilterIcon from "material-ui-icons/FilterList";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 import { grey } from "material-ui/colors";
-import IconButton from "material-ui/IconButton";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
 import SearchIcon from "material-ui-icons/Search";
 import Select from "material-ui/Select";
 import Slide from "material-ui/transitions/Slide";
 import Switch from "material-ui/Switch";
 import Toolbar from "material-ui/Toolbar";
-import Tooltip from "material-ui/Tooltip";
 import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
@@ -162,17 +158,12 @@ class FiltersToolbar extends Component {
     } = this.props;
     const {
       searchText,
-      confirmedGender,
-      confirmedSport,
-      confirmedDivision,
-      confirmedAgeGroup,
       selectedGender,
       selectedSport,
       selectedDivision,
       selectedAgeGroup,
       isOpen,
-      selectedShowDeletedTeams,
-      confirmedShowDeletedTeams
+      selectedShowDeletedTeams
     } = this.state;
 
     return (

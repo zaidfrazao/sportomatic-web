@@ -30,6 +30,8 @@ import defaultProfilePicture from "../../image/default-profile-picture.png";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   actionsBar: {
     display: "flex",
@@ -43,14 +45,8 @@ const styles = theme => ({
     marginTop: 24
   },
   button: {
-    "@media (max-width: 960px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "100%"
-    }
-  },
-  contentWrapper: {
-    "@media (min-width: 1200px)": {
-      width: 1200,
-      margin: "0 auto"
     }
   },
   deletedTeam: {

@@ -21,6 +21,9 @@ import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import MarkAbsentModal from "./components/MarkAbsentModal";
 
+const mobileBreakpoint = 800;
+const tabletBreakpoint = 1080;
+
 const styles = theme => ({
   actionsBar: {
     backgroundColor: grey[200]
@@ -36,13 +39,13 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     overflow: "auto",
-    "@media (max-width: 960px)": {
+    [`@media (max-width: ${tabletBreakpoint}px)`]: {
       display: "block"
     }
   },
   button: {
     margin: 24,
-    "@media (max-width: 600px)": {
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "calc(100% - 48px)"
     }
   },
@@ -96,7 +99,7 @@ const styles = theme => ({
     flexGrow: 1,
     display: "flex",
     flexDirection: "column",
-    "@media (max-width: 960px)": {
+    [`@media (max-width: ${tabletBreakpoint}px)`]: {
       display: "block",
       overflow: "auto"
     }

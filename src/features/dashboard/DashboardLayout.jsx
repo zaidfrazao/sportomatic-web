@@ -27,7 +27,6 @@ import BannerAd from "../../components/BannerAd";
 import defaultProfilePicture from "./image/default-profile-picture.png";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
-import UpdatesDialog from "./components/UpdatesDialog";
 
 const styles = theme => ({
   adWrapper: {
@@ -559,7 +558,6 @@ class DashboardLayout extends Component {
   render() {
     const {
       classes,
-      isMobile,
       accountInfo,
       institutions,
       permissions,
@@ -571,8 +569,6 @@ class DashboardLayout extends Component {
       isUpcomingEventsLoading,
       isPastEventsLoading
     } = this.props.loadingStatus;
-    const { isUpdatesDialogOpen } = this.props.dialogs;
-    const { closeUpdatesDialog } = this.props.actions;
 
     let active = {
       id: "",
@@ -756,13 +752,6 @@ class DashboardLayout extends Component {
             )}
           </Grid>
         </div>
-        <UpdatesDialog
-          isOpen={isUpdatesDialogOpen}
-          isMobile={isMobile}
-          actions={{
-            handleClose: () => closeUpdatesDialog()
-          }}
-        />
       </div>
     );
   }
