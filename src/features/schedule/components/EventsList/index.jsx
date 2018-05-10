@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import Avatar from "material-ui/Avatar";
-import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import { grey, lightBlue, orange, red } from "material-ui/colors";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import moment from "moment";
 import { Route } from "react-router-dom";
-import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
+import Button from "../../../../components/Button";
 
 const styles = theme => ({
   adWrapper: {
@@ -18,14 +17,11 @@ const styles = theme => ({
     justifyContent: "center",
     margin: "24px 0"
   },
-  backButton: {
-    margin: 24
+  backButtonWrapper: {
+    margin: 12
   },
-  cancelledHeading: {
-    padding: 12.5,
-    backgroundColor: red[900],
-    fontWeight: "normal",
-    color: grey[50]
+  cancelledEvent: {
+    backgroundColor: red[500]
   },
   competitiveEvent: {
     backgroundColor: orange[500]
@@ -35,19 +31,15 @@ const styles = theme => ({
     backgroundColor: lightBlue[700]
   },
   loaderWrapper: {
-    height: 80,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
+    width: "100%",
+    textAlign: "center",
+    padding: "24px 0"
   },
   nonCompetitiveEvent: {
     backgroundColor: lightBlue[500]
   },
   root: {
     width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
     overflow: "auto"
   },
   timeHeading: {
@@ -91,16 +83,10 @@ class EventsList extends Component {
     const { classes, dateSelected, isTablet, events, isLoading } = this.props;
     const { updateView } = this.props.actions;
 
-    const allEvents = this.getFullSortedEventsList(events);
-
-    const morningEvents = allEvents
+    const allEvents = this.getFullSortedEventsList(events)
       .filter(eventInfo => {
-        const startHour = eventInfo.requiredInfo.times.start.getHours();
-        const isMorningEvent = startHour < 12;
-        return isMorningEvent;
-      })
-      .filter(eventInfo => {
-        return eventInfo.requiredInfo.status === "ACTIVE";
+        const status = eventInfo.requiredInfo.status;
+        return status === "ACTIVE" || status === "CANCELLED";
       })
       .map(eventInfo => {
         const eventStartTime = moment(
@@ -109,6 +95,16 @@ class EventsList extends Component {
         const eventEndTime = moment(eventInfo.requiredInfo.times.end).format(
           "h:mm A"
         );
+        const status = eventInfo.requiredInfo.status;
+        const isCompetitive = eventInfo.requiredInfo.isCompetitive;
+
+        let avatarStyle = classes.nonCompetitiveEvent;
+        if (status === "CANCELLED") {
+          avatarStyle = classes.cancelledEvent;
+        } else if (isCompetitive) {
+          avatarStyle = classes.competitiveEvent;
+        }
+
         return (
           <Route
             key={eventInfo.id}
@@ -122,149 +118,7 @@ class EventsList extends Component {
                     );
                   }}
                 >
-                  <Avatar
-                    className={
-                      eventInfo.requiredInfo.isCompetitive
-                        ? classes.competitiveEvent
-                        : classes.nonCompetitiveEvent
-                    }
-                  />
-                  <ListItemText
-                    primary={eventInfo.requiredInfo.title}
-                    secondary={`${eventStartTime} - ${eventEndTime}`}
-                  />
-                </ListItem>
-              );
-            }}
-          />
-        );
-      });
-
-    const afternoonEvents = allEvents
-      .filter(eventInfo => {
-        const startHour = eventInfo.requiredInfo.times.start.getHours();
-        const isAfternoonEvent = startHour >= 12 && startHour < 18;
-        return isAfternoonEvent;
-      })
-      .filter(eventInfo => {
-        return eventInfo.requiredInfo.status === "ACTIVE";
-      })
-      .map(eventInfo => {
-        const eventStartTime = moment(
-          eventInfo.requiredInfo.times.start
-        ).format("h:mm A");
-        const eventEndTime = moment(eventInfo.requiredInfo.times.end).format(
-          "h:mm A"
-        );
-        return (
-          <Route
-            key={eventInfo.id}
-            render={({ history }) => {
-              return (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push(
-                      `/myaccount/schedule/${dateSelected}/${eventInfo.id}`
-                    );
-                  }}
-                >
-                  <Avatar
-                    className={
-                      eventInfo.requiredInfo.isCompetitive
-                        ? classes.competitiveEvent
-                        : classes.nonCompetitiveEvent
-                    }
-                  />
-                  <ListItemText
-                    primary={eventInfo.requiredInfo.title}
-                    secondary={`${eventStartTime} - ${eventEndTime}`}
-                  />
-                </ListItem>
-              );
-            }}
-          />
-        );
-      });
-
-    const eveningEvents = allEvents
-      .filter(eventInfo => {
-        const startHour = eventInfo.requiredInfo.times.start.getHours();
-        const isEveningEvent = startHour >= 18;
-        return isEveningEvent;
-      })
-      .filter(eventInfo => {
-        return eventInfo.requiredInfo.status === "ACTIVE";
-      })
-      .map(eventInfo => {
-        const eventStartTime = moment(
-          eventInfo.requiredInfo.times.start
-        ).format("h:mm A");
-        const eventEndTime = moment(eventInfo.requiredInfo.times.end).format(
-          "h:mm A"
-        );
-        return (
-          <Route
-            key={eventInfo.id}
-            render={({ history }) => {
-              return (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push(
-                      `/myaccount/schedule/${dateSelected}/${eventInfo.id}`
-                    );
-                  }}
-                >
-                  <Avatar
-                    className={
-                      eventInfo.requiredInfo.isCompetitive
-                        ? classes.competitiveEvent
-                        : classes.nonCompetitiveEvent
-                    }
-                  />
-                  <ListItemText
-                    primary={eventInfo.requiredInfo.title}
-                    secondary={`${eventStartTime} - ${eventEndTime}`}
-                  />
-                </ListItem>
-              );
-            }}
-          />
-        );
-      });
-
-    const cancelledEvents = allEvents
-      .filter(eventInfo => {
-        return eventInfo.requiredInfo.status === "CANCELLED";
-      })
-      .map(eventInfo => {
-        const eventStartTime = moment(
-          eventInfo.requiredInfo.times.start
-        ).format("h:mm A");
-        const eventEndTime = moment(eventInfo.requiredInfo.times.end).format(
-          "h:mm A"
-        );
-        return (
-          <Route
-            key={eventInfo.id}
-            render={({ history }) => {
-              return (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push(
-                      `/myaccount/schedule/${dateSelected}/${eventInfo.id}`
-                    );
-                  }}
-                >
-                  <Avatar
-                    className={
-                      eventInfo.requiredInfo.isCompetitive
-                        ? classes.competitiveEvent
-                        : classes.nonCompetitiveEvent
-                    }
-                  />
+                  <Avatar className={avatarStyle} />
                   <ListItemText
                     primary={eventInfo.requiredInfo.title}
                     secondary={`${eventStartTime} - ${eventEndTime}`}
@@ -281,101 +135,30 @@ class EventsList extends Component {
         {isTablet && (
           <Route
             render={({ history }) => (
-              <Button
-                raised
-                className={classes.backButton}
-                onClick={() => updateView("SCHEDULE")}
-              >
-                View calendar
-              </Button>
+              <div className={classes.backButtonWrapper}>
+                <Button
+                  colour="primary"
+                  fullWidth
+                  handleClick={() => updateView("SCHEDULE")}
+                >
+                  Select date
+                </Button>
+              </div>
             )}
           />
         )}
         <div className={classes.events}>
-          <Typography
-            component="h3"
-            type="body2"
-            className={classes.timeHeading}
-          >
-            Morning
-          </Typography>
           {isLoading ? (
             <div className={classes.loaderWrapper}>
               <CircularProgress />
             </div>
           ) : (
             <List>
-              {morningEvents.length > 0 ? (
-                morningEvents
+              {allEvents.length > 0 ? (
+                allEvents
               ) : (
                 <ListItem>
-                  <ListItemText primary="No morning events" />
-                </ListItem>
-              )}
-            </List>
-          )}
-          <Typography
-            component="h3"
-            type="body2"
-            className={classes.timeHeading}
-          >
-            Afternoon
-          </Typography>
-          {isLoading ? (
-            <div className={classes.loaderWrapper}>
-              <CircularProgress />
-            </div>
-          ) : (
-            <List>
-              {afternoonEvents.length > 0 ? (
-                afternoonEvents
-              ) : (
-                <ListItem>
-                  <ListItemText primary="No afternoon events" />
-                </ListItem>
-              )}
-            </List>
-          )}
-          <Typography
-            component="h3"
-            type="body2"
-            className={classes.timeHeading}
-          >
-            Evening
-          </Typography>
-          {isLoading ? (
-            <div className={classes.loaderWrapper}>
-              <CircularProgress />
-            </div>
-          ) : (
-            <List>
-              {eveningEvents.length > 0 ? (
-                eveningEvents
-              ) : (
-                <ListItem>
-                  <ListItemText primary="No evening events" />
-                </ListItem>
-              )}
-            </List>
-          )}
-          <Typography
-            component="h3"
-            type="body2"
-            className={classes.cancelledHeading}
-          >
-            Cancelled Events
-          </Typography>
-          {isLoading ? (
-            <div className={classes.loaderWrapper}>
-              <CircularProgress />
-            </div>
-          ) : (
-            <List>
-              {cancelledEvents.length > 0 ? (
-                cancelledEvents
-              ) : (
-                <ListItem>
-                  <ListItemText primary="No cancelled events" />
+                  <ListItemText primary="No events" />
                 </ListItem>
               )}
             </List>

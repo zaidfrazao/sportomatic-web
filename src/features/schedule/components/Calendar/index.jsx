@@ -5,21 +5,27 @@ import { Calendar as ReactCalendar } from "react-calendar";
 import { CircularProgress } from "material-ui/Progress";
 import classNames from "classnames";
 import EventIcon from "material-ui-icons/FiberManualRecord";
-import { grey, lightBlue, orange, red } from "material-ui/colors";
+import { common, grey, lightBlue, orange, red } from "material-ui/colors";
 import IconButton from "material-ui/IconButton";
 import moment from "moment";
 import NextIcon from "material-ui-icons/ArrowForward";
 import Next2Icon from "material-ui-icons/LastPage";
-import Paper from "material-ui/Paper";
 import PreviousIcon from "material-ui-icons/ArrowBack";
 import Previous2Icon from "material-ui-icons/FirstPage";
 import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
+import Button from "../../../../components/Button";
 import EventsList from "../EventsList";
 
 const mobileBreakpoint = 800;
 
 const styles = theme => ({
+  addButtonWrapper: {
+    width: "calc(100% - 24px)",
+    padding: 12,
+    display: "flex",
+    justifyContent: "center"
+  },
   arrow: {
     color: grey[50],
     width: 32,
@@ -32,20 +38,17 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center"
   },
-  bumper: {
-    height: 48,
-    width: "100%",
-    backgroundColor: lightBlue[900]
-  },
   calendarWithHeader: {
     width: "100%",
-    height: "calc(100% - 48px)",
-    overflow: "auto"
+    backgroundColor: "transparent",
+    border: "none",
+    padding: 12
   },
   calendarWithoutHeader: {
     width: "100%",
-    height: "100%",
-    overflow: "auto"
+    backgroundColor: "transparent",
+    border: "none",
+    padding: 8
   },
   cancelledEvent: {
     width: 12,
@@ -60,13 +63,13 @@ const styles = theme => ({
   contentWrapper: {
     flexGrow: 1,
     display: "flex",
-    flexDirection: "row",
-    backgroundColor: grey[50]
+    flexDirection: "row"
   },
   desktopCalendar: {
     width: "60%"
   },
   desktopEventsList: {
+    borderLeft: `2px solid ${grey[100]}`,
     width: "40%",
     display: "flex",
     flexDirection: "column"
@@ -87,7 +90,7 @@ const styles = theme => ({
   eventTile: {
     height: 64,
     width: 64,
-    fontSize: 20,
+    fontSize: 16,
     color: grey[900],
     fontWeight: "bold",
     "&:hover": {
@@ -103,6 +106,7 @@ const styles = theme => ({
   header: {
     padding: "20px 0",
     width: "100%",
+    borderRadius: "16px 16px 0 0",
     backgroundColor: lightBlue[700],
     display: "flex",
     flexDirection: "row",
@@ -132,7 +136,7 @@ const styles = theme => ({
   normalTile: {
     height: 64,
     width: 64,
-    fontSize: 18,
+    fontSize: 16,
     color: grey[800],
     "&:hover": {
       backgroundColor: `${grey[200]} !important`,
@@ -141,10 +145,11 @@ const styles = theme => ({
     }
   },
   root: {
-    flex: 1,
+    backgroundColor: common["white"],
     display: "flex",
     flexDirection: "column",
-    margin: 24
+    margin: "0 24px 24px 24px",
+    borderRadius: 16
   },
   selectedDate: {
     fontSize: 24,
@@ -156,7 +161,7 @@ const styles = theme => ({
   selectedTile: {
     height: 64,
     width: 64,
-    fontSize: 22,
+    fontSize: 20,
     backgroundColor: lightBlue[900],
     color: `${grey[50]} !important`,
     fontWeight: "bold",
@@ -177,7 +182,7 @@ const styles = theme => ({
   todayTile: {
     height: 64,
     width: 64,
-    fontSize: 18,
+    fontSize: 16,
     color: grey[900],
     backgroundColor: lightBlue[50],
     borderRadius: 32,
@@ -214,6 +219,7 @@ class Calendar extends Component {
       updateView,
       openCancelEventAlert,
       openUncancelEventAlert,
+      addEvent,
       cancelEvent
     } = this.props.actions;
 
@@ -265,7 +271,7 @@ class Calendar extends Component {
     const nextDisabled = isMinDateLoading;
 
     return (
-      <Paper className={classes.root}>
+      <div className={classes.root}>
         <div className={classes.header}>
           <div className={classes.arrowWrapper}>
             <Route
@@ -344,7 +350,6 @@ class Calendar extends Component {
         </div>
         <div className={classes.contentWrapper}>
           <div className={classes.desktopCalendar}>
-            <div className={classes.bumper} />
             <Route
               render={({ history }) => {
                 if (isEventsLoading || isMinDateLoading) {
@@ -485,6 +490,16 @@ class Calendar extends Component {
             />
           </div>
           <div className={classes.desktopEventsList}>
+            <div className={classes.addButtonWrapper}>
+              <Button
+                colour="secondary"
+                filled
+                fullWidth
+                handleClick={() => addEvent()}
+              >
+                Add new event
+              </Button>
+            </div>
             <EventsList
               isTablet={isTablet}
               dateSelected={dateSelected}
@@ -500,7 +515,7 @@ class Calendar extends Component {
             />
           </div>
         </div>
-      </Paper>
+      </div>
     );
   }
 
@@ -681,43 +696,6 @@ class Calendar extends Component {
                     return (
                       <ReactCalendar
                         showNeighboringMonth={false}
-                        tileContent={({ date, view }) => {
-                          date.setHours(2);
-                          const eventDate = dates[date.toDateString()];
-                          if (eventDate) {
-                            if (
-                              eventDate.hasCompetitive &&
-                              eventDate.hasNonCompetitive
-                            ) {
-                              return (
-                                <div>
-                                  <EventIcon
-                                    className={classes.competitiveEvent}
-                                  />
-                                  <EventIcon
-                                    className={classes.nonCompetitiveEvent}
-                                  />
-                                </div>
-                              );
-                            } else if (eventDate.hasCompetitive) {
-                              return (
-                                <div>
-                                  <EventIcon
-                                    className={classes.competitiveEvent}
-                                  />
-                                </div>
-                              );
-                            } else if (eventDate.hasNonCompetitive) {
-                              return (
-                                <div>
-                                  <EventIcon
-                                    className={classes.nonCompetitiveEvent}
-                                  />
-                                </div>
-                              );
-                            }
-                          }
-                        }}
                         tileClassName={({ date, view }) => {
                           let tileClasses = [];
 

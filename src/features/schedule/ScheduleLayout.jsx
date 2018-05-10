@@ -14,7 +14,6 @@ import DecisionModal from "../../components/DecisionModal";
 import EditAbsentRatingModal from "./components/EditAbsentRatingModal";
 import EditEventDialog from "./components/EditEventDialog";
 import EventInfo from "./components/EventInfo";
-import FiltersToolbar from "./components/FiltersToolbar";
 import MarkAbsentModal from "./components/MarkAbsentModal";
 import NotificationModal from "../../components/NotificationModal";
 import ReplacementCoachModal from "./components/ReplacementCoachModal";
@@ -36,6 +35,9 @@ const styles = theme => ({
     height: "100%",
     display: "flex",
     flexDirection: "column"
+  },
+  calendarWrapper: {
+    flexGrow: 1
   },
   desktopCalendar: {
     width: "60%"
@@ -73,7 +75,6 @@ const styles = theme => ({
   },
   root: {
     width: "100%",
-    height: "100%",
     display: "flex",
     flexDirection: "column"
   },
@@ -356,7 +357,6 @@ class ScheduleLayout extends Component {
       teams,
       staff,
       events,
-      filters,
       role,
       userID,
       permissions
@@ -386,8 +386,6 @@ class ScheduleLayout extends Component {
       cancelEvent,
       uncancelEvent,
       editEvent,
-      applyFilters,
-      updateSearch,
       openMarkAbsentModal,
       closeMarkAbsentModal,
       updateAbsent,
@@ -462,7 +460,10 @@ class ScheduleLayout extends Component {
 
     const coaches = _.fromPairs(
       _.toPairs(staff).filter(([id, info]) => {
-        if (info.institutions[activeInstitutionID].roles.coach === "APPROVED") {
+        if (
+          info.institutions[activeInstitutionID] &&
+          info.institutions[activeInstitutionID].roles.coach === "APPROVED"
+        ) {
           return true;
         } else {
           return false;
@@ -472,6 +473,7 @@ class ScheduleLayout extends Component {
     const managers = _.fromPairs(
       _.toPairs(staff).filter(([id, info]) => {
         if (
+          info.institutions[activeInstitutionID] &&
           info.institutions[activeInstitutionID].roles.manager === "APPROVED"
         ) {
           return true;
@@ -703,36 +705,26 @@ class ScheduleLayout extends Component {
 
       return (
         <div className={classes.contentWrapper}>
-          <FiltersToolbar
-            canCreate={canCreate}
-            eventTypes={_.keys(this.state.eventTypes)}
-            sports={_.keys(this.state.sports)}
-            divisions={_.keys(this.state.divisions)}
-            ageGroups={_.keys(this.state.ageGroups)}
-            genders={_.keys(this.state.genders)}
-            isMobile={isMobile}
-            initialFilters={filters}
-            applyFilters={applyFilters}
-            addEvent={openAddEventDialog}
-            updateSearch={updateSearch}
-          />
-          <Calendar
-            events={filteredEvents}
-            minDate={minDate}
-            dateSelected={dateSelected}
-            isMobile={isMobile}
-            isTablet={isTablet}
-            institutionID={activeInstitutionID}
-            currentView={currentView}
-            isEventsLoading={isEventsLoading || activeInstitutionID === ""}
-            isMinDateLoading={
-              isCreationDateLoading || activeInstitutionID === ""
-            }
-            actions={{
-              updateView,
-              cancelEvent
-            }}
-          />
+          <div className={classes.calendarWrapper}>
+            <Calendar
+              events={filteredEvents}
+              minDate={minDate}
+              dateSelected={dateSelected}
+              isMobile={isMobile}
+              isTablet={isTablet}
+              institutionID={activeInstitutionID}
+              currentView={currentView}
+              isEventsLoading={isEventsLoading || activeInstitutionID === ""}
+              isMinDateLoading={
+                isCreationDateLoading || activeInstitutionID === ""
+              }
+              actions={{
+                updateView,
+                cancelEvent,
+                addEvent: () => openAddEventDialog()
+              }}
+            />
+          </div>
           <AddEventDialog
             isOpen={isAddEventDialogOpen}
             isMobile={isTablet}

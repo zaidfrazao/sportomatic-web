@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import Account from "../features/core-interface/CoreInterfaceView";
-import Sandbox from "../features/sandbox/SandboxView";
 import SignIn from "../features/sign-in/SignInView";
 import SignUp from "../features/sign-up/SignUpView";
 
@@ -29,7 +28,6 @@ class App extends Component {
           path="/sign-up/:initiation/:currentStep/:optionalParameters/:stage"
           component={SignUp}
         />
-        <Route exact path="/sandbox" component={Sandbox} />
         <Route path="/myaccount" component={Account} />
         <Route component={Account} />
       </Switch>

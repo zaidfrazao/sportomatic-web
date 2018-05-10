@@ -19,7 +19,6 @@ import {
 import HoursApprovedIcon from "material-ui-icons/AssignmentTurnedIn";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import moment from "moment";
-import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
@@ -48,16 +47,6 @@ const styles = theme => ({
   },
   flexGrow: {
     flexGrow: 2
-  },
-  heading: {
-    fontSize: 18,
-    borderRadius: "16px 16px 0 0",
-    padding: "18px 0",
-    width: "100%",
-    textAlign: "center",
-    fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: lightBlue[800]
   },
   hoursApprovedAvatar: {
     backgroundColor: green[500]
@@ -108,6 +97,16 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center"
   },
+  sectionHeading: {
+    fontSize: 18,
+    borderRadius: "16px 16px 0 0",
+    padding: "18px 0",
+    width: "100%",
+    textAlign: "center",
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: lightBlue[800]
+  },
   sectionList: {
     flexGrow: 1,
     margin: "12px 12px 0 12px",
@@ -117,8 +116,10 @@ const styles = theme => ({
     width: "calc(100% - 24px)"
   },
   sectionButton: {
-    width: "calc(100% - 24px)",
-    margin: 12
+    backgroundColor: lightBlue[500],
+    borderRadius: "0 0 16px 16px",
+    width: "100%",
+    marginTop: 12
   },
   selectWrapper: {
     width: "50%"
@@ -619,9 +620,7 @@ class DashboardLayout extends Component {
         <div className={classes.adWrapper}>{ad}</div>
         <div className={classes.widgetsWrapper}>
           <div className={classes.section}>
-            <Typography className={classes.heading} type="title" component="h3">
-              Upcoming Events
-            </Typography>
+            <div className={classes.sectionHeading}>Upcoming Events</div>
             <div className={classes.sectionContent}>
               {isUpcomingEventsLoading ? (
                 <List className={classes.sectionList}>
@@ -643,8 +642,8 @@ class DashboardLayout extends Component {
               <div className={classes.sectionButton}>
                 <Button
                   colour="primary"
-                  slim
                   fullWidth
+                  filled
                   handleClick={() => history.push("/myaccount/schedule")}
                 >
                   View more
@@ -653,9 +652,7 @@ class DashboardLayout extends Component {
             </div>
           </div>
           <div className={classes.section}>
-            <Typography className={classes.heading} type="title" component="h3">
-              Recent Results
-            </Typography>
+            <div className={classes.sectionHeading}>Recent Results</div>
             <div className={classes.sectionContent}>
               {isPastEventsLoading ? (
                 <List className={classes.sectionList}>
@@ -677,8 +674,8 @@ class DashboardLayout extends Component {
               <div className={classes.sectionButton}>
                 <Button
                   colour="primary"
-                  slim
                   fullWidth
+                  filled
                   handleClick={() => history.push("/myaccount/results")}
                 >
                   View more
@@ -687,9 +684,7 @@ class DashboardLayout extends Component {
             </div>
           </div>
           <div className={classes.section}>
-            <Typography className={classes.heading} type="title" component="h3">
-              Recent Hours
-            </Typography>
+            <div className={classes.sectionHeading}>Recent Hours</div>
             <div className={classes.sectionContent}>
               {isPastEventsLoading ? (
                 <List className={classes.sectionList}>
@@ -711,8 +706,8 @@ class DashboardLayout extends Component {
               <div className={classes.sectionButton}>
                 <Button
                   colour="primary"
-                  slim
                   fullWidth
+                  filled
                   handleClick={() => history.push("/myaccount/hours")}
                 >
                   View more
@@ -722,13 +717,7 @@ class DashboardLayout extends Component {
           </div>
           {showWages && (
             <div className={classes.section}>
-              <Typography
-                className={classes.heading}
-                type="title"
-                component="h3"
-              >
-                Recent Wages
-              </Typography>
+              <div className={classes.sectionHeading}>Recent Wages</div>
               <div className={classes.sectionContent}>
                 {isRecentWagesLoading ? (
                   <List className={classes.sectionList}>
@@ -750,8 +739,8 @@ class DashboardLayout extends Component {
                 <div className={classes.sectionButton}>
                   <Button
                     colour="primary"
-                    slim
                     fullWidth
+                    filled
                     handleClick={() => history.push("/myaccount/wages")}
                   >
                     View more

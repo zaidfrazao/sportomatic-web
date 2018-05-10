@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Button from "material-ui/Button";
+import MuiButton from "material-ui/Button";
 import Dialog, {
   DialogActions,
   DialogContent,
@@ -12,6 +12,7 @@ import TextField from "material-ui/TextField";
 import ThumbsDownIcon from "material-ui-icons/ThumbDown";
 import ThumbsUpIcon from "material-ui-icons/ThumbUp";
 import { withStyles } from "material-ui/styles";
+import Button from "../../../../components/Button";
 
 const styles = theme => ({
   badButton: {
@@ -94,20 +95,20 @@ class MarkAbsentModal extends Component {
             {`${coachName} will be marked as absent. Please select whether they have a good or bad reason to be absent:`}
           </DialogContentText>
           <div className={classes.buttonsWrapper}>
-            <Button
+            <MuiButton
               className={
                 rating === "GOOD" ? classes.goodButton : classes.button
               }
               onClick={() => this.updateRating("GOOD")}
             >
               <ThumbsUpIcon className={classes.icon} /> Good
-            </Button>
-            <Button
+            </MuiButton>
+            <MuiButton
               className={rating === "BAD" ? classes.badButton : classes.button}
               onClick={() => this.updateRating("BAD")}
             >
               <ThumbsDownIcon className={classes.icon} /> Bad
-            </Button>
+            </MuiButton>
           </div>
           <FormControl>
             <TextField
@@ -124,7 +125,9 @@ class MarkAbsentModal extends Component {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => {
+            colour="primary"
+            slim
+            handleClick={() => {
               closeModal();
               this.resetState();
             }}
@@ -133,8 +136,10 @@ class MarkAbsentModal extends Component {
           </Button>
           <Button
             disabled={rating === ""}
-            color="primary"
-            onClick={() => {
+            colour="primary"
+            slim
+            filled
+            handleClick={() => {
               markAbsent(rating, reason);
               this.resetState();
             }}

@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import _ from "lodash";
 import AddIcon from "material-ui-icons/Add";
 import Avatar from "material-ui/Avatar";
-import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import Dialog, {
   DialogActions,
@@ -25,6 +24,7 @@ import TextField from "material-ui/TextField";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
+import Button from "../../../../components/Button";
 
 const styles = {
   addButtonWrapper: {
@@ -71,6 +71,9 @@ const styles = {
     textAlign: "center",
     backgroundColor: grey[200],
     color: grey[700]
+  },
+  iconAdjacentText: {
+    marginRight: 8
   },
   innerContentWrapper: {
     maxWidth: 1600,
@@ -497,16 +500,19 @@ class AddEventDialog extends Component {
             )}
             <div className={classes.teamButtonsWrapper}>
               <Button
-                aria-label="remove team"
-                onClick={() => this.removeTeam(id)}
+                colour="primary"
+                slim
+                handleClick={() => this.removeTeam(id)}
               >
                 Remove team
               </Button>
               {!isMobile && isCompetitive && <div className={classes.flex} />}
               {isCompetitive && (
                 <Button
-                  aria-label="add opponent"
-                  onClick={() =>
+                  colour="primary"
+                  slim
+                  filled
+                  handleClick={() =>
                     this.addOpponent(id, _.keys(opponents[id]).length)}
                 >
                   <AddIcon /> Add opponent
@@ -569,12 +575,15 @@ class AddEventDialog extends Component {
                 })}
               </Select>
             </FormControl>
-            <Button
-              aria-label="remove coach"
-              onClick={() => this.removeCoach(id)}
-            >
-              Remove coach
-            </Button>
+            <div className={classes.teamButtonsWrapper}>
+              <Button
+                colour="primary"
+                slim
+                handleClick={() => this.removeCoach(id)}
+              >
+                Remove coach
+              </Button>
+            </div>
           </div>
         </div>
       );
@@ -631,12 +640,15 @@ class AddEventDialog extends Component {
                 })}
               </Select>
             </FormControl>
-            <Button
-              aria-label="remove manager"
-              onClick={() => this.removeManager(id)}
-            >
-              Remove manager
-            </Button>
+            <div className={classes.teamButtonsWrapper}>
+              <Button
+                colour="primary"
+                slim
+                handleClick={() => this.removeManager(id)}
+              >
+                Remove manager
+              </Button>
+            </div>
           </div>
         </div>
       );
@@ -1598,10 +1610,13 @@ class AddEventDialog extends Component {
                     disabled={
                       _.keys(teams).length === _.keys(selectedTeams).length
                     }
-                    aria-label="add team"
-                    onClick={() => this.addTeam()}
+                    colour="primary"
+                    filled
+                    handleClick={() => this.addTeam()}
                   >
-                    <AddIcon /> Add team
+                    <i
+                      className={`fas fa-plus ${classes.iconAdjacentText}`}
+                    />Add team
                   </Button>
                 </div>
               </div>
@@ -1620,10 +1635,12 @@ class AddEventDialog extends Component {
                       _.keys(managers).length ===
                       _.keys(selectedManagers).length
                     }
-                    aria-label="add manager"
-                    onClick={() => this.addManager(_.keys(managers).length)}
+                    colour="primary"
+                    filled
+                    handleClick={() => this.addManager(_.keys(managers).length)}
                   >
-                    <AddIcon /> Add manager
+                    <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
+                    Add manager
                   </Button>
                 </div>
               </div>
@@ -1641,10 +1658,13 @@ class AddEventDialog extends Component {
                     disabled={
                       _.keys(coaches).length === _.keys(selectedCoaches).length
                     }
-                    aria-label="add coach"
-                    onClick={() => this.addCoach(_.keys(coaches).length)}
+                    colour="primary"
+                    filled
+                    handleClick={() => this.addCoach(_.keys(coaches).length)}
                   >
-                    <AddIcon /> Add coach
+                    <i
+                      className={`fas fa-plus ${classes.iconAdjacentText}`}
+                    />Add coach
                   </Button>
                 </div>
               </div>
@@ -1666,13 +1686,15 @@ class AddEventDialog extends Component {
           )}
         </DialogContent>
         <DialogActions>
-          <Button disabled={isLoading} onClick={() => handleClose()}>
+          <Button disabled={isLoading} slim handleClick={() => handleClose()}>
             Cancel
           </Button>
           <Button
-            disabled={isLoading || hasErrors}
-            color="primary"
-            onClick={() => {
+            loading={isLoading || hasErrors}
+            slim
+            filled
+            colour="primary"
+            handleClick={() => {
               let eventType = type;
               if (eventType === "OTHER") {
                 eventType = otherEventType;

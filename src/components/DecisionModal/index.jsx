@@ -4,8 +4,7 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from "material-ui/Dialog";
-import Button from "material-ui/Button";
-import Typography from "material-ui/Typography";
+import Button from "../../components/Button";
 
 class DecisionModal extends Component {
   props: {
@@ -40,14 +39,17 @@ class DecisionModal extends Component {
     return (
       <Dialog open={isOpen}>
         <DialogTitle>{heading}</DialogTitle>
-        <DialogContent>
-          <Typography type="body1" component="p">
-            {message}
-          </Typography>
-        </DialogContent>
+        <DialogContent>{message}</DialogContent>
         <DialogActions>
-          <Button onClick={() => handleNoClick()}>No</Button>
-          <Button color="primary" onClick={() => handleYesClick()}>
+          <Button colour="primary" slim handleClick={() => handleNoClick()}>
+            No
+          </Button>
+          <Button
+            colour="primary"
+            filled
+            slim
+            handleClick={() => handleYesClick()}
+          >
             Yes
           </Button>
         </DialogActions>

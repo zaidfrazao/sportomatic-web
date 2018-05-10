@@ -47,12 +47,12 @@ const styles = theme => ({
   },
   normal: {
     padding: "14px 20px",
-    borderRadius: 4,
+    borderRadius: 16,
     cursor: "pointer"
   },
   slim: {
     padding: "8px 14px",
-    borderRadius: 4,
+    borderRadius: 8,
     cursor: "pointer"
   },
   spinner: {

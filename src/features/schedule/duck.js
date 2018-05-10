@@ -72,7 +72,7 @@ export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 // Reducers
 
 export const uiConfigInitialState = {
-  currentView: "SCHEDULE",
+  currentView: "EVENTS_LIST",
   errorType: "NONE",
   minDate: new Date(2017, 1, 1),
   selectedCoach: "",

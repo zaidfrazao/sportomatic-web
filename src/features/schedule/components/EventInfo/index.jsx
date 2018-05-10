@@ -6,6 +6,7 @@ import AddSubIcon from "material-ui-icons/PersonAdd";
 import {
   amber,
   brown,
+  common,
   green,
   grey,
   lightBlue,
@@ -16,8 +17,6 @@ import Avatar from "material-ui/Avatar";
 import AwaitingApprovalIcon from "material-ui-icons/AssignmentReturn";
 import AwaitingSignInIcon from "material-ui-icons/AssignmentLate";
 import AwaitingSignOutIcon from "material-ui-icons/AssignmentReturned";
-import BackIcon from "material-ui-icons/ArrowBack";
-import Button from "material-ui/Button";
 import CancelIcon from "material-ui-icons/Cancel";
 import Collapse from "material-ui/transitions/Collapse";
 import EditIcon from "material-ui-icons/Edit";
@@ -36,7 +35,6 @@ import List, {
 } from "material-ui/List";
 import LocationIcon from "material-ui-icons/LocationOn";
 import moment from "moment";
-import Paper from "material-ui/Paper";
 import PersonIcon from "material-ui-icons/Person";
 import ResultsIcon from "material-ui-icons/PlusOne";
 import { Route } from "react-router-dom";
@@ -45,16 +43,14 @@ import Typography from "material-ui/Typography";
 import UncancelIcon from "material-ui-icons/Undo";
 import WarningIcon from "material-ui-icons/Warning";
 import { withStyles } from "material-ui/styles";
+import Button from "../../../../components/Button";
 import BannerAd from "../../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
 import defaultEmblem from "../../image/default-emblem.jpg";
 import defaultProfilePicture from "../../image/default-profile-picture.png";
 
-const mobileBreakpoint = 800;
-const tabletBreakpoint = 1080;
-
-const styles = theme => ({
+const styles = {
   actionsBar: {
     backgroundColor: grey[200],
     display: "flex",
@@ -63,14 +59,7 @@ const styles = theme => ({
   adWrapper: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    marginTop: 24
-  },
-  appBar: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: "center"
   },
   awaitingApprovalAvatar: {
     backgroundColor: lightBlue[500]
@@ -84,10 +73,8 @@ const styles = theme => ({
   badAbsentAvatar: {
     backgroundColor: red[500]
   },
-  button: {
-    [`@media (max-width: ${tabletBreakpoint}px)`]: {
-      width: "100%"
-    }
+  buttonWrapper: {
+    margin: "24px 12px 0 12px"
   },
   cancelledText: {
     color: red[500],
@@ -114,9 +101,42 @@ const styles = theme => ({
   goodAbsentAvatar: {
     backgroundColor: green[500]
   },
+  headerCancelled: {
+    margin: "0 24px 24px 24px",
+    padding: 12,
+    borderRadius: 16,
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: red[500],
+    border: `3px solid ${red[500]}`
+  },
+  headerCompetitive: {
+    margin: "0 24px 24px 24px",
+    padding: 12,
+    borderRadius: 16,
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: orange["A400"],
+    border: `3px solid ${orange["A400"]}`
+  },
+  headerNonCompetitive: {
+    margin: "0 24px 24px 24px",
+    padding: 12,
+    borderRadius: 16,
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: lightBlue[500],
+    border: `3px solid ${lightBlue[500]}`
+  },
   heading: {
     fontWeight: "normal",
-    fontSize: "1.2rem",
+    fontSize: 24,
     padding: "20px 0",
     margin: 0,
     width: "100%",
@@ -132,17 +152,15 @@ const styles = theme => ({
     marginRight: 8
   },
   inset: {
-    paddingLeft: theme.spacing.unit * 4
+    paddingLeft: 12
   },
   loss: {
     backgroundColor: red[500]
   },
   name: {
-    margin: "24px 16px",
-    textAlign: "left"
-  },
-  nested: {
-    backgroundColor: grey[100]
+    margin: 16,
+    color: common["white"],
+    textAlign: "center"
   },
   noItems: {
     textAlign: "center"
@@ -196,10 +214,34 @@ const styles = theme => ({
     flexDirection: "column"
   },
   section: {
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[200]}`,
+    borderRadius: 16,
+    marginBottom: 24,
     height: "100%",
-    width: "100%"
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    backgroundColor: common["white"]
+  },
+  sectionContent: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  },
+  sectionHeading: {
+    fontSize: 18,
+    borderRadius: "16px 16px 0 0",
+    padding: "18px 0",
+    width: "100%",
+    textAlign: "center",
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: lightBlue[800]
+  },
+  sectionList: {
+    flexGrow: 1,
+    margin: "12px 12px 0 12px",
+    width: "calc(100% - 24px)"
   },
   thumbsDownIcon: {
     color: red[500]
@@ -219,7 +261,7 @@ const styles = theme => ({
   wrapper: {
     padding: 24
   }
-});
+};
 
 class EventInfo extends Component {
   state = {
@@ -1066,103 +1108,128 @@ class EventInfo extends Component {
     const ad = this.createAd();
     const { coaches, managers, teams } = this.getListItems();
     const showButtons = !isPastEvent && info;
+    const status = info ? info.requiredInfo.status : "ACTIVE";
+    const isCompetitive = info ? info.requiredInfo.isCompetitive : false;
+    const title = info ? info.requiredInfo.title : "";
+    const date = info
+      ? moment(info.requiredInfo.times.start).format("DD MMMM YYYY")
+      : moment();
+    const startTime = info
+      ? moment(info.requiredInfo.times.start).format("h:mm A")
+      : moment();
+    const endTime = info
+      ? moment(info.requiredInfo.times.end).format("h:mm A")
+      : moment();
+    const eventType = info ? info.requiredInfo.type : "";
+    const venue =
+      info && info.optionalInfo.venue !== ""
+        ? info.optionalInfo.venue
+        : "Unknown";
+
+    let headerStyle = classes.headerNonCompetitive;
+    if (status === "CANCELLED") {
+      headerStyle = classes.headerCancelled;
+    } else if (isCompetitive) {
+      headerStyle = classes.headerCompetitive;
+    }
 
     let cancelButton = <div />;
     if (showButtons) {
-      if (info.requiredInfo.status === "CANCELLED") {
+      if (status === "CANCELLED") {
         cancelButton = (
-          <Button
-            disabled={
-              isInfoLoading ||
-              isCoachesLoading ||
-              isManagersLoading ||
-              isTeamsLoading
-            }
-            aria-label="uncancel event"
-            onClick={() => uncancelEvent()}
-          >
-            <UncancelIcon className={classes.iconAdjacentText} /> Uncancel event
-          </Button>
+          <div className={classes.buttonWrapper}>
+            <Button
+              disabled={
+                isInfoLoading ||
+                isCoachesLoading ||
+                isManagersLoading ||
+                isTeamsLoading
+              }
+              colour="primary"
+              slim
+              handleClick={() => uncancelEvent()}
+            >
+              <i className={`fas fa-undo ${classes.iconAdjacentText}`} />
+              Uncancel event
+            </Button>
+          </div>
         );
       } else {
         cancelButton = (
-          <Button
-            disabled={
-              isInfoLoading ||
-              isCoachesLoading ||
-              isManagersLoading ||
-              isTeamsLoading
-            }
-            aria-label="cancel event"
-            onClick={() => cancelEvent()}
-          >
-            <CancelIcon className={classes.iconAdjacentText} /> Cancel event
-          </Button>
+          <div className={classes.buttonWrapper}>
+            <Button
+              disabled={
+                isInfoLoading ||
+                isCoachesLoading ||
+                isManagersLoading ||
+                isTeamsLoading
+              }
+              colour="primary"
+              slim
+              handleClick={() => cancelEvent()}
+            >
+              <i className={`fas fa-ban ${classes.iconAdjacentText}`} /> Cancel
+              event
+            </Button>
+          </div>
         );
       }
     }
 
     return (
       <div className={classes.root}>
-        {isInfoLoading || !info ? (
-          <div className={classes.appBar}>
-            <Typography className={classes.name} type="title" component="h2">
-              Loading...
-            </Typography>
-          </div>
+        {isInfoLoading ? (
+          <div className={headerStyle}>Loading...</div>
         ) : (
-          <div className={classes.appBar}>
-            <Avatar
-              className={
-                info.requiredInfo.isCompetitive
-                  ? classes.competitiveEvent
-                  : classes.nonCompetitiveEvent
-              }
-            />
-            <Typography className={classes.name} type="title" component="h2">
-              {info.requiredInfo.title}
-            </Typography>
-          </div>
+          <div className={headerStyle}>{title}</div>
         )}
         <div className={classes.outerWrapper}>
+          {status === "CANCELLED" && (
+            <div className={classes.cancelledEvent}>
+              <WarningIcon className={classes.warningIcon} />
+              <Typography
+                className={classes.cancelledText}
+                type="subtitle"
+                component="h3"
+              >
+                This event has been cancelled.
+              </Typography>
+            </div>
+          )}
+          <div className={classes.adWrapper}>{ad}</div>
           <div className={classes.actionsBar}>
             <Route
               render={({ history }) => (
-                <Button
-                  aria-label="back"
-                  onClick={() => {
-                    history.goBack();
-                    updateView("EVENTS_LIST");
-                  }}
-                >
-                  <BackIcon className={classes.iconAdjacentText} /> Back
-                </Button>
+                <div className={classes.buttonWrapper}>
+                  <Button
+                    colour="primary"
+                    slim
+                    handleClick={() => {
+                      history.goBack();
+                      updateView("EVENTS_LIST");
+                    }}
+                  >
+                    <i
+                      className={`fas fa-caret-left ${classes.iconAdjacentText}`}
+                    />
+                    Back
+                  </Button>
+                </div>
               )}
             />
             {showButtons && canCancel && cancelButton}
             {showButtons &&
               canEdit &&
               !isMobile && (
-                <Button aria-label="edit event" onClick={() => editEvent()}>
-                  <EditIcon className={classes.iconAdjacentText} /> Edit event
-                </Button>
-              )}
-          </div>
-          <div className={classes.adWrapper}>{ad}</div>
-          <div className={classes.wrapper}>
-            {info &&
-              info.requiredInfo.status === "CANCELLED" && (
-                <div className={classes.cancelledEvent}>
-                  <WarningIcon className={classes.warningIcon} />
-                  <Typography
-                    className={classes.cancelledText}
-                    type="subtitle"
-                    component="h3"
-                  >
-                    This event has been cancelled.
-                  </Typography>
+                <div className={classes.buttonWrapper}>
+                  <Button colour="primary" slim handleClick={() => editEvent()}>
+                    <i className={`fas fa-edit ${classes.iconAdjacentText}`} />
+                    Edit event
+                  </Button>
                 </div>
               )}
+          </div>
+          <div className={classes.wrapper}>
             <Grid
               container
               direction="row"
@@ -1170,71 +1237,37 @@ class EventInfo extends Component {
               className={classes.contentWrapper}
             >
               <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Details
-                  </Typography>
-                  <List>
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Details</div>
+                  <List className={classes.sectionList}>
                     <ListItem>
                       <ListItemText
                         primary="Date"
-                        secondary={
-                          isInfoLoading || !info
-                            ? "Loading..."
-                            : moment(info.requiredInfo.times.start).format(
-                                "DD MMMM YYYY"
-                              )
-                        }
+                        secondary={isInfoLoading ? "Loading..." : date}
                       />
                     </ListItem>
                     <ListItem>
                       <ListItemText
                         primary="Starts at"
-                        secondary={
-                          isInfoLoading || !info
-                            ? "Loading..."
-                            : moment(info.requiredInfo.times.start).format(
-                                "h:mm A"
-                              )
-                        }
+                        secondary={isInfoLoading ? "Loading..." : startTime}
                       />
                     </ListItem>
                     <ListItem>
                       <ListItemText
                         primary="Ends at"
-                        secondary={
-                          isInfoLoading || !info
-                            ? "Loading..."
-                            : moment(info.requiredInfo.times.end).format(
-                                "h:mm A"
-                              )
-                        }
+                        secondary={isInfoLoading ? "Loading..." : endTime}
                       />
                     </ListItem>
                     <ListItem>
                       <ListItemText
                         primary="Event type"
-                        secondary={
-                          isInfoLoading || !info
-                            ? "Loading..."
-                            : info.requiredInfo.type
-                        }
+                        secondary={isInfoLoading ? "Loading..." : eventType}
                       />
                     </ListItem>
                     <ListItem>
                       <ListItemText
                         primary="Venue"
-                        secondary={
-                          isInfoLoading || !info
-                            ? "Loading..."
-                            : info.optionalInfo.venue === ""
-                              ? "Unknown"
-                              : info.optionalInfo.venue
-                        }
+                        secondary={isInfoLoading ? "Loading..." : venue}
                       />
                       {info &&
                         info.optionalInfo.venue !== "" && (
@@ -1283,25 +1316,19 @@ class EventInfo extends Component {
                       />
                     </ListItem>
                   </List>
-                </Paper>
+                </div>
               </Grid>
               <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Teams
-                  </Typography>
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Teams</div>
                   {isTeamsLoading || !info ? (
-                    <List>
+                    <List className={classes.sectionList}>
                       <ListItem className={classes.noItems}>
                         <ListItemText primary="Loading..." />
                       </ListItem>
                     </List>
                   ) : (
-                    <List>
+                    <List className={classes.sectionList}>
                       {teams.length > 0 ? (
                         teams
                       ) : (
@@ -1311,25 +1338,19 @@ class EventInfo extends Component {
                       )}
                     </List>
                   )}
-                </Paper>
+                </div>
               </Grid>
               <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Managers
-                  </Typography>
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Managers</div>
                   {isManagersLoading || !info ? (
-                    <List>
+                    <List className={classes.sectionList}>
                       <ListItem className={classes.noItems}>
                         <ListItemText primary="Loading..." />
                       </ListItem>
                     </List>
                   ) : (
-                    <List>
+                    <List className={classes.sectionList}>
                       {managers.length > 0 ? (
                         managers
                       ) : (
@@ -1339,25 +1360,19 @@ class EventInfo extends Component {
                       )}
                     </List>
                   )}
-                </Paper>
+                </div>
               </Grid>
               <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Coaches
-                  </Typography>
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Coaches</div>
                   {isCoachesLoading || !info ? (
-                    <List>
+                    <List className={classes.sectionList}>
                       <ListItem className={classes.noItems}>
                         <ListItemText primary="Loading..." />
                       </ListItem>
                     </List>
                   ) : (
-                    <List>
+                    <List className={classes.sectionList}>
                       {coaches.length > 0 ? (
                         coaches
                       ) : (
@@ -1367,7 +1382,7 @@ class EventInfo extends Component {
                       )}
                     </List>
                   )}
-                </Paper>
+                </div>
               </Grid>
             </Grid>
           </div>

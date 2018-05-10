@@ -1,30 +1,30 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
-import { grey } from "../../../../utils/colours";
+import { common, grey } from "../../../../utils/colours";
 
 const styles = theme => ({
   filled: {
-    color: grey[200],
-    backgroundColor: grey[400],
-    border: `2px solid ${grey[400]}`
+    color: common["white"],
+    backgroundColor: grey[300],
+    border: `2px solid ${grey[300]}`
   },
   fullWidth: {
     width: "100%"
   },
   normal: {
     padding: "14px 20px",
-    borderRadius: 4,
+    borderRadius: 16,
     cursor: "not-allowed"
   },
   outlined: {
-    color: grey[400],
+    color: grey[300],
     backgroundColor: "rgba(0, 0, 0, 0)",
-    border: `2px solid ${grey[400]}`
+    border: `2px solid ${grey[300]}`
   },
   slim: {
     padding: "8px 14px",
-    borderRadius: 4,
+    borderRadius: 8,
     cursor: "not-allowed"
   }
 });

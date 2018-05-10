@@ -1,7 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
-import Button from "material-ui/Button";
 import Dialog, {
   DialogActions,
   DialogContent,
@@ -11,6 +10,7 @@ import Dialog, {
 import { FormControl } from "material-ui/Form";
 import Input from "material-ui/Input";
 import Select from "material-ui/Select";
+import Button from "../../../../components/Button";
 
 class ReplacementCoachModal extends Component {
   state = {
@@ -84,7 +84,9 @@ class ReplacementCoachModal extends Component {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => {
+            colour="primary"
+            slim
+            handleClick={() => {
               closeModal();
               this.resetState();
             }}
@@ -93,8 +95,10 @@ class ReplacementCoachModal extends Component {
           </Button>
           <Button
             disabled={selectedCoachID === ""}
-            color="primary"
-            onClick={() => {
+            colour="primary"
+            filled
+            slim
+            handleClick={() => {
               updateReplacementCoach(selectedCoachID);
               this.resetState();
             }}

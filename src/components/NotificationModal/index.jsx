@@ -4,8 +4,7 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from "material-ui/Dialog";
-import Button from "material-ui/Button";
-import Typography from "material-ui/Typography";
+import Button from "../../components/Button";
 
 class NotificationModal extends Component {
   props: {
@@ -30,13 +29,14 @@ class NotificationModal extends Component {
     return (
       <Dialog open={isOpen}>
         <DialogTitle>{heading}</DialogTitle>
-        <DialogContent>
-          <Typography type="body1" component="p">
-            {message}
-          </Typography>
-        </DialogContent>
+        <DialogContent>{message}</DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={() => handleOkClick()}>
+          <Button
+            colour="primary"
+            filled
+            slim
+            handleClick={() => handleOkClick()}
+          >
             Ok
           </Button>
         </DialogActions>
