@@ -1,9 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
-import Avatar from "material-ui/Avatar";
-import Button from "material-ui/Button";
 import Checkbox from "material-ui/Checkbox";
-import { CircularProgress } from "material-ui/Progress";
 import Dialog, {
   DialogActions,
   DialogContent,
@@ -15,12 +12,10 @@ import {
   FormGroup,
   FormLabel
 } from "material-ui/Form";
-import { grey } from "material-ui/colors";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
 import Select from "material-ui/Select";
-import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
-import defaultProfilePicture from "../../image/default-profile-picture.png";
+import Button from "../../../../components/Button";
 
 const styles = theme => ({
   additionalInfoWrapper: {
@@ -30,45 +25,16 @@ const styles = theme => ({
   basicInfoTextField: {
     margin: 8
   },
-  button: {
-    width: "100%"
-  },
   contentWrapper: {
     minWidth: 280,
     maxWidth: 320,
     margin: "0 auto"
   },
-  errorText: {
-    color: grey[600],
-    width: "100%",
-    maxWidth: 200,
-    margin: 8,
-    textAlign: "center"
-  },
   formControl: {
     margin: "16px 0"
   },
-  messageWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  profilePicture: {
-    backgroundColor: grey[300],
-    height: 80,
-    width: 80,
-    margin: 8
-  },
   subFormControl: {
     margin: "8px 0"
-  },
-  userInfoWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    width: "100%",
-    margin: "16px 0"
   }
 });
 
@@ -239,22 +205,6 @@ class EditPersonDialog extends Component {
         <DialogTitle>Edit Person's Info</DialogTitle>
         <DialogContent>
           <div className={classes.contentWrapper}>
-            <div className={classes.messageWrapper}>
-              <div className={classes.userInfoWrapper}>
-                <Avatar
-                  src={
-                    personInfo.info.profilePictureURL === ""
-                      ? defaultProfilePicture
-                      : personInfo.info.profilePictureURL
-                  }
-                  className={classes.profilePicture}
-                />
-                <Typography type="title" component="h4">
-                  {`${personInfo.info.name} ${personInfo.info.surname}`}
-                </Typography>
-              </div>
-              {isLoading && <CircularProgress />}
-            </div>
             <form autoComplete="off">
               <div className={classes.additionalInfoWrapper}>
                 {!isLoading && (
@@ -413,7 +363,9 @@ class EditPersonDialog extends Component {
         <DialogActions>
           <Button
             disabled={isLoading}
-            onClick={() => {
+            colour="primary"
+            slim
+            handleClick={() => {
               closeModal();
               this.resetState();
             }}
@@ -421,9 +373,11 @@ class EditPersonDialog extends Component {
             Cancel
           </Button>
           <Button
-            disabled={isLoading || !(type.admin || type.coach || type.manager)}
-            color="primary"
-            onClick={() => {
+            loading={isLoading || !(type.admin || type.coach || type.manager)}
+            colour="primary"
+            slim
+            filled
+            handleClick={() => {
               editPerson(personID, {
                 ...personInfo,
                 institutions: {

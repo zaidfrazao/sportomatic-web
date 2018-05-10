@@ -9,6 +9,8 @@ import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import Button from "../../../../components/Button";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   adWrapper: {
     width: "100%",
@@ -40,7 +42,13 @@ const styles = theme => ({
   },
   root: {
     width: "100%",
-    overflow: "auto"
+    height: "100%",
+    overflow: "auto",
+    borderRadius: "0 0 16px 16px",
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
+      backgroundColor: grey[100],
+      borderRadius: "0 0 16px 0"
+    }
   },
   timeHeading: {
     padding: 12.5,
@@ -139,6 +147,7 @@ class EventsList extends Component {
                 <Button
                   colour="primary"
                   fullWidth
+                  filled
                   handleClick={() => updateView("SCHEDULE")}
                 >
                   Select date

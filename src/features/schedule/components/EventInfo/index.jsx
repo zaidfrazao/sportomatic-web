@@ -52,6 +52,7 @@ import defaultProfilePicture from "../../image/default-profile-picture.png";
 
 const styles = {
   actionsBar: {
+    margin: "0 12px",
     backgroundColor: grey[200],
     display: "flex",
     justifyContent: "center"
@@ -74,7 +75,7 @@ const styles = {
     backgroundColor: red[500]
   },
   buttonWrapper: {
-    margin: "24px 12px 0 12px"
+    margin: "0 12px 24px 12px"
   },
   cancelledText: {
     color: red[500],
@@ -109,8 +110,7 @@ const styles = {
     textAlign: "center",
     fontWeight: "bold",
     color: common["white"],
-    backgroundColor: red[500],
-    border: `3px solid ${red[500]}`
+    backgroundColor: red[500]
   },
   headerCompetitive: {
     margin: "0 24px 24px 24px",
@@ -120,8 +120,7 @@ const styles = {
     textAlign: "center",
     fontWeight: "bold",
     color: common["white"],
-    backgroundColor: orange["A400"],
-    border: `3px solid ${orange["A400"]}`
+    backgroundColor: orange["A400"]
   },
   headerNonCompetitive: {
     margin: "0 24px 24px 24px",
@@ -131,8 +130,7 @@ const styles = {
     textAlign: "center",
     fontWeight: "bold",
     color: common["white"],
-    backgroundColor: lightBlue[500],
-    border: `3px solid ${lightBlue[500]}`
+    backgroundColor: lightBlue[500]
   },
   heading: {
     fontWeight: "normal",
@@ -236,7 +234,7 @@ const styles = {
     textAlign: "center",
     fontWeight: "bold",
     color: common["white"],
-    backgroundColor: lightBlue[800]
+    backgroundColor: grey[500]
   },
   sectionList: {
     flexGrow: 1,
@@ -1145,8 +1143,9 @@ class EventInfo extends Component {
                 isManagersLoading ||
                 isTeamsLoading
               }
-              colour="primary"
+              colour="secondary"
               slim
+              filled
               handleClick={() => uncancelEvent()}
             >
               <i className={`fas fa-undo ${classes.iconAdjacentText}`} />
@@ -1164,8 +1163,9 @@ class EventInfo extends Component {
                 isManagersLoading ||
                 isTeamsLoading
               }
-              colour="primary"
+              colour="secondary"
               slim
+              filled
               handleClick={() => cancelEvent()}
             >
               <i className={`fas fa-ban ${classes.iconAdjacentText}`} /> Cancel
@@ -1192,17 +1192,16 @@ class EventInfo extends Component {
                 type="subtitle"
                 component="h3"
               >
-                This event has been cancelled.
+                Cancelled
               </Typography>
             </div>
           )}
-          <div className={classes.adWrapper}>{ad}</div>
           <div className={classes.actionsBar}>
             <Route
               render={({ history }) => (
                 <div className={classes.buttonWrapper}>
                   <Button
-                    colour="primary"
+                    colour="secondary"
                     slim
                     handleClick={() => {
                       history.goBack();
@@ -1217,18 +1216,25 @@ class EventInfo extends Component {
                 </div>
               )}
             />
+            <div className={classes.flexGrow} />
             {showButtons && canCancel && cancelButton}
             {showButtons &&
               canEdit &&
               !isMobile && (
                 <div className={classes.buttonWrapper}>
-                  <Button colour="primary" slim handleClick={() => editEvent()}>
+                  <Button
+                    colour="secondary"
+                    filled
+                    slim
+                    handleClick={() => editEvent()}
+                  >
                     <i className={`fas fa-edit ${classes.iconAdjacentText}`} />
                     Edit event
                   </Button>
                 </div>
               )}
           </div>
+          <div className={classes.adWrapper}>{ad}</div>
           <div className={classes.wrapper}>
             <Grid
               container

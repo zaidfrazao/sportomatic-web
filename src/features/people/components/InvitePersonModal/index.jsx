@@ -1,7 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import Avatar from "material-ui/Avatar";
-import Button from "material-ui/Button";
 import Checkbox from "material-ui/Checkbox";
 import { CircularProgress } from "material-ui/Progress";
 import Dialog, {
@@ -23,6 +22,7 @@ import Slide from "material-ui/transitions/Slide";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
+import Button from "../../../../components/Button";
 import { isValidEmail } from "../../../../utils/validation";
 import defaultProfilePicture from "../../image/default-profile-picture.png";
 
@@ -404,13 +404,13 @@ class InvitePersonModal extends Component {
                 />
               </FormControl>
               <Button
-                raised
                 type="submit"
-                disabled={isLoading}
-                color="primary"
-                className={classes.button}
-                aria-label="check email"
-                onClick={e => this.checkEmail(e)}
+                loading={isLoading}
+                colour="primary"
+                slim
+                fullWidth
+                filled
+                handleClick={e => this.checkEmail(e)}
               >
                 Check email
               </Button>
@@ -671,7 +671,9 @@ class InvitePersonModal extends Component {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => {
+            colour="primary"
+            slim
+            handleClick={() => {
               closeModal();
               this.resetState();
             }}
@@ -682,8 +684,10 @@ class InvitePersonModal extends Component {
             disabled={
               emailEntered === "" || !(type.admin || type.coach || type.manager)
             }
-            color="primary"
-            onClick={() => {
+            slim
+            filled
+            colour="primary"
+            handleClick={() => {
               if (personStatus === "NEW_USER") {
                 const tempPassword = this.generatePassword();
                 const userInfo = {

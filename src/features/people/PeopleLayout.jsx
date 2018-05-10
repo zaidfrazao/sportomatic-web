@@ -2,47 +2,41 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import AddIcon from "material-ui-icons/Add";
-import Badge from "material-ui/Badge";
-import Button from "material-ui/Button";
+import MuiButton from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import EditIcon from "material-ui-icons/Edit";
-import Tabs, { Tab } from "material-ui/Tabs";
 import { withStyles } from "material-ui/styles";
-import AcceptCoachModal from "./components/AcceptCoachModal";
 import BannerAd from "../../components/BannerAd";
+import Button from "../../components/Button";
 import DecisionModal from "../../components/DecisionModal";
 import EditPersonDialog from "./components/EditPersonDialog";
 import InvitePersonModal from "./components/InvitePersonModal";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import PeopleList from "./components/PeopleList";
-import RequestsList from "./components/RequestsList";
 import PersonInfo from "./components/PersonInfo";
-import FiltersToolbar from "./components/FiltersToolbar";
-
-const mobileBreakpoint = 800;
 
 const styles = theme => ({
-  adWrapper: {
-    width: "100%",
+  actionsBar: {
     display: "flex",
     justifyContent: "center",
-    marginTop: 24
+    margin: "0 24px 24px 24px"
   },
-  button: {
-    margin: theme.spacing.unit,
-    position: "fixed",
-    bottom: 72,
-    right: 24,
-    [`@media (min-width: ${mobileBreakpoint}px)`]: {
-      bottom: 24
-    }
+  adWrapper: {
+    display: "flex",
+    justifyContent: "center"
   },
   fabPosition: {
     position: "fixed",
     right: "24px",
     bottom: "24px",
     zIndex: 10
+  },
+  flexGrow: {
+    flexGrow: 1
+  },
+  iconAdjacentText: {
+    marginRight: 8
   },
   infoWrapper: {
     height: "100%",
@@ -53,21 +47,6 @@ const styles = theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
-  },
-  myPeopleSelector: {
-    width: "100%",
-    maxWidth: 1200,
-    margin: "0 auto",
-    display: "flex",
-    alignItems: "center"
-  },
-  requestsTab: {
-    flexGrow: 1,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-    textAlign: "center"
   },
   root: {
     width: "100%",
@@ -516,7 +495,6 @@ class PeopleLayout extends Component {
       teams,
       isMobile,
       isTablet,
-      filters,
       activeInstitutionID,
       eventsByCoach,
       eventsByManager,
@@ -525,7 +503,6 @@ class PeopleLayout extends Component {
       userID
     } = this.props;
     const {
-      currentTab,
       inviteeID,
       inviteeInfo,
       applicantID,
@@ -539,19 +516,14 @@ class PeopleLayout extends Component {
       isInviteeLoading,
       isEditPersonLoading,
       isEventsByCoachLoading,
-      isEventsByManagerLoading,
-      isApplicantResponseLoading
+      isEventsByManagerLoading
     } = this.props.loadingStatus;
     const {
-      updateTab,
       openEditPersonDialog,
       closeEditPersonDialog,
-      openRejectPersonModal,
       closeRejectPersonModal,
       openInvitePersonModal,
       closeInvitePersonModal,
-      applyFilters,
-      updateSearch,
       fetchInviteeInfo,
       createUser,
       invitePerson,
@@ -559,7 +531,6 @@ class PeopleLayout extends Component {
       editRoles,
       rejectPerson,
       approvePerson,
-      openApprovePersonModal,
       closeApprovePersonModal
     } = this.props.actions;
     const {
@@ -573,7 +544,6 @@ class PeopleLayout extends Component {
     const staffCardsInfo = this.getStaffCardsInfo(
       this.filterPeople(staff, false)
     );
-    const requestsCardsInfo = this.getRequestsCardsInfo(requests);
     const ad = this.createAd();
     const type = this.getType();
 
@@ -625,7 +595,7 @@ class PeopleLayout extends Component {
             />
             {role === "admin" &&
               isMobile && (
-                <Button
+                <MuiButton
                   fab
                   color="accent"
                   aria-label="edit person info"
@@ -633,161 +603,78 @@ class PeopleLayout extends Component {
                   onClick={() => openEditPersonDialog()}
                 >
                   <EditIcon />
-                </Button>
+                </MuiButton>
               )}
           </div>
         ) : (
           <div className={classes.tabsWrapper}>
-            {false &&
-              role === "admin" && (
-                <Tabs
-                  value={currentTab}
-                  onChange={(event, newTab) => updateTab(newTab)}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  centered
-                >
-                  <Tab label="Staff" value="STAFF" className={classes.tabs} />
-                  {requestsCardsInfo.length > 0 ? (
-                    <Tab
-                      label={
-                        <Badge
-                          badgeContent={requestsCardsInfo.length}
-                          color="accent"
-                        >
-                          Requests
-                        </Badge>
-                      }
-                      value="REQUESTS"
-                      className={classes.tabs}
-                    />
-                  ) : (
-                    <Tab
-                      label="Requests"
-                      value="REQUESTS"
-                      className={classes.tabs}
-                    />
-                  )}
-                </Tabs>
-              )}
-            {currentTab === "STAFF" && (
-              <div
-                className={
-                  staffCardsInfo.length > 0
-                    ? classes.staffTab
-                    : classes.staffTabNoCards
-                }
-              >
-                <FiltersToolbar
-                  sports={_.keys(this.state.sports)}
-                  types={_.keys(this.state.types)}
-                  isMobile={isMobile}
-                  initialFilters={filters}
-                  applyFilters={applyFilters}
-                  addPerson={openInvitePersonModal}
-                  updateSearch={updateSearch}
-                  role={role}
-                />
-                <div className={classes.adWrapper}>{ad}</div>
-                {activeInstitutionID === "" ||
-                isCoachesLoading ||
-                isManagersLoading ||
-                isAdminsLoading ? (
-                  <div className={classes.loaderWrapper}>
-                    <CircularProgress />
-                  </div>
-                ) : (
-                  <div>
-                    <PeopleList people={staffCardsInfo} />
-                  </div>
-                )}
-                <InvitePersonModal
-                  isOpen={isInvitePersonModalOpen}
-                  isMobile={isMobile}
-                  isLoading={isInviteeLoading || activeInstitutionID === ""}
-                  inviteeID={inviteeID}
-                  userID={userID}
-                  inviteeInfo={inviteeInfo}
-                  institutionID={activeInstitutionID}
-                  paymentDefaults={paymentDefaults}
-                  actions={{
-                    editRoles: () => editRoles(),
-                    invitePerson: (id, info) => invitePerson(id, info),
-                    createUser: (email, password, userInfo) =>
-                      createUser(email, password, userInfo),
-                    fetchInviteeInfo: email => fetchInviteeInfo(email),
-                    closeModal: () => closeInvitePersonModal()
-                  }}
-                />
-                {role === "admin" &&
-                  isMobile && (
+            <div
+              className={
+                staffCardsInfo.length > 0
+                  ? classes.staffTab
+                  : classes.staffTabNoCards
+              }
+            >
+              {role === "admin" &&
+                !isMobile && (
+                  <div className={classes.actionsBar}>
+                    <div className={classes.flexGrow} />
                     <Button
-                      fab
-                      color="accent"
-                      aria-label="invite new person"
-                      className={classes.fabPosition}
-                      onClick={() => openInvitePersonModal()}
+                      colour="secondary"
+                      filled
+                      handleClick={() => openInvitePersonModal()}
                     >
-                      <AddIcon />
+                      <i
+                        className={`fas fa-plus ${classes.iconAdjacentText}`}
+                      />
+                      Invite new person
                     </Button>
-                  )}
-              </div>
-            )}
-            {currentTab === "REQUESTS" && (
-              <div
-                className={
-                  requestsCardsInfo.length > 0
-                    ? classes.staffTab
-                    : classes.staffTabNoCards
-                }
-              >
-                <div className={classes.adWrapper}>{ad}</div>
-                {activeInstitutionID === "" ||
-                isCoachesLoading ||
-                isManagersLoading ||
-                isAdminsLoading ? (
-                  <div className={classes.loaderWrapper}>
-                    <CircularProgress />
                   </div>
-                ) : (
-                  <RequestsList
-                    people={requestsCardsInfo}
-                    actions={{ openRejectPersonModal, openApprovePersonModal }}
-                  />
                 )}
-              </div>
-            )}
-            <AcceptCoachModal
-              isLoading={isApplicantResponseLoading}
-              isOpen={isApprovePersonModalOpen && isCoachApplication}
-              applicantID={applicantID}
-              institutionID={activeInstitutionID}
-              paymentDefaults={paymentDefaults}
-              roles={{
-                admin:
-                  requests[applicantID] &&
-                  requests[applicantID].institutions[activeInstitutionID].roles
-                    .admin !== "N/A"
-                    ? "APPROVED"
-                    : "N/A",
-                coach:
-                  requests[applicantID] &&
-                  requests[applicantID].institutions[activeInstitutionID].roles
-                    .coach !== "N/A"
-                    ? "APPROVED"
-                    : "N/A",
-                manager:
-                  requests[applicantID] &&
-                  requests[applicantID].institutions[activeInstitutionID].roles
-                    .manager !== "N/A"
-                    ? "APPROVED"
-                    : "N/A"
-              }}
-              actions={{
-                approvePerson,
-                closeModal: () => closeApprovePersonModal()
-              }}
-            />
+              <div className={classes.adWrapper}>{ad}</div>
+              {activeInstitutionID === "" ||
+              isCoachesLoading ||
+              isManagersLoading ||
+              isAdminsLoading ? (
+                <div className={classes.loaderWrapper}>
+                  <CircularProgress />
+                </div>
+              ) : (
+                <div>
+                  <PeopleList people={staffCardsInfo} />
+                </div>
+              )}
+              <InvitePersonModal
+                isOpen={isInvitePersonModalOpen}
+                isMobile={isMobile}
+                isLoading={isInviteeLoading || activeInstitutionID === ""}
+                inviteeID={inviteeID}
+                userID={userID}
+                inviteeInfo={inviteeInfo}
+                institutionID={activeInstitutionID}
+                paymentDefaults={paymentDefaults}
+                actions={{
+                  editRoles: () => editRoles(),
+                  invitePerson: (id, info) => invitePerson(id, info),
+                  createUser: (email, password, userInfo) =>
+                    createUser(email, password, userInfo),
+                  fetchInviteeInfo: email => fetchInviteeInfo(email),
+                  closeModal: () => closeInvitePersonModal()
+                }}
+              />
+              {role === "admin" &&
+                isMobile && (
+                  <MuiButton
+                    fab
+                    color="accent"
+                    aria-label="invite new person"
+                    className={classes.fabPosition}
+                    onClick={() => openInvitePersonModal()}
+                  >
+                    <AddIcon />
+                  </MuiButton>
+                )}
+            </div>
             <DecisionModal
               isOpen={isRejectPersonModalOpen}
               handleYesClick={() => {

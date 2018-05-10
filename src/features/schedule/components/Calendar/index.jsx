@@ -14,7 +14,6 @@ import PreviousIcon from "material-ui-icons/ArrowBack";
 import Previous2Icon from "material-ui-icons/FirstPage";
 import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
-import Button from "../../../../components/Button";
 import EventsList from "../EventsList";
 
 const mobileBreakpoint = 800;
@@ -219,7 +218,6 @@ class Calendar extends Component {
       updateView,
       openCancelEventAlert,
       openUncancelEventAlert,
-      addEvent,
       cancelEvent
     } = this.props.actions;
 
@@ -490,16 +488,6 @@ class Calendar extends Component {
             />
           </div>
           <div className={classes.desktopEventsList}>
-            <div className={classes.addButtonWrapper}>
-              <Button
-                colour="secondary"
-                filled
-                fullWidth
-                handleClick={() => addEvent()}
-              >
-                Add new event
-              </Button>
-            </div>
             <EventsList
               isTablet={isTablet}
               dateSelected={dateSelected}

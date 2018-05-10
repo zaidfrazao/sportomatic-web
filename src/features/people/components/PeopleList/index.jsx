@@ -12,7 +12,9 @@ const styles = {
   },
   noCardsText: {
     color: grey[500],
-    padding: 40,
+    margin: "24px 0",
+    padding: "32px 64px",
+    borderRadius: 16,
     border: `3px solid ${grey[300]}`
   },
   noCardsWrapper: {

@@ -1,12 +1,8 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
-import Avatar from "material-ui/Avatar";
-import BackIcon from "material-ui-icons/ArrowBack";
-import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import Collapse from "material-ui/transitions/Collapse";
-import EditIcon from "material-ui-icons/Edit";
 import EventIcon from "material-ui-icons/Event";
 import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
@@ -19,22 +15,21 @@ import List, {
   ListSubheader
 } from "material-ui/List";
 import moment from "moment";
-import Paper from "material-ui/Paper";
 import { Route } from "react-router-dom";
 import TeamIcon from "material-ui-icons/Group";
-import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../components/BannerAd";
+import Button from "../../../../components/Button";
+import { common, lightBlue } from "../../../../utils/colours";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LargeRectangleAd from "../../../../components/LargeRectangleAd";
 import defaultProfilePicture from "../../image/default-profile-picture.png";
 
-const mobileBreakpoint = 800;
-
 const styles = theme => ({
   actionsBar: {
+    margin: "0 24px",
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "center"
   },
   adWrapper: {
     width: "100%",
@@ -43,13 +38,27 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center"
   },
-  button: {
-    [`@media (max-width: ${mobileBreakpoint}px)`]: {
-      width: "100%"
-    }
-  },
   flexGrow: {
     flexGrow: 1
+  },
+  header: {
+    margin: "0 24px",
+    padding: 12,
+    borderRadius: 16,
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: lightBlue[800]
+  },
+  headerSecondary: {
+    margin: "8px 24px",
+    padding: 12,
+    borderRadius: 16,
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: "bold",
+    color: grey[700]
   },
   heading: {
     fontWeight: "normal",
@@ -78,11 +87,6 @@ const styles = theme => ({
     backgroundColor: grey[50],
     border: `1px solid ${grey[200]}`
   },
-  name: {
-    margin: 24,
-    width: "calc(100% - 48px)",
-    textAlign: "center"
-  },
   nested: {
     backgroundColor: grey[100]
   },
@@ -91,18 +95,16 @@ const styles = theme => ({
   },
   picture: {
     backgroundColor: grey[300],
+    borderRadius: 16,
     width: 240,
-    height: "auto",
-    margin: 24
+    height: 240
   },
   pictureWrapper: {
     width: "100%",
     height: "100%",
-    backgroundColor: grey[50],
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    border: `1px solid ${grey[200]}`
+    justifyContent: "center"
   },
   outerWrapper: {
     flexGrow: 1,
@@ -129,10 +131,31 @@ const styles = theme => ({
     flexDirection: "column"
   },
   section: {
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[200]}`,
+    borderRadius: 16,
+    marginBottom: 24,
     height: "100%",
-    width: "100%"
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    backgroundColor: common["white"]
+  },
+  sectionContent: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column"
+  },
+  sectionHeading: {
+    fontSize: 18,
+    borderRadius: "16px 16px 0 0",
+    padding: "18px 0",
+    width: "100%",
+    textAlign: "center",
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: grey[500]
+  },
+  sectionList: {
+    flexGrow: 1
   },
   type: {
     fontWeight: "normal",
@@ -473,20 +496,28 @@ class PersonInfo extends Component {
     return (
       <div className={classes.root}>
         {isStaffLoading ? (
-          <Typography className={classes.name} type="title" component="h2">
-            Loading...
-          </Typography>
+          <div className={classes.header}>Loading...</div>
         ) : (
-          <Typography className={classes.name} type="title" component="h2">
-            {`${name} ${surname}`}
-          </Typography>
+          <div className={classes.header}>{`${name} ${surname}`}</div>
+        )}
+        {isStaffLoading ? (
+          <div className={classes.headerSecondary}>Loading...</div>
+        ) : (
+          <div className={classes.headerSecondary}>{type}</div>
         )}
         <div className={classes.outerWrapper}>
           <div className={classes.actionsBar}>
             <Route
               render={({ history }) => (
-                <Button aria-label="back" onClick={() => history.goBack()}>
-                  <BackIcon className={classes.iconAdjacentText} /> Back
+                <Button
+                  colour="secondary"
+                  slim
+                  handleClick={() => history.goBack()}
+                >
+                  <i
+                    className={`fas fa-caret-left ${classes.iconAdjacentText}`}
+                  />
+                  Back
                 </Button>
               )}
             />
@@ -494,12 +525,13 @@ class PersonInfo extends Component {
             {role === "admin" &&
               !isMobile && (
                 <Button
-                  disabled={isStaffLoading || isTeamsLoading}
-                  aria-label="edit person info"
-                  onClick={() => editPersonInfo()}
+                  colour="secondary"
+                  slim
+                  filled
+                  handleClick={() => editPersonInfo()}
                 >
-                  <EditIcon className={classes.iconAdjacentText} /> Edit person
-                  info
+                  <i className={`fas fa-edit ${classes.iconAdjacentText}`} />
+                  Edit person info
                 </Button>
               )}
           </div>
@@ -517,12 +549,13 @@ class PersonInfo extends Component {
                   </div>
                 ) : (
                   <div className={classes.pictureWrapper}>
-                    <Avatar
+                    <img
                       src={
                         profilePictureURL === ""
                           ? defaultProfilePicture
                           : profilePictureURL
                       }
+                      alt={name}
                       className={classes.picture}
                     />
                   </div>
@@ -531,245 +564,217 @@ class PersonInfo extends Component {
               <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
                 <div className={classes.adWrapper}>{ad}</div>
               </Grid>
-              <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-                {isStaffLoading ? (
-                  <Typography
-                    className={classes.type}
-                    type="title"
-                    component="h3"
-                  >
-                    Loading...
-                  </Typography>
-                ) : (
-                  <Typography
-                    className={classes.type}
-                    type="title"
-                    component="h3"
-                  >
-                    {type}
-                  </Typography>
-                )}
-              </Grid>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Details
-                  </Typography>
-                  <List>
-                    <ListItem>
-                      <ListItemText
-                        primary="Email"
-                        secondary={isStaffLoading ? "Loading..." : email}
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText
-                        primary="Phone number"
-                        secondary={
-                          isStaffLoading
-                            ? "Loading..."
-                            : phoneNumber === "" ? "Unknown" : phoneNumber
-                        }
-                      />
-                    </ListItem>
-                  </List>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Preferred Sports
-                  </Typography>
-                  {isStaffLoading ? (
-                    <ListItem className={classes.noItems}>
-                      <ListItemText primary="Loading..." />
-                    </ListItem>
-                  ) : (
-                    <List>
-                      {sports && _.keys(sports).length > 0 ? (
-                        _.toPairs(sports).map(([sport, exists]) => {
-                          if (exists && sport !== "Unknown") {
-                            return (
-                              <ListItem key={sport}>
-                                <ListItemText primary={sport} />
-                              </ListItem>
-                            );
-                          } else if (sport === "Unknown") {
-                            return (
-                              <ListItem key={sport} className={classes.noItems}>
-                                <ListItemText primary="None" />
-                              </ListItem>
-                            );
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Details</div>
+                  <div className={classes.sectionContent}>
+                    <List className={classes.sectionList}>
+                      <ListItem>
+                        <ListItemText
+                          primary="Email"
+                          secondary={isStaffLoading ? "Loading..." : email}
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText
+                          primary="Phone number"
+                          secondary={
+                            isStaffLoading
+                              ? "Loading..."
+                              : phoneNumber === "" ? "Unknown" : phoneNumber
                           }
-                        })
-                      ) : (
-                        <ListItem className={classes.noItems}>
-                          <ListItemText primary="No preferred sports" />
-                        </ListItem>
-                      )}
-                    </List>
-                  )}
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Teams
-                  </Typography>
-                  {isStaffLoading || isTeamsLoading ? (
-                    <List>
-                      <ListItem className={classes.noItems}>
-                        <ListItemText primary="Loading..." />
+                        />
                       </ListItem>
                     </List>
-                  ) : (
-                    <List>
-                      {teamsList && teamsList.length > 0 ? (
-                        teamsList.map(teamInfo => (
-                          <div key={teamInfo.id}>
-                            <ListItem
-                              button
-                              onClick={() => this.toggleTeamInfo(teamInfo.id)}
-                            >
-                              <ListItemText
-                                primary={teamInfo.info.name}
-                                secondary={teamInfo.info.sport}
-                              />
-                              {isTeamOpen[teamInfo.id] ? (
-                                <ExpandLess />
-                              ) : (
-                                <ExpandMore />
-                              )}
-                            </ListItem>
-                            <Collapse
-                              component="li"
-                              in={isTeamOpen[teamInfo.id]}
-                              timeout="auto"
-                              unmountOnExit
-                            >
-                              <List className={classes.nested} disablePadding>
-                                <ListSubheader>Options</ListSubheader>
-                                <Route
-                                  render={({ history }) => (
-                                    <ListItem
-                                      className={classes.inset}
-                                      button
-                                      onClick={() =>
-                                        history.push(
-                                          `/admin/teams/${teamInfo.id}`
-                                        )}
-                                    >
-                                      <ListItemIcon>
-                                        <TeamIcon />
-                                      </ListItemIcon>
-                                      <ListItemText primary="View team info" />
-                                    </ListItem>
-                                  )}
-                                />{" "}
-                              </List>
-                            </Collapse>
-                          </div>
-                        ))
-                      ) : (
-                        <ListItem className={classes.noItems}>
-                          <ListItemText primary="None" />
-                        </ListItem>
-                      )}
-                    </List>
-                  )}
-                </Paper>
+                  </div>
+                </div>
               </Grid>
-              {isCoach &&
-                role === "admin" && (
-                  <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                    <Paper className={classes.section}>
-                      <Typography
-                        className={classes.heading}
-                        type="title"
-                        component="h3"
-                      >
-                        Coach Payment Settings
-                      </Typography>
-                      <List>
-                        <ListItem>
-                          <ListItemText
-                            primary="Terms"
-                            secondary={
-                              isStaffLoading ? "Loading..." : paymentType
-                            }
-                          />
-                        </ListItem>
-                        {info.institutions[institutionID].paymentDefaults
-                          .type === "HOURLY" && (
-                          <ListItem>
-                            <ListItemText
-                              primary="Standard hourly rate"
-                              secondary={`R ${rates.standard}`}
-                            />
-                          </ListItem>
-                        )}
-                        {info.institutions[institutionID].paymentDefaults
-                          .type === "HOURLY" && (
-                          <ListItem>
-                            <ListItemText
-                              primary="Overtime hourly rate"
-                              secondary={`R ${rates.overtime}`}
-                            />
-                          </ListItem>
-                        )}
-                        {info.institutions[institutionID].paymentDefaults
-                          .type === "MONTHLY" && (
-                          <ListItem>
-                            <ListItemText
-                              primary="Monthly salary"
-                              secondary={`R ${rates.salary}`}
-                            />
-                          </ListItem>
-                        )}
-                      </List>
-                    </Paper>
-                  </Grid>
-                )}
-              {(isCoach || isManager) && (
-                <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                  <Paper className={classes.section}>
-                    <Typography
-                      className={classes.heading}
-                      type="title"
-                      component="h3"
-                    >
-                      Upcoming Events
-                    </Typography>
-                    {isEventsByPersonLoading || isStaffLoading ? (
-                      <List>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Preferred Sports</div>
+                  <div className={classes.sectionContent}>
+                    {isStaffLoading ? (
+                      <List className={classes.sectionList}>
                         <ListItem className={classes.noItems}>
                           <ListItemText primary="Loading..." />
                         </ListItem>
                       </List>
                     ) : (
-                      <List>
-                        {upcomingEventsList.length > 0 ? (
-                          upcomingEventsList
+                      <List className={classes.sectionList}>
+                        {sports && _.keys(sports).length > 0 ? (
+                          _.toPairs(sports).map(([sport, exists]) => {
+                            if (exists && sport !== "Unknown") {
+                              return (
+                                <ListItem key={sport}>
+                                  <ListItemText primary={sport} />
+                                </ListItem>
+                              );
+                            } else if (sport === "Unknown") {
+                              return (
+                                <ListItem
+                                  key={sport}
+                                  className={classes.noItems}
+                                >
+                                  <ListItemText primary="None" />
+                                </ListItem>
+                              );
+                            }
+                          })
                         ) : (
                           <ListItem className={classes.noItems}>
-                            <ListItemText primary="None" />
+                            <ListItemText primary="No preferred sports" />
                           </ListItem>
                         )}
                       </List>
                     )}
-                  </Paper>
+                  </div>
+                </div>
+              </Grid>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Teams</div>
+                  <div className={classes.sectionContent}>
+                    {isStaffLoading || isTeamsLoading ? (
+                      <List className={classes.sectionList}>
+                        <ListItem className={classes.noItems}>
+                          <ListItemText primary="Loading..." />
+                        </ListItem>
+                      </List>
+                    ) : (
+                      <List className={classes.sectionList}>
+                        {teamsList && teamsList.length > 0 ? (
+                          teamsList.map(teamInfo => (
+                            <div key={teamInfo.id}>
+                              <ListItem
+                                button
+                                onClick={() => this.toggleTeamInfo(teamInfo.id)}
+                              >
+                                <ListItemText
+                                  primary={teamInfo.info.name}
+                                  secondary={teamInfo.info.sport}
+                                />
+                                {isTeamOpen[teamInfo.id] ? (
+                                  <ExpandLess />
+                                ) : (
+                                  <ExpandMore />
+                                )}
+                              </ListItem>
+                              <Collapse
+                                component="li"
+                                in={isTeamOpen[teamInfo.id]}
+                                timeout="auto"
+                                unmountOnExit
+                              >
+                                <List className={classes.nested} disablePadding>
+                                  <ListSubheader>Options</ListSubheader>
+                                  <Route
+                                    render={({ history }) => (
+                                      <ListItem
+                                        className={classes.inset}
+                                        button
+                                        onClick={() =>
+                                          history.push(
+                                            `/admin/teams/${teamInfo.id}`
+                                          )}
+                                      >
+                                        <ListItemIcon>
+                                          <TeamIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary="View team info" />
+                                      </ListItem>
+                                    )}
+                                  />{" "}
+                                </List>
+                              </Collapse>
+                            </div>
+                          ))
+                        ) : (
+                          <List className={classes.sectionList}>
+                            <ListItem className={classes.noItems}>
+                              <ListItemText primary="None" />
+                            </ListItem>
+                          </List>
+                        )}
+                      </List>
+                    )}
+                  </div>
+                </div>
+              </Grid>
+              {isCoach &&
+                role === "admin" && (
+                  <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                    <div className={classes.section}>
+                      <div className={classes.sectionHeading}>
+                        Coach Payment Settings
+                      </div>
+                      <div className={classes.sectionContent}>
+                        <List className={classes.sectionList}>
+                          <ListItem>
+                            <ListItemText
+                              primary="Terms"
+                              secondary={
+                                isStaffLoading ? "Loading..." : paymentType
+                              }
+                            />
+                          </ListItem>
+                          {info.institutions[institutionID].paymentDefaults
+                            .type === "HOURLY" && (
+                            <ListItem>
+                              <ListItemText
+                                primary="Standard hourly rate"
+                                secondary={`R ${rates.standard}`}
+                              />
+                            </ListItem>
+                          )}
+                          {info.institutions[institutionID].paymentDefaults
+                            .type === "HOURLY" && (
+                            <ListItem>
+                              <ListItemText
+                                primary="Overtime hourly rate"
+                                secondary={`R ${rates.overtime}`}
+                              />
+                            </ListItem>
+                          )}
+                          {info.institutions[institutionID].paymentDefaults
+                            .type === "MONTHLY" && (
+                            <ListItem>
+                              <ListItemText
+                                primary="Monthly salary"
+                                secondary={`R ${rates.salary}`}
+                              />
+                            </ListItem>
+                          )}
+                        </List>
+                      </div>
+                    </div>
+                  </Grid>
+                )}
+              {(isCoach || isManager) && (
+                <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
+                  <div className={classes.section}>
+                    <div className={classes.sectionHeading}>
+                      Upcoming Events
+                    </div>
+                    <div className={classes.sectionContent}>
+                      {isEventsByPersonLoading || isStaffLoading ? (
+                        <List className={classes.sectionList}>
+                          <ListItem className={classes.noItems}>
+                            <ListItemText primary="Loading..." />
+                          </ListItem>
+                        </List>
+                      ) : (
+                        <List className={classes.sectionList}>
+                          {upcomingEventsList.length > 0 ? (
+                            upcomingEventsList
+                          ) : (
+                            <ListItem className={classes.noItems}>
+                              <ListItemText primary="None" />
+                            </ListItem>
+                          )}
+                        </List>
+                      )}
+                    </div>
+                  </div>
                 </Grid>
               )}
             </Grid>

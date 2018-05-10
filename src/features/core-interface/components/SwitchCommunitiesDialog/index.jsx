@@ -1,6 +1,5 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
-import Button from "material-ui/Button";
 import Dialog, {
   DialogActions,
   DialogContent,
@@ -8,6 +7,7 @@ import Dialog, {
 } from "material-ui/Dialog";
 import { common, grey, lightBlue } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
+import Button from "../../../../components/Button";
 
 const mobileBreakpoint = 800;
 
@@ -53,8 +53,8 @@ const styles = {
     padding: 4,
     margin: 12,
     width: 32,
-    ehgiht: 32,
-    backgroundColor: common["white"],
+    height: 32,
+    backgroundColor: grey[300],
     [`@media (max-width: ${mobileBreakpoint}px)`]: {
       margin: 14
     }
@@ -130,10 +130,14 @@ class SwitchCommunitiesDialog extends Component {
         <DialogTitle>Switch Community</DialogTitle>
         <DialogContent>{communityItems}</DialogContent>
         <DialogActions>
-          <Button onClick={() => closeDialog()}>Close</Button>
+          <Button colour="primary" slim handleClick={() => closeDialog()}>
+            Close
+          </Button>
           <Button
-            color="primary"
-            onClick={() => updateActiveCommunity(selectedCommunityID)}
+            colour="primary"
+            slim
+            filled
+            handleClick={() => updateActiveCommunity(selectedCommunityID)}
           >
             Switch
           </Button>

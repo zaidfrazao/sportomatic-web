@@ -2,13 +2,14 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import AddIcon from "material-ui-icons/Add";
-import Button from "material-ui/Button";
 import EditIcon from "material-ui-icons/Edit";
 import { lightBlue, orange } from "material-ui/colors";
 import moment from "moment";
+import MuiButton from "material-ui/Button";
 import { Redirect } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import AddEventDialog from "./components/AddEventDialog";
+import Button from "../../components/Button";
 import Calendar from "./components/Calendar";
 import DecisionModal from "../../components/DecisionModal";
 import EditAbsentRatingModal from "./components/EditAbsentRatingModal";
@@ -19,6 +20,11 @@ import NotificationModal from "../../components/NotificationModal";
 import ReplacementCoachModal from "./components/ReplacementCoachModal";
 
 const styles = theme => ({
+  actionsBar: {
+    display: "flex",
+    justifyContent: "center",
+    margin: "0 24px 24px 24px"
+  },
   button: {
     margin: theme.spacing.unit,
     position: "fixed",
@@ -54,6 +60,12 @@ const styles = theme => ({
     right: "24px",
     bottom: "24px",
     zIndex: 10
+  },
+  flexGrow: {
+    flexGrow: 1
+  },
+  iconAdjacentText: {
+    marginRight: 8
   },
   loaderWrapper: {
     flexGrow: 1,
@@ -527,7 +539,7 @@ class ScheduleLayout extends Component {
           {canEdit &&
             !isPastEvent &&
             isMobile && (
-              <Button
+              <MuiButton
                 fab
                 color="accent"
                 aria-label="edit event"
@@ -535,7 +547,7 @@ class ScheduleLayout extends Component {
                 onClick={() => openEditEventDialog()}
               >
                 <EditIcon />
-              </Button>
+              </MuiButton>
             )}
           <EditEventDialog
             isOpen={isEditEventDialogOpen}
@@ -705,6 +717,20 @@ class ScheduleLayout extends Component {
 
       return (
         <div className={classes.contentWrapper}>
+          {!isMobile &&
+            canCreate && (
+              <div className={classes.actionsBar}>
+                <div className={classes.flexGrow} />
+                <Button
+                  colour="secondary"
+                  filled
+                  handleClick={() => openAddEventDialog()}
+                >
+                  <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
+                  Add new event
+                </Button>
+              </div>
+            )}
           <div className={classes.calendarWrapper}>
             <Calendar
               events={filteredEvents}
@@ -755,7 +781,7 @@ class ScheduleLayout extends Component {
           />
           {canCreate &&
             isMobile && (
-              <Button
+              <MuiButton
                 fab
                 color="accent"
                 aria-label="add new event"
@@ -763,7 +789,7 @@ class ScheduleLayout extends Component {
                 onClick={() => openAddEventDialog()}
               >
                 <AddIcon />
-              </Button>
+              </MuiButton>
             )}
         </div>
       );
