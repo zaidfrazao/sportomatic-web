@@ -194,13 +194,12 @@ class TeamsLayout extends Component {
   filterTeams() {
     const {
       gender,
-      sport,
       division,
       ageGroup,
       searchText,
       showDeletedTeams
     } = this.props.filters;
-    const { teams, staff, userID, role, meAllFilter } = this.props;
+    const { teams, staff, userID, role, meAllFilter, sportFilter } = this.props;
 
     return _.fromPairs(
       _.toPairs(teams).filter(([teamID, teamInfo]) => {
@@ -255,9 +254,21 @@ class TeamsLayout extends Component {
           allowThroughFilter =
             allowThroughFilter && teamInfo.info.gender === gender;
         }
-        if (sport !== "All") {
-          allowThroughFilter =
-            allowThroughFilter && teamInfo.info.sport === sport;
+        if (sportFilter !== "all") {
+          if (sportFilter === "other") {
+            let teamSport = teamInfo.info.sport;
+            if (teamSport === "Soccer / Football") {
+              teamSport = "soccer";
+            }
+            const supportedSports = ["netball", "rugby", "soccer"];
+            allowThroughFilter =
+              allowThroughFilter &&
+              !supportedSports.includes(_.lowerCase(teamSport));
+          } else {
+            allowThroughFilter =
+              allowThroughFilter &&
+              _.lowerCase(teamInfo.info.sport).includes(sportFilter);
+          }
         }
         if (division !== "All") {
           allowThroughFilter =

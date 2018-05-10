@@ -1,23 +1,19 @@
 import React, { Component } from "react";
 import AddIcon from "material-ui-icons/Add";
 import Button from "material-ui/Button";
-import Chip from "material-ui/Chip";
 import Dialog, {
   DialogActions,
   DialogContent,
   DialogTitle
 } from "material-ui/Dialog";
-import FilterIcon from "material-ui-icons/FilterList";
 import { FormControl, FormControlLabel } from "material-ui/Form";
 import { grey } from "material-ui/colors";
-import IconButton from "material-ui/IconButton";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
 import SearchIcon from "material-ui-icons/Search";
 import Select from "material-ui/Select";
 import Slide from "material-ui/transitions/Slide";
 import Switch from "material-ui/Switch";
 import Toolbar from "material-ui/Toolbar";
-import Tooltip from "material-ui/Tooltip";
 import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
@@ -166,17 +162,12 @@ class FiltersToolbar extends Component {
     } = this.props;
     const {
       searchText,
-      confirmedGender,
-      confirmedSport,
-      confirmedDivision,
-      confirmedAgeGroup,
       selectedGender,
       selectedSport,
       selectedDivision,
       selectedAgeGroup,
       isOpen,
-      selectedShowDeletedTeams,
-      confirmedShowDeletedTeams
+      selectedShowDeletedTeams
     } = this.state;
 
     return (
@@ -197,91 +188,6 @@ class FiltersToolbar extends Component {
             />
           </FormControl>
           <div className={classes.flexGrow} />
-          {!isMobile && (
-            <div className={classes.settingChips}>
-              {confirmedGender !== "All" && (
-                <Chip
-                  label={this.formatGender(confirmedGender)}
-                  onRequestDelete={() => {
-                    this.handleDeleteFilter("Gender");
-                    applyFilters(
-                      confirmedShowDeletedTeams,
-                      "All",
-                      confirmedSport,
-                      confirmedDivision,
-                      confirmedAgeGroup
-                    );
-                  }}
-                  className={classes.chip}
-                />
-              )}
-              {confirmedSport !== "All" && (
-                <Chip
-                  label={confirmedSport}
-                  onRequestDelete={() => {
-                    this.handleDeleteFilter("Sport");
-                    applyFilters(
-                      confirmedShowDeletedTeams,
-                      confirmedGender,
-                      "All",
-                      confirmedDivision,
-                      confirmedAgeGroup
-                    );
-                  }}
-                  className={classes.chip}
-                />
-              )}
-              {confirmedDivision !== "All" && (
-                <Chip
-                  label={confirmedDivision}
-                  onRequestDelete={() => {
-                    this.handleDeleteFilter("Division");
-                    applyFilters(
-                      confirmedShowDeletedTeams,
-                      confirmedGender,
-                      confirmedSport,
-                      "All",
-                      confirmedAgeGroup
-                    );
-                  }}
-                  className={classes.chip}
-                />
-              )}
-              {confirmedAgeGroup !== "All" && (
-                <Chip
-                  label={this.formatAgeGroup(confirmedAgeGroup)}
-                  onRequestDelete={() => {
-                    this.handleDeleteFilter("AgeGroup");
-                    applyFilters(
-                      confirmedShowDeletedTeams,
-                      confirmedGender,
-                      confirmedSport,
-                      confirmedDivision,
-                      "All"
-                    );
-                  }}
-                  className={classes.chip}
-                />
-              )}
-            </div>
-          )}
-          {isMobile ? (
-            <Tooltip title="Filter events" placement="bottom">
-              <IconButton
-                aria-label="filter events"
-                onClick={() => this.toggleDialog()}
-              >
-                <FilterIcon />
-              </IconButton>
-            </Tooltip>
-          ) : (
-            <Button
-              aria-label="filter events"
-              onClick={() => this.toggleDialog()}
-            >
-              <FilterIcon className={classes.iconAdjacentText} /> Set filters
-            </Button>
-          )}
           {role === "admin" &&
             !isMobile && (
               <Button
@@ -293,74 +199,6 @@ class FiltersToolbar extends Component {
               </Button>
             )}
         </Toolbar>
-        {isMobile && (
-          <div className={classes.settingChips}>
-            {confirmedGender !== "All" && (
-              <Chip
-                label={this.formatGender(confirmedGender)}
-                onRequestDelete={() => {
-                  this.handleDeleteFilter("Gender");
-                  applyFilters(
-                    confirmedShowDeletedTeams,
-                    "All",
-                    confirmedSport,
-                    confirmedDivision,
-                    confirmedAgeGroup
-                  );
-                }}
-                className={classes.chip}
-              />
-            )}
-            {confirmedSport !== "All" && (
-              <Chip
-                label={confirmedSport}
-                onRequestDelete={() => {
-                  this.handleDeleteFilter("Sport");
-                  applyFilters(
-                    confirmedShowDeletedTeams,
-                    confirmedGender,
-                    "All",
-                    confirmedDivision,
-                    confirmedAgeGroup
-                  );
-                }}
-                className={classes.chip}
-              />
-            )}
-            {confirmedDivision !== "All" && (
-              <Chip
-                label={confirmedDivision}
-                onRequestDelete={() => {
-                  this.handleDeleteFilter("Division");
-                  applyFilters(
-                    confirmedShowDeletedTeams,
-                    confirmedGender,
-                    confirmedSport,
-                    "All",
-                    confirmedAgeGroup
-                  );
-                }}
-                className={classes.chip}
-              />
-            )}
-            {confirmedAgeGroup !== "All" && (
-              <Chip
-                label={this.formatAgeGroup(confirmedAgeGroup)}
-                onRequestDelete={() => {
-                  this.handleDeleteFilter("AgeGroup");
-                  applyFilters(
-                    confirmedShowDeletedTeams,
-                    confirmedGender,
-                    confirmedSport,
-                    confirmedDivision,
-                    "All"
-                  );
-                }}
-                className={classes.chip}
-              />
-            )}
-          </div>
-        )}
         <Dialog
           open={isOpen}
           fullScreen={isMobile}

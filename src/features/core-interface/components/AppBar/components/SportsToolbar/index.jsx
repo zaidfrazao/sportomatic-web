@@ -116,10 +116,10 @@ class SportsToolbar extends Component<Props> {
             </div>
           );
         }
-      }),
-      <div key={`sports-toolbar-add`} className={classes.button}>
-        <i className={`fas fa-plus-circle ${classes.icon}`} />
-      </div>
+      })
+      // <div key={`sports-toolbar-add`} className={classes.button}>
+      //   <i className={`fas fa-plus-circle ${classes.icon}`} />
+      // </div>
     ];
 
     return sportButtons;
