@@ -6,24 +6,23 @@ import Avatar from "material-ui/Avatar";
 import AwaitingApprovalIcon from "material-ui-icons/AssignmentReturn";
 import AwaitingSignInIcon from "material-ui-icons/AssignmentLate";
 import AwaitingSignOutIcon from "material-ui-icons/AssignmentReturned";
-import Button from "material-ui/Button";
 import {
   amber,
   brown,
+  common,
   grey,
   green,
   lightBlue,
   orange,
   red
 } from "material-ui/colors";
-import Grid from "material-ui/Grid";
 import HoursApprovedIcon from "material-ui-icons/AssignmentTurnedIn";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import moment from "moment";
-import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
+import Button from "../../components/Button";
 import defaultProfilePicture from "./image/default-profile-picture.png";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
@@ -32,8 +31,7 @@ const styles = theme => ({
   adWrapper: {
     width: "100%",
     display: "flex",
-    justifyContent: "center",
-    marginTop: 24
+    justifyContent: "center"
   },
   awaitingApprovalAvatar: {
     backgroundColor: lightBlue[500]
@@ -52,15 +50,14 @@ const styles = theme => ({
     flexGrow: 2
   },
   heading: {
-    fontWeight: "normal",
-    fontSize: "1.2rem",
-    padding: "20px 0",
-    margin: 0,
+    fontSize: 18,
+    borderRadius: "16px 16px 0 0",
+    padding: "18px 0",
     width: "100%",
     textAlign: "center",
-    backgroundColor: grey[700],
-    color: grey[50],
-    borderBottom: `1px solid ${grey[200]}`
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: lightBlue[800]
   },
   hoursApprovedAvatar: {
     backgroundColor: green[500]
@@ -97,12 +94,31 @@ const styles = theme => ({
     width: "100%"
   },
   section: {
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[200]}`,
+    borderRadius: 16,
+    marginBottom: 24,
     height: "100%",
     width: "100%",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    backgroundColor: common["white"]
+  },
+  sectionContent: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  },
+  sectionList: {
+    flexGrow: 1,
+    margin: 12,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    width: "calc(100% - 24px)"
+  },
+  sectionButton: {
+    width: "calc(100% - 24px)",
+    margin: 12
   },
   selectWrapper: {
     width: "50%"
@@ -602,155 +618,148 @@ class DashboardLayout extends Component {
       <div className={classes.root}>
         <div className={classes.adWrapper}>{ad}</div>
         <div className={classes.widgetsWrapper}>
-          <Grid
-            container
-            direction="row"
-            align="stretch"
-            className={classes.contentWrapper}
-          >
-            <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-              <Paper className={classes.section}>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Upcoming Events
-                </Typography>
-                {isUpcomingEventsLoading ? (
-                  <List>
-                    <ListItem className={classes.noItems}>
-                      <ListItemText primary="Loading..." />
-                    </ListItem>
-                  </List>
-                ) : (
-                  <List>
-                    {upcomingEventsList.length > 0 ? (
-                      upcomingEventsList
-                    ) : (
-                      <ListItem className={classes.noItems}>
-                        <ListItemText primary="None" />
-                      </ListItem>
-                    )}
-                  </List>
-                )}
-                <div className={classes.flexGrow} />
-                <Button
-                  className={classes.viewMoreButton}
-                  onClick={() => history.push("/myaccount/schedule")}
-                >
-                  View more
-                </Button>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-              <Paper className={classes.section}>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Recent Results
-                </Typography>
-                {isPastEventsLoading ? (
-                  <List>
-                    <ListItem className={classes.noItems}>
-                      <ListItemText primary="Loading..." />
-                    </ListItem>
-                  </List>
-                ) : (
-                  <List>
-                    {recentResultsList.length > 0 ? (
-                      recentResultsList
-                    ) : (
-                      <ListItem className={classes.noItems}>
-                        <ListItemText primary="None" />
-                      </ListItem>
-                    )}
-                  </List>
-                )}
-                <div className={classes.flexGrow} />
-                <Button
-                  className={classes.viewMoreButton}
-                  onClick={() => history.push("/myaccount/results")}
-                >
-                  View more
-                </Button>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-              <Paper className={classes.section}>
-                <Typography
-                  className={classes.heading}
-                  type="title"
-                  component="h3"
-                >
-                  Recent Hours
-                </Typography>
-                {isPastEventsLoading ? (
-                  <List>
-                    <ListItem className={classes.noItems}>
-                      <ListItemText primary="Loading..." />
-                    </ListItem>
-                  </List>
-                ) : (
-                  <List>
-                    {recentHoursList.length > 0 ? (
-                      recentHoursList
-                    ) : (
-                      <ListItem className={classes.noItems}>
-                        <ListItemText primary="None" />
-                      </ListItem>
-                    )}
-                  </List>
-                )}
-                <div className={classes.flexGrow} />
-                <Button
-                  className={classes.viewMoreButton}
-                  onClick={() => history.push("/myaccount/hours")}
-                >
-                  View more
-                </Button>
-              </Paper>
-            </Grid>
-            {showWages && (
-              <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Recent Wages
-                  </Typography>
-                  {isRecentWagesLoading ? (
-                    <List>
-                      <ListItem className={classes.noItems}>
-                        <ListItemText primary="Loading..." />
-                      </ListItem>
-                    </List>
+          <div className={classes.section}>
+            <Typography className={classes.heading} type="title" component="h3">
+              Upcoming Events
+            </Typography>
+            <div className={classes.sectionContent}>
+              {isUpcomingEventsLoading ? (
+                <List className={classes.sectionList}>
+                  <ListItem className={classes.noItems}>
+                    <ListItemText primary="Loading..." />
+                  </ListItem>
+                </List>
+              ) : (
+                <List className={classes.sectionList}>
+                  {upcomingEventsList.length > 0 ? (
+                    upcomingEventsList
                   ) : (
-                    <List>
-                      {recentWagesList.length > 0 ? (
-                        recentWagesList
-                      ) : (
-                        <ListItem className={classes.noItems}>
-                          <ListItemText primary="None" />
-                        </ListItem>
-                      )}
-                    </List>
+                    <ListItem className={classes.noItems}>
+                      <ListItemText primary="None" />
+                    </ListItem>
                   )}
-                  <div className={classes.flexGrow} />
+                </List>
+              )}
+              <div className={classes.sectionButton}>
+                <Button
+                  colour="primary"
+                  slim
+                  fullWidth
+                  handleClick={() => history.push("/myaccount/schedule")}
+                >
+                  View more
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className={classes.section}>
+            <Typography className={classes.heading} type="title" component="h3">
+              Recent Results
+            </Typography>
+            <div className={classes.sectionContent}>
+              {isPastEventsLoading ? (
+                <List className={classes.sectionList}>
+                  <ListItem className={classes.noItems}>
+                    <ListItemText primary="Loading..." />
+                  </ListItem>
+                </List>
+              ) : (
+                <List className={classes.sectionList}>
+                  {recentResultsList.length > 0 ? (
+                    recentResultsList
+                  ) : (
+                    <ListItem className={classes.noItems}>
+                      <ListItemText primary="None" />
+                    </ListItem>
+                  )}
+                </List>
+              )}
+              <div className={classes.sectionButton}>
+                <Button
+                  colour="primary"
+                  slim
+                  fullWidth
+                  handleClick={() => history.push("/myaccount/results")}
+                >
+                  View more
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className={classes.section}>
+            <Typography className={classes.heading} type="title" component="h3">
+              Recent Hours
+            </Typography>
+            <div className={classes.sectionContent}>
+              {isPastEventsLoading ? (
+                <List className={classes.sectionList}>
+                  <ListItem className={classes.noItems}>
+                    <ListItemText primary="Loading..." />
+                  </ListItem>
+                </List>
+              ) : (
+                <List className={classes.sectionList}>
+                  {recentHoursList.length > 0 ? (
+                    recentHoursList
+                  ) : (
+                    <ListItem className={classes.noItems}>
+                      <ListItemText primary="None" />
+                    </ListItem>
+                  )}
+                </List>
+              )}
+              <div className={classes.sectionButton}>
+                <Button
+                  colour="primary"
+                  slim
+                  fullWidth
+                  handleClick={() => history.push("/myaccount/hours")}
+                >
+                  View more
+                </Button>
+              </div>
+            </div>
+          </div>
+          {showWages && (
+            <div className={classes.section}>
+              <Typography
+                className={classes.heading}
+                type="title"
+                component="h3"
+              >
+                Recent Wages
+              </Typography>
+              <div className={classes.sectionContent}>
+                {isRecentWagesLoading ? (
+                  <List className={classes.sectionList}>
+                    <ListItem className={classes.noItems}>
+                      <ListItemText primary="Loading..." />
+                    </ListItem>
+                  </List>
+                ) : (
+                  <List className={classes.sectionList}>
+                    {recentWagesList.length > 0 ? (
+                      recentWagesList
+                    ) : (
+                      <ListItem className={classes.noItems}>
+                        <ListItemText primary="None" />
+                      </ListItem>
+                    )}
+                  </List>
+                )}
+                <div className={classes.sectionButton}>
                   <Button
-                    className={classes.viewMoreButton}
-                    onClick={() => history.push("/myaccount/wages")}
+                    colour="primary"
+                    slim
+                    fullWidth
+                    handleClick={() => history.push("/myaccount/wages")}
                   >
                     View more
                   </Button>
-                </Paper>
-              </Grid>
-            )}
-          </Grid>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
