@@ -110,7 +110,7 @@ const styles = theme => ({
   },
   sectionList: {
     flexGrow: 1,
-    margin: 12,
+    margin: "12px 12px 0 12px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
