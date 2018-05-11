@@ -2,7 +2,6 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import AddIcon from "material-ui-icons/Add";
-import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import Dialog, {
   DialogActions,
@@ -17,6 +16,7 @@ import Slide from "material-ui/transitions/Slide";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
+import Button from "../../../../components/Button";
 
 const styles = {
   addButtonWrapper: {
@@ -680,11 +680,15 @@ class AddTeamDialog extends Component {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleClose()}>Cancel</Button>
+          <Button colour="primary" slim handleClick={() => handleClose()}>
+            Cancel
+          </Button>
           <Button
-            disabled={isLoading}
-            color="primary"
-            onClick={() => {
+            loading={isLoading}
+            colour="primary"
+            slim
+            filled
+            handleClick={() => {
               if (teamName.length === 0) {
                 openTeamErrorAlert("TITLE");
               } else {

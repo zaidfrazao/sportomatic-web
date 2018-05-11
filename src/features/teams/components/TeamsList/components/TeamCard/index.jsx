@@ -1,113 +1,52 @@
 import React, { Component } from "react";
-import Button from "material-ui/Button";
-import Card, { CardActions, CardContent } from "material-ui/Card";
-import { grey, red } from "material-ui/colors";
+import { common, lightBlue } from "../../../../../../utils/colours";
+import injectStyles from "react-jss";
 import { Route } from "react-router-dom";
-import Typography from "material-ui/Typography";
-import WarningIcon from "material-ui-icons/Warning";
-import { withStyles } from "material-ui/styles";
+import Button from "../../../../../../components/Button";
 
-const styles = theme => ({
-  avatar: {
-    backgroundColor: grey[500],
-    width: 72,
-    height: 72
-  },
+const styles = {
   buttons: {
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    borderRadius: "0 0 16px 16px",
+    backgroundColor: lightBlue[500]
   },
-  card: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column"
-  },
-  cardContent: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column"
-  },
-  deletedTeam: {
-    marginBottom: 16,
-    fontSize: 14,
-    color: red[500],
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
-  },
-  flexGrow: {
-    flexGrow: 1
-  },
-  name: {
+  header: {
+    fontSize: 18,
+    borderRadius: "16px 16px 0 0",
+    padding: "18px 0",
+    width: "100%",
     textAlign: "center",
-    backgroundColor: grey[100],
-    padding: "24px 8px",
-    flexGrow: 1,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  subheading: {
-    margin: 12,
-    color: theme.palette.text.secondary
-  },
-  title: {
-    marginBottom: 16,
-    fontSize: 14,
-    color: theme.palette.text.secondary
-  },
-  titleWrapper: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  viewButton: {
-    flexGrow: 1
-  },
-  warningIcon: {
-    width: 14,
-    height: 14,
-    color: red[500]
+    fontWeight: "bold",
+    color: common["black"],
+    backgroundColor: common["white"]
   }
-});
+};
 
 class TeamCard extends Component {
   render() {
-    const { classes, sport, name, id, status } = this.props;
+    const { classes, name, id } = this.props;
 
     return (
-      <Card className={classes.card}>
-        <CardContent className={classes.cardContent}>
-          <div className={classes.titleWrapper}>
-            <Typography type="body1" className={classes.title}>
-              {sport}
-            </Typography>
-            <div className={classes.flexGrow} />
-            {status === "DELETED" && (
-              <Typography type="body1" className={classes.deletedTeam}>
-                Deleted <WarningIcon />
-              </Typography>
-            )}
-          </div>
-          <Typography type="headline" component="h2" className={classes.name}>
-            {name}
-          </Typography>
-        </CardContent>
-        <CardActions className={classes.buttons}>
+      <div className={classes.card}>
+        <div className={classes.header}>{name}</div>
+        <div className={classes.buttons}>
           <Route
             render={({ history }) => (
               <Button
-                dense
-                className={classes.viewButton}
-                onClick={() => history.push(`/myaccount/teams/${id}`)}
+                colour="primary"
+                filled
+                fullWidth
+                handleClick={() => history.push(`/myaccount/teams/${id}`)}
               >
                 View
               </Button>
             )}
           />
-        </CardActions>
-      </Card>
+        </div>
+      </div>
     );
   }
 }
 
-export default withStyles(styles)(TeamCard);
+export default injectStyles(styles)(TeamCard);

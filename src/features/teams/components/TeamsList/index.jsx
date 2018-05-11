@@ -9,6 +9,7 @@ const styles = {
   noTeamsText: {
     color: grey[500],
     padding: 40,
+    borderRadius: 16,
     border: `3px solid ${grey[300]}`
   },
   noTeamsWrapper: {

@@ -1,12 +1,17 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
-import { amber, brown, green, grey, lightBlue, red } from "material-ui/colors";
+import {
+  amber,
+  brown,
+  common,
+  green,
+  grey,
+  lightBlue,
+  red
+} from "material-ui/colors";
 import Avatar from "material-ui/Avatar";
-import BackIcon from "material-ui-icons/ArrowBack";
-import Button from "material-ui/Button";
 import Collapse from "material-ui/transitions/Collapse";
-import EditIcon from "material-ui-icons/Edit";
 import EventIcon from "material-ui-icons/Event";
 import ExpandLess from "material-ui-icons/ExpandLess";
 import ExpandMore from "material-ui-icons/ExpandMore";
@@ -18,14 +23,13 @@ import List, {
   ListSubheader
 } from "material-ui/List";
 import moment from "moment";
-import Paper from "material-ui/Paper";
 import PersonIcon from "material-ui-icons/Person";
 import ResultsIcon from "material-ui-icons/PlusOne";
 import { Route } from "react-router-dom";
-import Typography from "material-ui/Typography";
 import WarningIcon from "material-ui-icons/Warning";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../components/BannerAd";
+import Button from "../../../../components/Button";
 import defaultProfilePicture from "../../image/default-profile-picture.png";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
@@ -34,8 +38,9 @@ const mobileBreakpoint = 800;
 
 const styles = theme => ({
   actionsBar: {
+    margin: "24px 24px 0 24px",
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "center"
   },
   adWrapper: {
     width: "100%",
@@ -66,6 +71,16 @@ const styles = theme => ({
   },
   flexGrow: {
     flexGrow: 1
+  },
+  header: {
+    margin: "0 24px",
+    padding: 12,
+    borderRadius: 16,
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: lightBlue[800]
   },
   heading: {
     fontWeight: "normal",
@@ -121,10 +136,31 @@ const styles = theme => ({
     flexDirection: "column"
   },
   section: {
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[200]}`,
+    borderRadius: 16,
+    marginBottom: 24,
     height: "100%",
-    width: "100%"
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    backgroundColor: common["white"]
+  },
+  sectionContent: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column"
+  },
+  sectionHeading: {
+    fontSize: 18,
+    borderRadius: "16px 16px 0 0",
+    padding: "18px 0",
+    width: "100%",
+    textAlign: "center",
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: grey[500]
+  },
+  sectionList: {
+    flexGrow: 1
   },
   unknownResultAvatar: {
     backgroundColor: grey[800]
@@ -908,20 +944,23 @@ class TeamInfo extends Component {
     return (
       <div className={classes.root}>
         {isTeamsLoading ? (
-          <Typography className={classes.name} type="title" component="h2">
-            Loading...
-          </Typography>
+          <div className={classes.header}>Loading...</div>
         ) : (
-          <Typography className={classes.name} type="title" component="h2">
-            {name}
-          </Typography>
+          <div className={classes.header}>{name}</div>
         )}
         <div className={classes.outerWrapper}>
           <div className={classes.actionsBar}>
             <Route
               render={({ history }) => (
-                <Button aria-label="back" onClick={() => history.goBack()}>
-                  <BackIcon className={classes.iconAdjacentText} /> Back
+                <Button
+                  colour="secondary"
+                  slim
+                  handleClick={() => history.goBack()}
+                >
+                  <i
+                    className={`fas fa-caret-left ${classes.iconAdjacentText}`}
+                  />
+                  Back
                 </Button>
               )}
             />
@@ -929,13 +968,13 @@ class TeamInfo extends Component {
             {canEdit &&
               !isMobile && (
                 <Button
-                  disabled={
-                    isCoachesLoading || isManagersLoading || isTeamsLoading
-                  }
-                  aria-label="edit team"
-                  onClick={() => editTeam()}
+                  colour="secondary"
+                  slim
+                  filled
+                  handleClick={() => editTeam()}
                 >
-                  <EditIcon className={classes.iconAdjacentText} /> Edit team
+                  <i className={`fas fa-edit ${classes.iconAdjacentText}`} />
+                  Edit team info
                 </Button>
               )}
           </div>
@@ -945,13 +984,9 @@ class TeamInfo extends Component {
               info.status === "DELETED" && (
                 <div className={classes.deletedTeam}>
                   <WarningIcon className={classes.warningIcon} />
-                  <Typography
-                    className={classes.deletedText}
-                    type="subtitle"
-                    component="h3"
-                  >
+                  <div className={classes.deletedText}>
                     This team has been deleted.
-                  </Typography>
+                  </div>
                 </div>
               )}
             <Grid
@@ -961,15 +996,9 @@ class TeamInfo extends Component {
               className={classes.contentWrapper}
             >
               <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Details
-                  </Typography>
-                  <List>
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Details</div>
+                  <List className={classes.sectionList}>
                     <ListItem>
                       <ListItemText
                         primary="Sport"
@@ -999,25 +1028,19 @@ class TeamInfo extends Component {
                       />
                     </ListItem>
                   </List>
-                </Paper>
+                </div>
               </Grid>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Managers
-                  </Typography>
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Managers</div>
                   {isManagersLoading || isTeamsLoading ? (
-                    <List>
+                    <List className={classes.sectionList}>
                       <ListItem className={classes.noItems}>
                         <ListItemText primary="Loading..." />
                       </ListItem>
                     </List>
                   ) : (
-                    <List>
+                    <List className={classes.sectionList}>
                       {managers.length > 0 ? (
                         managers
                       ) : (
@@ -1027,25 +1050,19 @@ class TeamInfo extends Component {
                       )}
                     </List>
                   )}
-                </Paper>
+                </div>
               </Grid>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Coaches
-                  </Typography>
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Coaches</div>
                   {isCoachesLoading || isTeamsLoading ? (
-                    <List>
+                    <List className={classes.sectionList}>
                       <ListItem className={classes.noItems}>
                         <ListItemText primary="Loading..." />
                       </ListItem>
                     </List>
                   ) : (
-                    <List>
+                    <List className={classes.sectionList}>
                       {coaches.length > 0 ? (
                         coaches
                       ) : (
@@ -1055,25 +1072,19 @@ class TeamInfo extends Component {
                       )}
                     </List>
                   )}
-                </Paper>
+                </div>
               </Grid>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Upcoming Events
-                  </Typography>
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Upcoming Events</div>
                   {isEventsByTeamLoading || isTeamsLoading ? (
-                    <List>
+                    <List className={classes.sectionList}>
                       <ListItem className={classes.noItems}>
                         <ListItemText primary="Loading..." />
                       </ListItem>
                     </List>
                   ) : (
-                    <List>
+                    <List className={classes.sectionList}>
                       {upcomingEvents.length > 0 ? (
                         upcomingEvents
                       ) : (
@@ -1083,25 +1094,19 @@ class TeamInfo extends Component {
                       )}
                     </List>
                   )}
-                </Paper>
+                </div>
               </Grid>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Recent Results
-                  </Typography>
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Recent Results</div>
                   {isEventsByTeamLoading || isTeamsLoading ? (
-                    <List>
+                    <List className={classes.sectionList}>
                       <ListItem className={classes.noItems}>
                         <ListItemText primary="Loading..." />
                       </ListItem>
                     </List>
                   ) : (
-                    <List>
+                    <List className={classes.sectionList}>
                       {recentResults.length > 0 ? (
                         recentResults
                       ) : (
@@ -1111,7 +1116,7 @@ class TeamInfo extends Component {
                       )}
                     </List>
                   )}
-                </Paper>
+                </div>
               </Grid>
             </Grid>
           </div>

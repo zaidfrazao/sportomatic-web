@@ -2,14 +2,14 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import AddIcon from "material-ui-icons/Add";
-import Button from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import EditIcon from "material-ui-icons/Edit";
+import MuiButton from "material-ui/Button";
 import { withStyles } from "material-ui/styles";
 import AddTeamDialog from "./components/AddTeamDialog";
 import BannerAd from "../../components/BannerAd";
+import Button from "../../components/Button";
 import EditTeamDialog from "./components/EditTeamDialog";
-import FiltersToolbar from "./components/FiltersToolbar";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import NotificationModal from "../../components/NotificationModal";
@@ -19,11 +19,15 @@ import TeamsList from "./components/TeamsList";
 const mobileBreakpoint = 800;
 
 const styles = theme => ({
+  actionsBar: {
+    display: "flex",
+    justifyContent: "center",
+    margin: "0 24px 24px 24px"
+  },
   adWrapper: {
     width: "100%",
     display: "flex",
-    justifyContent: "center",
-    marginTop: 24
+    justifyContent: "center"
   },
   button: {
     margin: theme.spacing.unit,
@@ -39,6 +43,12 @@ const styles = theme => ({
     right: "24px",
     bottom: "24px",
     zIndex: 10
+  },
+  flexGrow: {
+    flexGrow: 1
+  },
+  iconAdjacentText: {
+    marginRight: 8
   },
   infoWrapper: {
     width: "100%",
@@ -298,7 +308,6 @@ class TeamsLayout extends Component {
       activeInstitutionID,
       isMobile,
       isTablet,
-      filters,
       eventsByTeam,
       role,
       permissions
@@ -325,8 +334,6 @@ class TeamsLayout extends Component {
       closeEditTeamDialog,
       openDeleteTeamAlert,
       closeDeleteTeamAlert,
-      applyFilters,
-      updateSearch,
       loadOptions,
       openTeamErrorAlert,
       closeTeamErrorAlert,
@@ -422,7 +429,7 @@ class TeamsLayout extends Component {
             />
             {role === "admin" &&
               isMobile && (
-                <Button
+                <MuiButton
                   fab
                   color="accent"
                   aria-label="edit team"
@@ -430,7 +437,7 @@ class TeamsLayout extends Component {
                   onClick={() => openEditTeamDialog()}
                 >
                   <EditIcon />
-                </Button>
+                </MuiButton>
               )}
           </div>
         ) : (
@@ -439,23 +446,20 @@ class TeamsLayout extends Component {
               filteredTeams.length > 0 ? classes.teamCards : classes.teamNoCards
             }
           >
-            <FiltersToolbar
-              role={role}
-              genders={_.keys(this.state.genders)}
-              sports={_.keys(this.state.sports)}
-              divisions={_.keys(this.state.divisions)}
-              ageGroups={_.keys(this.state.ageGroups)}
-              showDeletedTeams={this.state.showDeletedTeams}
-              isMobile={isMobile}
-              isLoading={isStaffLoading}
-              initialFilters={filters}
-              applyFilters={applyFilters}
-              addTeam={() => {
-                openAddTeamDialog();
-                loadOptions(activeInstitutionID);
-              }}
-              updateSearch={updateSearch}
-            />
+            {role === "admin" &&
+              !isMobile && (
+                <div className={classes.actionsBar}>
+                  <div className={classes.flexGrow} />
+                  <Button
+                    colour="secondary"
+                    filled
+                    handleClick={() => openAddTeamDialog()}
+                  >
+                    <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
+                    Add new team
+                  </Button>
+                </div>
+              )}
             <div className={classes.adWrapper}>{ad}</div>
             {isTeamsLoading || activeInstitutionID === "" ? (
               <div className={classes.loaderWrapper}>
@@ -470,7 +474,7 @@ class TeamsLayout extends Component {
                 />
                 {role === "admin" &&
                   isMobile && (
-                    <Button
+                    <MuiButton
                       fab
                       color="accent"
                       aria-label="add new team"
@@ -478,7 +482,7 @@ class TeamsLayout extends Component {
                       onClick={() => openAddTeamDialog()}
                     >
                       <AddIcon />
-                    </Button>
+                    </MuiButton>
                   )}
               </div>
             )}
