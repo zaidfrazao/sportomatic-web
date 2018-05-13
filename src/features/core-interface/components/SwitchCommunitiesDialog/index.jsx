@@ -8,6 +8,7 @@ import Dialog, {
 import { common, grey, lightBlue } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
 import Button from "../../../../components/Button";
+import defaultEmblem from "./images/default-emblem.jpg";
 
 const mobileBreakpoint = 800;
 
@@ -15,7 +16,7 @@ const styles = {
   community: {
     transition: "0.25s",
     fontSize: 14,
-    margin: "16px 18px",
+    margin: "16px 0",
     borderRadius: 16,
     cursor: "pointer",
     backgroundColor: grey[100],
@@ -28,7 +29,7 @@ const styles = {
   communitySelected: {
     transition: "0.25s",
     borderRadius: 16,
-    margin: "16px 18px",
+    margin: "16px 0",
     fontSize: 16,
     position: "relative",
     fontWeight: "bold",
@@ -98,7 +99,7 @@ class SwitchCommunitiesDialog extends Component {
           <img
             className={classes.emblem}
             alt={`${info.name} emblem`}
-            src={info.emblem}
+            src={info.emblem === "" ? defaultEmblem : info.emblem}
           />
           <span
             className={

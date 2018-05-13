@@ -10,7 +10,7 @@ const styles = theme => ({
     cursor: "pointer",
     height: "100%",
     padding: "8px 0",
-    width: "50%",
+    width: "60%",
     "&:hover": {
       backgroundColor: grey[300]
     }
@@ -22,7 +22,7 @@ const styles = theme => ({
     cursor: "pointer",
     height: "100%",
     padding: "8px 0",
-    width: "50%",
+    width: "40%",
     "&:hover": {
       backgroundColor: grey[300]
     }
@@ -85,7 +85,7 @@ class PersonalAllSwitch extends Component<Props> {
             }
             onClick={() => changeMeAllFilter("me")}
           >
-            Me
+            My Teams
           </span>
           <span
             className={
