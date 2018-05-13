@@ -11,9 +11,9 @@ const styles = theme => ({
   buttonIcon: {
     marginRight: 8
   },
-  buttonWrapper: {
-    width: "100%",
-    margin: "4px 0"
+  buttonsWrapper: {
+    display: "flex",
+    marginBottom: 12
   },
   communityName: {
     flexGrow: 1,
@@ -37,6 +37,10 @@ const styles = theme => ({
       margin: 14
     }
   },
+  interactiveSectionWrapper: {
+    width: "100%",
+    margin: "4px 0"
+  },
   nameEmblemWrapper: {
     position: "relative",
     display: "flex",
@@ -44,13 +48,17 @@ const styles = theme => ({
     alignItems: "center",
     marginBottom: 12
   },
+  switchButtonWrapper: {
+    flexGrow: 1,
+    marginRight: 8
+  },
   wrapper: {
     backgroundColor: lightBlue[500],
     padding: 28,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "cen  buttonWrapper: {},ter"
   }
 });
 
@@ -87,27 +95,41 @@ class CommunityInfo extends Component<Props> {
           />
           <h2 className={classes.communityName}>{name}</h2>
         </div>
-        <div className={classes.buttonWrapper}>
+        <div className={classes.interactiveSectionWrapper}>
+          {false && (
+            <RoleSwitcher
+              selected={selectedRole}
+              options={availableRoles}
+              handleChange={newRole => switchRoles(newRole)}
+            />
+          )}
+          <div className={classes.buttonsWrapper}>
+            <div className={classes.switchButtonWrapper}>
+              <Button
+                colour="primary"
+                type="dark"
+                filled
+                slim
+                fullWidth
+                handleClick={() => switchCommunities()}
+              >
+                Communities
+              </Button>
+            </div>
+            <Button
+              colour="primary"
+              type="dark"
+              filled
+              slim
+              handleClick={() => logOut()}
+            >
+              <i className="fas fa-sign-out-alt" />
+            </Button>
+          </div>
           <PersonalAllSwitch
             meAllFilter={meAllFilter}
-            switchCommunities={switchCommunities}
             changeMeAllFilter={newFilter => changeMeAllFilter(newFilter)}
           />
-          <RoleSwitcher
-            selected={selectedRole}
-            options={availableRoles}
-            handleChange={newRole => switchRoles(newRole)}
-          />
-          <Button
-            colour="primary"
-            type="dark"
-            fullWidth
-            filled
-            slim
-            handleClick={() => logOut()}
-          >
-            Log out
-          </Button>
         </div>
       </div>
     );

@@ -1,16 +1,14 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
-import AddIcon from "material-ui-icons/Add";
-import EditIcon from "material-ui-icons/Edit";
-import { lightBlue, orange } from "material-ui/colors";
+import injectSheet from "react-jss";
 import moment from "moment";
 import MuiButton from "material-ui/Button";
 import { Redirect } from "react-router-dom";
-import { withStyles } from "material-ui/styles";
 import AddEventDialog from "./components/AddEventDialog";
 import Button from "../../components/Button";
 import Calendar from "./components/Calendar";
+import { common } from "../../utils/colours";
 import DecisionModal from "../../components/DecisionModal";
 import EditAbsentRatingModal from "./components/EditAbsentRatingModal";
 import EditEventDialog from "./components/EditEventDialog";
@@ -19,23 +17,11 @@ import MarkAbsentModal from "./components/MarkAbsentModal";
 import NotificationModal from "../../components/NotificationModal";
 import ReplacementCoachModal from "./components/ReplacementCoachModal";
 
-const styles = theme => ({
+const styles = {
   actionsBar: {
     display: "flex",
     justifyContent: "center",
     margin: "0 24px 24px 24px"
-  },
-  button: {
-    margin: theme.spacing.unit,
-    position: "fixed",
-    bottom: 24,
-    right: 24,
-    zIndex: 1
-  },
-  competitiveEvent: {
-    width: 12,
-    height: 12,
-    color: orange[500]
   },
   contentWrapper: {
     height: "100%",
@@ -45,20 +31,11 @@ const styles = theme => ({
   calendarWrapper: {
     flexGrow: 1
   },
-  desktopCalendar: {
-    width: "60%"
-  },
-  desktopEventsList: {
-    width: "40%",
-    height: "100%"
-  },
-  eventsListWrapper: {
-    height: "calc(100% - 98px)"
-  },
   fabPosition: {
+    color: common["white"],
     position: "fixed",
-    right: "24px",
-    bottom: "24px",
+    right: 24,
+    bottom: 24,
     zIndex: 10
   },
   flexGrow: {
@@ -67,33 +44,12 @@ const styles = theme => ({
   iconAdjacentText: {
     marginRight: 8
   },
-  loaderWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  myEventsSelector: {
-    width: "100%",
-    maxWidth: 1200,
-    margin: "16px auto 0 auto",
-    display: "flex",
-    alignItems: "center"
-  },
-  nonCompetitiveEvent: {
-    width: 12,
-    height: 12,
-    color: lightBlue[500]
-  },
   root: {
     width: "100%",
     display: "flex",
     flexDirection: "column"
-  },
-  tabletEventsListWrapper: {
-    height: "100%"
   }
-});
+};
 
 class ScheduleLayout extends Component {
   state = {
@@ -360,35 +316,248 @@ class ScheduleLayout extends Component {
     );
   }
 
-  renderView() {
+  checkIfShouldRedirect() {
+    const { dateSelected } = this.props.match.params;
+
+    return !dateSelected;
+  }
+
+  getEventErrorAlert() {
+    const { errorType } = this.props.uiConfig;
+
+    let heading = "Event Title Required";
+    let message =
+      "You need to specify a title for this event before saving it.";
+    if (errorType === "DATE") {
+      heading = "Date Invalid";
+      message =
+        "You cannot create an event scheduled for a date that has already passed.";
+    }
+    if (errorType === "LOADING") {
+      heading = "Network Issue";
+      message =
+        "You have lost your connection to the internet. Please check your connectivity and try again.";
+    }
+    if (errorType === "EVENT_TYPE") {
+      heading = "Event Type Required";
+      message = "Please specify a name for your custom event type.";
+    }
+
+    return {
+      heading,
+      message
+    };
+  }
+
+  getPermissions() {
+    const { role, permissions } = this.props;
+
+    const canCreate =
+      role === "admin" ||
+      (role === "coach" && permissions.coaches.events.canCreate) ||
+      (role === "manager" && permissions.managers.events.canCreate);
+
+    const canEdit =
+      role === "admin" ||
+      (role === "coach" && permissions.coaches.events.canEdit) ||
+      (role === "manager" && permissions.managers.events.canEdit);
+
+    const canCancel =
+      role === "admin" ||
+      (role === "coach" && permissions.coaches.events.canCancel) ||
+      (role === "manager" && permissions.managers.events.canCancel);
+
+    return {
+      canCreate,
+      canEdit,
+      canCancel
+    };
+  }
+
+  getCoaches() {
+    const { activeInstitutionID, staff } = this.props;
+
+    return _.fromPairs(
+      _.toPairs(staff).filter(([id, info]) => {
+        if (
+          info.institutions[activeInstitutionID] &&
+          info.institutions[activeInstitutionID].roles.coach === "APPROVED"
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+    );
+  }
+
+  getManagers() {
+    const { activeInstitutionID, staff } = this.props;
+
+    return _.fromPairs(
+      _.toPairs(staff).filter(([id, info]) => {
+        if (
+          info.institutions[activeInstitutionID] &&
+          info.institutions[activeInstitutionID].roles.manager === "APPROVED"
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+    );
+  }
+
+  checkIfEventPassed() {
+    const { events } = this.props;
+    const { eventID } = this.props.match.params;
+
+    if (events[eventID]) {
+      const eventDate = new Date(events[eventID].requiredInfo.times.start);
+      const currentDate = new Date(Date.now());
+      return eventDate < currentDate;
+    }
+    return false;
+  }
+
+  getEventListView(canCreate) {
     const {
       isTablet,
       isMobile,
       classes,
       activeInstitutionID,
       teams,
-      staff,
+      navigateTo
+    } = this.props;
+    const { dateSelected } = this.props.match.params;
+    const { currentView, minDate } = this.props.uiConfig;
+    const {
+      updateView,
+      openAddEventDialog,
+      closeAddEventDialog,
+      addEvent,
+      openEventErrorAlert,
+      closeEventErrorAlert
+    } = this.props.actions;
+    const {
+      isEventsLoading,
+      isAddEventDialogLoading,
+      isCreationDateLoading,
+      isStaffLoading,
+      isTeamsLoading
+    } = this.props.loadingStatus;
+    const { isAddEventDialogOpen, isEventErrorAlertOpen } = this.props.dialogs;
+
+    const currentDate = new Date(Date.now());
+    const filteredEvents = this.filterEvents();
+    const coaches = this.getCoaches();
+    const managers = this.getManagers();
+    const eventErrorAlert = this.getEventErrorAlert();
+
+    return (
+      <div className={classes.root}>
+        <div className={classes.contentWrapper}>
+          {!isMobile &&
+            canCreate && (
+              <div className={classes.actionsBar}>
+                <div className={classes.flexGrow} />
+                <Button
+                  colour="secondary"
+                  filled
+                  handleClick={() => openAddEventDialog()}
+                >
+                  <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
+                  Add new event
+                </Button>
+              </div>
+            )}
+          <div className={classes.calendarWrapper}>
+            <Calendar
+              events={filteredEvents}
+              minDate={minDate}
+              dateSelected={dateSelected}
+              isMobile={isMobile}
+              isTablet={isTablet}
+              institutionID={activeInstitutionID}
+              currentView={currentView}
+              isEventsLoading={isEventsLoading || activeInstitutionID === ""}
+              isMinDateLoading={
+                isCreationDateLoading || activeInstitutionID === ""
+              }
+              actions={{
+                updateView,
+                navigateTo,
+                addEvent: () => openAddEventDialog()
+              }}
+            />
+          </div>
+          <AddEventDialog
+            isOpen={isAddEventDialogOpen}
+            isMobile={isTablet}
+            isLoading={
+              isAddEventDialogLoading ||
+              isEventsLoading ||
+              isStaffLoading ||
+              isTeamsLoading ||
+              activeInstitutionID === ""
+            }
+            minDate={moment(currentDate).format("YYYY-MM-DD")}
+            initialDate={dateSelected}
+            institutionID={activeInstitutionID}
+            teams={teams}
+            coaches={coaches}
+            managers={managers}
+            actions={{
+              handleClose: closeAddEventDialog,
+              addEvent,
+              openEventErrorAlert
+            }}
+          />
+          <NotificationModal
+            isOpen={isEventErrorAlertOpen}
+            handleOkClick={closeEventErrorAlert}
+            heading={eventErrorAlert.heading}
+            message={eventErrorAlert.message}
+          />
+          {canCreate &&
+            isMobile && (
+              <MuiButton
+                fab
+                color="accent"
+                className={classes.fabPosition}
+                onClick={() => openAddEventDialog()}
+              >
+                <i className="fas fa-plus" />
+              </MuiButton>
+            )}
+        </div>
+      </div>
+    );
+  }
+
+  getEventInfoView(canEdit, canCancel) {
+    const {
+      isTablet,
+      isMobile,
+      classes,
+      activeInstitutionID,
+      teams,
       events,
       role,
       userID,
-      permissions
+      navigateTo,
+      goBack
     } = this.props;
-    const { dateSelected, eventID } = this.props.match.params;
+    const { dateSelected, eventID, infoTab } = this.props.match.params;
     const {
-      currentView,
-      errorType,
-      minDate,
       selectedCoach,
       selectedReplacementCoach,
       prevReplacementCoachID
     } = this.props.uiConfig;
     const {
       updateView,
-      openAddEventDialog,
-      closeAddEventDialog,
       openEditEventDialog,
       closeEditEventDialog,
-      addEvent,
       openEventErrorAlert,
       closeEventErrorAlert,
       openCancelEventAlert,
@@ -415,14 +584,11 @@ class ScheduleLayout extends Component {
     } = this.props.actions;
     const {
       isEventsLoading,
-      isAddEventDialogLoading,
       isEditEventDialogLoading,
-      isCreationDateLoading,
       isStaffLoading,
       isTeamsLoading
     } = this.props.loadingStatus;
     const {
-      isAddEventDialogOpen,
       isCancelEventAlertOpen,
       isUncancelEventAlertOpen,
       isEditEventDialogOpen,
@@ -435,97 +601,38 @@ class ScheduleLayout extends Component {
     } = this.props.dialogs;
 
     const currentDate = new Date(Date.now());
-    if (!dateSelected) {
-      return (
-        <Redirect
-          to={`/myaccount/schedule/${moment(currentDate).format("YYYY-MM-DD")}`}
-        />
-      );
-    }
+    const coaches = this.getCoaches();
+    const managers = this.getManagers();
+    const isPastEvent = this.checkIfEventPassed();
+    const eventErrorAlert = this.getEventErrorAlert();
+    const eventInfo = events[eventID];
 
-    let eventErrorAlertHeading = "Event Title Required";
-    let eventErrorAlertMessage =
-      "You need to specify a title for this event before saving it.";
-    if (errorType === "DATE") {
-      eventErrorAlertHeading = "Date Invalid";
-      eventErrorAlertMessage =
-        "You cannot create an event scheduled for a date that has already passed.";
-    }
-    if (errorType === "LOADING") {
-      eventErrorAlertHeading = "Network Issue";
-      eventErrorAlertMessage =
-        "You have lost your connection to the internet. Please check your connectivity and try again.";
-    }
-    if (errorType === "EVENT_TYPE") {
-      eventErrorAlertHeading = "Event Type Required";
-      eventErrorAlertMessage =
-        "Please specify a name for your custom event type.";
-    }
-
-    const filteredEvents = this.filterEvents();
-    let isPastEvent = false;
-    if (events[eventID]) {
-      const eventDate = new Date(events[eventID].requiredInfo.times.start);
-      const currentDate = new Date(Date.now());
-      isPastEvent = eventDate < currentDate;
-    }
-
-    const coaches = _.fromPairs(
-      _.toPairs(staff).filter(([id, info]) => {
-        if (
-          info.institutions[activeInstitutionID] &&
-          info.institutions[activeInstitutionID].roles.coach === "APPROVED"
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      })
-    );
-    const managers = _.fromPairs(
-      _.toPairs(staff).filter(([id, info]) => {
-        if (
-          info.institutions[activeInstitutionID] &&
-          info.institutions[activeInstitutionID].roles.manager === "APPROVED"
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      })
-    );
-
-    if (currentView === "EVENT_INFO") {
-      const canEdit =
-        role === "admin" ||
-        (role === "coach" && permissions.coaches.events.canEdit) ||
-        (role === "manager" && permissions.managers.events.canEdit);
-
-      return (
+    return (
+      <div className={classes.root}>
         <div className={classes.contentWrapper}>
           <EventInfo
             userID={userID}
             role={role}
             canEdit={canEdit}
-            canCancel={
-              role === "admin" ||
-              (role === "coach" && permissions.coaches.events.canCancel) ||
-              (role === "manager" && permissions.managers.events.canCancel)
-            }
+            canCancel={canCancel}
             coaches={coaches}
             managers={managers}
             teams={teams}
-            info={events[eventID]}
+            info={eventInfo}
             eventID={eventID}
             isInfoLoading={isEventsLoading || activeInstitutionID === ""}
             isCoachesLoading={isStaffLoading || activeInstitutionID === ""}
             isManagersLoading={isStaffLoading || activeInstitutionID === ""}
             isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
             isPastEvent={isPastEvent}
+            dateSelected={dateSelected}
             isMobile={isMobile}
             isTablet={isTablet}
+            infoTab={infoTab}
             actions={{
               updateView,
+              navigateTo,
+              goBack,
               removeReplacementCoach: openReplacementCoachRemovalModal,
               updateReplacementCoach: openReplacementCoachModal,
               editAbsentRating: openEditAbsentRatingModal,
@@ -542,11 +649,10 @@ class ScheduleLayout extends Component {
               <MuiButton
                 fab
                 color="accent"
-                aria-label="edit event"
                 className={classes.fabPosition}
                 onClick={() => openEditEventDialog()}
               >
-                <EditIcon />
+                <i className="fas fa-edit" />
               </MuiButton>
             )}
           <EditEventDialog
@@ -577,8 +683,8 @@ class ScheduleLayout extends Component {
           <NotificationModal
             isOpen={isEventErrorAlertOpen}
             handleOkClick={closeEventErrorAlert}
-            heading={eventErrorAlertHeading}
-            message={eventErrorAlertMessage}
+            heading={eventErrorAlert.heading}
+            message={eventErrorAlert.message}
           />
           <DecisionModal
             isOpen={isCancelEventAlertOpen}
@@ -708,98 +814,40 @@ class ScheduleLayout extends Component {
               </div>
             )}
         </div>
-      );
-    } else {
-      const canCreate =
-        role === "admin" ||
-        (role === "coach" && permissions.coaches.events.canCreate) ||
-        (role === "manager" && permissions.managers.events.canCreate);
-
-      return (
-        <div className={classes.contentWrapper}>
-          {!isMobile &&
-            canCreate && (
-              <div className={classes.actionsBar}>
-                <div className={classes.flexGrow} />
-                <Button
-                  colour="secondary"
-                  filled
-                  handleClick={() => openAddEventDialog()}
-                >
-                  <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
-                  Add new event
-                </Button>
-              </div>
-            )}
-          <div className={classes.calendarWrapper}>
-            <Calendar
-              events={filteredEvents}
-              minDate={minDate}
-              dateSelected={dateSelected}
-              isMobile={isMobile}
-              isTablet={isTablet}
-              institutionID={activeInstitutionID}
-              currentView={currentView}
-              isEventsLoading={isEventsLoading || activeInstitutionID === ""}
-              isMinDateLoading={
-                isCreationDateLoading || activeInstitutionID === ""
-              }
-              actions={{
-                updateView,
-                cancelEvent,
-                addEvent: () => openAddEventDialog()
-              }}
-            />
-          </div>
-          <AddEventDialog
-            isOpen={isAddEventDialogOpen}
-            isMobile={isTablet}
-            isLoading={
-              isAddEventDialogLoading ||
-              isEventsLoading ||
-              isStaffLoading ||
-              isTeamsLoading ||
-              activeInstitutionID === ""
-            }
-            minDate={moment(currentDate).format("YYYY-MM-DD")}
-            initialDate={dateSelected}
-            institutionID={activeInstitutionID}
-            teams={teams}
-            coaches={coaches}
-            managers={managers}
-            actions={{
-              handleClose: closeAddEventDialog,
-              addEvent,
-              openEventErrorAlert
-            }}
-          />
-          <NotificationModal
-            isOpen={isEventErrorAlertOpen}
-            handleOkClick={closeEventErrorAlert}
-            heading={eventErrorAlertHeading}
-            message={eventErrorAlertMessage}
-          />
-          {canCreate &&
-            isMobile && (
-              <MuiButton
-                fab
-                color="accent"
-                aria-label="add new event"
-                className={classes.fabPosition}
-                onClick={() => openAddEventDialog()}
-              >
-                <AddIcon />
-              </MuiButton>
-            )}
-        </div>
-      );
-    }
+      </div>
+    );
   }
 
   render() {
-    const { classes } = this.props;
-    return <div className={classes.root}>{this.renderView()}</div>;
+    const { currentView } = this.props.uiConfig;
+    const { updateView } = this.props.actions;
+
+    const permissions = this.getPermissions();
+    const currentDate = new Date(Date.now());
+    const shouldRedirect = this.checkIfShouldRedirect();
+
+    if (shouldRedirect) {
+      updateView("EVENTS_LIST");
+      return (
+        <Redirect
+          to={`/myaccount/schedule/${moment(currentDate).format("YYYY-MM-DD")}`}
+        />
+      );
+    }
+
+    switch (currentView) {
+      case "EVENT_LIST":
+      case "SCHEDULE":
+        return this.getEventListView(permissions.canCreate);
+      case "EVENT_INFO":
+        return this.getEventInfoView(
+          permissions.canEdit,
+          permissions.canCancel
+        );
+      default:
+        return this.getEventListView(permissions.canCreate);
+    }
   }
 }
 
-export default withStyles(styles)(ScheduleLayout);
+export default injectSheet(styles)(ScheduleLayout);

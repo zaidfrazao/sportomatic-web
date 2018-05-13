@@ -1763,8 +1763,8 @@ class EditEventDialog extends Component {
                         error={errors.numberOfEvents.hasError}
                         helperText={errors.numberOfEvents.message}
                         onChange={e => {
-                          this.validateField("numberOfEvents", e.target.value);
-                          this.handleChange("numberOfEvents", e.target.value);
+                          this.validateField("notes", e.target.value);
+                          this.handleChange("notes", e.target.value);
                         }}
                         InputLabelProps={{
                           shrink: true

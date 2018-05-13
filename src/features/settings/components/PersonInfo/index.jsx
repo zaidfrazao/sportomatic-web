@@ -2,18 +2,15 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import AvatarEditor from "react-avatar-editor";
-import Button from "material-ui/Button";
-import { CircularProgress } from "material-ui/Progress";
 import Checkbox from "material-ui/Checkbox";
 import { FormControl, FormControlLabel } from "material-ui/Form";
-import { grey } from "material-ui/colors";
+import { common, grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import Input, { InputLabel } from "material-ui/Input";
-import Paper from "material-ui/Paper";
 import TextField from "material-ui/TextField";
-import Typography from "material-ui/Typography";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../../../components/BannerAd";
+import Button from "../../../../components/Button";
 import { isValidEmail } from "../../../../utils/validation";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LargeRectangleAd from "../../../../components/LargeRectangleAd";
@@ -95,15 +92,45 @@ const styles = theme => ({
     flexDirection: "column"
   },
   section: {
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[200]}`,
-    height: "100%"
+    borderRadius: 16,
+    marginBottom: 24,
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    backgroundColor: common["white"]
   },
+  sectionButton: {},
   sectionContent: {
-    padding: 16,
+    margin: 24,
     display: "flex",
     flexDirection: "column",
     alignItems: "center"
+  },
+  sectionContentSports: {
+    margin: 24,
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between"
+  },
+  sectionContentWrapper: {
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column"
+  },
+  sectionHeading: {
+    fontSize: 18,
+    borderRadius: "16px 16px 0 0",
+    padding: "18px 0",
+    width: "100%",
+    textAlign: "center",
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: grey[500]
+  },
+  sectionList: {
+    flexGrow: 1
   },
   sportSectionContent: {
     padding: 16,
@@ -562,25 +589,18 @@ class PersonInfo extends Component {
                     onChange={this.handleNewImage}
                   />
                   <label htmlFor="icon-button-file">
-                    <Button
-                      className={classes.button}
-                      color="primary"
-                      component="span"
-                    >
+                    <Button colour="secondary" component="span" filled>
                       Change profile picture
                     </Button>
                   </label>
                   <Button
                     disabled={!this.state.image}
-                    className={classes.button}
-                    color="primary"
-                    onClick={this.handleSave}
+                    loading={isUpdateProfilePictureLoading}
+                    colour="primary"
+                    filled
+                    handleClick={this.handleSave}
                   >
-                    {isUpdateProfilePictureLoading ? (
-                      <CircularProgress size={20} />
-                    ) : (
-                      "Save new picture"
-                    )}
+                    Save new picture
                   </Button>
                 </div>
               </Grid>
@@ -588,139 +608,129 @@ class PersonInfo extends Component {
                 <div className={classes.adWrapper}>{ad}</div>
               </Grid>
               <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Basic Info
-                  </Typography>
-                  <div className={classes.sectionContent}>
-                    <TextField
-                      label="Name"
-                      value={name}
-                      error={errors["name"].hasError}
-                      onChange={e => this.updateField(e.target.value, "name")}
-                      onBlur={e => this.validateField(e.target.value, "name")}
-                      helperText={errors["name"].message}
-                      className={classes.formControl}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
-                    <TextField
-                      label="Surname"
-                      value={surname}
-                      error={errors["surname"].hasError}
-                      onChange={e =>
-                        this.updateField(e.target.value, "surname")}
-                      onBlur={e =>
-                        this.validateField(e.target.value, "surname")}
-                      helperText={errors["surname"].message}
-                      className={classes.formControl}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
-                    <TextField
-                      label="Phone number"
-                      value={phoneNumber}
-                      error={errors["phoneNumber"].hasError}
-                      placeholder="e.g. (011) 222-3333"
-                      onChange={e =>
-                        this.updateField(
-                          toPhoneFormat(e.target.value),
-                          "phoneNumber"
-                        )}
-                      onBlur={e =>
-                        this.validateField(
-                          toPhoneFormat(e.target.value),
-                          "phoneNumber"
-                        )}
-                      helperText={errors["phoneNumber"].message}
-                      className={classes.formControl}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Basic Info</div>
+                  <div className={classes.sectionContentWrapper}>
+                    <div className={classes.sectionContent}>
+                      <TextField
+                        label="Name"
+                        value={name}
+                        error={errors["name"].hasError}
+                        onChange={e => this.updateField(e.target.value, "name")}
+                        onBlur={e => this.validateField(e.target.value, "name")}
+                        helperText={errors["name"].message}
+                        className={classes.formControl}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                      <TextField
+                        label="Surname"
+                        value={surname}
+                        error={errors["surname"].hasError}
+                        onChange={e =>
+                          this.updateField(e.target.value, "surname")}
+                        onBlur={e =>
+                          this.validateField(e.target.value, "surname")}
+                        helperText={errors["surname"].message}
+                        className={classes.formControl}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                      <TextField
+                        label="Phone number"
+                        value={phoneNumber}
+                        error={errors["phoneNumber"].hasError}
+                        placeholder="e.g. (011) 222-3333"
+                        onChange={e =>
+                          this.updateField(
+                            toPhoneFormat(e.target.value),
+                            "phoneNumber"
+                          )}
+                        onBlur={e =>
+                          this.validateField(
+                            toPhoneFormat(e.target.value),
+                            "phoneNumber"
+                          )}
+                        helperText={errors["phoneNumber"].message}
+                        className={classes.formControl}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                    </div>
                     <div className={classes.flexGrow} />
                     <Button
-                      className={classes.button}
-                      color="primary"
-                      disabled={!canSaveBasicInfo || isUpdateBasicInfoLoading}
-                      onClick={() =>
+                      colour="primary"
+                      disabled={!canSaveBasicInfo}
+                      loading={isUpdateBasicInfoLoading}
+                      filled
+                      handleClick={() =>
                         updateBasicInfo(userID, name, surname, phoneNumber)}
                     >
-                      {isUpdateBasicInfoLoading ? (
-                        <CircularProgress size={20} />
-                      ) : (
-                        "Save changes"
-                      )}
+                      Save changes
                     </Button>
                   </div>
-                </Paper>
+                </div>
               </Grid>
               <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Login Details
-                  </Typography>
-                  <div className={classes.sectionContent}>
-                    <TextField
-                      label="Email"
-                      value={email}
-                      error={errors["email"].hasError}
-                      onChange={e => this.updateField(e.target.value, "email")}
-                      onBlur={e => this.validateField(e.target.value, "email")}
-                      helperText={errors["email"].message}
-                      className={classes.formControl}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
-                    <TextField
-                      type="password"
-                      label="Password"
-                      value={password}
-                      error={errors["password"].hasError}
-                      onChange={e =>
-                        this.updateField(e.target.value, "password")}
-                      onBlur={e =>
-                        this.validateField(e.target.value, "password")}
-                      helperText={errors["password"].message}
-                      className={classes.formControl}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
-                    <TextField
-                      type="password"
-                      label="Confirm password"
-                      value={confirmPassword}
-                      error={errors["confirmPassword"].hasError}
-                      onChange={e =>
-                        this.updateField(e.target.value, "confirmPassword")}
-                      onBlur={e =>
-                        this.validateField(e.target.value, "confirmPassword")}
-                      helperText={errors["confirmPassword"].message}
-                      className={classes.formControl}
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Login Details</div>
+                  <div className={classes.sectionContentWrapper}>
+                    <div className={classes.sectionContent}>
+                      <TextField
+                        label="Email"
+                        value={email}
+                        error={errors["email"].hasError}
+                        onChange={e =>
+                          this.updateField(e.target.value, "email")}
+                        onBlur={e =>
+                          this.validateField(e.target.value, "email")}
+                        helperText={errors["email"].message}
+                        className={classes.formControl}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                      <TextField
+                        type="password"
+                        label="Password"
+                        value={password}
+                        error={errors["password"].hasError}
+                        onChange={e =>
+                          this.updateField(e.target.value, "password")}
+                        onBlur={e =>
+                          this.validateField(e.target.value, "password")}
+                        helperText={errors["password"].message}
+                        className={classes.formControl}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                      <TextField
+                        type="password"
+                        label="Confirm password"
+                        value={confirmPassword}
+                        error={errors["confirmPassword"].hasError}
+                        onChange={e =>
+                          this.updateField(e.target.value, "confirmPassword")}
+                        onBlur={e =>
+                          this.validateField(e.target.value, "confirmPassword")}
+                        helperText={errors["confirmPassword"].message}
+                        className={classes.formControl}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                    </div>
                     <div className={classes.flexGrow} />
                     <Button
-                      className={classes.button}
-                      color="primary"
-                      disabled={
-                        !canSaveLoginDetails || isUpdateLoginDetailsLoading
-                      }
-                      onClick={() => {
+                      colour="primary"
+                      disabled={!canSaveLoginDetails}
+                      loading={isUpdateLoginDetailsLoading}
+                      filled
+                      handleClick={() => {
                         updateLoginDetails(userID, email, password);
                         this.setState({
                           password: "",
@@ -728,29 +738,16 @@ class PersonInfo extends Component {
                         });
                       }}
                     >
-                      {isUpdateLoginDetailsLoading ? (
-                        <CircularProgress size={20} />
-                      ) : (
-                        "Save changes"
-                      )}
+                      Save changes
                     </Button>
                   </div>
-                </Paper>
+                </div>
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-                <Paper className={classes.section}>
-                  <Typography
-                    className={classes.heading}
-                    type="title"
-                    component="h3"
-                  >
-                    Preferred Sports
-                  </Typography>
-                  <div className={classes.sportSectionContent}>
-                    <FormControl
-                      component="fieldset"
-                      className={classes.formControl}
-                    >
+                <div className={classes.section}>
+                  <div className={classes.sectionHeading}>Preferred Sports</div>
+                  <div className={classes.sectionContentWrapper}>
+                    <div className={classes.sectionContentSports}>
                       {_.toPairs(sports).map(([sport, checked]) => {
                         return (
                           <FormControlLabel
@@ -773,12 +770,13 @@ class PersonInfo extends Component {
                           />
                         );
                       })}
-                    </FormControl>
+                    </div>
+                    <div className={classes.flexGrow} />
                     <Button
-                      className={classes.button}
-                      color="primary"
-                      disabled={isUpdateSportsLoading}
-                      onClick={() => {
+                      colour="primary"
+                      loading={isUpdateSportsLoading}
+                      filled
+                      handleClick={() => {
                         let sportsUnknown = true;
                         _.toPairs(sports).map(([sport, selected]) => {
                           if (selected) {
@@ -793,14 +791,10 @@ class PersonInfo extends Component {
                         }
                       }}
                     >
-                      {isUpdateSportsLoading ? (
-                        <CircularProgress size={20} />
-                      ) : (
-                        "Save changes"
-                      )}
+                      Save changes
                     </Button>
                   </div>
-                </Paper>
+                </div>
               </Grid>
             </Grid>
           </div>

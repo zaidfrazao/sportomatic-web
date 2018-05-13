@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { common, lightBlue } from "../../../../../../utils/colours";
+import { grey, lightBlue } from "../../../../../../utils/colours";
 import injectStyles from "react-jss";
 import { Route } from "react-router-dom";
 import Button from "../../../../../../components/Button";
@@ -18,8 +18,8 @@ const styles = {
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: common["black"],
-    backgroundColor: common["white"]
+    color: grey[800],
+    backgroundColor: grey[100]
   }
 };
 

@@ -4,34 +4,38 @@ import injectSheet from "react-jss";
 
 const styles = theme => ({
   tab: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
     textAlign: "center",
-    width: 120,
     borderRadius: 8,
-    margin: "12px 4px",
+    margin: "0 8px",
     padding: 18,
+    fontWeight: "bold",
     color: grey[800],
-    backgroundColor: grey[200],
+    backgroundColor: grey[100],
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: grey[100]
+      backgroundColor: grey[300]
     }
   },
   tabSelected: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
     textAlign: "center",
-    width: 120,
     borderRadius: 8,
-    margin: "12px 4px",
+    margin: "0 8px",
     padding: 18,
     fontWeight: "bold",
     color: common["white"],
-    backgroundColor: lightBlue[700],
+    backgroundColor: lightBlue[800],
     cursor: "pointer",
     "&:hover": {
       backgroundColor: lightBlue[600]
     }
   },
   wrapper: {
-    margin: "12px 8px",
     display: "flex",
     justifyContent: "center"
   }
@@ -39,13 +43,25 @@ const styles = theme => ({
 
 class Tabs extends Component {
   render() {
-    const { classes, tabs, selected } = this.props;
+    const { classes, tabs, selected, handleClick } = this.props;
 
     const tabComponents = tabs.map(tab => {
-      if (selected === tab.value) {
-        return <div className={classes.tabSelected}>{tab.label}</div>;
+      if (selected === tab.key) {
+        return (
+          <div key={tab.key} className={classes.tabSelected}>
+            {tab.label}
+          </div>
+        );
       } else {
-        return <div className={classes.tab}>{tab.label}</div>;
+        return (
+          <div
+            key={tab.key}
+            className={classes.tab}
+            onClick={() => handleClick(tab.key)}
+          >
+            {tab.label}
+          </div>
+        );
       }
     });
 

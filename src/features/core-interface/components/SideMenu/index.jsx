@@ -186,7 +186,7 @@ class SideMenu extends Component<Props> {
     return (
       <div className={wrapperStyle}>
         <CommunityInfo
-          emblem={emblem}
+          emblem={emblem === "" ? defaultEmblem : emblem}
           name={communityName}
           selectedRole={selectedRole}
           switchCommunities={switchCommunities}

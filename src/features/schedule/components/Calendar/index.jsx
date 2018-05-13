@@ -12,7 +12,6 @@ import NextIcon from "material-ui-icons/ArrowForward";
 import Next2Icon from "material-ui-icons/LastPage";
 import PreviousIcon from "material-ui-icons/ArrowBack";
 import Previous2Icon from "material-ui-icons/FirstPage";
-import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import EventsList from "../EventsList";
 
@@ -218,7 +217,8 @@ class Calendar extends Component {
       updateView,
       openCancelEventAlert,
       openUncancelEventAlert,
-      cancelEvent
+      cancelEvent,
+      navigateTo
     } = this.props.actions;
 
     let dates = {};
@@ -272,39 +272,33 @@ class Calendar extends Component {
       <div className={classes.root}>
         <div className={classes.header}>
           <div className={classes.arrowWrapper}>
-            <Route
-              render={({ history }) => (
-                <IconButton
-                  disabled={prevDisabled}
-                  onClick={() => {
-                    const date = new Date(dateSelected);
-                    let newDate = new Date(
-                      date.getFullYear(),
-                      date.getMonth() - 1,
-                      2
-                    );
-                    if (this.compareDates(minDate, newDate) === +1) {
-                      newDate = new Date(
-                        minDate.getFullYear(),
-                        minDate.getMonth(),
-                        minDate.getDate() + 1
-                      );
-                    }
-                    history.push(
-                      `/myaccount/schedule/${moment(newDate).format(
-                        "YYYY-MM-DD"
-                      )}`
-                    );
-                  }}
-                >
-                  <PreviousIcon
-                    className={
-                      prevDisabled ? classes.disabledButton : classes.arrow
-                    }
-                  />
-                </IconButton>
-              )}
-            />
+            <IconButton
+              disabled={prevDisabled}
+              onClick={() => {
+                const date = new Date(dateSelected);
+                let newDate = new Date(
+                  date.getFullYear(),
+                  date.getMonth() - 1,
+                  2
+                );
+                if (this.compareDates(minDate, newDate) === +1) {
+                  newDate = new Date(
+                    minDate.getFullYear(),
+                    minDate.getMonth(),
+                    minDate.getDate() + 1
+                  );
+                }
+                navigateTo(
+                  `/myaccount/schedule/${moment(newDate).format("YYYY-MM-DD")}`
+                );
+              }}
+            >
+              <PreviousIcon
+                className={
+                  prevDisabled ? classes.disabledButton : classes.arrow
+                }
+              />
+            </IconButton>
           </div>
           <div className={classes.headerContent}>
             <div className={classes.selectedYear}>
@@ -318,174 +312,144 @@ class Calendar extends Component {
             </div>
           </div>
           <div className={classes.arrowWrapper}>
-            <Route
-              render={({ history }) => (
-                <IconButton
-                  disabled={nextDisabled}
-                  onClick={() => {
-                    const date = new Date(dateSelected);
-                    const newDate = new Date(
-                      date.getFullYear(),
-                      date.getMonth() + 1,
-                      2
-                    );
-                    history.push(
-                      `/myaccount/schedule/${moment(newDate).format(
-                        "YYYY-MM-DD"
-                      )}`
-                    );
-                  }}
-                >
-                  <NextIcon
-                    className={
-                      nextDisabled ? classes.disabledButton : classes.arrow
-                    }
-                  />
-                </IconButton>
-              )}
-            />
+            <IconButton
+              disabled={nextDisabled}
+              onClick={() => {
+                const date = new Date(dateSelected);
+                const newDate = new Date(
+                  date.getFullYear(),
+                  date.getMonth() + 1,
+                  2
+                );
+                navigateTo(
+                  `/myaccount/schedule/${moment(newDate).format("YYYY-MM-DD")}`
+                );
+              }}
+            >
+              <NextIcon
+                className={
+                  nextDisabled ? classes.disabledButton : classes.arrow
+                }
+              />
+            </IconButton>
           </div>
         </div>
         <div className={classes.contentWrapper}>
           <div className={classes.desktopCalendar}>
-            <Route
-              render={({ history }) => {
-                if (isEventsLoading || isMinDateLoading) {
-                  return (
-                    <div className={classes.loadingWrapper}>
-                      <CircularProgress />
-                    </div>
+            {isEventsLoading || isMinDateLoading ? (
+              <div className={classes.loadingWrapper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <ReactCalendar
+                showNeighboringMonth={false}
+                tileContent={({ date, view }) => {
+                  date.setHours(2);
+                  const eventDate = dates[date.toDateString()];
+                  if (eventDate) {
+                    if (
+                      eventDate.hasCompetitive &&
+                      eventDate.hasNonCompetitive &&
+                      eventDate.hasCancelled
+                    ) {
+                      return (
+                        <div>
+                          <EventIcon className={classes.competitiveEvent} />
+                          <EventIcon className={classes.nonCompetitiveEvent} />
+                          <EventIcon className={classes.cancelledEvent} />
+                        </div>
+                      );
+                    } else if (
+                      eventDate.hasCompetitive &&
+                      eventDate.hasNonCompetitive
+                    ) {
+                      return (
+                        <div>
+                          <EventIcon className={classes.competitiveEvent} />
+                          <EventIcon className={classes.nonCompetitiveEvent} />
+                        </div>
+                      );
+                    } else if (
+                      eventDate.hasCompetitive &&
+                      eventDate.hasCancelled
+                    ) {
+                      return (
+                        <div>
+                          <EventIcon className={classes.competitiveEvent} />
+                          <EventIcon className={classes.cancelledEvent} />
+                        </div>
+                      );
+                    } else if (
+                      eventDate.hasNonCompetitive &&
+                      eventDate.hasCancelled
+                    ) {
+                      return (
+                        <div>
+                          <EventIcon className={classes.nonCompetitiveEvent} />
+                          <EventIcon className={classes.cancelledEvent} />
+                        </div>
+                      );
+                    } else if (eventDate.hasCompetitive) {
+                      return (
+                        <div>
+                          <EventIcon className={classes.competitiveEvent} />
+                        </div>
+                      );
+                    } else if (eventDate.hasNonCompetitive) {
+                      return (
+                        <div>
+                          <EventIcon className={classes.nonCompetitiveEvent} />
+                        </div>
+                      );
+                    }
+                  }
+                }}
+                tileClassName={({ date, view }) => {
+                  let tileClasses = [];
+
+                  if (date >= minDate) {
+                    if (date.toDateString() === formattedDateSelected) {
+                      tileClasses.push(classes.selectedTile);
+                    } else if (date.toDateString() === currentDate) {
+                      tileClasses.push(classes.todayTile);
+                    } else if (dates[date.toDateString()]) {
+                      tileClasses.push(classes.eventTile);
+                    } else {
+                      tileClasses.push(classes.normalTile);
+                    }
+                  } else {
+                    tileClasses.push(classes.disabledDate);
+                  }
+
+                  if (date.getDay() === 6 || date.getDay() === 0) {
+                    tileClasses.push(classes.weekendTile);
+                  }
+
+                  return classNames(...tileClasses);
+                }}
+                className={classes.calendarWithHeader}
+                value={new Date(dateSelected)}
+                minDate={minDate}
+                showNavigation={false}
+                onChange={date => {
+                  const newDate = new Date(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate()
                   );
-                } else {
-                  return (
-                    <ReactCalendar
-                      showNeighboringMonth={false}
-                      tileContent={({ date, view }) => {
-                        date.setHours(2);
-                        const eventDate = dates[date.toDateString()];
-                        if (eventDate) {
-                          if (
-                            eventDate.hasCompetitive &&
-                            eventDate.hasNonCompetitive &&
-                            eventDate.hasCancelled
-                          ) {
-                            return (
-                              <div>
-                                <EventIcon
-                                  className={classes.competitiveEvent}
-                                />
-                                <EventIcon
-                                  className={classes.nonCompetitiveEvent}
-                                />
-                                <EventIcon className={classes.cancelledEvent} />
-                              </div>
-                            );
-                          } else if (
-                            eventDate.hasCompetitive &&
-                            eventDate.hasNonCompetitive
-                          ) {
-                            return (
-                              <div>
-                                <EventIcon
-                                  className={classes.competitiveEvent}
-                                />
-                                <EventIcon
-                                  className={classes.nonCompetitiveEvent}
-                                />
-                              </div>
-                            );
-                          } else if (
-                            eventDate.hasCompetitive &&
-                            eventDate.hasCancelled
-                          ) {
-                            return (
-                              <div>
-                                <EventIcon
-                                  className={classes.competitiveEvent}
-                                />
-                                <EventIcon className={classes.cancelledEvent} />
-                              </div>
-                            );
-                          } else if (
-                            eventDate.hasNonCompetitive &&
-                            eventDate.hasCancelled
-                          ) {
-                            return (
-                              <div>
-                                <EventIcon
-                                  className={classes.nonCompetitiveEvent}
-                                />
-                                <EventIcon className={classes.cancelledEvent} />
-                              </div>
-                            );
-                          } else if (eventDate.hasCompetitive) {
-                            return (
-                              <div>
-                                <EventIcon
-                                  className={classes.competitiveEvent}
-                                />
-                              </div>
-                            );
-                          } else if (eventDate.hasNonCompetitive) {
-                            return (
-                              <div>
-                                <EventIcon
-                                  className={classes.nonCompetitiveEvent}
-                                />
-                              </div>
-                            );
-                          }
-                        }
-                      }}
-                      tileClassName={({ date, view }) => {
-                        let tileClasses = [];
-
-                        if (date >= minDate) {
-                          if (date.toDateString() === formattedDateSelected) {
-                            tileClasses.push(classes.selectedTile);
-                          } else if (date.toDateString() === currentDate) {
-                            tileClasses.push(classes.todayTile);
-                          } else if (dates[date.toDateString()]) {
-                            tileClasses.push(classes.eventTile);
-                          } else {
-                            tileClasses.push(classes.normalTile);
-                          }
-                        } else {
-                          tileClasses.push(classes.disabledDate);
-                        }
-
-                        if (date.getDay() === 6 || date.getDay() === 0) {
-                          tileClasses.push(classes.weekendTile);
-                        }
-
-                        return classNames(...tileClasses);
-                      }}
-                      className={classes.calendarWithHeader}
-                      value={new Date(dateSelected)}
-                      minDate={minDate}
-                      showNavigation={false}
-                      onChange={date => {
-                        const newDate = new Date(
-                          date.getFullYear(),
-                          date.getMonth(),
-                          date.getDate()
-                        );
-                        history.push(
-                          `/myaccount/schedule/${moment(newDate).format(
-                            "YYYY-MM-DD"
-                          )}`
-                        );
-                        updateView("EVENTS_LIST");
-                      }}
-                      nextLabel={<NextIcon />}
-                      prevLabel={<PreviousIcon />}
-                      next2Label={<Next2Icon />}
-                      prev2Label={<Previous2Icon />}
-                    />
+                  navigateTo(
+                    `/myaccount/schedule/${moment(newDate).format(
+                      "YYYY-MM-DD"
+                    )}`
                   );
-                }
-              }}
-            />
+                  updateView("EVENTS_LIST");
+                }}
+                nextLabel={<NextIcon />}
+                prevLabel={<PreviousIcon />}
+                next2Label={<Next2Icon />}
+                prev2Label={<Previous2Icon />}
+              />
+            )}
           </div>
           <div className={classes.desktopEventsList}>
             <EventsList
@@ -498,6 +462,7 @@ class Calendar extends Component {
                 updateView,
                 openCancelEventAlert,
                 openUncancelEventAlert,
+                navigateTo,
                 cancelEvent
               }}
             />
@@ -519,7 +484,7 @@ class Calendar extends Component {
       isMinDateLoading,
       minDate
     } = this.props;
-    const { updateView, cancelEvent } = this.props.actions;
+    const { updateView, cancelEvent, navigateTo } = this.props.actions;
 
     let dates = {};
     _.values(events).map(eventInfo => {
@@ -577,42 +542,36 @@ class Calendar extends Component {
       <div className={classes.root}>
         <div className={classes.header}>
           <div className={classes.arrowWrapper}>
-            <Route
-              render={({ history }) => (
-                <IconButton
-                  disabled={prevDisabled}
-                  onClick={() => {
-                    const date = new Date(dateSelected);
-                    let newDate = new Date();
-                    if (currentView === "SCHEDULE") {
-                      newDate = new Date(
-                        date.getFullYear(),
-                        date.getMonth() - 1,
-                        date.getDate()
-                      );
-                    } else {
-                      newDate = new Date(
-                        date.getFullYear(),
-                        date.getMonth(),
-                        date.getDate() - 1
-                      );
-                    }
+            <IconButton
+              disabled={prevDisabled}
+              onClick={() => {
+                const date = new Date(dateSelected);
+                let newDate = new Date();
+                if (currentView === "SCHEDULE") {
+                  newDate = new Date(
+                    date.getFullYear(),
+                    date.getMonth() - 1,
+                    date.getDate()
+                  );
+                } else {
+                  newDate = new Date(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate() - 1
+                  );
+                }
 
-                    history.push(
-                      `/myaccount/schedule/${moment(newDate).format(
-                        "YYYY-MM-DD"
-                      )}`
-                    );
-                  }}
-                >
-                  <PreviousIcon
-                    className={
-                      prevDisabled ? classes.disabledButton : classes.arrow
-                    }
-                  />
-                </IconButton>
-              )}
-            />
+                navigateTo(
+                  `/myaccount/schedule/${moment(newDate).format("YYYY-MM-DD")}`
+                );
+              }}
+            >
+              <PreviousIcon
+                className={
+                  prevDisabled ? classes.disabledButton : classes.arrow
+                }
+              />
+            </IconButton>
           </div>
           <div className={classes.headerContent}>
             <div className={classes.selectedYear}>
@@ -631,108 +590,93 @@ class Calendar extends Component {
             </div>
           </div>
           <div className={classes.arrowWrapper}>
-            <Route
-              render={({ history }) => (
-                <IconButton
-                  disabled={nextDisabled}
-                  onClick={() => {
-                    const date = new Date(dateSelected);
-                    let newDate = new Date();
-                    if (currentView === "SCHEDULE") {
-                      newDate = new Date(
-                        date.getFullYear(),
-                        date.getMonth() + 1,
-                        date.getDate()
-                      );
-                    } else {
-                      newDate = new Date(
-                        date.getFullYear(),
-                        date.getMonth(),
-                        date.getDate() + 1
-                      );
-                    }
-
-                    history.push(
-                      `/myaccount/schedule/${moment(newDate).format(
-                        "YYYY-MM-DD"
-                      )}`
-                    );
-                  }}
-                >
-                  <NextIcon
-                    className={
-                      nextDisabled ? classes.disabledButton : classes.arrow
-                    }
-                  />
-                </IconButton>
-              )}
-            />
+            <IconButton
+              disabled={nextDisabled}
+              onClick={() => {
+                const date = new Date(dateSelected);
+                let newDate = new Date();
+                if (currentView === "SCHEDULE") {
+                  newDate = new Date(
+                    date.getFullYear(),
+                    date.getMonth() + 1,
+                    date.getDate()
+                  );
+                } else {
+                  newDate = new Date(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate() + 1
+                  );
+                }
+                navigateTo(
+                  `/myaccount/schedule/${moment(newDate).format("YYYY-MM-DD")}`
+                );
+              }}
+            >
+              <NextIcon
+                className={
+                  nextDisabled ? classes.disabledButton : classes.arrow
+                }
+              />
+            </IconButton>
           </div>
         </div>
         <div className={classes.contentWrapper}>
           {currentView === "SCHEDULE" ? (
             <div className={classes.mobileCalendar}>
-              <Route
-                render={({ history }) => {
-                  if (isEventsLoading || isMinDateLoading) {
-                    return (
-                      <div className={classes.loadingWrapper}>
-                        <CircularProgress />
-                      </div>
-                    );
+              (isEventsLoading || isMinDateLoading) ? (
+              <div className={classes.loadingWrapper}>
+                <CircularProgress />
+              </div>
+              ) : (
+              <ReactCalendar
+                showNeighboringMonth={false}
+                tileClassName={({ date, view }) => {
+                  let tileClasses = [];
+
+                  if (date > minDate) {
+                    if (date.toDateString() === formattedDateSelected) {
+                      tileClasses.push(classes.selectedTile);
+                    } else if (date.toDateString() === currentDate) {
+                      tileClasses.push(classes.todayTile);
+                    } else if (dates[date.toDateString()]) {
+                      tileClasses.push(classes.eventTile);
+                    } else {
+                      tileClasses.push(classes.normalTile);
+                    }
                   } else {
-                    return (
-                      <ReactCalendar
-                        showNeighboringMonth={false}
-                        tileClassName={({ date, view }) => {
-                          let tileClasses = [];
-
-                          if (date > minDate) {
-                            if (date.toDateString() === formattedDateSelected) {
-                              tileClasses.push(classes.selectedTile);
-                            } else if (date.toDateString() === currentDate) {
-                              tileClasses.push(classes.todayTile);
-                            } else if (dates[date.toDateString()]) {
-                              tileClasses.push(classes.eventTile);
-                            } else {
-                              tileClasses.push(classes.normalTile);
-                            }
-                          } else {
-                            tileClasses.push(classes.disabledDate);
-                          }
-
-                          if (date.getDay() === 6 || date.getDay() === 0) {
-                            tileClasses.push(classes.weekendTile);
-                          }
-
-                          return classNames(...tileClasses);
-                        }}
-                        className={classes.calendarWithoutHeader}
-                        value={new Date(dateSelected)}
-                        minDate={minDate}
-                        showNavigation={false}
-                        onChange={date => {
-                          const newDate = new Date(
-                            date.getFullYear(),
-                            date.getMonth(),
-                            date.getDate()
-                          );
-                          history.push(
-                            `/myaccount/schedule/${moment(newDate).format(
-                              "YYYY-MM-DD"
-                            )}`
-                          );
-                          updateView("EVENTS_LIST");
-                        }}
-                        nextLabel={<NextIcon />}
-                        prevLabel={<PreviousIcon />}
-                        next2Label={<Next2Icon />}
-                        prev2Label={<Previous2Icon />}
-                      />
-                    );
+                    tileClasses.push(classes.disabledDate);
                   }
+
+                  if (date.getDay() === 6 || date.getDay() === 0) {
+                    tileClasses.push(classes.weekendTile);
+                  }
+
+                  return classNames(...tileClasses);
                 }}
+                className={classes.calendarWithoutHeader}
+                value={new Date(dateSelected)}
+                minDate={minDate}
+                showNavigation={false}
+                onChange={date => {
+                  const newDate = new Date(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate()
+                  );
+                  navigateTo(
+                    `/myaccount/schedule/${moment(newDate).format(
+                      "YYYY-MM-DD"
+                    )}`
+                  );
+                  updateView("EVENTS_LIST");
+                }}
+                nextLabel={<NextIcon />}
+                prevLabel={<PreviousIcon />}
+                next2Label={<Next2Icon />}
+                prev2Label={<Previous2Icon />}
               />
+              )}
             </div>
           ) : (
             <div className={classes.eventsListWrapper}>
@@ -744,6 +688,7 @@ class Calendar extends Component {
                 isLoading={isEventsLoading || isMinDateLoading}
                 actions={{
                   updateView,
+                  navigateTo,
                   cancelEvent
                 }}
               />

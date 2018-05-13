@@ -5,7 +5,6 @@ import { CircularProgress } from "material-ui/Progress";
 import { grey, lightBlue, orange, red } from "material-ui/colors";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import moment from "moment";
-import { Route } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
 import Button from "../../../../components/Button";
 
@@ -89,7 +88,7 @@ class EventsList extends Component {
 
   render() {
     const { classes, dateSelected, isTablet, events, isLoading } = this.props;
-    const { updateView } = this.props.actions;
+    const { updateView, navigateTo } = this.props.actions;
 
     const allEvents = this.getFullSortedEventsList(events)
       .filter(eventInfo => {
@@ -114,47 +113,36 @@ class EventsList extends Component {
         }
 
         return (
-          <Route
+          <ListItem
             key={eventInfo.id}
-            render={({ history }) => {
-              return (
-                <ListItem
-                  button
-                  onClick={() => {
-                    history.push(
-                      `/myaccount/schedule/${dateSelected}/${eventInfo.id}`
-                    );
-                  }}
-                >
-                  <Avatar className={avatarStyle} />
-                  <ListItemText
-                    primary={eventInfo.requiredInfo.title}
-                    secondary={`${eventStartTime} - ${eventEndTime}`}
-                  />
-                </ListItem>
-              );
+            button
+            onClick={() => {
+              navigateTo(`/myaccount/schedule/${dateSelected}/${eventInfo.id}`);
+              updateView("EVENT_INFO");
             }}
-          />
+          >
+            <Avatar className={avatarStyle} />
+            <ListItemText
+              primary={eventInfo.requiredInfo.title}
+              secondary={`${eventStartTime} - ${eventEndTime}`}
+            />
+          </ListItem>
         );
       });
 
     return (
       <div className={classes.root}>
         {isTablet && (
-          <Route
-            render={({ history }) => (
-              <div className={classes.backButtonWrapper}>
-                <Button
-                  colour="primary"
-                  fullWidth
-                  filled
-                  handleClick={() => updateView("SCHEDULE")}
-                >
-                  Select date
-                </Button>
-              </div>
-            )}
-          />
+          <div className={classes.backButtonWrapper}>
+            <Button
+              colour="primary"
+              fullWidth
+              filled
+              handleClick={() => updateView("SCHEDULE")}
+            >
+              Select date
+            </Button>
+          </div>
         )}
         <div className={classes.events}>
           {isLoading ? (

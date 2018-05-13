@@ -171,106 +171,28 @@ class CoreInterfaceLayout extends Component {
   }
 
   getSideMenuItems() {
-    const { accountInfo } = this.props.uiConfig;
-
-    const role = _.toLower(accountInfo.lastAccessed.role);
-
-    switch (role) {
-      case "admin":
-      case "coach":
-        return {
-          overview: {
-            label: "Overview",
-            icon: "fas fa-newspaper"
-          },
-          schedule: {
-            label: "Schedule",
-            icon: "fas fa-calendar"
-          },
-          hours: {
-            label: "Hours",
-            icon: "fas fa-calendar"
-          },
-          results: {
-            label: "Results",
-            icon: "fas fa-list-ol"
-          },
-          wages: {
-            label: "Wages",
-            icon: "fas fa-money-bill-alt"
-          },
-          people: {
-            label: "People",
-            icon: "fas fa-user"
-          },
-          teams: {
-            label: "Teams",
-            icon: "fas fa-users"
-          },
-          settings: {
-            label: "Settings",
-            icon: "fas fa-cog"
-          }
-        };
-      case "manager":
-        return {
-          overview: {
-            label: "Overview",
-            icon: "fas fa-newspaper"
-          },
-          schedule: {
-            label: "Schedule",
-            icon: "fas fa-calendar"
-          },
-          hours: {
-            label: "Hours",
-            icon: "fas fa-clock"
-          },
-          results: {
-            label: "Results",
-            icon: "fas fa-list-ol"
-          },
-          people: {
-            label: "People",
-            icon: "fas fa-user"
-          },
-          teams: {
-            label: "Teams",
-            icon: "fas fa-users"
-          },
-          settings: {
-            label: "Settings",
-            icon: "fas fa-cog"
-          }
-        };
-      default:
-        return {
-          overview: {
-            label: "Overview",
-            icon: "fas fa-newspaper"
-          },
-          schedule: {
-            label: "Schedule",
-            icon: "fas fa-calendar"
-          },
-          results: {
-            label: "Results",
-            icon: "fas fa-list-ol"
-          },
-          people: {
-            label: "People",
-            icon: "fas fa-user"
-          },
-          teams: {
-            label: "Teams",
-            icon: "fas fa-users"
-          },
-          settings: {
-            label: "Settings",
-            icon: "fas fa-cog"
-          }
-        };
-    }
+    return {
+      overview: {
+        label: "Overview",
+        icon: "fas fa-newspaper"
+      },
+      schedule: {
+        label: "Events",
+        icon: "fas fa-calendar"
+      },
+      people: {
+        label: "People",
+        icon: "fas fa-user"
+      },
+      teams: {
+        label: "Teams",
+        icon: "fas fa-users"
+      },
+      settings: {
+        label: "Settings",
+        icon: "fas fa-cog"
+      }
+    };
   }
 
   getSportsItems() {
@@ -296,6 +218,18 @@ class CoreInterfaceLayout extends Component {
         icon: otherIcon
       }
     };
+  }
+
+  navigateTo(path) {
+    const { history } = this.props;
+
+    history.push(path);
+  }
+
+  goBack() {
+    const { history } = this.props;
+
+    history.goBack();
   }
 
   render() {
@@ -680,6 +614,8 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
                     />
                   </Route>
                   <Route exact path={"/myaccount/schedule/:dateSelected"}>
@@ -693,6 +629,8 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
                     />
                   </Route>
                   <Route
@@ -709,6 +647,26 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
+                    />
+                  </Route>
+                  <Route
+                    exact
+                    path={"/myaccount/schedule/:dateSelected/:eventID/:infoTab"}
+                  >
+                    <Schedule
+                      userID={userID}
+                      role={role}
+                      sportFilter={sportSelected}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      meAllFilter={meAllFilter}
+                      activeInstitutionID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      permissions={permissions}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
                     />
                   </Route>
                   <Route exact path={"/myaccount/wages"}>

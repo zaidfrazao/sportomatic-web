@@ -39,6 +39,7 @@ const styles = theme => ({
     }
   },
   fabPosition: {
+    color: "#fff",
     position: "fixed",
     right: "24px",
     bottom: "24px",

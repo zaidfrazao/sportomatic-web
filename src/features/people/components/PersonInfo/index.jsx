@@ -151,8 +151,8 @@ const styles = theme => ({
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: grey[500]
+    color: grey[800],
+    backgroundColor: grey[100]
   },
   sectionList: {
     flexGrow: 1

@@ -3,17 +3,6 @@ import { common, grey, lightBlue } from "material-ui/colors";
 import { withStyles } from "material-ui/styles";
 
 const styles = theme => ({
-  button: {
-    borderRadius: 8,
-    backgroundColor: lightBlue[800],
-    color: common["white"],
-    padding: 12,
-    margin: 8,
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: lightBlue[700]
-    }
-  },
   switchLeft: {
     borderRadius: "8px 0 0 8px",
     backgroundColor: grey[100],
@@ -83,12 +72,7 @@ type Props = {
 
 class PersonalAllSwitch extends Component<Props> {
   render() {
-    const {
-      classes,
-      meAllFilter,
-      changeMeAllFilter,
-      switchCommunities
-    } = this.props;
+    const { classes, meAllFilter, changeMeAllFilter } = this.props;
 
     return (
       <div className={classes.wrapper}>
@@ -113,9 +97,6 @@ class PersonalAllSwitch extends Component<Props> {
           >
             All
           </span>
-        </div>
-        <div className={classes.button} onClick={() => switchCommunities()}>
-          <i className="fas fa-exchange-alt" />
         </div>
       </div>
     );
