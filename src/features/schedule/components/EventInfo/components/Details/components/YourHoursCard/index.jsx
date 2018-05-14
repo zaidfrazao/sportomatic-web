@@ -9,8 +9,6 @@ import {
   red
 } from "../../../../../../../../utils/colours";
 import Button from "../../../../../../../../components/Button";
-import EditTimesDialog from "./components/EditTimesDialog";
-import defaultProfilePicture from "./images/default-profile-picture.png";
 
 const styles = {
   approvedWrapper: {
@@ -30,9 +28,6 @@ const styles = {
     "&:hover": {
       backgroundColor: orange["A200"]
     }
-  },
-  buttonSecondaryWrapper: {
-    padding: 12
   },
   card: {
     width: "100%",
@@ -60,20 +55,12 @@ const styles = {
   header: {
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
-    padding: 12,
-    width: "calc(100% - 24px)",
+    padding: "18px 0",
+    width: "100%",
+    textAlign: "center",
     fontWeight: "bold",
     color: grey[800],
-    backgroundColor: grey[100],
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  picture: {
-    marginRight: 12,
-    borderRadius: "50%",
-    width: 40,
-    height: 40
+    backgroundColor: grey[100]
   },
   timesIconWrapper: {
     textAlign: "center",
@@ -95,84 +82,7 @@ const styles = {
   }
 };
 
-class CoachCard extends Component {
-  state = {
-    isEditTimesDialogOpen: false,
-    isMarkAbsentDialogOpen: false
-  };
-
-  toggleEditTimesDialog() {
-    const { isEditTimesDialogOpen } = this.state;
-
-    this.setState({
-      isEditTimesDialogOpen: !isEditTimesDialogOpen
-    });
-  }
-
-  toggleMarkAbsentDialog() {
-    this.setState({
-      isMarkAbsentDialogOpen: !this.state.isMarkAbsentDialogOpen
-    });
-  }
-
-  getWages() {
-    const { isCompetitive, wageSettings, hours, eventTimes } = this.props;
-    const { type, rates } = wageSettings;
-
-    if (type === "HOURLY") {
-      const signInMoment = moment(hours.times.signIn);
-      const eventStartMoment = moment(eventTimes.start);
-      const signOutMoment = moment(hours.times.signOut);
-      const eventEndMoment = moment(eventTimes.end);
-
-      let standardHours = 0;
-      let overtimeHours = 0;
-
-      if (eventStartMoment.isBefore(signInMoment)) {
-        if (eventEndMoment.isBefore(signOutMoment)) {
-          standardHours = Math.round(
-            eventEndMoment.diff(signInMoment, "hours", true)
-          );
-          overtimeHours = Math.round(
-            signOutMoment.diff(eventEndMoment, "hours", true)
-          );
-        } else {
-          standardHours = Math.round(
-            signOutMoment.diff(signInMoment, "hours", true)
-          );
-        }
-      } else {
-        if (eventEndMoment.isBefore(signOutMoment)) {
-          standardHours = Math.round(
-            eventEndMoment.diff(eventStartMoment, "hours", true)
-          );
-          overtimeHours = Math.round(
-            signOutMoment.diff(eventEndMoment, "hours", true)
-          );
-        } else {
-          standardHours = Math.round(
-            signOutMoment.diff(eventStartMoment, "hours", true)
-          );
-        }
-      }
-
-      const wage =
-        standardHours * rates.standard + overtimeHours * rates.overtime;
-
-      return wage;
-    } else if (type === "FIXED") {
-      let wage = rates.nonCompetitive;
-
-      if (isCompetitive) {
-        wage = rates.competitive;
-      }
-
-      return wage;
-    } else {
-      return 0;
-    }
-  }
-
+class YourHoursCard extends Component {
   getTimes() {
     const { hours, eventTimes } = this.props;
 
@@ -262,57 +172,6 @@ class CoachCard extends Component {
     }
   }
 
-  getSecondaryAction() {
-    const {
-      classes,
-      hours,
-      name,
-      eventTimes,
-      updateTimes,
-      coachID
-    } = this.props;
-    const { isEditTimesDialogOpen } = this.state;
-
-    if (hours.status === "AWAITING_SIGN_IN") {
-      return (
-        <div className={classes.buttonSecondaryWrapper}>
-          <Button
-            colour="primary"
-            slim
-            fullWidth
-            handleClick={() => this.toggleMarkAbsentDialog()}
-          >
-            Mark absent
-          </Button>
-        </div>
-      );
-    } else {
-      return (
-        <div className={classes.buttonSecondaryWrapper}>
-          <Button
-            colour="primary"
-            slim
-            fullWidth
-            handleClick={() => this.toggleEditTimesDialog()}
-          >
-            Edit times
-          </Button>
-          <EditTimesDialog
-            isOpen={isEditTimesDialogOpen}
-            name={name}
-            status={hours.status}
-            signInTime={hours.times.signIn}
-            signOutTime={hours.times.signOut}
-            eventTimes={eventTimes}
-            closeDialog={() => this.toggleEditTimesDialog()}
-            updateTimes={(signInTime, signOutTime) =>
-              updateTimes(coachID, signInTime, signOutTime)}
-          />
-        </div>
-      );
-    }
-  }
-
   checkIfSignInDisabled() {
     const { eventTimes } = this.props;
 
@@ -323,15 +182,7 @@ class CoachCard extends Component {
   }
 
   getPrimaryAction() {
-    const {
-      classes,
-      coachID,
-      hours,
-      signIn,
-      signOut,
-      approveHours,
-      wageSettings
-    } = this.props;
+    const { classes, coachID, hours, signIn, signOut } = this.props;
 
     switch (hours.status) {
       case "AWAITING_SIGN_IN":
@@ -373,25 +224,10 @@ class CoachCard extends Component {
           </div>
         );
       case "AWAITING_APPROVAL":
-        const wage = this.getWages();
-        const shouldCreateWage =
-          wageSettings.type === "HOURLY" || wageSettings.type === "FIXED";
-
         return (
-          <div className={classes.buttonPrimaryWrapper}>
-            <Button
-              colour="secondary"
-              filled
-              fullWidth
-              handleClick={() =>
-                approveHours(
-                  coachID,
-                  shouldCreateWage,
-                  wage,
-                  wageSettings.type
-                )}
-            >
-              Approve
+          <div className={classes.buttonDisabledWrapper}>
+            <Button colour="secondary" filled fullWidth disabled>
+              Awaiting approval
             </Button>
           </div>
         );
@@ -401,23 +237,14 @@ class CoachCard extends Component {
   }
 
   render() {
-    const { classes, name, profilePicture, hours } = this.props;
+    const { classes } = this.props;
 
     const times = this.getTimes();
     const primaryAction = this.getPrimaryAction();
-    const secondaryAction = this.getSecondaryAction();
 
     return (
       <div className={classes.card}>
-        <div className={classes.header}>
-          <img
-            className={classes.picture}
-            src={profilePicture === "" ? defaultProfilePicture : profilePicture}
-            alt={name}
-          />
-          {name}
-        </div>
-        {hours.status !== "APPROVED" && secondaryAction}
+        <div className={classes.header}>Your Hours</div>
         <div className={classes.timesWrapper}>
           <div className={classes.timesIconWrapper}>
             <span>Sign in</span>
@@ -458,4 +285,4 @@ class CoachCard extends Component {
   }
 }
 
-export default injectStyles(styles)(CoachCard);
+export default injectStyles(styles)(YourHoursCard);

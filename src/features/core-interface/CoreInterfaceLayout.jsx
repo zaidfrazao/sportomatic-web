@@ -92,7 +92,8 @@ class CoreInterfaceLayout extends Component {
     const {
       loadUnreadNotifications,
       loadReadNotifications,
-      loadAccountInfo
+      loadAccountInfo,
+      changeMeAllFilter
     } = nextProps.actions;
     const { userID, isLoggedIn, accountInfo } = nextProps.uiConfig;
     const { loadInstitutionInfo } = nextProps.actions;
@@ -101,9 +102,19 @@ class CoreInterfaceLayout extends Component {
       accountInfo !== this.props.uiConfig.accountInfo &&
       accountInfo.institutions
     ) {
+      const activeInstitutionID = accountInfo.lastAccessed.institutionID;
+
       _.toPairs(accountInfo.institutions).map(([id, info]) => {
         loadInstitutionInfo(id);
       });
+      if (
+        accountInfo.institutions[activeInstitutionID] &&
+        accountInfo.institutions[activeInstitutionID].roles.admin === "APPROVED"
+      ) {
+        changeMeAllFilter("all");
+      } else {
+        changeMeAllFilter("me");
+      }
     }
 
     if (pathname !== this.props.location.pathname) {
@@ -232,6 +243,31 @@ class CoreInterfaceLayout extends Component {
     history.goBack();
   }
 
+  getRole() {
+    const { accountInfo } = this.props.uiConfig;
+
+    const activeCommunityID = accountInfo.lastAccessed.institutionID;
+    const activeCommunityRoles =
+      accountInfo &&
+      accountInfo.institutions[activeCommunityID] &&
+      accountInfo.institutions[activeCommunityID].roles;
+
+    if (activeCommunityRoles) {
+      if (activeCommunityRoles.admin === "APPROVED") {
+        return "admin";
+      } else if (
+        activeCommunityRoles.manager === "APPROVED" ||
+        activeCommunityRoles.coach === "APPROVED"
+      ) {
+        return "staff";
+      } else {
+        return "guest";
+      }
+    } else {
+      return "guest";
+    }
+  }
+
   render() {
     const { classes, institutions, history } = this.props;
     const {
@@ -267,6 +303,8 @@ class CoreInterfaceLayout extends Component {
 
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
+
+    const communityRole = this.getRole();
 
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
@@ -606,7 +644,7 @@ class CoreInterfaceLayout extends Component {
                   <Route exact path={"/myaccount/schedule/"}>
                     <Schedule
                       userID={userID}
-                      role={role}
+                      role={communityRole}
                       sportFilter={sportSelected}
                       isMobile={isMobile}
                       isTablet={isTablet}
@@ -621,7 +659,7 @@ class CoreInterfaceLayout extends Component {
                   <Route exact path={"/myaccount/schedule/:dateSelected"}>
                     <Schedule
                       userID={userID}
-                      role={role}
+                      role={communityRole}
                       sportFilter={sportSelected}
                       isMobile={isMobile}
                       isTablet={isTablet}
@@ -639,7 +677,7 @@ class CoreInterfaceLayout extends Component {
                   >
                     <Schedule
                       userID={userID}
-                      role={role}
+                      role={communityRole}
                       sportFilter={sportSelected}
                       isMobile={isMobile}
                       isTablet={isTablet}
@@ -657,7 +695,7 @@ class CoreInterfaceLayout extends Component {
                   >
                     <Schedule
                       userID={userID}
-                      role={role}
+                      role={communityRole}
                       sportFilter={sportSelected}
                       isMobile={isMobile}
                       isTablet={isTablet}
@@ -733,6 +771,7 @@ class CoreInterfaceLayout extends Component {
             actions={{
               closeDialog: () => closeManageInstitutionsDialog(),
               updateActiveCommunity: newCommunityID => {
+                this.navigateTo("/myaccount/overview");
                 switchInstitution(userID, newCommunityID, role);
                 closeManageInstitutionsDialog();
               }

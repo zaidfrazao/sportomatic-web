@@ -305,8 +305,7 @@ class InvitePersonModal extends Component {
     });
   }
 
-  checkEmail(e) {
-    e.preventDefault();
+  checkEmail() {
     const { paymentDefaults } = this.props;
     const { fetchInviteeInfo } = this.props.actions;
     const { emailEntered } = this.state;
@@ -410,7 +409,7 @@ class InvitePersonModal extends Component {
                 slim
                 fullWidth
                 filled
-                handleClick={e => this.checkEmail(e)}
+                handleClick={() => this.checkEmail()}
               >
                 Check email
               </Button>

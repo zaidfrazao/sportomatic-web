@@ -173,9 +173,11 @@ class EventInfo extends Component {
       status: "DELETED",
       title: "Loading...",
       eventType: "Loading",
-      date: moment(new Date(Date.now())),
-      startTime: moment(new Date(Date.now())),
-      endTime: moment(new Date(Date.now())),
+      date: new Date(Date.now()),
+      times: {
+        start: new Date(Date.now()),
+        end: new Date(Date.now())
+      },
       formattedDate: "Loading",
       formattedStartTime: "Loading",
       formattedEndTime: "Loading",
@@ -190,8 +192,10 @@ class EventInfo extends Component {
         title: info.requiredInfo.title,
         eventType: info.requiredInfo.type,
         date: info.requiredInfo.times.start,
-        startTime: info.requiredInfo.times.start,
-        endTime: info.requiredInfo.times.end,
+        times: {
+          start: info.requiredInfo.times.start,
+          end: info.requiredInfo.times.end
+        },
         formattedDate: moment(info.requiredInfo.times.start).format(
           "D MMMM YYYY"
         ),
@@ -209,7 +213,14 @@ class EventInfo extends Component {
   }
 
   getSectionDisplay(info, teams, coaches, managers) {
-    const { classes, isMobile, infoTab, eventID, dateSelected } = this.props;
+    const {
+      classes,
+      isMobile,
+      infoTab,
+      eventID,
+      dateSelected,
+      userID
+    } = this.props;
     const {
       navigateTo,
       signIn,
@@ -230,16 +241,18 @@ class EventInfo extends Component {
               <Details
                 eventType={info.eventType}
                 date={info.formattedDate}
-                startTime={info.formattedStartTime}
-                endTime={info.formattedEndTime}
+                times={info.times}
                 isCancelled={info.status === "CANCELLED"}
                 isCompetitive={info.isCompetitive}
                 venue={info.venue}
                 notes={info.notes}
+                userID={userID}
                 teams={teams}
                 coaches={coaches}
                 managers={managers}
                 navigateTo={navigateTo}
+                signIn={signIn}
+                signOut={signOut}
               />
             </div>
           );
@@ -251,10 +264,7 @@ class EventInfo extends Component {
                 isCancelled={info.status === "CANCELLED"}
                 isCompetitive={info.isCompetitive}
                 coaches={coaches}
-                eventTimes={{
-                  start: info.startTime,
-                  end: info.endTime
-                }}
+                eventTimes={info.times}
                 signIn={signIn}
                 signOut={signIn}
                 updateTimes={updateTimes}
@@ -328,16 +338,18 @@ class EventInfo extends Component {
               <Details
                 eventType={info.eventType}
                 date={info.formattedDate}
-                startTime={info.formattedStartTime}
-                endTime={info.formattedEndTime}
+                times={info.times}
                 isCancelled={info.status === "CANCELLED"}
                 isCompetitive={info.isCompetitive}
                 venue={info.venue}
                 notes={info.notes}
+                userID={userID}
                 teams={teams}
                 coaches={coaches}
                 managers={managers}
                 navigateTo={navigateTo}
+                signIn={signIn}
+                signOut={signOut}
               />
             </div>
           );
@@ -349,10 +361,7 @@ class EventInfo extends Component {
                 isCancelled={info.status === "CANCELLED"}
                 isCompetitive={info.isCompetitive}
                 coaches={coaches}
-                eventTimes={{
-                  start: info.startTime,
-                  end: info.endTime
-                }}
+                eventTimes={info.times}
                 signIn={signIn}
                 signOut={signOut}
                 updateTimes={updateTimes}
@@ -373,12 +382,18 @@ class EventInfo extends Component {
               <Details
                 eventType={info.eventType}
                 date={info.formattedDate}
-                startTime={info.formattedStartTime}
-                endTime={info.formattedEndTime}
+                times={info.times}
                 isCancelled={info.status === "CANCELLED"}
                 isCompetitive={info.isCompetitive}
                 venue={info.venue}
                 notes={info.notes}
+                userID={userID}
+                teams={teams}
+                coaches={coaches}
+                managers={managers}
+                navigateTo={navigateTo}
+                signIn={signIn}
+                signOut={signOut}
               />
             </div>
           );
@@ -386,33 +401,34 @@ class EventInfo extends Component {
     }
   }
 
-  getTabs(isCompetitive) {
+  getTabs(isCompetitive, canManageCoaches) {
+    const allTabs = [
+      {
+        key: "details",
+        label: "Details"
+      },
+      {
+        key: "coach-management",
+        label: "Coach Management"
+      },
+      {
+        key: "results",
+        label: "Results"
+      }
+    ];
+
     if (isCompetitive) {
-      return [
-        {
-          key: "details",
-          label: "Details"
-        },
-        {
-          key: "coach-management",
-          label: "Coach Management"
-        },
-        {
-          key: "results",
-          label: "Results"
-        }
-      ];
+      if (canManageCoaches) {
+        return allTabs;
+      } else {
+        return [allTabs[0], allTabs[2]];
+      }
     } else {
-      return [
-        {
-          key: "details",
-          label: "Details"
-        },
-        {
-          key: "coach-management",
-          label: "Coach Management"
-        }
-      ];
+      if (canManageCoaches) {
+        return [allTabs[0], allTabs[1]];
+      } else {
+        return [allTabs[0]];
+      }
     }
   }
 
@@ -517,6 +533,12 @@ class EventInfo extends Component {
     }
   }
 
+  checkIfCanManageCoaches() {
+    const { role, userID, info } = this.props;
+
+    return role === "admin" || (info && info.managers[userID]);
+  }
+
   render() {
     const {
       classes,
@@ -549,7 +571,10 @@ class EventInfo extends Component {
       coaches,
       managers
     );
-    const tabs = this.getTabs(info.isCompetitive);
+    const tabs = this.getTabs(
+      info.isCompetitive,
+      this.checkIfCanManageCoaches()
+    );
 
     return (
       <div className={classes.root}>

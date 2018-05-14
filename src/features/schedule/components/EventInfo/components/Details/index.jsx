@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import injectSheet from "react-jss";
+import moment from "moment";
+import YourHoursCard from "./components/YourHoursCard";
 import {
   common,
   grey,
@@ -187,6 +189,10 @@ const styles = {
     flexWrap: "wrap",
     alignItems: "baseline",
     padding: 24
+  },
+  yourHoursWrapper: {
+    marginBottom: 24,
+    width: "100%"
   }
 };
 
@@ -251,26 +257,62 @@ class Details extends Component {
     ));
   }
 
+  checkIfUserCoaching(userID) {
+    const { coaches } = this.props;
+
+    let isCoaching = false;
+    coaches.map(coachInfo => {
+      if (coachInfo.id === userID) isCoaching = true;
+    });
+
+    return isCoaching;
+  }
+
+  getCoachHours(userID) {
+    const { coaches } = this.props;
+
+    let hours = {
+      status: "AWAITING_SIGN_IN",
+      times: {
+        signIn: new Date(Date.now()),
+        signOut: new Date(Date.now())
+      }
+    };
+    coaches.map(coachInfo => {
+      if (coachInfo.id === userID) hours = coachInfo.hours;
+    });
+
+    return hours;
+  }
+
   render() {
     const {
       classes,
       eventType,
-      startTime,
-      endTime,
+      times,
       date,
       isCancelled,
       isCompetitive,
       venue,
-      notes
+      notes,
+      userID,
+      signIn,
+      signOut
     } = this.props;
 
     let eventTypeIcon = "fas fa-dumbbell";
     if (isCompetitive) {
       eventTypeIcon = "fas fa-trophy";
     }
+    const isCoaching = this.checkIfUserCoaching(userID);
+    const hours = this.getCoachHours(userID);
     const teamItems = this.getTeamItems();
     const coachItems = this.getCoachItems();
     const managerItems = this.getManagerItems();
+    const formattedTimes = {
+      start: moment(times.start).format("hh:mm A"),
+      end: moment(times.end).format("hh:mm A")
+    };
 
     return (
       <div className={classes.wrapper}>
@@ -282,12 +324,23 @@ class Details extends Component {
           </div>
         )}
         <div className={classes.column}>
+          {isCoaching && (
+            <div className={classes.yourHoursWrapper}>
+              <YourHoursCard
+                coachID={userID}
+                hours={hours}
+                eventTimes={times}
+                signIn={signIn}
+                signOut={signOut}
+              />
+            </div>
+          )}
           <div className={classes.section}>
             <div className={classes.dateWrapper}>{date}</div>
             <div className={classes.startEndWrapper}>
-              <div className={classes.timeWrapper}>{startTime}</div>
+              <div className={classes.timeWrapper}>{formattedTimes.start}</div>
               <div className={classes.timesSeparator}>-</div>
-              <div className={classes.timeWrapper}>{endTime}</div>
+              <div className={classes.timeWrapper}>{formattedTimes.end}</div>
             </div>
             <div className={classes.eventTypeWrapper}>
               <div className={classes.eventTypeIconWrapper}>

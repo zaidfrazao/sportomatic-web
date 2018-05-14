@@ -213,7 +213,7 @@ class ScheduleLayout extends Component {
       gender,
       searchText
     } = this.props.filters;
-    const { events, teams, staff, userID, role, meAllFilter } = this.props;
+    const { events, teams, staff, userID, meAllFilter } = this.props;
 
     return _.fromPairs(
       _.toPairs(events).filter(([id, info]) => {
@@ -228,15 +228,12 @@ class ScheduleLayout extends Component {
           titleMatch = eventTitle.includes(_.toLower(searchText));
         }
 
-        if (role === "coach" && meAllFilter === "me") {
+        if (meAllFilter === "me") {
           const eventCoaches = _.keys(info.coaches);
+          const eventManagers = _.keys(info.managers);
+
           roleMatch = false;
           roleMatch = roleMatch || eventCoaches.includes(userID);
-        }
-
-        if (role === "manager" && meAllFilter === "me") {
-          const eventManagers = _.keys(info.managers);
-          roleMatch = false;
           roleMatch = roleMatch || eventManagers.includes(userID);
         }
 
@@ -352,16 +349,11 @@ class ScheduleLayout extends Component {
   getPermissions() {
     const { role, permissions } = this.props;
 
-    const canCreate =
-      role === "admin" ||
-      (role === "coach" && permissions.coaches.events.canCreate) ||
-      (role === "manager" && permissions.managers.events.canCreate);
-
+    const canCreate = role === "admin";
     const canEdit =
       role === "admin" ||
       (role === "coach" && permissions.coaches.events.canEdit) ||
       (role === "manager" && permissions.managers.events.canEdit);
-
     const canCancel =
       role === "admin" ||
       (role === "coach" && permissions.coaches.events.canCancel) ||
