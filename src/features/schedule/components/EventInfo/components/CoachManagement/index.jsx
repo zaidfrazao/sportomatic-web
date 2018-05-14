@@ -11,7 +11,6 @@ const styles = {
     fontSize: 18,
     borderRadius: 16,
     padding: "18px 0",
-    marginBottom: 24,
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
@@ -20,6 +19,10 @@ const styles = {
   },
   cancelledIcon: {
     marginRight: 8
+  },
+  cancelledWrapper: {
+    width: "calc(100% - 48px)",
+    margin: 24
   },
   coachCardWrapper: {
     margin: 24,
@@ -32,11 +35,12 @@ const styles = {
     }
   },
   noItems: {
+    width: "calc(100% - 96px)",
     border: `3px solid ${grey[300]}`,
     color: grey[400],
     borderRadius: 12,
     padding: "40px 24px",
-    margin: "24px 0",
+    margin: 24,
     fontSize: 20,
     lineHeight: "28px",
     fontWeight: "bold",
@@ -50,14 +54,29 @@ const styles = {
 
 class CoachManagement extends Component {
   getCoaches() {
-    const { classes, coaches } = this.props;
+    const {
+      classes,
+      coaches,
+      eventTimes,
+      signIn,
+      signOut,
+      updateTimes,
+      approveHours
+    } = this.props;
 
     return coaches.map(info => (
       <div key={info.id} className={classes.coachCardWrapper}>
         <CoachCard
-          id={info.id}
+          coachID={info.id}
           name={info.name}
           profilePicture={info.profilePicture}
+          hours={info.hours}
+          wageSettings={info.wageSettings}
+          eventTimes={eventTimes}
+          signIn={signIn}
+          signOut={signOut}
+          updateTimes={updateTimes}
+          approveHours={approveHours}
         />
       </div>
     ));
@@ -71,7 +90,7 @@ class CoachManagement extends Component {
     return (
       <div className={classes.wrapper}>
         {isCancelled ? (
-          <div>
+          <div className={classes.cancelledWrapper}>
             <div className={classes.cancelledAlert}>
               <i
                 className={`fas fa-exclamation ${classes.cancelledIcon}`}

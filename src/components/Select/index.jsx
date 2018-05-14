@@ -100,7 +100,7 @@ const styles = theme => ({
     border: `2px solid ${common["white"]}`,
     zIndex: 1000,
     borderRadius: 4,
-    maxHeight: 300,
+    maxHeight: 200,
     overflow: "auto",
     boxShadow:
       "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
@@ -161,6 +161,7 @@ class Select extends Component<Props, State> {
     helperText: "",
     placeholder: "Select an item",
     items: [],
+    validation: "default",
     selectedItem: {
       key: "none",
       label: "N/A"
@@ -200,10 +201,10 @@ class Select extends Component<Props, State> {
   }
 
   getSelectStyle() {
-    const { classes, helperText } = this.props;
+    const { classes, validation } = this.props;
 
     let styles = [classes.select];
-    if (helperText.length > 0) {
+    if (validation === "error") {
       styles.push(classes.selectError);
     } else {
       styles.push(classes.selectBasic);

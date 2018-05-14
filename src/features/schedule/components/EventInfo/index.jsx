@@ -189,9 +189,9 @@ class EventInfo extends Component {
         status: info.requiredInfo.status,
         title: info.requiredInfo.title,
         eventType: info.requiredInfo.type,
-        date: moment(info.requiredInfo.times.start),
-        startTime: moment(info.requiredInfo.times.start),
-        endTime: moment(info.requiredInfo.times.end),
+        date: info.requiredInfo.times.start,
+        startTime: info.requiredInfo.times.start,
+        endTime: info.requiredInfo.times.end,
         formattedDate: moment(info.requiredInfo.times.start).format(
           "D MMMM YYYY"
         ),
@@ -210,7 +210,13 @@ class EventInfo extends Component {
 
   getSectionDisplay(info, teams, coaches, managers) {
     const { classes, isMobile, infoTab, eventID, dateSelected } = this.props;
-    const { navigateTo } = this.props.actions;
+    const {
+      navigateTo,
+      signIn,
+      signOut,
+      updateTimes,
+      approveHours
+    } = this.props.actions;
     const { tabSelected } = this.state;
 
     const ad = this.createAd();
@@ -245,6 +251,14 @@ class EventInfo extends Component {
                 isCancelled={info.status === "CANCELLED"}
                 isCompetitive={info.isCompetitive}
                 coaches={coaches}
+                eventTimes={{
+                  start: info.startTime,
+                  end: info.endTime
+                }}
+                signIn={signIn}
+                signOut={signIn}
+                updateTimes={updateTimes}
+                approveHours={approveHours}
               />
             </div>
           );
@@ -335,6 +349,14 @@ class EventInfo extends Component {
                 isCancelled={info.status === "CANCELLED"}
                 isCompetitive={info.isCompetitive}
                 coaches={coaches}
+                eventTimes={{
+                  start: info.startTime,
+                  end: info.endTime
+                }}
+                signIn={signIn}
+                signOut={signOut}
+                updateTimes={updateTimes}
+                approveHours={approveHours}
               />
             </div>
           );
@@ -424,16 +446,44 @@ class EventInfo extends Component {
       return _.toPairs(info.coaches).map(([coachID, eventCoachInfo]) => {
         const coachInfo = coaches[coachID];
         if (coachInfo) {
+          let wageSettings = {
+            rates: {
+              standard: 100,
+              overtime: 150
+            },
+            type: "HOURLY"
+          };
+
+          if (eventCoachInfo.wageSettings) {
+            wageSettings = eventCoachInfo;
+          }
+
           return {
+            wageSettings,
             id: coachID,
             name: `${coachInfo.info.name} ${coachInfo.info.surname}`,
-            profilePicture: coachInfo.info.profilePictureURL
+            profilePicture: coachInfo.info.profilePictureURL,
+            hours: eventCoachInfo.hours
           };
         } else {
           return {
             id: coachID,
             name: "Error finding coach",
-            profilePicture: ""
+            profilePicture: "",
+            hours: {
+              status: "AWAITING_SIGN_IN",
+              times: {
+                signIn: new Date(Date.now()),
+                signOut: new Date(Date.now())
+              }
+            },
+            wageSettings: {
+              rates: {
+                standard: 100,
+                overtime: 150
+              },
+              type: "HOURLY"
+            }
           };
         }
       });

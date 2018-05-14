@@ -1183,8 +1183,7 @@ class AddEventDialog extends Component {
       institutionID,
       teams,
       coaches,
-      managers,
-      isMobile
+      managers
     } = this.props;
     const { handleClose, addEvent } = this.props.actions;
     const {
@@ -1214,7 +1213,7 @@ class AddEventDialog extends Component {
 
     return (
       <Dialog
-        fullScreen={isMobile}
+        fullScreen
         open={isOpen}
         onRequestClose={() => handleClose()}
         transition={this.state.Transition}

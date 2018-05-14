@@ -1396,8 +1396,7 @@ class EditEventDialog extends Component {
       initialEventInfo,
       teams,
       coaches,
-      managers,
-      isMobile
+      managers
     } = this.props;
     const { handleClose, editEvent } = this.props.actions;
     const {
@@ -1428,7 +1427,7 @@ class EditEventDialog extends Component {
     return (
       <div>
         <Dialog
-          fullScreen={isMobile}
+          fullScreen
           open={isOpen}
           onRequestClose={() => handleClose()}
           transition={this.state.Transition}

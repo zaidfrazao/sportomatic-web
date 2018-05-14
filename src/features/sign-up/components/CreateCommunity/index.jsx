@@ -666,6 +666,9 @@ class CreateCommunity extends Component<Props, State> {
           <form className={classes.form}>
             <Select
               helperText={communityType.helperText}
+              validation={
+                communityType.helperText.length === 0 ? "default" : "error"
+              }
               placeholder="Type of community"
               selectedItem={{
                 key: communityType.value,
@@ -681,6 +684,9 @@ class CreateCommunity extends Component<Props, State> {
             {showSubType && (
               <Select
                 helperText={subType.helperText}
+                validation={
+                  subType.helperText.length === 0 ? "default" : "error"
+                }
                 placeholder={subTypePlaceholder}
                 selectedItem={{
                   key: subType.value,
@@ -727,6 +733,9 @@ class CreateCommunity extends Component<Props, State> {
             {showGender && (
               <Select
                 helperText={athleteGender.helperText}
+                validation={
+                  athleteGender.helperText.length === 0 ? "default" : "error"
+                }
                 placeholder="Gender of athletes"
                 selectedItem={{
                   key: athleteGender.value,

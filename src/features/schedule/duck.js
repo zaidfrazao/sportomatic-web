@@ -66,6 +66,18 @@ export const REQUEST_REPLACEMENT_COACH_REMOVAL = `${NAMESPACE}/REQUEST_REPLACEME
 export const RECEIVE_REPLACEMENT_COACH_REMOVAL = `${NAMESPACE}/RECEIVE_REPLACEMENT_COACH_REMOVAL`;
 export const ERROR_REMOVING_REPLACEMENT_COACH = `${NAMESPACE}/ERROR_REMOVING_REPLACEMENT_COACH`;
 export const RESET_SCHEDULE_STATE = `${NAMESPACE}/RESET_SCHEDULE_STATE`;
+export const REQUEST_SIGN_IN = `${NAMESPACE}/REQUEST_SIGN_IN`;
+export const RECEIVE_SIGN_IN = `${NAMESPACE}/RECEIVE_SIGN_IN`;
+export const ERROR_SIGNING_IN = `${NAMESPACE}/ERROR_SIGNING_IN`;
+export const REQUEST_SIGN_OUT = `${NAMESPACE}/REQUEST_SIGN_OUT`;
+export const RECEIVE_SIGN_OUT = `${NAMESPACE}/RECEIVE_SIGN_OUT`;
+export const ERROR_SIGNING_OUT = `${NAMESPACE}/ERROR_SIGNING_OUT`;
+export const REQUEST_UPDATE_TIMES = `${NAMESPACE}/REQUEST_UPDATE_TIMES`;
+export const RECEIVE_UPDATE_TIMES = `${NAMESPACE}/RECEIVE_UPDATE_TIMES`;
+export const ERROR_UPDATING_TIMES = `${NAMESPACE}/ERROR_UPDATING_TIMES`;
+export const REQUEST_APPROVE_HOURS = `${NAMESPACE}/REQUEST_APPROVE_HOURS`;
+export const RECEIVE_APPROVE_HOURS = `${NAMESPACE}/RECEIVE_APPROVE_HOURS`;
+export const ERROR_APPROVING_HOURS = `${NAMESPACE}/ERROR_APPROVING_HOURS`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -1345,5 +1357,183 @@ export function fetchCreationDate(institutionID) {
         dispatch(receiveCreationDate(institutionInfo.metadata.creationDate));
       })
       .catch(error => dispatch(errorFetchingCreationDate(error)));
+  };
+}
+
+export function requestSignIn() {
+  return {
+    type: REQUEST_SIGN_IN
+  };
+}
+
+export function receiveSignIn() {
+  return {
+    type: RECEIVE_SIGN_IN
+  };
+}
+
+export function errorSigningIn(error: { code: string, message: string }) {
+  return {
+    type: ERROR_SIGNING_IN,
+    payload: {
+      error
+    }
+  };
+}
+
+export function signIn(eventID, coachID, signInTime) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestSignIn());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    return eventRef
+      .update({
+        [`coaches.${coachID}.hours.times.signIn`]: signInTime,
+        [`coaches.${coachID}.hours.status`]: "AWAITING_SIGN_OUT"
+      })
+      .then(() => dispatch(receiveSignIn()))
+      .catch(error => dispatch(errorSigningIn(error)));
+  };
+}
+
+export function requestSignOut() {
+  return {
+    type: REQUEST_SIGN_OUT
+  };
+}
+
+export function receiveSignOut() {
+  return {
+    type: RECEIVE_SIGN_OUT
+  };
+}
+
+export function errorSigningOut(error: { code: string, message: string }) {
+  return {
+    type: ERROR_SIGNING_OUT,
+    payload: {
+      error
+    }
+  };
+}
+
+export function signOut(eventID, coachID, signOutTime) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestSignOut());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    return eventRef
+      .update({
+        [`coaches.${coachID}.hours.times.signOut`]: signOutTime,
+        [`coaches.${coachID}.hours.status`]: "AWAITING_APPROVAL"
+      })
+      .then(() => dispatch(receiveSignOut()))
+      .catch(error => dispatch(errorSigningOut(error)));
+  };
+}
+
+export function requestUpdateTimes() {
+  return {
+    type: REQUEST_UPDATE_TIMES
+  };
+}
+
+export function receiveUpdateTimes() {
+  return {
+    type: RECEIVE_UPDATE_TIMES
+  };
+}
+
+export function errorUpdatingTimes(error: { code: string, message: string }) {
+  return {
+    type: ERROR_UPDATING_TIMES,
+    payload: {
+      error
+    }
+  };
+}
+
+export function updateTimes(eventID, coachID, signInTime, signOutTime) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestUpdateTimes());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    return eventRef
+      .update({
+        [`coaches.${coachID}.hours.times.signIn`]: signInTime,
+        [`coaches.${coachID}.hours.times.signOut`]: signOutTime,
+        [`coaches.${coachID}.hours.status`]: "AWAITING_APPROVAL"
+      })
+      .then(() => dispatch(receiveUpdateTimes()))
+      .catch(error => dispatch(errorUpdatingTimes(error)));
+  };
+}
+
+export function requestApproveHours() {
+  return {
+    type: REQUEST_APPROVE_HOURS
+  };
+}
+
+export function receiveApproveHours() {
+  return {
+    type: RECEIVE_APPROVE_HOURS
+  };
+}
+
+export function errorApprovingHours(error: { code: string, message: string }) {
+  return {
+    type: ERROR_APPROVING_HOURS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function approveHours(
+  institutionID,
+  eventID,
+  eventTitle,
+  eventDate,
+  coachID,
+  shouldCreateWage,
+  wage,
+  wageType
+) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestApproveHours());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    let batch = db.batch();
+    batch.update(eventRef, {
+      [`coaches.${coachID}.hours.status`]: "APPROVED"
+    });
+
+    if (shouldCreateWage) {
+      const newWageRef = db.collection("wages").doc();
+
+      batch.set(newWageRef, {
+        coachID,
+        institutionID,
+        wage,
+        currency: "ZAR",
+        date: eventDate,
+        title: eventTitle,
+        type: wageType
+      });
+    }
+
+    return batch
+      .commit()
+      .then(() => dispatch(receiveApproveHours()))
+      .catch(error => dispatch(errorApprovingHours(error)));
   };
 }

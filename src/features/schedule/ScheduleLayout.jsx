@@ -580,7 +580,11 @@ class ScheduleLayout extends Component {
       updateReplacementCoach,
       openReplacementCoachRemovalModal,
       closeReplacementCoachRemovalModal,
-      removeReplacementCoach
+      removeReplacementCoach,
+      signIn,
+      signOut,
+      updateTimes,
+      approveHours
     } = this.props.actions;
     const {
       isEventsLoading,
@@ -633,6 +637,23 @@ class ScheduleLayout extends Component {
               updateView,
               navigateTo,
               goBack,
+              signIn: (coachID, signInTime) =>
+                signIn(eventID, coachID, signInTime),
+              signOut: (coachID, signOutTime) =>
+                signOut(eventID, coachID, signOutTime),
+              updateTimes: (coachID, signInTime, signOutTime) =>
+                updateTimes(eventID, coachID, signInTime, signOutTime),
+              approveHours: (coachID, shouldCreateWage, wage, wageType) =>
+                approveHours(
+                  activeInstitutionID,
+                  eventID,
+                  eventInfo.requiredInfo.title,
+                  eventInfo.requiredInfo.times.start,
+                  coachID,
+                  shouldCreateWage,
+                  wage,
+                  wageType
+                ),
               removeReplacementCoach: openReplacementCoachRemovalModal,
               updateReplacementCoach: openReplacementCoachModal,
               editAbsentRating: openEditAbsentRatingModal,
