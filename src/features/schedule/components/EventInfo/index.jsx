@@ -226,7 +226,8 @@ class EventInfo extends Component {
       signIn,
       signOut,
       updateTimes,
-      approveHours
+      approveHours,
+      updateAbsent
     } = this.props.actions;
     const { tabSelected } = this.state;
 
@@ -269,6 +270,7 @@ class EventInfo extends Component {
                 signOut={signIn}
                 updateTimes={updateTimes}
                 approveHours={approveHours}
+                updateAbsent={updateAbsent}
               />
             </div>
           );
@@ -366,6 +368,7 @@ class EventInfo extends Component {
                 signOut={signOut}
                 updateTimes={updateTimes}
                 approveHours={approveHours}
+                updateAbsent={updateAbsent}
               />
             </div>
           );
@@ -477,6 +480,10 @@ class EventInfo extends Component {
           return {
             wageSettings,
             id: coachID,
+            absenteeism: {
+              isAbsent: !eventCoachInfo.attendance.didAttend,
+              rating: eventCoachInfo.absenteeism.rating
+            },
             name: `${coachInfo.info.name} ${coachInfo.info.surname}`,
             profilePicture: coachInfo.info.profilePictureURL,
             hours: eventCoachInfo.hours
@@ -492,6 +499,10 @@ class EventInfo extends Component {
                 signIn: new Date(Date.now()),
                 signOut: new Date(Date.now())
               }
+            },
+            absenteeism: {
+              isAbsent: false,
+              rating: ""
             },
             wageSettings: {
               rates: {

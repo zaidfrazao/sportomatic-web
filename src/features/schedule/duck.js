@@ -1119,33 +1119,16 @@ export function errorUpdatingAbsent(error: { code: string, message: string }) {
   };
 }
 
-export function updateAbsent(
-  eventID,
-  coachID,
-  newStatus,
-  isPastEvent,
-  rating = "NEUTRAL",
-  reason = ""
-) {
+export function updateAbsent(eventID, coachID, rating) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestAbsentUpdate());
     const db = firebase.firestore();
     const eventRef = db.collection("events").doc(eventID);
 
-    let updates = {
+    const updates = {
       [`coaches.${coachID}.absenteeism.rating`]: rating,
-      [`coaches.${coachID}.absenteeism.reason`]: reason
+      [`coaches.${coachID}.attendance.didAttend`]: false
     };
-    if (isPastEvent) {
-      updates[`coaches.${coachID}.attendance.didAttend`] = newStatus;
-    } else {
-      updates[`coaches.${coachID}.attendance.didAttend`] = newStatus;
-      updates[`coaches.${coachID}.attendance.willAttend`] = newStatus;
-      if (newStatus) {
-        updates[`coaches.${coachID}.attendance.hasSubstitute`] = false;
-        updates[`coaches.${coachID}.attendance.substitute`] = "";
-      }
-    }
 
     return eventRef
       .update(updates)

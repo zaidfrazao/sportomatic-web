@@ -10,12 +10,9 @@ import Button from "../../components/Button";
 import Calendar from "./components/Calendar";
 import { common } from "../../utils/colours";
 import DecisionModal from "../../components/DecisionModal";
-import EditAbsentRatingModal from "./components/EditAbsentRatingModal";
 import EditEventDialog from "./components/EditEventDialog";
 import EventInfo from "./components/EventInfo";
-import MarkAbsentModal from "./components/MarkAbsentModal";
 import NotificationModal from "../../components/NotificationModal";
-import ReplacementCoachModal from "./components/ReplacementCoachModal";
 
 const styles = {
   actionsBar: {
@@ -542,11 +539,6 @@ class ScheduleLayout extends Component {
     } = this.props;
     const { dateSelected, eventID, infoTab } = this.props.match.params;
     const {
-      selectedCoach,
-      selectedReplacementCoach,
-      prevReplacementCoachID
-    } = this.props.uiConfig;
-    const {
       updateView,
       openEditEventDialog,
       closeEditEventDialog,
@@ -559,24 +551,11 @@ class ScheduleLayout extends Component {
       cancelEvent,
       uncancelEvent,
       editEvent,
-      openMarkAbsentModal,
-      closeMarkAbsentModal,
-      updateAbsent,
-      openUnmarkAbsentModal,
-      closeUnmarkAbsentModal,
-      openEditAbsentRatingModal,
-      closeEditAbsentRatingModal,
-      editAbsentRating,
-      openReplacementCoachModal,
-      closeReplacementCoachModal,
-      updateReplacementCoach,
-      openReplacementCoachRemovalModal,
-      closeReplacementCoachRemovalModal,
-      removeReplacementCoach,
       signIn,
       signOut,
       updateTimes,
-      approveHours
+      approveHours,
+      updateAbsent
     } = this.props.actions;
     const {
       isEventsLoading,
@@ -588,12 +567,7 @@ class ScheduleLayout extends Component {
       isCancelEventAlertOpen,
       isUncancelEventAlertOpen,
       isEditEventDialogOpen,
-      isEventErrorAlertOpen,
-      isMarkAbsentModalOpen,
-      isUnmarkAbsentModalOpen,
-      isEditAbsentRatingModalOpen,
-      isReplacementCoachModalOpen,
-      isReplacementCoachRemovalModalOpen
+      isEventErrorAlertOpen
     } = this.props.dialogs;
 
     const currentDate = new Date(Date.now());
@@ -646,11 +620,8 @@ class ScheduleLayout extends Component {
                   wage,
                   wageType
                 ),
-              removeReplacementCoach: openReplacementCoachRemovalModal,
-              updateReplacementCoach: openReplacementCoachModal,
-              editAbsentRating: openEditAbsentRatingModal,
-              markAbsent: openMarkAbsentModal,
-              unmarkAbsent: openUnmarkAbsentModal,
+              updateAbsent: (coachID, rating) =>
+                updateAbsent(eventID, coachID, rating),
               editEvent: openEditEventDialog,
               cancelEvent: openCancelEventAlert,
               uncancelEvent: openUncancelEventAlert
@@ -719,113 +690,6 @@ class ScheduleLayout extends Component {
             heading="Uncancel Event"
             message="Are you sure you want to uncancel this event?"
           />
-          {coaches[selectedCoach] &&
-            events[eventID] && (
-              <div>
-                {events[eventID].coaches[selectedCoach].attendance
-                  .substitute !== "" && (
-                  <DecisionModal
-                    isOpen={isReplacementCoachRemovalModalOpen}
-                    handleYesClick={() => {
-                      removeReplacementCoach(
-                        eventID,
-                        selectedCoach,
-                        selectedReplacementCoach
-                      );
-                      closeReplacementCoachRemovalModal();
-                    }}
-                    handleNoClick={closeReplacementCoachRemovalModal}
-                    heading="Remove Replacement Coach"
-                    message={`Are you sure you want to remove ${coaches[
-                      events[eventID].coaches[selectedCoach].attendance
-                        .substitute
-                    ].info.name} ${coaches[
-                      events[eventID].coaches[selectedCoach].attendance
-                        .substitute
-                    ].info.surname} as the replacement coach?`}
-                  />
-                )}
-                <ReplacementCoachModal
-                  isOpen={isReplacementCoachModalOpen}
-                  coaches={coaches}
-                  coachName={`${coaches[selectedCoach].info.name} ${coaches[
-                    selectedCoach
-                  ].info.surname}`}
-                  initialReplacementCoach={
-                    events[eventID].coaches[selectedCoach].attendance.substitute
-                  }
-                  originalCoachID={selectedCoach}
-                  actions={{
-                    updateReplacementCoach: replacementCoachID => {
-                      updateReplacementCoach(
-                        eventID,
-                        selectedCoach,
-                        replacementCoachID,
-                        prevReplacementCoachID
-                      );
-                      closeReplacementCoachModal();
-                    },
-                    closeModal: () => closeReplacementCoachModal()
-                  }}
-                />
-                <MarkAbsentModal
-                  isOpen={isMarkAbsentModalOpen}
-                  coachName={`${coaches[selectedCoach].info.name} ${coaches[
-                    selectedCoach
-                  ].info.surname}`}
-                  actions={{
-                    markAbsent: (rating, reason) => {
-                      updateAbsent(
-                        eventID,
-                        selectedCoach,
-                        false,
-                        isPastEvent,
-                        rating,
-                        reason
-                      );
-                      closeMarkAbsentModal();
-                    },
-                    closeModal: () => closeMarkAbsentModal()
-                  }}
-                />
-                <EditAbsentRatingModal
-                  isOpen={isEditAbsentRatingModalOpen}
-                  initialInfo={
-                    events[eventID].coaches[selectedCoach].absenteeism
-                  }
-                  coachName={`${coaches[selectedCoach].info.name} ${coaches[
-                    selectedCoach
-                  ].info.surname}`}
-                  actions={{
-                    editAbsentRating: (rating, reason) => {
-                      editAbsentRating(eventID, selectedCoach, rating, reason);
-                      closeEditAbsentRatingModal();
-                    },
-                    closeModal: () => closeEditAbsentRatingModal()
-                  }}
-                />
-                <DecisionModal
-                  isOpen={isUnmarkAbsentModalOpen}
-                  handleYesClick={() => {
-                    updateAbsent(eventID, selectedCoach, true, isPastEvent);
-                    closeUnmarkAbsentModal();
-                  }}
-                  handleNoClick={closeUnmarkAbsentModal}
-                  heading={
-                    isPastEvent ? "Mark as Attended" : "Mark as Attending"
-                  }
-                  message={
-                    isPastEvent
-                      ? `Are you sure ${coaches[selectedCoach].info
-                          .name} ${coaches[selectedCoach].info
-                          .surname} did attend?`
-                      : `Are you sure ${coaches[selectedCoach].info
-                          .name} ${coaches[selectedCoach].info
-                          .surname} will attend?`
-                  }
-                />
-              </div>
-            )}
         </div>
       </div>
     );

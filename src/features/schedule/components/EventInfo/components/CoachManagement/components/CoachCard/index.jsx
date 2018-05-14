@@ -11,8 +11,20 @@ import {
 import Button from "../../../../../../../../components/Button";
 import EditTimesDialog from "./components/EditTimesDialog";
 import defaultProfilePicture from "./images/default-profile-picture.png";
+import MarkAbsentDialog from "./components/MarkAbsentDialog";
 
 const styles = {
+  absentWrapper: {
+    borderRadius: 16,
+    textAlign: "center",
+    border: `2px solid ${grey[500]}`,
+    margin: 12,
+    padding: "24px 12px",
+    color: grey[500]
+  },
+  absentIcon: {
+    marginRight: 12
+  },
   approvedWrapper: {
     borderRadius: "0 0 16px 16px",
     textAlign: "center",
@@ -35,6 +47,8 @@ const styles = {
     padding: 12
   },
   card: {
+    display: "flex",
+    flexDirection: "column",
     width: "100%",
     borderRadius: 16,
     backgroundColor: common["white"]
@@ -269,9 +283,10 @@ class CoachCard extends Component {
       name,
       eventTimes,
       updateTimes,
+      updateAbsent,
       coachID
     } = this.props;
-    const { isEditTimesDialogOpen } = this.state;
+    const { isEditTimesDialogOpen, isMarkAbsentDialogOpen } = this.state;
 
     if (hours.status === "AWAITING_SIGN_IN") {
       return (
@@ -284,6 +299,12 @@ class CoachCard extends Component {
           >
             Mark absent
           </Button>
+          <MarkAbsentDialog
+            isOpen={isMarkAbsentDialogOpen}
+            name={name}
+            closeDialog={() => this.toggleMarkAbsentDialog()}
+            updateAbsent={rating => updateAbsent(coachID, rating)}
+          />
         </div>
       );
     } else {
@@ -401,7 +422,7 @@ class CoachCard extends Component {
   }
 
   render() {
-    const { classes, name, profilePicture, hours } = this.props;
+    const { classes, name, profilePicture, hours, absenteeism } = this.props;
 
     const times = this.getTimes();
     const primaryAction = this.getPrimaryAction();
@@ -417,42 +438,60 @@ class CoachCard extends Component {
           />
           {name}
         </div>
-        {hours.status !== "APPROVED" && secondaryAction}
-        <div className={classes.timesWrapper}>
-          <div className={classes.timesIconWrapper}>
-            <span>Sign in</span>
+        {hours.status !== "APPROVED" &&
+          !absenteeism.isAbsent &&
+          secondaryAction}
+        {!absenteeism.isAbsent && (
+          <div className={classes.timesWrapper}>
+            <div className={classes.timesIconWrapper}>
+              <span>Sign in</span>
+            </div>
+            <span className={classes.timesText}>{times.signIn}</span>
+            {times.signInDelta.show && (
+              <span
+                className={
+                  times.signInDelta.positive
+                    ? classes.deltaPositive
+                    : classes.deltaNegative
+                }
+              >
+                {times.signInDelta.text}
+              </span>
+            )}
           </div>
-          <span className={classes.timesText}>{times.signIn}</span>
-          {times.signInDelta.show && (
-            <span
-              className={
-                times.signInDelta.positive
-                  ? classes.deltaPositive
-                  : classes.deltaNegative
-              }
-            >
-              {times.signInDelta.text}
-            </span>
-          )}
-        </div>
-        <div className={classes.timesWrapper}>
-          <div className={classes.timesIconWrapper}>
-            <span>Sign out</span>
+        )}
+        {!absenteeism.isAbsent && (
+          <div className={classes.timesWrapper}>
+            <div className={classes.timesIconWrapper}>
+              <span>Sign out</span>
+            </div>
+            <span className={classes.timesText}>{times.signOut}</span>
+            {times.signOutDelta.show && (
+              <span
+                className={
+                  times.signOutDelta.positive
+                    ? classes.deltaPositive
+                    : classes.deltaNegative
+                }
+              >
+                {times.signOutDelta.text}
+              </span>
+            )}
           </div>
-          <span className={classes.timesText}>{times.signOut}</span>
-          {times.signOutDelta.show && (
-            <span
-              className={
-                times.signOutDelta.positive
-                  ? classes.deltaPositive
-                  : classes.deltaNegative
-              }
-            >
-              {times.signOutDelta.text}
-            </span>
-          )}
-        </div>
-        {primaryAction}
+        )}
+        {absenteeism.isAbsent &&
+          (absenteeism.rating === "GOOD" ? (
+            <div className={classes.absentWrapper}>
+              <i className={`fas fa-thumbs-up ${classes.absentIcon}`} />Absent
+              with excuse
+            </div>
+          ) : (
+            <div className={classes.absentWrapper}>
+              <i className={`fas fa-thumbs-down ${classes.absentIcon}`} />Absent
+              without excuse
+            </div>
+          ))}
+        {!absenteeism.isAbsent && primaryAction}
       </div>
     );
   }

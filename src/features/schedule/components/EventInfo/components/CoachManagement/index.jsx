@@ -61,7 +61,8 @@ class CoachManagement extends Component {
       signIn,
       signOut,
       updateTimes,
-      approveHours
+      approveHours,
+      updateAbsent
     } = this.props;
 
     return coaches.map(info => (
@@ -72,11 +73,13 @@ class CoachManagement extends Component {
           profilePicture={info.profilePicture}
           hours={info.hours}
           wageSettings={info.wageSettings}
+          absenteeism={info.absenteeism}
           eventTimes={eventTimes}
           signIn={signIn}
           signOut={signOut}
           updateTimes={updateTimes}
           approveHours={approveHours}
+          updateAbsent={updateAbsent}
         />
       </div>
     ));

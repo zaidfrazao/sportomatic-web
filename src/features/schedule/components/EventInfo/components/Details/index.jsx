@@ -285,6 +285,20 @@ class Details extends Component {
     return hours;
   }
 
+  getCoachAbsenteeism(userID) {
+    const { coaches } = this.props;
+
+    let absenteeism = {
+      isAbsent: false,
+      rating: ""
+    };
+    coaches.map(coachInfo => {
+      if (coachInfo.id === userID) absenteeism = coachInfo.absenteeism;
+    });
+
+    return absenteeism;
+  }
+
   render() {
     const {
       classes,
@@ -306,6 +320,7 @@ class Details extends Component {
     }
     const isCoaching = this.checkIfUserCoaching(userID);
     const hours = this.getCoachHours(userID);
+    const absenteeism = this.getCoachAbsenteeism(userID);
     const teamItems = this.getTeamItems();
     const coachItems = this.getCoachItems();
     const managerItems = this.getManagerItems();
@@ -329,6 +344,7 @@ class Details extends Component {
               <YourHoursCard
                 coachID={userID}
                 hours={hours}
+                absenteeism={absenteeism}
                 eventTimes={times}
                 signIn={signIn}
                 signOut={signOut}
