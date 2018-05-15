@@ -1,11 +1,14 @@
 import React, { Component } from "react";
-import { common, grey, lightBlue } from "../../../../../../utils/colours";
+import { common, grey, lightBlue, red } from "../../../../../../utils/colours";
 import injectStyles from "react-jss";
 import { Route } from "react-router-dom";
 import Button from "../../../../../../components/Button";
 import defaultProfilePicture from "../../../../image/default-profile-picture.png";
 
 const styles = {
+  alertIcon: {
+    marginRight: 12
+  },
   buttons: {
     display: "flex",
     justifyContent: "space-between",
@@ -27,6 +30,18 @@ const styles = {
     fontWeight: "bold",
     color: grey[800],
     backgroundColor: grey[100]
+  },
+  inactiveAlert: {
+    fontSize: 14,
+    padding: "12px 0",
+    width: "100%",
+    textAlign: "center",
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: red[500]
+  },
+  resendButtonWrapper: {
+    margin: 12
   },
   picture: {
     borderRadius: 8,
@@ -51,11 +66,27 @@ const styles = {
 
 class PersonCard extends Component {
   render() {
-    const { classes, name, surname, profilePictureURL, id, type } = this.props;
+    const {
+      classes,
+      name,
+      surname,
+      profilePictureURL,
+      id,
+      type,
+      status,
+      resendInvite,
+      isLoading
+    } = this.props;
 
     return (
       <div className={classes.card}>
         <div className={classes.header}>{`${name} ${surname}`}</div>
+        {status === "INACTIVE" && (
+          <div className={classes.inactiveAlert}>
+            <i className={`fas fa-exclamation ${classes.alertIcon}`} />Not yet
+            signed up
+          </div>
+        )}
         <div className={classes.pictureWrapper}>
           <img
             className={classes.picture}
@@ -68,6 +99,19 @@ class PersonCard extends Component {
           />
         </div>
         <div className={classes.type}>{type}</div>
+        {status === "INACTIVE" && (
+          <div className={classes.resendButtonWrapper}>
+            <Button
+              colour="secondary"
+              slim
+              fullWidth
+              loading={isLoading}
+              handleClick={() => resendInvite()}
+            >
+              Resend invite
+            </Button>
+          </div>
+        )}
         <div className={classes.buttons}>
           <Route
             render={({ history }) => (

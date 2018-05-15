@@ -305,6 +305,7 @@ class CoreInterfaceLayout extends Component {
     const isTablet = windowWidth < 1080;
 
     const communityRole = this.getRole();
+    const userName = `${accountInfo.info.name} ${accountInfo.info.surname}`;
 
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
@@ -591,6 +592,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/people/"}>
                     <People
+                      communityName={communityName}
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
@@ -599,11 +601,13 @@ class CoreInterfaceLayout extends Component {
                       isAccountInfoLoading={isAccountInfoLoading}
                       paymentDefaults={paymentDefaults}
                       userID={userID}
+                      userName={userName}
                       role={role}
                     />
                   </Route>
                   <Route path={"/myaccount/people/:personID"}>
                     <People
+                      communityName={communityName}
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
@@ -612,6 +616,7 @@ class CoreInterfaceLayout extends Component {
                       isAccountInfoLoading={isAccountInfoLoading}
                       paymentDefaults={paymentDefaults}
                       userID={userID}
+                      userName={userName}
                       role={role}
                     />
                   </Route>

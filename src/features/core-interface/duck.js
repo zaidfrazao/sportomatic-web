@@ -59,6 +59,10 @@ export const uiConfigInitialState = {
   sportSelected: "all",
   meAllFilter: "me",
   accountInfo: {
+    info: {
+      name: "",
+      surname: ""
+    },
     institutions: {},
     lastAccessed: {
       institutionID: "",

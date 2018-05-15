@@ -27,7 +27,7 @@ const styles = {
 
 class PeopleList extends Component {
   render() {
-    const { classes, people } = this.props;
+    const { classes, people, resendInvite, isLoading } = this.props;
 
     if (people.length > 0) {
       return (
@@ -49,6 +49,14 @@ class PeopleList extends Component {
                   profilePictureURL={personInfo.profilePictureURL}
                   type={personInfo.type}
                   id={personInfo.id}
+                  status={personInfo.status}
+                  isLoading={isLoading}
+                  resendInvite={() =>
+                    resendInvite(
+                      personInfo.name,
+                      personInfo.id,
+                      personInfo.email
+                    )}
                 />
               </Grid>
             ))}

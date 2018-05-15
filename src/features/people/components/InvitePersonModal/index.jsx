@@ -729,7 +729,7 @@ class InvitePersonModal extends Component {
                     createdVia: "INVITE",
                     createdByInstitution: institutionID,
                     createdByUser: userID,
-                    status: "ACTIVE",
+                    status: "INACTIVE",
                     tempPassword
                   },
                   tutorialStatus: {

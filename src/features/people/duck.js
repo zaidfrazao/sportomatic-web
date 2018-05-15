@@ -1,29 +1,20 @@
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
+import "firebase/functions";
 import { TeamAlias } from "../../models/aliases";
 
 // Actions
 
 const NAMESPACE = "sportomatic-web/people";
 
-export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
-export const OPEN_DELETE_PERSON_ALERT = `${NAMESPACE}/OPEN_DELETE_PERSON_ALERT`;
-export const CLOSE_DELETE_PERSON_ALERT = `${NAMESPACE}/CLOSE_DELETE_PERSON_ALERT`;
 export const OPEN_EDIT_PERSON_DIALOG = `${NAMESPACE}/OPEN_EDIT_PERSON_DIALOG`;
 export const CLOSE_EDIT_PERSON_DIALOG = `${NAMESPACE}/CLOSE_EDIT_PERSON_DIALOG`;
-export const OPEN_REJECT_PERSON_MODAL = `${NAMESPACE}/OPEN_REJECT_PERSON_MODAL`;
-export const CLOSE_REJECT_PERSON_MODAL = `${NAMESPACE}/CLOSE_REJECT_PERSON_MODAL`;
-export const OPEN_APPROVE_PERSON_MODAL = `${NAMESPACE}/OPEN_APPROVE_PERSON_MODAL`;
-export const CLOSE_APPROVE_PERSON_MODAL = `${NAMESPACE}/CLOSE_APPROVE_PERSON_MODAL`;
 export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
 export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
-export const REQUEST_STAFF_REQUESTS = `${NAMESPACE}/REQUEST_STAFF_REQUESTS`;
-export const RECEIVE_STAFF_REQUESTS = `${NAMESPACE}/RECEIVE_STAFF_REQUESTS`;
 export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
 export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
-export const UPDATE_SEARCH = `${NAMESPACE}/UPDATE_SEARCH`;
 export const OPEN_INVITE_PERSON_MODAL = `${NAMESPACE}/OPEN_INVITE_PERSON_MODAL`;
 export const CLOSE_INVITE_PERSON_MODAL = `${NAMESPACE}/CLOSE_INVITE_PERSON_MODAL`;
 export const REQUEST_INVITEE = `${NAMESPACE}/REQUEST_INVITEE`;
@@ -42,16 +33,11 @@ export const EDIT_ROLES = `${NAMESPACE}/EDIT_ROLES`;
 export const REQUEST_EVENTS_BY_COACH = `${NAMESPACE}/REQUEST_EVENTS_BY_COACH`;
 export const RECEIVE_EVENTS_BY_COACH = `${NAMESPACE}/RECEIVE_EVENTS_BY_COACH`;
 export const ERROR_LOADING_EVENTS_BY_COACH = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_COACH`;
-export const REQUEST_EVENTS_BY_MANAGER = `${NAMESPACE}/REQUEST_EVENTS_BY_MANAGER`;
-export const RECEIVE_EVENTS_BY_MANAGER = `${NAMESPACE}/RECEIVE_EVENTS_BY_MANAGER`;
-export const ERROR_LOADING_EVENTS_BY_MANAGER = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_MANAGER`;
-export const REQUEST_REJECT_PERSON = `${NAMESPACE}/REQUEST_REJECT_PERSON`;
-export const RECEIVE_REJECT_PERSON = `${NAMESPACE}/RECEIVE_REJECT_PERSON`;
-export const ERROR_REJECTING_PERSON = `${NAMESPACE}/ERROR_REJECTING_PERSON`;
-export const REQUEST_APPROVE_PERSON = `${NAMESPACE}/REQUEST_APPROVE_PERSON`;
-export const RECEIVE_APPROVE_PERSON = `${NAMESPACE}/RECEIVE_APPROVE_PERSON`;
-export const ERROR_APPROVING_PERSON = `${NAMESPACE}/ERROR_APPROVING_PERSON`;
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
+export const REQUEST_RESEND_INVITE = `${NAMESPACE}/REQUEST_RESEND_INVITE`;
+export const RECEIVE_RESEND_INVITE = `${NAMESPACE}/RECEIVE_RESEND_INVITE`;
+export const ERROR_RESENDING_INVITE = `${NAMESPACE}/ERROR_RESENDING_INVITE`;
+export const CLOSE_RESEND_INVITE_ALERT = `${NAMESPACE}/CLOSE_RESEND_INVITE_ALERT`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -60,9 +46,7 @@ export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 export const uiConfigInitialState = {
   currentTab: "STAFF",
   inviteeID: "",
-  inviteeInfo: {},
-  applicantID: "",
-  isCoachApplication: false
+  inviteeInfo: {}
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -70,38 +54,11 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
     case RESET_STATE:
     case SIGN_OUT:
       return uiConfigInitialState;
-    case UPDATE_TAB:
-      return {
-        ...state,
-        currentTab: action.payload.newTab
-      };
     case RECEIVE_INVITEE:
       return {
         ...state,
         inviteeID: action.payload.id,
         inviteeInfo: action.payload.info
-      };
-    case OPEN_REJECT_PERSON_MODAL:
-      return {
-        ...state,
-        applicantID: action.payload.applicantID
-      };
-    case CLOSE_REJECT_PERSON_MODAL:
-      return {
-        ...state,
-        applicantID: ""
-      };
-    case OPEN_APPROVE_PERSON_MODAL:
-      return {
-        ...state,
-        applicantID: action.payload.applicantID,
-        isCoachApplication: action.payload.isCoachApplication
-      };
-    case CLOSE_APPROVE_PERSON_MODAL:
-      return {
-        ...state,
-        applicantID: "",
-        isCoachApplication: false
       };
     default:
       return state;
@@ -124,22 +81,15 @@ function filterReducer(state = filtersInitialState, action = {}) {
         ...state,
         ...action.payload
       };
-    case UPDATE_SEARCH:
-      return {
-        ...state,
-        searchText: action.payload.searchText
-      };
     default:
       return state;
   }
 }
 
 export const dialogsInitialState = {
-  isDeletPersonAlertOpen: false,
   isEditPersonDialogOpen: false,
   isInvitePersonModalOpen: false,
-  isRejectPersonModalOpen: false,
-  isApprovePersonModalOpen: false
+  isResendInviteAlertOpen: false
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
@@ -147,16 +97,6 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
     case RESET_STATE:
     case SIGN_OUT:
       return dialogsInitialState;
-    case OPEN_DELETE_PERSON_ALERT:
-      return {
-        ...state,
-        isDeletPersonAlertOpen: true
-      };
-    case CLOSE_DELETE_PERSON_ALERT:
-      return {
-        ...state,
-        isDeletPersonAlertOpen: false
-      };
     case OPEN_EDIT_PERSON_DIALOG:
       return {
         ...state,
@@ -189,25 +129,16 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
         isEditPersonDialogOpen: true,
         isInvitePersonModalOpen: false
       };
-    case OPEN_REJECT_PERSON_MODAL:
+    case RECEIVE_RESEND_INVITE:
+    case ERROR_RESENDING_INVITE:
       return {
         ...state,
-        isRejectPersonModalOpen: true
+        isResendInviteAlertOpen: true
       };
-    case CLOSE_REJECT_PERSON_MODAL:
+    case CLOSE_RESEND_INVITE_ALERT:
       return {
         ...state,
-        isRejectPersonModalOpen: false
-      };
-    case OPEN_APPROVE_PERSON_MODAL:
-      return {
-        ...state,
-        isApprovePersonModalOpen: true
-      };
-    case CLOSE_APPROVE_PERSON_MODAL:
-      return {
-        ...state,
-        isApprovePersonModalOpen: false
+        isResendInviteAlertOpen: false
       };
     default:
       return state;
@@ -222,19 +153,6 @@ function staffReducer(state = {}, action = {}) {
       return {};
     case RECEIVE_STAFF:
       return action.payload.staff;
-    default:
-      return state;
-  }
-}
-
-function requestsReducer(state = {}, action = {}) {
-  switch (action.type) {
-    case RESET_STATE:
-    case REQUEST_STAFF_REQUESTS:
-    case SIGN_OUT:
-      return {};
-    case RECEIVE_STAFF_REQUESTS:
-      return action.payload.requests;
     default:
       return state;
   }
@@ -255,13 +173,11 @@ function teamsReducer(state = {}, action = {}) {
 
 export const loadingStatusInitialState = {
   isStaffLoading: false,
-  isRequestsLoading: false,
   isTeamsLoading: false,
   isInviteeLoading: false,
   isEditPersonLoading: false,
   isEventsByCoachLoading: false,
-  isEventsByManagerLoading: false,
-  isApplicantResponseLoading: false
+  isResendInviteLoading: false
 };
 
 function loadingStatusListReducer(
@@ -281,16 +197,6 @@ function loadingStatusListReducer(
       return {
         ...state,
         isStaffLoading: false
-      };
-    case REQUEST_STAFF_REQUESTS:
-      return {
-        ...state,
-        isRequestsLoading: true
-      };
-    case RECEIVE_STAFF_REQUESTS:
-      return {
-        ...state,
-        isRequestsLoading: false
       };
     case REQUEST_TEAMS:
       return {
@@ -341,30 +247,16 @@ function loadingStatusListReducer(
         ...state,
         isEventsByCoachLoading: false
       };
-    case REQUEST_EVENTS_BY_MANAGER:
+    case REQUEST_RESEND_INVITE:
       return {
         ...state,
-        isEventsByManagerLoading: true
+        isResendInviteLoading: true
       };
-    case RECEIVE_EVENTS_BY_MANAGER:
-    case ERROR_LOADING_EVENTS_BY_MANAGER:
+    case RECEIVE_RESEND_INVITE:
+    case ERROR_RESENDING_INVITE:
       return {
         ...state,
-        isEventsByManagerLoading: false
-      };
-    case REQUEST_APPROVE_PERSON:
-    case REQUEST_REJECT_PERSON:
-      return {
-        ...state,
-        isApplicantResponseLoading: true
-      };
-    case RECEIVE_APPROVE_PERSON:
-    case ERROR_APPROVING_PERSON:
-    case RECEIVE_REJECT_PERSON:
-    case ERROR_REJECTING_PERSON:
-      return {
-        ...state,
-        isApplicantResponseLoading: false
+        isResendInviteLoading: false
       };
     default:
       return state;
@@ -384,42 +276,25 @@ function eventsByCoachReducer(state = {}, action = {}) {
   }
 }
 
-function eventsByManagerReducer(state = {}, action = {}) {
-  switch (action.type) {
-    case RESET_STATE:
-    case REQUEST_EVENTS_BY_MANAGER:
-    case SIGN_OUT:
-      return {};
-    case RECEIVE_EVENTS_BY_MANAGER:
-      return action.payload.events;
-    default:
-      return state;
-  }
-}
-
 export const peopleReducer = combineReducers({
   uiConfig: uiConfigReducer,
   staff: staffReducer,
   dialogs: dialogsReducer,
   loadingStatus: loadingStatusListReducer,
   teams: teamsReducer,
-  requests: requestsReducer,
   filters: filterReducer,
-  eventsByCoach: eventsByCoachReducer,
-  eventsByManager: eventsByManagerReducer
+  eventsByCoach: eventsByCoachReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.people.uiConfig;
 const staff = state => state.people.staff;
-const requests = state => state.people.requests;
 const teams = state => state.people.teams;
 const dialogs = state => state.people.dialogs;
 const loadingStatus = state => state.people.loadingStatus;
 const filters = state => state.people.filters;
 const eventsByCoach = state => state.people.eventsByCoach;
-const eventsByManager = state => state.people.eventsByManager;
 
 export const selector = createStructuredSelector({
   uiConfig,
@@ -427,10 +302,8 @@ export const selector = createStructuredSelector({
   dialogs,
   loadingStatus,
   teams,
-  requests,
   filters,
-  eventsByCoach,
-  eventsByManager
+  eventsByCoach
 });
 
 // Action Creators
@@ -457,64 +330,9 @@ export function applyFilters(sport, type) {
   };
 }
 
-export function updateSearch(searchText) {
+export function closeResendInviteAlert() {
   return {
-    type: UPDATE_SEARCH,
-    payload: {
-      searchText
-    }
-  };
-}
-
-export function updateTab(newTab) {
-  return {
-    type: UPDATE_TAB,
-    payload: {
-      newTab
-    }
-  };
-}
-
-export function openApprovePersonModal(applicantID, isCoachApplication) {
-  return {
-    type: OPEN_APPROVE_PERSON_MODAL,
-    payload: {
-      applicantID,
-      isCoachApplication
-    }
-  };
-}
-
-export function closeApprovePersonModal() {
-  return {
-    type: CLOSE_APPROVE_PERSON_MODAL
-  };
-}
-
-export function openRejectPersonModal(applicantID) {
-  return {
-    type: OPEN_REJECT_PERSON_MODAL,
-    payload: {
-      applicantID
-    }
-  };
-}
-
-export function closeRejectPersonModal() {
-  return {
-    type: CLOSE_REJECT_PERSON_MODAL
-  };
-}
-
-export function openDeletePersonAlert() {
-  return {
-    type: OPEN_DELETE_PERSON_ALERT
-  };
-}
-
-export function closeDeletePersonAlert() {
-  return {
-    type: CLOSE_DELETE_PERSON_ALERT
+    type: CLOSE_RESEND_INVITE_ALERT
   };
 }
 
@@ -572,40 +390,6 @@ export function loadStaff(institutionID) {
         staff[doc.id] = doc.data();
       });
       dispatch(receiveStaff(staff));
-    });
-  };
-}
-
-export function requestStaffRequests() {
-  return {
-    type: REQUEST_STAFF_REQUESTS
-  };
-}
-
-export function receiveStaffRequests(requests) {
-  return {
-    type: RECEIVE_STAFF_REQUESTS,
-    payload: {
-      requests
-    }
-  };
-}
-
-export function loadStaffRequests(institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestStaffRequests());
-
-    const requestsRef = firebase
-      .firestore()
-      .collection("users")
-      .where(`institutions.${institutionID}.status`, "==", "REQUESTED");
-
-    return requestsRef.onSnapshot(querySnapshot => {
-      let requests = {};
-      querySnapshot.forEach(doc => {
-        requests[doc.id] = doc.data();
-      });
-      dispatch(receiveStaffRequests(requests));
     });
   };
 }
@@ -807,82 +591,6 @@ export function editPerson(userID, info) {
   };
 }
 
-export function requestRejectPerson() {
-  return {
-    type: REQUEST_REJECT_PERSON
-  };
-}
-
-export function receiveRejectPerson() {
-  return {
-    type: RECEIVE_REJECT_PERSON
-  };
-}
-
-export function errorRejectingPerson(error: { code: string, message: string }) {
-  return {
-    type: ERROR_REJECTING_PERSON,
-    payload: {
-      error
-    }
-  };
-}
-
-export function rejectPerson(userID, institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestRejectPerson());
-    const db = firebase.firestore();
-    const userRef = db.collection("users").doc(userID);
-
-    return userRef
-      .update({
-        [`institutions.${institutionID}.status`]: "REJECTED"
-      })
-      .then(() => dispatch(receiveRejectPerson()))
-      .catch(error => dispatch(errorRejectingPerson(error)));
-  };
-}
-
-export function requestApprovePerson() {
-  return {
-    type: REQUEST_APPROVE_PERSON
-  };
-}
-
-export function receiveApprovePerson() {
-  return {
-    type: RECEIVE_APPROVE_PERSON
-  };
-}
-
-export function errorApprovingPerson(error: { code: string, message: string }) {
-  return {
-    type: ERROR_APPROVING_PERSON,
-    payload: {
-      error
-    }
-  };
-}
-
-export function approvePerson(userID, institutionID, paymentDefaults, roles) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestApprovePerson());
-    const db = firebase.firestore();
-    const userRef = db.collection("users").doc(userID);
-
-    return userRef
-      .update({
-        [`institutions.${institutionID}`]: {
-          paymentDefaults,
-          roles,
-          status: "STAFF"
-        }
-      })
-      .then(() => dispatch(receiveApprovePerson()))
-      .catch(error => dispatch(errorApprovingPerson(error)));
-  };
-}
-
 export function requestEventsByCoach() {
   return {
     type: REQUEST_EVENTS_BY_COACH
@@ -931,50 +639,51 @@ export function loadEventsByCoach(institutionID, coachID) {
   };
 }
 
-export function requestEventsByManager() {
+export function requestResendInvite() {
   return {
-    type: REQUEST_EVENTS_BY_MANAGER
+    type: REQUEST_RESEND_INVITE
   };
 }
 
-export function receiveEventsByManager(events) {
+export function receiveResendInvite() {
   return {
-    type: RECEIVE_EVENTS_BY_MANAGER,
-    payload: {
-      events
-    }
+    type: RECEIVE_RESEND_INVITE
   };
 }
 
-export function errorLoadingEventsByManager(error: {
-  code: string,
-  message: string
-}) {
+export function errorResendingInvite(error: { code: string, message: string }) {
   return {
-    type: ERROR_LOADING_EVENTS_BY_MANAGER,
+    type: ERROR_RESENDING_INVITE,
     payload: {
       error
     }
   };
 }
 
-export function loadEventsByManager(institutionID, managerID) {
+export function resendInvite(
+  inviteeName,
+  inviteeID,
+  inviteeEmail,
+  inviterName,
+  communityName
+) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestEventsByManager());
+    dispatch(requestResendInvite());
 
-    let eventsRef = firebase
-      .firestore()
-      .collection("events")
-      .where("institutionID", "==", institutionID)
-      .where("requiredInfo.status", "==", "ACTIVE")
-      .where(`managers.${managerID}.status`, "==", "ACTIVE");
+    const sendInvite = firebase.functions().httpsCallable("resendInviteEmail");
 
-    return eventsRef.onSnapshot(querySnapshot => {
-      let events = {};
-      querySnapshot.forEach(doc => {
-        events[doc.id] = doc.data();
+    return sendInvite({
+      inviteeName,
+      inviteeID,
+      inviteeEmail,
+      inviterName,
+      communityName
+    })
+      .then(result => {
+        dispatch(receiveResendInvite());
+      })
+      .catch(error => {
+        dispatch(errorResendingInvite(error));
       });
-      dispatch(receiveEventsByManager(events));
-    });
   };
 }

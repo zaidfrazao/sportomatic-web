@@ -8,13 +8,13 @@ import EditIcon from "material-ui-icons/Edit";
 import { withStyles } from "material-ui/styles";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
-import DecisionModal from "../../components/DecisionModal";
 import EditPersonDialog from "./components/EditPersonDialog";
 import InvitePersonModal from "./components/InvitePersonModal";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import PeopleList from "./components/PeopleList";
 import PersonInfo from "./components/PersonInfo";
+import NotificationModal from "../../components/NotificationModal";
 
 const styles = theme => ({
   actionsBar: {
@@ -82,22 +82,14 @@ class PeopleLayout extends Component {
   componentWillMount() {
     const { activeInstitutionID } = this.props;
     const { personID } = this.props.match.params;
-    const {
-      loadStaff,
-      loadStaffRequests,
-      loadTeams,
-      loadEventsByCoach,
-      loadEventsByManager
-    } = this.props.actions;
+    const { loadStaff, loadTeams, loadEventsByCoach } = this.props.actions;
 
     if (activeInstitutionID !== "") {
       loadStaff(activeInstitutionID);
-      loadStaffRequests(activeInstitutionID);
       loadTeams(activeInstitutionID);
 
       if (personID) {
         loadEventsByCoach(activeInstitutionID, personID);
-        loadEventsByManager(activeInstitutionID, personID);
       }
     }
   }
@@ -107,10 +99,8 @@ class PeopleLayout extends Component {
     const { personID } = nextProps.match.params;
     const {
       loadStaff,
-      loadStaffRequests,
       loadTeams,
       loadEventsByCoach,
-      loadEventsByManager,
       resetState
     } = nextProps.actions;
 
@@ -132,12 +122,10 @@ class PeopleLayout extends Component {
     ) {
       resetState();
       loadStaff(activeInstitutionID);
-      loadStaffRequests(activeInstitutionID);
       loadTeams(activeInstitutionID);
 
       if (personID) {
         loadEventsByCoach(activeInstitutionID, personID);
-        loadEventsByManager(activeInstitutionID, personID);
       }
     }
 
@@ -147,7 +135,6 @@ class PeopleLayout extends Component {
       personID !== this.props.match.params.personID
     ) {
       loadEventsByCoach(activeInstitutionID, personID);
-      loadEventsByManager(activeInstitutionID, personID);
     }
 
     this.setState({
@@ -157,6 +144,7 @@ class PeopleLayout extends Component {
 
   componentWillUnmount() {
     const { resetState } = this.props.actions;
+
     resetState();
   }
 
@@ -294,6 +282,8 @@ class PeopleLayout extends Component {
             name: value.info.name,
             surname: value.info.surname,
             profilePictureURL: value.info.profilePictureURL,
+            email: value.info.email,
+            status: value.metadata.status,
             type: type
           };
         }
@@ -309,73 +299,9 @@ class PeopleLayout extends Component {
       });
   }
 
-  getRequestsCardsInfo(requests) {
-    const { activeInstitutionID } = this.props;
-
-    return _.values(
-      _.mapValues(requests, (value, key) => {
-        let type = "";
-        if (
-          value.institutions[activeInstitutionID].roles.admin === "REQUESTED"
-        ) {
-          type = "Admin";
-        }
-        if (
-          value.institutions[activeInstitutionID].roles.manager === "REQUESTED"
-        ) {
-          type = "Manager";
-        }
-        if (
-          value.institutions[activeInstitutionID].roles.coach === "REQUESTED"
-        ) {
-          type = "Coach";
-        }
-        if (
-          value.institutions[activeInstitutionID].roles.admin === "REQUESTED" &&
-          value.institutions[activeInstitutionID].roles.coach === "REQUESTED"
-        ) {
-          type = "Admin and Coach";
-        }
-        if (
-          value.institutions[activeInstitutionID].roles.coach === "REQUESTED" &&
-          value.institutions[activeInstitutionID].roles.manager === "REQUESTED"
-        ) {
-          type = "Manager and Coach";
-        }
-        if (
-          value.institutions[activeInstitutionID].roles.admin === "REQUESTED" &&
-          value.institutions[activeInstitutionID].roles.manager === "REQUESTED"
-        ) {
-          type = "Admin and Manager";
-        }
-        if (
-          value.institutions[activeInstitutionID].roles.admin === "REQUESTED" &&
-          value.institutions[activeInstitutionID].roles.coach === "REQUESTED" &&
-          value.institutions[activeInstitutionID].roles.manager === "REQUESTED"
-        ) {
-          type = "Admin, Coach and Manager";
-        }
-        return {
-          ...value,
-          id: key,
-          name: value.info.name,
-          surname: value.info.surname,
-          profilePictureURL: value.info.profilePictureURL,
-          type: type
-        };
-      })
-    ).sort((personA, personB) => {
-      if (personA.info.name > personB.info.name) return +1;
-      if (personA.info.name < personB.info.name) return -1;
-      if (personA.info.surname > personB.info.surname) return +1;
-      if (personA.info.surname < personB.info.surname) return -1;
-      return 0;
-    });
-  }
-
   filterPeople(staff) {
     const { sportFilter } = this.props;
-    const { type, searchText } = this.props.filters;
+    const { type } = this.props.filters;
     const {
       teams,
       activeInstitutionID,
@@ -390,27 +316,6 @@ class PeopleLayout extends Component {
         let nameMatch = true;
         let teamMatch = false;
         let roleMatch = true;
-
-        if (searchText !== "") {
-          nameMatch =
-            nameMatch &&
-            _.toLower(
-              `${personInfo.info.name} ${personInfo.info.surname}`
-            ).includes(_.toLower(searchText));
-          _.toPairs(teams).map(([teamID, teamInfo]) => {
-            const teamCoaches = _.keys(teamInfo.coaches);
-            const teamManagers = _.keys(teamInfo.managers);
-
-            if (
-              teamCoaches.includes(staffID) ||
-              teamManagers.includes(staffID)
-            ) {
-              teamMatch =
-                teamMatch ||
-                _.toLower(teamInfo.info.name).includes(_.toLower(searchText));
-            }
-          });
-        }
 
         if ((role === "coach" || role === "manager") && meAllFilter === "me") {
           if (meAllFilter === "me") {
@@ -492,23 +397,18 @@ class PeopleLayout extends Component {
     const {
       classes,
       staff,
-      requests,
       teams,
       isMobile,
       isTablet,
       activeInstitutionID,
       eventsByCoach,
-      eventsByManager,
       role,
       paymentDefaults,
-      userID
+      userID,
+      userName,
+      communityName
     } = this.props;
-    const {
-      inviteeID,
-      inviteeInfo,
-      applicantID,
-      isCoachApplication
-    } = this.props.uiConfig;
+    const { inviteeID, inviteeInfo } = this.props.uiConfig;
     const {
       isCoachesLoading,
       isManagersLoading,
@@ -516,13 +416,11 @@ class PeopleLayout extends Component {
       isTeamsLoading,
       isInviteeLoading,
       isEditPersonLoading,
-      isEventsByCoachLoading,
-      isEventsByManagerLoading
+      isResendInviteLoading
     } = this.props.loadingStatus;
     const {
       openEditPersonDialog,
       closeEditPersonDialog,
-      closeRejectPersonModal,
       openInvitePersonModal,
       closeInvitePersonModal,
       fetchInviteeInfo,
@@ -530,15 +428,13 @@ class PeopleLayout extends Component {
       invitePerson,
       editPerson,
       editRoles,
-      rejectPerson,
-      approvePerson,
-      closeApprovePersonModal
+      resendInvite,
+      closeResendInviteAlert
     } = this.props.actions;
     const {
-      isRejectPersonModalOpen,
       isEditPersonDialogOpen,
       isInvitePersonModalOpen,
-      isApprovePersonModalOpen
+      isResendInviteAlertOpen
     } = this.props.dialogs;
     const { personID } = this.props.match.params;
 
@@ -566,10 +462,7 @@ class PeopleLayout extends Component {
                 activeInstitutionID === ""
               }
               isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
-              isEventsByPersonLoading={
-                isEventsByCoachLoading || isEventsByManagerLoading
-              }
-              eventsByPerson={{ ...eventsByCoach, ...eventsByManager }}
+              eventsByPerson={{ ...eventsByCoach }}
               isMobile={isMobile}
               isTablet={isTablet}
               actions={{
@@ -642,7 +535,18 @@ class PeopleLayout extends Component {
                 </div>
               ) : (
                 <div>
-                  <PeopleList people={staffCardsInfo} />
+                  <PeopleList
+                    people={staffCardsInfo}
+                    isLoading={isResendInviteLoading}
+                    resendInvite={(inviteeName, inviteeID, inviteeEmail) =>
+                      resendInvite(
+                        inviteeName,
+                        inviteeID,
+                        inviteeEmail,
+                        userName,
+                        communityName
+                      )}
+                  />
                 </div>
               )}
               <InvitePersonModal
@@ -676,59 +580,14 @@ class PeopleLayout extends Component {
                   </MuiButton>
                 )}
             </div>
-            <DecisionModal
-              isOpen={isRejectPersonModalOpen}
-              handleYesClick={() => {
-                rejectPerson(applicantID, activeInstitutionID);
-                closeRejectPersonModal();
-              }}
-              handleNoClick={() => closeRejectPersonModal()}
-              heading="Reject Application"
-              message="Are you sure you want to reject this application?"
-            />
-            <DecisionModal
-              isOpen={isApprovePersonModalOpen && !isCoachApplication}
-              handleYesClick={() => {
-                approvePerson(
-                  applicantID,
-                  activeInstitutionID,
-                  {
-                    rates: {
-                      overtime: 150,
-                      salary: 6000,
-                      standard: 100
-                    },
-                    type: "HOURLY"
-                  },
-                  {
-                    admin:
-                      requests[applicantID] &&
-                      requests[applicantID].institutions[activeInstitutionID]
-                        .roles.admin !== "N/A"
-                        ? "APPROVED"
-                        : "N/A",
-                    coach:
-                      requests[applicantID] &&
-                      requests[applicantID].institutions[activeInstitutionID]
-                        .roles.coach !== "N/A"
-                        ? "APPROVED"
-                        : "N/A",
-                    manager:
-                      requests[applicantID] &&
-                      requests[applicantID].institutions[activeInstitutionID]
-                        .roles.manager !== "N/A"
-                        ? "APPROVED"
-                        : "N/A"
-                  }
-                );
-                closeApprovePersonModal();
-              }}
-              handleNoClick={() => closeApprovePersonModal()}
-              heading="Approve Application"
-              message="Are you sure you want to approve this application?"
-            />
           </div>
         )}
+        <NotificationModal
+          isOpen={isResendInviteAlertOpen}
+          heading="Invite Email Resent"
+          message="Your invite was resent to this person."
+          handleOkClick={() => closeResendInviteAlert()}
+        />
       </div>
     );
   }

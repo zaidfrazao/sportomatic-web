@@ -423,7 +423,6 @@ class PersonInfo extends Component {
       type,
       isStaffLoading,
       isTeamsLoading,
-      isEventsByPersonLoading,
       info,
       institutionID,
       role,
@@ -434,7 +433,6 @@ class PersonInfo extends Component {
 
     const teamsList = this.createTeamsList();
     const ad = this.createAd();
-    const upcomingEventsList = this.createUpcomingEventsList();
 
     let name = "";
     let surname = "";
@@ -445,7 +443,6 @@ class PersonInfo extends Component {
     let rates = {};
     let paymentType = "";
     let isCoach = false;
-    let isManager = false;
 
     if (info) {
       name = info.info.name;
@@ -475,7 +472,6 @@ class PersonInfo extends Component {
         })
       };
       isCoach = info.institutions[institutionID].roles.coach === "APPROVED";
-      isManager = info.institutions[institutionID].roles.manager === "APPROVED";
 
       switch (info.institutions[institutionID].paymentDefaults.type) {
         case "N/A":
@@ -749,34 +745,6 @@ class PersonInfo extends Component {
                     </div>
                   </Grid>
                 )}
-              {(isCoach || isManager) && (
-                <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                  <div className={classes.section}>
-                    <div className={classes.sectionHeading}>
-                      Upcoming Events
-                    </div>
-                    <div className={classes.sectionContent}>
-                      {isEventsByPersonLoading || isStaffLoading ? (
-                        <List className={classes.sectionList}>
-                          <ListItem className={classes.noItems}>
-                            <ListItemText primary="Loading..." />
-                          </ListItem>
-                        </List>
-                      ) : (
-                        <List className={classes.sectionList}>
-                          {upcomingEventsList.length > 0 ? (
-                            upcomingEventsList
-                          ) : (
-                            <ListItem className={classes.noItems}>
-                              <ListItemText primary="None" />
-                            </ListItem>
-                          )}
-                        </List>
-                      )}
-                    </div>
-                  </div>
-                </Grid>
-              )}
             </Grid>
           </div>
         </div>
