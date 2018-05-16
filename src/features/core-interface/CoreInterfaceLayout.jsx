@@ -639,6 +639,7 @@ class CoreInterfaceLayout extends Component {
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
+                      institutionCreationDate={institutionCreationDate}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}
@@ -654,6 +655,7 @@ class CoreInterfaceLayout extends Component {
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
+                      institutionCreationDate={institutionCreationDate}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}
@@ -672,6 +674,7 @@ class CoreInterfaceLayout extends Component {
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
+                      institutionCreationDate={institutionCreationDate}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}
@@ -690,6 +693,7 @@ class CoreInterfaceLayout extends Component {
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
                       activeInstitutionID={activeInstitutionID}
+                      institutionCreationDate={institutionCreationDate}
                       isAccountInfoLoading={isAccountInfoLoading}
                       permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}

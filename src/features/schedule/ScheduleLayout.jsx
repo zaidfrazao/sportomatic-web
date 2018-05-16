@@ -6,19 +6,27 @@ import moment from "moment";
 import MuiButton from "material-ui/Button";
 import { Redirect } from "react-router-dom";
 import AddEventDialog from "./components/AddEventDialog";
+import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
-import Calendar from "./components/Calendar";
+import EventsList from "./components/EventsList2";
 import { common } from "../../utils/colours";
 import DecisionModal from "../../components/DecisionModal";
 import EditEventDialog from "./components/EditEventDialog";
 import EventInfo from "./components/EventInfo";
+import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
+import LeaderboardAd from "../../components/LeaderboardAd";
 import NotificationModal from "../../components/NotificationModal";
 
 const styles = {
+  adWrapper: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
   actionsBar: {
     display: "flex",
     justifyContent: "center",
-    margin: "0 24px 24px 24px"
+    margin: "24px 24px 0 24px"
   },
   contentWrapper: {
     height: "100%",
@@ -63,10 +71,9 @@ class ScheduleLayout extends Component {
       loadEvents,
       fetchCreationDate,
       loadStaff,
-      loadTeams,
-      updateView
+      loadTeams
     } = this.props.actions;
-    const { eventID, dateSelected } = this.props.match.params;
+    const { dateSelected } = this.props.match.params;
 
     if (dateSelected && activeInstitutionID !== "") {
       const minDate = moment(dateSelected)
@@ -83,21 +90,16 @@ class ScheduleLayout extends Component {
       loadTeams(activeInstitutionID);
       fetchCreationDate(activeInstitutionID);
     }
-
-    if (eventID) {
-      updateView("EVENT_INFO");
-    }
   }
 
   componentWillReceiveProps(nextProps) {
     const { activeInstitutionID, events, teams } = nextProps;
-    const { dateSelected, eventID } = nextProps.match.params;
+    const { dateSelected } = nextProps.match.params;
     const {
       loadEvents,
       fetchCreationDate,
       loadStaff,
-      loadTeams,
-      updateView
+      loadTeams
     } = nextProps.actions;
 
     if (dateSelected !== this.props.match.params.dateSelected && dateSelected) {
@@ -179,14 +181,6 @@ class ScheduleLayout extends Component {
       });
     }
 
-    if (eventID !== this.props.match.params.eventID) {
-      if (eventID) {
-        updateView("EVENT_INFO");
-      } else {
-        updateView("EVENTS_LIST");
-      }
-    }
-
     this.setState({
       genders,
       eventTypes,
@@ -199,6 +193,19 @@ class ScheduleLayout extends Component {
   componentWillUnmount() {
     const { resetState } = this.props.actions;
     resetState();
+  }
+
+  createAd() {
+    const { isMobile, isTablet } = this.props;
+
+    let ad = <LeaderboardAd />;
+    if (isMobile) {
+      ad = <LargeMobileBannerAd />;
+    } else if (isTablet) {
+      ad = <BannerAd />;
+    }
+
+    return ad;
   }
 
   filterEvents() {
@@ -416,12 +423,11 @@ class ScheduleLayout extends Component {
       classes,
       activeInstitutionID,
       teams,
-      navigateTo
+      navigateTo,
+      institutionCreationDate
     } = this.props;
     const { dateSelected } = this.props.match.params;
-    const { currentView, minDate } = this.props.uiConfig;
     const {
-      updateView,
       openAddEventDialog,
       closeAddEventDialog,
       addEvent,
@@ -431,7 +437,6 @@ class ScheduleLayout extends Component {
     const {
       isEventsLoading,
       isAddEventDialogLoading,
-      isCreationDateLoading,
       isStaffLoading,
       isTeamsLoading
     } = this.props.loadingStatus;
@@ -442,10 +447,12 @@ class ScheduleLayout extends Component {
     const coaches = this.getCoaches();
     const managers = this.getManagers();
     const eventErrorAlert = this.getEventErrorAlert();
+    const ad = this.createAd();
 
     return (
       <div className={classes.root}>
         <div className={classes.contentWrapper}>
+          <div className={classes.adWrapper}>{ad}</div>
           {!isMobile &&
             canCreate && (
               <div className={classes.actionsBar}>
@@ -460,26 +467,13 @@ class ScheduleLayout extends Component {
                 </Button>
               </div>
             )}
-          <div className={classes.calendarWrapper}>
-            <Calendar
-              events={filteredEvents}
-              minDate={minDate}
-              dateSelected={dateSelected}
-              isMobile={isMobile}
-              isTablet={isTablet}
-              institutionID={activeInstitutionID}
-              currentView={currentView}
-              isEventsLoading={isEventsLoading || activeInstitutionID === ""}
-              isMinDateLoading={
-                isCreationDateLoading || activeInstitutionID === ""
-              }
-              actions={{
-                updateView,
-                navigateTo,
-                addEvent: () => openAddEventDialog()
-              }}
-            />
-          </div>
+          <EventsList
+            isMobile={isMobile}
+            isTablet={isTablet}
+            events={filteredEvents}
+            institutionCreationDate={institutionCreationDate}
+            navigateTo={navigateTo}
+          />
           <AddEventDialog
             isOpen={isAddEventDialogOpen}
             isMobile={isTablet}
@@ -539,7 +533,6 @@ class ScheduleLayout extends Component {
     } = this.props;
     const { dateSelected, eventID, infoTab } = this.props.match.params;
     const {
-      updateView,
       openEditEventDialog,
       closeEditEventDialog,
       openEventErrorAlert,
@@ -600,7 +593,6 @@ class ScheduleLayout extends Component {
             isTablet={isTablet}
             infoTab={infoTab}
             actions={{
-              updateView,
               navigateTo,
               goBack,
               signIn: (coachID, signInTime) =>
@@ -696,33 +688,21 @@ class ScheduleLayout extends Component {
   }
 
   render() {
-    const { currentView } = this.props.uiConfig;
-    const { updateView } = this.props.actions;
+    const { eventID } = this.props.match.params;
 
     const permissions = this.getPermissions();
-    const currentDate = new Date(Date.now());
     const shouldRedirect = this.checkIfShouldRedirect();
 
     if (shouldRedirect) {
-      updateView("EVENTS_LIST");
-      return (
-        <Redirect
-          to={`/myaccount/schedule/${moment(currentDate).format("YYYY-MM-DD")}`}
-        />
-      );
+      const currentDate = moment(new Date(Date.now())).format("YYYY-MM-DD");
+
+      return <Redirect to={`/myaccount/schedule/${currentDate}`} />;
     }
 
-    switch (currentView) {
-      case "EVENT_LIST":
-      case "SCHEDULE":
-        return this.getEventListView(permissions.canCreate);
-      case "EVENT_INFO":
-        return this.getEventInfoView(
-          permissions.canEdit,
-          permissions.canCancel
-        );
-      default:
-        return this.getEventListView(permissions.canCreate);
+    if (eventID) {
+      return this.getEventInfoView(permissions.canEdit, permissions.canCancel);
+    } else {
+      return this.getEventListView(permissions.canCreate);
     }
   }
 }

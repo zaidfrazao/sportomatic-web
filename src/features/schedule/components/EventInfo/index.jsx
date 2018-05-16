@@ -558,7 +558,7 @@ class EventInfo extends Component {
       dateSelected
     } = this.props;
     const { isInfoLoading } = this.props;
-    const { updateView, editEvent, goBack } = this.props.actions;
+    const { editEvent, goBack } = this.props.actions;
     const { tabSelected } = this.state;
 
     const info = this.getInfo();
@@ -589,14 +589,7 @@ class EventInfo extends Component {
         <div className={classes.outerWrapper}>
           <div className={classes.actionsBar}>
             <div className={classes.buttonWrapper}>
-              <Button
-                colour="secondary"
-                slim
-                handleClick={() => {
-                  goBack();
-                  !infoTab && updateView("EVENTS_LIST");
-                }}
-              >
+              <Button colour="secondary" slim handleClick={() => goBack()}>
                 <i
                   className={`fas fa-caret-left ${classes.iconAdjacentText}`}
                 />
