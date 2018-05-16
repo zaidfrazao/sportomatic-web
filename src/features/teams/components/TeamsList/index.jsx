@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
-import Typography from "material-ui/Typography";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
+import { grey } from "../../../../utils/colours";
 import TeamCard from "./components/TeamCard";
 
 const styles = {
@@ -28,8 +27,7 @@ const styles = {
 
 class TeamsList extends Component {
   render() {
-    const { classes, teams, hasTeamsCreated } = this.props;
-    const { openDeleteTeamAlert } = this.props.actions;
+    const { classes, teams, hasTeamsCreated, navigateTo } = this.props;
 
     if (teams.length > 0) {
       return (
@@ -42,7 +40,7 @@ class TeamsList extends Component {
                   sport={teamInfo.sport}
                   id={teamInfo.id}
                   status={teamInfo.status}
-                  actions={{ deleteTeam: openDeleteTeamAlert }}
+                  navigateTo={navigateTo}
                 />
               </Grid>
             ))}
@@ -52,19 +50,15 @@ class TeamsList extends Component {
     } else {
       return (
         <div className={classes.noTeamsWrapper}>
-          <Typography
-            type="title"
-            component="h3"
-            className={classes.noTeamsText}
-          >
+          <div className={classes.noTeamsText}>
             {hasTeamsCreated
               ? "No teams found"
               : 'Press "+" to create your first team'}
-          </Typography>
+          </div>
         </div>
       );
     }
   }
 }
 
-export default withStyles(styles)(TeamsList);
+export default injectStyles(styles)(TeamsList);

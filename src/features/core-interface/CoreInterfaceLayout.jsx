@@ -544,7 +544,6 @@ class CoreInterfaceLayout extends Component {
                       paymentDefaults={paymentDefaults}
                       userID={userID}
                       userName={userName}
-                      role={role}
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
@@ -563,7 +562,6 @@ class CoreInterfaceLayout extends Component {
                       paymentDefaults={paymentDefaults}
                       userID={userID}
                       userName={userName}
-                      role={role}
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
@@ -582,7 +580,6 @@ class CoreInterfaceLayout extends Component {
                       paymentDefaults={paymentDefaults}
                       userID={userID}
                       userName={userName}
-                      role={role}
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
@@ -590,6 +587,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/teams/"}>
                     <Teams
+                      isAdmin={isAdmin}
                       userID={userID}
                       role={role}
                       sportFilter={sportSelected}
@@ -598,11 +596,13 @@ class CoreInterfaceLayout extends Component {
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      permissions={permissions}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
                     />
                   </Route>
-                  <Route path={"/myaccount/teams/:teamID"}>
+                  <Route exact path={"/myaccount/teams/:teamID"}>
                     <Teams
+                      isAdmin={isAdmin}
                       userID={userID}
                       role={role}
                       sportFilter={sportSelected}
@@ -611,7 +611,23 @@ class CoreInterfaceLayout extends Component {
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      permissions={permissions}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/teams/:teamID/:infoTab"}>
+                    <Teams
+                      isAdmin={isAdmin}
+                      userID={userID}
+                      role={role}
+                      sportFilter={sportSelected}
+                      activeInstitutionID={activeInstitutionID}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      meAllFilter={meAllFilter}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
                     />
                   </Route>
                   <Route exact path={"/myaccount/schedule/"}>

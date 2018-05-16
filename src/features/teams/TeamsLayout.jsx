@@ -12,7 +12,6 @@ import Button from "../../components/Button";
 import EditTeamDialog from "./components/EditTeamDialog";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
-import NotificationModal from "../../components/NotificationModal";
 import TeamInfo from "./components/TeamInfo";
 import TeamsList from "./components/TeamsList";
 
@@ -98,45 +97,22 @@ class TeamsLayout extends Component {
 
   componentWillMount() {
     const { activeInstitutionID } = this.props;
-    const { teamID } = this.props.match.params;
-    const { loadTeams, loadStaff, loadEventsByTeam } = this.props.actions;
+    const { loadTeams, loadStaff } = this.props.actions;
 
     if (activeInstitutionID !== "") {
       loadTeams(activeInstitutionID);
       loadStaff(activeInstitutionID);
-
-      if (teamID) {
-        loadEventsByTeam(activeInstitutionID, teamID);
-      }
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { activeInstitutionID, teams } = nextProps;
-    const { teamID } = nextProps.match.params;
-    const {
-      loadTeams,
-      loadStaff,
-      loadEventsByTeam,
-      resetState
-    } = nextProps.actions;
+    const { loadTeams, loadStaff, resetState } = nextProps.actions;
 
     if (activeInstitutionID !== this.props.activeInstitutionID) {
       resetState();
       loadTeams(activeInstitutionID);
       loadStaff(activeInstitutionID);
-
-      if (teamID) {
-        loadEventsByTeam(activeInstitutionID, teamID);
-      }
-    }
-
-    if (
-      activeInstitutionID !== "" &&
-      teamID &&
-      teamID !== this.props.match.params.teamID
-    ) {
-      loadEventsByTeam(activeInstitutionID, teamID);
     }
 
     if (teams !== this.props.teams) {
@@ -192,25 +168,19 @@ class TeamsLayout extends Component {
   }
 
   getTeamsList(teams) {
-    return _.toPairs(teams).map(keyValuePair => {
+    return _.toPairs(teams).map(([id, info]) => {
       return {
-        id: keyValuePair[0],
-        name: keyValuePair[1].info.name,
-        sport: keyValuePair[1].info.sport,
-        status: keyValuePair[1].status
+        id,
+        name: info.info.name,
+        sport: info.info.sport,
+        status: info.status
       };
     });
   }
 
   filterTeams() {
-    const {
-      gender,
-      division,
-      ageGroup,
-      searchText,
-      showDeletedTeams
-    } = this.props.filters;
-    const { teams, staff, userID, role, meAllFilter, sportFilter } = this.props;
+    const { gender, division, ageGroup, showDeletedTeams } = this.props.filters;
+    const { teams, userID, meAllFilter, sportFilter } = this.props;
 
     return _.fromPairs(
       _.toPairs(teams).filter(([teamID, teamInfo]) => {
@@ -224,41 +194,14 @@ class TeamsLayout extends Component {
           allowThroughFilter = false;
         }
 
-        if (searchText !== "") {
-          const teamName = _.toLower(teamInfo.info.name);
+        if (meAllFilter === "me") {
+          roleMatch = false;
           const teamCoaches = _.keys(teamInfo.coaches);
           const teamManagers = _.keys(teamInfo.managers);
 
-          teamCoaches.map(coachID => {
-            const coachName = `${_.toLower(
-              staff[coachID].info.name
-            )} ${_.toLower(staff[coachID].info.surname)}`;
-            coachMatch =
-              coachMatch && coachName.includes(_.toLower(searchText));
-          });
-          teamManagers.map(managerID => {
-            const managerName = `${_.toLower(
-              staff[managerID].info.name
-            )} ${_.toLower(staff[managerID].info.surname)}`;
-            managerMatch =
-              managerMatch && managerName.includes(_.toLower(searchText));
-          });
-
-          if (teamCoaches.length === 0) coachMatch = false;
-          if (teamManagers.length === 0) managerMatch = false;
-          titleMatch = teamName.includes(_.toLower(searchText));
-        }
-
-        if (role === "coach" && meAllFilter === "me") {
-          const teamCoaches = _.keys(teamInfo.coaches);
-          roleMatch = false;
-          roleMatch = roleMatch || teamCoaches.includes(userID);
-        }
-
-        if (role === "manager" && meAllFilter === "me") {
-          const teamManagers = _.keys(teamInfo.managers);
-          roleMatch = false;
-          roleMatch = roleMatch || teamManagers.includes(userID);
+          if (teamCoaches.includes(userID) || teamManagers.includes(userID)) {
+            roleMatch = roleMatch || true;
+          }
         }
 
         if (gender !== "All") {
@@ -308,24 +251,16 @@ class TeamsLayout extends Component {
       staff,
       activeInstitutionID,
       isMobile,
-      isTablet,
-      eventsByTeam,
-      role,
-      permissions
+      isAdmin,
+      navigateTo,
+      goBack
     } = this.props;
-    const {
-      isAddTeamDialogOpen,
-      isEditTeamDialogOpen,
-      isDeleteTeamAlertOpen,
-      isTeamErrorAlertOpen
-    } = this.props.dialogs;
+    const { isAddTeamDialogOpen, isEditTeamDialogOpen } = this.props.dialogs;
     const {
       isAddTeamDialogLoading,
       isEditTeamDialogLoading,
       isTeamsLoading,
-      isStaffLoading,
-      isOptionsLoading,
-      isEventsByTeamLoading
+      isOptionsLoading
     } = this.props.loadingStatus;
     const {
       openAddTeamDialog,
@@ -333,75 +268,29 @@ class TeamsLayout extends Component {
       addTeam,
       openEditTeamDialog,
       closeEditTeamDialog,
-      openDeleteTeamAlert,
-      closeDeleteTeamAlert,
       loadOptions,
-      openTeamErrorAlert,
-      closeTeamErrorAlert,
       editTeam
     } = this.props.actions;
-    const { errorType } = this.props.uiConfig;
-    const { teamID } = this.props.match.params;
+    const { teamID, infoTab } = this.props.match.params;
 
     const ad = this.createAd();
     const hasTeamsCreated = this.getTeamsList(teams).length > 0;
     const filteredTeams = this.getTeamsList(this.filterTeams());
-
-    const coaches = _.fromPairs(
-      _.toPairs(staff).filter(([id, info]) => {
-        if (info.institutions[activeInstitutionID]) {
-          return (
-            info.institutions[activeInstitutionID].roles.coach === "APPROVED"
-          );
-        } else {
-          return false;
-        }
-      })
-    );
-    const managers = _.fromPairs(
-      _.toPairs(staff).filter(([id, info]) => {
-        if (info.institutions[activeInstitutionID]) {
-          return (
-            info.institutions[activeInstitutionID].roles.manager === "APPROVED"
-          );
-        } else {
-          return false;
-        }
-      })
-    );
-
-    let teamErrorAlertHeading = "Team Name Required";
-    let teamErrorAlertMessage =
-      "You need to specify a name for this team before saving it.";
-    if (errorType === "LOADING") {
-      teamErrorAlertHeading = "Network Issue";
-      teamErrorAlertMessage =
-        "You have lost your connection to the internet. Please check your connectivity and try again.";
-    }
 
     return (
       <div className={classes.root}>
         {teamID ? (
           <div className={classes.infoWrapper}>
             <TeamInfo
-              role={role}
-              canEdit={
-                role === "admin" ||
-                (role === "coach" && permissions.coaches.teams.canEdit) ||
-                (role === "manager" && permissions.managers.teams.canEdit)
-              }
-              isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
-              isCoachesLoading={isStaffLoading}
-              isManagersLoading={isStaffLoading}
-              isEventsByTeamLoading={isEventsByTeamLoading}
-              eventsByTeam={eventsByTeam}
-              coaches={coaches}
-              managers={managers}
+              staff={staff}
               info={teams[teamID]}
               teamID={teamID}
               isMobile={isMobile}
-              isTablet={isTablet}
+              isUserAdmin={isAdmin}
+              infoTab={infoTab}
               actions={{
+                navigateTo,
+                goBack,
                 editTeam: () => {
                   openEditTeamDialog();
                   loadOptions(activeInstitutionID);
@@ -420,15 +309,13 @@ class TeamsLayout extends Component {
               initialTeamInfo={teams[teamID]}
               institutionID={activeInstitutionID}
               options={options}
-              coaches={coaches}
-              managers={managers}
+              staff={staff}
               actions={{
                 handleClose: closeEditTeamDialog,
-                editTeam,
-                openTeamErrorAlert
+                editTeam
               }}
             />
-            {role === "admin" &&
+            {isAdmin &&
               isMobile && (
                 <MuiButton
                   fab
@@ -447,7 +334,7 @@ class TeamsLayout extends Component {
               filteredTeams.length > 0 ? classes.teamCards : classes.teamNoCards
             }
           >
-            {role === "admin" &&
+            {isAdmin &&
               !isMobile && (
                 <div className={classes.actionsBar}>
                   <div className={classes.flexGrow} />
@@ -471,9 +358,9 @@ class TeamsLayout extends Component {
                 <TeamsList
                   teams={filteredTeams}
                   hasTeamsCreated={hasTeamsCreated}
-                  actions={{ openDeleteTeamAlert }}
+                  navigateTo={navigateTo}
                 />
-                {role === "admin" &&
+                {isAdmin &&
                   isMobile && (
                     <MuiButton
                       fab
@@ -487,12 +374,6 @@ class TeamsLayout extends Component {
                   )}
               </div>
             )}
-            <NotificationModal
-              isOpen={isDeleteTeamAlertOpen}
-              handleOkClick={closeDeleteTeamAlert}
-              heading="Unavailable in Beta"
-              message="The ability to delete teams is unavailable in this version of the beta."
-            />
           </div>
         )}
         <AddTeamDialog
@@ -505,19 +386,11 @@ class TeamsLayout extends Component {
           }
           institutionID={activeInstitutionID}
           options={options}
-          coaches={coaches}
-          managers={managers}
+          staff={staff}
           actions={{
             handleClose: closeAddTeamDialog,
-            addTeam,
-            openTeamErrorAlert
+            addTeam
           }}
-        />
-        <NotificationModal
-          isOpen={isTeamErrorAlertOpen}
-          handleOkClick={closeTeamErrorAlert}
-          heading={teamErrorAlertHeading}
-          message={teamErrorAlertMessage}
         />
       </div>
     );

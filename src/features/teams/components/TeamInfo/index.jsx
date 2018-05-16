@@ -1,73 +1,33 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
-import {
-  amber,
-  brown,
-  common,
-  green,
-  grey,
-  lightBlue,
-  red
-} from "material-ui/colors";
-import Avatar from "material-ui/Avatar";
-import Collapse from "material-ui/transitions/Collapse";
-import EventIcon from "material-ui-icons/Event";
-import ExpandLess from "material-ui-icons/ExpandLess";
-import ExpandMore from "material-ui-icons/ExpandMore";
-import Grid from "material-ui/Grid";
-import List, {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader
-} from "material-ui/List";
-import moment from "moment";
-import PersonIcon from "material-ui-icons/Person";
-import ResultsIcon from "material-ui-icons/PlusOne";
-import { Route } from "react-router-dom";
-import WarningIcon from "material-ui-icons/Warning";
+import { Redirect } from "react-router-dom";
 import { withStyles } from "material-ui/styles";
-import BannerAd from "../../../../components/BannerAd";
 import Button from "../../../../components/Button";
-import defaultProfilePicture from "../../image/default-profile-picture.png";
+import BannerAd from "../../../../components/BannerAd";
+import { common, grey, lightBlue } from "../../../../utils/colours";
+import Details from "./components/Details";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
+import Tabs from "../../../../components/Tabs";
 
-const mobileBreakpoint = 800;
-
-const styles = theme => ({
+const styles = {
   actionsBar: {
-    margin: "24px 24px 0 24px",
+    margin: "0 12px",
+    backgroundColor: grey[200],
     display: "flex",
     justifyContent: "center"
   },
   adWrapper: {
-    width: "100%",
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    marginTop: 24
+    justifyContent: "center"
   },
-  button: {
-    [`@media (max-width: ${mobileBreakpoint}px)`]: {
-      width: "100%"
-    }
+  buttonSeparator: {
+    height: 12
   },
-  deletedTeam: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 24
-  },
-  deletedText: {
-    color: red[500],
-    textAlign: "center"
-  },
-  draw: {
-    backgroundColor: lightBlue[500]
+  buttonWrapper: {
+    margin: "24px 12px"
   },
   flexGrow: {
     flexGrow: 1
@@ -82,52 +42,15 @@ const styles = theme => ({
     color: common["white"],
     backgroundColor: lightBlue[800]
   },
-  heading: {
-    fontWeight: "normal",
-    fontSize: "1.2rem",
-    padding: "20px 0",
-    margin: 0,
-    width: "100%",
-    textAlign: "center",
-    backgroundColor: grey[700],
-    color: grey[50],
-    borderBottom: `1px solid ${grey[200]}`
-  },
   iconAdjacentText: {
     marginRight: 8
   },
-  inset: {
-    paddingLeft: theme.spacing.unit * 4
-  },
-  loss: {
-    backgroundColor: red[500]
-  },
-  name: {
-    margin: 24,
-    width: "calc(100% - 48px)",
-    textAlign: "center"
-  },
-  nested: {
-    backgroundColor: grey[100]
-  },
-  noItems: {
-    textAlign: "center"
+  menuButtonWrapper: {
+    margin: "0 24px"
   },
   outerWrapper: {
     flexGrow: 1,
     overflow: "auto"
-  },
-  placedFirst: {
-    backgroundColor: amber[500]
-  },
-  placedSecond: {
-    backgroundColor: grey[400]
-  },
-  placedThird: {
-    backgroundColor: brown[400]
-  },
-  placedOther: {
-    backgroundColor: grey[700]
   },
   root: {
     height: "100%",
@@ -147,7 +70,8 @@ const styles = theme => ({
   sectionContent: {
     flexGrow: 1,
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    alignItems: "center"
   },
   sectionHeading: {
     fontSize: 18,
@@ -156,737 +80,41 @@ const styles = theme => ({
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[100]
+    color: common["white"],
+    backgroundColor: grey[500]
   },
   sectionList: {
-    flexGrow: 1
+    flexGrow: 1,
+    margin: "12px 12px 0 12px",
+    width: "calc(100% - 24px)"
   },
-  unknownResultAvatar: {
-    backgroundColor: grey[800]
+  subheader: {
+    margin: "12px 24px 0 24px",
+    padding: 12,
+    borderRadius: 16,
+    fontSize: 16,
+    textAlign: "center",
+    fontWeight: "bold",
+    color: grey[800],
+    backgroundColor: grey[300]
   },
-  warningIcon: {
-    color: red[500]
-  },
-  win: {
-    backgroundColor: green[500]
+  tabsWrapper: {
+    margin: "0 24px 24px 24px"
   },
   wrapper: {
     padding: 24
   }
-});
+};
 
 class TeamInfo extends Component {
   state = {
-    isCoachOpen: {},
-    isManagerOpen: {},
-    isEventOpen: {},
-    upcomingEvents: {},
-    pastEvents: {}
+    tabSelected: "details"
   };
 
-  componentWillMount() {
-    const { info, eventsByTeam } = this.props;
-
-    let isCoachOpen = {};
-    let isManagerOpen = {};
-    let isEventOpen = {};
-    let upcomingEvents = {};
-    let pastEvents = {};
-
-    if (info) {
-      _.keys(info.coaches).map(coachID => {
-        isCoachOpen[coachID] = false;
-      });
-      _.keys(info.managers).map(managerID => {
-        isManagerOpen[managerID] = false;
-      });
-    }
-
-    if (eventsByTeam) {
-      _.toPairs(eventsByTeam)
-        .sort(([id1, info1], [id2, info2]) => {
-          const time1 = info1.requiredInfo.times.start;
-          const time2 = info2.requiredInfo.times.start;
-          if (time1 < time2) {
-            return -1;
-          } else if (time1 > time2) {
-            return +1;
-          } else {
-            return 0;
-          }
-        })
-        .map(([id, info]) => {
-          const startTime = moment(info.requiredInfo.times.start);
-          const currentTime = moment();
-          if (startTime.isAfter(currentTime)) {
-            upcomingEvents[id] = info;
-          } else {
-            pastEvents[id] = info;
-          }
-        });
-
-      _.keys(eventsByTeam).map(eventID => {
-        isEventOpen[eventID] = false;
-      });
-    }
-
+  updateTabSelected(newTab) {
     this.setState({
-      isCoachOpen,
-      isManagerOpen,
-      isEventOpen,
-      upcomingEvents,
-      pastEvents
+      tabSelected: newTab
     });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { info, eventsByTeam, teamID } = nextProps;
-
-    let isCoachOpen = this.state.isCoachOpen;
-    let isManagerOpen = this.state.isManagerOpen;
-    let isEventOpen = this.state.isEventOpen;
-    let upcomingEvents = this.state.upcomingEvents;
-    let pastEvents = this.state.pastEvents;
-
-    if (teamID !== this.props.teamID) {
-      isCoachOpen = {};
-      isManagerOpen = {};
-      isEventOpen = {};
-      upcomingEvents = {};
-      pastEvents = {};
-    }
-
-    if (info && info !== this.props.info) {
-      isCoachOpen = {};
-      isManagerOpen = {};
-      _.keys(info.coaches).map(coachID => {
-        isCoachOpen[coachID] = false;
-      });
-      _.keys(info.managers).map(managerID => {
-        isManagerOpen[managerID] = false;
-      });
-    }
-
-    if (eventsByTeam !== {} && eventsByTeam !== this.props.eventsByTeam) {
-      upcomingEvents = {};
-      pastEvents = {};
-      isEventOpen = {};
-
-      _.toPairs(eventsByTeam)
-        .sort(([id1, info1], [id2, info2]) => {
-          const time1 = info1.requiredInfo.times.start;
-          const time2 = info2.requiredInfo.times.start;
-          if (time1 < time2) {
-            return -1;
-          } else if (time1 > time2) {
-            return +1;
-          } else {
-            return 0;
-          }
-        })
-        .map(([id, info]) => {
-          const startTime = moment(info.requiredInfo.times.start);
-          const currentTime = moment();
-          if (startTime.isAfter(currentTime)) {
-            upcomingEvents[id] = info;
-          } else {
-            pastEvents[id] = info;
-          }
-        });
-
-      pastEvents = _.fromPairs(
-        _.toPairs(pastEvents).sort(([id1, info1], [id2, info2]) => {
-          const time1 = info1.requiredInfo.times.start;
-          const time2 = info2.requiredInfo.times.start;
-          if (time1 < time2) {
-            return +1;
-          } else if (time1 > time2) {
-            return -1;
-          } else {
-            return 0;
-          }
-        })
-      );
-
-      _.keys(eventsByTeam).map(eventID => {
-        isEventOpen[eventID] = false;
-      });
-    }
-
-    this.setState({
-      isCoachOpen,
-      isManagerOpen,
-      isEventOpen,
-      upcomingEvents,
-      pastEvents
-    });
-  }
-
-  toggleCoachInfo = coachID => {
-    const { isCoachOpen } = this.state;
-
-    this.setState({
-      isCoachOpen: {
-        ...isCoachOpen,
-        [coachID]: !isCoachOpen[coachID]
-      }
-    });
-  };
-
-  toggleManagerInfo = managerID => {
-    const { isManagerOpen } = this.state;
-
-    this.setState({
-      isManagerOpen: {
-        ...isManagerOpen,
-        [managerID]: !isManagerOpen[managerID]
-      }
-    });
-  };
-
-  toggleEventInfo = eventID => {
-    const { isEventOpen } = this.state;
-
-    this.setState({
-      isEventOpen: {
-        ...isEventOpen,
-        [eventID]: !isEventOpen[eventID]
-      }
-    });
-  };
-
-  formatGender(gender, ageGroup) {
-    let formattedGender = "Mixed";
-    if (ageGroup < 18) {
-      if (ageGroup !== "Open" && gender === "MALE") {
-        formattedGender = "Boys";
-      } else if (gender === "FEMALE") {
-        formattedGender = "Girls";
-      }
-    } else {
-      if (gender === "FEMALE") {
-        formattedGender = "Men";
-      } else if (gender === "FEMALE") {
-        formattedGender = "Women";
-      }
-    }
-    return formattedGender;
-  }
-
-  formatAgeGroup(ageGroup) {
-    return ageGroup !== "Open" ? `U/${ageGroup}` : ageGroup;
-  }
-
-  getResultsForEvent(teamID, teamInfo, eventInfo) {
-    const { classes } = this.props;
-
-    let resultsForEventList = [];
-    const teamResultInfo = eventInfo.teams[teamID];
-    if (teamResultInfo.resultsStatus === "FINALISED") {
-      const sport = teamInfo ? teamInfo.info.sport : "";
-      let ourTotalPoints = 0;
-
-      if (sport === "Athletics" || sport === "Swimming") {
-        _.toPairs(
-          teamResultInfo.opponents
-        ).map(([opponentID, opponentInfo]) => {
-          ourTotalPoints =
-            opponentInfo.ourScore && opponentInfo.ourScore.totalPoints;
-        });
-
-        let scores = [{ id: teamID, score: ourTotalPoints }];
-
-        _.toPairs(
-          teamResultInfo.opponents
-        ).map(([opponentID, opponentInfo]) => {
-          scores.push({
-            id: opponentID,
-            score: opponentInfo.theirScore.totalPoints
-          });
-        });
-
-        scores.sort((scoreA, scoreB) => {
-          if (scoreA.score > scoreB.score) {
-            return -1;
-          } else if (scoreA.score < scoreB.score) {
-            return +1;
-          } else {
-            return 0;
-          }
-        });
-
-        let placement = 1;
-        let prevScore = scores[0].score;
-        const placements = _.fromPairs(
-          scores.map((score, index) => {
-            if (index === 0) {
-              prevScore = score.score;
-              return [score.id, placement];
-            } else {
-              if (score.score === prevScore) {
-                prevScore = score.score;
-                return [score.id, placement];
-              } else {
-                placement = index + 1;
-                prevScore = score.score;
-                return [score.id, placement];
-              }
-            }
-          })
-        );
-
-        let statusStyle = "";
-        let resultText = "";
-        let primaryText = "Loading...";
-        let secondaryText = "";
-        scores.map(score => {
-          switch (placements[score.id]) {
-            case 1:
-              statusStyle = classes.placedFirst;
-              resultText = "1";
-              primaryText =
-                score.id === teamID
-                  ? teamInfo.info.name
-                  : teamResultInfo.opponents[score.id].name === ""
-                    ? "Unknown"
-                    : teamResultInfo.opponents[score.id].name;
-              secondaryText = `Placed 1st`;
-              resultsForEventList.push(
-                <ListItem key={`teamInfoResult-${teamID}-${score.id}`}>
-                  <Avatar className={statusStyle}>{resultText}</Avatar>
-                  <ListItemText
-                    primary={primaryText}
-                    secondary={secondaryText}
-                  />
-                </ListItem>
-              );
-              break;
-            case 2:
-              statusStyle = classes.placedSecond;
-              resultText = "2";
-              primaryText =
-                score.id === teamID
-                  ? teamInfo.info.name
-                  : teamResultInfo.opponents[score.id].name === ""
-                    ? "Unknown"
-                    : teamResultInfo.opponents[score.id].name;
-              secondaryText = `Placed 2st`;
-              resultsForEventList.push(
-                <ListItem key={`teamInfoResult-${teamID}-${score.id}`}>
-                  <Avatar className={statusStyle}>{resultText}</Avatar>
-                  <ListItemText
-                    primary={primaryText}
-                    secondary={secondaryText}
-                  />
-                </ListItem>
-              );
-              break;
-            case 3:
-              statusStyle = classes.placedThird;
-              resultText = "3";
-              primaryText =
-                score.id === teamID
-                  ? teamInfo.info.name
-                  : teamResultInfo.opponents[score.id].name === ""
-                    ? "Unknown"
-                    : teamResultInfo.opponents[score.id].name;
-              secondaryText = `Placed 3rd`;
-              resultsForEventList.push(
-                <ListItem key={`teamInfoResult-${teamID}-${score.id}`}>
-                  <Avatar className={statusStyle}>{resultText}</Avatar>
-                  <ListItemText
-                    primary={primaryText}
-                    secondary={secondaryText}
-                  />
-                </ListItem>
-              );
-              break;
-            default:
-              let suffix = "th";
-              if (placements[score.id] > 20) {
-                if (placements[score.id] % 10 === 1) {
-                  suffix = "st";
-                } else if (placements[score.id] % 10 === 2) {
-                  suffix = "nd";
-                } else if (placements[score.id] % 10 === 3) {
-                  suffix = "rd";
-                }
-              }
-              statusStyle = classes.placedOther;
-              resultText = `${placements[score.id]}`;
-              primaryText =
-                score.id === teamID
-                  ? teamInfo.info.name
-                  : teamResultInfo.opponents[score.id].name === ""
-                    ? "Unknown"
-                    : teamResultInfo.opponents[score.id].name;
-              secondaryText = `Placed ${placements[score.id]}${suffix}`;
-              resultsForEventList.push(
-                <ListItem key={`teamInfoResult-${teamID}-${score.id}`}>
-                  <Avatar className={statusStyle}>{resultText}</Avatar>
-                  <ListItemText
-                    primary={primaryText}
-                    secondary={secondaryText}
-                  />
-                </ListItem>
-              );
-              break;
-          }
-        });
-      } else {
-        let statusStyle = "";
-        let resultText = "";
-        let primaryText = "Loading...";
-        let secondaryText = "";
-
-        _.toPairs(
-          teamResultInfo.opponents
-        ).map(([opponentID, opponentInfo]) => {
-          if (opponentInfo.ourScore.totalPoints) {
-            if (
-              opponentInfo.ourScore.totalPoints >
-              opponentInfo.theirScore.totalPoints
-            ) {
-              statusStyle = classes.win;
-              resultText = "W";
-              primaryText = `vs ${opponentInfo.name === ""
-                ? "Unknown"
-                : opponentInfo.name}`;
-              secondaryText = `Won ${opponentInfo.ourScore
-                .totalPoints} - ${opponentInfo.theirScore.totalPoints}`;
-            } else if (
-              opponentInfo.ourScore.totalPoints <
-              opponentInfo.theirScore.totalPoints
-            ) {
-              statusStyle = classes.loss;
-              resultText = "L";
-              primaryText = `vs ${opponentInfo.name === ""
-                ? "Unknown"
-                : opponentInfo.name}`;
-              secondaryText = `Lost ${opponentInfo.ourScore
-                .totalPoints} - ${opponentInfo.theirScore.totalPoints}`;
-            } else {
-              statusStyle = classes.draw;
-              resultText = "D";
-              primaryText = `vs ${opponentInfo.name === ""
-                ? "Unknown"
-                : opponentInfo.name}`;
-              secondaryText = `Drew ${opponentInfo.ourScore
-                .totalPoints} - ${opponentInfo.theirScore.totalPoints}`;
-            }
-            resultsForEventList.push(
-              <ListItem key={`teamInfoResult-${teamID}-${opponentID}`}>
-                <Avatar className={statusStyle}>{resultText}</Avatar>
-                <ListItemText primary={primaryText} secondary={secondaryText} />
-              </ListItem>
-            );
-          } else {
-            if (
-              opponentInfo.ourScore.finalScore >
-              opponentInfo.theirScore.finalScore
-            ) {
-              statusStyle = classes.win;
-              resultText = "W";
-              primaryText = `vs ${opponentInfo.name === ""
-                ? "Unknown"
-                : opponentInfo.name}`;
-              secondaryText = `Won ${opponentInfo.ourScore
-                .finalScore} - ${opponentInfo.theirScore.finalScore}`;
-            } else if (
-              opponentInfo.ourScore.finalScore <
-              opponentInfo.theirScore.finalScore
-            ) {
-              statusStyle = classes.loss;
-              resultText = "L";
-              primaryText = `vs ${opponentInfo.name === ""
-                ? "Unknown"
-                : opponentInfo.name}`;
-              secondaryText = `Lost ${opponentInfo.ourScore
-                .finalScore} - ${opponentInfo.theirScore.finalScore}`;
-            } else {
-              statusStyle = classes.draw;
-              resultText = "D";
-              primaryText = `vs ${opponentInfo.name === ""
-                ? "Unknown"
-                : opponentInfo.name}`;
-              secondaryText = `Drew ${opponentInfo.ourScore
-                .finalScore} - ${opponentInfo.theirScore.finalScore}`;
-            }
-            resultsForEventList.push(
-              <ListItem key={`teamInfoResult-${teamID}-${opponentID}`}>
-                <Avatar className={statusStyle}>{resultText}</Avatar>
-                <ListItemText primary={primaryText} secondary={secondaryText} />
-              </ListItem>
-            );
-          }
-        });
-      }
-    }
-
-    return resultsForEventList;
-  }
-
-  getListItems() {
-    const {
-      classes,
-      coaches,
-      managers,
-      info,
-      isCoachesLoading,
-      isManagersLoading,
-      isEventsByTeamLoading,
-      isTeamsLoading,
-      teamID
-    } = this.props;
-    const {
-      isCoachOpen,
-      isManagerOpen,
-      isEventOpen,
-      upcomingEvents,
-      pastEvents
-    } = this.state;
-
-    let eventCoaches = [];
-    let eventManagers = [];
-    let upcomingEventsList = [];
-    let recentResultsList = [];
-
-    !isCoachesLoading &&
-      info &&
-      _.toPairs(info.coaches).map(([id, coachEventInfo]) => {
-        const coachInfo = coaches[id].info;
-        eventCoaches.push(
-          <Route
-            key={id}
-            render={({ history }) => {
-              return (
-                <div>
-                  <ListItem button onClick={() => this.toggleCoachInfo(id)}>
-                    <Avatar
-                      src={
-                        coachInfo.profilePictureURL === ""
-                          ? defaultProfilePicture
-                          : coachInfo.profilePictureURL
-                      }
-                    />
-                    <ListItemText
-                      primary={`${coachInfo.name} ${coachInfo.surname}`}
-                      secondary={coachInfo.phoneNumber}
-                    />
-                    {isCoachOpen[id] ? <ExpandLess /> : <ExpandMore />}
-                  </ListItem>
-                  <Collapse
-                    component="li"
-                    in={isCoachOpen[id]}
-                    timeout="auto"
-                    unmountOnExit
-                  >
-                    <List className={classes.nested} disablePadding>
-                      <ListSubheader>Options</ListSubheader>
-                      <ListItem
-                        className={classes.inset}
-                        button
-                        onClick={() => history.push(`/myaccount/people/${id}`)}
-                      >
-                        <ListItemIcon>
-                          <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="View coach info" />
-                      </ListItem>
-                    </List>
-                  </Collapse>
-                </div>
-              );
-            }}
-          />
-        );
-      });
-
-    !isManagersLoading &&
-      info &&
-      _.toPairs(info.managers).map(([id, managerEventInfo]) => {
-        const managerInfo = managers[id].info;
-        eventManagers.push(
-          <Route
-            key={id}
-            render={({ history }) => {
-              return (
-                <div>
-                  <ListItem button onClick={() => this.toggleManagerInfo(id)}>
-                    <Avatar
-                      src={
-                        managerInfo.profilePictureURL === ""
-                          ? defaultProfilePicture
-                          : managerInfo.profilePictureURL
-                      }
-                    />
-                    <ListItemText
-                      primary={`${managerInfo.name} ${managerInfo.surname}`}
-                      secondary={managerInfo.phoneNumber}
-                    />
-                    {isManagerOpen[id] ? <ExpandLess /> : <ExpandMore />}
-                  </ListItem>
-                  <Collapse
-                    component="li"
-                    in={isManagerOpen[id]}
-                    timeout="auto"
-                    unmountOnExit
-                  >
-                    <List className={classes.nested} disablePadding>
-                      <ListSubheader>Options</ListSubheader>
-                      <ListItem
-                        className={classes.inset}
-                        button
-                        onClick={() => history.push(`/myaccount/people/${id}`)}
-                      >
-                        <ListItemIcon>
-                          <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="View manager info" />
-                      </ListItem>
-                    </List>
-                  </Collapse>
-                </div>
-              );
-            }}
-          />
-        );
-      });
-
-    !isEventsByTeamLoading &&
-      !isTeamsLoading &&
-      _.toPairs(upcomingEvents).map(([id, eventInfo]) => {
-        const startTime = moment(eventInfo.requiredInfo.times.start);
-        upcomingEventsList.length < 5 &&
-          upcomingEventsList.push(
-            <Route
-              key={id}
-              render={({ history }) => {
-                return (
-                  <div>
-                    <ListItem button onClick={() => this.toggleEventInfo(id)}>
-                      <ListItemText
-                        primary={eventInfo.requiredInfo.title}
-                        secondary={startTime.format("D MMM YYYY")}
-                      />
-                      {isEventOpen[id] ? <ExpandLess /> : <ExpandMore />}
-                    </ListItem>
-                    <Collapse
-                      component="li"
-                      in={isEventOpen[id]}
-                      timeout="auto"
-                      unmountOnExit
-                    >
-                      <List className={classes.nested} disablePadding>
-                        <ListSubheader>Options</ListSubheader>
-                        <ListItem
-                          className={classes.inset}
-                          button
-                          onClick={() =>
-                            history.push(
-                              `/myaccount/schedule/${startTime.format(
-                                "YYYY-MM-DD"
-                              )}/${id}`
-                            )}
-                        >
-                          <ListItemIcon>
-                            <EventIcon />
-                          </ListItemIcon>
-                          <ListItemText primary="View event info" />
-                        </ListItem>
-                      </List>
-                    </Collapse>
-                  </div>
-                );
-              }}
-            />
-          );
-      });
-
-    !isEventsByTeamLoading &&
-      !isTeamsLoading &&
-      _.toPairs(pastEvents).map(([id, eventInfo]) => {
-        const startTime = moment(eventInfo.requiredInfo.times.start);
-        const teamInfo = eventInfo.teams[teamID];
-
-        if (teamInfo) {
-          const showResults = teamInfo.resultsStatus === "FINALISED";
-
-          showResults &&
-            recentResultsList.push(
-              <Route
-                key={id}
-                render={({ history }) => {
-                  return (
-                    <div>
-                      <ListItem button onClick={() => this.toggleEventInfo(id)}>
-                        <ListItemText
-                          primary={eventInfo.requiredInfo.title}
-                          secondary={startTime.format("D MMM YYYY")}
-                        />
-                        {isEventOpen[id] ? <ExpandLess /> : <ExpandMore />}
-                      </ListItem>
-                      <Collapse
-                        component="li"
-                        in={isEventOpen[id]}
-                        timeout="auto"
-                        unmountOnExit
-                      >
-                        <List className={classes.nested} disablePadding>
-                          {showResults && (
-                            <ListSubheader>Opponents & Results</ListSubheader>
-                          )}
-                          {showResults &&
-                            this.getResultsForEvent(teamID, info, eventInfo)}
-                          <ListSubheader>Options</ListSubheader>
-                          <ListItem
-                            className={classes.inset}
-                            button
-                            onClick={() =>
-                              history.push(
-                                `/myaccount/schedule/${startTime.format(
-                                  "YYYY-MM-DD"
-                                )}/${id}`
-                              )}
-                          >
-                            <ListItemIcon>
-                              <EventIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="View event info" />
-                          </ListItem>
-                          {eventInfo.requiredInfo.isCompetitive &&
-                            eventInfo.requiredInfo.status === "ACTIVE" && (
-                              <ListItem
-                                className={classes.inset}
-                                button
-                                onClick={() =>
-                                  history.push(
-                                    `/myaccount/results/${teamID}/${id}`
-                                  )}
-                              >
-                                <ListItemIcon>
-                                  <ResultsIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="View results" />
-                              </ListItem>
-                            )}
-                        </List>
-                      </Collapse>
-                    </div>
-                  );
-                }}
-              />
-            );
-        }
-      });
-
-    return {
-      coaches: eventCoaches,
-      managers: eventManagers,
-      upcomingEvents: upcomingEventsList,
-      recentResults: recentResultsList
-    };
   }
 
   createAd() {
@@ -902,224 +130,244 @@ class TeamInfo extends Component {
     return ad;
   }
 
-  render() {
-    const { classes, info, canEdit, isMobile } = this.props;
-    const {
-      isTeamsLoading,
-      isCoachesLoading,
-      isManagersLoading,
-      isEventsByTeamLoading
-    } = this.props;
-    const { editTeam } = this.props.actions;
+  getInfo() {
+    const { info } = this.props;
 
-    let name = "";
-    let sport = "";
-    let division = "";
-    let ageGroup = "";
-    let gender = "";
+    let reformattedInfo = {
+      name: "Loading",
+      ageGroup: "Loading",
+      division: "Loading",
+      gender: "Loading",
+      sport: "Loading"
+    };
 
     if (info) {
-      name = info.info.name;
-      sport = info.info.sport;
-      division = info.info.division;
-      ageGroup = info.info.ageGroup;
-      gender = info.info.gender;
+      reformattedInfo = {
+        name: info.info.name,
+        ageGroup: info.info.ageGroup,
+        division: info.info.division,
+        gender: info.info.gender,
+        sport: info.info.sport
+      };
     }
 
-    let formattedGender = "Loading...";
-    let formattedAgeGroup = "Loading...";
-    if (!isTeamsLoading) {
-      formattedGender = this.formatGender(gender, ageGroup);
-      formattedAgeGroup = this.formatAgeGroup(ageGroup);
-    }
+    return reformattedInfo;
+  }
+
+  getSectionDisplay(info, coaches, managers) {
+    const { classes, isMobile, infoTab, teamID } = this.props;
+    const { navigateTo } = this.props.actions;
+    const { tabSelected } = this.state;
 
     const ad = this.createAd();
-    const {
-      coaches,
-      managers,
-      upcomingEvents,
-      recentResults
-    } = this.getListItems();
+
+    if (isMobile) {
+      switch (infoTab) {
+        case "details":
+          return (
+            <div>
+              <div className={classes.adWrapper}>{ad}</div>
+              <Details
+                name={info.name}
+                ageGroup={info.ageGroup}
+                division={info.division}
+                sport={info.sport}
+                gender={info.gender}
+                coaches={coaches}
+                managers={managers}
+                navigateTo={navigateTo}
+              />
+            </div>
+          );
+        default:
+          return (
+            <div>
+              <div className={classes.menuButtonWrapper}>
+                <Button
+                  type="dark"
+                  colour="primary"
+                  filled
+                  fullWidth
+                  handleClick={() =>
+                    navigateTo(`/myaccount/teams/${teamID}/details`)}
+                >
+                  Details
+                </Button>
+              </div>
+              <div className={classes.buttonSeparator} />
+              <div className={classes.menuButtonWrapper}>
+                <Button
+                  type="dark"
+                  colour="primary"
+                  filled
+                  fullWidth
+                  handleClick={() =>
+                    navigateTo(`/myaccount/teams/${teamID}/seasons`)}
+                >
+                  Seasons
+                </Button>
+              </div>
+            </div>
+          );
+      }
+    } else {
+      switch (tabSelected) {
+        case "details":
+          return (
+            <div>
+              <div className={classes.adWrapper}>{ad}</div>
+              <Details
+                name={info.name}
+                ageGroup={info.ageGroup}
+                division={info.division}
+                sport={info.sport}
+                gender={info.gender}
+                coaches={coaches}
+                managers={managers}
+                navigateTo={navigateTo}
+              />
+            </div>
+          );
+        default:
+          return (
+            <div>
+              <div className={classes.adWrapper}>{ad}</div>
+              <Details
+                name={info.name}
+                ageGroup={info.ageGroup}
+                division={info.division}
+                sport={info.sport}
+                gender={info.gender}
+                coaches={coaches}
+                managers={managers}
+                navigateTo={navigateTo}
+              />
+            </div>
+          );
+      }
+    }
+  }
+
+  getTabs(isUserInfo, isUserManager, isUserAdmin) {
+    const allTabs = [
+      {
+        key: "details",
+        label: "Details"
+      },
+      {
+        key: "seasons",
+        label: "Seasons"
+      }
+    ];
+
+    return allTabs;
+  }
+
+  getManagers() {
+    const { info, staff } = this.props;
+
+    if (info) {
+      return _.toPairs(info.managers).map(([managerID, eventManagerInfo]) => {
+        const managerInfo = staff[managerID];
+        if (managerInfo) {
+          return {
+            id: managerID,
+            name: `${managerInfo.info.name} ${managerInfo.info.surname}`,
+            profilePicture: managerInfo.info.profilePictureURL
+          };
+        } else {
+          return {
+            id: managerID,
+            name: "Error finding manager",
+            profilePicture: ""
+          };
+        }
+      });
+    } else {
+      return [];
+    }
+  }
+
+  getCoaches() {
+    const { info, staff } = this.props;
+
+    if (info) {
+      return _.toPairs(info.coaches).map(([coachID, eventCoachInfo]) => {
+        const coachInfo = staff[coachID];
+        if (coachInfo) {
+          return {
+            id: coachID,
+            name: `${coachInfo.info.name} ${coachInfo.info.surname}`,
+            profilePicture: coachInfo.info.profilePictureURL
+          };
+        } else {
+          return {
+            id: coachID,
+            name: "Error finding manager",
+            profilePicture: ""
+          };
+        }
+      });
+    } else {
+      return [];
+    }
+  }
+
+  render() {
+    const { classes, isMobile, infoTab, teamID, isUserAdmin } = this.props;
+    const { editTeam, goBack } = this.props.actions;
+    const { tabSelected } = this.state;
+
+    const info = this.getInfo();
+    const coaches = this.getCoaches();
+    const managers = this.getManagers();
+
+    if (!isMobile && infoTab) {
+      return <Redirect to={`/myaccount/teams/${teamID}`} />;
+    }
+
+    const sectionDisplay = this.getSectionDisplay(info, coaches, managers);
+    const tabs = this.getTabs();
 
     return (
       <div className={classes.root}>
-        {isTeamsLoading ? (
-          <div className={classes.header}>Loading...</div>
-        ) : (
-          <div className={classes.header}>{name}</div>
-        )}
+        <div className={classes.header}>{info.name}</div>
         <div className={classes.outerWrapper}>
           <div className={classes.actionsBar}>
-            <Route
-              render={({ history }) => (
-                <Button
-                  colour="secondary"
-                  slim
-                  handleClick={() => history.goBack()}
-                >
-                  <i
-                    className={`fas fa-caret-left ${classes.iconAdjacentText}`}
-                  />
-                  Back
-                </Button>
-              )}
-            />
+            <div className={classes.buttonWrapper}>
+              <Button colour="secondary" slim handleClick={() => goBack()}>
+                <i
+                  className={`fas fa-caret-left ${classes.iconAdjacentText}`}
+                />
+                Back
+              </Button>
+            </div>
             <div className={classes.flexGrow} />
-            {canEdit &&
+            {isUserAdmin &&
               !isMobile && (
-                <Button
-                  colour="secondary"
-                  slim
-                  filled
-                  handleClick={() => editTeam()}
-                >
-                  <i className={`fas fa-edit ${classes.iconAdjacentText}`} />
-                  Edit team info
-                </Button>
-              )}
-          </div>
-          <div className={classes.adWrapper}>{ad}</div>
-          <div className={classes.wrapper}>
-            {info &&
-              info.status === "DELETED" && (
-                <div className={classes.deletedTeam}>
-                  <WarningIcon className={classes.warningIcon} />
-                  <div className={classes.deletedText}>
-                    This team has been deleted.
-                  </div>
+                <div className={classes.buttonWrapper}>
+                  <Button
+                    colour="secondary"
+                    filled
+                    slim
+                    handleClick={() => editTeam()}
+                  >
+                    <i className={`fas fa-edit ${classes.iconAdjacentText}`} />
+                    Edit team
+                  </Button>
                 </div>
               )}
-            <Grid
-              container
-              direction="row"
-              align="stretch"
-              className={classes.contentWrapper}
-            >
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <div className={classes.section}>
-                  <div className={classes.sectionHeading}>Details</div>
-                  <List className={classes.sectionList}>
-                    <ListItem>
-                      <ListItemText
-                        primary="Sport"
-                        secondary={isTeamsLoading ? "Loading..." : sport}
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText
-                        primary="Division"
-                        secondary={isTeamsLoading ? "Loading..." : division}
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText
-                        primary="Age Group"
-                        secondary={
-                          isTeamsLoading ? "Loading..." : formattedAgeGroup
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText
-                        primary="Gender"
-                        secondary={
-                          isTeamsLoading ? "Loading..." : formattedGender
-                        }
-                      />
-                    </ListItem>
-                  </List>
-                </div>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <div className={classes.section}>
-                  <div className={classes.sectionHeading}>Managers</div>
-                  {isManagersLoading || isTeamsLoading ? (
-                    <List className={classes.sectionList}>
-                      <ListItem className={classes.noItems}>
-                        <ListItemText primary="Loading..." />
-                      </ListItem>
-                    </List>
-                  ) : (
-                    <List className={classes.sectionList}>
-                      {managers.length > 0 ? (
-                        managers
-                      ) : (
-                        <ListItem className={classes.noItems}>
-                          <ListItemText primary="None" />
-                        </ListItem>
-                      )}
-                    </List>
-                  )}
-                </div>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <div className={classes.section}>
-                  <div className={classes.sectionHeading}>Coaches</div>
-                  {isCoachesLoading || isTeamsLoading ? (
-                    <List className={classes.sectionList}>
-                      <ListItem className={classes.noItems}>
-                        <ListItemText primary="Loading..." />
-                      </ListItem>
-                    </List>
-                  ) : (
-                    <List className={classes.sectionList}>
-                      {coaches.length > 0 ? (
-                        coaches
-                      ) : (
-                        <ListItem className={classes.noItems}>
-                          <ListItemText primary="None" />
-                        </ListItem>
-                      )}
-                    </List>
-                  )}
-                </div>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <div className={classes.section}>
-                  <div className={classes.sectionHeading}>Upcoming Events</div>
-                  {isEventsByTeamLoading || isTeamsLoading ? (
-                    <List className={classes.sectionList}>
-                      <ListItem className={classes.noItems}>
-                        <ListItemText primary="Loading..." />
-                      </ListItem>
-                    </List>
-                  ) : (
-                    <List className={classes.sectionList}>
-                      {upcomingEvents.length > 0 ? (
-                        upcomingEvents
-                      ) : (
-                        <ListItem className={classes.noItems}>
-                          <ListItemText primary="None" />
-                        </ListItem>
-                      )}
-                    </List>
-                  )}
-                </div>
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
-                <div className={classes.section}>
-                  <div className={classes.sectionHeading}>Recent Results</div>
-                  {isEventsByTeamLoading || isTeamsLoading ? (
-                    <List className={classes.sectionList}>
-                      <ListItem className={classes.noItems}>
-                        <ListItemText primary="Loading..." />
-                      </ListItem>
-                    </List>
-                  ) : (
-                    <List className={classes.sectionList}>
-                      {recentResults.length > 0 ? (
-                        recentResults
-                      ) : (
-                        <ListItem className={classes.noItems}>
-                          <ListItemText primary="None" />
-                        </ListItem>
-                      )}
-                    </List>
-                  )}
-                </div>
-              </Grid>
-            </Grid>
           </div>
+          {!isMobile && (
+            <div className={classes.tabsWrapper}>
+              <Tabs
+                tabs={tabs}
+                selected={tabSelected}
+                handleClick={newTab => this.updateTabSelected(newTab)}
+              />
+            </div>
+          )}
+          {sectionDisplay}
         </div>
       </div>
     );

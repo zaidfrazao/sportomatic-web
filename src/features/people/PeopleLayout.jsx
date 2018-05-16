@@ -201,14 +201,7 @@ class PeopleLayout extends Component {
 
   filterPeople(staff) {
     const { sportFilter } = this.props;
-    const { type } = this.props.filters;
-    const {
-      teams,
-      activeInstitutionID,
-      userID,
-      role,
-      meAllFilter
-    } = this.props;
+    const { teams, userID, meAllFilter } = this.props;
 
     return _.fromPairs(
       _.toPairs(staff).filter(([staffID, personInfo]) => {
@@ -217,24 +210,19 @@ class PeopleLayout extends Component {
         let teamMatch = false;
         let roleMatch = true;
 
-        if ((role === "coach" || role === "manager") && meAllFilter === "me") {
-          if (meAllFilter === "me") {
-            roleMatch = false;
-            _.values(teams).map(teamInfo => {
-              const teamCoaches = _.keys(teamInfo.coaches);
-              const teamManagers = _.keys(teamInfo.managers);
+        if (meAllFilter === "me") {
+          roleMatch = false;
+          _.values(teams).map(teamInfo => {
+            const teamCoaches = _.keys(teamInfo.coaches);
+            const teamManagers = _.keys(teamInfo.managers);
 
-              if (
-                teamCoaches.includes(userID) ||
-                teamManagers.includes(userID)
-              ) {
-                roleMatch =
-                  roleMatch ||
-                  teamCoaches.includes(staffID) ||
-                  teamManagers.includes(staffID);
-              }
-            });
-          }
+            if (teamCoaches.includes(userID) || teamManagers.includes(userID)) {
+              roleMatch =
+                roleMatch ||
+                teamCoaches.includes(staffID) ||
+                teamManagers.includes(staffID);
+            }
+          });
         }
 
         if (sportFilter !== "all") {
@@ -264,24 +252,6 @@ class PeopleLayout extends Component {
               }
             });
             allowThroughFilter = allowThroughFilter && doesSport;
-          }
-        }
-        if (type !== "All") {
-          if (type === "Admin") {
-            allowThroughFilter =
-              allowThroughFilter &&
-              personInfo.institutions[activeInstitutionID].roles.admin ===
-                "APPROVED";
-          } else if (type === "Coach") {
-            allowThroughFilter =
-              allowThroughFilter &&
-              personInfo.institutions[activeInstitutionID].roles.coach ===
-                "APPROVED";
-          } else if (type === "Manager") {
-            allowThroughFilter =
-              allowThroughFilter &&
-              personInfo.institutions[activeInstitutionID].roles.manager ===
-                "APPROVED";
           }
         }
 
@@ -354,7 +324,6 @@ class PeopleLayout extends Component {
       isMobile,
       isTablet,
       activeInstitutionID,
-      role,
       paymentDefaults,
       userID,
       userName,
@@ -396,7 +365,6 @@ class PeopleLayout extends Component {
     if (personID) {
       const hours = this.getHours();
       const wages = this.getWages();
-      console.log(wages);
 
       return (
         <div className={classes.root}>
@@ -404,7 +372,6 @@ class PeopleLayout extends Component {
             <PersonInfo
               institutionCreationDate={institutionCreationDate}
               userID={userID}
-              role={role}
               teams={teams}
               personID={personID}
               info={staff[personID]}

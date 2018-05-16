@@ -223,7 +223,7 @@ class AddTeamDialog extends Component {
   }
 
   createCoachesList() {
-    const { classes, coaches } = this.props;
+    const { classes, staff } = this.props;
     const { selectedCoaches } = this.state;
 
     const listItems = _.toPairs(selectedCoaches).map(([id, info]) => {
@@ -238,7 +238,7 @@ class AddTeamDialog extends Component {
                 onChange={this.changeCoach(id)}
                 input={<Input id="coach selection" />}
               >
-                {_.toPairs(coaches).map(([coachID, coachInfo]) => {
+                {_.toPairs(staff).map(([coachID, coachInfo]) => {
                   return (
                     <option
                       key={`${id}-${coachID}`}
@@ -286,7 +286,7 @@ class AddTeamDialog extends Component {
   }
 
   createManagersList() {
-    const { classes, managers } = this.props;
+    const { classes, staff } = this.props;
     const { selectedManagers } = this.state;
 
     const listItems = _.toPairs(selectedManagers).map(([id, info]) => {
@@ -301,7 +301,7 @@ class AddTeamDialog extends Component {
                 onChange={this.changeManager(id)}
                 input={<Input id="manager selection" />}
               >
-                {_.toPairs(managers).map(([managerID, managerInfo]) => {
+                {_.toPairs(staff).map(([managerID, managerInfo]) => {
                   return (
                     <option
                       key={`${id}-${managerID}`}
@@ -371,10 +371,10 @@ class AddTeamDialog extends Component {
   };
 
   addCoach() {
-    const { coaches } = this.props;
+    const { staff } = this.props;
     const { selectedCoaches } = this.state;
 
-    const coachIDs = _.keys(coaches);
+    const coachIDs = _.keys(staff);
     const selectedCoachIDs = _.keys(selectedCoaches);
 
     let idCount = 0;
@@ -390,7 +390,7 @@ class AddTeamDialog extends Component {
     this.setState({
       selectedCoaches: {
         ...selectedCoaches,
-        [newID]: coaches[newID]
+        [newID]: staff[newID]
       }
     });
   }
@@ -436,10 +436,10 @@ class AddTeamDialog extends Component {
   }
 
   addManager() {
-    const { managers } = this.props;
+    const { staff } = this.props;
     const { selectedManagers } = this.state;
 
-    const managerIDs = _.keys(managers);
+    const managerIDs = _.keys(staff);
     const selectedManagerIDs = _.keys(selectedManagers);
 
     let idCount = 0;
@@ -455,13 +455,13 @@ class AddTeamDialog extends Component {
     this.setState({
       selectedManagers: {
         ...selectedManagers,
-        [newID]: managers[newID]
+        [newID]: staff[newID]
       }
     });
   }
 
   changeManager = oldID => event => {
-    const { managers } = this.props;
+    const { staff } = this.props;
     const { selectedManagers } = this.state;
 
     const newManagers = _.fromPairs(
@@ -477,7 +477,7 @@ class AddTeamDialog extends Component {
     this.setState({
       selectedManagers: {
         ...newManagers,
-        [event.target.value]: managers[event.target.value]
+        [event.target.value]: staff[event.target.value]
       }
     });
   };
@@ -506,8 +506,7 @@ class AddTeamDialog extends Component {
       isOpen,
       isLoading,
       institutionID,
-      coaches,
-      managers,
+      staff,
       isMobile
     } = this.props;
     const { handleClose, addTeam, openTeamErrorAlert } = this.props.actions;
@@ -629,11 +628,10 @@ class AddTeamDialog extends Component {
                 <div className={classes.addButtonWrapper}>
                   <Button
                     disabled={
-                      _.keys(managers).length ===
-                      _.keys(selectedManagers).length
+                      _.keys(staff).length === _.keys(selectedManagers).length
                     }
                     filled
-                    handleClick={() => this.addManager(_.keys(managers).length)}
+                    handleClick={() => this.addManager(_.keys(staff).length)}
                   >
                     <AddIcon /> Add manager
                   </Button>
@@ -651,10 +649,10 @@ class AddTeamDialog extends Component {
                 <div className={classes.addButtonWrapper}>
                   <Button
                     disabled={
-                      _.keys(coaches).length === _.keys(selectedCoaches).length
+                      _.keys(staff).length === _.keys(selectedCoaches).length
                     }
                     filled
-                    handleClick={() => this.addCoach(_.keys(coaches).length)}
+                    handleClick={() => this.addCoach(_.keys(staff).length)}
                   >
                     <AddIcon /> Add coach
                   </Button>

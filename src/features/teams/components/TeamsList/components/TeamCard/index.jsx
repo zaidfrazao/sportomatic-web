@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { grey, lightBlue } from "../../../../../../utils/colours";
 import injectStyles from "react-jss";
-import { Route } from "react-router-dom";
+import { grey, lightBlue } from "../../../../../../utils/colours";
 import Button from "../../../../../../components/Button";
 
 const styles = {
@@ -25,24 +24,20 @@ const styles = {
 
 class TeamCard extends Component {
   render() {
-    const { classes, name, id } = this.props;
+    const { classes, name, id, navigateTo } = this.props;
 
     return (
       <div className={classes.card}>
         <div className={classes.header}>{name}</div>
         <div className={classes.buttons}>
-          <Route
-            render={({ history }) => (
-              <Button
-                colour="primary"
-                filled
-                fullWidth
-                handleClick={() => history.push(`/myaccount/teams/${id}`)}
-              >
-                View
-              </Button>
-            )}
-          />
+          <Button
+            colour="primary"
+            filled
+            fullWidth
+            handleClick={() => navigateTo(`/myaccount/teams/${id}`)}
+          >
+            View
+          </Button>
         </div>
       </div>
     );
