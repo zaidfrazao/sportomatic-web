@@ -327,10 +327,10 @@ class PersonInfo extends Component {
     if (isUserInfo) {
       return allTabs;
     } else {
-      if (isUserManager) {
-        return [allTabs[0], allTabs[1]];
-      } else if (isUserAdmin) {
+      if (isUserAdmin) {
         return allTabs;
+      } else if (isUserManager) {
+        return [allTabs[0], allTabs[1]];
       } else {
         return [allTabs[0]];
       }
