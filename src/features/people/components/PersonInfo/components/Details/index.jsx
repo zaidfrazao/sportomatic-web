@@ -139,9 +139,8 @@ class Details extends Component {
     return teams.map((info, index) => {
       if (index !== lastIndex) {
         return (
-          <div>
+          <div key={info.id}>
             <div
-              key={info.id}
               className={classes.listItemWrapper}
               onClick={() => navigateTo(`/myaccount/teams/${info.id}`)}
             >
@@ -172,10 +171,8 @@ class Details extends Component {
     return sports.map((sport, index) => {
       if (index !== lastIndex) {
         return (
-          <div>
-            <div key={sport} className={classes.listItemInactiveWrapper}>
-              {sport}
-            </div>
+          <div key={sport}>
+            <div className={classes.listItemInactiveWrapper}>{sport}</div>
             <div className={classes.listItemSeparator} />
           </div>
         );

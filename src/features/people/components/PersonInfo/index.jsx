@@ -172,7 +172,15 @@ class PersonInfo extends Component {
   }
 
   getSectionDisplay(info, teams) {
-    const { classes, isMobile, infoTab, personID, hours, wages } = this.props;
+    const {
+      classes,
+      isMobile,
+      infoTab,
+      personID,
+      hours,
+      wages,
+      institutionCreationDate
+    } = this.props;
     const { navigateTo } = this.props.actions;
     const { tabSelected } = this.state;
 
@@ -200,14 +208,22 @@ class PersonInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Hours hours={hours} />
+              <Hours
+                isMobile={isMobile}
+                hours={hours}
+                institutionCreationDate={institutionCreationDate}
+              />
             </div>
           );
         case "wages":
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Wages wages={wages} />
+              <Wages
+                isMobile={isMobile}
+                wages={wages}
+                institutionCreationDate={institutionCreationDate}
+              />
             </div>
           );
         default:
@@ -278,14 +294,22 @@ class PersonInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Hours hours={hours} />
+              <Hours
+                isMobile={isMobile}
+                hours={hours}
+                institutionCreationDate={institutionCreationDate}
+              />
             </div>
           );
         case "wages":
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Wages wages={wages} />
+              <Wages
+                isMobile={isMobile}
+                wages={wages}
+                institutionCreationDate={institutionCreationDate}
+              />
             </div>
           );
         default:

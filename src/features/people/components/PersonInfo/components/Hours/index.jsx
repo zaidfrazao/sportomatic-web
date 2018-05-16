@@ -1,116 +1,135 @@
 import React, { Component } from "react";
 import injectSheet from "react-jss";
-import CoachCard from "./components/CoachCard";
-import { common, grey, red } from "../../../../../../utils/colours";
+import moment from "moment";
+// import { common, grey, red } from "../../../../../../utils/colours";
+import DateSelector from "./components/DateSelector";
+import MonthSelector from "./components/MonthSelector";
+import HoursTable from "./components/HoursTable";
 
-const mobileBreakpoint = 800;
-const tabletBreakpoint = 1080;
+// const mobileBreakpoint = 800;
+// const tabletBreakpoint = 1080;
 
 const styles = {
-  cancelledAlert: {
-    fontSize: 18,
-    borderRadius: 16,
-    padding: "18px 0",
-    width: "100%",
-    textAlign: "center",
-    fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: red[500]
-  },
-  cancelledIcon: {
-    marginRight: 8
-  },
-  cancelledWrapper: {
-    width: "calc(100% - 48px)",
-    margin: 24
-  },
-  coachCardWrapper: {
-    margin: 24,
-    width: "calc(100% - 48px)",
-    [`@media (min-width: ${mobileBreakpoint}px)`]: {
-      width: "calc(50% - 48px)"
-    },
-    [`@media (min-width: ${tabletBreakpoint}px)`]: {
-      width: "calc(33% - 48px)"
-    }
-  },
-  noItems: {
-    width: "calc(100% - 96px)",
-    border: `3px solid ${grey[300]}`,
-    color: grey[400],
-    borderRadius: 12,
-    padding: "40px 24px",
-    margin: 24,
-    fontSize: 20,
-    lineHeight: "28px",
-    fontWeight: "bold",
-    textAlign: "center"
+  separator: {
+    height: 12
   },
   wrapper: {
-    display: "flex",
-    flexWrap: "wrap"
+    padding: 24
   }
 };
 
-class CoachManagement extends Component {
-  getCoaches() {
-    const {
-      classes,
-      coaches,
-      eventTimes,
-      signIn,
-      signOut,
-      updateTimes,
-      approveHours,
-      updateAbsent
-    } = this.props;
+class Hours extends Component {
+  state = {
+    dateSelectedMoment: moment(new Date(Date.now())),
+    isMonthSelectorOpen: false
+  };
 
-    return coaches.map(info => (
-      <div key={info.id} className={classes.coachCardWrapper}>
-        <CoachCard
-          coachID={info.id}
-          name={info.name}
-          profilePicture={info.profilePicture}
-          hours={info.hours}
-          wageSettings={info.wageSettings}
-          absenteeism={info.absenteeism}
-          eventTimes={eventTimes}
-          signIn={signIn}
-          signOut={signOut}
-          updateTimes={updateTimes}
-          approveHours={approveHours}
-          updateAbsent={updateAbsent}
-        />
-      </div>
-    ));
+  toggleMonthSelector() {
+    const { isMonthSelectorOpen } = this.state;
+
+    this.setState({
+      isMonthSelectorOpen: !isMonthSelectorOpen
+    });
+  }
+
+  updateDateSelected(newDate) {
+    this.setState({
+      dateSelectedMoment: moment(newDate)
+    });
+  }
+
+  prevMonth() {
+    const { dateSelectedMoment } = this.state;
+
+    const prevMonth = moment(dateSelectedMoment).subtract(1, "month");
+
+    this.setState({
+      dateSelectedMoment: prevMonth
+    });
+  }
+
+  nextMonth() {
+    const { dateSelectedMoment } = this.state;
+
+    const nextMonth = moment(dateSelectedMoment).add(1, "month");
+
+    this.setState({
+      dateSelectedMoment: nextMonth
+    });
+  }
+
+  getDateDisplay() {
+    const { isMobile } = this.props;
+    const { dateSelectedMoment } = this.state;
+
+    if (isMobile) return dateSelectedMoment.format("MMM YYYY");
+    return dateSelectedMoment.format("MMMM YYYY");
+  }
+
+  checkIfPrevDisabled() {
+    const { institutionCreationDate } = this.props;
+    const { dateSelectedMoment } = this.state;
+
+    const institutionCreationMoment = moment(institutionCreationDate);
+
+    if (
+      institutionCreationMoment.month() === dateSelectedMoment.month() &&
+      institutionCreationMoment.year() === dateSelectedMoment.year()
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  checkIfNextDisabled() {
+    const { dateSelectedMoment } = this.state;
+
+    const currentMoment = moment(new Date(Date.now()));
+
+    if (
+      currentMoment.month() === dateSelectedMoment.month() &&
+      currentMoment.year() === dateSelectedMoment.year()
+    ) {
+      return true;
+    }
+    return false;
   }
 
   render() {
-    const { classes, isCancelled } = this.props;
+    const { classes, institutionCreationDate, isMobile, hours } = this.props;
+    const { dateSelectedMoment, isMonthSelectorOpen } = this.state;
 
-    const coachItems = this.getCoaches();
+    const dateDisplay = this.getDateDisplay();
+    const isPrevDisabled = this.checkIfPrevDisabled();
+    const isNextDisabled = this.checkIfNextDisabled();
 
     return (
       <div className={classes.wrapper}>
-        {isCancelled ? (
-          <div className={classes.cancelledWrapper}>
-            <div className={classes.cancelledAlert}>
-              <i
-                className={`fas fa-exclamation ${classes.cancelledIcon}`}
-              />CANCELLED
-            </div>
-            <div className={classes.noItems}>
-              Not applicable to cancelled events
-            </div>
-          </div>
-        ) : coachItems.length === 0 ? (
-          <div className={classes.noItems}>No coaches at this event</div>
-        ) : (
-          coachItems
-        )}
+        <DateSelector
+          dateDisplay={dateDisplay}
+          isPrevDisabled={isPrevDisabled}
+          isNextDisabled={isNextDisabled}
+          toggleMonthSelector={() => this.toggleMonthSelector()}
+          handlePrevMonth={() => this.prevMonth()}
+          handleNextMonth={() => this.nextMonth()}
+        />
+        <div className={classes.separator} />
+        <HoursTable hours={hours} />
+        <MonthSelector
+          isMobile={isMobile}
+          isOpen={isMonthSelectorOpen}
+          minDate={institutionCreationDate}
+          maxDate={new Date(Date.now())}
+          dateSelected={dateSelectedMoment.toDate()}
+          updateDateSelected={newDate => {
+            this.updateDateSelected(newDate);
+            this.toggleMonthSelector();
+          }}
+          closeDialog={() => this.toggleMonthSelector()}
+        />
       </div>
     );
   }
 }
 
-export default injectSheet(styles)(CoachManagement);
+export default injectSheet(styles)(Hours);

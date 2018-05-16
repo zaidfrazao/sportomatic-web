@@ -11,22 +11,28 @@ import {
 import Button from "../../../../../../../../components/Button";
 
 const styles = {
+  absentBadWrapper: {
+    borderRadius: 16,
+    textAlign: "center",
+    border: `2px solid ${red[500]}`,
+    margin: 12,
+    padding: "24px 12px",
+    color: red[500]
+  },
   absentWrapper: {
     borderRadius: 16,
     textAlign: "center",
-    border: `2px solid ${grey[500]}`,
+    border: `2px solid ${grey[400]}`,
     margin: 12,
     padding: "24px 12px",
-    color: grey[500]
-  },
-  absentIcon: {
-    marginRight: 12
+    color: grey[400]
   },
   approvedWrapper: {
     borderRadius: "0 0 16px 16px",
     textAlign: "center",
     padding: "24px 0",
-    color: grey[900],
+    fontWeight: "bold",
+    color: grey[500],
     backgroundColor: grey[300]
   },
   buttonDisabledWrapper: {
@@ -74,6 +80,9 @@ const styles = {
     fontWeight: "bold",
     color: grey[800],
     backgroundColor: grey[100]
+  },
+  icon: {
+    marginRight: 12
   },
   timesIconWrapper: {
     textAlign: "center",
@@ -245,7 +254,11 @@ class YourHoursCard extends Component {
           </div>
         );
       default:
-        return <div className={classes.approvedWrapper}>Approved</div>;
+        return (
+          <div className={classes.approvedWrapper}>
+            <i className={`fas fa-check ${classes.icon}`} />Approved
+          </div>
+        );
     }
   }
 
@@ -299,12 +312,12 @@ class YourHoursCard extends Component {
         {absenteeism.isAbsent &&
           (absenteeism.rating === "GOOD" ? (
             <div className={classes.absentWrapper}>
-              <i className={`fas fa-thumbs-up ${classes.absentIcon}`} />Absent
-              with excuse
+              <i className={`fas fa-thumbs-up ${classes.icon}`} />Absent with
+              excuse
             </div>
           ) : (
-            <div className={classes.absentWrapper}>
-              <i className={`fas fa-thumbs-down ${classes.absentIcon}`} />Absent
+            <div className={classes.absentBadWrapper}>
+              <i className={`fas fa-thumbs-down ${classes.icon}`} />Absent
               without excuse
             </div>
           ))}

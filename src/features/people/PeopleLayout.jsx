@@ -300,14 +300,19 @@ class PeopleLayout extends Component {
     return _.toPairs(eventsByCoach)
       .map(([eventID, eventInfo]) => {
         const eventCoachInfo = eventInfo.coaches[personID];
+
         if (eventCoachInfo) {
           return {
             id: eventID,
             title: eventInfo.requiredInfo.title,
             status: eventInfo.requiredInfo.status,
             date: eventInfo.requiredInfo.times.start,
+            times: {
+              start: eventInfo.requiredInfo.times.start,
+              end: eventInfo.requiredInfo.times.end
+            },
             absenteeism: {
-              wasAbsent: eventInfo.coaches[personID].attendance.didAttend,
+              wasAbsent: eventInfo.coaches[personID].attendance.willAttend,
               rating: eventInfo.coaches[personID].absenteeism.rating
             },
             hours: eventInfo.coaches[personID].hours
@@ -316,10 +321,10 @@ class PeopleLayout extends Component {
       })
       .sort((eventA, eventB) => {
         const eventMomentA = moment(eventA.date);
-        const eventMomentB = moment(eventA.date);
+        const eventMomentB = moment(eventB.date);
 
         if (eventMomentA.isBefore(eventMomentB)) return -1;
-        else if (eventMomentA.isAfter(eventMomentB)) return +1;
+        if (eventMomentA.isAfter(eventMomentB)) return +1;
         return 0;
       });
   }
@@ -336,7 +341,7 @@ class PeopleLayout extends Component {
         const wageMomentB = moment(wageB.date);
 
         if (wageMomentA.isBefore(wageMomentB)) return -1;
-        else if (wageMomentA.isAfter(wageMomentB)) return +1;
+        if (wageMomentA.isAfter(wageMomentB)) return +1;
         return 0;
       });
   }
@@ -356,7 +361,8 @@ class PeopleLayout extends Component {
       communityName,
       navigateTo,
       goBack,
-      isAdmin
+      isAdmin,
+      institutionCreationDate
     } = this.props;
     const { inviteeID, inviteeInfo, resendInfo } = this.props.uiConfig;
     const {
@@ -390,11 +396,13 @@ class PeopleLayout extends Component {
     if (personID) {
       const hours = this.getHours();
       const wages = this.getWages();
+      console.log(hours);
 
       return (
         <div className={classes.root}>
           <div className={classes.infoWrapper}>
             <PersonInfo
+              institutionCreationDate={institutionCreationDate}
               userID={userID}
               role={role}
               teams={teams}
