@@ -181,6 +181,10 @@ class CoreInterfaceLayout extends Component {
         label: "Teams",
         icon: "fas fa-users"
       },
+      reports: {
+        label: "Reports",
+        icon: "fas fa-clipboard"
+      },
       settings: {
         label: "Settings",
         icon: "fas fa-cog"

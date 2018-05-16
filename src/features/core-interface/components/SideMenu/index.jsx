@@ -38,6 +38,20 @@ const styles = theme => ({
       margin: "0 12px 0 0"
     }
   },
+  menuItemInactive: {
+    fontSize: 14,
+    padding: "18px 0",
+    margin: "16px 18px",
+    borderRadius: 16,
+    cursor: "not-allowed",
+    backgroundColor: grey[200],
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      textAlign: "center",
+      margin: "20px 18px",
+      padding: "22px 0",
+      fontSize: 20
+    }
+  },
   menuItemSelected: {
     transition: "0.25s",
     borderRadius: 16,
@@ -60,6 +74,9 @@ const styles = theme => ({
   },
   menuItemText: {
     color: common["black"]
+  },
+  menuItemTextInactive: {
+    color: grey[400]
   },
   menuItemTextSelected: {
     color: common["white"]
@@ -126,32 +143,49 @@ class SideMenu extends Component<Props> {
     const { classes, selected, items, isTablet } = this.props;
     const { changeSelected, toggleSideNav } = this.props.actions;
 
-    return _.toPairs(items).map(([key, item]) => (
-      <div
-        key={`side-menu-item-${key}`}
-        className={
-          selected === key ? classes.menuItemSelected : classes.menuItem
-        }
-        onClick={() => {
-          changeSelected(key);
-          isTablet && toggleSideNav();
-        }}
-      >
-        <span
-          className={
-            selected === key
-              ? classes.menuItemTextSelected
-              : classes.menuItemText
-          }
-        >
-          <span className={classes.menuItemIcon}>
-            <i className={item.icon} />
-          </span>
-          {item.label}
-        </span>
-        {selected === key && !isTablet && <span className={classes.arrow} />}
-      </div>
-    ));
+    return _.toPairs(items).map(([key, item]) => {
+      if (key === "reports" || key === "settings") {
+        return (
+          <div
+            key={`side-menu-item-${key}`}
+            className={classes.menuItemInactive}
+          >
+            <span className={classes.menuItemTextInactive}>
+              <span className={classes.menuItemIcon}>
+                <i className={item.icon} />
+              </span>
+              {item.label}
+            </span>
+          </div>
+        );
+      } else {
+        return (
+          <div
+            key={`side-menu-item-${key}`}
+            className={
+              selected === key ? classes.menuItemSelected : classes.menuItem
+            }
+            onClick={() => {
+              changeSelected(key);
+              isTablet && toggleSideNav();
+            }}
+          >
+            <span
+              className={
+                selected === key
+                  ? classes.menuItemTextSelected
+                  : classes.menuItemText
+              }
+            >
+              <span className={classes.menuItemIcon}>
+                <i className={item.icon} />
+              </span>
+              {item.label}
+            </span>
+          </div>
+        );
+      }
+    });
   }
 
   render() {
