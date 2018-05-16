@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { common, grey, lightBlue, red } from "../../../../../../utils/colours";
+import _ from "lodash";
 import injectStyles from "react-jss";
-import { Route } from "react-router-dom";
+import { common, grey, lightBlue, red } from "../../../../../../utils/colours";
 import Button from "../../../../../../components/Button";
 import defaultProfilePicture from "../../../../image/default-profile-picture.png";
 
@@ -55,7 +55,7 @@ const styles = {
     backgroundColor: grey[300],
     margin: "16px auto 0 auto"
   },
-  type: {
+  roles: {
     color: grey[500],
     padding: 16,
     fontSize: 14,
@@ -65,19 +65,71 @@ const styles = {
 };
 
 class PersonCard extends Component {
+  getTeams() {
+    const { id, teams } = this.props;
+
+    return _.toPairs(teams)
+      .map(([teamID, teamInfo]) => {
+        return {
+          id: teamID,
+          name: teamInfo.info.name,
+          coaches: teamInfo.coaches,
+          managers: teamInfo.managers
+        };
+      })
+      .filter(teamInfo => teamInfo.coaches[id] || teamInfo.managers[id]);
+  }
+
+  getRoles(personTeams) {
+    const { teams, id, isAdmin } = this.props;
+
+    let isManager = false;
+    let isCoach = false;
+
+    personTeams.map(personTeamInfo => {
+      const completeTeamInfo = teams[personTeamInfo.id];
+
+      if (completeTeamInfo) {
+        if (completeTeamInfo.coaches[id]) isCoach = true;
+        if (completeTeamInfo.managers[id]) isManager = true;
+      }
+    });
+
+    if (isAdmin && isManager && isCoach) {
+      return "Admin | Manager | Coach";
+    } else if (isAdmin && isManager && !isCoach) {
+      return "Admin | Manager";
+    } else if (isAdmin && !isManager && isCoach) {
+      return "Admin | Coach";
+    } else if (!isAdmin && isManager && isCoach) {
+      return "Manager | Coach";
+    } else if (isAdmin && !isManager && !isCoach) {
+      return "Admin";
+    } else if (!isAdmin && isManager && !isCoach) {
+      return "Manager";
+    } else if (!isAdmin && !isManager && isCoach) {
+      return "Coach";
+    } else {
+      return "No Role Assigned";
+    }
+  }
+
   render() {
     const {
       classes,
-      isAdmin,
+      isUserAdmin,
       name,
       surname,
       profilePictureURL,
       id,
-      type,
       status,
       resendInvite,
-      isLoading
+      isLoading,
+      navigateTo
     } = this.props;
+
+    const teams = this.getTeams();
+    const roles = this.getRoles(teams);
 
     return (
       <div className={classes.card}>
@@ -99,8 +151,8 @@ class PersonCard extends Component {
             alt={name}
           />
         </div>
-        <div className={classes.type}>{type}</div>
-        {isAdmin &&
+        <div className={classes.roles}>{roles}</div>
+        {isUserAdmin &&
           status === "INACTIVE" && (
             <div className={classes.resendButtonWrapper}>
               <Button
@@ -115,18 +167,14 @@ class PersonCard extends Component {
             </div>
           )}
         <div className={classes.buttons}>
-          <Route
-            render={({ history }) => (
-              <Button
-                colour="primary"
-                filled
-                fullWidth
-                handleClick={() => history.push(`/myaccount/people/${id}`)}
-              >
-                View
-              </Button>
-            )}
-          />
+          <Button
+            colour="primary"
+            filled
+            fullWidth
+            handleClick={() => navigateTo(`/myaccount/people/${id}`)}
+          >
+            View
+          </Button>
         </div>
       </div>
     );

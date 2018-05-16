@@ -33,7 +33,9 @@ class PeopleList extends Component {
       resendInvite,
       isLoading,
       resendID,
-      isAdmin
+      isUserAdmin,
+      teams,
+      navigateTo
     } = this.props;
 
     if (people.length > 0) {
@@ -51,13 +53,15 @@ class PeopleList extends Component {
                 key={personInfo.id}
               >
                 <PersonCard
-                  isAdmin={isAdmin}
+                  isUserAdmin={isUserAdmin}
+                  isAdmin={personInfo.isAdmin}
                   name={personInfo.name}
                   surname={personInfo.surname}
                   profilePictureURL={personInfo.profilePictureURL}
-                  type={personInfo.type}
                   id={personInfo.id}
                   status={personInfo.status}
+                  teams={teams}
+                  navigateTo={navigateTo}
                   isLoading={isLoading && resendID === personInfo.id}
                   resendInvite={() =>
                     resendInvite(

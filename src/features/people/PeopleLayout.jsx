@@ -170,140 +170,31 @@ class PeopleLayout extends Component {
     return ad;
   }
 
-  getType() {
-    const { staff, activeInstitutionID } = this.props;
-    const { personID } = this.props.match.params;
-
-    let type = "";
-    if (personID && staff[personID]) {
-      if (
-        staff[personID].institutions[activeInstitutionID].roles.admin ===
-        "APPROVED"
-      ) {
-        type = "Admin";
-      }
-      if (
-        staff[personID].institutions[activeInstitutionID].roles.manager ===
-        "APPROVED"
-      ) {
-        type = "Manager";
-      }
-      if (
-        staff[personID].institutions[activeInstitutionID].roles.coach ===
-        "APPROVED"
-      ) {
-        type = "Coach";
-      }
-      if (
-        staff[personID].institutions[activeInstitutionID].roles.admin ===
-          "APPROVED" &&
-        staff[personID].institutions[activeInstitutionID].roles.coach ===
-          "APPROVED"
-      ) {
-        type = "Admin / Coach";
-      }
-      if (
-        staff[personID].institutions[activeInstitutionID].roles.coach ===
-          "APPROVED" &&
-        staff[personID].institutions[activeInstitutionID].roles.manager ===
-          "APPROVED"
-      ) {
-        type = "Manager / Coach";
-      }
-      if (
-        staff[personID].institutions[activeInstitutionID].roles.admin ===
-          "APPROVED" &&
-        staff[personID].institutions[activeInstitutionID].roles.manager ===
-          "APPROVED"
-      ) {
-        type = "Admin / Manager";
-      }
-      if (
-        staff[personID].institutions[activeInstitutionID].roles.admin ===
-          "APPROVED" &&
-        staff[personID].institutions[activeInstitutionID].roles.coach ===
-          "APPROVED" &&
-        staff[personID].institutions[activeInstitutionID].roles.manager ===
-          "APPROVED"
-      ) {
-        type = "Admin / Coach / Manager";
-      }
-    }
-
-    return type;
-  }
-
   getStaffCardsInfo(staff) {
     const { activeInstitutionID } = this.props;
 
     return _.values(
       _.mapValues(staff, (value, key) => {
         if (value.institutions[activeInstitutionID]) {
-          let type = "";
-          if (
-            value.institutions[activeInstitutionID].roles.admin === "APPROVED"
-          ) {
-            type = "Admin";
-          }
-          if (
-            value.institutions[activeInstitutionID].roles.manager === "APPROVED"
-          ) {
-            type = "Manager";
-          }
-          if (
-            value.institutions[activeInstitutionID].roles.coach === "APPROVED"
-          ) {
-            type = "Coach";
-          }
-          if (
-            value.institutions[activeInstitutionID].roles.admin ===
-              "APPROVED" &&
-            value.institutions[activeInstitutionID].roles.coach === "APPROVED"
-          ) {
-            type = "Admin / Coach";
-          }
-          if (
-            value.institutions[activeInstitutionID].roles.coach ===
-              "APPROVED" &&
-            value.institutions[activeInstitutionID].roles.manager === "APPROVED"
-          ) {
-            type = "Manager / Coach";
-          }
-          if (
-            value.institutions[activeInstitutionID].roles.admin ===
-              "APPROVED" &&
-            value.institutions[activeInstitutionID].roles.manager === "APPROVED"
-          ) {
-            type = "Admin / Manager";
-          }
-          if (
-            value.institutions[activeInstitutionID].roles.admin ===
-              "APPROVED" &&
-            value.institutions[activeInstitutionID].roles.coach ===
-              "APPROVED" &&
-            value.institutions[activeInstitutionID].roles.manager === "APPROVED"
-          ) {
-            type = "Admin / Coach / Manager";
-          }
           return {
-            ...value,
             id: key,
             name: value.info.name,
             surname: value.info.surname,
             profilePictureURL: value.info.profilePictureURL,
             email: value.info.email,
             status: value.metadata.status,
-            type: type
+            isAdmin:
+              value.institutions[activeInstitutionID].roles.admin === "APPROVED"
           };
         }
       })
     )
       .filter(person => person !== undefined)
       .sort((personA, personB) => {
-        if (personA.info.name > personB.info.name) return +1;
-        if (personA.info.name < personB.info.name) return -1;
-        if (personA.info.surname > personB.info.surname) return +1;
-        if (personA.info.surname < personB.info.surname) return -1;
+        if (personA.name > personB.name) return +1;
+        if (personA.name < personB.name) return -1;
+        if (personA.surname > personB.surname) return +1;
+        if (personA.surname < personB.surname) return -1;
         return 0;
       });
   }
@@ -496,8 +387,6 @@ class PeopleLayout extends Component {
     } = this.props.dialogs;
     const { personID, infoTab } = this.props.match.params;
 
-    console.log(this.props.match);
-
     if (personID) {
       const hours = this.getHours();
       const wages = this.getWages();
@@ -597,10 +486,12 @@ class PeopleLayout extends Component {
               ) : (
                 <div>
                   <PeopleList
+                    teams={teams}
+                    navigateTo={navigateTo}
                     people={staffCardsInfo}
                     isLoading={isResendInviteLoading}
                     resendID={resendInfo.id}
-                    isAdmin={isAdmin}
+                    isUserAdmin={isAdmin}
                     resendInvite={(inviteeName, inviteeID, inviteeEmail) =>
                       resendInvite(
                         inviteeName,

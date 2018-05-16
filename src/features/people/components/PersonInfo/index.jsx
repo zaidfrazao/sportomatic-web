@@ -150,7 +150,7 @@ class PersonInfo extends Component {
       phoneNumber: "Loading",
       profilePicture: "",
       sports: [],
-      status: "STAFF"
+      isAdmin: false
     };
 
     if (info) {
@@ -163,7 +163,8 @@ class PersonInfo extends Component {
         lastName: info.info.surname,
         phoneNumber: info.info.phoneNumber,
         profilePicture: info.info.profilePictureURL,
-        status: info.institutions[activeInstitutionID].status
+        isAdmin:
+          info.institutions[activeInstitutionID].roles.admin === "APPROVED"
       };
     }
 
@@ -374,10 +375,9 @@ class PersonInfo extends Component {
     return isManager;
   }
 
-  getPersonRolesHeading(personTeams, personStatus) {
+  getPersonRolesHeading(personTeams, isAdmin) {
     const { teams, personID } = this.props;
 
-    let isAdmin = personStatus === "ADMIN";
     let isManager = false;
     let isCoach = false;
 
@@ -418,7 +418,7 @@ class PersonInfo extends Component {
     const teams = this.getTeams();
     const isUserInfo = this.checkIfUserInfo();
     const isUserManager = this.checkIfUserManagesPerson(teams);
-    const personRolesHeading = this.getPersonRolesHeading(teams, info.status);
+    const personRolesHeading = this.getPersonRolesHeading(teams, info.isAdmin);
 
     if (!isMobile && infoTab) {
       return <Redirect to={`/myaccount/people/${personID}`} />;
