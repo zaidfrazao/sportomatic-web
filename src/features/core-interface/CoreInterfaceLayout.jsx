@@ -166,7 +166,7 @@ class CoreInterfaceLayout extends Component {
   getSideMenuItems() {
     return {
       overview: {
-        label: "Overview",
+        label: "News",
         icon: "fas fa-newspaper"
       },
       schedule: {
