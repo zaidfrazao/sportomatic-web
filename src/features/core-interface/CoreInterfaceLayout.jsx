@@ -259,11 +259,19 @@ class CoreInterfaceLayout extends Component {
 
     return _.toPairs(institutions)
       .map(([id, info]) => {
-        return {
-          id,
-          emblem: info.info.emblemURL,
-          name: info.info.name
+        let institutionInfo = {
+          id: "",
+          emblemURL: "",
+          name: ""
         };
+        if (info) {
+          institutionInfo = {
+            id,
+            emblem: info.info.emblemURL,
+            name: info.info.name
+          };
+        }
+        return institutionInfo;
       })
       .sort((communityA, communityB) => {
         if (communityA.name > communityB.name) return +1;
