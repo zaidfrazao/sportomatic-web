@@ -31,11 +31,11 @@ const styles = theme => ({
     overflow: "auto"
   },
   footer: {
+    borderRadius: "0 0 16px 16px",
     display: "block",
     width: "100%",
     height: 60,
-    backgroundColor: lightBlue[700],
-    borderTop: "1px solid #E0E0E0",
+    backgroundColor: grey[200],
     [`@media (max-width: ${mobileBreakpoint}px)`]: {
       display: "none"
     }
@@ -59,9 +59,9 @@ const styles = theme => ({
   },
   header: {
     display: "block",
-    backgroundColor: lightBlue[700],
+    backgroundColor: grey[200],
     height: 60,
-    borderBottom: "1px solid #E0E0E0",
+    borderRadius: "16px 16px 0 0",
     [`@media (max-width: ${mobileBreakpoint}px)`]: {
       display: "none"
     }
@@ -72,6 +72,7 @@ const styles = theme => ({
     margin: "24px auto 12px auto"
   },
   paper: {
+    borderRadius: 0,
     backgroundColor: common["white"],
     textAlign: "center",
     width: "100%",
@@ -80,7 +81,8 @@ const styles = theme => ({
     flexDirection: "column",
     [`@media (min-width: ${mobileBreakpoint}px)`]: {
       maxWidth: 480,
-      height: "auto"
+      height: "auto",
+      borderRadius: 16
     }
   },
   orLine: {
