@@ -396,7 +396,7 @@ class PeopleLayout extends Component {
     if (personID) {
       const hours = this.getHours();
       const wages = this.getWages();
-      console.log(hours);
+      console.log(wages);
 
       return (
         <div className={classes.root}>

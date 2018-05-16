@@ -1,14 +1,9 @@
 import React, { Component } from "react";
 import injectSheet from "react-jss";
 import moment from "moment";
-// import { common, grey, red } from "../../../../../../utils/colours";
 import DateSelector from "./components/DateSelector";
 import MonthSelector from "./components/MonthSelector";
 import HoursTable from "./components/HoursTable";
-
-// const mobileBreakpoint = 800;
-// const tabletBreakpoint = 1080;
-
 const styles = {
   separator: {
     height: 12
@@ -114,7 +109,7 @@ class Hours extends Component {
           handleNextMonth={() => this.nextMonth()}
         />
         <div className={classes.separator} />
-        <HoursTable hours={hours} />
+        <HoursTable hours={hours} dateSelected={dateSelectedMoment.toDate()} />
         <MonthSelector
           isMobile={isMobile}
           isOpen={isMonthSelectorOpen}
