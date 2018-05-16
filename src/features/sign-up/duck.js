@@ -560,6 +560,7 @@ export function updateAccount(
     const newUserRef = db.collection("users").doc(userID);
     batch.update(newUserRef, {
       "completeness.hasPassword": true,
+      "metadata.status": "ACTIVE",
       [`institutions.${userID}`]: {
         paymentDefaults: {
           rates: {

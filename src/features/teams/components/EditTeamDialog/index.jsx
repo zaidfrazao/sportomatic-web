@@ -310,10 +310,7 @@ class EditTeamDialog extends Component {
                 })}
               </Select>
             </FormControl>
-            <Button
-              aria-label="remove coach"
-              onClick={() => this.removeCoach(id)}
-            >
+            <Button slim handleClick={() => this.removeCoach(id)}>
               Remove coach
             </Button>
           </div>
@@ -372,10 +369,7 @@ class EditTeamDialog extends Component {
                 })}
               </Select>
             </FormControl>
-            <Button
-              aria-label="remove manager"
-              onClick={() => this.removeManager(id)}
-            >
+            <Button slim handleClick={() => this.removeManager(id)}>
               Remove manager
             </Button>
           </div>
@@ -691,8 +685,8 @@ class EditTeamDialog extends Component {
                       _.keys(managers).length ===
                       _.keys(selectedManagers).length
                     }
-                    aria-label="add manager"
-                    onClick={() => this.addManager(_.keys(managers).length)}
+                    filled
+                    handleClick={() => this.addManager(_.keys(managers).length)}
                   >
                     <AddIcon /> Add manager
                   </Button>
@@ -712,8 +706,8 @@ class EditTeamDialog extends Component {
                     disabled={
                       _.keys(coaches).length === _.keys(selectedCoaches).length
                     }
-                    aria-label="add coach"
-                    onClick={() => this.addCoach(_.keys(coaches).length)}
+                    filled
+                    handleClick={() => this.addCoach(_.keys(coaches).length)}
                   >
                     <AddIcon /> Add coach
                   </Button>

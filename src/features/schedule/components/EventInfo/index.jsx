@@ -103,13 +103,6 @@ class EventInfo extends Component {
     tabSelected: "details"
   };
 
-  componentWillMount() {
-    const { dateSelected, eventID } = this.props;
-    const { navigateTo } = this.props.actions;
-
-    navigateTo(`/myaccount/schedule/${dateSelected}/${eventID}`);
-  }
-
   updateTabSelected(newTab) {
     this.setState({
       tabSelected: newTab
@@ -285,6 +278,7 @@ class EventInfo extends Component {
             <div>
               <div className={classes.menuButtonWrapper}>
                 <Button
+                  type="dark"
                   colour="primary"
                   filled
                   fullWidth
@@ -299,6 +293,7 @@ class EventInfo extends Component {
               <div className={classes.buttonSeparator} />
               <div className={classes.menuButtonWrapper}>
                 <Button
+                  type="dark"
                   colour="primary"
                   filled
                   fullWidth
@@ -315,6 +310,7 @@ class EventInfo extends Component {
                   <div className={classes.buttonSeparator} />
                   <div className={classes.menuButtonWrapper}>
                     <Button
+                      type="dark"
                       colour="primary"
                       filled
                       fullWidth

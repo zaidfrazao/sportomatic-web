@@ -87,6 +87,11 @@ const styles = {
     color: common["white"],
     backgroundColor: grey[400]
   },
+  listItemSeparator: {
+    height: 1,
+    backgroundColor: grey[100],
+    margin: "6px 24px"
+  },
   listItemWrapper: {
     display: "flex",
     alignItems: "center",
@@ -200,61 +205,136 @@ class Details extends Component {
   getTeamItems() {
     const { classes, teams, navigateTo } = this.props;
 
-    return teams.map(info => (
-      <div
-        key={info.id}
-        className={classes.listItemWrapper}
-        onClick={() => navigateTo(`/myaccount/teams/${info.id}`)}
-      >
-        {info.name}
-      </div>
-    ));
+    const lastIndex = teams.length - 1;
+
+    return teams.map((info, index) => {
+      if (index !== lastIndex) {
+        return (
+          <div>
+            <div
+              key={info.id}
+              className={classes.listItemWrapper}
+              onClick={() => navigateTo(`/myaccount/teams/${info.id}`)}
+            >
+              {info.name}
+            </div>
+            <div className={classes.listItemSeparator} />
+          </div>
+        );
+      } else {
+        return (
+          <div
+            key={info.id}
+            className={classes.listItemWrapper}
+            onClick={() => navigateTo(`/myaccount/teams/${info.id}`)}
+          >
+            {info.name}
+          </div>
+        );
+      }
+    });
   }
 
   getCoachItems() {
     const { classes, coaches, navigateTo } = this.props;
 
-    return coaches.map(info => (
-      <div
-        key={info.id}
-        className={classes.listItemWrapper}
-        onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
-      >
-        <img
-          alt={info.name}
-          className={classes.profilePicture}
-          src={
-            info.profilePicture === ""
-              ? defaultProfilePicture
-              : info.profilePicture
-          }
-        />
-        {info.name}
-      </div>
-    ));
+    const lastIndex = coaches.length - 1;
+
+    return coaches.map((info, index) => {
+      if (index !== lastIndex) {
+        return (
+          <div>
+            <div
+              key={info.id}
+              className={classes.listItemWrapper}
+              onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+            >
+              <img
+                alt={info.name}
+                className={classes.profilePicture}
+                src={
+                  info.profilePicture === ""
+                    ? defaultProfilePicture
+                    : info.profilePicture
+                }
+              />
+              {info.name}
+            </div>
+            <div className={classes.listItemSeparator} />
+          </div>
+        );
+      } else {
+        return (
+          <div
+            key={info.id}
+            className={classes.listItemWrapper}
+            onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+          >
+            <img
+              alt={info.name}
+              className={classes.profilePicture}
+              src={
+                info.profilePicture === ""
+                  ? defaultProfilePicture
+                  : info.profilePicture
+              }
+            />
+            {info.name}
+          </div>
+        );
+      }
+    });
   }
 
   getManagerItems() {
     const { classes, managers, navigateTo } = this.props;
 
-    return managers.map(info => (
-      <div
-        key={info.id}
-        className={classes.listItemWrapper}
-        onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
-      >
-        <img
-          alt={info.name}
-          className={classes.profilePicture}
-          src={
-            info.profilePicture === ""
-              ? defaultProfilePicture
-              : info.profilePicture
-          }
-        />
-        {info.name}
-      </div>
-    ));
+    const lastIndex = managers.length - 1;
+
+    return managers.map((info, index) => {
+      if (index !== lastIndex) {
+        return (
+          <div>
+            <div
+              key={info.id}
+              className={classes.listItemWrapper}
+              onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+            >
+              <img
+                alt={info.name}
+                className={classes.profilePicture}
+                src={
+                  info.profilePicture === ""
+                    ? defaultProfilePicture
+                    : info.profilePicture
+                }
+              />
+              {info.name}
+            </div>
+            <div className={classes.listItemSeparator} />
+          </div>
+        );
+      } else {
+        return (
+          <div
+            key={info.id}
+            className={classes.listItemWrapper}
+            onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+          >
+            <img
+              alt={info.name}
+              className={classes.profilePicture}
+              src={
+                info.profilePicture === ""
+                  ? defaultProfilePicture
+                  : info.profilePicture
+              }
+            />
+            {info.name}
+          </div>
+        );
+      }
+    });
   }
 
   checkIfUserCoaching(userID) {
@@ -339,18 +419,19 @@ class Details extends Component {
           </div>
         )}
         <div className={classes.column}>
-          {isCoaching && (
-            <div className={classes.yourHoursWrapper}>
-              <YourHoursCard
-                coachID={userID}
-                hours={hours}
-                absenteeism={absenteeism}
-                eventTimes={times}
-                signIn={signIn}
-                signOut={signOut}
-              />
-            </div>
-          )}
+          {isCoaching &&
+            !isCancelled && (
+              <div className={classes.yourHoursWrapper}>
+                <YourHoursCard
+                  coachID={userID}
+                  hours={hours}
+                  absenteeism={absenteeism}
+                  eventTimes={times}
+                  signIn={signIn}
+                  signOut={signOut}
+                />
+              </div>
+            )}
           <div className={classes.section}>
             <div className={classes.dateWrapper}>{date}</div>
             <div className={classes.startEndWrapper}>

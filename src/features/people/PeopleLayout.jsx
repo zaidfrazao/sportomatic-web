@@ -1,6 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
+import moment from "moment";
 import AddIcon from "material-ui-icons/Add";
 import MuiButton from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
@@ -82,7 +83,12 @@ class PeopleLayout extends Component {
   componentWillMount() {
     const { activeInstitutionID } = this.props;
     const { personID } = this.props.match.params;
-    const { loadStaff, loadTeams, loadEventsByCoach } = this.props.actions;
+    const {
+      loadStaff,
+      loadTeams,
+      loadEventsByCoach,
+      loadWagesByCoach
+    } = this.props.actions;
 
     if (activeInstitutionID !== "") {
       loadStaff(activeInstitutionID);
@@ -90,6 +96,7 @@ class PeopleLayout extends Component {
 
       if (personID) {
         loadEventsByCoach(activeInstitutionID, personID);
+        loadWagesByCoach(activeInstitutionID, personID);
       }
     }
   }
@@ -101,6 +108,7 @@ class PeopleLayout extends Component {
       loadStaff,
       loadTeams,
       loadEventsByCoach,
+      loadWagesByCoach,
       resetState
     } = nextProps.actions;
 
@@ -135,6 +143,7 @@ class PeopleLayout extends Component {
       personID !== this.props.match.params.personID
     ) {
       loadEventsByCoach(activeInstitutionID, personID);
+      loadWagesByCoach(activeInstitutionID, personID);
     }
 
     this.setState({
@@ -393,6 +402,54 @@ class PeopleLayout extends Component {
     );
   }
 
+  getHours() {
+    const { personID } = this.props.match.params;
+    const { eventsByCoach } = this.props;
+
+    return _.toPairs(eventsByCoach)
+      .map(([eventID, eventInfo]) => {
+        const eventCoachInfo = eventInfo.coaches[personID];
+        if (eventCoachInfo) {
+          return {
+            id: eventID,
+            title: eventInfo.requiredInfo.title,
+            status: eventInfo.requiredInfo.status,
+            date: eventInfo.requiredInfo.times.start,
+            absenteeism: {
+              wasAbsent: eventInfo.coaches[personID].attendance.didAttend,
+              rating: eventInfo.coaches[personID].absenteeism.rating
+            },
+            hours: eventInfo.coaches[personID].hours
+          };
+        }
+      })
+      .sort((eventA, eventB) => {
+        const eventMomentA = moment(eventA.date);
+        const eventMomentB = moment(eventA.date);
+
+        if (eventMomentA.isBefore(eventMomentB)) return -1;
+        else if (eventMomentA.isAfter(eventMomentB)) return +1;
+        return 0;
+      });
+  }
+
+  getWages() {
+    const { wagesByCoach } = this.props;
+
+    return _.toPairs(wagesByCoach)
+      .map(([wageID, wageInfo]) => {
+        return { id: wageID, ...wageInfo };
+      })
+      .sort((wageA, wageB) => {
+        const wageMomentA = moment(wageA.date);
+        const wageMomentB = moment(wageB.date);
+
+        if (wageMomentA.isBefore(wageMomentB)) return -1;
+        else if (wageMomentA.isAfter(wageMomentB)) return +1;
+        return 0;
+      });
+  }
+
   render() {
     const {
       classes,
@@ -401,19 +458,20 @@ class PeopleLayout extends Component {
       isMobile,
       isTablet,
       activeInstitutionID,
-      eventsByCoach,
       role,
       paymentDefaults,
       userID,
       userName,
-      communityName
+      communityName,
+      navigateTo,
+      goBack,
+      isAdmin
     } = this.props;
-    const { inviteeID, inviteeInfo } = this.props.uiConfig;
+    const { inviteeID, inviteeInfo, resendInfo } = this.props.uiConfig;
     const {
       isCoachesLoading,
       isManagersLoading,
       isAdminsLoading,
-      isTeamsLoading,
       isInviteeLoading,
       isEditPersonLoading,
       isResendInviteLoading
@@ -436,37 +494,34 @@ class PeopleLayout extends Component {
       isInvitePersonModalOpen,
       isResendInviteAlertOpen
     } = this.props.dialogs;
-    const { personID } = this.props.match.params;
+    const { personID, infoTab } = this.props.match.params;
 
-    const staffCardsInfo = this.getStaffCardsInfo(
-      this.filterPeople(staff, false)
-    );
-    const ad = this.createAd();
-    const type = this.getType();
+    console.log(this.props.match);
 
-    return (
-      <div className={classes.root}>
-        {personID ? (
+    if (personID) {
+      const hours = this.getHours();
+      const wages = this.getWages();
+
+      return (
+        <div className={classes.root}>
           <div className={classes.infoWrapper}>
             <PersonInfo
+              userID={userID}
               role={role}
-              type={type}
               teams={teams}
               personID={personID}
               info={staff[personID]}
-              institutionID={activeInstitutionID}
-              isStaffLoading={
-                isCoachesLoading ||
-                isManagersLoading ||
-                isAdminsLoading ||
-                activeInstitutionID === ""
-              }
-              isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
-              eventsByPerson={{ ...eventsByCoach }}
+              activeInstitutionID={activeInstitutionID}
+              infoTab={infoTab}
+              isUserAdmin={isAdmin}
+              hours={hours}
+              wages={wages}
               isMobile={isMobile}
               isTablet={isTablet}
               actions={{
-                editPersonInfo: () => openEditPersonDialog()
+                navigateTo,
+                goBack,
+                editPerson: () => openEditPersonDialog()
               }}
             />
             <EditPersonDialog
@@ -487,7 +542,7 @@ class PeopleLayout extends Component {
                 closeModal: () => closeEditPersonDialog()
               }}
             />
-            {role === "admin" &&
+            {isAdmin &&
               isMobile && (
                 <MuiButton
                   fab
@@ -500,7 +555,16 @@ class PeopleLayout extends Component {
                 </MuiButton>
               )}
           </div>
-        ) : (
+        </div>
+      );
+    } else {
+      const staffCardsInfo = this.getStaffCardsInfo(
+        this.filterPeople(staff, false)
+      );
+      const ad = this.createAd();
+
+      return (
+        <div className={classes.root}>
           <div className={classes.tabsWrapper}>
             <div
               className={
@@ -509,22 +573,19 @@ class PeopleLayout extends Component {
                   : classes.staffTabNoCards
               }
             >
-              {role === "admin" &&
-                !isMobile && (
-                  <div className={classes.actionsBar}>
-                    <div className={classes.flexGrow} />
-                    <Button
-                      colour="secondary"
-                      filled
-                      handleClick={() => openInvitePersonModal()}
-                    >
-                      <i
-                        className={`fas fa-plus ${classes.iconAdjacentText}`}
-                      />
-                      Invite new person
-                    </Button>
-                  </div>
-                )}
+              {!isMobile && (
+                <div className={classes.actionsBar}>
+                  <div className={classes.flexGrow} />
+                  <Button
+                    colour="secondary"
+                    filled
+                    handleClick={() => openInvitePersonModal()}
+                  >
+                    <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
+                    Invite new person
+                  </Button>
+                </div>
+              )}
               <div className={classes.adWrapper}>{ad}</div>
               {activeInstitutionID === "" ||
               isCoachesLoading ||
@@ -538,6 +599,8 @@ class PeopleLayout extends Component {
                   <PeopleList
                     people={staffCardsInfo}
                     isLoading={isResendInviteLoading}
+                    resendID={resendInfo.id}
+                    isAdmin={isAdmin}
                     resendInvite={(inviteeName, inviteeID, inviteeEmail) =>
                       resendInvite(
                         inviteeName,
@@ -567,7 +630,7 @@ class PeopleLayout extends Component {
                   closeModal: () => closeInvitePersonModal()
                 }}
               />
-              {role === "admin" &&
+              {isAdmin &&
                 isMobile && (
                   <MuiButton
                     fab
@@ -581,15 +644,15 @@ class PeopleLayout extends Component {
                 )}
             </div>
           </div>
-        )}
-        <NotificationModal
-          isOpen={isResendInviteAlertOpen}
-          heading="Invite Email Resent"
-          message="Your invite was resent to this person."
-          handleOkClick={() => closeResendInviteAlert()}
-        />
-      </div>
-    );
+          <NotificationModal
+            isOpen={isResendInviteAlertOpen}
+            heading="Invite Email Resent"
+            message={`Your invite was resent to ${resendInfo.name}.`}
+            handleOkClick={() => closeResendInviteAlert()}
+          />
+        </div>
+      );
+    }
   }
 }
 

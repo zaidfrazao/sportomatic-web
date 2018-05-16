@@ -7,16 +7,14 @@ import { grey } from "../../utils/colours";
 import AppBar from "./components/AppBar";
 import Dashboard from "../dashboard/DashboardView";
 import DecisionModal from "../../components/DecisionModal";
-import Hours from "../hours/HoursView";
 import LoadingScreen from "../../components/LoadingScreen";
 import SwitchCommunitiesDialog from "./components/SwitchCommunitiesDialog";
-import Results from "../results/ResultsView";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
 import Settings from "../settings/SettingsView";
 import SideMenu from "./components/SideMenu";
 import Teams from "../teams/TeamsView";
-import Wages from "../wages/WagesView";
+
 import netballIcon from "./images/netball.png";
 import otherIcon from "./images/other.png";
 import rugbyIcon from "./images/rugby.png";
@@ -38,9 +36,6 @@ const styles = theme => ({
     display: "flex",
     height: "calc(100vh - 64px)"
   },
-  hide: {
-    display: "none"
-  },
   headerText: {
     fontSize: 24,
     margin: 24,
@@ -49,10 +44,6 @@ const styles = theme => ({
     borderRadius: 12,
     padding: "12px 18px",
     textAlign: "center"
-  },
-  menuButton: {
-    marginLeft: 12,
-    marginRight: 36
   },
   wrapper: {
     backgroundColor: grey[200]
@@ -150,12 +141,6 @@ class CoreInterfaceLayout extends Component {
       case "schedule":
         updateSideMenu("schedule");
         break;
-      case "hours":
-        updateSideMenu("hours");
-        break;
-      case "wages":
-        updateSideMenu("wages");
-        break;
       case "reports":
         updateSideMenu("reports");
         break;
@@ -167,9 +152,6 @@ class CoreInterfaceLayout extends Component {
         break;
       case "settings":
         updateSideMenu("settings");
-        break;
-      case "results":
-        updateSideMenu("results");
         break;
       default:
         updateSideMenu("overview");
@@ -268,6 +250,24 @@ class CoreInterfaceLayout extends Component {
     }
   }
 
+  getSwitchCommunitiesInfo() {
+    const { institutions } = this.props;
+
+    return _.toPairs(institutions)
+      .map(([id, info]) => {
+        return {
+          id,
+          emblem: info.info.emblemURL,
+          name: info.info.name
+        };
+      })
+      .sort((communityA, communityB) => {
+        if (communityA.name > communityB.name) return +1;
+        if (communityA.name < communityB.name) return -1;
+        return 0;
+      });
+  }
+
   render() {
     const { classes, institutions, history } = this.props;
     const {
@@ -306,24 +306,13 @@ class CoreInterfaceLayout extends Component {
 
     const communityRole = this.getRole();
     const userName = `${accountInfo.info.name} ${accountInfo.info.surname}`;
+    let isAdmin = false;
 
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
     const sideMenuItems = this.getSideMenuItems();
     const sportsItems = this.getSportsItems();
-    const switchCommunityInfo = _.toPairs(institutions)
-      .map(([id, info]) => {
-        return {
-          id,
-          emblem: info.info.emblemURL,
-          name: info.info.name
-        };
-      })
-      .sort((communityA, communityB) => {
-        if (communityA.name > communityB.name) return +1;
-        if (communityA.name < communityB.name) return -1;
-        return 0;
-      });
+    const switchCommunityInfo = this.getSwitchCommunitiesInfo();
 
     let communityName = "Default";
     let emblem = "";
@@ -389,6 +378,11 @@ class CoreInterfaceLayout extends Component {
     if (institutions[activeInstitutionID]) {
       const institutionRoles =
         accountInfo.institutions[activeInstitutionID].roles;
+
+      isAdmin =
+        accountInfo.institutions[activeInstitutionID].roles.admin ===
+        "APPROVED";
+
       availableRoles = [];
       institutionRoles.admin === "APPROVED" &&
         availableRoles.push({
@@ -525,73 +519,9 @@ class CoreInterfaceLayout extends Component {
                       institutions={institutions}
                     />
                   </Route>
-                  <Route exact path={"/myaccount/hours/"}>
-                    <Hours
-                      isMobile={isMobile}
-                      isTablet={isTablet}
-                      sportFilter={sportSelected}
-                      activeInstitutionID={activeInstitutionID}
-                      isAccountInfoLoading={isAccountInfoLoading}
-                      userID={userID}
-                      role={role}
-                      paymentDefaults={paymentDefaults}
-                      institutionCreationDate={institutionCreationDate}
-                    />
-                  </Route>
-                  <Route exact path={"/myaccount/hours/:coachID"}>
-                    <Hours
-                      isMobile={isMobile}
-                      isTablet={isTablet}
-                      sportFilter={sportSelected}
-                      activeInstitutionID={activeInstitutionID}
-                      isAccountInfoLoading={isAccountInfoLoading}
-                      userID={userID}
-                      role={role}
-                      paymentDefaults={paymentDefaults}
-                      institutionCreationDate={institutionCreationDate}
-                    />
-                  </Route>
-                  <Route exact path={"/myaccount/results/"}>
-                    <Results
-                      isMobile={isMobile}
-                      isTablet={isTablet}
-                      sportFilter={sportSelected}
-                      meAllFilter={meAllFilter}
-                      activeInstitutionID={activeInstitutionID}
-                      isAccountInfoLoading={isAccountInfoLoading}
-                      userID={userID}
-                      role={role}
-                      permissions={permissions}
-                    />
-                  </Route>
-                  <Route exact path={"/myaccount/results/:teamID"}>
-                    <Results
-                      isMobile={isMobile}
-                      isTablet={isTablet}
-                      sportFilter={sportSelected}
-                      meAllFilter={meAllFilter}
-                      activeInstitutionID={activeInstitutionID}
-                      isAccountInfoLoading={isAccountInfoLoading}
-                      userID={userID}
-                      role={role}
-                      permissions={permissions}
-                    />
-                  </Route>
-                  <Route exact path={"/myaccount/results/:teamID/:eventID"}>
-                    <Results
-                      isMobile={isMobile}
-                      isTablet={isTablet}
-                      sportFilter={sportSelected}
-                      meAllFilter={meAllFilter}
-                      activeInstitutionID={activeInstitutionID}
-                      isAccountInfoLoading={isAccountInfoLoading}
-                      userID={userID}
-                      role={role}
-                      permissions={permissions}
-                    />
-                  </Route>
                   <Route exact path={"/myaccount/people/"}>
                     <People
+                      isAdmin={isAdmin}
                       communityName={communityName}
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
@@ -603,10 +533,14 @@ class CoreInterfaceLayout extends Component {
                       userID={userID}
                       userName={userName}
                       role={role}
+                      institutionCreationDate={institutionCreationDate}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
                     />
                   </Route>
-                  <Route path={"/myaccount/people/:personID"}>
+                  <Route exact path={"/myaccount/people/:personID"}>
                     <People
+                      isAdmin={isAdmin}
                       communityName={communityName}
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
@@ -618,6 +552,28 @@ class CoreInterfaceLayout extends Component {
                       userID={userID}
                       userName={userName}
                       role={role}
+                      institutionCreationDate={institutionCreationDate}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/people/:personID/:infoTab"}>
+                    <People
+                      isAdmin={isAdmin}
+                      communityName={communityName}
+                      activeInstitutionID={activeInstitutionID}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      sportFilter={sportSelected}
+                      meAllFilter={meAllFilter}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      paymentDefaults={paymentDefaults}
+                      userID={userID}
+                      userName={userName}
+                      role={role}
+                      institutionCreationDate={institutionCreationDate}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
                     />
                   </Route>
                   <Route exact path={"/myaccount/teams/"}>
@@ -710,34 +666,6 @@ class CoreInterfaceLayout extends Component {
                       permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
-                    />
-                  </Route>
-                  <Route exact path={"/myaccount/wages"}>
-                    <Wages
-                      isMobile={isMobile}
-                      isTablet={isTablet}
-                      userID={userID}
-                      role={role}
-                      sportFilter={sportSelected}
-                      activeInstitutionID={activeInstitutionID}
-                      isAccountInfoLoading={isAccountInfoLoading}
-                      permissions={permissions}
-                      institutionCreationDate={institutionCreationDate}
-                      paymentDefaults={paymentDefaults}
-                    />
-                  </Route>
-                  <Route path={"/myaccount/wages/:coachID"}>
-                    <Wages
-                      isMobile={isMobile}
-                      isTablet={isTablet}
-                      userID={userID}
-                      role={role}
-                      sportFilter={sportSelected}
-                      activeInstitutionID={activeInstitutionID}
-                      isAccountInfoLoading={isAccountInfoLoading}
-                      permissions={permissions}
-                      institutionCreationDate={institutionCreationDate}
-                      paymentDefaults={paymentDefaults}
                     />
                   </Route>
                   <Route>

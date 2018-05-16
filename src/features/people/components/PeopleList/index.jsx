@@ -27,7 +27,14 @@ const styles = {
 
 class PeopleList extends Component {
   render() {
-    const { classes, people, resendInvite, isLoading } = this.props;
+    const {
+      classes,
+      people,
+      resendInvite,
+      isLoading,
+      resendID,
+      isAdmin
+    } = this.props;
 
     if (people.length > 0) {
       return (
@@ -44,13 +51,14 @@ class PeopleList extends Component {
                 key={personInfo.id}
               >
                 <PersonCard
+                  isAdmin={isAdmin}
                   name={personInfo.name}
                   surname={personInfo.surname}
                   profilePictureURL={personInfo.profilePictureURL}
                   type={personInfo.type}
                   id={personInfo.id}
                   status={personInfo.status}
-                  isLoading={isLoading}
+                  isLoading={isLoading && resendID === personInfo.id}
                   resendInvite={() =>
                     resendInvite(
                       personInfo.name,

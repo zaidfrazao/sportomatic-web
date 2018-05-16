@@ -38,6 +38,9 @@ export const REQUEST_RESEND_INVITE = `${NAMESPACE}/REQUEST_RESEND_INVITE`;
 export const RECEIVE_RESEND_INVITE = `${NAMESPACE}/RECEIVE_RESEND_INVITE`;
 export const ERROR_RESENDING_INVITE = `${NAMESPACE}/ERROR_RESENDING_INVITE`;
 export const CLOSE_RESEND_INVITE_ALERT = `${NAMESPACE}/CLOSE_RESEND_INVITE_ALERT`;
+export const REQUEST_WAGES_BY_COACH = `${NAMESPACE}/REQUEST_WAGES_BY_COACH`;
+export const RECEIVE_WAGES_BY_COACH = `${NAMESPACE}/RECEIVE_WAGES_BY_COACH`;
+export const ERROR_LOADING_WAGES_BY_COACH = `${NAMESPACE}/ERROR_LOADING_WAGES_BY_COACH`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -46,7 +49,11 @@ export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 export const uiConfigInitialState = {
   currentTab: "STAFF",
   inviteeID: "",
-  inviteeInfo: {}
+  inviteeInfo: {},
+  resendInfo: {
+    id: "",
+    name: ""
+  }
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -59,6 +66,14 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         inviteeID: action.payload.id,
         inviteeInfo: action.payload.info
+      };
+    case REQUEST_RESEND_INVITE:
+      return {
+        ...state,
+        resendInfo: {
+          id: action.payload.id,
+          name: action.payload.name
+        }
       };
     default:
       return state;
@@ -177,7 +192,8 @@ export const loadingStatusInitialState = {
   isInviteeLoading: false,
   isEditPersonLoading: false,
   isEventsByCoachLoading: false,
-  isResendInviteLoading: false
+  isResendInviteLoading: false,
+  isWagesByCoachLoading: false
 };
 
 function loadingStatusListReducer(
@@ -188,6 +204,17 @@ function loadingStatusListReducer(
     case RESET_STATE:
     case SIGN_OUT:
       return loadingStatusInitialState;
+    case REQUEST_WAGES_BY_COACH:
+      return {
+        ...state,
+        isWagesByCoachLoading: true
+      };
+    case ERROR_LOADING_WAGES_BY_COACH:
+    case RECEIVE_WAGES_BY_COACH:
+      return {
+        ...state,
+        isWagesByCoachLoading: false
+      };
     case REQUEST_STAFF:
       return {
         ...state,
@@ -276,11 +303,25 @@ function eventsByCoachReducer(state = {}, action = {}) {
   }
 }
 
+function wagesByCoachReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case REQUEST_WAGES_BY_COACH:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_WAGES_BY_COACH:
+      return action.payload.wages;
+    default:
+      return state;
+  }
+}
+
 export const peopleReducer = combineReducers({
   uiConfig: uiConfigReducer,
   staff: staffReducer,
   dialogs: dialogsReducer,
   loadingStatus: loadingStatusListReducer,
+  wagesByCoach: wagesByCoachReducer,
   teams: teamsReducer,
   filters: filterReducer,
   eventsByCoach: eventsByCoachReducer
@@ -295,6 +336,7 @@ const dialogs = state => state.people.dialogs;
 const loadingStatus = state => state.people.loadingStatus;
 const filters = state => state.people.filters;
 const eventsByCoach = state => state.people.eventsByCoach;
+const wagesByCoach = state => state.people.wagesByCoach;
 
 export const selector = createStructuredSelector({
   uiConfig,
@@ -303,7 +345,8 @@ export const selector = createStructuredSelector({
   loadingStatus,
   teams,
   filters,
-  eventsByCoach
+  eventsByCoach,
+  wagesByCoach
 });
 
 // Action Creators
@@ -626,7 +669,6 @@ export function loadEventsByCoach(institutionID, coachID) {
       .firestore()
       .collection("events")
       .where("institutionID", "==", institutionID)
-      .where("requiredInfo.status", "==", "ACTIVE")
       .where(`coaches.${coachID}.status`, "==", "ACTIVE");
 
     return eventsRef.onSnapshot(querySnapshot => {
@@ -639,9 +681,13 @@ export function loadEventsByCoach(institutionID, coachID) {
   };
 }
 
-export function requestResendInvite() {
+export function requestResendInvite(id, name) {
   return {
-    type: REQUEST_RESEND_INVITE
+    type: REQUEST_RESEND_INVITE,
+    payload: {
+      id,
+      name
+    }
   };
 }
 
@@ -668,7 +714,7 @@ export function resendInvite(
   communityName
 ) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestResendInvite());
+    dispatch(requestResendInvite(inviteeID, inviteeName));
 
     const sendInvite = firebase.functions().httpsCallable("resendInviteEmail");
 
@@ -685,5 +731,53 @@ export function resendInvite(
       .catch(error => {
         dispatch(errorResendingInvite(error));
       });
+  };
+}
+
+export function requestWagesByCoach() {
+  return {
+    type: REQUEST_WAGES_BY_COACH
+  };
+}
+
+export function receiveWagesByCoach(wages) {
+  return {
+    type: RECEIVE_WAGES_BY_COACH,
+    payload: {
+      wages
+    }
+  };
+}
+
+export function errorLoadingWagesByCoach(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_WAGES_BY_COACH,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadWagesByCoach(institutionID, coachID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestWagesByCoach());
+
+    let wagesRef = firebase
+      .firestore()
+      .collection("wages")
+      .orderBy("date", "desc")
+      .where("institutionID", "==", institutionID)
+      .where("coachID", "==", coachID);
+
+    return wagesRef.onSnapshot(querySnapshot => {
+      let wages = {};
+      querySnapshot.forEach(doc => {
+        wages[doc.id] = doc.data();
+      });
+      dispatch(receiveWagesByCoach(wages));
+    });
   };
 }

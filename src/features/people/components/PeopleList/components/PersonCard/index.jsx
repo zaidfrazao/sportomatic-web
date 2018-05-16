@@ -68,6 +68,7 @@ class PersonCard extends Component {
   render() {
     const {
       classes,
+      isAdmin,
       name,
       surname,
       profilePictureURL,
@@ -99,19 +100,20 @@ class PersonCard extends Component {
           />
         </div>
         <div className={classes.type}>{type}</div>
-        {status === "INACTIVE" && (
-          <div className={classes.resendButtonWrapper}>
-            <Button
-              colour="secondary"
-              slim
-              fullWidth
-              loading={isLoading}
-              handleClick={() => resendInvite()}
-            >
-              Resend invite
-            </Button>
-          </div>
-        )}
+        {isAdmin &&
+          status === "INACTIVE" && (
+            <div className={classes.resendButtonWrapper}>
+              <Button
+                colour="secondary"
+                slim
+                fullWidth
+                loading={isLoading}
+                handleClick={() => resendInvite()}
+              >
+                Resend invite
+              </Button>
+            </div>
+          )}
         <div className={classes.buttons}>
           <Route
             render={({ history }) => (
