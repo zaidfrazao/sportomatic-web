@@ -118,7 +118,7 @@ class PersonCard extends Component {
       surname,
       profilePictureURL,
       id,
-      status,
+      isSignedUp,
       resendInvite,
       isLoading,
       navigateTo
@@ -130,7 +130,7 @@ class PersonCard extends Component {
     return (
       <div className={classes.card}>
         <div className={classes.header}>{`${name} ${surname}`}</div>
-        {status === "INACTIVE" && (
+        {!isSignedUp && (
           <div className={classes.inactiveAlert}>
             <i className={`fas fa-exclamation ${classes.alertIcon}`} />Not yet
             signed up
@@ -149,7 +149,7 @@ class PersonCard extends Component {
           />
         </div>
         {isUserAdmin &&
-          status === "INACTIVE" && (
+          !isSignedUp && (
             <div className={classes.resendButtonWrapper}>
               <Button
                 colour="secondary"

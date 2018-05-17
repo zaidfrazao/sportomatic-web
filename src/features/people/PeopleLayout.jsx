@@ -182,7 +182,7 @@ class PeopleLayout extends Component {
             surname: value.info.surname,
             profilePictureURL: value.info.profilePictureURL,
             email: value.info.email,
-            status: value.metadata.status,
+            isSignedUp: value.completeness.hasPassword,
             isAdmin:
               value.institutions[activeInstitutionID].roles.admin === "APPROVED"
           };

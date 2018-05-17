@@ -63,7 +63,7 @@ class PeopleList extends Component {
                 surname={personInfo.surname}
                 profilePictureURL={personInfo.profilePictureURL}
                 id={personInfo.id}
-                status={personInfo.status}
+                isSignedUp={personInfo.isSignedUp}
                 teams={teams}
                 navigateTo={navigateTo}
                 isLoading={isLoading && resendID === personInfo.id}
