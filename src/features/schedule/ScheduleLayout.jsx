@@ -370,40 +370,6 @@ class ScheduleLayout extends Component {
     };
   }
 
-  getCoaches() {
-    const { activeInstitutionID, staff } = this.props;
-
-    return _.fromPairs(
-      _.toPairs(staff).filter(([id, info]) => {
-        if (
-          info.institutions[activeInstitutionID] &&
-          info.institutions[activeInstitutionID].roles.coach === "APPROVED"
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      })
-    );
-  }
-
-  getManagers() {
-    const { activeInstitutionID, staff } = this.props;
-
-    return _.fromPairs(
-      _.toPairs(staff).filter(([id, info]) => {
-        if (
-          info.institutions[activeInstitutionID] &&
-          info.institutions[activeInstitutionID].roles.manager === "APPROVED"
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      })
-    );
-  }
-
   checkIfEventPassed() {
     const { events } = this.props;
     const { eventID } = this.props.match.params;
@@ -444,8 +410,6 @@ class ScheduleLayout extends Component {
 
     const currentDate = new Date(Date.now());
     const filteredEvents = this.filterEvents();
-    const coaches = this.getCoaches();
-    const managers = this.getManagers();
     const eventErrorAlert = this.getEventErrorAlert();
     const ad = this.createAd();
 
@@ -515,6 +479,7 @@ class ScheduleLayout extends Component {
       isMobile,
       classes,
       activeInstitutionID,
+      staff,
       teams,
       events,
       role,
@@ -555,8 +520,6 @@ class ScheduleLayout extends Component {
     } = this.props.dialogs;
 
     const currentDate = new Date(Date.now());
-    const coaches = this.getCoaches();
-    const managers = this.getManagers();
     const isPastEvent = this.checkIfEventPassed();
     const eventErrorAlert = this.getEventErrorAlert();
     const eventInfo = events[eventID];
@@ -569,8 +532,8 @@ class ScheduleLayout extends Component {
             role={role}
             canEdit={canEdit}
             canCancel={canCancel}
-            coaches={coaches}
-            managers={managers}
+            coaches={staff}
+            managers={staff}
             teams={teams}
             info={eventInfo}
             eventID={eventID}
