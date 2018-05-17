@@ -1,15 +1,15 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
-import AddIcon from "material-ui-icons/Add";
-import { CircularProgress } from "material-ui/Progress";
-import EditIcon from "material-ui-icons/Edit";
-import MuiButton from "material-ui/Button";
+// import AddIcon from "material-ui-icons/Add";
+// import { CircularProgress } from "material-ui/Progress";
+// import EditIcon from "material-ui-icons/Edit";
+// import MuiButton from "material-ui/Button";
 import injectStyles from "react-jss";
-import AddTeamDialog from "./components/AddTeamDialog";
+// import AddTeamDialog from "./components/AddTeamDialog";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
-import EditTeamDialog from "./components/EditTeamDialog";
+// import EditTeamDialog from "./components/EditTeamDialog";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import TeamInfo from "./components/TeamInfo";
@@ -17,7 +17,7 @@ import TeamsList from "./components/TeamsList";
 
 const mobileBreakpoint = 800;
 
-const styles = theme => ({
+const styles = {
   actionsBar: {
     display: "flex",
     justifyContent: "center",
@@ -29,7 +29,7 @@ const styles = theme => ({
     justifyContent: "center"
   },
   button: {
-    margin: theme.spacing.unit,
+    margin: 8,
     position: "fixed",
     bottom: 72,
     right: 24,
@@ -84,7 +84,7 @@ const styles = theme => ({
     flexDirection: "column",
     overflow: "auto"
   }
-});
+};
 
 class TeamsLayout extends Component {
   state = {
@@ -297,7 +297,7 @@ class TeamsLayout extends Component {
                 }
               }}
             />
-            <EditTeamDialog
+            {/*<EditTeamDialog
               isOpen={isEditTeamDialogOpen}
               isMobile={isMobile}
               isLoading={
@@ -314,8 +314,8 @@ class TeamsLayout extends Component {
                 handleClose: closeEditTeamDialog,
                 editTeam
               }}
-            />
-            {isAdmin &&
+            />*/}
+            {/*isAdmin &&
               isMobile && (
                 <MuiButton
                   fab
@@ -326,7 +326,7 @@ class TeamsLayout extends Component {
                 >
                   <EditIcon />
                 </MuiButton>
-              )}
+              )*/}
           </div>
         ) : (
           <div
@@ -350,9 +350,7 @@ class TeamsLayout extends Component {
               )}
             <div className={classes.adWrapper}>{ad}</div>
             {isTeamsLoading || activeInstitutionID === "" ? (
-              <div className={classes.loaderWrapper}>
-                <CircularProgress />
-              </div>
+              <div className={classes.loaderWrapper} />
             ) : (
               <div>
                 <TeamsList
@@ -360,7 +358,7 @@ class TeamsLayout extends Component {
                   hasTeamsCreated={hasTeamsCreated}
                   navigateTo={navigateTo}
                 />
-                {isAdmin &&
+                {/*isAdmin &&
                   isMobile && (
                     <MuiButton
                       fab
@@ -371,12 +369,12 @@ class TeamsLayout extends Component {
                     >
                       <AddIcon />
                     </MuiButton>
-                  )}
+                  )*/}
               </div>
             )}
           </div>
         )}
-        <AddTeamDialog
+        {/*<AddTeamDialog
           isOpen={isAddTeamDialogOpen}
           isMobile={isMobile}
           isLoading={
@@ -391,7 +389,7 @@ class TeamsLayout extends Component {
             handleClose: closeAddTeamDialog,
             addTeam
           }}
-        />
+        />*/}
       </div>
     );
   }

@@ -2,22 +2,22 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import moment from "moment";
-import AddIcon from "material-ui-icons/Add";
-import MuiButton from "material-ui/Button";
+// import AddIcon from "material-ui-icons/Add";
+// import MuiButton from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
-import EditIcon from "material-ui-icons/Edit";
+// import EditIcon from "material-ui-icons/Edit";
 import injectStyles from "react-jss";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
-import EditPersonDialog from "./components/EditPersonDialog";
-import InvitePersonModal from "./components/InvitePersonModal";
+// import EditPersonDialog from "./components/EditPersonDialog";
+// import InvitePersonModal from "./components/InvitePersonModal";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import PeopleList from "./components/PeopleList";
 import PersonInfo from "./components/PersonInfo";
-import NotificationModal from "../../components/NotificationModal";
+// import NotificationModal from "../../components/NotificationModal";
 
-const styles = theme => ({
+const styles = {
   actionsBar: {
     display: "flex",
     justifyContent: "center",
@@ -72,7 +72,7 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column"
   }
-});
+};
 
 class PeopleLayout extends Component {
   state = {
@@ -388,7 +388,7 @@ class PeopleLayout extends Component {
                 editPerson: () => openEditPersonDialog()
               }}
             />
-            <EditPersonDialog
+            {/*<EditPersonDialog
               isOpen={isEditPersonDialogOpen}
               isMobile={isMobile}
               isLoading={
@@ -405,8 +405,8 @@ class PeopleLayout extends Component {
                 editPerson: (id, info) => editPerson(id, info),
                 closeModal: () => closeEditPersonDialog()
               }}
-            />
-            {isAdmin &&
+            />*/}
+            {/*isAdmin &&
               isMobile && (
                 <MuiButton
                   fab
@@ -417,7 +417,7 @@ class PeopleLayout extends Component {
                 >
                   <EditIcon />
                 </MuiButton>
-              )}
+              )*/}
           </div>
         </div>
       );
@@ -478,7 +478,7 @@ class PeopleLayout extends Component {
                   />
                 </div>
               )}
-              <InvitePersonModal
+              {/*<InvitePersonModal
                 isOpen={isInvitePersonModalOpen}
                 isMobile={isMobile}
                 isLoading={isInviteeLoading || activeInstitutionID === ""}
@@ -495,8 +495,8 @@ class PeopleLayout extends Component {
                   fetchInviteeInfo: email => fetchInviteeInfo(email),
                   closeModal: () => closeInvitePersonModal()
                 }}
-              />
-              {isAdmin &&
+              />*/}
+              {/*isAdmin &&
                 isMobile && (
                   <MuiButton
                     fab
@@ -507,15 +507,15 @@ class PeopleLayout extends Component {
                   >
                     <AddIcon />
                   </MuiButton>
-                )}
+                )*/}
             </div>
           </div>
-          <NotificationModal
+          {/*<NotificationModal
             isOpen={isResendInviteAlertOpen}
             heading="Invite Email Resent"
             message={`Your invite was resent to ${resendInfo.name}.`}
             handleOkClick={() => closeResendInviteAlert()}
-          />
+          />*/}
         </div>
       );
     }

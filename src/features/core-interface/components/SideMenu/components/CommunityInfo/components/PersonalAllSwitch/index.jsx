@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { common, grey, lightBlue } from "material-ui/colors";
+import { common, grey, lightBlue } from "../../../../../../../../utils/colours";
 import injectStyles from "react-jss";
 
-const styles = theme => ({
+const styles = {
   switchLeft: {
     borderRadius: "8px 0 0 8px",
     backgroundColor: grey[100],
@@ -62,7 +62,7 @@ const styles = theme => ({
     display: "flex",
     alignItems: "center"
   }
-});
+};
 
 type Props = {
   classes: {

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { LinearProgress } from "material-ui/Progress";
 import injectStyles from "react-jss";
 import logo from "./images/logo.png";
 
@@ -35,7 +34,6 @@ class LoadingScreen extends Component {
       <div className={classes.wrapper}>
         <div className={classes.itemsWrapper}>
           <img src={logo} alt="Sportomatic Logo" className={classes.logo} />
-          <LinearProgress className={classes.loader} />
         </div>
       </div>
     );

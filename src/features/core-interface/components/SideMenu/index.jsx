@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import { common, grey, lightBlue } from "material-ui/colors";
+import { common, grey, lightBlue } from "../../../../utils/colours";
 import injectStyles from "react-jss";
 import CommunityInfo from "./components/CommunityInfo";
 import defaultEmblem from "./images/default-emblem.jpg";
 
 const mobileBreakpoint = 800;
 
-const styles = theme => ({
+const styles = {
   menu: {
     padding: "12px 0",
     flex: 1
@@ -108,7 +108,7 @@ const styles = theme => ({
     height: "calc(100vh - 64px)",
     overflow: "auto"
   }
-});
+};
 
 type Props = {
   classes: {

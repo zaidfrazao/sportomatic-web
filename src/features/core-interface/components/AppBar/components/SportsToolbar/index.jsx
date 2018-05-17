@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import { common, grey, lightBlue } from "material-ui/colors";
+import { common, grey, lightBlue } from "../../../../../../utils/colours";
 import injectStyles from "react-jss";
 
 const styles = theme => ({

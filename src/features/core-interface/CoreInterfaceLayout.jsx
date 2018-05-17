@@ -6,12 +6,11 @@ import injectStyles from "react-jss";
 import { grey } from "../../utils/colours";
 import AppBar from "./components/AppBar";
 import Dashboard from "../dashboard/DashboardView";
-import DecisionModal from "../../components/DecisionModal";
+// import DecisionModal from "../../components/DecisionModal";
 import LoadingScreen from "../../components/LoadingScreen";
-import SwitchCommunitiesDialog from "./components/SwitchCommunitiesDialog";
+// import SwitchCommunitiesDialog from "./components/SwitchCommunitiesDialog";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
-import Settings from "../settings/SettingsView";
 import SideMenu from "./components/SideMenu";
 import Teams from "../teams/TeamsView";
 
@@ -20,7 +19,7 @@ import otherIcon from "./images/other.png";
 import rugbyIcon from "./images/rugby.png";
 import soccerIcon from "./images/soccer.png";
 
-const styles = theme => ({
+const styles = {
   content: {
     maxWidth: 1200,
     margin: "0 auto"
@@ -48,7 +47,7 @@ const styles = theme => ({
   wrapper: {
     backgroundColor: grey[200]
   }
-});
+};
 
 class CoreInterfaceLayout extends Component {
   constructor(props, context) {
@@ -509,28 +508,6 @@ class CoreInterfaceLayout extends Component {
                       permissions={permissions}
                     />
                   </Route>
-                  <Route exact path={"/myaccount/settings/"}>
-                    <Settings
-                      isMobile={isMobile}
-                      isTablet={isTablet}
-                      userID={userID}
-                      activeInstitutionID={activeInstitutionID}
-                      accountInfo={accountInfo}
-                      isAccountInfoLoading={isAccountInfoLoading}
-                      institutions={institutions}
-                    />
-                  </Route>
-                  <Route exact path={"/myaccount/settings/:institutionID"}>
-                    <Settings
-                      isMobile={isMobile}
-                      isTablet={isTablet}
-                      userID={userID}
-                      activeInstitutionID={activeInstitutionID}
-                      accountInfo={accountInfo}
-                      isAccountInfoLoading={isAccountInfoLoading}
-                      institutions={institutions}
-                    />
-                  </Route>
                   <Route exact path={"/myaccount/people/"}>
                     <People
                       isAdmin={isAdmin}
@@ -718,7 +695,7 @@ class CoreInterfaceLayout extends Component {
               </div>
             </div>
           </div>
-          <DecisionModal
+          {/*<DecisionModal
             isOpen={isLogOutModalOpen}
             handleYesClick={() => {
               signOut();
@@ -727,8 +704,8 @@ class CoreInterfaceLayout extends Component {
             handleNoClick={closeLogOutModal}
             heading="Log Out"
             message="Are you sure you want to log out?"
-          />
-          <SwitchCommunitiesDialog
+          />*/}
+          {/*<SwitchCommunitiesDialog
             isOpen={isManageInstitutionsDialogOpen}
             isMobile={isMobile}
             communities={switchCommunityInfo}
@@ -741,7 +718,7 @@ class CoreInterfaceLayout extends Component {
                 closeManageInstitutionsDialog();
               }
             }}
-          />
+          />*/}
         </div>
       );
     }

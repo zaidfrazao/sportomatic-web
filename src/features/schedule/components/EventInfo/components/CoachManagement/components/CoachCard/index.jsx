@@ -9,9 +9,9 @@ import {
   red
 } from "../../../../../../../../utils/colours";
 import Button from "../../../../../../../../components/Button";
-import EditTimesDialog from "./components/EditTimesDialog";
+// import EditTimesDialog from "./components/EditTimesDialog";
 import defaultProfilePicture from "./images/default-profile-picture.png";
-import MarkAbsentDialog from "./components/MarkAbsentDialog";
+// import MarkAbsentDialog from "./components/MarkAbsentDialog";
 
 const styles = {
   absentBadWrapper: {
@@ -308,12 +308,12 @@ class CoachCard extends Component {
           >
             Mark absent
           </Button>
-          <MarkAbsentDialog
+          {/*<MarkAbsentDialog
             isOpen={isMarkAbsentDialogOpen}
             name={name}
             closeDialog={() => this.toggleMarkAbsentDialog()}
             updateAbsent={rating => updateAbsent(coachID, rating)}
-          />
+          />*/}
         </div>
       );
     } else {
@@ -327,7 +327,7 @@ class CoachCard extends Component {
           >
             Edit times
           </Button>
-          <EditTimesDialog
+          {/*<EditTimesDialog
             isOpen={isEditTimesDialogOpen}
             name={name}
             status={hours.status}
@@ -337,7 +337,7 @@ class CoachCard extends Component {
             closeDialog={() => this.toggleEditTimesDialog()}
             updateTimes={(signInTime, signOutTime) =>
               updateTimes(coachID, signInTime, signOutTime)}
-          />
+          />*/}
         </div>
       );
     }

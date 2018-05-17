@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { grey, lightBlue } from "material-ui/colors";
+import { grey, lightBlue } from "../../../../utils/colours";
 import injectStyles from "react-jss";
 import SportsToolbar from "./components/SportsToolbar";
 import logo from "./images/logo.png";

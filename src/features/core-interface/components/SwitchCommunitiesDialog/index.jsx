@@ -5,7 +5,7 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from "material-ui/Dialog";
-import { common, grey, lightBlue } from "material-ui/colors";
+import { common, grey, lightBlue } from "../../../../utils/colours";
 import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 import defaultEmblem from "./images/default-emblem.jpg";

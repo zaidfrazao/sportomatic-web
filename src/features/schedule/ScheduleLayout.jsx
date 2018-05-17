@@ -3,19 +3,19 @@ import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
 import moment from "moment";
-import MuiButton from "material-ui/Button";
+// import MuiButton from "material-ui/Button";
 import { Redirect } from "react-router-dom";
-import AddEventDialog from "./components/AddEventDialog";
+// import AddEventDialog from "./components/AddEventDialog";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
 import EventsList from "./components/EventsList";
 import { common } from "../../utils/colours";
-import DecisionModal from "../../components/DecisionModal";
-import EditEventDialog from "./components/EditEventDialog";
+// import DecisionModal from "../../components/DecisionModal";
+// import EditEventDialog from "./components/EditEventDialog";
 import EventInfo from "./components/EventInfo";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
-import NotificationModal from "../../components/NotificationModal";
+// import NotificationModal from "../../components/NotificationModal";
 
 const styles = {
   adWrapper: {
@@ -474,7 +474,7 @@ class ScheduleLayout extends Component {
             institutionCreationDate={institutionCreationDate}
             navigateTo={navigateTo}
           />
-          <AddEventDialog
+          {/*<AddEventDialog
             isOpen={isAddEventDialogOpen}
             isMobile={isTablet}
             isLoading={
@@ -495,14 +495,14 @@ class ScheduleLayout extends Component {
               addEvent,
               openEventErrorAlert
             }}
-          />
-          <NotificationModal
+          />*/}
+          {/*<NotificationModal
             isOpen={isEventErrorAlertOpen}
             handleOkClick={closeEventErrorAlert}
             heading={eventErrorAlert.heading}
             message={eventErrorAlert.message}
-          />
-          {canCreate &&
+          />*/}
+          {/*canCreate &&
             isMobile && (
               <MuiButton
                 fab
@@ -512,7 +512,7 @@ class ScheduleLayout extends Component {
               >
                 <i className="fas fa-plus" />
               </MuiButton>
-            )}
+            )*/}
         </div>
       </div>
     );
@@ -619,7 +619,7 @@ class ScheduleLayout extends Component {
               uncancelEvent: openUncancelEventAlert
             }}
           />
-          {canEdit &&
+          {/*canEdit &&
             !isPastEvent &&
             isMobile && (
               <MuiButton
@@ -630,8 +630,8 @@ class ScheduleLayout extends Component {
               >
                 <i className="fas fa-edit" />
               </MuiButton>
-            )}
-          <EditEventDialog
+            )*/}
+          {/*<EditEventDialog
             isOpen={isEditEventDialogOpen}
             isLoading={
               isEditEventDialogLoading ||
@@ -655,14 +655,14 @@ class ScheduleLayout extends Component {
               editEvent,
               openEventErrorAlert
             }}
-          />
-          <NotificationModal
+          />*/}
+          {/*<NotificationModal
             isOpen={isEventErrorAlertOpen}
             handleOkClick={closeEventErrorAlert}
             heading={eventErrorAlert.heading}
             message={eventErrorAlert.message}
-          />
-          <DecisionModal
+          />*/}
+          {/*<DecisionModal
             isOpen={isCancelEventAlertOpen}
             handleYesClick={() => {
               cancelEvent(eventID);
@@ -671,8 +671,8 @@ class ScheduleLayout extends Component {
             handleNoClick={closeCancelEventAlert}
             heading="Cancel Event"
             message="Are you sure you want to cancel this event?"
-          />
-          <DecisionModal
+          />*/}
+          {/*<DecisionModal
             isOpen={isUncancelEventAlertOpen}
             handleYesClick={() => {
               uncancelEvent(eventID);
@@ -681,7 +681,7 @@ class ScheduleLayout extends Component {
             handleNoClick={closeUncancelEventAlert}
             heading="Uncancel Event"
             message="Are you sure you want to uncancel this event?"
-          />
+          />*/}
         </div>
       </div>
     );

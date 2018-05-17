@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Grid from "material-ui/Grid";
 import injectStyles from "react-jss";
 import { grey } from "../../../../utils/colours";
 import TeamCard from "./components/TeamCard";
@@ -32,19 +31,17 @@ class TeamsList extends Component {
     if (teams.length > 0) {
       return (
         <div className={classes.wrapper}>
-          <Grid container direction="row" spacing={40} align="stretch">
-            {teams.map(teamInfo => (
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={4} key={teamInfo.id}>
-                <TeamCard
-                  name={teamInfo.name}
-                  sport={teamInfo.sport}
-                  id={teamInfo.id}
-                  status={teamInfo.status}
-                  navigateTo={navigateTo}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          {teams.map(teamInfo => (
+            <div key={teamInfo.id}>
+              <TeamCard
+                name={teamInfo.name}
+                sport={teamInfo.sport}
+                id={teamInfo.id}
+                status={teamInfo.status}
+                navigateTo={navigateTo}
+              />
+            </div>
+          ))}
         </div>
       );
     } else {

@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { grey } from "material-ui/colors";
-import Grid from "material-ui/Grid";
-import Typography from "material-ui/Typography";
+import { grey } from "../../../../utils/colours";
 import injectStyles from "react-jss";
 import PersonCard from "./components/PersonCard";
 
@@ -41,50 +39,34 @@ class PeopleList extends Component {
     if (people.length > 0) {
       return (
         <div className={classes.cardsWrapper}>
-          <Grid container direction="row" spacing={40} align="stretch">
-            {people.map(personInfo => (
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={6}
-                lg={4}
-                xl={4}
-                key={personInfo.id}
-              >
-                <PersonCard
-                  isUserAdmin={isUserAdmin}
-                  isAdmin={personInfo.isAdmin}
-                  name={personInfo.name}
-                  surname={personInfo.surname}
-                  profilePictureURL={personInfo.profilePictureURL}
-                  id={personInfo.id}
-                  status={personInfo.status}
-                  teams={teams}
-                  navigateTo={navigateTo}
-                  isLoading={isLoading && resendID === personInfo.id}
-                  resendInvite={() =>
-                    resendInvite(
-                      personInfo.name,
-                      personInfo.id,
-                      personInfo.email
-                    )}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          {people.map(personInfo => (
+            <div key={personInfo.id}>
+              <PersonCard
+                isUserAdmin={isUserAdmin}
+                isAdmin={personInfo.isAdmin}
+                name={personInfo.name}
+                surname={personInfo.surname}
+                profilePictureURL={personInfo.profilePictureURL}
+                id={personInfo.id}
+                status={personInfo.status}
+                teams={teams}
+                navigateTo={navigateTo}
+                isLoading={isLoading && resendID === personInfo.id}
+                resendInvite={() =>
+                  resendInvite(
+                    personInfo.name,
+                    personInfo.id,
+                    personInfo.email
+                  )}
+              />
+            </div>
+          ))}
         </div>
       );
     } else {
       return (
         <div className={classes.noCardsWrapper}>
-          <Typography
-            type="title"
-            component="h3"
-            className={classes.noCardsText}
-          >
-            No person found
-          </Typography>
+          <div className={classes.noCardsText}>No person found</div>
         </div>
       );
     }

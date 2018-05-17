@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { common, lightBlue } from "material-ui/colors";
+import { common, lightBlue } from "../../../../../../utils/colours";
 import injectStyles from "react-jss";
 import Button from "../../../../../../components/Button";
 import PersonalAllSwitch from "./components/PersonalAllSwitch";
@@ -7,7 +7,7 @@ import RoleSwitcher from "./components/RoleSwitcher";
 
 const mobileBreakpoint = 800;
 
-const styles = theme => ({
+const styles = {
   buttonIcon: {
     marginRight: 8
   },
@@ -60,7 +60,7 @@ const styles = theme => ({
     justifyContent: "center",
     alignItems: "cen  buttonWrapper: {},ter"
   }
-});
+};
 
 type Props = {
   classes: {

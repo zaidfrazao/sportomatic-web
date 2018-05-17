@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { grey } from "material-ui/colors";
+import { grey } from "../../utils/colours";
 
 class BannerAd extends Component {
   constructor(props) {

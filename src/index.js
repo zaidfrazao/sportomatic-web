@@ -1,27 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
-import { getStore } from "./utils/redux";
-import { MuiThemeProvider } from "material-ui/styles";
+import { ThemeProvider } from "react-jss";
 import { Provider } from "react-redux";
 import App from "./app/App";
-import defineMUITheme from "./utils/mui-theme";
-import registerServiceWorker from "./utils/register-service-worker";
+import { getStore } from "./utils/redux";
 import { initFirebase } from "./utils/firebase";
+import registerServiceWorker from "./utils/register-service-worker";
 import "./index.css";
 
 initFirebase();
-const theme = defineMUITheme();
+const theme = {};
 const store = getStore();
 
 ReactDOM.render(
-  <MuiThemeProvider theme={theme}>
+  <ThemeProvider theme={theme}>
     <Provider store={store}>
       <Router>
         <App />
       </Router>
     </Provider>
-  </MuiThemeProvider>,
+  </ThemeProvider>,
   document.getElementById("root")
 );
 

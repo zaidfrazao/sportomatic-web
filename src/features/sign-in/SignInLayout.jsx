@@ -5,8 +5,8 @@ import logo from "./images/logo.png";
 import Button from "../../components/Button";
 import { common, grey, lightBlue } from "../../utils/colours";
 import LoadingScreen from "../../components/LoadingScreen";
-import NotificationModal from "../../components/NotificationModal";
-import PasswordResetDialog from "./components/PasswordResetDialog";
+// import NotificationModal from "../../components/NotificationModal";
+// import PasswordResetDialog from "./components/PasswordResetDialog";
 import TextField from "../../components/TextField";
 
 const mobileBreakpoint = 800;
@@ -303,7 +303,7 @@ class SignInLayout extends Component {
           </div>
           <div className={classes.footer} />
         </div>
-        <PasswordResetDialog
+        {/*<PasswordResetDialog
           isOpen={isPasswordResetDialogOpen}
           closeDialog={closePasswordResetDialog}
           email={passwordResetEmail}
@@ -311,8 +311,8 @@ class SignInLayout extends Component {
           isLoading={isPasswordResetLoading}
           sendEmail={sendPasswordResetEmail}
           emailError={passwordResetEmailErrors}
-        />
-        <NotificationModal
+        />*/}
+        {/*<NotificationModal
           isOpen={isPasswordResetSuccessModalOpen}
           handleOkClick={closePasswordResetSuccessModal}
           heading="Password Reset Email Sent"
@@ -323,7 +323,7 @@ class SignInLayout extends Component {
           handleOkClick={closeNetworkFailureModal}
           heading="Network Failure"
           message="You have been disconnected from the internet. Please reconnect and try again."
-        />
+        />*/}
       </div>
     );
   }
