@@ -62,6 +62,7 @@ const styles = {
   },
   rowIcon: {
     textAlign: "center",
+    color: common["black"],
     backgroundColor: grey[100],
     padding: "8px 0",
     width: 32,
@@ -70,6 +71,7 @@ const styles = {
   rowIconLast: {
     borderRadius: "0 0 0 8px",
     textAlign: "center",
+    color: common["black"],
     backgroundColor: grey[100],
     padding: "8px 0",
     width: 32,
