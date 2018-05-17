@@ -167,6 +167,10 @@ class CoreInterfaceLayout extends Component {
         label: "News",
         icon: "fas fa-newspaper"
       },
+      reports: {
+        label: "Reports",
+        icon: "fas fa-clipboard"
+      },
       schedule: {
         label: "Events",
         icon: "fas fa-calendar"
@@ -177,11 +181,11 @@ class CoreInterfaceLayout extends Component {
       },
       teams: {
         label: "Teams",
-        icon: "fas fa-users"
+        icon: "fas fa-user-friends"
       },
-      reports: {
-        label: "Reports",
-        icon: "fas fa-clipboard"
+      communities: {
+        label: "Communities",
+        icon: "fas fa-users"
       },
       settings: {
         label: "Settings",

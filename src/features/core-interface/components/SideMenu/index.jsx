@@ -89,6 +89,7 @@ const styles = {
     borderRight: `2px solid ${grey[300]}`
   },
   wrapperMobileClosed: {
+    zIndex: 2,
     transition: "0.5s",
     backgroundColor: "white",
     position: "absolute",
@@ -98,6 +99,7 @@ const styles = {
     overflow: "auto"
   },
   wrapperMobileOpen: {
+    zIndex: 2,
     transition: "0.5s",
     backgroundColor: "white",
     left: 0,
@@ -142,7 +144,7 @@ class SideMenu extends Component<Props> {
     const { changeSelected, toggleSideNav } = this.props.actions;
 
     return _.toPairs(items).map(([key, item]) => {
-      if (key === "reports" || key === "settings") {
+      if (key === "reports" || key === "settings" || key === "communities") {
         return (
           <div
             key={`side-menu-item-${key}`}
