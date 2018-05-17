@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { grey, lightBlue } from "material-ui/colors";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import SportsToolbar from "./components/SportsToolbar";
 import logo from "./images/logo.png";
 
@@ -120,4 +120,4 @@ class AppBar extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(AppBar);
+export default injectStyles(styles)(AppBar);

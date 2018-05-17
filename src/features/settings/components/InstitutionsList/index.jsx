@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Grid from "material-ui/Grid";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import InstitutionCard from "./components/InstitutionCard";
 
 const styles = {
@@ -43,4 +43,4 @@ class InstitutionsList extends Component {
   }
 }
 
-export default withStyles(styles)(InstitutionsList);
+export default injectStyles(styles)(InstitutionsList);

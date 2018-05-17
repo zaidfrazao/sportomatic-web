@@ -19,7 +19,7 @@ import {
 import HoursApprovedIcon from "material-ui-icons/AssignmentTurnedIn";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import moment from "moment";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
 import defaultProfilePicture from "./image/default-profile-picture.png";
@@ -755,4 +755,4 @@ class DashboardLayout extends Component {
   }
 }
 
-export default withStyles(styles)(DashboardLayout);
+export default injectStyles(styles)(DashboardLayout);

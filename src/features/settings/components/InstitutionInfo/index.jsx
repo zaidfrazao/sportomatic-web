@@ -20,7 +20,7 @@ import Switch from "material-ui/Switch";
 import TextField from "material-ui/TextField";
 import Toolbar from "material-ui/Toolbar";
 import Typography from "material-ui/Typography";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import BannerAd from "../../../../components/BannerAd";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
@@ -898,4 +898,4 @@ class InstitutionInfo extends Component {
   }
 }
 
-export default withStyles(styles)(InstitutionInfo);
+export default injectStyles(styles)(InstitutionInfo);

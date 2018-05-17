@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import PersonCard from "./components/PersonCard";
 
 const styles = {
@@ -91,4 +91,4 @@ class PeopleList extends Component {
   }
 }
 
-export default withStyles(styles)(PeopleList);
+export default injectStyles(styles)(PeopleList);

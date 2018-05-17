@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import { Redirect } from "react-router-dom";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 import BannerAd from "../../../../components/BannerAd";
 import Hours from "./components/Hours";
@@ -499,4 +499,4 @@ class PersonInfo extends Component {
   }
 }
 
-export default withStyles(styles)(PersonInfo);
+export default injectStyles(styles)(PersonInfo);

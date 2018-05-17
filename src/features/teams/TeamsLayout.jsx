@@ -5,7 +5,7 @@ import AddIcon from "material-ui-icons/Add";
 import { CircularProgress } from "material-ui/Progress";
 import EditIcon from "material-ui-icons/Edit";
 import MuiButton from "material-ui/Button";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import AddTeamDialog from "./components/AddTeamDialog";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
@@ -397,4 +397,4 @@ class TeamsLayout extends Component {
   }
 }
 
-export default withStyles(styles)(TeamsLayout);
+export default injectStyles(styles)(TeamsLayout);

@@ -3,7 +3,7 @@ import Button from "material-ui/Button";
 import Card, { CardActions, CardContent, CardMedia } from "material-ui/Card";
 import { Route } from "react-router-dom";
 import Typography from "material-ui/Typography";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import defaultEmblem from "../../../../image/default-emblem.jpg";
 
 const styles = {
@@ -70,4 +70,4 @@ class InstitutionCard extends Component {
   }
 }
 
-export default withStyles(styles)(InstitutionCard);
+export default injectStyles(styles)(InstitutionCard);

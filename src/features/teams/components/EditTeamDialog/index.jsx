@@ -15,7 +15,7 @@ import Select from "material-ui/Select";
 import Slide from "material-ui/transitions/Slide";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 
 const styles = {
@@ -771,4 +771,4 @@ class EditTeamDialog extends Component {
   }
 }
 
-export default withStyles(styles)(EditTeamDialog);
+export default injectStyles(styles)(EditTeamDialog);

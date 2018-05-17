@@ -3,7 +3,7 @@ import _ from "lodash";
 import { Redirect } from "react-router-dom";
 import Tabs, { Tab } from "material-ui/Tabs";
 import Typography from "material-ui/Typography";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import BannerAd from "../../components/BannerAd";
 import InstitutionInfo from "./components/InstitutionInfo";
 import InstitutionsList from "./components/InstitutionsList";
@@ -202,4 +202,4 @@ class SettingsLayout extends Component {
   }
 }
 
-export default withStyles(styles)(SettingsLayout);
+export default injectStyles(styles)(SettingsLayout);

@@ -21,7 +21,7 @@ import Select from "material-ui/Select";
 import Slide from "material-ui/transitions/Slide";
 import TextField from "material-ui/TextField";
 import Typography from "material-ui/Typography";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 import { isValidEmail } from "../../../../utils/validation";
 import defaultProfilePicture from "../../image/default-profile-picture.png";
@@ -772,4 +772,4 @@ class InvitePersonModal extends Component {
   }
 }
 
-export default withStyles(styles)(InvitePersonModal);
+export default injectStyles(styles)(InvitePersonModal);

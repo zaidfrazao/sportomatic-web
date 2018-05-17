@@ -12,7 +12,7 @@ import NextIcon from "material-ui-icons/ArrowForward";
 import Next2Icon from "material-ui-icons/LastPage";
 import PreviousIcon from "material-ui-icons/ArrowBack";
 import Previous2Icon from "material-ui-icons/FirstPage";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import EventsList from "../EventsList";
 
 const mobileBreakpoint = 800;
@@ -709,4 +709,4 @@ class Calendar extends Component {
   }
 }
 
-export default withStyles(styles)(Calendar);
+export default injectStyles(styles)(Calendar);

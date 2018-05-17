@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { LinearProgress } from "material-ui/Progress";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import logo from "./images/logo.png";
 
 const styles = theme => ({
@@ -42,4 +42,4 @@ class LoadingScreen extends Component {
   }
 }
 
-export default withStyles(styles)(LoadingScreen);
+export default injectStyles(styles)(LoadingScreen);

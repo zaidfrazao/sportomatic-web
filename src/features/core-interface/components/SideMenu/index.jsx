@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import { common, grey, lightBlue } from "material-ui/colors";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import CommunityInfo from "./components/CommunityInfo";
 import defaultEmblem from "./images/default-emblem.jpg";
 
@@ -242,4 +242,4 @@ class SideMenu extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(SideMenu);
+export default injectStyles(styles)(SideMenu);

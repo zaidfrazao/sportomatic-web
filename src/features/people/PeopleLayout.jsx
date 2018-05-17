@@ -6,7 +6,7 @@ import AddIcon from "material-ui-icons/Add";
 import MuiButton from "material-ui/Button";
 import { CircularProgress } from "material-ui/Progress";
 import EditIcon from "material-ui-icons/Edit";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
 import EditPersonDialog from "./components/EditPersonDialog";
@@ -522,4 +522,4 @@ class PeopleLayout extends Component {
   }
 }
 
-export default withStyles(styles)(PeopleLayout);
+export default injectStyles(styles)(PeopleLayout);

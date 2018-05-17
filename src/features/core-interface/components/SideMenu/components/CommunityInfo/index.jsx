@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { common, lightBlue } from "material-ui/colors";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import Button from "../../../../../../components/Button";
 import PersonalAllSwitch from "./components/PersonalAllSwitch";
 import RoleSwitcher from "./components/RoleSwitcher";
@@ -136,4 +136,4 @@ class CommunityInfo extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(CommunityInfo);
+export default injectStyles(styles)(CommunityInfo);

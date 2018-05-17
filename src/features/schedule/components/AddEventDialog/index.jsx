@@ -23,7 +23,7 @@ import Switch from "material-ui/Switch";
 import TextField from "material-ui/TextField";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 
 const styles = {
@@ -1803,4 +1803,4 @@ class AddEventDialog extends Component {
   }
 }
 
-export default withStyles(styles)(AddEventDialog);
+export default injectStyles(styles)(AddEventDialog);

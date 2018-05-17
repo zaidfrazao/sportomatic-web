@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import { Redirect } from "react-router-dom";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 import BannerAd from "../../../../components/BannerAd";
 import { common, grey, lightBlue } from "../../../../utils/colours";
@@ -374,4 +374,4 @@ class TeamInfo extends Component {
   }
 }
 
-export default withStyles(styles)(TeamInfo);
+export default injectStyles(styles)(TeamInfo);

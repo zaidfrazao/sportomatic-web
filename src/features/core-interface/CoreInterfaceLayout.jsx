@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import { Redirect, Route, Switch } from "react-router-dom";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import { grey } from "../../utils/colours";
 import AppBar from "./components/AppBar";
 import Dashboard from "../dashboard/DashboardView";
@@ -748,4 +748,4 @@ class CoreInterfaceLayout extends Component {
   }
 }
 
-export default withStyles(styles)(CoreInterfaceLayout);
+export default injectStyles(styles)(CoreInterfaceLayout);

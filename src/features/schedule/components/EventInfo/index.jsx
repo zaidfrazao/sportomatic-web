@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import moment from "moment";
 import { Redirect } from "react-router-dom";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 import BannerAd from "../../../../components/BannerAd";
 import CoachManagement from "./components/CoachManagement";
@@ -630,4 +630,4 @@ class EventInfo extends Component {
   }
 }
 
-export default withStyles(styles)(EventInfo);
+export default injectStyles(styles)(EventInfo);

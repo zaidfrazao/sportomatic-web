@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import { common, grey, lightBlue } from "material-ui/colors";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 
 const styles = theme => ({
   button: {
@@ -133,4 +133,4 @@ class SportsToolbar extends Component<Props> {
   }
 }
 
-export default withStyles(styles)(SportsToolbar);
+export default injectStyles(styles)(SportsToolbar);

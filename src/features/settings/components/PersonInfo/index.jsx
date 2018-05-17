@@ -8,7 +8,7 @@ import { common, grey } from "material-ui/colors";
 import Grid from "material-ui/Grid";
 import Input, { InputLabel } from "material-ui/Input";
 import TextField from "material-ui/TextField";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import BannerAd from "../../../../components/BannerAd";
 import Button from "../../../../components/Button";
 import { isValidEmail } from "../../../../utils/validation";
@@ -804,4 +804,4 @@ class PersonInfo extends Component {
   }
 }
 
-export default withStyles(styles)(PersonInfo);
+export default injectStyles(styles)(PersonInfo);

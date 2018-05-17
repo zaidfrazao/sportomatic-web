@@ -14,7 +14,7 @@ import {
 } from "material-ui/Form";
 import Input, { InputAdornment, InputLabel } from "material-ui/Input";
 import Select from "material-ui/Select";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 
 const styles = theme => ({
@@ -403,4 +403,4 @@ class EditPersonDialog extends Component {
   }
 }
 
-export default withStyles(styles)(EditPersonDialog);
+export default injectStyles(styles)(EditPersonDialog);

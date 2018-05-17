@@ -6,7 +6,7 @@ import Dialog, {
   DialogTitle
 } from "material-ui/Dialog";
 import { common, grey, lightBlue } from "material-ui/colors";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 import defaultEmblem from "./images/default-emblem.jpg";
 
@@ -148,4 +148,4 @@ class SwitchCommunitiesDialog extends Component {
   }
 }
 
-export default withStyles(styles)(SwitchCommunitiesDialog);
+export default injectStyles(styles)(SwitchCommunitiesDialog);

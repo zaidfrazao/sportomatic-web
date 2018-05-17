@@ -5,7 +5,7 @@ import { CircularProgress } from "material-ui/Progress";
 import { grey, lightBlue, orange, red } from "material-ui/colors";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import moment from "moment";
-import { withStyles } from "material-ui/styles";
+import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 
 const mobileBreakpoint = 800;
@@ -166,4 +166,4 @@ class EventsList extends Component {
   }
 }
 
-export default withStyles(styles)(EventsList);
+export default injectStyles(styles)(EventsList);
