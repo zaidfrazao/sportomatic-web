@@ -34,8 +34,6 @@ const styles = theme => ({
     color: lightBlue[500]
   },
   mobileMenuButton: {
-    boxShadow: `0 0 20px ${grey[500]}`,
-    zIndex: 10,
     width: 80,
     height: "100%",
     borderLeft: `1px solid ${grey[300]}`,

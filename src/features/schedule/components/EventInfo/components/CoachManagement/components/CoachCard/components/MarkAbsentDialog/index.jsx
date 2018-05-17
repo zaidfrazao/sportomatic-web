@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Dialog, { DialogContent } from "material-ui/Dialog";
 import injectSheet from "react-jss";
 import Button from "../../../../../../../../../../components/Button";
 import {
@@ -7,6 +6,7 @@ import {
   green,
   red
 } from "../../../../../../../../../../utils/colours";
+import Dialog from "../../../../../../../../../../components/Dialog";
 
 const styles = {
   absentButtonPositive: {
@@ -36,7 +36,8 @@ const styles = {
     }
   },
   absentButtonsWrapper: {
-    margin: "24px 0"
+    margin: "24px 0",
+    width: 260
   },
   absentIcon: {
     marginRight: 12
@@ -46,7 +47,8 @@ const styles = {
     flexGrow: 1
   },
   actionButtonsWrapper: {
-    display: "flex"
+    display: "flex",
+    width: 260
   },
   headingMain: {
     fontWeight: "bold",
@@ -55,7 +57,6 @@ const styles = {
     lineHeight: "32px"
   },
   wrapper: {
-    width: 260,
     margin: "0 auto",
     display: "flex",
     flexDirection: "column",
@@ -68,10 +69,15 @@ class MarkAbsentDialog extends Component {
   render() {
     const { classes, isOpen, closeDialog, name, updateAbsent } = this.props;
 
+    const actions = [
+      <Button colour="primary" slim handleClick={() => closeDialog()}>
+        Cancel
+      </Button>
+    ];
+
     return (
-      <Dialog open={isOpen} fullScreen>
-        <DialogContent className={classes.wrapper}>
-          <div className={classes.headingMain}>Mark {name} Absent</div>
+      <Dialog isOpen={isOpen} heading={`Mark ${name} Absent`} actions={actions}>
+        <div className={classes.wrapper}>
           <div className={classes.absentButtonsWrapper}>
             <div
               className={classes.absentButtonPositive}
@@ -88,17 +94,7 @@ class MarkAbsentDialog extends Component {
               Absent without excuse
             </div>
           </div>
-          <div className={classes.actionButtonsWrapper}>
-            <Button
-              colour="primary"
-              slim
-              fullWidth
-              handleClick={() => closeDialog()}
-            >
-              Cancel
-            </Button>
-          </div>
-        </DialogContent>
+        </div>
       </Dialog>
     );
   }

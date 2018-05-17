@@ -4,7 +4,7 @@ import _ from "lodash";
 import moment from "moment";
 // import AddIcon from "material-ui-icons/Add";
 // import MuiButton from "material-ui/Button";
-import { CircularProgress } from "material-ui/Progress";
+// import { CircularProgress } from "material-ui/Progress";
 // import EditIcon from "material-ui-icons/Edit";
 import injectStyles from "react-jss";
 import BannerAd from "../../components/BannerAd";
@@ -455,9 +455,7 @@ class PeopleLayout extends Component {
               isCoachesLoading ||
               isManagersLoading ||
               isAdminsLoading ? (
-                <div className={classes.loaderWrapper}>
-                  <CircularProgress />
-                </div>
+                <div className={classes.loaderWrapper} />
               ) : (
                 <div>
                   <PeopleList

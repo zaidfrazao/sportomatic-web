@@ -1,19 +1,19 @@
 import React, { Component } from "react";
-import Dialog, { DialogContent } from "material-ui/Dialog";
 import injectSheet from "react-jss";
 import moment from "moment";
 import Button from "../../../../../../../../../../components/Button";
 import { common, red } from "../../../../../../../../../../utils/colours";
+import Dialog from "../../../../../../../../../../components/Dialog";
 import Select from "../../../../../../../../../../components/Select";
 
 const styles = {
-  actionButton: {
-    margin: "0 12px",
-    flexGrow: 1
-  },
   actionButtonsWrapper: {
     width: 260,
-    display: "flex"
+    display: "flex",
+    flexDirection: "column"
+  },
+  buttonSeparator: {
+    height: 12
   },
   errorWrapper: {
     backgroundColor: red[500],
@@ -417,11 +417,27 @@ class EditTimesDialog extends Component {
     const { errors, signInTime, signOutTime } = this.state;
 
     const { minutes, hours, timeOfDay } = this.getTimeOptions();
+    const actions = [
+      <Button colour="primary" slim handleClick={() => closeDialog()}>
+        Cancel
+      </Button>,
+      <Button
+        colour="primary"
+        filled
+        slim
+        handleClick={() => this.validateTimes(signInTime, signOutTime)}
+      >
+        Update
+      </Button>
+    ];
 
     return (
-      <Dialog open={isOpen} fullScreen>
-        <DialogContent className={classes.wrapper}>
-          <div className={classes.headingMain}>Edit Times for {name}</div>
+      <Dialog
+        isOpen={isOpen}
+        heading={`Edit Times for ${name}`}
+        actions={actions}
+      >
+        <div className={classes.wrapper}>
           <div className={classes.headingTime}>Sign in</div>
           <div className={classes.timeInputGroupWrapper}>
             <div className={classes.timeInputWrapper}>
@@ -489,31 +505,7 @@ class EditTimesDialog extends Component {
           {errors.signOut.message.length > 0 && (
             <div className={classes.errorWrapper}>{errors.signOut.message}</div>
           )}
-          <div className={classes.sectionSeparator} />
-          <div className={classes.actionButtonsWrapper}>
-            <div className={classes.actionButton}>
-              <Button
-                colour="primary"
-                slim
-                fullWidth
-                handleClick={() => closeDialog()}
-              >
-                Cancel
-              </Button>
-            </div>
-            <div className={classes.actionButton}>
-              <Button
-                colour="primary"
-                filled
-                slim
-                fullWidth
-                handleClick={() => this.validateTimes(signInTime, signOutTime)}
-              >
-                Update
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
+        </div>
       </Dialog>
     );
   }
