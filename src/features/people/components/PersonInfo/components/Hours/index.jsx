@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import injectSheet from "react-jss";
 import moment from "moment";
 import DateSelector from "./components/DateSelector";
-import MonthSelector from "./components/MonthSelector";
+// import MonthSelector from "./components/MonthSelector";
 import HoursTable from "./components/HoursTable";
 const styles = {
   separator: {
@@ -110,7 +110,7 @@ class Hours extends Component {
         />
         <div className={classes.separator} />
         <HoursTable hours={hours} dateSelected={dateSelectedMoment.toDate()} />
-        <MonthSelector
+        {/*<MonthSelector
           isMobile={isMobile}
           isOpen={isMonthSelectorOpen}
           minDate={institutionCreationDate}
@@ -121,7 +121,7 @@ class Hours extends Component {
             this.toggleMonthSelector();
           }}
           closeDialog={() => this.toggleMonthSelector()}
-        />
+        />*/}
       </div>
     );
   }

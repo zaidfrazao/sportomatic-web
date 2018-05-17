@@ -8,7 +8,7 @@ import { Redirect } from "react-router-dom";
 import AddEventDialog from "./components/AddEventDialog";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
-import EventsList from "./components/EventsList2";
+import EventsList from "./components/EventsList";
 import { common } from "../../utils/colours";
 import DecisionModal from "../../components/DecisionModal";
 import EditEventDialog from "./components/EditEventDialog";

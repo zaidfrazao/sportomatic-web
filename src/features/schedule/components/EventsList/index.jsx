@@ -1,169 +1,201 @@
 import React, { Component } from "react";
-import _ from "lodash";
-import Avatar from "material-ui/Avatar";
-import { CircularProgress } from "material-ui/Progress";
-import { grey, lightBlue, orange, red } from "material-ui/colors";
-import List, { ListItem, ListItemText } from "material-ui/List";
+import injectSheet from "react-jss";
 import moment from "moment";
-import injectStyles from "react-jss";
-import Button from "../../../../components/Button";
+// import DateSelector from "./components/DateSelector";
+import DaysSelector from "./components/DaysSelector";
+import ListOfEvents from "./components/ListOfEvents";
 
-const mobileBreakpoint = 800;
-
-const styles = theme => ({
-  adWrapper: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    margin: "24px 0"
+const styles = {
+  separator: {
+    height: 12
   },
-  backButtonWrapper: {
-    margin: 12
-  },
-  cancelledEvent: {
-    backgroundColor: red[500]
-  },
-  competitiveEvent: {
-    backgroundColor: orange[500]
-  },
-  header: {
-    height: 98,
-    backgroundColor: lightBlue[700]
-  },
-  loaderWrapper: {
-    width: "100%",
-    textAlign: "center",
-    padding: "24px 0"
-  },
-  nonCompetitiveEvent: {
-    backgroundColor: lightBlue[500]
-  },
-  root: {
-    width: "100%",
-    height: "100%",
-    overflow: "auto",
-    borderRadius: "0 0 16px 16px",
-    [`@media (min-width: ${mobileBreakpoint}px)`]: {
-      backgroundColor: grey[100],
-      borderRadius: "0 0 16px 0"
-    }
-  },
-  timeHeading: {
-    padding: 12.5,
-    backgroundColor: lightBlue[900],
-    fontWeight: "normal",
-    color: grey[50]
+  wrapper: {
+    padding: 24
   }
-});
+};
 
 class EventsList extends Component {
-  getFullSortedEventsList(events) {
-    const { dateSelected } = this.props;
-    return _.toPairs(events)
-      .filter(
-        ([id, info]) =>
-          info.status !== "DELETED" &&
-          info.requiredInfo.times.start.toDateString() ===
-            new Date(dateSelected).toDateString()
-      )
-      .map(([id, info]) => {
-        return {
-          id,
-          ...info
-        };
-      })
-      .sort((eventA, eventB) => {
-        if (eventA.requiredInfo.startTime < eventB.requiredInfo.startTime)
-          return -1;
-        if (eventA.requiredInfo.startTime > eventB.requiredInfo.startTime)
-          return +1;
-        if (eventA.requiredInfo.endTime < eventB.requiredInfo.endTime)
-          return -1;
-        if (eventA.requiredInfo.endTime > eventB.requiredInfo.endTime)
-          return +1;
-        return 0;
-      });
+  state = {
+    dateSelectedMoment: moment(new Date(Date.now())),
+    isDateSelectorOpen: false
+  };
+
+  toggleDateSelector() {
+    const { isDateSelectorOpen } = this.state;
+
+    this.setState({
+      isDateSelectorOpen: !isDateSelectorOpen
+    });
+  }
+
+  updateDateSelected(newDate) {
+    this.setState({
+      dateSelectedMoment: moment(newDate)
+    });
+  }
+
+  prevWeek() {
+    const { dateSelectedMoment } = this.state;
+
+    const prevWeek = moment(dateSelectedMoment).subtract(1, "week");
+
+    this.setState({
+      dateSelectedMoment: prevWeek
+    });
+  }
+
+  nextWeek() {
+    const { dateSelectedMoment } = this.state;
+
+    const nextWeek = moment(dateSelectedMoment).add(1, "week");
+
+    this.setState({
+      dateSelectedMoment: nextWeek
+    });
+  }
+
+  prevDay() {
+    const { dateSelectedMoment } = this.state;
+
+    const prevDay = moment(dateSelectedMoment).subtract(1, "day");
+
+    this.setState({
+      dateSelectedMoment: prevDay
+    });
+  }
+
+  nextDay() {
+    const { dateSelectedMoment } = this.state;
+
+    const nextDay = moment(dateSelectedMoment).add(1, "day");
+
+    this.setState({
+      dateSelectedMoment: nextDay
+    });
+  }
+
+  getDateDisplay() {
+    const { isTablet } = this.props;
+    const { dateSelectedMoment } = this.state;
+
+    if (isTablet) return dateSelectedMoment.format("D MMM YY");
+
+    const startOfWeek = moment(dateSelectedMoment)
+      .startOf("week")
+      .format("D MMM YYYY");
+    const endOfWeek = moment(dateSelectedMoment)
+      .endOf("week")
+      .format("D MMM YYYY");
+    return `${startOfWeek} - ${endOfWeek}`;
+  }
+
+  checkIfPrevDisabled() {
+    const { institutionCreationDate, isTablet } = this.props;
+    const { dateSelectedMoment } = this.state;
+
+    const institutionCreationMoment = moment(institutionCreationDate);
+
+    if (isTablet) {
+      if (
+        institutionCreationMoment.date() === dateSelectedMoment.date() &&
+        institutionCreationMoment.month() === dateSelectedMoment.month() &&
+        institutionCreationMoment.year() === dateSelectedMoment.year()
+      ) {
+        return true;
+      }
+      return false;
+    } else {
+      if (
+        institutionCreationMoment.week() === dateSelectedMoment.week() &&
+        institutionCreationMoment.year() === dateSelectedMoment.year()
+      ) {
+        return true;
+      }
+      return false;
+    }
+  }
+
+  getDateToDisplay() {
+    const { dateSelectedMoment } = this.state;
+    const { isTablet } = this.props;
+
+    if (isTablet) {
+      return [dateSelectedMoment.toDate()];
+    } else {
+      let dates = [];
+      let startOfWeek = moment(dateSelectedMoment).startOf("week");
+      const endOfWeek = moment(dateSelectedMoment).endOf("week");
+
+      while (
+        startOfWeek.format("DD-MM-YYYY") !== endOfWeek.format("DD-MM-YYYY")
+      ) {
+        dates.push(startOfWeek.toDate());
+        startOfWeek.add(1, "day");
+      }
+      dates.push(startOfWeek.toDate());
+
+      return dates;
+    }
   }
 
   render() {
-    const { classes, dateSelected, isTablet, events, isLoading } = this.props;
-    const { updateView, navigateTo } = this.props.actions;
+    const {
+      classes,
+      institutionCreationDate,
+      isTablet,
+      isMobile,
+      events,
+      navigateTo
+    } = this.props;
+    const { dateSelectedMoment, isDateSelectorOpen } = this.state;
 
-    const allEvents = this.getFullSortedEventsList(events)
-      .filter(eventInfo => {
-        const status = eventInfo.requiredInfo.status;
-        return status === "ACTIVE" || status === "CANCELLED";
-      })
-      .map(eventInfo => {
-        const eventStartTime = moment(
-          eventInfo.requiredInfo.times.start
-        ).format("h:mm A");
-        const eventEndTime = moment(eventInfo.requiredInfo.times.end).format(
-          "h:mm A"
-        );
-        const status = eventInfo.requiredInfo.status;
-        const isCompetitive = eventInfo.requiredInfo.isCompetitive;
-
-        let avatarStyle = classes.nonCompetitiveEvent;
-        if (status === "CANCELLED") {
-          avatarStyle = classes.cancelledEvent;
-        } else if (isCompetitive) {
-          avatarStyle = classes.competitiveEvent;
-        }
-
-        return (
-          <ListItem
-            key={eventInfo.id}
-            button
-            onClick={() => {
-              navigateTo(`/myaccount/schedule/${dateSelected}/${eventInfo.id}`);
-              updateView("EVENT_INFO");
-            }}
-          >
-            <Avatar className={avatarStyle} />
-            <ListItemText
-              primary={eventInfo.requiredInfo.title}
-              secondary={`${eventStartTime} - ${eventEndTime}`}
-            />
-          </ListItem>
-        );
-      });
+    const dateDisplay = this.getDateDisplay();
+    const isPrevDisabled = this.checkIfPrevDisabled();
+    const datesToDisplay = this.getDateToDisplay();
 
     return (
-      <div className={classes.root}>
-        {isTablet && (
-          <div className={classes.backButtonWrapper}>
-            <Button
-              colour="primary"
-              fullWidth
-              filled
-              handleClick={() => updateView("SCHEDULE")}
-            >
-              Select date
-            </Button>
-          </div>
-        )}
-        <div className={classes.events}>
-          {isLoading ? (
-            <div className={classes.loaderWrapper}>
-              <CircularProgress />
-            </div>
-          ) : (
-            <List>
-              {allEvents.length > 0 ? (
-                allEvents
-              ) : (
-                <ListItem>
-                  <ListItemText primary="No events" />
-                </ListItem>
-              )}
-            </List>
-          )}
-        </div>
+      <div className={classes.wrapper}>
+        <DaysSelector
+          dateDisplay={dateDisplay}
+          isPrevDisabled={isPrevDisabled}
+          toggleDateSelector={() => this.toggleDateSelector()}
+          handlePrev={() => {
+            if (isTablet) {
+              this.prevDay();
+            } else {
+              this.prevWeek();
+            }
+          }}
+          handleNext={() => {
+            if (isTablet) {
+              this.nextDay();
+            } else {
+              this.nextWeek();
+            }
+          }}
+        />
+        <div className={classes.separator} />
+        <ListOfEvents
+          events={events}
+          isTablet={isTablet}
+          datesToDisplay={datesToDisplay}
+          dateSelected={dateSelectedMoment.toDate()}
+          navigateTo={navigateTo}
+        />
+        {/*<DateSelector
+          isMobile={isMobile}
+          isOpen={isDateSelectorOpen}
+          minDate={institutionCreationDate}
+          dateSelected={dateSelectedMoment.toDate()}
+          updateDateSelected={newDate => {
+            this.updateDateSelected(newDate);
+            this.toggleDateSelector();
+          }}
+          closeDialog={() => this.toggleDateSelector()}
+        />*/}
       </div>
     );
   }
 }
 
-export default injectStyles(styles)(EventsList);
+export default injectSheet(styles)(EventsList);

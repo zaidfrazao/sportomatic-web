@@ -7,7 +7,7 @@ import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 import BannerAd from "../../../../components/BannerAd";
 import CoachManagement from "./components/CoachManagement";
-import { common, grey, lightBlue } from "../../../../utils/colours";
+import { common, grey } from "../../../../utils/colours";
 import Details from "./components/Details";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
@@ -36,13 +36,13 @@ const styles = {
   },
   header: {
     margin: "0 24px",
-    padding: 12,
+    padding: 24,
     borderRadius: 16,
-    fontSize: 18,
+    fontSize: 20,
     textAlign: "center",
     fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: lightBlue[800]
+    color: grey[800],
+    backgroundColor: grey[100]
   },
   iconAdjacentText: {
     marginRight: 8

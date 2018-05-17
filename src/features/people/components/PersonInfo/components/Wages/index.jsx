@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import injectSheet from "react-jss";
 import moment from "moment";
 import DateSelector from "./components/DateSelector";
-import MonthSelector from "./components/MonthSelector";
+// import MonthSelector from "./components/MonthSelector";
 import WagesTable from "./components/WagesTable";
 
 const styles = {
@@ -111,7 +111,7 @@ class Wages extends Component {
         />
         <div className={classes.separator} />
         <WagesTable wages={wages} dateSelected={dateSelectedMoment.toDate()} />
-        <MonthSelector
+        {/*<MonthSelector
           isMobile={isMobile}
           isOpen={isMonthSelectorOpen}
           minDate={institutionCreationDate}
@@ -122,7 +122,7 @@ class Wages extends Component {
             this.toggleMonthSelector();
           }}
           closeDialog={() => this.toggleMonthSelector()}
-        />
+        />*/}
       </div>
     );
   }

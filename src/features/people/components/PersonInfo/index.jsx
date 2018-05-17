@@ -7,7 +7,7 @@ import Button from "../../../../components/Button";
 import BannerAd from "../../../../components/BannerAd";
 import Hours from "./components/Hours";
 import Wages from "./components/Wages";
-import { common, grey, lightBlue } from "../../../../utils/colours";
+import { common, grey } from "../../../../utils/colours";
 import Details from "./components/Details";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
@@ -36,13 +36,13 @@ const styles = {
   },
   header: {
     margin: "0 24px",
-    padding: 12,
+    padding: 24,
     borderRadius: 16,
-    fontSize: 18,
+    fontSize: 20,
     textAlign: "center",
     fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: lightBlue[800]
+    color: grey[800],
+    backgroundColor: grey[100]
   },
   iconAdjacentText: {
     marginRight: 8
@@ -91,14 +91,12 @@ const styles = {
     width: "calc(100% - 24px)"
   },
   subheader: {
-    margin: "12px 24px 0 24px",
-    padding: 12,
-    borderRadius: 16,
+    paddingTop: 8,
+    marginTop: 8,
     fontSize: 16,
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[300]
+    color: grey[700]
   },
   tabsWrapper: {
     margin: "0 24px 24px 24px"
@@ -453,10 +451,10 @@ class PersonInfo extends Component {
 
     return (
       <div className={classes.root}>
-        <div
-          className={classes.header}
-        >{`${info.firstName} ${info.lastName}`}</div>
-        <div className={classes.subheader}>{personRolesHeading}</div>
+        <div className={classes.header}>
+          {`${info.firstName} ${info.lastName}`}
+          <div className={classes.subheader}>{personRolesHeading}</div>
+        </div>
         <div className={classes.outerWrapper}>
           <div className={classes.actionsBar}>
             <div className={classes.buttonWrapper}>

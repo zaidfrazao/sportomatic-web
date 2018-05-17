@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import injectStyles from "react-jss";
 import moment from "moment";
-import { common, grey } from "../../../../../../utils/colours";
+import { common, grey, lightBlue } from "../../../../../../utils/colours";
 import EventCard from "./components/EventCard";
 
 const styles = {
@@ -10,22 +10,45 @@ const styles = {
     width: "14%",
     border: `1px solid ${grey[200]}`
   },
+  columnToday: {
+    width: "14%",
+    border: `1px solid ${grey[200]}`,
+    backgroundColor: lightBlue[50]
+  },
   columnLeft: {
     width: "14%",
     borderRadius: "16px 0 0 16px",
-    backgroundColor: grey[50],
+    backgroundColor: common["white"],
     border: `1px solid ${grey[200]}`
+  },
+  columnLeftToday: {
+    width: "14%",
+    borderRadius: "16px 0 0 16px",
+    border: `1px solid ${grey[200]}`,
+    backgroundColor: lightBlue[50]
   },
   columnRight: {
     width: "14%",
     borderRadius: "0 16px 16px 0",
-    backgroundColor: grey[50],
+    backgroundColor: common["white"],
     border: `1px solid ${grey[200]}`
+  },
+  columnRightToday: {
+    width: "14%",
+    borderRadius: "0 16px 16px 0",
+    border: `1px solid ${grey[200]}`,
+    backgroundColor: lightBlue[50]
   },
   columnTablet: {
     width: "100%",
     borderRadius: 16,
     border: `1px solid ${grey[200]}`
+  },
+  columnTabletToday: {
+    width: "100%",
+    borderRadius: 16,
+    border: `1px solid ${grey[200]}`,
+    backgroundColor: lightBlue[50]
   },
   header: {
     fontSize: 18,
@@ -163,15 +186,20 @@ class ListOfEvents extends Component {
 
   getColumns() {
     const { classes, datesToDisplay, isTablet } = this.props;
-    const today = moment(new Date(Date.now()));
+    const today = moment(new Date(Date.now())).format("DD-MM-YYYY");
 
     return datesToDisplay.map((date, index) => {
       const eventCards = this.getEventCards(date);
+      const isToday = moment(date).format("DD-MM-YYYY") === today;
 
       if (isTablet) {
         const formattedDate = moment(date).format("dddd");
         return (
-          <div className={classes.columnTablet}>
+          <div
+            className={
+              isToday ? classes.columnTabletToday : classes.columnTablet
+            }
+          >
             <div className={classes.headerTablet}>{formattedDate}</div>
             {eventCards}
           </div>
@@ -180,7 +208,9 @@ class ListOfEvents extends Component {
       if (index === 0) {
         const formattedDate = moment(date).format("ddd, D");
         return (
-          <div className={classes.columnLeft}>
+          <div
+            className={isToday ? classes.columnLeftToday : classes.columnLeft}
+          >
             <div className={classes.headerLeft}>{formattedDate}</div>
             {eventCards}
           </div>
@@ -189,7 +219,9 @@ class ListOfEvents extends Component {
       if (index === 6) {
         const formattedDate = moment(date).format("ddd, D");
         return (
-          <div className={classes.columnRight}>
+          <div
+            className={isToday ? classes.columnRightToday : classes.columnRight}
+          >
             <div className={classes.headerRight}>{formattedDate}</div>
             {eventCards}
           </div>
@@ -197,7 +229,7 @@ class ListOfEvents extends Component {
       }
       const formattedDate = moment(date).format("ddd, D");
       return (
-        <div className={classes.column}>
+        <div className={isToday ? classes.columnToday : classes.column}>
           <div className={classes.header}>{formattedDate}</div>
           {eventCards}
         </div>
