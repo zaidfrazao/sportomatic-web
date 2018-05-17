@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogTitle
-} from "material-ui/Dialog";
 import injectSheet from "react-jss";
 import Button from "../../../../components/Button";
+import Dialog from "../../../../components/Dialog";
 import TextField from "../../../../components/TextField";
 
 const styles = {
@@ -51,39 +47,37 @@ class PasswordResetDialog extends Component {
       emailError
     } = this.props;
 
+    const actions = [
+      <Button colour="primary" slim handleClick={() => closeDialog()}>
+        Cancel
+      </Button>,
+      <Button
+        loading={isLoading}
+        colour="primary"
+        slim
+        filled
+        handleClick={() => sendEmail(email)}
+      >
+        Send
+      </Button>
+    ];
+
     return (
-      <Dialog open={isOpen} onRequestClose={() => closeDialog()}>
-        <DialogTitle>Reset Password</DialogTitle>
-        <DialogContent>
-          <span>
-            Please specify the email address of the account for which you'd like
-            to reset the password.
-          </span>
-          <div className={classes.textFieldWrapper}>
-            <TextField
-              type="email"
-              value={email}
-              placeholder="Email"
-              validation={emailError.hasError ? "error" : "default"}
-              helperText={emailError.message}
-              handleChange={value => updateEmail(value)}
-            />
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button colour="primary" slim handleClick={() => closeDialog()}>
-            Cancel
-          </Button>
-          <Button
-            loading={isLoading}
-            colour="primary"
-            slim
-            filled
-            handleClick={() => sendEmail(email)}
-          >
-            Send
-          </Button>
-        </DialogActions>
+      <Dialog isOpen={isOpen} heading="Reset Password" actions={actions}>
+        <span>
+          Please specify the email address of the account for which you'd like
+          to reset the password.
+        </span>
+        <div className={classes.textFieldWrapper}>
+          <TextField
+            type="email"
+            value={email}
+            placeholder="Email"
+            validation={emailError.hasError ? "error" : "default"}
+            helperText={emailError.message}
+            handleChange={value => updateEmail(value)}
+          />
+        </div>
       </Dialog>
     );
   }

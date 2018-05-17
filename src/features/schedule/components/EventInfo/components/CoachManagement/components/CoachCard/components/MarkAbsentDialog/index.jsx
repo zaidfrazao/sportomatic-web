@@ -35,10 +35,6 @@ const styles = {
       backgroundColor: red[600]
     }
   },
-  absentButtonsWrapper: {
-    margin: "24px 0",
-    width: 260
-  },
   absentIcon: {
     marginRight: 12
   },
@@ -46,22 +42,11 @@ const styles = {
     margin: "0 12px",
     flexGrow: 1
   },
-  actionButtonsWrapper: {
-    display: "flex",
-    width: 260
-  },
   headingMain: {
     fontWeight: "bold",
     textAlign: "center",
     fontSize: 24,
     lineHeight: "32px"
-  },
-  wrapper: {
-    margin: "0 auto",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
   }
 };
 
@@ -77,23 +62,19 @@ class MarkAbsentDialog extends Component {
 
     return (
       <Dialog isOpen={isOpen} heading={`Mark ${name} Absent`} actions={actions}>
-        <div className={classes.wrapper}>
-          <div className={classes.absentButtonsWrapper}>
-            <div
-              className={classes.absentButtonPositive}
-              onClick={() => updateAbsent("GOOD")}
-            >
-              <i className={`fas fa-thumbs-up ${classes.absentIcon}`} />Absent
-              with excuse
-            </div>
-            <div
-              className={classes.absentButtonNegative}
-              onClick={() => updateAbsent("BAD")}
-            >
-              <i className={`fas fa-thumbs-down ${classes.absentIcon}`} />
-              Absent without excuse
-            </div>
-          </div>
+        <div
+          className={classes.absentButtonPositive}
+          onClick={() => updateAbsent("GOOD")}
+        >
+          <i className={`fas fa-thumbs-up ${classes.absentIcon}`} />Absent with
+          excuse
+        </div>
+        <div
+          className={classes.absentButtonNegative}
+          onClick={() => updateAbsent("BAD")}
+        >
+          <i className={`fas fa-thumbs-down ${classes.absentIcon}`} />
+          Absent without excuse
         </div>
       </Dialog>
     );

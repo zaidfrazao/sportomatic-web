@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import injectSheet from "react-jss";
 import moment from "moment";
-// import DateSelector from "./components/DateSelector";
+import DateSelector from "./components/DateSelector";
 import DaysSelector from "./components/DaysSelector";
 import ListOfEvents from "./components/ListOfEvents";
 
@@ -182,7 +182,7 @@ class EventsList extends Component {
           dateSelected={dateSelectedMoment.toDate()}
           navigateTo={navigateTo}
         />
-        {/*<DateSelector
+        <DateSelector
           isMobile={isMobile}
           isOpen={isDateSelectorOpen}
           minDate={institutionCreationDate}
@@ -192,7 +192,7 @@ class EventsList extends Component {
             this.toggleDateSelector();
           }}
           closeDialog={() => this.toggleDateSelector()}
-        />*/}
+        />
       </div>
     );
   }

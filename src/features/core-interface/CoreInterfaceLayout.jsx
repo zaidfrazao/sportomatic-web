@@ -6,9 +6,9 @@ import injectStyles from "react-jss";
 import { grey } from "../../utils/colours";
 import AppBar from "./components/AppBar";
 import Dashboard from "../dashboard/DashboardView";
-// import DecisionModal from "../../components/DecisionModal";
+import Dialog from "../../components/Dialog";
 import LoadingScreen from "../../components/LoadingScreen";
-// import SwitchCommunitiesDialog from "./components/SwitchCommunitiesDialog";
+import SwitchCommunitiesDialog from "./components/SwitchCommunitiesDialog";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
 import SideMenu from "./components/SideMenu";
@@ -694,7 +694,7 @@ class CoreInterfaceLayout extends Component {
               </div>
             </div>
           </div>
-          {/*<DecisionModal
+          <Dialog
             isOpen={isLogOutModalOpen}
             handleYesClick={() => {
               signOut();
@@ -702,9 +702,11 @@ class CoreInterfaceLayout extends Component {
             }}
             handleNoClick={closeLogOutModal}
             heading="Log Out"
-            message="Are you sure you want to log out?"
-          />*/}
-          {/*<SwitchCommunitiesDialog
+            type="decision"
+          >
+            Are you sure you want to log out?
+          </Dialog>
+          <SwitchCommunitiesDialog
             isOpen={isManageInstitutionsDialogOpen}
             isMobile={isMobile}
             communities={switchCommunityInfo}
@@ -717,7 +719,7 @@ class CoreInterfaceLayout extends Component {
                 closeManageInstitutionsDialog();
               }
             }}
-          />*/}
+          />
         </div>
       );
     }

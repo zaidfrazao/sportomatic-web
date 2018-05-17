@@ -3,10 +3,25 @@ import { grey } from "../../../../utils/colours";
 import injectStyles from "react-jss";
 import PersonCard from "./components/PersonCard";
 
+const mobileBreakpoint = 800;
+const tabletBreakpoint = 1080;
+
 const styles = {
   cardsWrapper: {
+    display: "flex",
+    flexWrap: "wrap",
     padding: 24,
     margin: "0 auto"
+  },
+  cardWrapper: {
+    padding: 24,
+    width: "calc(100% - 48px)",
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
+      width: "calc(50% - 48px)"
+    },
+    [`@media (min-width: ${tabletBreakpoint}px)`]: {
+      width: "calc(33% - 48px)"
+    }
   },
   noCardsText: {
     color: grey[500],
@@ -40,7 +55,7 @@ class PeopleList extends Component {
       return (
         <div className={classes.cardsWrapper}>
           {people.map(personInfo => (
-            <div key={personInfo.id}>
+            <div className={classes.cardWrapper} key={personInfo.id}>
               <PersonCard
                 isUserAdmin={isUserAdmin}
                 isAdmin={personInfo.isAdmin}

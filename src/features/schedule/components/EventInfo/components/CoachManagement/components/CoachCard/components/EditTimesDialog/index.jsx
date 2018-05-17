@@ -7,11 +7,6 @@ import Dialog from "../../../../../../../../../../components/Dialog";
 import Select from "../../../../../../../../../../components/Select";
 
 const styles = {
-  actionButtonsWrapper: {
-    width: 260,
-    display: "flex",
-    flexDirection: "column"
-  },
   buttonSeparator: {
     height: 12
   },
@@ -38,20 +33,13 @@ const styles = {
     fontSize: 18
   },
   timeInputGroupWrapper: {
-    display: "flex",
-    width: 260
+    display: "flex"
   },
   timeInputWrapper: {
     flexGrow: 1
   },
   sectionSeparator: {
     height: 24
-  },
-  wrapper: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
   }
 };
 
@@ -437,75 +425,73 @@ class EditTimesDialog extends Component {
         heading={`Edit Times for ${name}`}
         actions={actions}
       >
-        <div className={classes.wrapper}>
-          <div className={classes.headingTime}>Sign in</div>
-          <div className={classes.timeInputGroupWrapper}>
-            <div className={classes.timeInputWrapper}>
-              <Select
-                selectedItem={signInTime.hour}
-                items={hours}
-                validation={errors.signIn.hasError ? "error" : "default"}
-                handleChange={(key, label) =>
-                  this.updateSignInTime(label, "hour")}
-              />
-            </div>
-            <div className={classes.timeInputWrapper}>
-              <Select
-                selectedItem={signInTime.minute}
-                items={minutes}
-                validation={errors.signIn.hasError ? "error" : "default"}
-                handleChange={(key, label) =>
-                  this.updateSignInTime(label, "minute")}
-              />
-            </div>
-            <div className={classes.timeInputWrapper}>
-              <Select
-                selectedItem={signInTime.timeOfDay}
-                items={timeOfDay}
-                validation={errors.signIn.hasError ? "error" : "default"}
-                handleChange={(key, label) =>
-                  this.updateSignInTime(label, "timeOfDay")}
-              />
-            </div>
+        <div className={classes.headingTime}>Sign in</div>
+        <div className={classes.timeInputGroupWrapper}>
+          <div className={classes.timeInputWrapper}>
+            <Select
+              selectedItem={signInTime.hour}
+              items={hours}
+              validation={errors.signIn.hasError ? "error" : "default"}
+              handleChange={(key, label) =>
+                this.updateSignInTime(label, "hour")}
+            />
           </div>
-          {errors.signIn.message.length > 0 && (
-            <div className={classes.errorWrapper}>{errors.signIn.message}</div>
-          )}
-          <div className={classes.sectionSeparator} />
-          <div className={classes.headingTime}>Sign out</div>
-          <div className={classes.timeInputGroupWrapper}>
-            <div className={classes.timeInputWrapper}>
-              <Select
-                selectedItem={signOutTime.hour}
-                items={hours}
-                validation={errors.signOut.hasError ? "error" : "default"}
-                handleChange={(key, label) =>
-                  this.updateSignOutTime(label, "hour")}
-              />
-            </div>
-            <div className={classes.timeInputWrapper}>
-              <Select
-                selectedItem={signOutTime.minute}
-                items={minutes}
-                validation={errors.signOut.hasError ? "error" : "default"}
-                handleChange={(key, label) =>
-                  this.updateSignOutTime(label, "minute")}
-              />
-            </div>
-            <div className={classes.timeInputWrapper}>
-              <Select
-                selectedItem={signOutTime.timeOfDay}
-                items={timeOfDay}
-                validation={errors.signOut.hasError ? "error" : "default"}
-                handleChange={(key, label) =>
-                  this.updateSignOutTime(label, "timeOfDay")}
-              />
-            </div>
+          <div className={classes.timeInputWrapper}>
+            <Select
+              selectedItem={signInTime.minute}
+              items={minutes}
+              validation={errors.signIn.hasError ? "error" : "default"}
+              handleChange={(key, label) =>
+                this.updateSignInTime(label, "minute")}
+            />
           </div>
-          {errors.signOut.message.length > 0 && (
-            <div className={classes.errorWrapper}>{errors.signOut.message}</div>
-          )}
+          <div className={classes.timeInputWrapper}>
+            <Select
+              selectedItem={signInTime.timeOfDay}
+              items={timeOfDay}
+              validation={errors.signIn.hasError ? "error" : "default"}
+              handleChange={(key, label) =>
+                this.updateSignInTime(label, "timeOfDay")}
+            />
+          </div>
         </div>
+        {errors.signIn.message.length > 0 && (
+          <div className={classes.errorWrapper}>{errors.signIn.message}</div>
+        )}
+        <div className={classes.sectionSeparator} />
+        <div className={classes.headingTime}>Sign out</div>
+        <div className={classes.timeInputGroupWrapper}>
+          <div className={classes.timeInputWrapper}>
+            <Select
+              selectedItem={signOutTime.hour}
+              items={hours}
+              validation={errors.signOut.hasError ? "error" : "default"}
+              handleChange={(key, label) =>
+                this.updateSignOutTime(label, "hour")}
+            />
+          </div>
+          <div className={classes.timeInputWrapper}>
+            <Select
+              selectedItem={signOutTime.minute}
+              items={minutes}
+              validation={errors.signOut.hasError ? "error" : "default"}
+              handleChange={(key, label) =>
+                this.updateSignOutTime(label, "minute")}
+            />
+          </div>
+          <div className={classes.timeInputWrapper}>
+            <Select
+              selectedItem={signOutTime.timeOfDay}
+              items={timeOfDay}
+              validation={errors.signOut.hasError ? "error" : "default"}
+              handleChange={(key, label) =>
+                this.updateSignOutTime(label, "timeOfDay")}
+            />
+          </div>
+        </div>
+        {errors.signOut.message.length > 0 && (
+          <div className={classes.errorWrapper}>{errors.signOut.message}</div>
+        )}
       </Dialog>
     );
   }

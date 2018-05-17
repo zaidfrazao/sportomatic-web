@@ -13,8 +13,7 @@ const styles = {
   header: {
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
-    padding: "18px 0",
-    width: "100%",
+    padding: 24,
     textAlign: "center",
     fontWeight: "bold",
     color: grey[800],

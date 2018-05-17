@@ -24,8 +24,7 @@ const styles = {
   header: {
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
-    padding: "18px 0",
-    width: "100%",
+    padding: 24,
     textAlign: "center",
     fontWeight: "bold",
     color: grey[800],
@@ -41,19 +40,16 @@ const styles = {
     backgroundColor: red[500]
   },
   resendButtonWrapper: {
-    margin: 12
+    margin: "0 24px 24px 24px"
   },
   picture: {
-    borderRadius: 8,
     width: "100%",
-    height: "100%"
+    height: "auto",
+    backgroundColor: grey[300],
+    borderRadius: 12
   },
   pictureWrapper: {
-    borderRadius: 8,
-    width: 260,
-    height: 260,
-    backgroundColor: grey[300],
-    margin: "16px auto 0 auto"
+    padding: "0 24px 24px 24px"
   },
   roles: {
     color: grey[500],
@@ -140,6 +136,7 @@ class PersonCard extends Component {
             signed up
           </div>
         )}
+        <div className={classes.roles}>{roles}</div>
         <div className={classes.pictureWrapper}>
           <img
             className={classes.picture}
@@ -151,7 +148,6 @@ class PersonCard extends Component {
             alt={name}
           />
         </div>
-        <div className={classes.roles}>{roles}</div>
         {isUserAdmin &&
           status === "INACTIVE" && (
             <div className={classes.resendButtonWrapper}>

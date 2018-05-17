@@ -3,36 +3,50 @@ import injectStyles from "react-jss";
 import { grey } from "../../../../utils/colours";
 import TeamCard from "./components/TeamCard";
 
+const mobileBreakpoint = 800;
+const tabletBreakpoint = 1080;
+
 const styles = {
-  noTeamsText: {
+  cardsWrapper: {
+    display: "flex",
+    flexWrap: "wrap",
+    padding: 24,
+    margin: "0 auto"
+  },
+  cardWrapper: {
+    padding: 24,
+    width: "calc(100% - 48px)",
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
+      width: "calc(50% - 48px)"
+    },
+    [`@media (min-width: ${tabletBreakpoint}px)`]: {
+      width: "calc(33% - 48px)"
+    }
+  },
+  noCardsText: {
     color: grey[500],
     padding: 40,
     borderRadius: 16,
     border: `3px solid ${grey[300]}`
   },
-  noTeamsWrapper: {
+  noCardsWrapper: {
+    flexGrow: 1,
     display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
-    margin: 24
-  },
-  wrapper: {
-    padding: 24,
-    maxWidth: 1200,
-    margin: "0 auto"
+    justifyContent: "center",
+    margin: "24px auto"
   }
 };
 
 class TeamsList extends Component {
   render() {
-    const { classes, teams, hasTeamsCreated, navigateTo } = this.props;
+    const { classes, teams, navigateTo } = this.props;
 
     if (teams.length > 0) {
       return (
-        <div className={classes.wrapper}>
+        <div className={classes.cardsWrapper}>
           {teams.map(teamInfo => (
-            <div key={teamInfo.id}>
+            <div className={classes.cardWrapper} key={teamInfo.id}>
               <TeamCard
                 name={teamInfo.name}
                 sport={teamInfo.sport}
@@ -46,12 +60,8 @@ class TeamsList extends Component {
       );
     } else {
       return (
-        <div className={classes.noTeamsWrapper}>
-          <div className={classes.noTeamsText}>
-            {hasTeamsCreated
-              ? "No teams found"
-              : 'Press "+" to create your first team'}
-          </div>
+        <div className={classes.noCardsWrapper}>
+          <div className={classes.noCardsText}>No teams found</div>
         </div>
       );
     }

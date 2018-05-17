@@ -1,22 +1,19 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogTitle
-} from "material-ui/Dialog";
-import { common, grey, lightBlue } from "../../../../utils/colours";
 import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
+import { common, grey, lightBlue } from "../../../../utils/colours";
 import defaultEmblem from "./images/default-emblem.jpg";
+import Dialog from "../../../../components/Dialog";
 
 const mobileBreakpoint = 800;
 
 const styles = {
   community: {
+    maxWidth: 400,
     transition: "0.25s",
     fontSize: 14,
-    margin: "16px 0",
+    margin: "16px auto",
     borderRadius: 16,
     cursor: "pointer",
     backgroundColor: grey[100],
@@ -27,9 +24,10 @@ const styles = {
     }
   },
   communitySelected: {
+    maxWidth: 400,
     transition: "0.25s",
     borderRadius: 16,
-    margin: "16px 0",
+    margin: "16px auto",
     fontSize: 16,
     position: "relative",
     fontWeight: "bold",
@@ -117,32 +115,27 @@ class SwitchCommunitiesDialog extends Component {
 
   render() {
     const { selectedCommunityID } = this.state;
-    const { isOpen, isMobile } = this.props;
+    const { isOpen } = this.props;
     const { closeDialog, updateActiveCommunity } = this.props.actions;
 
     const communityItems = this.getCommunityItems();
+    const actions = [
+      <Button colour="primary" slim handleClick={() => closeDialog()}>
+        Close
+      </Button>,
+      <Button
+        colour="primary"
+        slim
+        filled
+        handleClick={() => updateActiveCommunity(selectedCommunityID)}
+      >
+        Switch
+      </Button>
+    ];
 
     return (
-      <Dialog
-        open={isOpen}
-        fullScreen={isMobile}
-        onRequestClose={() => closeDialog()}
-      >
-        <DialogTitle>Switch Community</DialogTitle>
-        <DialogContent>{communityItems}</DialogContent>
-        <DialogActions>
-          <Button colour="primary" slim handleClick={() => closeDialog()}>
-            Close
-          </Button>
-          <Button
-            colour="primary"
-            slim
-            filled
-            handleClick={() => updateActiveCommunity(selectedCommunityID)}
-          >
-            Switch
-          </Button>
-        </DialogActions>
+      <Dialog isOpen={isOpen} heading="Switch Community" actions={actions}>
+        {communityItems}
       </Dialog>
     );
   }

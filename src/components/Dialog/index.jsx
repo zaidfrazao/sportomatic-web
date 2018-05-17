@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import injectSheet from "react-jss";
+import Button from "../../components/Button";
 import { common, grey } from "../../utils/colours";
 
 const styles = {
@@ -34,14 +35,17 @@ const styles = {
   innerWrapper: {
     borderRadius: 16,
     backgroundColor: common["white"],
-    margin: "24px auto",
-    width: "80%",
-    maxHeight: "80%",
+    margin: 24,
+    minWidth: 260,
+    maxWidth: 600,
+    maxHeight: "calc(100% - 48px)",
     display: "flex",
     flexDirection: "column"
   },
   wrapper: {
-    display: props => (props.isOpen ? "block" : "none"),
+    display: props => (props.isOpen ? "flex" : "none"),
+    justifyContent: "center",
+    alignItems: "center",
     position: "fixed",
     top: 0,
     left: 0,
@@ -54,15 +58,47 @@ const styles = {
 class Dialog extends Component<Props> {
   static defaultProps = {
     actions: [],
-    heading: "Default"
+    heading: "Default",
+    type: "default"
   };
 
   getActionItems() {
-    const { classes, actions } = this.props;
+    const {
+      classes,
+      actions,
+      type,
+      handleYesClick,
+      handleNoClick,
+      handleOkClick
+    } = this.props;
 
-    return actions.map(action => (
-      <div className={classes.action}>{action}</div>
-    ));
+    switch (type) {
+      case "alert":
+        return (
+          <div className={classes.action}>
+            <Button slim filled handleClick={() => handleOkClick()}>
+              Ok
+            </Button>
+          </div>
+        );
+      case "decision":
+        return [
+          <div className={classes.action}>
+            <Button slim handleClick={() => handleNoClick()}>
+              No
+            </Button>
+          </div>,
+          <div className={classes.action}>
+            <Button slim filled handleClick={() => handleYesClick()}>
+              Yes
+            </Button>
+          </div>
+        ];
+      default:
+        return actions.map(action => (
+          <div className={classes.action}>{action}</div>
+        ));
+    }
   }
 
   render() {

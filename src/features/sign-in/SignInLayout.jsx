@@ -4,9 +4,9 @@ import injectSheet from "react-jss";
 import logo from "./images/logo.png";
 import Button from "../../components/Button";
 import { common, grey, lightBlue } from "../../utils/colours";
+import Dialog from "../../components/Dialog";
 import LoadingScreen from "../../components/LoadingScreen";
-// import NotificationModal from "../../components/NotificationModal";
-// import PasswordResetDialog from "./components/PasswordResetDialog";
+import PasswordResetDialog from "./components/PasswordResetDialog";
 import TextField from "../../components/TextField";
 
 const mobileBreakpoint = 800;
@@ -303,7 +303,7 @@ class SignInLayout extends Component {
           </div>
           <div className={classes.footer} />
         </div>
-        {/*<PasswordResetDialog
+        <PasswordResetDialog
           isOpen={isPasswordResetDialogOpen}
           closeDialog={closePasswordResetDialog}
           email={passwordResetEmail}
@@ -311,19 +311,26 @@ class SignInLayout extends Component {
           isLoading={isPasswordResetLoading}
           sendEmail={sendPasswordResetEmail}
           emailError={passwordResetEmailErrors}
-        />*/}
-        {/*<NotificationModal
+        />
+        <Dialog
+          type="alert"
           isOpen={isPasswordResetSuccessModalOpen}
           handleOkClick={closePasswordResetSuccessModal}
           heading="Password Reset Email Sent"
-          message={`Check your inbox for ${passwordResetEmail} for a password reset email from Sportomatic. Click the link contained in this email to choose a new password.`}
-        />
-        <NotificationModal
+        >
+          Check your inbox for {passwordResetEmail} for a password reset email
+          from Sportomatic. Click the link contained in this email to choose a
+          new password.
+        </Dialog>
+        <Dialog
+          type="alert"
           isOpen={isNetworkFailureModalOpen}
           handleOkClick={closeNetworkFailureModal}
           heading="Network Failure"
-          message="You have been disconnected from the internet. Please reconnect and try again."
-        />*/}
+        >
+          You have been disconnected from the internet. Please reconnect and try
+          again.
+        </Dialog>
       </div>
     );
   }
