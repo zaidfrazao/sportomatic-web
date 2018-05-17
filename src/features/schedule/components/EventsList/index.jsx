@@ -16,7 +16,6 @@ const styles = {
 
 class EventsList extends Component {
   state = {
-    dateSelectedMoment: moment(new Date(Date.now())),
     isDateSelectorOpen: false
   };
 
@@ -29,54 +28,59 @@ class EventsList extends Component {
   }
 
   updateDateSelected(newDate) {
-    this.setState({
-      dateSelectedMoment: moment(newDate)
-    });
+    const { navigateTo } = this.props;
+
+    const dateSelectedString = moment(newDate).format("YYYY-MM-DD");
+
+    navigateTo(`/myaccount/schedule/${dateSelectedString}`);
   }
 
   prevWeek() {
-    const { dateSelectedMoment } = this.state;
+    const { dateSelectedString, navigateTo } = this.props;
 
-    const prevWeek = moment(dateSelectedMoment).subtract(1, "week");
+    const prevWeekString = moment(dateSelectedString, "YYYY-MM-DD")
+      .subtract(1, "week")
+      .startOf("week")
+      .format("YYYY-MM-DD");
 
-    this.setState({
-      dateSelectedMoment: prevWeek
-    });
+    navigateTo(`/myaccount/schedule/${prevWeekString}`);
   }
 
   nextWeek() {
-    const { dateSelectedMoment } = this.state;
+    const { dateSelectedString, navigateTo } = this.props;
 
-    const nextWeek = moment(dateSelectedMoment).add(1, "week");
+    const nextWeekString = moment(dateSelectedString, "YYYY-MM-DD")
+      .add(1, "week")
+      .endOf("week")
+      .format("YYYY-MM-DD");
 
-    this.setState({
-      dateSelectedMoment: nextWeek
-    });
+    navigateTo(`/myaccount/schedule/${nextWeekString}`);
   }
 
   prevDay() {
-    const { dateSelectedMoment } = this.state;
+    const { dateSelectedString, navigateTo } = this.props;
 
-    const prevDay = moment(dateSelectedMoment).subtract(1, "day");
+    const prevDayString = moment(dateSelectedString, "YYYY-MM-DD")
+      .subtract(1, "day")
+      .format("YYYY-MM-DD");
 
-    this.setState({
-      dateSelectedMoment: prevDay
-    });
+    navigateTo(`/myaccount/schedule/${prevDayString}`);
   }
 
   nextDay() {
-    const { dateSelectedMoment } = this.state;
+    const { dateSelectedString, navigateTo } = this.props;
 
-    const nextDay = moment(dateSelectedMoment).add(1, "day");
+    const nextDayString = moment(dateSelectedString, "YYYY-MM-DD")
+      .add(1, "day")
+      .format("YYYY-MM-DD");
 
-    this.setState({
-      dateSelectedMoment: nextDay
-    });
+    navigateTo(`/myaccount/schedule/${nextDayString}`);
   }
 
   getDateDisplay() {
-    const { isTablet } = this.props;
-    const { dateSelectedMoment } = this.state;
+    const { isTablet, dateSelectedString } = this.props;
+
+    const dateSelectedMoment = moment(dateSelectedString, "YYYY-MM-DD");
 
     if (isTablet) return dateSelectedMoment.format("D MMM YY");
 
@@ -90,9 +94,13 @@ class EventsList extends Component {
   }
 
   checkIfPrevDisabled() {
-    const { institutionCreationDate, isTablet } = this.props;
-    const { dateSelectedMoment } = this.state;
+    const {
+      institutionCreationDate,
+      isTablet,
+      dateSelectedString
+    } = this.props;
 
+    const dateSelectedMoment = moment(dateSelectedString, "YYYY-MM-DD");
     const institutionCreationMoment = moment(institutionCreationDate);
 
     if (isTablet) {
@@ -116,8 +124,9 @@ class EventsList extends Component {
   }
 
   getDateToDisplay() {
-    const { dateSelectedMoment } = this.state;
-    const { isTablet } = this.props;
+    const { isTablet, dateSelectedString } = this.props;
+
+    const dateSelectedMoment = moment(dateSelectedString, "YYYY-MM-DD");
 
     if (isTablet) {
       return [dateSelectedMoment.toDate()];
@@ -145,10 +154,13 @@ class EventsList extends Component {
       isTablet,
       isMobile,
       events,
-      navigateTo
+      navigateTo,
+      canCreate,
+      dateSelectedString
     } = this.props;
-    const { dateSelectedMoment, isDateSelectorOpen } = this.state;
+    const { isDateSelectorOpen } = this.state;
 
+    const dateSelectedMoment = moment(dateSelectedString, "YYYY-MM-DD");
     const dateDisplay = this.getDateDisplay();
     const isPrevDisabled = this.checkIfPrevDisabled();
     const datesToDisplay = this.getDateToDisplay();
@@ -176,7 +188,9 @@ class EventsList extends Component {
         />
         <div className={classes.separator} />
         <ListOfEvents
+          canCreate={canCreate}
           events={events}
+          isMobile={isMobile}
           isTablet={isTablet}
           datesToDisplay={datesToDisplay}
           dateSelected={dateSelectedMoment.toDate()}

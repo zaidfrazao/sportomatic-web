@@ -2,53 +2,49 @@ import React, { Component } from "react";
 import _ from "lodash";
 import injectStyles from "react-jss";
 import moment from "moment";
+import Button from "../../../../../../components/Button";
 import { common, grey, lightBlue } from "../../../../../../utils/colours";
 import EventCard from "./components/EventCard";
 
 const styles = {
+  addEventWrapper: {
+    textAlign: "center",
+    fontSize: 14,
+    borderRadius: 12,
+    border: `2px dotted ${grey[300]}`,
+    color: grey[300],
+    cursor: "pointer",
+    padding: 12,
+    margin: 8,
+    "&:hover": {
+      border: `2px solid ${grey[400]}`,
+      color: grey[400]
+    }
+  },
+  addEventWrapperTablet: {
+    margin: 8
+  },
   column: {
     width: "14%",
-    border: `1px solid ${grey[200]}`
-  },
-  columnToday: {
-    width: "14%",
-    border: `1px solid ${grey[200]}`,
-    backgroundColor: lightBlue[50]
+    border: `1px solid ${grey[100]}`,
+    backgroundColor: common["white"]
   },
   columnLeft: {
     width: "14%",
     borderRadius: "16px 0 0 16px",
-    backgroundColor: common["white"],
-    border: `1px solid ${grey[200]}`
-  },
-  columnLeftToday: {
-    width: "14%",
-    borderRadius: "16px 0 0 16px",
-    border: `1px solid ${grey[200]}`,
-    backgroundColor: lightBlue[50]
+    backgroundColor: grey[50],
+    border: `1px solid ${grey[100]}`
   },
   columnRight: {
     width: "14%",
     borderRadius: "0 16px 16px 0",
-    backgroundColor: common["white"],
-    border: `1px solid ${grey[200]}`
-  },
-  columnRightToday: {
-    width: "14%",
-    borderRadius: "0 16px 16px 0",
-    border: `1px solid ${grey[200]}`,
-    backgroundColor: lightBlue[50]
+    backgroundColor: grey[50],
+    border: `1px solid ${grey[100]}`
   },
   columnTablet: {
     width: "100%",
     borderRadius: 16,
-    border: `1px solid ${grey[200]}`
-  },
-  columnTabletToday: {
-    width: "100%",
-    borderRadius: 16,
-    border: `1px solid ${grey[200]}`,
-    backgroundColor: lightBlue[50]
+    backgroundColor: common["white"]
   },
   header: {
     fontSize: 18,
@@ -58,6 +54,15 @@ const styles = {
     fontWeight: "bold",
     color: grey[800],
     backgroundColor: grey[100]
+  },
+  headerToday: {
+    fontSize: 18,
+    padding: "18px 0",
+    width: "100%",
+    textAlign: "center",
+    fontWeight: "bold",
+    color: grey[800],
+    backgroundColor: grey[300]
   },
   headerLeft: {
     fontSize: 18,
@@ -69,6 +74,16 @@ const styles = {
     color: grey[800],
     backgroundColor: grey[100]
   },
+  headerLeftToday: {
+    fontSize: 18,
+    borderRadius: "16px 0 0 0",
+    padding: "18px 0",
+    width: "100%",
+    textAlign: "center",
+    fontWeight: "bold",
+    color: grey[800],
+    backgroundColor: grey[300]
+  },
   headerRight: {
     fontSize: 18,
     borderRadius: "0 16px 0 0",
@@ -78,6 +93,16 @@ const styles = {
     fontWeight: "bold",
     color: grey[800],
     backgroundColor: grey[100]
+  },
+  headerRightToday: {
+    fontSize: 18,
+    borderRadius: "0 16px 0 0",
+    padding: "18px 0",
+    width: "100%",
+    textAlign: "center",
+    fontWeight: "bold",
+    color: grey[800],
+    backgroundColor: grey[300]
   },
   headerTablet: {
     fontSize: 18,
@@ -89,9 +114,26 @@ const styles = {
     color: grey[800],
     backgroundColor: grey[100]
   },
+  icon: {
+    marginRight: 8
+  },
+  noEvents: {
+    textAlign: "center",
+    fontSize: 14,
+    color: grey[400],
+    padding: 12,
+    margin: 8
+  },
+  todayWrapper: {
+    backgroundColor: lightBlue[800],
+    color: common["white"],
+    fontWeight: "bold",
+    textAlign: "center",
+    padding: 8
+  },
   wrapper: {
     borderRadius: 16,
-    backgroundColor: common["white"],
+    backgroundColor: grey[100],
     display: "flex",
     justifyContent: "space-around"
   }
@@ -185,7 +227,13 @@ class ListOfEvents extends Component {
   }
 
   getColumns() {
-    const { classes, datesToDisplay, isTablet } = this.props;
+    const {
+      classes,
+      datesToDisplay,
+      isTablet,
+      isMobile,
+      canCreate
+    } = this.props;
     const today = moment(new Date(Date.now())).format("DD-MM-YYYY");
 
     return datesToDisplay.map((date, index) => {
@@ -195,43 +243,84 @@ class ListOfEvents extends Component {
       if (isTablet) {
         const formattedDate = moment(date).format("dddd");
         return (
-          <div
-            className={
-              isToday ? classes.columnTabletToday : classes.columnTablet
-            }
-          >
-            <div className={classes.headerTablet}>{formattedDate}</div>
+          <div className={classes.columnTablet}>
+            <div className={classes.headerTablet}>
+              {isToday ? "Today" : formattedDate}
+            </div>
+            {isMobile &&
+              canCreate && (
+                <div className={classes.addEventWrapperTablet}>
+                  <Button colour="secondary" filled fullWidth>
+                    <i className={`fas fa-plus ${classes.icon}`} />Add event
+                  </Button>
+                </div>
+              )}
             {eventCards}
+            {eventCards.length === 0 && (
+              <div className={classes.noEvents}>No events</div>
+            )}
           </div>
         );
       }
       if (index === 0) {
         const formattedDate = moment(date).format("ddd, D");
         return (
-          <div
-            className={isToday ? classes.columnLeftToday : classes.columnLeft}
-          >
-            <div className={classes.headerLeft}>{formattedDate}</div>
+          <div className={classes.columnLeft}>
+            <div
+              className={isToday ? classes.headerLeftToday : classes.headerLeft}
+            >
+              {isToday ? "Today" : formattedDate}
+            </div>
             {eventCards}
+            {eventCards.length === 0 && (
+              <div className={classes.noEvents}>No events</div>
+            )}
+            {canCreate && (
+              <div className={classes.addEventWrapper}>
+                <i className={`fas fa-plus ${classes.icon}`} />Add event
+              </div>
+            )}
           </div>
         );
       }
       if (index === 6) {
         const formattedDate = moment(date).format("ddd, D");
         return (
-          <div
-            className={isToday ? classes.columnRightToday : classes.columnRight}
-          >
-            <div className={classes.headerRight}>{formattedDate}</div>
+          <div className={classes.columnRight}>
+            <div
+              className={
+                isToday ? classes.headerRightToday : classes.headerRight
+              }
+            >
+              {isToday ? "Today" : formattedDate}
+            </div>
             {eventCards}
+            {eventCards.length === 0 && (
+              <div className={classes.noEvents}>No events</div>
+            )}
+            {canCreate && (
+              <div className={classes.addEventWrapper}>
+                <i className={`fas fa-plus ${classes.icon}`} />Add event
+              </div>
+            )}
           </div>
         );
       }
       const formattedDate = moment(date).format("ddd, D");
       return (
-        <div className={isToday ? classes.columnToday : classes.column}>
-          <div className={classes.header}>{formattedDate}</div>
+        <div className={classes.column}>
+          <div className={isToday ? classes.headerToday : classes.header}>
+            {isToday ? "Today" : formattedDate}
+          </div>
           {eventCards}
+          {eventCards.length === 0 && (
+            <div className={classes.noEvents}>No events</div>
+          )}
+          {canCreate && (
+            <div className={classes.addEventWrapper}>
+              <i className={`fas fa-plus ${classes.icon}`} />Add event
+            </div>
+          )}
         </div>
       );
     });

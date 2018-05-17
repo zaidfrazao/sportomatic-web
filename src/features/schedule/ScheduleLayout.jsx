@@ -468,9 +468,11 @@ class ScheduleLayout extends Component {
               </div>
             )}
           <EventsList
+            canCreate={canCreate}
             isMobile={isMobile}
             isTablet={isTablet}
             events={filteredEvents}
+            dateSelectedString={dateSelected}
             institutionCreationDate={institutionCreationDate}
             navigateTo={navigateTo}
           />
@@ -502,17 +504,6 @@ class ScheduleLayout extends Component {
             heading={eventErrorAlert.heading}
             message={eventErrorAlert.message}
           />*/}
-          {/*canCreate &&
-            isMobile && (
-              <MuiButton
-                fab
-                color="accent"
-                className={classes.fabPosition}
-                onClick={() => openAddEventDialog()}
-              >
-                <i className="fas fa-plus" />
-              </MuiButton>
-            )*/}
         </div>
       </div>
     );
