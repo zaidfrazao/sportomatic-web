@@ -5,6 +5,7 @@ import injectStyles from "react-jss";
 import Button from "../../components/Button";
 import BannerAd from "../../components/BannerAd";
 import { common, grey } from "../../utils/colours";
+import Results from "./components/Results";
 import Today from "./components/Today";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
@@ -177,33 +178,21 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Today
-                isMobile={isMobile}
-                events={todaysEvents}
-                navigateTo={navigateTo}
-              />
+              <Results />
             </div>
           );
         case "incomplete":
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Today
-                isMobile={isMobile}
-                events={todaysEvents}
-                navigateTo={navigateTo}
-              />
+              <Results />
             </div>
           );
         case "notifications":
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Today
-                isMobile={isMobile}
-                events={todaysEvents}
-                navigateTo={navigateTo}
-              />
+              <Results />
             </div>
           );
         default:
@@ -282,44 +271,28 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Today
-                isMobile={isMobile}
-                events={todaysEvents}
-                navigateTo={navigateTo}
-              />
+              <Results />
             </div>
           );
         case "incomplete":
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Today
-                isMobile={isMobile}
-                events={todaysEvents}
-                navigateTo={navigateTo}
-              />
+              <Results />
             </div>
           );
         case "notifications":
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Today
-                isMobile={isMobile}
-                events={todaysEvents}
-                navigateTo={navigateTo}
-              />
+              <Results />
             </div>
           );
         default:
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Today
-                isMobile={isMobile}
-                events={todaysEvents}
-                navigateTo={navigateTo}
-              />
+              <Results />
             </div>
           );
       }

@@ -9,6 +9,7 @@ import { common, grey, lightBlue } from "../../../../utils/colours";
 import Details from "./components/Details";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
+import Seasons from "./components/Seasons";
 import Tabs from "../../../../components/Tabs";
 
 const styles = {
@@ -179,6 +180,13 @@ class TeamInfo extends Component {
               />
             </div>
           );
+        case "seasons":
+          return (
+            <div>
+              <div className={classes.adWrapper}>{ad}</div>
+              <Seasons />
+            </div>
+          );
         default:
           return (
             <div>
@@ -226,6 +234,13 @@ class TeamInfo extends Component {
                 managers={managers}
                 navigateTo={navigateTo}
               />
+            </div>
+          );
+        case "seasons":
+          return (
+            <div>
+              <div className={classes.adWrapper}>{ad}</div>
+              <Seasons />
             </div>
           );
         default:

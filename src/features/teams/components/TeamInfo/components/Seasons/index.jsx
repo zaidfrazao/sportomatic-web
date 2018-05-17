@@ -8,7 +8,7 @@ const styles = {
   }
 };
 
-class Results extends Component {
+class Seasons extends Component {
   render() {
     const { classes } = this.props;
 
@@ -20,4 +20,4 @@ class Results extends Component {
   }
 }
 
-export default injectStyles(styles)(Results);
+export default injectStyles(styles)(Seasons);

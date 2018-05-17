@@ -27,6 +27,13 @@ const styles = {
     backgroundColor: green[500],
     color: common["white"]
   },
+  emptyState: {
+    padding: "48px 24px",
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "bold",
+    color: grey[400]
+  },
   icon: {
     marginRight: 12
   },
@@ -250,7 +257,15 @@ class HoursTable extends Component {
               <th className={classes.tableItem}>Sign out</th>
               <th className={classes.tableItem}>Hours</th>
             </tr>
-            {rows}
+            {rows.length === 0 ? (
+              <tr>
+                <td colSpan={5} className={classes.emptyState}>
+                  No hours this month
+                </td>
+              </tr>
+            ) : (
+              rows
+            )}
             <tr className={classes.tableFooter}>
               <td className={classes.tableItem} colSpan={2}>
                 TOTAL

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
-import EmptyState from "../../../../../../components/EmptyState";
+import EmptyState from "../../../../components/EmptyState";
 
 const styles = {
   wrapper: {

@@ -28,6 +28,13 @@ const styles = {
     backgroundColor: green[500],
     color: common["white"]
   },
+  emptyState: {
+    padding: "48px 24px",
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "bold",
+    color: grey[400]
+  },
   icon: {
     marginRight: 12
   },
@@ -166,7 +173,15 @@ class WagesTable extends Component {
               <th className={classes.tableItem}>Type</th>
               <th className={classes.tableItem}>Amount</th>
             </tr>
-            {rows}
+            {rows.length === 0 ? (
+              <tr>
+                <td colSpan={5} className={classes.emptyState}>
+                  No wages this month
+                </td>
+              </tr>
+            ) : (
+              rows
+            )}
             <tr className={classes.tableFooter}>
               <td className={classes.tableItem} colSpan={3}>
                 TOTAL

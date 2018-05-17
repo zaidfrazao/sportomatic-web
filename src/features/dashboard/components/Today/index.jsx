@@ -2,9 +2,13 @@ import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
 import moment from "moment";
+import EmptyState from "../../../../components/EmptyState";
 import EventCard from "./components/EventCard";
 
 const styles = {
+  emptyState: {
+    padding: 24
+  },
   wrapper: {
     width: "100%"
   }
@@ -80,7 +84,17 @@ class Today extends Component {
 
     const eventCards = this.getEventCards();
 
-    return <div className={classes.wrapper}>{eventCards}</div>;
+    return (
+      <div className={classes.wrapper}>
+        {eventCards.length === 0 ? (
+          <div className={classes.emptyState}>
+            <EmptyState message="No events today" />
+          </div>
+        ) : (
+          eventCards
+        )}
+      </div>
+    );
   }
 }
 

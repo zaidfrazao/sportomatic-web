@@ -17,7 +17,7 @@ const styles = {
   cancelledAlert: {
     fontSize: 18,
     borderRadius: 16,
-    padding: "18px 0",
+    padding: "24px 0",
     marginBottom: 24,
     width: "100%",
     textAlign: "center",

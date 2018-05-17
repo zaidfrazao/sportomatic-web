@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import injectSheet from "react-jss";
 import CoachCard from "./components/CoachCard";
 import { common, grey, red } from "../../../../../../utils/colours";
+import EmptyState from "../../../../../../components/EmptyState";
 
 const mobileBreakpoint = 800;
 const tabletBreakpoint = 1080;
@@ -10,8 +11,9 @@ const styles = {
   cancelledAlert: {
     fontSize: 18,
     borderRadius: 16,
-    padding: "18px 0",
+    padding: "24px 0",
     width: "100%",
+    marginBottom: 24,
     textAlign: "center",
     fontWeight: "bold",
     color: common["white"],
@@ -34,17 +36,9 @@ const styles = {
       width: "calc(33% - 48px)"
     }
   },
-  noItems: {
-    width: "calc(100% - 96px)",
-    border: `3px solid ${grey[300]}`,
-    color: grey[400],
-    borderRadius: 12,
-    padding: "40px 24px",
-    margin: 24,
-    fontSize: 20,
-    lineHeight: "28px",
-    fontWeight: "bold",
-    textAlign: "center"
+  emptyStateWrapper: {
+    flexGrow: 1,
+    margin: 24
   },
   wrapper: {
     display: "flex",
@@ -99,12 +93,12 @@ class CoachManagement extends Component {
                 className={`fas fa-exclamation ${classes.cancelledIcon}`}
               />CANCELLED
             </div>
-            <div className={classes.noItems}>
-              Not applicable to cancelled events
-            </div>
+            <EmptyState message="Not applicable to cancelled" />
           </div>
         ) : coachItems.length === 0 ? (
-          <div className={classes.noItems}>No coaches at this event</div>
+          <div className={classes.emptyStateWrapper}>
+            <EmptyState message="No coaches at this event" />
+          </div>
         ) : (
           coachItems
         )}

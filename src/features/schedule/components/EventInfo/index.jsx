@@ -11,6 +11,7 @@ import { common, grey } from "../../../../utils/colours";
 import Details from "./components/Details";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
+import Results from "./components/Results";
 import Tabs from "../../../../components/Tabs";
 
 const styles = {
@@ -271,6 +272,7 @@ class EventInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <Results />
             </div>
           );
         default:
@@ -372,6 +374,7 @@ class EventInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <Results />
             </div>
           );
         default:
