@@ -7,25 +7,13 @@ import moment from "moment";
 
 const NAMESPACE = "sportomatic-web/dashboard";
 
-export const TOGGLE_SIDE_MENU = `${NAMESPACE}/TOGGLE_SIDE_MENU`;
-export const REQUEST_SWITCH_INSTITUTION = `${NAMESPACE}/REQUEST_SWITCH_INSTITUTION`;
-export const RECEIVE_SWITCH_INSTITUTION = `${NAMESPACE}/RECEIVE_SWITCH_INSTITUTION`;
-export const ERROR_SWITCHING_INSTITUTION = `${NAMESPACE}/ERROR_SWITCHING_INSTITUTION`;
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
-export const OPEN_UPDATES_DIALOG = `${NAMESPACE}/OPEN_UPDATES_DIALOG`;
-export const CLOSE_UPDATES_DIALOG = `${NAMESPACE}/CLOSE_UPDATES_DIALOG`;
-export const REQUEST_UPCOMING_EVENTS = `${NAMESPACE}/REQUEST_UPCOMING_EVENTS`;
-export const RECEIVE_UPCOMING_EVENTS = `${NAMESPACE}/RECEIVE_UPCOMING_EVENTS`;
-export const ERROR_LOADING_UPCOMING_EVENTS = `${NAMESPACE}/ERROR_LOADING_UPCOMING_EVENTS`;
-export const REQUEST_PAST_EVENTS = `${NAMESPACE}/REQUEST_PAST_EVENTS`;
-export const RECEIVE_PAST_EVENTS = `${NAMESPACE}/RECEIVE_PAST_EVENTS`;
-export const ERROR_LOADING_PAST_EVENTS = `${NAMESPACE}/ERROR_LOADING_PAST_EVENTS`;
-export const REQUEST_RECENT_WAGES = `${NAMESPACE}/REQUEST_RECENT_WAGES`;
-export const RECEIVE_RECENT_WAGES = `${NAMESPACE}/RECEIVE_RECENT_WAGES`;
-export const ERROR_LOADING_RECENT_WAGES = `${NAMESPACE}/ERROR_LOADING_RECENT_WAGES`;
-export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
-export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
-export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
+export const REQUEST_RECENT_RESULTS = `${NAMESPACE}/REQUEST_RECENT_RESULTS`;
+export const RECEIVE_RECENT_RESULTS = `${NAMESPACE}/RECEIVE_RECENT_RESULTS`;
+export const ERROR_LOADING_RECENT_RESULTS = `${NAMESPACE}/ERROR_LOADING_RECENT_RESULTS`;
+export const REQUEST_TODAYS_EVENTS = `${NAMESPACE}/REQUEST_TODAYS_EVENTS`;
+export const RECEIVE_TODAYS_EVENTS = `${NAMESPACE}/RECEIVE_TODAYS_EVENTS`;
+export const ERROR_LOADING_TODAYS_EVENTS = `${NAMESPACE}/ERROR_LOADING_TODAYS_EVENTS`;
 export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
 export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
 export const ERROR_LOADING_TEAMS = `${NAMESPACE}/ERROR_LOADING_TEAMS`;
@@ -35,11 +23,7 @@ export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 // Reducers
 
 export const uiConfigInitialState = {
-  appBarTitle: "Dashboard",
-  bottomNavValue: "dashboard",
-  isSideMenuOpen: false,
-  earliestLoadedEvent: "",
-  latestLoadedEvent: ""
+  earliestLoadedResult: ""
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -47,44 +31,10 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
     case RESET_STATE:
     case SIGN_OUT:
       return uiConfigInitialState;
-    case TOGGLE_SIDE_MENU:
+    case RECEIVE_RECENT_RESULTS:
       return {
         ...state,
-        isSideMenuOpen: !state.isSideMenuOpen
-      };
-    case RECEIVE_PAST_EVENTS:
-      return {
-        ...state,
-        earliestLoadedEvent: action.payload.lastVisible
-      };
-    case RECEIVE_UPCOMING_EVENTS:
-      return {
-        ...state,
-        latestLoadedEvent: action.payload.lastVisible
-      };
-    default:
-      return state;
-  }
-}
-
-export const dialogsInitialState = {
-  isUpdatesDialogOpen: false
-};
-
-function dialogsReducer(state = dialogsInitialState, action = {}) {
-  switch (action.type) {
-    case RESET_STATE:
-    case SIGN_OUT:
-      return dialogsInitialState;
-    case OPEN_UPDATES_DIALOG:
-      return {
-        ...state,
-        isUpdatesDialogOpen: true
-      };
-    case CLOSE_UPDATES_DIALOG:
-      return {
-        ...state,
-        isUpdatesDialogOpen: false
+        earliestLoadedResult: action.payload.lastVisible
       };
     default:
       return state;
@@ -92,9 +42,8 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 }
 
 export const loadingStatusInitialState = {
-  isUpcomingEventsLoading: false,
-  isPastEventsLoading: false,
-  isRecentWagesLoading: false,
+  isRecentResultsLoading: false,
+  isTodaysEventsLoading: false,
   isStaffLoading: false,
   isTeamsLoading: false
 };
@@ -103,50 +52,28 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
     case RESET_STATE:
     case SIGN_OUT:
-      return dialogsInitialState;
-    case REQUEST_PAST_EVENTS:
+      return loadingStatusInitialState;
+    case REQUEST_RECENT_RESULTS:
       return {
         ...state,
-        isPastEventsLoading: true
+        isRecentResultsLoading: true
       };
-    case RECEIVE_PAST_EVENTS:
-    case ERROR_LOADING_PAST_EVENTS:
+    case RECEIVE_RECENT_RESULTS:
+    case ERROR_LOADING_RECENT_RESULTS:
       return {
         ...state,
-        isPastEventsLoading: false
+        isRecentResultsLoading: false
       };
-    case REQUEST_UPCOMING_EVENTS:
+    case REQUEST_TODAYS_EVENTS:
       return {
         ...state,
-        isUpcomingEventsLoading: true
+        isTodaysEventsLoading: true
       };
-    case RECEIVE_UPCOMING_EVENTS:
-    case ERROR_LOADING_UPCOMING_EVENTS:
+    case RECEIVE_TODAYS_EVENTS:
+    case ERROR_LOADING_TODAYS_EVENTS:
       return {
         ...state,
-        isUpcomingEventsLoading: false
-      };
-    case REQUEST_RECENT_WAGES:
-      return {
-        ...state,
-        isRecentWagesLoading: true
-      };
-    case RECEIVE_RECENT_WAGES:
-    case ERROR_LOADING_RECENT_WAGES:
-      return {
-        ...state,
-        isRecentWagesLoading: false
-      };
-    case REQUEST_STAFF:
-      return {
-        ...state,
-        isStaffLoading: true
-      };
-    case RECEIVE_STAFF:
-    case ERROR_LOADING_STAFF:
-      return {
-        ...state,
-        isStaffLoading: false
+        isTodaysEventsLoading: false
       };
     case REQUEST_TEAMS:
       return {
@@ -159,19 +86,6 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isTeamsLoading: false
       };
-    default:
-      return state;
-  }
-}
-
-function staffReducer(state = {}, action = {}) {
-  switch (action.type) {
-    case RESET_STATE:
-    case REQUEST_STAFF:
-    case SIGN_OUT:
-      return {};
-    case RECEIVE_STAFF:
-      return action.payload.staff;
     default:
       return state;
   }
@@ -190,39 +104,13 @@ function teamsReducer(state = {}, action = {}) {
   }
 }
 
-function recentWagesReducer(state = {}, action = {}) {
+function todaysEventsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
-    case REQUEST_RECENT_WAGES:
+    case REQUEST_TODAYS_EVENTS:
     case SIGN_OUT:
       return {};
-    case RECEIVE_RECENT_WAGES:
-      return action.payload.wages;
-    default:
-      return state;
-  }
-}
-
-function upcomingEventsReducer(state = {}, action = {}) {
-  switch (action.type) {
-    case RESET_STATE:
-    case REQUEST_UPCOMING_EVENTS:
-    case SIGN_OUT:
-      return {};
-    case RECEIVE_UPCOMING_EVENTS:
-      return action.payload.events;
-    default:
-      return state;
-  }
-}
-
-function pastEventsReducer(state = {}, action = {}) {
-  switch (action.type) {
-    case RESET_STATE:
-    case REQUEST_PAST_EVENTS:
-    case SIGN_OUT:
-      return {};
-    case RECEIVE_PAST_EVENTS:
+    case RECEIVE_TODAYS_EVENTS:
       return action.payload.events;
     default:
       return state;
@@ -231,50 +119,26 @@ function pastEventsReducer(state = {}, action = {}) {
 
 export const dashboardReducer = combineReducers({
   uiConfig: uiConfigReducer,
-  dialogs: dialogsReducer,
   loadingStatus: loadingStatusReducer,
-  recentWages: recentWagesReducer,
-  staff: staffReducer,
   teams: teamsReducer,
-  upcomingEvents: upcomingEventsReducer,
-  pastEvents: pastEventsReducer
+  todaysEvents: todaysEventsReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.dashboard.uiConfig;
-const dialogs = state => state.dashboard.dialogs;
 const loadingStatus = state => state.dashboard.loadingStatus;
-const staff = state => state.dashboard.staff;
 const teams = state => state.dashboard.teams;
-const recentWages = state => state.dashboard.recentWages;
-const upcomingEvents = state => state.dashboard.upcomingEvents;
-const pastEvents = state => state.dashboard.pastEvents;
+const todaysEvents = state => state.dashboard.todaysEvents;
 
 export const selector = createStructuredSelector({
   uiConfig,
-  dialogs,
   loadingStatus,
-  staff,
   teams,
-  recentWages,
-  upcomingEvents,
-  pastEvents
+  todaysEvents
 });
 
 // Action Creators
-
-export function openUpdatesDialog() {
-  return {
-    type: OPEN_UPDATES_DIALOG
-  };
-}
-
-export function closeUpdatesDialog() {
-  return {
-    type: CLOSE_UPDATES_DIALOG
-  };
-}
 
 export function resetState() {
   return {
@@ -282,263 +146,47 @@ export function resetState() {
   };
 }
 
-export function toggleSideMenu() {
+export function requestTodaysEvents() {
   return {
-    type: TOGGLE_SIDE_MENU
+    type: REQUEST_TODAYS_EVENTS
   };
 }
 
-export function createInstitution(info) {
-  return function(dispatch: DispatchAlias) {
-    const db = firebase.firestore();
-
-    return db.collection("institutions").add(info);
-  };
-}
-
-export function requestSwitchInstitution() {
+export function receiveTodaysEvents(events) {
   return {
-    type: REQUEST_SWITCH_INSTITUTION
-  };
-}
-
-export function receiveSwitchInstitution() {
-  return {
-    type: RECEIVE_SWITCH_INSTITUTION
-  };
-}
-
-export function errorSwitchingInstitution(error: {
-  code: string,
-  message: string
-}) {
-  return {
-    type: ERROR_SWITCHING_INSTITUTION,
-    payload: {
-      error
-    }
-  };
-}
-
-export function switchInstitution(userID, institutionID, role) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestSwitchInstitution());
-
-    const db = firebase.firestore();
-    const userRef = db.collection("users").doc(userID);
-
-    return userRef
-      .update({
-        lastAccessed: {
-          institutionID,
-          role
-        }
-      })
-      .then(() => dispatch(receiveSwitchInstitution()))
-      .catch(error => dispatch(errorSwitchingInstitution(error)));
-  };
-}
-
-export function requestStaff() {
-  return {
-    type: REQUEST_STAFF
-  };
-}
-
-export function receiveStaff(staff) {
-  return {
-    type: RECEIVE_STAFF,
-    payload: {
-      staff
-    }
-  };
-}
-
-export function errorLoadingStaff(error: { code: string, message: string }) {
-  return {
-    type: ERROR_LOADING_STAFF,
-    payload: {
-      error
-    }
-  };
-}
-
-export function loadStaff(institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestStaff());
-
-    const coachesRef = firebase
-      .firestore()
-      .collection("users")
-      .where(`institutions.${institutionID}.status`, "==", "STAFF");
-
-    return coachesRef.onSnapshot(querySnapshot => {
-      let staff = {};
-      querySnapshot.forEach(doc => {
-        staff[doc.id] = doc.data();
-      });
-      dispatch(receiveStaff(staff));
-    });
-  };
-}
-
-export function requestRecentWages() {
-  return {
-    type: REQUEST_RECENT_WAGES
-  };
-}
-
-export function receiveRecentWages(wages) {
-  return {
-    type: RECEIVE_RECENT_WAGES,
-    payload: {
-      wages
-    }
-  };
-}
-
-export function errorLoadingRecentWages(error: {
-  code: string,
-  message: string
-}) {
-  return {
-    type: ERROR_LOADING_RECENT_WAGES,
-    payload: {
-      error
-    }
-  };
-}
-
-export function loadRecentWages(institutionID, coachID = "") {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestRecentWages());
-
-    let wagesRef = {};
-    if (coachID === "") {
-      wagesRef = firebase
-        .firestore()
-        .collection("wages")
-        .orderBy("date", "desc")
-        .limit(5)
-        .where("institutionID", "==", institutionID)
-        .where("date", "<", moment().toDate());
-    } else {
-      wagesRef = firebase
-        .firestore()
-        .collection("wages")
-        .orderBy("date", "desc")
-        .limit(5)
-        .where("institutionID", "==", institutionID)
-        .where("coachID", "==", coachID)
-        .where("date", "<", moment().toDate());
-    }
-
-    return wagesRef.onSnapshot(querySnapshot => {
-      let wages = {};
-      querySnapshot.forEach(doc => {
-        wages[doc.id] = doc.data();
-      });
-      dispatch(receiveRecentWages(wages));
-    });
-  };
-}
-
-export function requestPastEvents() {
-  return {
-    type: REQUEST_PAST_EVENTS
-  };
-}
-
-export function receivePastEvents(events) {
-  return {
-    type: RECEIVE_PAST_EVENTS,
+    type: RECEIVE_TODAYS_EVENTS,
     payload: {
       events
     }
   };
 }
 
-export function errorLoadingPastEvents(error: {
-  code: string,
-  message: string
-}) {
-  return {
-    type: ERROR_LOADING_PAST_EVENTS,
-    payload: {
-      error
-    }
-  };
-}
-
-export function loadPastEvents(institutionID, userID = "", role = "admin") {
+export function loadTodaysEvents(institutionID) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestPastEvents());
+    dispatch(requestTodaysEvents());
 
-    let eventsRef = {};
-    eventsRef = firebase
-      .firestore()
-      .collection("events")
-      .orderBy("requiredInfo.times.start", "desc")
-      .limit(20)
-      .where("institutionID", "==", institutionID)
-      .where("requiredInfo.times.start", "<", moment().toDate());
-
-    return eventsRef.onSnapshot(querySnapshot => {
-      let events = {};
-      querySnapshot.forEach(doc => {
-        events[doc.id] = doc.data();
-      });
-      dispatch(receivePastEvents(events));
-    });
-  };
-}
-
-export function requestUpcomingEvents() {
-  return {
-    type: REQUEST_UPCOMING_EVENTS
-  };
-}
-
-export function receiveUpcomingEvents(events) {
-  return {
-    type: RECEIVE_UPCOMING_EVENTS,
-    payload: {
-      events
-    }
-  };
-}
-
-export function errorLoadingUpcomingEvents(error: {
-  code: string,
-  message: string
-}) {
-  return {
-    type: ERROR_LOADING_UPCOMING_EVENTS,
-    payload: {
-      error
-    }
-  };
-}
-
-export function loadUpcomingEvents(institutionID, userID = "", role = "admin") {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestUpcomingEvents());
+    const startOfDay = moment()
+      .startOf("day")
+      .toDate();
+    const endOfDay = moment()
+      .endOf("day")
+      .toDate();
 
     let eventsRef = {};
     eventsRef = firebase
       .firestore()
       .collection("events")
       .orderBy("requiredInfo.times.start", "asc")
-      .limit(20)
       .where("institutionID", "==", institutionID)
-      .where("requiredInfo.times.start", ">", moment().toDate());
+      .where("requiredInfo.times.start", ">", startOfDay)
+      .where("requiredInfo.times.start", "<=", endOfDay);
 
     return eventsRef.onSnapshot(querySnapshot => {
       let events = {};
       querySnapshot.forEach(doc => {
         events[doc.id] = doc.data();
       });
-      dispatch(receiveUpcomingEvents(events));
+      dispatch(receiveTodaysEvents(events));
     });
   };
 }

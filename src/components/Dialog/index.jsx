@@ -95,8 +95,10 @@ class Dialog extends Component<Props> {
           </div>
         ];
       default:
-        return actions.map(action => (
-          <div className={classes.action}>{action}</div>
+        return actions.map((action, index) => (
+          <div key={`dialog-action-${index}`} className={classes.action}>
+            {action}
+          </div>
         ));
     }
   }

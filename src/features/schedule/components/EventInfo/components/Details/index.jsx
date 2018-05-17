@@ -379,6 +379,13 @@ class Details extends Component {
     return absenteeism;
   }
 
+  getEventTypeIcon() {
+    const { isCompetitive } = this.props;
+
+    if (isCompetitive) return "fas fa-trophy";
+    return "fas fa-dumbbell";
+  }
+
   render() {
     const {
       classes,
@@ -386,7 +393,6 @@ class Details extends Component {
       times,
       date,
       isCancelled,
-      isCompetitive,
       venue,
       notes,
       userID,
@@ -394,10 +400,7 @@ class Details extends Component {
       signOut
     } = this.props;
 
-    let eventTypeIcon = "fas fa-dumbbell";
-    if (isCompetitive) {
-      eventTypeIcon = "fas fa-trophy";
-    }
+    const eventTypeIcon = this.getEventTypeIcon();
     const isCoaching = this.checkIfUserCoaching(userID);
     const hours = this.getCoachHours(userID);
     const absenteeism = this.getCoachAbsenteeism(userID);

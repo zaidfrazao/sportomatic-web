@@ -485,30 +485,56 @@ class CoreInterfaceLayout extends Component {
                 <Switch>
                   <Route exact path={"/myaccount/"}>
                     <Dashboard
+                      isAdmin={isAdmin}
+                      communityName={communityName}
+                      activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
-                      userID={userID}
-                      role={role}
                       sportFilter={sportSelected}
-                      activeInstitutionID={activeInstitutionID}
-                      accountInfo={accountInfo}
+                      meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      institutions={institutions}
-                      permissions={permissions}
+                      paymentDefaults={paymentDefaults}
+                      userID={userID}
+                      userName={userName}
+                      institutionCreationDate={institutionCreationDate}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
                     />
                   </Route>
                   <Route exact path={"/myaccount/overview/"}>
                     <Dashboard
+                      isAdmin={isAdmin}
+                      communityName={communityName}
+                      activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
-                      userID={userID}
-                      role={role}
                       sportFilter={sportSelected}
-                      activeInstitutionID={activeInstitutionID}
-                      accountInfo={accountInfo}
+                      meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      institutions={institutions}
-                      permissions={permissions}
+                      paymentDefaults={paymentDefaults}
+                      userID={userID}
+                      userName={userName}
+                      institutionCreationDate={institutionCreationDate}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/overview/:infoTab"}>
+                    <Dashboard
+                      isAdmin={isAdmin}
+                      communityName={communityName}
+                      activeInstitutionID={activeInstitutionID}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      sportFilter={sportSelected}
+                      meAllFilter={meAllFilter}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      paymentDefaults={paymentDefaults}
+                      userID={userID}
+                      userName={userName}
+                      institutionCreationDate={institutionCreationDate}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
                     />
                   </Route>
                   <Route exact path={"/myaccount/people/"}>
@@ -686,16 +712,20 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route>
                     <Dashboard
+                      isAdmin={isAdmin}
+                      communityName={communityName}
+                      activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
                       isTablet={isTablet}
-                      userID={userID}
-                      role={role}
                       sportFilter={sportSelected}
-                      activeInstitutionID={activeInstitutionID}
-                      accountInfo={accountInfo}
+                      meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      institutions={institutions}
-                      permissions={permissions}
+                      paymentDefaults={paymentDefaults}
+                      userID={userID}
+                      userName={userName}
+                      institutionCreationDate={institutionCreationDate}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
                     />
                   </Route>
                 </Switch>

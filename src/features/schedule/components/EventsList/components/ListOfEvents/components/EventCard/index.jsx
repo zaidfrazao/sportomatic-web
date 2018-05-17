@@ -88,14 +88,14 @@ const styles = {
     transition: "0.25s",
     margin: 12,
     borderRadius: 8,
-    border: `1px solid ${lightBlue[800]}`,
-    backgroundColor: lightBlue[800],
-    color: lightBlue[800],
+    border: `1px solid ${lightBlue[500]}`,
+    backgroundColor: lightBlue[500],
+    color: lightBlue[500],
     cursor: "pointer",
     "&:hover": {
-      border: `1px solid ${lightBlue[700]}`,
-      color: lightBlue[700],
-      backgroundColor: lightBlue[700]
+      border: `1px solid ${lightBlue[400]}`,
+      color: lightBlue[400],
+      backgroundColor: lightBlue[400]
     }
   }
 };
