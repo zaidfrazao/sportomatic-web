@@ -4,13 +4,14 @@ import {
   common,
   grey,
   lightBlue,
-  red
+  red,
+  yellow
 } from "../../../../../../../../utils/colours";
 
 const styles = {
   cancelledRow: {
-    fontSize: 14,
-    color: red[500],
+    fontSize: 11,
+    color: red[700],
     backgroundColor: common["white"],
     padding: "12px 0",
     borderBottom: `1px solid ${grey[100]}`,
@@ -20,16 +21,39 @@ const styles = {
     marginRight: 8
   },
   cancelledText: {
-    color: red[500]
+    color: red[700]
   },
-  header: {
+  desktopTitle: {
+    fontSize: 12,
     padding: 12,
     textAlign: "center",
     color: common["white"],
     fontWeight: "bold"
   },
+  header: {
+    fontSize: 12,
+    padding: 12,
+    lineHeight: "16px",
+    textAlign: "center",
+    color: common["white"],
+    fontWeight: "bold"
+  },
   headerIcon: {
-    margin: "0 12px"
+    marginRight: 8
+  },
+  missingInfoRow: {
+    fontSize: 11,
+    color: yellow[800],
+    backgroundColor: common["white"],
+    padding: "12px 0",
+    borderBottom: `1px solid ${grey[100]}`,
+    textAlign: "center"
+  },
+  missingInfoIcon: {
+    marginRight: 8
+  },
+  missingInfoText: {
+    color: yellow[800]
   },
   row: {
     fontSize: 14,
@@ -92,8 +116,10 @@ class EventCard extends Component {
       endTime,
       viewEventInfo,
       isCancelled,
-      isTablet,
-      title
+      title,
+      isPastEvent,
+      isMissingInfo,
+      isActionsRequired
     } = this.props;
 
     const icon = this.getIcon();
@@ -102,7 +128,7 @@ class EventCard extends Component {
       <div className={classes.wrapper} onClick={() => viewEventInfo()}>
         <div className={classes.header}>
           {icon}
-          {isTablet ? title : ""}
+          {title}
         </div>
         {isCancelled && (
           <div className={classes.cancelledRow}>
@@ -110,6 +136,22 @@ class EventCard extends Component {
             <span className={classes.cancelledText}>Cancelled</span>
           </div>
         )}
+        {!isCancelled &&
+          !isPastEvent &&
+          isMissingInfo && (
+            <div className={classes.missingInfoRow}>
+              <i className={`fas fa-question ${classes.missingInfoIcon}`} />
+              <span className={classes.missingInfoText}>Missing info</span>
+            </div>
+          )}
+        {!isCancelled &&
+          isPastEvent &&
+          isActionsRequired && (
+            <div className={classes.cancelledRow}>
+              <i className={`fas fa-exclamation ${classes.cancelledIcon}`} />
+              <span className={classes.cancelledText}>Actions required</span>
+            </div>
+          )}
         <div className={classes.row}>
           <i className={`fas fa-hourglass-start ${classes.rowIcon}`} />
           <span className={classes.rowText}>{startTime}</span>

@@ -75,6 +75,44 @@ const styles = {
 };
 
 class ListOfEvents extends Component {
+  checkIfInfoMissing(eventInfo) {
+    const venue = eventInfo.optionalInfo.venue;
+    const isCompetitive = eventInfo.requiredInfo.isCompetitive;
+    let isMissingInfo = venue === "";
+
+    if (isCompetitive) {
+      const teams = eventInfo.teams;
+
+      _.toPairs(teams).map(([teamID, teamInfo]) => {
+        _.toPairs(teamInfo.opponents).map(([opponentID, opponentInfo]) => {
+          isMissingInfo = opponentInfo.name;
+        });
+      });
+    }
+
+    return isMissingInfo;
+  }
+
+  checkIfActionsRequired(eventInfo) {
+    const coaches = eventInfo.coaches;
+    let isActionsRequired = false;
+
+    _.toPairs(coaches).map(([coachID, coachInfo]) => {
+      isActionsRequired =
+        coachInfo.hours.status !== "APPROVED" &&
+        coachInfo.attendance.willAttend;
+    });
+
+    return isActionsRequired;
+  }
+
+  checkIfPastEvent(endTime) {
+    const endTimeMoment = moment(endTime);
+    const currentMoment = moment(new Date(Date.now()));
+
+    return endTimeMoment.isBefore(currentMoment);
+  }
+
   getEventCards(date) {
     const { events, navigateTo, isTablet } = this.props;
 
@@ -98,15 +136,24 @@ class ListOfEvents extends Component {
         const title = eventInfo.requiredInfo.title;
         const isCompetitive = eventInfo.requiredInfo.isCompetitive;
         const isCancelled = eventInfo.requiredInfo.status === "CANCELLED";
+        const isMissingInfo = this.checkIfInfoMissing(eventInfo);
+        const isActionsRequired = this.checkIfActionsRequired(eventInfo);
+        const isPastEvent = this.checkIfPastEvent(
+          eventInfo.requiredInfo.times.end
+        );
+
         return (
           <EventCard
             key={eventID}
+            isActionsRequired={isActionsRequired}
+            isPastEvent={isPastEvent}
             isCompetitive={isCompetitive}
             isCancelled={isCancelled}
             startTime={startTime}
             endTime={endTime}
             title={title}
             isTablet={isTablet}
+            isMissingInfo={isMissingInfo}
             viewEventInfo={() =>
               navigateTo(`/myaccount/schedule/${eventDate}/${eventID}`)}
           />
