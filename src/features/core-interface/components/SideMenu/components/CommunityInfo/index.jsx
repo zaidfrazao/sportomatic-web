@@ -3,7 +3,6 @@ import { common, lightBlue } from "../../../../../../utils/colours";
 import injectStyles from "react-jss";
 import Button from "../../../../../../components/Button";
 import PersonalAllSwitch from "./components/PersonalAllSwitch";
-import RoleSwitcher from "./components/RoleSwitcher";
 
 const mobileBreakpoint = 800;
 
@@ -74,9 +73,6 @@ class CommunityInfo extends Component<Props> {
       classes,
       emblem,
       name,
-      selectedRole,
-      switchRoles,
-      availableRoles,
       logOut,
       meAllFilter,
       changeMeAllFilter,
@@ -96,13 +92,6 @@ class CommunityInfo extends Component<Props> {
           <h2 className={classes.communityName}>{name}</h2>
         </div>
         <div className={classes.interactiveSectionWrapper}>
-          {false && (
-            <RoleSwitcher
-              selected={selectedRole}
-              options={availableRoles}
-              handleChange={newRole => switchRoles(newRole)}
-            />
-          )}
           <div className={classes.buttonsWrapper}>
             <div className={classes.switchButtonWrapper}>
               <Button

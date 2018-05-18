@@ -4,6 +4,7 @@ import injectSheet from "react-jss";
 
 const styles = theme => ({
   tab: {
+    transition: "0.25s",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -20,6 +21,7 @@ const styles = theme => ({
     }
   },
   tabSelected: {
+    transition: "0.25s",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",

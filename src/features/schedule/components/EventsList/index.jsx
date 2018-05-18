@@ -84,13 +84,14 @@ class EventsList extends Component {
 
     if (isTablet) return dateSelectedMoment.format("D MMM YY");
 
-    const startOfWeek = moment(dateSelectedMoment)
+    const monthYearString = moment(dateSelectedMoment).format("MMMM YYYY");
+    const startDateNumber = moment(dateSelectedMoment)
       .startOf("week")
-      .format("D MMM YYYY");
-    const endOfWeek = moment(dateSelectedMoment)
+      .format("D");
+    const endDateNumber = moment(dateSelectedMoment)
       .endOf("week")
-      .format("D MMM YYYY");
-    return `${startOfWeek} - ${endOfWeek}`;
+      .format("D");
+    return `${startDateNumber} - ${endDateNumber} ${monthYearString}`;
   }
 
   checkIfPrevDisabled() {
