@@ -2,12 +2,26 @@ import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
 import moment from "moment";
+import Button from "../../../../components/Button";
 import EmptyState from "../../../../components/EmptyState";
 import EventCard from "./components/EventCard";
+import { grey } from "../../../../utils/colours";
 
 const styles = {
+  actionsBar: {
+    margin: "24px 24px 0 24px",
+    backgroundColor: grey[200],
+    display: "flex",
+    justifyContent: "center"
+  },
   emptyState: {
     padding: 24
+  },
+  flexGrow: {
+    flexGrow: 1
+  },
+  iconAdjacentText: {
+    marginRight: 8
   },
   wrapper: {
     width: "100%"
@@ -80,12 +94,25 @@ class Today extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, goBack, isMobile } = this.props;
 
     const eventCards = this.getEventCards();
 
     return (
       <div className={classes.wrapper}>
+        {isMobile && (
+          <div className={classes.actionsBar}>
+            <div className={classes.buttonWrapper}>
+              <Button colour="secondary" slim handleClick={() => goBack()}>
+                <i
+                  className={`fas fa-caret-left ${classes.iconAdjacentText}`}
+                />
+                Back
+              </Button>
+            </div>
+            <div className={classes.flexGrow} />
+          </div>
+        )}
         {eventCards.length === 0 ? (
           <div className={classes.emptyState}>
             <EmptyState message="No events today" />

@@ -155,7 +155,7 @@ class DashboardLayout extends Component {
   }
 
   getSectionDisplay() {
-    const { classes, isMobile, navigateTo, todaysEvents } = this.props;
+    const { classes, isMobile, navigateTo, todaysEvents, goBack } = this.props;
     const { infoTab } = this.props.match.params;
     const { tabSelected } = this.state;
 
@@ -171,6 +171,7 @@ class DashboardLayout extends Component {
                 isMobile={isMobile}
                 events={todaysEvents}
                 navigateTo={navigateTo}
+                goBack={goBack}
               />
             </div>
           );
@@ -178,21 +179,21 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results />
+              <Results isMobile={isMobile} goBack={goBack} />
             </div>
           );
         case "incomplete":
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results />
+              <Results isMobile={isMobile} goBack={goBack} />
             </div>
           );
         case "notifications":
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results />
+              <Results isMobile={isMobile} goBack={goBack} />
             </div>
           );
         default:
@@ -264,6 +265,7 @@ class DashboardLayout extends Component {
                 isMobile={isMobile}
                 events={todaysEvents}
                 navigateTo={navigateTo}
+                goBack={goBack}
               />
             </div>
           );
@@ -271,28 +273,28 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results />
+              <Results isMobile={isMobile} goBack={goBack} />
             </div>
           );
         case "incomplete":
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results />
+              <Results isMobile={isMobile} goBack={goBack} />
             </div>
           );
         case "notifications":
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results />
+              <Results isMobile={isMobile} goBack={goBack} />
             </div>
           );
         default:
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results />
+              <Results isMobile={isMobile} goBack={goBack} />
             </div>
           );
       }
