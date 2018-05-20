@@ -83,12 +83,12 @@ class Dialog extends Component<Props> {
         );
       case "decision":
         return [
-          <div className={classes.action}>
+          <div key="decision-no" className={classes.action}>
             <Button slim handleClick={() => handleNoClick()}>
               No
             </Button>
           </div>,
-          <div className={classes.action}>
+          <div key="decision-yes" className={classes.action}>
             <Button slim filled handleClick={() => handleYesClick()}>
               Yes
             </Button>
