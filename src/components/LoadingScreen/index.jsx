@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
 import logo from "./images/logo.png";
+import Loader from "../Loader";
 
 const styles = theme => ({
   itemsWrapper: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center"
-  },
-  loader: {
-    width: 200
   },
   logo: {
     width: 240,
@@ -34,6 +32,7 @@ class LoadingScreen extends Component {
       <div className={classes.wrapper}>
         <div className={classes.itemsWrapper}>
           <img src={logo} alt="Sportomatic Logo" className={classes.logo} />
+          <Loader />
         </div>
       </div>
     );
