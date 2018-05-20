@@ -465,6 +465,7 @@ class PersonInfo extends Component {
                 Back
               </Button>
             </div>
+            <div className={classes.flexGrow} />
           </div>
           {!isMobile && (
             <div className={classes.tabsWrapper}>
