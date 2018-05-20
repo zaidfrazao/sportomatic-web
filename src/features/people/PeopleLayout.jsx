@@ -4,18 +4,15 @@ import _ from "lodash";
 import moment from "moment";
 // import AddIcon from "material-ui-icons/Add";
 // import MuiButton from "material-ui/Button";
-// import { CircularProgress } from "material-ui/Progress";
-// import EditIcon from "material-ui-icons/Edit";
 import injectStyles from "react-jss";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
-// import EditPersonDialog from "./components/EditPersonDialog";
-// import InvitePersonModal from "./components/InvitePersonModal";
+import Dialog from "../../components/Dialog";
+import InvitePersonDialog from "./components/InvitePersonDialog";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import PeopleList from "./components/PeopleList";
 import PersonInfo from "./components/PersonInfo";
-// import NotificationModal from "../../components/NotificationModal";
 
 const styles = {
   actionsBar: {
@@ -324,7 +321,6 @@ class PeopleLayout extends Component {
       isMobile,
       isTablet,
       activeInstitutionID,
-      paymentDefaults,
       userID,
       userName,
       communityName,
@@ -333,32 +329,28 @@ class PeopleLayout extends Component {
       isAdmin,
       institutionCreationDate
     } = this.props;
-    const { inviteeID, inviteeInfo, resendInfo } = this.props.uiConfig;
+    const { resendInfo } = this.props.uiConfig;
     const {
       isCoachesLoading,
       isManagersLoading,
       isAdminsLoading,
-      isInviteeLoading,
-      isEditPersonLoading,
-      isResendInviteLoading
+      isResendInviteLoading,
+      isInviteUserLoading,
+      isCreateUserLoading,
+      isInviteeInfoLoading
     } = this.props.loadingStatus;
     const {
-      openEditPersonDialog,
-      closeEditPersonDialog,
       openInvitePersonModal,
       closeInvitePersonModal,
       fetchInviteeInfo,
-      createUser,
-      invitePerson,
-      editPerson,
-      editRoles,
       resendInvite,
+      closePostInviteAlert,
       closeResendInviteAlert
     } = this.props.actions;
     const {
-      isEditPersonDialogOpen,
       isInvitePersonModalOpen,
-      isResendInviteAlertOpen
+      isResendInviteAlertOpen,
+      postInviteAlert
     } = this.props.dialogs;
     const { personID, infoTab } = this.props.match.params;
 
@@ -384,40 +376,9 @@ class PeopleLayout extends Component {
               isTablet={isTablet}
               actions={{
                 navigateTo,
-                goBack,
-                editPerson: () => openEditPersonDialog()
+                goBack
               }}
             />
-            {/*<EditPersonDialog
-              isOpen={isEditPersonDialogOpen}
-              isMobile={isMobile}
-              isLoading={
-                isCoachesLoading ||
-                isManagersLoading ||
-                isAdminsLoading ||
-                isEditPersonLoading ||
-                activeInstitutionID === ""
-              }
-              personID={personID}
-              personInfo={staff[personID]}
-              institutionID={activeInstitutionID}
-              actions={{
-                editPerson: (id, info) => editPerson(id, info),
-                closeModal: () => closeEditPersonDialog()
-              }}
-            />*/}
-            {/*isAdmin &&
-              isMobile && (
-                <MuiButton
-                  fab
-                  color="accent"
-                  aria-label="edit person info"
-                  className={classes.fabPosition}
-                  onClick={() => openEditPersonDialog()}
-                >
-                  <EditIcon />
-                </MuiButton>
-              )*/}
           </div>
         </div>
       );
@@ -437,19 +398,22 @@ class PeopleLayout extends Component {
                   : classes.staffTabNoCards
               }
             >
-              {!isMobile && (
-                <div className={classes.actionsBar}>
-                  <div className={classes.flexGrow} />
-                  <Button
-                    colour="secondary"
-                    filled
-                    handleClick={() => openInvitePersonModal()}
-                  >
-                    <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
-                    Invite new person
-                  </Button>
-                </div>
-              )}
+              {!isMobile &&
+                isAdmin && (
+                  <div className={classes.actionsBar}>
+                    <div className={classes.flexGrow} />
+                    <Button
+                      colour="secondary"
+                      filled
+                      handleClick={() => openInvitePersonModal()}
+                    >
+                      <i
+                        className={`fas fa-plus ${classes.iconAdjacentText}`}
+                      />
+                      Invite new person
+                    </Button>
+                  </div>
+                )}
               <div className={classes.adWrapper}>{ad}</div>
               {activeInstitutionID === "" ||
               isCoachesLoading ||
@@ -476,24 +440,26 @@ class PeopleLayout extends Component {
                   />
                 </div>
               )}
-              {/*<InvitePersonModal
+              <InvitePersonDialog
                 isOpen={isInvitePersonModalOpen}
-                isMobile={isMobile}
-                isLoading={isInviteeLoading || activeInstitutionID === ""}
-                inviteeID={inviteeID}
-                userID={userID}
-                inviteeInfo={inviteeInfo}
-                institutionID={activeInstitutionID}
-                paymentDefaults={paymentDefaults}
+                isLoading={
+                  isInviteeInfoLoading ||
+                  isCreateUserLoading ||
+                  isInviteUserLoading
+                }
                 actions={{
-                  editRoles: () => editRoles(),
-                  invitePerson: (id, info) => invitePerson(id, info),
-                  createUser: (email, password, userInfo) =>
-                    createUser(email, password, userInfo),
-                  fetchInviteeInfo: email => fetchInviteeInfo(email),
+                  invitePerson: (type, firstName, lastName, email) =>
+                    fetchInviteeInfo(
+                      type,
+                      firstName,
+                      lastName,
+                      email,
+                      activeInstitutionID,
+                      userID
+                    ),
                   closeModal: () => closeInvitePersonModal()
                 }}
-              />*/}
+              />
               {/*isAdmin &&
                 isMobile && (
                   <MuiButton
@@ -508,12 +474,22 @@ class PeopleLayout extends Component {
                 )*/}
             </div>
           </div>
-          {/*<NotificationModal
+          <Dialog
+            type="alert"
             isOpen={isResendInviteAlertOpen}
             heading="Invite Email Resent"
-            message={`Your invite was resent to ${resendInfo.name}.`}
             handleOkClick={() => closeResendInviteAlert()}
-          />*/}
+          >
+            {`Your invite was resent to ${resendInfo.name}.`}
+          </Dialog>
+          <Dialog
+            type="alert"
+            isOpen={postInviteAlert.isOpen}
+            heading={postInviteAlert.heading}
+            handleOkClick={() => closePostInviteAlert()}
+          >
+            {postInviteAlert.message}
+          </Dialog>
         </div>
       );
     }

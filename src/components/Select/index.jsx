@@ -143,12 +143,6 @@ const styles = theme => ({
   selectError: {
     border: `1px solid ${red[500]}`
   },
-  selectText: {
-    color: grey[900],
-    fontFamily: "Nunito, sans-serif",
-    fontSize: 16,
-    lineHeight: "23px"
-  },
   wrapper: {
     position: "relative"
   }

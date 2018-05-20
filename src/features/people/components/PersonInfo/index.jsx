@@ -433,7 +433,7 @@ class PersonInfo extends Component {
 
   render() {
     const { classes, isMobile, infoTab, personID, isUserAdmin } = this.props;
-    const { editPerson, goBack } = this.props.actions;
+    const { goBack } = this.props.actions;
     const { tabSelected } = this.state;
 
     const info = this.getInfo();
@@ -465,21 +465,6 @@ class PersonInfo extends Component {
                 Back
               </Button>
             </div>
-            <div className={classes.flexGrow} />
-            {isUserAdmin &&
-              !isMobile && (
-                <div className={classes.buttonWrapper}>
-                  <Button
-                    colour="secondary"
-                    filled
-                    slim
-                    handleClick={() => editPerson()}
-                  >
-                    <i className={`fas fa-edit ${classes.iconAdjacentText}`} />
-                    Edit person
-                  </Button>
-                </div>
-              )}
           </div>
           {!isMobile && (
             <div className={classes.tabsWrapper}>

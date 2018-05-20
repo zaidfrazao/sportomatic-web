@@ -8,8 +8,6 @@ import { TeamAlias } from "../../models/aliases";
 
 const NAMESPACE = "sportomatic-web/people";
 
-export const OPEN_EDIT_PERSON_DIALOG = `${NAMESPACE}/OPEN_EDIT_PERSON_DIALOG`;
-export const CLOSE_EDIT_PERSON_DIALOG = `${NAMESPACE}/CLOSE_EDIT_PERSON_DIALOG`;
 export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
 export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
 export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
@@ -17,6 +15,8 @@ export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
 export const OPEN_INVITE_PERSON_MODAL = `${NAMESPACE}/OPEN_INVITE_PERSON_MODAL`;
 export const CLOSE_INVITE_PERSON_MODAL = `${NAMESPACE}/CLOSE_INVITE_PERSON_MODAL`;
+export const OPEN_POST_INVITE_MODAL = `${NAMESPACE}/OPEN_POST_INVITE_MODAL`;
+export const CLOSE_POST_INVITE_MODAL = `${NAMESPACE}/CLOSE_POST_INVITE_MODAL`;
 export const REQUEST_INVITEE = `${NAMESPACE}/REQUEST_INVITEE`;
 export const RECEIVE_INVITEE = `${NAMESPACE}/RECEIVE_INVITEE`;
 export const ERROR_FETCHING_INVITEE_INFO = `${NAMESPACE}/ERROR_FETCHING_INVITEE_INFO`;
@@ -26,10 +26,6 @@ export const ERROR_CREATING_USER = `${NAMESPACE}/ERROR_CREATING_USER`;
 export const REQUEST_INVITE_PERSON = `${NAMESPACE}/REQUEST_INVITE_PERSON`;
 export const RECEIVE_INVITE_PERSON = `${NAMESPACE}/RECEIVE_INVITE_PERSON`;
 export const ERROR_INVITING_PERSON = `${NAMESPACE}/ERROR_INVITING_PERSON`;
-export const REQUEST_EDIT_PERSON = `${NAMESPACE}/REQUEST_EDIT_PERSON`;
-export const RECEIVE_EDIT_PERSON = `${NAMESPACE}/RECEIVE_EDIT_PERSON`;
-export const ERROR_EDITTING_PERSON = `${NAMESPACE}/ERROR_EDITTING_PERSON`;
-export const EDIT_ROLES = `${NAMESPACE}/EDIT_ROLES`;
 export const REQUEST_EVENTS_BY_COACH = `${NAMESPACE}/REQUEST_EVENTS_BY_COACH`;
 export const RECEIVE_EVENTS_BY_COACH = `${NAMESPACE}/RECEIVE_EVENTS_BY_COACH`;
 export const ERROR_LOADING_EVENTS_BY_COACH = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_COACH`;
@@ -102,9 +98,13 @@ function filterReducer(state = filtersInitialState, action = {}) {
 }
 
 export const dialogsInitialState = {
-  isEditPersonDialogOpen: false,
   isInvitePersonModalOpen: false,
-  isResendInviteAlertOpen: false
+  isResendInviteAlertOpen: false,
+  postInviteAlert: {
+    heading: "",
+    message: "",
+    isOpen: false
+  }
 };
 
 function dialogsReducer(state = dialogsInitialState, action = {}) {
@@ -112,17 +112,23 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
     case RESET_STATE:
     case SIGN_OUT:
       return dialogsInitialState;
-    case OPEN_EDIT_PERSON_DIALOG:
+    case OPEN_POST_INVITE_MODAL:
       return {
         ...state,
-        isEditPersonDialogOpen: true
+        postInviteAlert: {
+          heading: action.payload.heading,
+          message: action.payload.message,
+          isOpen: true
+        }
       };
-    case RECEIVE_EDIT_PERSON:
-    case ERROR_EDITTING_PERSON:
-    case CLOSE_EDIT_PERSON_DIALOG:
+    case CLOSE_POST_INVITE_MODAL:
       return {
         ...state,
-        isEditPersonDialogOpen: false
+        postInviteAlert: {
+          heading: "",
+          message: "",
+          isOpen: false
+        }
       };
     case OPEN_INVITE_PERSON_MODAL:
       return {
@@ -136,12 +142,6 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
     case CLOSE_INVITE_PERSON_MODAL:
       return {
         ...state,
-        isInvitePersonModalOpen: false
-      };
-    case EDIT_ROLES:
-      return {
-        ...state,
-        isEditPersonDialogOpen: true,
         isInvitePersonModalOpen: false
       };
     case RECEIVE_RESEND_INVITE:
@@ -189,8 +189,9 @@ function teamsReducer(state = {}, action = {}) {
 export const loadingStatusInitialState = {
   isStaffLoading: false,
   isTeamsLoading: false,
-  isInviteeLoading: false,
-  isEditPersonLoading: false,
+  isInviteeInfoLoading: false,
+  isCreateUserLoading: false,
+  isInviteUserLoading: false,
   isEventsByCoachLoading: false,
   isResendInviteLoading: false,
   isWagesByCoachLoading: false
@@ -235,33 +236,38 @@ function loadingStatusListReducer(
         ...state,
         isTeamsLoading: false
       };
-    case REQUEST_EDIT_PERSON:
-      return {
-        ...state,
-        isEditPersonLoading: true
-      };
-    case RECEIVE_EDIT_PERSON:
-    case ERROR_EDITTING_PERSON:
-      return {
-        ...state,
-        isEditPersonLoading: false
-      };
-    case REQUEST_INVITE_PERSON:
-    case REQUEST_CREATE_USER:
     case REQUEST_INVITEE:
       return {
         ...state,
-        isInviteeLoading: true
+        isInviteeInfoLoading: true
       };
-    case RECEIVE_INVITE_PERSON:
-    case ERROR_INVITING_PERSON:
-    case RECEIVE_CREATE_USER:
-    case ERROR_CREATING_USER:
     case RECEIVE_INVITEE:
     case ERROR_FETCHING_INVITEE_INFO:
       return {
         ...state,
-        isInviteeLoading: false
+        isInviteeInfoLoading: false
+      };
+    case REQUEST_INVITE_PERSON:
+      return {
+        ...state,
+        isInviteUserLoading: true
+      };
+    case RECEIVE_INVITE_PERSON:
+    case ERROR_INVITING_PERSON:
+      return {
+        ...state,
+        isInviteUserLoading: false
+      };
+    case REQUEST_CREATE_USER:
+      return {
+        ...state,
+        isCreateUserLoading: true
+      };
+    case RECEIVE_CREATE_USER:
+    case ERROR_CREATING_USER:
+      return {
+        ...state,
+        isCreateUserLoading: false
       };
     case REQUEST_EVENTS_BY_COACH:
       return {
@@ -357,12 +363,6 @@ export function resetState() {
   };
 }
 
-export function editRoles() {
-  return {
-    type: EDIT_ROLES
-  };
-}
-
 export function applyFilters(sport, type) {
   return {
     type: APPLY_FILTERS,
@@ -379,18 +379,6 @@ export function closeResendInviteAlert() {
   };
 }
 
-export function openEditPersonDialog() {
-  return {
-    type: OPEN_EDIT_PERSON_DIALOG
-  };
-}
-
-export function closeEditPersonDialog() {
-  return {
-    type: CLOSE_EDIT_PERSON_DIALOG
-  };
-}
-
 export function openInvitePersonModal() {
   return {
     type: OPEN_INVITE_PERSON_MODAL
@@ -400,6 +388,22 @@ export function openInvitePersonModal() {
 export function closeInvitePersonModal() {
   return {
     type: CLOSE_INVITE_PERSON_MODAL
+  };
+}
+
+export function openPostInviteAlert(heading, message) {
+  return {
+    type: OPEN_POST_INVITE_MODAL,
+    payload: {
+      heading,
+      message
+    }
+  };
+}
+
+export function closePostInviteAlert() {
+  return {
+    type: CLOSE_POST_INVITE_MODAL
   };
 }
 
@@ -499,7 +503,14 @@ export function errorFetchingInviteeInfo(error: {
   };
 }
 
-export function fetchInviteeInfo(email) {
+export function fetchInviteeInfo(
+  type,
+  firstName,
+  lastName,
+  email,
+  institutionID,
+  creatorID
+) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestInvitee());
 
@@ -518,8 +529,27 @@ export function fetchInviteeInfo(email) {
           info = doc.data();
         });
         dispatch(receiveInvitee(id, info));
+
+        if (
+          info.institutions[institutionID] &&
+          info.institutions[institutionID].status !== "REMOVED"
+        ) {
+          dispatch(
+            openPostInviteAlert(
+              "Already in Community",
+              `${firstName} ${lastName} is already a member of your community.`
+            )
+          );
+        } else {
+          dispatch(invitePerson(id, institutionID, type, firstName, lastName));
+        }
       })
-      .catch(error => dispatch(errorFetchingInviteeInfo(error)));
+      .catch(error => {
+        dispatch(errorFetchingInviteeInfo(error));
+        dispatch(
+          createUser(email, firstName, lastName, type, creatorID, institutionID)
+        );
+      });
   };
 }
 
@@ -544,24 +574,119 @@ export function errorCreatingUser(error: { code: string, message: string }) {
   };
 }
 
-export function createUser(email, password, userInfo) {
+export function generateRandomPassword(length) {
+  let text = "";
+  const possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (let i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
+export function createUser(
+  email,
+  firstName,
+  lastName,
+  type,
+  creatorID,
+  institutionID
+) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestCreateUser());
     const db = firebase.firestore();
 
+    const randomisedPassword = generateRandomPassword(10);
+
+    const userInfo = {
+      completeness: {
+        hasName: true,
+        hasPassword: false,
+        hasSurname: true,
+        hasEmail: true,
+        hasPhoneNumber: false,
+        hasProfilePicture: false,
+        hasSports: false
+      },
+      info: {
+        email,
+        name: firstName,
+        surname: lastName,
+        phoneNumber: "",
+        profilePictureURL: "",
+        sports: {}
+      },
+      institutions: {
+        [institutionID]: {
+          roles: {
+            admin: type === "ADMIN" ? "APPROVED" : "N/A",
+            coach: "N/A",
+            manager: "N/A"
+          },
+          status: type
+        }
+      },
+      lastAccessed: {
+        accountType: "ADMIN",
+        institutionID
+      },
+      metadata: {
+        creationDate: new Date(Date.now()),
+        createdVia: "INVITE",
+        createdByInstitution: institutionID,
+        createdByUser: creatorID,
+        status: "INACTIVE",
+        tempPassword: randomisedPassword
+      },
+      tutorialStatus: {
+        lessons: {
+          dashboard: "NOT_STARTED",
+          schedule: "NOT_STARTED",
+          hours: "NOT_STARTED",
+          results: "NOT_STARTED",
+          wages: "NOT_STARTED",
+          people: "NOT_STARTED",
+          teams: "NOT_STARTED"
+        }
+      }
+    };
+
     return firebase
       .auth()
-      .createUserWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email, randomisedPassword)
       .then(user => {
         db
           .collection("users")
           .doc(user.uid)
           .set(userInfo)
-          .then(() => dispatch(receiveCreateUser()))
-          .catch(error => dispatch(errorCreatingUser(error)));
+          .then(() => {
+            dispatch(receiveCreateUser());
+            dispatch(
+              openPostInviteAlert(
+                "Person Invited",
+                `${firstName} ${lastName} was invited to your community.`
+              )
+            );
+          })
+          .catch(error => {
+            dispatch(errorCreatingUser(error));
+            dispatch(
+              openPostInviteAlert(
+                "Error Occured",
+                `An unknown error occurred while trying to invite ${firstName} ${lastName}.`
+              )
+            );
+          });
       })
       .catch(error => {
         dispatch(errorCreatingUser(error));
+        dispatch(
+          openPostInviteAlert(
+            "Error Occured",
+            `An unknown error occurred while trying to invite ${firstName} ${lastName}.`
+          )
+        );
       });
   };
 }
@@ -587,50 +712,41 @@ export function errorInvitingPerson(error: { code: string, message: string }) {
   };
 }
 
-export function invitePerson(userID, info) {
+export function invitePerson(userID, institutionID, type, firstName, lastName) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestInvitePerson());
     const db = firebase.firestore();
     const userRef = db.collection("users").doc(userID);
 
     return userRef
-      .set(info)
-      .then(() => dispatch(receiveInvitePerson()))
-      .catch(error => dispatch(errorInvitingPerson(error)));
-  };
-}
-
-export function requestEditPerson() {
-  return {
-    type: REQUEST_EDIT_PERSON
-  };
-}
-
-export function receiveEditPerson() {
-  return {
-    type: RECEIVE_EDIT_PERSON
-  };
-}
-
-export function errorEdittingPerson(error: { code: string, message: string }) {
-  return {
-    type: ERROR_EDITTING_PERSON,
-    payload: {
-      error
-    }
-  };
-}
-
-export function editPerson(userID, info) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestEditPerson());
-    const db = firebase.firestore();
-    const userRef = db.collection("users").doc(userID);
-
-    return userRef
-      .set(info)
-      .then(() => dispatch(receiveEditPerson()))
-      .catch(error => dispatch(errorEdittingPerson(error)));
+      .update({
+        [`institutions.${institutionID}`]: {
+          roles: {
+            admin: type === "ADMIN" ? "APPROVED" : "N/A",
+            coach: "N/A",
+            manager: "N/A"
+          },
+          status: type
+        }
+      })
+      .then(() => {
+        dispatch(receiveInvitePerson());
+        dispatch(
+          openPostInviteAlert(
+            "Person Invited",
+            `${firstName} ${lastName} was invited to your community.`
+          )
+        );
+      })
+      .catch(error => {
+        dispatch(errorInvitingPerson(error));
+        dispatch(
+          openPostInviteAlert(
+            "Error Occured",
+            `An unknown error occurred while trying to invite ${firstName} ${lastName}.`
+          )
+        );
+      });
   };
 }
 
