@@ -23,13 +23,6 @@ const styles = {
   cancelledText: {
     color: red[700]
   },
-  desktopTitle: {
-    fontSize: 12,
-    padding: 12,
-    textAlign: "center",
-    color: common["white"],
-    fontWeight: "bold"
-  },
   header: {
     fontSize: 12,
     padding: 12,

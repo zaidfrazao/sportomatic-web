@@ -37,16 +37,6 @@ const styles = {
   },
   absentIcon: {
     marginRight: 12
-  },
-  actionButton: {
-    margin: "0 12px",
-    flexGrow: 1
-  },
-  headingMain: {
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: 24,
-    lineHeight: "32px"
   }
 };
 

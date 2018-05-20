@@ -1,9 +1,10 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
 import injectStyles from "react-jss";
 import moment from "moment";
 import Button from "../../../../../../components/Button";
-import { common, grey, lightBlue } from "../../../../../../utils/colours";
+import { common, grey } from "../../../../../../utils/colours";
 import EventCard from "./components/EventCard";
 
 const styles = {
@@ -123,13 +124,6 @@ const styles = {
     color: grey[400],
     padding: 12,
     margin: 8
-  },
-  todayWrapper: {
-    backgroundColor: lightBlue[800],
-    color: common["white"],
-    fontWeight: "bold",
-    textAlign: "center",
-    padding: 8
   },
   wrapper: {
     borderRadius: 16,

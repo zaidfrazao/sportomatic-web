@@ -63,17 +63,6 @@ const styles = {
     display: "flex",
     alignItems: "center"
   },
-  heading: {
-    fontSize: 18,
-    borderRadius: 16,
-    padding: "18px 0",
-    marginBottom: 24,
-    width: "100%",
-    textAlign: "center",
-    fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: grey[400]
-  },
   listItemSeparator: {
     height: 1,
     backgroundColor: grey[100],

@@ -58,9 +58,6 @@ const styles = theme => ({
     boxSizing: "border-box",
     height: 50
   },
-  selectWrapper: {
-    width: "100%"
-  },
   wrapper: {
     flex: 1,
     display: "flex",

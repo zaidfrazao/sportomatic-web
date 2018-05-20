@@ -7,7 +7,7 @@ import Button from "../../../../components/Button";
 import BannerAd from "../../../../components/BannerAd";
 import Hours from "./components/Hours";
 import Wages from "./components/Wages";
-import { common, grey } from "../../../../utils/colours";
+import { grey } from "../../../../utils/colours";
 import Details from "./components/Details";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
@@ -60,36 +60,6 @@ const styles = {
     display: "flex",
     flexDirection: "column"
   },
-  section: {
-    borderRadius: 16,
-    marginBottom: 24,
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: common["white"]
-  },
-  sectionContent: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  },
-  sectionHeading: {
-    fontSize: 18,
-    borderRadius: "16px 16px 0 0",
-    padding: "18px 0",
-    width: "100%",
-    textAlign: "center",
-    fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: grey[500]
-  },
-  sectionList: {
-    flexGrow: 1,
-    margin: "12px 12px 0 12px",
-    width: "calc(100% - 24px)"
-  },
   subheader: {
     paddingTop: 8,
     marginTop: 8,
@@ -100,9 +70,6 @@ const styles = {
   },
   tabsWrapper: {
     margin: "0 24px 24px 24px"
-  },
-  wrapper: {
-    padding: 24
   }
 };
 

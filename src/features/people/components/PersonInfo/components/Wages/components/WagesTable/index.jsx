@@ -2,32 +2,9 @@ import React, { Component } from "react";
 import accounting from "accounting";
 import injectStyles from "react-jss";
 import moment from "moment";
-import {
-  common,
-  green,
-  grey,
-  red
-} from "../../../../../../../../utils/colours";
+import { common, grey } from "../../../../../../../../utils/colours";
 
 const styles = {
-  deltaNegative: {
-    fontWeight: "bold",
-    padding: 8,
-    borderRadius: 8,
-    fontSize: 12,
-    margin: "0 12px",
-    backgroundColor: red[500],
-    color: common["white"]
-  },
-  deltaPositive: {
-    fontWeight: "bold",
-    padding: 8,
-    borderRadius: 8,
-    fontSize: 12,
-    margin: "0 12px",
-    backgroundColor: green[500],
-    color: common["white"]
-  },
   emptyState: {
     padding: "48px 24px",
     textAlign: "center",
@@ -35,38 +12,7 @@ const styles = {
     fontWeight: "bold",
     color: grey[400]
   },
-  icon: {
-    marginRight: 12
-  },
-  messageAwaitingApproval: {
-    textAlign: "center",
-    color: red[900]
-  },
-  messageCancelled: {
-    textAlign: "center",
-    color: grey[600]
-  },
-  messageAbsentBad: {
-    textAlign: "center",
-    color: red[900]
-  },
-  messageAbsentGood: {
-    textAlign: "center",
-    color: grey[600]
-  },
   tableItem: {
-    padding: 24,
-    border: `2px solid ${grey[100]}`,
-    margin: 0
-  },
-  tableItemNegative: {
-    color: red[500],
-    padding: 24,
-    border: `2px solid ${grey[100]}`,
-    margin: 0
-  },
-  tableItemPositive: {
-    color: green[500],
     padding: 24,
     border: `2px solid ${grey[100]}`,
     margin: 0

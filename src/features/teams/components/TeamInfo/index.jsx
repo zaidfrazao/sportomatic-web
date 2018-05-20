@@ -59,51 +59,8 @@ const styles = {
     display: "flex",
     flexDirection: "column"
   },
-  section: {
-    borderRadius: 16,
-    marginBottom: 24,
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: common["white"]
-  },
-  sectionContent: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  },
-  sectionHeading: {
-    fontSize: 18,
-    borderRadius: "16px 16px 0 0",
-    padding: "18px 0",
-    width: "100%",
-    textAlign: "center",
-    fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: grey[500]
-  },
-  sectionList: {
-    flexGrow: 1,
-    margin: "12px 12px 0 12px",
-    width: "calc(100% - 24px)"
-  },
-  subheader: {
-    margin: "12px 24px 0 24px",
-    padding: 12,
-    borderRadius: 16,
-    fontSize: 16,
-    textAlign: "center",
-    fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[300]
-  },
   tabsWrapper: {
     margin: "0 24px 24px 24px"
-  },
-  wrapper: {
-    padding: 24
   }
 };
 

@@ -1,21 +1,13 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
-// import AddIcon from "material-ui-icons/Add";
-// import { CircularProgress } from "material-ui/Progress";
-// import EditIcon from "material-ui-icons/Edit";
-// import MuiButton from "material-ui/Button";
 import injectStyles from "react-jss";
-// import AddTeamDialog from "./components/AddTeamDialog";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
-// import EditTeamDialog from "./components/EditTeamDialog";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import TeamInfo from "./components/TeamInfo";
 import TeamsList from "./components/TeamsList";
-
-const mobileBreakpoint = 800;
 
 const styles = {
   actionsBar: {
@@ -27,15 +19,6 @@ const styles = {
     width: "100%",
     display: "flex",
     justifyContent: "center"
-  },
-  button: {
-    margin: 8,
-    position: "fixed",
-    bottom: 72,
-    right: 24,
-    [`@media (min-width: ${mobileBreakpoint}px)`]: {
-      bottom: 24
-    }
   },
   fabPosition: {
     color: "#fff",
@@ -60,13 +43,6 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     margin: 24
-  },
-  myTeamsSelector: {
-    width: "100%",
-    maxWidth: 1200,
-    margin: "0 auto",
-    display: "flex",
-    alignItems: "center"
   },
   root: {
     width: "100%",
@@ -247,7 +223,6 @@ class TeamsLayout extends Component {
     const {
       classes,
       teams,
-      options,
       staff,
       activeInstitutionID,
       isMobile,
@@ -255,21 +230,11 @@ class TeamsLayout extends Component {
       navigateTo,
       goBack
     } = this.props;
-    const { isAddTeamDialogOpen, isEditTeamDialogOpen } = this.props.dialogs;
-    const {
-      isAddTeamDialogLoading,
-      isEditTeamDialogLoading,
-      isTeamsLoading,
-      isOptionsLoading
-    } = this.props.loadingStatus;
+    const { isTeamsLoading } = this.props.loadingStatus;
     const {
       openAddTeamDialog,
-      closeAddTeamDialog,
-      addTeam,
       openEditTeamDialog,
-      closeEditTeamDialog,
-      loadOptions,
-      editTeam
+      loadOptions
     } = this.props.actions;
     const { teamID, infoTab } = this.props.match.params;
 

@@ -26,9 +26,6 @@ const styles = {
     color: grey[800],
     backgroundColor: grey[100]
   },
-  headerIcon: {
-    marginRight: 12
-  },
   iconComplete: {
     textAlign: "center",
     color: green[500],
@@ -137,7 +134,7 @@ class EventCard extends Component {
   }
 
   getResultsInfo() {
-    const { classes, isResultsLogged, isCompetitive } = this.props;
+    // const { classes, isResultsLogged, isCompetitive } = this.props;
 
     let text = "Results feature coming soon";
     let icon = <div />;

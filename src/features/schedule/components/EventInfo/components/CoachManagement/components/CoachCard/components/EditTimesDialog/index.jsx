@@ -7,9 +7,6 @@ import Dialog from "../../../../../../../../../../components/Dialog";
 import Select from "../../../../../../../../../../components/Select";
 
 const styles = {
-  buttonSeparator: {
-    height: 12
-  },
   errorWrapper: {
     backgroundColor: red[500],
     color: common["white"],
@@ -18,13 +15,6 @@ const styles = {
     padding: 12,
     borderRadius: 8,
     margin: 12
-  },
-  headingMain: {
-    marginBottom: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: 24,
-    lineHeight: "32px"
   },
   headingTime: {
     marginBottom: 12,

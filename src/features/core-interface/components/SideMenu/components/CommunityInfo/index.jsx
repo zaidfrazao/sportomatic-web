@@ -7,9 +7,6 @@ import PersonalAllSwitch from "./components/PersonalAllSwitch";
 const mobileBreakpoint = 800;
 
 const styles = {
-  buttonIcon: {
-    marginRight: 8
-  },
   buttonsWrapper: {
     display: "flex",
     marginBottom: 12

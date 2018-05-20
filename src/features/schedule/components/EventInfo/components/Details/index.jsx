@@ -1,14 +1,9 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import injectSheet from "react-jss";
 import moment from "moment";
 import YourHoursCard from "./components/YourHoursCard";
-import {
-  common,
-  grey,
-  lightBlue,
-  orange,
-  red
-} from "../../../../../../utils/colours";
+import { common, grey, red } from "../../../../../../utils/colours";
 import defaultProfilePicture from "./images/default-profile-picture.png";
 
 const tabletBreakpoint = 1080;
@@ -42,24 +37,6 @@ const styles = {
     fontWeight: "bold",
     textAlign: "center"
   },
-  eventCompetitive: {
-    borderRadius: "16px 16px 0 0",
-    backgroundColor: orange["A400"],
-    color: common["white"],
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-    padding: 12
-  },
-  eventNonCompetitive: {
-    borderRadius: "16px 16px 0 0",
-    backgroundColor: lightBlue["A400"],
-    color: common["white"],
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-    padding: 12
-  },
   eventTypeIconWrapper: {
     textAlign: "center",
     backgroundColor: grey[100],
@@ -75,17 +52,6 @@ const styles = {
     borderTop: `1px solid ${grey[100]}`,
     display: "flex",
     alignItems: "center"
-  },
-  heading: {
-    fontSize: 18,
-    borderRadius: 16,
-    padding: "18px 0",
-    marginBottom: 24,
-    width: "100%",
-    textAlign: "center",
-    fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: grey[400]
   },
   listItemSeparator: {
     height: 1,

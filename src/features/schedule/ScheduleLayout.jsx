@@ -5,17 +5,13 @@ import injectSheet from "react-jss";
 import moment from "moment";
 // import MuiButton from "material-ui/Button";
 import { Redirect } from "react-router-dom";
-// import AddEventDialog from "./components/AddEventDialog";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
 import EventsList from "./components/EventsList";
 import { common } from "../../utils/colours";
-// import DecisionModal from "../../components/DecisionModal";
-// import EditEventDialog from "./components/EditEventDialog";
 import EventInfo from "./components/EventInfo";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
-// import NotificationModal from "../../components/NotificationModal";
 
 const styles = {
   adWrapper: {
@@ -32,9 +28,6 @@ const styles = {
     height: "100%",
     display: "flex",
     flexDirection: "column"
-  },
-  calendarWrapper: {
-    flexGrow: 1
   },
   fabPosition: {
     color: common["white"],
@@ -387,30 +380,13 @@ class ScheduleLayout extends Component {
       isTablet,
       isMobile,
       classes,
-      activeInstitutionID,
-      teams,
       navigateTo,
       institutionCreationDate
     } = this.props;
     const { dateSelected } = this.props.match.params;
-    const {
-      openAddEventDialog,
-      closeAddEventDialog,
-      addEvent,
-      openEventErrorAlert,
-      closeEventErrorAlert
-    } = this.props.actions;
-    const {
-      isEventsLoading,
-      isAddEventDialogLoading,
-      isStaffLoading,
-      isTeamsLoading
-    } = this.props.loadingStatus;
-    const { isAddEventDialogOpen, isEventErrorAlertOpen } = this.props.dialogs;
+    const { openAddEventDialog } = this.props.actions;
 
-    const currentDate = new Date(Date.now());
     const filteredEvents = this.filterEvents();
-    const eventErrorAlert = this.getEventErrorAlert();
     const ad = this.createAd();
 
     return (
@@ -440,34 +416,6 @@ class ScheduleLayout extends Component {
             institutionCreationDate={institutionCreationDate}
             navigateTo={navigateTo}
           />
-          {/*<AddEventDialog
-            isOpen={isAddEventDialogOpen}
-            isMobile={isTablet}
-            isLoading={
-              isAddEventDialogLoading ||
-              isEventsLoading ||
-              isStaffLoading ||
-              isTeamsLoading ||
-              activeInstitutionID === ""
-            }
-            minDate={moment(currentDate).format("YYYY-MM-DD")}
-            initialDate={dateSelected}
-            institutionID={activeInstitutionID}
-            teams={teams}
-            coaches={coaches}
-            managers={managers}
-            actions={{
-              handleClose: closeAddEventDialog,
-              addEvent,
-              openEventErrorAlert
-            }}
-          />*/}
-          {/*<NotificationModal
-            isOpen={isEventErrorAlertOpen}
-            handleOkClick={closeEventErrorAlert}
-            heading={eventErrorAlert.heading}
-            message={eventErrorAlert.message}
-          />*/}
         </div>
       </div>
     );
@@ -490,16 +438,8 @@ class ScheduleLayout extends Component {
     const { dateSelected, eventID, infoTab } = this.props.match.params;
     const {
       openEditEventDialog,
-      closeEditEventDialog,
-      openEventErrorAlert,
-      closeEventErrorAlert,
       openCancelEventAlert,
-      closeCancelEventAlert,
       openUncancelEventAlert,
-      closeUncancelEventAlert,
-      cancelEvent,
-      uncancelEvent,
-      editEvent,
       signIn,
       signOut,
       updateTimes,
@@ -508,20 +448,11 @@ class ScheduleLayout extends Component {
     } = this.props.actions;
     const {
       isEventsLoading,
-      isEditEventDialogLoading,
       isStaffLoading,
       isTeamsLoading
     } = this.props.loadingStatus;
-    const {
-      isCancelEventAlertOpen,
-      isUncancelEventAlertOpen,
-      isEditEventDialogOpen,
-      isEventErrorAlertOpen
-    } = this.props.dialogs;
 
-    const currentDate = new Date(Date.now());
     const isPastEvent = this.checkIfEventPassed();
-    const eventErrorAlert = this.getEventErrorAlert();
     const eventInfo = events[eventID];
 
     return (

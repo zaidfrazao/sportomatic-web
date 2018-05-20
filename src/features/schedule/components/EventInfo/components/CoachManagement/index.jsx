@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import injectSheet from "react-jss";
 import CoachCard from "./components/CoachCard";
-import { common, grey, red } from "../../../../../../utils/colours";
+import { common, red } from "../../../../../../utils/colours";
 import EmptyState from "../../../../../../components/EmptyState";
 
 const mobileBreakpoint = 800;
