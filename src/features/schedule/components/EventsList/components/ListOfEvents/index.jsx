@@ -228,21 +228,25 @@ class ListOfEvents extends Component {
       isMobile,
       canCreate
     } = this.props;
-    const today = moment(new Date(Date.now())).format("DD-MM-YYYY");
+    const today = moment(new Date(Date.now()));
 
     return datesToDisplay.map((date, index) => {
       const eventCards = this.getEventCards(date);
-      const isToday = moment(date).format("DD-MM-YYYY") === today;
+      const isToday =
+        moment(date).format("DD-MM-YYYY") === today.format("DD-MM-YYYY");
+      const showAddButton = !moment(date).isBefore(today.startOf("day"));
 
       if (isTablet) {
         const formattedDate = moment(date).format("dddd");
+
         return (
           <div className={classes.columnTablet}>
             <div className={classes.headerTablet}>
               {isToday ? "Today" : formattedDate}
             </div>
             {isMobile &&
-              canCreate && (
+              canCreate &&
+              showAddButton && (
                 <div className={classes.addEventWrapperTablet}>
                   <Button colour="secondary" filled fullWidth>
                     <i className={`fas fa-plus ${classes.icon}`} />Add event
@@ -269,11 +273,12 @@ class ListOfEvents extends Component {
             {eventCards.length === 0 && (
               <div className={classes.noEvents}>No events</div>
             )}
-            {canCreate && (
-              <div className={classes.addEventWrapper}>
-                <i className={`fas fa-plus ${classes.icon}`} />Add event
-              </div>
-            )}
+            {canCreate &&
+              showAddButton && (
+                <div className={classes.addEventWrapper}>
+                  <i className={`fas fa-plus ${classes.icon}`} />Add event
+                </div>
+              )}
           </div>
         );
       }
@@ -292,11 +297,12 @@ class ListOfEvents extends Component {
             {eventCards.length === 0 && (
               <div className={classes.noEvents}>No events</div>
             )}
-            {canCreate && (
-              <div className={classes.addEventWrapper}>
-                <i className={`fas fa-plus ${classes.icon}`} />Add event
-              </div>
-            )}
+            {canCreate &&
+              showAddButton && (
+                <div className={classes.addEventWrapper}>
+                  <i className={`fas fa-plus ${classes.icon}`} />Add event
+                </div>
+              )}
           </div>
         );
       }
@@ -310,11 +316,12 @@ class ListOfEvents extends Component {
           {eventCards.length === 0 && (
             <div className={classes.noEvents}>No events</div>
           )}
-          {canCreate && (
-            <div className={classes.addEventWrapper}>
-              <i className={`fas fa-plus ${classes.icon}`} />Add event
-            </div>
-          )}
+          {canCreate &&
+            showAddButton && (
+              <div className={classes.addEventWrapper}>
+                <i className={`fas fa-plus ${classes.icon}`} />Add event
+              </div>
+            )}
         </div>
       );
     });
