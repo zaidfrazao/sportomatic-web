@@ -7,7 +7,7 @@ import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 import BannerAd from "../../../../components/BannerAd";
 import CoachManagement from "./components/CoachManagement";
-import { grey } from "../../../../utils/colours";
+import { common, grey } from "../../../../utils/colours";
 import Details from "./components/Details";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
@@ -43,7 +43,7 @@ const styles = {
     textAlign: "center",
     fontWeight: "bold",
     color: grey[800],
-    backgroundColor: grey[100]
+    backgroundColor: common["white"]
   },
   iconAdjacentText: {
     marginRight: 8

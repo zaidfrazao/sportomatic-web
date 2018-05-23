@@ -93,7 +93,7 @@ class CoachManagement extends Component {
                 className={`fas fa-exclamation ${classes.cancelledIcon}`}
               />CANCELLED
             </div>
-            <EmptyState message="Not applicable to cancelled" />
+            <EmptyState message="Not applicable to cancelled events" />
           </div>
         ) : coachItems.length === 0 ? (
           <div className={classes.emptyStateWrapper}>
