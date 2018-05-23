@@ -126,6 +126,7 @@ class TeamInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <Details
+                isMobile={isMobile}
                 name={info.name}
                 ageGroup={info.ageGroup}
                 division={info.division}
@@ -182,6 +183,7 @@ class TeamInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <Details
+                isMobile={isMobile}
                 name={info.name}
                 ageGroup={info.ageGroup}
                 division={info.division}
@@ -205,6 +207,7 @@ class TeamInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <Details
+                isMobile={isMobile}
                 name={info.name}
                 ageGroup={info.ageGroup}
                 division={info.division}

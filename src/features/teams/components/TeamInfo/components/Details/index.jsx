@@ -7,10 +7,11 @@ const tabletBreakpoint = 1080;
 
 const styles = {
   ageIconWrapper: {
+    fontWeight: "bold",
     borderRadius: "16px 0 0 0",
     textAlign: "center",
     backgroundColor: grey[100],
-    width: 60,
+    width: props => (props.isMobile ? 60 : 140),
     padding: "24px 0"
   },
   ageText: {
@@ -31,9 +32,10 @@ const styles = {
     }
   },
   divisionIconWrapper: {
+    fontWeight: "bold",
     textAlign: "center",
     backgroundColor: grey[100],
-    width: 60,
+    width: props => (props.isMobile ? 60 : 140),
     padding: "24px 0"
   },
   divisionText: {
@@ -47,10 +49,11 @@ const styles = {
     alignItems: "center"
   },
   genderIconWrapper: {
+    fontWeight: "bold",
     borderRadius: "0 0 0 16px",
     textAlign: "center",
     backgroundColor: grey[100],
-    width: 60,
+    width: props => (props.isMobile ? 60 : 140),
     padding: "24px 0"
   },
   genderText: {
@@ -62,6 +65,9 @@ const styles = {
     borderTop: `1px solid ${grey[100]}`,
     display: "flex",
     alignItems: "center"
+  },
+  iconText: {
+    marginLeft: 8
   },
   listItemSeparator: {
     height: 1,
@@ -115,9 +121,10 @@ const styles = {
     backgroundColor: grey[100]
   },
   sportIconWrapper: {
+    fontWeight: "bold",
     textAlign: "center",
     backgroundColor: grey[100],
-    width: 60,
+    width: props => (props.isMobile ? 60 : 140),
     padding: "24px 0"
   },
   sportText: {
@@ -275,7 +282,7 @@ class Details extends Component {
   }
 
   render() {
-    const { classes, division, sport } = this.props;
+    const { classes, division, sport, isMobile } = this.props;
 
     const coachItems = this.getCoachItems();
     const managerItems = this.getManagerItems();
@@ -289,24 +296,32 @@ class Details extends Component {
             <div className={classes.ageWrapper}>
               <div className={classes.ageIconWrapper}>
                 <i className="fas fa-hourglass-half" />
+                {!isMobile && (
+                  <span className={classes.iconText}>Age Group</span>
+                )}
               </div>
               <span className={classes.ageText}>{ageGroup}</span>
             </div>
             <div className={classes.divisionWrapper}>
               <div className={classes.divisionIconWrapper}>
                 <i className="fas fa-sort-alpha-down" />
+                {!isMobile && (
+                  <span className={classes.iconText}>Division</span>
+                )}
               </div>
               <span className={classes.divisionText}>{division}</span>
             </div>
             <div className={classes.sportWrapper}>
               <div className={classes.sportIconWrapper}>
                 <i className="fas fa-futbol" />
+                {!isMobile && <span className={classes.iconText}>Sport</span>}
               </div>
               <span className={classes.sportText}>{sport}</span>
             </div>
             <div className={classes.genderWrapper}>
               <div className={classes.genderIconWrapper}>
                 <i className="fas fa-venus-mars" />
+                {!isMobile && <span className={classes.iconText}>Gender</span>}
               </div>
               <span className={classes.genderText}>{gender}</span>
             </div>
