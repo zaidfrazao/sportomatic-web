@@ -38,7 +38,7 @@ class Today extends Component {
     if (startTimeMoment.isAfter(currentTimeMoment)) {
       return `Starts ${startTimeMoment.to(currentTimeMoment)}`;
     } else if (endTimeMoment.isAfter(currentTimeMoment)) {
-      return `Ends ${endTimeMoment.to(currentTimeMoment)}`;
+      return `Ends ${currentTimeMoment.to(endTimeMoment)}`;
     } else {
       return `Ended ${endTimeMoment.from(currentTimeMoment)}`;
     }
