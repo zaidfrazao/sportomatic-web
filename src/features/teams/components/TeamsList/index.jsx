@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
-import { grey } from "../../../../utils/colours";
+import EmptyState from "../../../../components/EmptyState";
 import TeamCard from "./components/TeamCard";
 
 const mobileBreakpoint = 800;
@@ -23,18 +23,8 @@ const styles = {
       width: "calc(33% - 48px)"
     }
   },
-  noCardsText: {
-    color: grey[500],
-    padding: 40,
-    borderRadius: 16,
-    border: `3px solid ${grey[300]}`
-  },
-  noCardsWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    margin: "24px auto"
+  emptyState: {
+    padding: 24
   }
 };
 
@@ -60,8 +50,8 @@ class TeamsList extends Component {
       );
     } else {
       return (
-        <div className={classes.noCardsWrapper}>
-          <div className={classes.noCardsText}>No teams found</div>
+        <div className={classes.emptyState}>
+          <EmptyState message="No teams" />
         </div>
       );
     }

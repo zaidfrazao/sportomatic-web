@@ -54,12 +54,6 @@ const styles = {
   teamCards: {
     flexGrow: 1,
     overflow: "auto"
-  },
-  teamNoCards: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-    overflow: "auto"
   }
 };
 
@@ -146,8 +140,11 @@ class TeamsLayout extends Component {
 
   getTeamsList(teams) {
     return _.toPairs(teams).map(([id, info]) => {
+      let isInSeason = false;
+
       return {
         id,
+        isInSeason,
         name: info.info.name,
         sport: info.info.sport,
         status: info.status
@@ -271,11 +268,7 @@ class TeamsLayout extends Component {
     } else {
       return (
         <div className={classes.root}>
-          <div
-            className={
-              filteredTeams.length > 0 ? classes.teamCards : classes.teamNoCards
-            }
-          >
+          <div className={classes.teamCards}>
             {isAdmin &&
               !isMobile && (
                 <div className={classes.actionsBar}>
