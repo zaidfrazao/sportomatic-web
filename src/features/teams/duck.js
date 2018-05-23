@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
@@ -12,9 +11,6 @@ export const CLOSE_ADD_TEAM_DIALOG = `${NAMESPACE}/CLOSE_ADD_TEAM_DIALOG`;
 export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
 export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
 export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
-export const REQUEST_OPTIONS = `${NAMESPACE}/REQUEST_OPTIONS`;
-export const RECEIVE_OPTIONS = `${NAMESPACE}/RECEIVE_OPTIONS`;
-export const ERROR_LOADING_OPTIONS = `${NAMESPACE}/ERROR_LOADING_OPTIONS`;
 export const REQUEST_ADD_TEAM = `${NAMESPACE}/REQUEST_ADD_TEAM`;
 export const RECEIVE_ADD_TEAM = `${NAMESPACE}/RECEIVE_ADD_TEAM`;
 export const ERROR_ADDING_TEAM = `${NAMESPACE}/ERROR_ADDING_TEAM`;
@@ -138,25 +134,6 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
   }
 }
 
-export const optionsInitialState = {
-  ageGroups: { "12": "U/12" },
-  divisions: { A: "A" },
-  sports: { Athletics: true },
-  genderType: "MIXED"
-};
-
-function optionsReducer(state = optionsInitialState, action = {}) {
-  switch (action.type) {
-    case RESET_STATE:
-    case SIGN_OUT:
-      return optionsInitialState;
-    case RECEIVE_OPTIONS:
-      return action.payload;
-    default:
-      return state;
-  }
-}
-
 export const filtersInitialState = {
   gender: "All",
   sport: "All",
@@ -187,10 +164,9 @@ function filterReducer(state = filtersInitialState, action = {}) {
 }
 
 export const loadingStatusInitialState = {
-  isAddTeamDialogLoading: false,
-  isEditTeamDialogLoading: false,
+  isAddTeamLoading: false,
+  isEditTeamLoading: false,
   isTeamsLoading: false,
-  isOptionsLoading: false,
   isStaffLoading: false,
   isEventsByTeamLoading: false
 };
@@ -203,35 +179,24 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
     case REQUEST_ADD_TEAM:
       return {
         ...state,
-        isAddTeamDialogLoading: true
+        isAddTeamLoading: true
       };
     case ERROR_ADDING_TEAM:
     case RECEIVE_ADD_TEAM:
       return {
         ...state,
-        isAddTeamDialogLoading: false
+        isAddTeamLoading: false
       };
     case REQUEST_EDIT_TEAM:
       return {
         ...state,
-        isEditTeamDialogLoading: true
+        isEditTeamLoading: true
       };
     case ERROR_EDITTING_TEAM:
     case RECEIVE_EDIT_TEAM:
       return {
         ...state,
-        isEditTeamDialogLoading: false
-      };
-    case REQUEST_OPTIONS:
-      return {
-        ...state,
-        isOptionsLoading: true
-      };
-    case ERROR_LOADING_OPTIONS:
-    case RECEIVE_OPTIONS:
-      return {
-        ...state,
-        isOptionsLoading: false
+        isEditTeamLoading: false
       };
     case REQUEST_TEAMS:
       return {
@@ -313,7 +278,6 @@ function eventsByTeamReducer(state = {}, action = {}) {
 export const teamsReducer = combineReducers({
   dialogs: dialogsReducer,
   teamsList: teamsListReducer,
-  options: optionsReducer,
   staff: staffReducer,
   loadingStatus: loadingStatusReducer,
   filters: filterReducer,
@@ -325,7 +289,6 @@ export const teamsReducer = combineReducers({
 
 const dialogs = state => state.teams.dialogs;
 const teams = state => state.teams.teamsList;
-const options = state => state.teams.options;
 const staff = state => state.teams.staff;
 const loadingStatus = state => state.teams.loadingStatus;
 const filters = state => state.teams.filters;
@@ -335,7 +298,6 @@ const eventsByTeam = state => state.teams.eventsByTeam;
 export const selector = createStructuredSelector({
   dialogs,
   teams,
-  options,
   staff,
   loadingStatus,
   filters,
@@ -516,68 +478,6 @@ export function loadTeams(institutionID) {
   };
 }
 
-export function requestOptions() {
-  return {
-    type: REQUEST_OPTIONS
-  };
-}
-
-export function receiveOptions(institutionInfo) {
-  const ageGroups = _.fromPairs(
-    institutionInfo.ageGroups.map(ageGroup => {
-      if (typeof ageGroup === "number") {
-        return [ageGroup, `U/${ageGroup}`];
-      } else {
-        return [ageGroup, ageGroup];
-      }
-    })
-  );
-  const divisions = _.fromPairs(
-    institutionInfo.divisions.map(division => [division, division])
-  );
-  const sports = _.fromPairs(
-    institutionInfo.sports.map(sport => [sport, sport])
-  );
-  const genderType = institutionInfo.gender;
-
-  return {
-    type: RECEIVE_OPTIONS,
-    payload: {
-      ageGroups,
-      divisions,
-      sports,
-      genderType
-    }
-  };
-}
-
-export function errorLoadingOptions(error: { code: string, message: string }) {
-  return {
-    type: ERROR_LOADING_OPTIONS,
-    payload: {
-      error
-    }
-  };
-}
-
-export function loadOptions(institutionID) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestOptions());
-    const institutionRef = firebase
-      .firestore()
-      .collection("institutions")
-      .doc(institutionID);
-
-    return institutionRef
-      .get()
-      .then(doc => {
-        const institutionInfo = doc.data();
-        dispatch(receiveOptions(institutionInfo.info));
-      })
-      .catch(error => dispatch(errorLoadingOptions(error)));
-  };
-}
-
 export function requestAddTeam() {
   return {
     type: REQUEST_ADD_TEAM
@@ -599,7 +499,14 @@ export function errorAddingTeam(error: { code: string, message: string }) {
   };
 }
 
-export function addTeam(institutionID, info, managers, coaches) {
+export function addTeam(
+  institutionID,
+  ageGroup,
+  division,
+  gender,
+  sport,
+  name
+) {
   return function(dispatch: DispatchAlias) {
     dispatch(requestAddTeam());
     const db = firebase.firestore();
@@ -607,10 +514,17 @@ export function addTeam(institutionID, info, managers, coaches) {
     return db
       .collection("teams")
       .add({
-        coaches,
-        info,
         institutionID,
-        managers,
+        info: {
+          ageGroup,
+          division,
+          gender,
+          sport,
+          name
+        },
+        coaches: {},
+        managers: {},
+        seasons: {},
         status: "ACTIVE"
       })
       .then(() => dispatch(receiveAddTeam()))

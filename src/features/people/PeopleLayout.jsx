@@ -2,8 +2,6 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import moment from "moment";
-// import AddIcon from "material-ui-icons/Add";
-// import MuiButton from "material-ui/Button";
 import injectStyles from "react-jss";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
@@ -464,18 +462,6 @@ class PeopleLayout extends Component {
                   closeModal: () => closeInvitePersonModal()
                 }}
               />
-              {/*isAdmin &&
-                isMobile && (
-                  <MuiButton
-                    fab
-                    color="accent"
-                    aria-label="invite new person"
-                    className={classes.fabPosition}
-                    onClick={() => openInvitePersonModal()}
-                  >
-                    <AddIcon />
-                  </MuiButton>
-                )*/}
             </div>
           </div>
           <Dialog

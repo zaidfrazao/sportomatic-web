@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import injectStyles from "react-jss";
+import AddTeamModal from "./components/AddTeamModal";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
@@ -228,23 +229,26 @@ class TeamsLayout extends Component {
       isMobile,
       isAdmin,
       navigateTo,
-      goBack
+      goBack,
+      teamOptions
     } = this.props;
-    const { isTeamsLoading } = this.props.loadingStatus;
+    const { isTeamsLoading, isAddTeamLoading } = this.props.loadingStatus;
     const {
       openAddTeamDialog,
+      closeAddTeamDialog,
       openEditTeamDialog,
-      loadOptions
+      addTeam
     } = this.props.actions;
+    const { isAddTeamDialogOpen } = this.props.dialogs;
     const { teamID, infoTab } = this.props.match.params;
 
     const ad = this.createAd();
     const hasTeamsCreated = this.getTeamsList(teams).length > 0;
     const filteredTeams = this.getTeamsList(this.filterTeams());
 
-    return (
-      <div className={classes.root}>
-        {teamID ? (
+    if (teamID) {
+      return (
+        <div className={classes.root}>
           <div className={classes.infoWrapper}>
             <TeamInfo
               staff={staff}
@@ -258,42 +262,15 @@ class TeamsLayout extends Component {
                 goBack,
                 editTeam: () => {
                   openEditTeamDialog();
-                  loadOptions(activeInstitutionID);
                 }
               }}
             />
-            {/*<EditTeamDialog
-              isOpen={isEditTeamDialogOpen}
-              isMobile={isMobile}
-              isLoading={
-                isEditTeamDialogLoading ||
-                isOptionsLoading ||
-                activeInstitutionID === ""
-              }
-              teamID={teamID}
-              initialTeamInfo={teams[teamID]}
-              institutionID={activeInstitutionID}
-              options={options}
-              staff={staff}
-              actions={{
-                handleClose: closeEditTeamDialog,
-                editTeam
-              }}
-            />*/}
-            {/*isAdmin &&
-              isMobile && (
-                <MuiButton
-                  fab
-                  color="accent"
-                  aria-label="edit team"
-                  className={classes.fabPosition}
-                  onClick={() => openEditTeamDialog()}
-                >
-                  <EditIcon />
-                </MuiButton>
-              )*/}
           </div>
-        ) : (
+        </div>
+      );
+    } else {
+      return (
+        <div className={classes.root}>
           <div
             className={
               filteredTeams.length > 0 ? classes.teamCards : classes.teamNoCards
@@ -323,40 +300,29 @@ class TeamsLayout extends Component {
                   hasTeamsCreated={hasTeamsCreated}
                   navigateTo={navigateTo}
                 />
-                {/*isAdmin &&
-                  isMobile && (
-                    <MuiButton
-                      fab
-                      color="accent"
-                      aria-label="add new team"
-                      className={classes.fabPosition}
-                      onClick={() => openAddTeamDialog()}
-                    >
-                      <AddIcon />
-                    </MuiButton>
-                  )*/}
               </div>
             )}
           </div>
-        )}
-        {/*<AddTeamDialog
-          isOpen={isAddTeamDialogOpen}
-          isMobile={isMobile}
-          isLoading={
-            isAddTeamDialogLoading ||
-            isOptionsLoading ||
-            activeInstitutionID === ""
-          }
-          institutionID={activeInstitutionID}
-          options={options}
-          staff={staff}
-          actions={{
-            handleClose: closeAddTeamDialog,
-            addTeam
-          }}
-        />*/}
-      </div>
-    );
+          <AddTeamModal
+            isOpen={isAddTeamDialogOpen}
+            isLoading={isAddTeamLoading}
+            options={teamOptions}
+            actions={{
+              addTeam: (ageGroup, division, sport, gender, name) =>
+                addTeam(
+                  activeInstitutionID,
+                  ageGroup,
+                  division,
+                  gender,
+                  sport,
+                  name
+                ),
+              closeModal: () => closeAddTeamDialog()
+            }}
+          />
+        </div>
+      );
+    }
   }
 }
 

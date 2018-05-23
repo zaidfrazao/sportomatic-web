@@ -282,6 +282,35 @@ class CoreInterfaceLayout extends Component {
       });
   }
 
+  getTeamOptions(institutionInfo) {
+    const ageGroups = institutionInfo.info.ageGroups.map(ageGroup => {
+      return {
+        key: ageGroup,
+        label: ageGroup
+      };
+    });
+    const divisions = institutionInfo.info.divisions.map(division => {
+      return {
+        key: division,
+        label: division
+      };
+    });
+    const sports = institutionInfo.info.sports.map(sport => {
+      return {
+        key: sport,
+        label: sport
+      };
+    });
+    const genders = _.lowerCase(institutionInfo.info.gender);
+
+    return {
+      ageGroups,
+      divisions,
+      sports,
+      genders
+    };
+  }
+
   render() {
     const { classes, institutions, history } = this.props;
     const {
@@ -320,17 +349,15 @@ class CoreInterfaceLayout extends Component {
 
     const communityRole = this.getRole();
     const userName = `${accountInfo.info.name} ${accountInfo.info.surname}`;
-    let isAdmin = false;
-
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
     const sideMenuItems = this.getSideMenuItems();
     const sportsItems = this.getSportsItems();
     const switchCommunityInfo = this.getSwitchCommunitiesInfo();
 
+    let isAdmin = false;
     let communityName = "Default";
     let emblem = "";
-
     let permissions = {
       coaches: {
         events: {
@@ -376,11 +403,18 @@ class CoreInterfaceLayout extends Component {
       type: "HOURLY"
     };
     let institutionCreationDate = new Date(Date.now());
+    let teamOptions = {
+      ageGroups: [],
+      divisions: [],
+      sports: [],
+      genders: "both"
+    };
+
     if (institutions[activeInstitutionID]) {
+      teamOptions = this.getTeamOptions(institutions[activeInstitutionID]);
       isAdmin =
         accountInfo.institutions[activeInstitutionID].roles.admin ===
         "APPROVED";
-
       communityName = institutions[activeInstitutionID].info.name;
       emblem = institutions[activeInstitutionID].info.emblemURL;
       permissions = institutions[activeInstitutionID].permissions;
@@ -551,6 +585,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/teams/"}>
                     <Teams
+                      teamOptions={teamOptions}
                       isAdmin={isAdmin}
                       userID={userID}
                       role={role}
@@ -566,6 +601,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/teams/:teamID"}>
                     <Teams
+                      teamOptions={teamOptions}
                       isAdmin={isAdmin}
                       userID={userID}
                       role={role}
@@ -581,6 +617,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/teams/:teamID/:infoTab"}>
                     <Teams
+                      teamOptions={teamOptions}
                       isAdmin={isAdmin}
                       userID={userID}
                       role={role}
