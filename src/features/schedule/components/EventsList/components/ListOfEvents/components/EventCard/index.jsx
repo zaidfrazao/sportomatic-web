@@ -3,14 +3,14 @@ import injectStyles from "react-jss";
 import {
   common,
   grey,
-  lightBlue,
+  orange,
   red,
   yellow
 } from "../../../../../../../../utils/colours";
 
 const styles = {
   cancelledRow: {
-    fontSize: 11,
+    fontSize: props => (props.isTablet ? 16 : 14),
     color: red[700],
     backgroundColor: common["white"],
     padding: "12px 0",
@@ -24,9 +24,9 @@ const styles = {
     color: red[700]
   },
   header: {
-    fontSize: 12,
+    fontSize: props => (props.isTablet ? 16 : 14),
     padding: 12,
-    lineHeight: "16px",
+    lineHeight: props => (props.isTablet ? "22px" : "18px"),
     textAlign: "center",
     color: common["white"],
     fontWeight: "bold"
@@ -35,7 +35,7 @@ const styles = {
     marginRight: 8
   },
   missingInfoRow: {
-    fontSize: 11,
+    fontSize: props => (props.isTablet ? 16 : 14),
     color: yellow[800],
     backgroundColor: common["white"],
     padding: "12px 0",
@@ -49,7 +49,8 @@ const styles = {
     color: yellow[800]
   },
   row: {
-    fontSize: 14,
+    display: "flex",
+    alignItems: "center",
     backgroundColor: common["white"],
     borderBottom: `1px solid ${grey[100]}`
   },
@@ -58,7 +59,9 @@ const styles = {
     color: common["black"],
     backgroundColor: grey[100],
     padding: "8px 0",
-    width: 32,
+    fontWeight: "bold",
+    fontSize: props => (props.isTablet ? 16 : 14),
+    width: props => (props.isTablet ? 120 : 32),
     marginRight: 8
   },
   rowIconLast: {
@@ -67,30 +70,37 @@ const styles = {
     color: common["black"],
     backgroundColor: grey[100],
     padding: "8px 0",
-    width: 32,
+    fontWeight: "bold",
+    fontSize: props => (props.isTablet ? 16 : 14),
+    width: props => (props.isTablet ? 120 : 32),
     marginRight: 8
   },
   rowLast: {
+    display: "flex",
+    alignItems: "center",
     borderRadius: "0 0 8px 8px",
     fontSize: 14,
     backgroundColor: common["white"]
   },
+  rowTabletText: {
+    marginLeft: 8
+  },
   rowText: {
     color: common["black"],
-    fontSize: 11
+    fontSize: props => (props.isTablet ? 16 : 14)
   },
   wrapper: {
     transition: "0.25s",
     margin: 12,
     borderRadius: 8,
-    border: `1px solid ${lightBlue[500]}`,
-    backgroundColor: lightBlue[500],
-    color: lightBlue[500],
+    border: `1px solid ${orange["A400"]}`,
+    backgroundColor: orange["A400"],
+    color: orange["A400"],
     cursor: "pointer",
     "&:hover": {
-      border: `1px solid ${lightBlue[400]}`,
-      color: lightBlue[400],
-      backgroundColor: lightBlue[400]
+      border: `1px solid ${orange["A200"]}`,
+      color: orange["A200"],
+      backgroundColor: orange["A200"]
     }
   }
 };
@@ -114,7 +124,8 @@ class EventCard extends Component {
       title,
       isPastEvent,
       isMissingInfo,
-      isActionsRequired
+      isActionsRequired,
+      isTablet
     } = this.props;
 
     const icon = this.getIcon();
@@ -148,11 +159,21 @@ class EventCard extends Component {
             </div>
           )}
         <div className={classes.row}>
-          <i className={`fas fa-hourglass-start ${classes.rowIcon}`} />
+          <div className={classes.rowIcon}>
+            <i className={`fas fa-hourglass-start`} />
+            {isTablet && (
+              <span className={classes.rowTabletText}>Starts at</span>
+            )}
+          </div>
           <span className={classes.rowText}>{startTime}</span>
         </div>
         <div className={classes.rowLast}>
-          <i className={`fas fa-hourglass-end ${classes.rowIconLast}`} />
+          <div className={classes.rowIconLast}>
+            <i className={`fas fa-hourglass-start`} />
+            {isTablet && (
+              <span className={classes.rowTabletText}>Starts at</span>
+            )}
+          </div>
           <span className={classes.rowText}>{endTime}</span>
         </div>
       </div>
