@@ -330,20 +330,7 @@ class CoreInterfaceLayout extends Component {
 
     let communityName = "Default";
     let emblem = "";
-    let availableRoles = [
-      {
-        key: "admin",
-        label: "Administrator"
-      },
-      {
-        key: "coach",
-        label: "Coach"
-      },
-      {
-        key: "manager",
-        label: "Manager"
-      }
-    ];
+
     let permissions = {
       coaches: {
         events: {
@@ -390,37 +377,9 @@ class CoreInterfaceLayout extends Component {
     };
     let institutionCreationDate = new Date(Date.now());
     if (institutions[activeInstitutionID]) {
-      const institutionRoles =
-        accountInfo.institutions[activeInstitutionID].roles;
-
       isAdmin =
         accountInfo.institutions[activeInstitutionID].roles.admin ===
         "APPROVED";
-
-      availableRoles = [];
-      institutionRoles.admin === "APPROVED" &&
-        availableRoles.push({
-          key: "admin",
-          label: "Administrator"
-        });
-      institutionRoles.manager === "APPROVED" &&
-        availableRoles.push({
-          key: "manager",
-          label: "Manager"
-        });
-      institutionRoles.coach === "APPROVED" &&
-        availableRoles.push({
-          key: "coach",
-          label: "Coach"
-        });
-
-      let validRoleSelected = false;
-      availableRoles.map(availableRole => {
-        if (availableRole.key === role) validRoleSelected = true;
-      });
-      if (!validRoleSelected) {
-        switchRole(userID, availableRoles[0].key);
-      }
 
       communityName = institutions[activeInstitutionID].info.name;
       emblem = institutions[activeInstitutionID].info.emblemURL;
@@ -458,7 +417,6 @@ class CoreInterfaceLayout extends Component {
               communityName={communityName}
               emblem={emblem}
               selectedRole={role}
-              availableRoles={availableRoles}
               meAllFilter={meAllFilter}
               actions={{
                 switchCommunities: () => openManageInstitutionsDialog(),

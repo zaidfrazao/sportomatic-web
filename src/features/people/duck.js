@@ -10,6 +10,8 @@ const NAMESPACE = "sportomatic-web/people";
 
 export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
 export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
+export const REQUEST_ADMIN = `${NAMESPACE}/REQUEST_ADMIN`;
+export const RECEIVE_ADMIN = `${NAMESPACE}/RECEIVE_ADMIN`;
 export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
 export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
 export const APPLY_FILTERS = `${NAMESPACE}/APPLY_FILTERS`;
@@ -160,14 +162,17 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
   }
 }
 
-function staffReducer(state = {}, action = {}) {
+function usersReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
-    case REQUEST_STAFF:
     case SIGN_OUT:
       return {};
+    case RECEIVE_ADMIN:
     case RECEIVE_STAFF:
-      return action.payload.staff;
+      return {
+        ...state,
+        ...action.payload.people
+      };
     default:
       return state;
   }
@@ -324,7 +329,7 @@ function wagesByCoachReducer(state = {}, action = {}) {
 
 export const peopleReducer = combineReducers({
   uiConfig: uiConfigReducer,
-  staff: staffReducer,
+  users: usersReducer,
   dialogs: dialogsReducer,
   loadingStatus: loadingStatusListReducer,
   wagesByCoach: wagesByCoachReducer,
@@ -336,7 +341,7 @@ export const peopleReducer = combineReducers({
 // Selectors
 
 const uiConfig = state => state.people.uiConfig;
-const staff = state => state.people.staff;
+const users = state => state.people.users;
 const teams = state => state.people.teams;
 const dialogs = state => state.people.dialogs;
 const loadingStatus = state => state.people.loadingStatus;
@@ -346,7 +351,7 @@ const wagesByCoach = state => state.people.wagesByCoach;
 
 export const selector = createStructuredSelector({
   uiConfig,
-  staff,
+  users,
   dialogs,
   loadingStatus,
   teams,
@@ -407,17 +412,51 @@ export function closePostInviteAlert() {
   };
 }
 
+export function requestAdmins() {
+  return {
+    type: REQUEST_ADMIN
+  };
+}
+
+export function receiveAdmins(people) {
+  return {
+    type: RECEIVE_ADMIN,
+    payload: {
+      people
+    }
+  };
+}
+
+export function loadAdmins(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestAdmins());
+
+    const adminRef = firebase
+      .firestore()
+      .collection("users")
+      .where(`institutions.${institutionID}.status`, "==", "ADMIN");
+
+    return adminRef.onSnapshot(querySnapshot => {
+      let admins = {};
+      querySnapshot.forEach(doc => {
+        admins[doc.id] = doc.data();
+      });
+      dispatch(receiveAdmins(admins));
+    });
+  };
+}
+
 export function requestStaff() {
   return {
     type: REQUEST_STAFF
   };
 }
 
-export function receiveStaff(staff) {
+export function receiveStaff(people) {
   return {
     type: RECEIVE_STAFF,
     payload: {
-      staff
+      people
     }
   };
 }

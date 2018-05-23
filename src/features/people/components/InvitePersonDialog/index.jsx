@@ -51,6 +51,33 @@ class InvitePersonDialog extends Component {
     }
   }
 
+  componentWillMount() {
+    document.addEventListener("keydown", this.onKeyPressed.bind(this));
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeyPressed.bind(this));
+  }
+
+  onKeyPressed(e) {
+    const { isOpen, isLoading } = this.props;
+    const { invitePerson } = this.props.actions;
+    const { email, type, firstName, lastName } = this.state;
+
+    if (isOpen && !isLoading && e.keyCode === 13) {
+      const isValid = this.validateForm(type, firstName, lastName, email);
+
+      if (isValid) {
+        invitePerson(
+          type.value.key,
+          firstName.value,
+          lastName.value,
+          email.value
+        );
+      }
+    }
+  }
+
   resetState() {
     this.setState({
       email: {

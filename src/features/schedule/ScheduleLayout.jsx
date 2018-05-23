@@ -7,8 +7,8 @@ import moment from "moment";
 import { Redirect } from "react-router-dom";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
-import EventsList from "./components/EventsList";
 import { common } from "../../utils/colours";
+import EventsList from "./components/EventsList";
 import EventInfo from "./components/EventInfo";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
@@ -63,6 +63,7 @@ class ScheduleLayout extends Component {
     const {
       loadEvents,
       fetchCreationDate,
+      loadAdmins,
       loadStaff,
       loadTeams
     } = this.props.actions;
@@ -79,6 +80,7 @@ class ScheduleLayout extends Component {
     }
 
     if (activeInstitutionID !== "") {
+      loadAdmins(activeInstitutionID);
       loadStaff(activeInstitutionID);
       loadTeams(activeInstitutionID);
       fetchCreationDate(activeInstitutionID);
@@ -91,6 +93,7 @@ class ScheduleLayout extends Component {
     const {
       loadEvents,
       fetchCreationDate,
+      loadAdmins,
       loadStaff,
       loadTeams
     } = nextProps.actions;
@@ -128,6 +131,7 @@ class ScheduleLayout extends Component {
         loadEvents(activeInstitutionID, minDate, maxDate);
       }
 
+      loadAdmins(activeInstitutionID);
       loadStaff(activeInstitutionID);
       loadTeams(activeInstitutionID);
       fetchCreationDate(activeInstitutionID);
@@ -210,7 +214,7 @@ class ScheduleLayout extends Component {
       gender,
       searchText
     } = this.props.filters;
-    const { events, teams, staff, userID, meAllFilter } = this.props;
+    const { events, teams, users, userID, meAllFilter } = this.props;
 
     return _.fromPairs(
       _.toPairs(events).filter(([id, info]) => {
@@ -239,15 +243,15 @@ class ScheduleLayout extends Component {
           const eventManagers = _.keys(info.managers);
           eventCoaches.map(coachID => {
             const coachName = `${_.toLower(
-              staff[coachID].info.name
-            )} ${_.toLower(staff[coachID].info.surname)}`;
+              users[coachID].info.name
+            )} ${_.toLower(users[coachID].info.surname)}`;
             coachMatch =
               coachMatch && coachName.includes(_.toLower(searchText));
           });
           eventManagers.map(managerID => {
             const managerName = `${_.toLower(
-              staff[managerID].info.name
-            )} ${_.toLower(staff[managerID].info.surname)}`;
+              users[managerID].info.name
+            )} ${_.toLower(users[managerID].info.surname)}`;
             managerMatch =
               managerMatch && managerName.includes(_.toLower(searchText));
           });
@@ -427,7 +431,7 @@ class ScheduleLayout extends Component {
       isMobile,
       classes,
       activeInstitutionID,
-      staff,
+      users,
       teams,
       events,
       role,
@@ -463,8 +467,8 @@ class ScheduleLayout extends Component {
             role={role}
             canEdit={canEdit}
             canCancel={canCancel}
-            coaches={staff}
-            managers={staff}
+            coaches={users}
+            managers={users}
             teams={teams}
             info={eventInfo}
             eventID={eventID}

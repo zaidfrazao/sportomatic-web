@@ -81,6 +81,7 @@ class PeopleLayout extends Component {
     const { activeInstitutionID } = this.props;
     const { personID } = this.props.match.params;
     const {
+      loadAdmins,
       loadStaff,
       loadTeams,
       loadEventsByCoach,
@@ -88,6 +89,7 @@ class PeopleLayout extends Component {
     } = this.props.actions;
 
     if (activeInstitutionID !== "") {
+      loadAdmins(activeInstitutionID);
       loadStaff(activeInstitutionID);
       loadTeams(activeInstitutionID);
 
@@ -102,6 +104,7 @@ class PeopleLayout extends Component {
     const { activeInstitutionID, teams } = nextProps;
     const { personID } = nextProps.match.params;
     const {
+      loadAdmins,
       loadStaff,
       loadTeams,
       loadEventsByCoach,
@@ -126,6 +129,7 @@ class PeopleLayout extends Component {
       activeInstitutionID !== ""
     ) {
       resetState();
+      loadAdmins(activeInstitutionID);
       loadStaff(activeInstitutionID);
       loadTeams(activeInstitutionID);
 
@@ -316,7 +320,7 @@ class PeopleLayout extends Component {
   render() {
     const {
       classes,
-      staff,
+      users,
       teams,
       isMobile,
       isTablet,
@@ -366,7 +370,7 @@ class PeopleLayout extends Component {
               userID={userID}
               teams={teams}
               personID={personID}
-              info={staff[personID]}
+              info={users[personID]}
               activeInstitutionID={activeInstitutionID}
               infoTab={infoTab}
               isUserAdmin={isAdmin}
@@ -384,7 +388,7 @@ class PeopleLayout extends Component {
       );
     } else {
       const staffCardsInfo = this.getStaffCardsInfo(
-        this.filterPeople(staff, false)
+        this.filterPeople(users, false)
       );
       const ad = this.createAd();
 

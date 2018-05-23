@@ -28,7 +28,8 @@ export const CLOSE_UNCANCEL_EVENT_ALERT = `${NAMESPACE}/CLOSE_UNCANCEL_EVENT_ALE
 export const UPDATE_CURRENT_VIEW = `${NAMESPACE}/UPDATE_CURRENT_VIEW`;
 export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
 export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
-export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
+export const REQUEST_ADMINS = `${NAMESPACE}/REQUEST_ADMINS`;
+export const RECEIVE_ADMINS = `${NAMESPACE}/RECEIVE_ADMINS`;
 export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
 export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
 export const ERROR_LOADING_TEAMS = `${NAMESPACE}/ERROR_LOADING_TEAMS`;
@@ -358,7 +359,6 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         isStaffLoading: true
       };
     case RECEIVE_STAFF:
-    case ERROR_LOADING_STAFF:
     case RECEIVE_ABSENT_UPDATE:
     case ERROR_UPDATING_ABSENT:
     case RECEIVE_ABSENT_RATING_UPDATE:
@@ -422,14 +422,17 @@ function eventsReducer(state = {}, action = {}) {
   }
 }
 
-function staffReducer(state = {}, action = {}) {
+function usersReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_SCHEDULE_STATE:
-    case REQUEST_STAFF:
     case SIGN_OUT:
       return {};
+    case RECEIVE_ADMINS:
     case RECEIVE_STAFF:
-      return action.payload.staff;
+      return {
+        ...state,
+        ...action.payload.people
+      };
     default:
       return state;
   }
@@ -454,7 +457,7 @@ export const scheduleReducer = combineReducers({
   events: eventsReducer,
   loadingStatus: loadingStatusReducer,
   teams: teamsReducer,
-  staff: staffReducer,
+  users: usersReducer,
   filters: filterReducer
 });
 
@@ -465,7 +468,7 @@ const dialogs = state => state.schedule.dialogs;
 const events = state => state.schedule.events;
 const loadingStatus = state => state.schedule.loadingStatus;
 const teams = state => state.schedule.teams;
-const staff = state => state.schedule.staff;
+const users = state => state.schedule.users;
 const filters = state => state.schedule.filters;
 
 export const selector = createStructuredSelector({
@@ -474,7 +477,7 @@ export const selector = createStructuredSelector({
   events,
   loadingStatus,
   teams,
-  staff,
+  users,
   filters
 });
 
@@ -930,37 +933,58 @@ export function editEvent(
   };
 }
 
-export function requestStaff(institutionID) {
+export function requestAdmins() {
   return {
-    type: REQUEST_STAFF,
+    type: REQUEST_ADMINS
+  };
+}
+
+export function receiveAdmins(people) {
+  return {
+    type: RECEIVE_ADMINS,
     payload: {
-      institutionID
+      people
     }
   };
 }
 
-export function receiveStaff(institutionID, staff) {
+export function loadAdmins(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestAdmins());
+
+    const adminRef = firebase
+      .firestore()
+      .collection("users")
+      .where(`institutions.${institutionID}.status`, "==", "ADMIN");
+
+    return adminRef.onSnapshot(querySnapshot => {
+      let admins = {};
+      querySnapshot.forEach(doc => {
+        admins[doc.id] = doc.data();
+      });
+      dispatch(receiveAdmins(admins));
+    });
+  };
+}
+
+export function requestStaff() {
+  return {
+    type: REQUEST_STAFF
+  };
+}
+
+export function receiveStaff(people) {
   return {
     type: RECEIVE_STAFF,
     payload: {
-      institutionID,
-      staff
-    }
-  };
-}
-
-export function errorLoadingStaff(error: { code: string, message: string }) {
-  return {
-    type: ERROR_LOADING_STAFF,
-    payload: {
-      error
+      people
     }
   };
 }
 
 export function loadStaff(institutionID) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestStaff(institutionID));
+    dispatch(requestStaff());
 
     const staffRef = firebase
       .firestore()
@@ -972,7 +996,7 @@ export function loadStaff(institutionID) {
       querySnapshot.forEach(doc => {
         staff[doc.id] = doc.data();
       });
-      dispatch(receiveStaff(institutionID, staff));
+      dispatch(receiveStaff(staff));
     });
   };
 }
