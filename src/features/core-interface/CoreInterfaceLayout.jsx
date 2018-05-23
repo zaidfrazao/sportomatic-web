@@ -284,6 +284,12 @@ class CoreInterfaceLayout extends Component {
 
   getTeamOptions(institutionInfo) {
     const ageGroups = institutionInfo.info.ageGroups.map(ageGroup => {
+      if (!isNaN(parseInt(ageGroup, 10))) {
+        return {
+          key: ageGroup,
+          label: `U/${ageGroup}`
+        };
+      }
       return {
         key: ageGroup,
         label: ageGroup
