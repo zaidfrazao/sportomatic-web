@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import _ from "lodash";
 import injectStyles from "react-jss";
 import moment from "moment";
-import Button from "../../../../../../components/Button";
 import { common, grey } from "../../../../../../utils/colours";
 import EventCard from "./components/EventCard";
 
@@ -221,13 +220,7 @@ class ListOfEvents extends Component {
   }
 
   getColumns() {
-    const {
-      classes,
-      datesToDisplay,
-      isTablet,
-      isMobile,
-      canCreate
-    } = this.props;
+    const { classes, datesToDisplay, isTablet, canCreate } = this.props;
     const today = moment(new Date(Date.now()));
 
     return datesToDisplay.map((date, index) => {
@@ -244,19 +237,16 @@ class ListOfEvents extends Component {
             <div className={classes.headerTablet}>
               {isToday ? "Today" : formattedDate}
             </div>
-            {isMobile &&
-              canCreate &&
-              showAddButton && (
-                <div className={classes.addEventWrapperTablet}>
-                  <Button colour="secondary" filled fullWidth>
-                    <i className={`fas fa-plus ${classes.icon}`} />Add event
-                  </Button>
-                </div>
-              )}
             {eventCards}
             {eventCards.length === 0 && (
               <div className={classes.noEvents}>No events</div>
             )}
+            {canCreate &&
+              showAddButton && (
+                <div className={classes.addEventWrapper}>
+                  <i className={`fas fa-plus ${classes.icon}`} />Add event
+                </div>
+              )}
           </div>
         );
       }

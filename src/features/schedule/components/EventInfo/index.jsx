@@ -559,7 +559,12 @@ class EventInfo extends Component {
         <div className={classes.outerWrapper}>
           <div className={classes.actionsBar}>
             <div className={classes.buttonWrapper}>
-              <Button colour="secondary" slim handleClick={() => goBack()}>
+              <Button
+                colour="secondary"
+                filled
+                slim
+                handleClick={() => goBack()}
+              >
                 <i
                   className={`fas fa-caret-left ${classes.iconAdjacentText}`}
                 />

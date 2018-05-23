@@ -3,10 +3,8 @@ import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
 import moment from "moment";
-// import MuiButton from "material-ui/Button";
 import { Redirect } from "react-router-dom";
 import BannerAd from "../../components/BannerAd";
-import Button from "../../components/Button";
 import { common } from "../../utils/colours";
 import EventsList from "./components/EventsList";
 import EventInfo from "./components/EventInfo";
@@ -388,7 +386,6 @@ class ScheduleLayout extends Component {
       institutionCreationDate
     } = this.props;
     const { dateSelected } = this.props.match.params;
-    const { openAddEventDialog } = this.props.actions;
 
     const filteredEvents = this.filterEvents();
     const ad = this.createAd();
@@ -397,20 +394,6 @@ class ScheduleLayout extends Component {
       <div className={classes.root}>
         <div className={classes.contentWrapper}>
           <div className={classes.adWrapper}>{ad}</div>
-          {!isMobile &&
-            canCreate && (
-              <div className={classes.actionsBar}>
-                <div className={classes.flexGrow} />
-                <Button
-                  colour="secondary"
-                  filled
-                  handleClick={() => openAddEventDialog()}
-                >
-                  <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
-                  Add new event
-                </Button>
-              </div>
-            )}
           <EventsList
             canCreate={canCreate}
             isMobile={isMobile}
@@ -508,69 +491,6 @@ class ScheduleLayout extends Component {
               uncancelEvent: openUncancelEventAlert
             }}
           />
-          {/*canEdit &&
-            !isPastEvent &&
-            isMobile && (
-              <MuiButton
-                fab
-                color="accent"
-                className={classes.fabPosition}
-                onClick={() => openEditEventDialog()}
-              >
-                <i className="fas fa-edit" />
-              </MuiButton>
-            )*/}
-          {/*<EditEventDialog
-            isOpen={isEditEventDialogOpen}
-            isLoading={
-              isEditEventDialogLoading ||
-              isEventsLoading ||
-              isStaffLoading ||
-              isTeamsLoading ||
-              activeInstitutionID === ""
-            }
-            isMobile={isMobile}
-            isTablet={isTablet}
-            minDate={moment(currentDate).format("YYYY-MM-DD")}
-            initialDate={dateSelected}
-            teams={teams}
-            coaches={coaches}
-            managers={managers}
-            initialEventInfo={events[eventID]}
-            initialEventID={eventID}
-            institutionID={activeInstitutionID}
-            actions={{
-              handleClose: closeEditEventDialog,
-              editEvent,
-              openEventErrorAlert
-            }}
-          />*/}
-          {/*<NotificationModal
-            isOpen={isEventErrorAlertOpen}
-            handleOkClick={closeEventErrorAlert}
-            heading={eventErrorAlert.heading}
-            message={eventErrorAlert.message}
-          />*/}
-          {/*<DecisionModal
-            isOpen={isCancelEventAlertOpen}
-            handleYesClick={() => {
-              cancelEvent(eventID);
-              closeCancelEventAlert();
-            }}
-            handleNoClick={closeCancelEventAlert}
-            heading="Cancel Event"
-            message="Are you sure you want to cancel this event?"
-          />*/}
-          {/*<DecisionModal
-            isOpen={isUncancelEventAlertOpen}
-            handleYesClick={() => {
-              uncancelEvent(eventID);
-              closeUncancelEventAlert();
-            }}
-            handleNoClick={closeUncancelEventAlert}
-            heading="Uncancel Event"
-            message="Are you sure you want to uncancel this event?"
-          />*/}
         </div>
       </div>
     );
