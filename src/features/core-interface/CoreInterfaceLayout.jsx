@@ -34,12 +34,23 @@ const styles = {
     display: "flex",
     height: "calc(100vh - 64px)"
   },
+  headerIcon: {
+    marginRight: 16
+  },
   headerText: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     fontSize: 24,
     lineHeight: "36px",
     backgroundColor: "white",
     padding: "32px 0",
     textAlign: "center"
+  },
+  sportSelectedIcon: {
+    width: 26,
+    height: 26,
+    marginRight: 16
   },
   wrapper: {
     backgroundColor: grey[200]
@@ -468,10 +479,19 @@ class CoreInterfaceLayout extends Component {
             <div className={classes.contentWrapper}>
               {sportSelected === "all" ? (
                 <h1 className={classes.headerText}>
+                  <i
+                    className={`${sideMenuItems[sideMenuItemSelected]
+                      .icon} ${classes.headerIcon}`}
+                  />
                   {sideMenuItems[sideMenuItemSelected].label}
                 </h1>
               ) : (
                 <h1 className={classes.headerText}>
+                  <img
+                    src={sportsItems[sportSelected].icon}
+                    alt="Sport selected icon"
+                    className={classes.sportSelectedIcon}
+                  />
                   {`${sportsItems[sportSelected].label} ${sideMenuItems[
                     sideMenuItemSelected
                   ].label}`}
