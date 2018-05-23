@@ -36,11 +36,9 @@ const styles = {
   },
   headerText: {
     fontSize: 24,
-    margin: 24,
     lineHeight: "36px",
     backgroundColor: "white",
-    borderRadius: 12,
-    padding: "12px 18px",
+    padding: "32px 0",
     textAlign: "center"
   },
   wrapper: {
@@ -468,18 +466,18 @@ class CoreInterfaceLayout extends Component {
               }}
             />
             <div className={classes.contentWrapper}>
+              {sportSelected === "all" ? (
+                <h1 className={classes.headerText}>
+                  {sideMenuItems[sideMenuItemSelected].label}
+                </h1>
+              ) : (
+                <h1 className={classes.headerText}>
+                  {`${sportsItems[sportSelected].label} ${sideMenuItems[
+                    sideMenuItemSelected
+                  ].label}`}
+                </h1>
+              )}
               <div className={classes.content}>
-                {sportSelected === "all" ? (
-                  <h1 className={classes.headerText}>
-                    {sideMenuItems[sideMenuItemSelected].label}
-                  </h1>
-                ) : (
-                  <h1 className={classes.headerText}>
-                    {`${sportsItems[sportSelected].label} ${sideMenuItems[
-                      sideMenuItemSelected
-                    ].label}`}
-                  </h1>
-                )}
                 <Switch>
                   <Route exact path={"/myaccount/"}>
                     <Dashboard

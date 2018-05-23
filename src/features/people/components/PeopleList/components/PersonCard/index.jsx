@@ -41,7 +41,7 @@ const styles = {
     backgroundColor: red[500]
   },
   resendButtonWrapper: {
-    margin: "0 24px 24px 24px"
+    margin: "0 12px 12px 12px"
   },
   picture: {
     width: "100%",

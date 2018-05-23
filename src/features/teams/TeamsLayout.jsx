@@ -290,6 +290,7 @@ class TeamsLayout extends Component {
               <div>
                 <TeamsList
                   teams={filteredTeams}
+                  isUserAdmin={isAdmin}
                   hasTeamsCreated={hasTeamsCreated}
                   navigateTo={navigateTo}
                 />

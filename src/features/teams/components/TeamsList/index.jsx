@@ -14,12 +14,14 @@ const styles = {
     margin: "0 auto"
   },
   cardWrapper: {
-    padding: 24,
-    width: "calc(100% - 48px)",
+    width: "100%",
+    padding: "24px 0",
     [`@media (min-width: ${mobileBreakpoint}px)`]: {
+      padding: 24,
       width: "calc(50% - 48px)"
     },
     [`@media (min-width: ${tabletBreakpoint}px)`]: {
+      padding: 24,
       width: "calc(33% - 48px)"
     }
   },
@@ -30,7 +32,7 @@ const styles = {
 
 class TeamsList extends Component {
   render() {
-    const { classes, teams, navigateTo } = this.props;
+    const { classes, teams, navigateTo, isUserAdmin } = this.props;
 
     if (teams.length > 0) {
       return (
@@ -38,10 +40,12 @@ class TeamsList extends Component {
           {teams.map(teamInfo => (
             <div className={classes.cardWrapper} key={teamInfo.id}>
               <TeamCard
+                isUserAdmin={isUserAdmin}
                 name={teamInfo.name}
                 sport={teamInfo.sport}
                 id={teamInfo.id}
                 status={teamInfo.status}
+                isInSeason={teamInfo.isInSeason}
                 navigateTo={navigateTo}
               />
             </div>

@@ -14,12 +14,14 @@ const styles = {
     margin: "0 auto"
   },
   cardWrapper: {
-    padding: 24,
-    width: "calc(100% - 48px)",
+    width: "100%",
+    padding: "24px 0",
     [`@media (min-width: ${mobileBreakpoint}px)`]: {
+      padding: 24,
       width: "calc(50% - 48px)"
     },
     [`@media (min-width: ${tabletBreakpoint}px)`]: {
+      padding: 24,
       width: "calc(33% - 48px)"
     }
   },
