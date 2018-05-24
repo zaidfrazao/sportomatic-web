@@ -14,7 +14,7 @@ const styles = theme => ({
     padding: 18,
     fontWeight: "bold",
     color: grey[800],
-    backgroundColor: grey[100],
+    backgroundColor: common["white"],
     cursor: "pointer",
     "&:hover": {
       backgroundColor: grey[300]

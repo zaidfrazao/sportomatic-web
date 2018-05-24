@@ -14,7 +14,10 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     borderRadius: "0 0 16px 16px",
-    backgroundColor: lightBlue[500]
+    backgroundColor: lightBlue[500],
+    "&:hover": {
+      backgroundColor: lightBlue[400]
+    }
   },
   card: {
     borderRadius: 16,
