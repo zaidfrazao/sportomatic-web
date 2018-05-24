@@ -32,6 +32,16 @@ const styles = {
     padding: 24,
     margin: 0
   },
+  tableFooterItemLeft: {
+    borderRadius: "0 0 0 16px",
+    padding: 24,
+    margin: 0
+  },
+  tableFooterItemRight: {
+    borderRadius: "0 0 16px 0",
+    padding: 24,
+    margin: 0
+  },
   tableHeader: {
     borderRadius: "16px 16px 0 0",
     width: "100%",
@@ -45,18 +55,27 @@ const styles = {
     padding: 24,
     margin: 0
   },
+  tableHeaderItemLeft: {
+    borderRadius: "16px 0 0 0",
+    padding: 24,
+    margin: 0
+  },
+  tableHeaderItemRight: {
+    borderRadius: "0 16px 0 0",
+    padding: 24,
+    margin: 0
+  },
   tableRow: {
     width: "100%"
   },
   tableWrapper: {
-    width: "calc(100% - 2px)",
+    width: "100%",
     borderCollapse: "collapse"
   },
   wrapper: {
     border: `1px solid ${grey[300]}`,
     borderRadius: 16,
-    backgroundColor: common["white"],
-    overflow: "auto"
+    backgroundColor: common["white"]
   }
 };
 
@@ -125,10 +144,10 @@ class WagesTable extends Component {
         <table className={classes.tableWrapper}>
           <tbody>
             <tr className={classes.tableHeader}>
-              <th className={classes.tableHeaderItem}>Date</th>
+              <th className={classes.tableHeaderItemLeft}>Date</th>
               {!isMobile && <th className={classes.tableHeaderItem}>Reason</th>}
               {!isTablet && <th className={classes.tableHeaderItem}>Type</th>}
-              <th className={classes.tableHeaderItem}>Amount</th>
+              <th className={classes.tableHeaderItemRight}>Amount</th>
             </tr>
             {rows.length === 0 ? (
               <tr>
@@ -144,12 +163,12 @@ class WagesTable extends Component {
             )}
             <tr className={classes.tableFooter}>
               <td
-                className={classes.tableFooterItem}
+                className={classes.tableFooterItemLeft}
                 colSpan={isMobile ? 1 : isTablet ? 2 : 3}
               >
                 TOTAL
               </td>
-              <td className={classes.tableFooterItem}>
+              <td className={classes.tableFooterItemRight}>
                 {accounting.formatMoney(total, "R")}
               </td>
             </tr>

@@ -38,6 +38,10 @@ const styles = {
   icon: {
     marginRight: 12
   },
+  innerTableWrapper: {
+    width: "100%",
+    borderRadius: 16
+  },
   messageAwaitingApproval: {
     textAlign: "center",
     color: red[900]
@@ -86,6 +90,16 @@ const styles = {
     padding: 24,
     margin: 0
   },
+  tableFooterItemLeft: {
+    borderRadius: "0 0 0 16px",
+    padding: 24,
+    margin: 0
+  },
+  tableFooterItemRight: {
+    borderRadius: "0 0 16px 0",
+    padding: 24,
+    margin: 0
+  },
   tableHeader: {
     borderRadius: "16px 16px 0 0",
     width: "100%",
@@ -99,18 +113,28 @@ const styles = {
     padding: 24,
     margin: 0
   },
+  tableHeaderItemLeft: {
+    borderRadius: "16px 0 0 0",
+    padding: 24,
+    margin: 0
+  },
+  tableHeaderItemRight: {
+    borderRadius: "0 16px 0 0",
+    padding: 24,
+    margin: 0
+  },
   tableRow: {
     width: "100%"
   },
   tableWrapper: {
-    width: "calc(100% - 2px)",
+    width: "100%",
+    borderRadius: 16,
     borderCollapse: "collapse"
   },
   wrapper: {
     border: `1px solid ${grey[300]}`,
     borderRadius: 16,
-    backgroundColor: common["white"],
-    overflow: "auto"
+    backgroundColor: common["white"]
   }
 };
 
@@ -263,9 +287,9 @@ class HoursTable extends Component {
     return (
       <div className={classes.wrapper}>
         <table className={classes.tableWrapper}>
-          <tbody>
+          <tbody className={classes.innerTableWrapper}>
             <tr className={classes.tableHeader}>
-              <th className={classes.tableHeaderItem}>Date</th>
+              <th className={classes.tableHeaderItemLeft}>Date</th>
               {!isMobile && <th className={classes.tableHeaderItem}>Event</th>}
               {!isTablet && (
                 <th className={classes.tableHeaderItem}>Sign in</th>
@@ -273,7 +297,7 @@ class HoursTable extends Component {
               {!isTablet && (
                 <th className={classes.tableHeaderItem}>Sign out</th>
               )}
-              <th className={classes.tableHeaderItem}>Hours</th>
+              <th className={classes.tableHeaderItemRight}>Hours</th>
             </tr>
             {rows.length === 0 ? (
               <tr>
@@ -289,12 +313,12 @@ class HoursTable extends Component {
             )}
             <tr className={classes.tableFooter}>
               <td
-                className={classes.tableFooterItem}
+                className={classes.tableFooterItemLeft}
                 colSpan={isMobile ? 1 : isTablet ? 2 : 4}
               >
                 TOTAL
               </td>
-              <td className={classes.tableFooterItem}>{totals.hours}</td>
+              <td className={classes.tableFooterItemRight}>{totals.hours}</td>
             </tr>
           </tbody>
         </table>
