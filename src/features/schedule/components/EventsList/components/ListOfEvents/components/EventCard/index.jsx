@@ -25,7 +25,7 @@ const styles = {
   header: {
     borderBottom: `1px solid ${grey[300]}`,
     fontSize: props => (props.isTablet ? 16 : 14),
-    padding: 12,
+    padding: "24px 12px",
     lineHeight: props => (props.isTablet ? "22px" : "18px"),
     textAlign: "center",
     fontWeight: "bold",
@@ -64,8 +64,8 @@ const styles = {
     backgroundColor: grey[100],
     padding: "8px 0",
     fontWeight: "bold",
-    fontSize: props => (props.isTablet ? 16 : 14),
-    width: props => (props.isTablet ? 120 : 32),
+    fontSize: 14,
+    width: props => (props.isTablet ? 80 : 32),
     marginRight: 8
   },
   rowIconLast: {
@@ -75,8 +75,8 @@ const styles = {
     backgroundColor: grey[100],
     padding: "8px 0",
     fontWeight: "bold",
-    fontSize: props => (props.isTablet ? 16 : 14),
-    width: props => (props.isTablet ? 120 : 32),
+    fontSize: props => 14,
+    width: props => (props.isTablet ? 80 : 32),
     marginRight: 8
   },
   rowLast: {
@@ -164,18 +164,14 @@ class EventCard extends Component {
         <div className={classes.row}>
           <div className={classes.rowIcon}>
             <i className={`fas fa-hourglass-start`} />
-            {isTablet && (
-              <span className={classes.rowTabletText}>Starts at</span>
-            )}
+            {isTablet && <span className={classes.rowTabletText}>Starts</span>}
           </div>
           <span className={classes.rowText}>{startTime}</span>
         </div>
         <div className={classes.rowLast}>
           <div className={classes.rowIconLast}>
             <i className={`fas fa-hourglass-start`} />
-            {isTablet && (
-              <span className={classes.rowTabletText}>Starts at</span>
-            )}
+            {isTablet && <span className={classes.rowTabletText}>Ends</span>}
           </div>
           <span className={classes.rowText}>{endTime}</span>
         </div>
