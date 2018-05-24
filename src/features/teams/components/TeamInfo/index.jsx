@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import injectStyles from "react-jss";
 import Button from "../../../../components/Button";
 import BannerAd from "../../../../components/BannerAd";
-import { common, grey } from "../../../../utils/colours";
+import { common, grey, lightBlue } from "../../../../utils/colours";
 import Details from "./components/Details";
 import LargeMobileBannerAd from "../../../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../../../components/LeaderboardAd";
@@ -24,6 +24,21 @@ const styles = {
     alignItems: "center",
     justifyContent: "center"
   },
+  backButton: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    backgroundColor: lightBlue[800],
+    color: common["white"],
+    cursor: "pointer",
+    textAlign: "center",
+    fontSize: 24,
+    padding: "18px 24px",
+    borderRadius: "16px 0 0 16px",
+    "&:hover": {
+      backgroundColor: lightBlue[700]
+    }
+  },
   buttonSeparator: {
     height: 12
   },
@@ -34,15 +49,20 @@ const styles = {
     flexGrow: 1
   },
   header: {
+    display: "flex",
     border: `1px solid ${grey[300]}`,
-    margin: "0 24px",
-    padding: 24,
+    margin: "0 24px 24px 24px",
     borderRadius: 16,
     fontSize: 20,
     textAlign: "center",
     fontWeight: "bold",
     color: grey[800],
     backgroundColor: common["white"]
+  },
+  headerInnerWrapper: {
+    flexGrow: 1,
+    textAlign: "center",
+    padding: 24
   },
   iconAdjacentText: {
     marginRight: 8
@@ -307,19 +327,15 @@ class TeamInfo extends Component {
 
     return (
       <div className={classes.root}>
-        <div className={classes.header}>{info.name}</div>
-        <div className={classes.outerWrapper}>
-          <div className={classes.actionsBar}>
-            <div className={classes.buttonWrapper}>
-              <Button colour="primary" filled slim handleClick={() => goBack()}>
-                <i
-                  className={`fas fa-caret-left ${classes.iconAdjacentText}`}
-                />
-                Back
-              </Button>
+        <div className={classes.header}>
+          <div className={classes.backButton} onClick={() => goBack()}>
+            <div>
+              <i className="fas fa-caret-left" />
             </div>
-            <div className={classes.flexGrow} />
           </div>
+          <div className={classes.headerInnerWrapper}>{info.name}</div>
+        </div>
+        <div className={classes.outerWrapper}>
           {!isMobile && (
             <div className={classes.tabsWrapper}>
               <Tabs

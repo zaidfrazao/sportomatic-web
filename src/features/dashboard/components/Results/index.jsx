@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
-import Button from "../../../../components/Button";
 import EmptyState from "../../../../components/EmptyState";
 import { grey } from "../../../../utils/colours";
 
@@ -24,23 +23,10 @@ const styles = {
 
 class Results extends Component {
   render() {
-    const { classes, goBack, isMobile } = this.props;
+    const { classes } = this.props;
 
     return (
       <div className={classes.wrapper}>
-        {isMobile && (
-          <div className={classes.actionsBar}>
-            <div className={classes.buttonWrapper}>
-              <Button colour="primary" filled slim handleClick={() => goBack()}>
-                <i
-                  className={`fas fa-caret-left ${classes.iconAdjacentText}`}
-                />
-                Back
-              </Button>
-            </div>
-            <div className={classes.flexGrow} />
-          </div>
-        )}
         <EmptyState message="Coming Soon" />
       </div>
     );

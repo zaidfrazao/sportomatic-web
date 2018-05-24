@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import injectStyles from "react-jss";
 import Button from "../../components/Button";
 import BannerAd from "../../components/BannerAd";
+import { common, grey, lightBlue } from "../../utils/colours";
 import Results from "./components/Results";
 import Today from "./components/Today";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
@@ -16,8 +17,39 @@ const styles = {
     alignItems: "center",
     justifyContent: "center"
   },
+  backButton: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    backgroundColor: lightBlue[800],
+    color: common["white"],
+    cursor: "pointer",
+    textAlign: "center",
+    fontSize: 24,
+    padding: "18px 24px",
+    borderRadius: "16px 0 0 16px",
+    "&:hover": {
+      backgroundColor: lightBlue[700]
+    }
+  },
   buttonSeparator: {
     height: 12
+  },
+  header: {
+    display: "flex",
+    border: `1px solid ${grey[300]}`,
+    margin: "0 24px 24px 24px",
+    borderRadius: 16,
+    fontSize: 20,
+    textAlign: "center",
+    fontWeight: "bold",
+    color: grey[800],
+    backgroundColor: common["white"]
+  },
+  headerInnerWrapper: {
+    flexGrow: 1,
+    textAlign: "center",
+    padding: 24
   },
   menuButtonWrapper: {
     margin: "0 24px"
@@ -99,34 +131,65 @@ class DashboardLayout extends Component {
         case "today":
           return (
             <div>
+              <div className={classes.header}>
+                <div className={classes.backButton} onClick={() => goBack()}>
+                  <div>
+                    <i className="fas fa-caret-left" />
+                  </div>
+                </div>
+                <div className={classes.headerInnerWrapper}>Today</div>
+              </div>
               <div className={classes.adWrapper}>{ad}</div>
               <Today
                 isMobile={isMobile}
                 events={todaysEvents}
                 navigateTo={navigateTo}
-                goBack={goBack}
               />
             </div>
           );
         case "results":
           return (
             <div>
+              <div className={classes.header}>
+                <div className={classes.backButton} onClick={() => goBack()}>
+                  <div>
+                    <i className="fas fa-caret-left" />
+                  </div>
+                </div>
+                <div className={classes.headerInnerWrapper}>Results</div>
+              </div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} goBack={goBack} />
+              <Results isMobile={isMobile} />
             </div>
           );
         case "incomplete":
           return (
             <div>
+              <div className={classes.header}>
+                <div className={classes.backButton} onClick={() => goBack()}>
+                  <div>
+                    <i className="fas fa-caret-left" />
+                  </div>
+                </div>
+                <div className={classes.headerInnerWrapper}>Incomplete</div>
+              </div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} goBack={goBack} />
+              <Results isMobile={isMobile} />
             </div>
           );
         case "notifications":
           return (
             <div>
+              <div className={classes.header}>
+                <div className={classes.backButton} onClick={() => goBack()}>
+                  <div>
+                    <i className="fas fa-caret-left" />
+                  </div>
+                </div>
+                <div className={classes.headerInnerWrapper}>Notifications</div>
+              </div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} goBack={goBack} />
+              <Results isMobile={isMobile} />
             </div>
           );
         default:
@@ -198,7 +261,6 @@ class DashboardLayout extends Component {
                 isMobile={isMobile}
                 events={todaysEvents}
                 navigateTo={navigateTo}
-                goBack={goBack}
               />
             </div>
           );
@@ -206,28 +268,28 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} goBack={goBack} />
+              <Results isMobile={isMobile} />
             </div>
           );
         case "incomplete":
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} goBack={goBack} />
+              <Results isMobile={isMobile} />
             </div>
           );
         case "notifications":
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} goBack={goBack} />
+              <Results isMobile={isMobile} />
             </div>
           );
         default:
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} goBack={goBack} />
+              <Results isMobile={isMobile} />
             </div>
           );
       }

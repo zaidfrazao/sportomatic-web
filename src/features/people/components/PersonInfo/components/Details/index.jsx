@@ -21,7 +21,8 @@ const styles = {
   },
   emailText: {
     flex: 1,
-    paddingLeft: 12,
+    overflow: "auto",
+    padding: 12,
     color: grey[700]
   },
   emailWrapper: {

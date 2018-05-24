@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
 import moment from "moment";
-import Button from "../../../../components/Button";
 import EmptyState from "../../../../components/EmptyState";
 import EventCard from "./components/EventCard";
 import { grey } from "../../../../utils/colours";
@@ -95,25 +94,12 @@ class Today extends Component {
   }
 
   render() {
-    const { classes, goBack, isMobile } = this.props;
+    const { classes } = this.props;
 
     const eventCards = this.getEventCards();
 
     return (
       <div className={classes.wrapper}>
-        {isMobile && (
-          <div className={classes.actionsBar}>
-            <div className={classes.buttonWrapper}>
-              <Button colour="primary" filled slim handleClick={() => goBack()}>
-                <i
-                  className={`fas fa-caret-left ${classes.iconAdjacentText}`}
-                />
-                Back
-              </Button>
-            </div>
-            <div className={classes.flexGrow} />
-          </div>
-        )}
         {eventCards.length === 0 ? (
           <div className={classes.emptyState}>
             <EmptyState message="No events today" />
