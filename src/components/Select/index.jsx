@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
-import { common, grey, red } from "../../utils/colours";
+import { common, grey, lightBlue, red } from "../../utils/colours";
 
 type Props = {
   handleChange: (key: string, label: string) => null,
@@ -64,6 +64,20 @@ const styles = theme => ({
     border: "6px solid transparent",
     borderColor: `transparent transparent ${red[500]} transparent`
   },
+  closeMenuButton: {
+    fontSize: "24",
+    padding: 24,
+    textAlign: "center",
+    fontWeight: "bold",
+    color: common["white"],
+    backgroundColor: lightBlue[500],
+    "&:hover": {
+      backgroundColor: lightBlue[400]
+    },
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
+      display: "none"
+    }
+  },
   itemSelected: {
     color: grey[900],
     fontFamily: "Nunito, sans-serif",
@@ -97,28 +111,33 @@ const styles = theme => ({
   },
   menu: {
     position: "fixed",
-    backgroundColor: grey[100],
-    border: `2px solid ${common["white"]}`,
+    backgroundColor: common["white"],
+    border: `2px solid ${grey[300]}`,
     zIndex: 1000,
     borderRadius: 4,
     maxHeight: 200,
     overflow: "auto",
+    width: 260,
     boxShadow:
       "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
     [`@media (max-width: ${mobileBreakpoint}px)`]: {
-      top: "5%",
-      left: "5%",
-      width: "90%",
-      maxHeight: "90%",
-      height: "90%"
+      borderRadius: 0,
+      left: 0,
+      top: 0,
+      width: "100%",
+      maxHeight: "100%",
+      height: "100%"
     }
   },
   menuItem: {
-    padding: "12px 20px",
-    border: `1px solid ${common["white"]}`,
+    padding: "12px 24px",
+    border: `1px solid ${grey[100]}`,
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: "rgba(0, 0, 0, 0.1)"
+      backgroundColor: grey[200]
+    },
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      padding: 24
     }
   },
   menuItemText: {
@@ -302,7 +321,12 @@ class Select extends Component<Props, State> {
             <p className={classes.helperText}>{helperText}</p>
           </div>
         )}
-        {menuOpen && <div className={classes.menu}>{menuItems}</div>}
+        {menuOpen && (
+          <div className={classes.menu}>
+            <div className={classes.closeMenuButton}>Close</div>
+            {menuItems}
+          </div>
+        )}
       </div>
     );
   }
