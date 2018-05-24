@@ -14,7 +14,7 @@ const styles = {
   },
   tableItem: {
     padding: 24,
-    border: `2px solid ${grey[100]}`,
+    border: `2px solid ${grey[200]}`,
     margin: 0
   },
   tableFooter: {
@@ -42,8 +42,6 @@ const styles = {
   },
   tableWrapper: {
     width: 1150,
-    border: `2px solid ${grey[100]}`,
-    borderSpacing: 2,
     borderCollapse: "collapse"
   },
   wrapper: {

@@ -16,15 +16,12 @@ const styles = {
     transition: "0.25s",
     fontSize: 14,
     padding: "18px 0",
-    margin: "16px 18px",
+    margin: "12px 24px",
     borderRadius: 16,
     cursor: "pointer",
     backgroundColor: grey[100],
     [`@media (max-width: ${mobileBreakpoint}px)`]: {
-      textAlign: "center",
-      margin: "20px 18px",
-      padding: "22px 0",
-      fontSize: 20
+      textAlign: "center"
     },
     "&:hover": {
       backgroundColor: grey[200]
@@ -41,32 +38,26 @@ const styles = {
   menuItemInactive: {
     fontSize: 14,
     padding: "18px 0",
-    margin: "16px 18px",
+    margin: "12px 24px",
     borderRadius: 16,
     cursor: "not-allowed",
     backgroundColor: grey[200],
     [`@media (max-width: ${mobileBreakpoint}px)`]: {
-      textAlign: "center",
-      margin: "20px 18px",
-      padding: "22px 0",
-      fontSize: 20
+      textAlign: "center"
     }
   },
   menuItemSelected: {
     transition: "0.25s",
     borderRadius: 16,
     padding: "18px 0",
-    margin: "16px 18px",
+    margin: "12px 24px",
     fontSize: 16,
     position: "relative",
     fontWeight: "bold",
     cursor: "pointer",
     backgroundColor: lightBlue[800],
     [`@media (max-width: ${mobileBreakpoint}px)`]: {
-      textAlign: "center",
-      margin: "20px 18px",
-      padding: "22px 0",
-      fontSize: 20
+      textAlign: "center"
     },
     "&:hover": {
       backgroundColor: lightBlue[700]
