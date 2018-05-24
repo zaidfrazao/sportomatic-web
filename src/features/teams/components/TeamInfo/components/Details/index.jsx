@@ -102,6 +102,7 @@ const styles = {
     marginRight: 24
   },
   section: {
+    border: `1px solid ${grey[300]}`,
     borderRadius: 16,
     marginBottom: 24,
     height: "100%",
@@ -111,6 +112,7 @@ const styles = {
     backgroundColor: common["white"]
   },
   sectionHeading: {
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
     padding: "18px 0",

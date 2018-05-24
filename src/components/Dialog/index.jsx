@@ -1,20 +1,13 @@
 import React, { Component } from "react";
 import injectSheet from "react-jss";
 import Button from "../../components/Button";
-import { common, grey } from "../../utils/colours";
+import { common, grey, lightBlue } from "../../utils/colours";
 
 const styles = {
   action: {
     marginLeft: 12
   },
   actionsWrapper: {
-    fontSize: 18,
-    borderRadius: "0 0 16px 16px",
-    padding: "12px 24px",
-    textAlign: "center",
-    fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[100],
     display: "flex",
     justifyContent: "flex-end"
   },
@@ -23,6 +16,32 @@ const styles = {
     overflow: "auto",
     padding: 24
   },
+  dotHighlighted: {
+    width: 12,
+    height: 12,
+    borderRadius: "50%",
+    margin: "0 4px",
+    backgroundColor: lightBlue[500]
+  },
+  dotNotHighlighted: {
+    width: 12,
+    height: 12,
+    borderRadius: "50%",
+    margin: "0 4px",
+    backgroundColor: grey[300]
+  },
+  dotsWrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    marginTop: 8
+  },
+  footer: {
+    borderRadius: "0 0 16px 16px",
+    padding: "12px 24px",
+    backgroundColor: grey[100],
+    borderTop: `1px solid ${grey[300]}`
+  },
   header: {
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
@@ -30,7 +49,8 @@ const styles = {
     textAlign: "center",
     fontWeight: "bold",
     color: grey[800],
-    backgroundColor: grey[100]
+    backgroundColor: grey[100],
+    borderBottom: `1px solid ${grey[300]}`
   },
   innerWrapper: {
     borderRadius: 16,
@@ -40,10 +60,13 @@ const styles = {
     maxWidth: 600,
     maxHeight: "calc(100% - 48px)",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    boxShadow:
+      "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
   },
   wrapper: {
     display: props => (props.isOpen ? "flex" : "none"),
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     position: "fixed",
@@ -59,7 +82,10 @@ class Dialog extends Component<Props> {
   static defaultProps = {
     actions: [],
     heading: "Default",
-    type: "default"
+    type: "default",
+    hasSteps: false,
+    currentStep: 0,
+    numberOfSteps: 0
   };
 
   getActionItems() {
@@ -103,17 +129,38 @@ class Dialog extends Component<Props> {
     }
   }
 
+  getDots() {
+    const { classes, numberOfSteps, currentStep } = this.props;
+
+    return Array(numberOfSteps)
+      .fill(1)
+      .map((value, index) => {
+        const step = index + 1;
+        if (step <= currentStep) {
+          return <span className={classes.dotHighlighted} />;
+        } else {
+          return <span className={classes.dotNotHighlighted} />;
+        }
+      });
+  }
+
   render() {
-    const { classes, heading, children } = this.props;
+    const { classes, heading, children, hasSteps } = this.props;
 
     const actionItems = this.getActionItems();
+    const dots = this.getDots();
 
     return (
       <div className={classes.wrapper}>
         <div className={classes.innerWrapper}>
-          <div className={classes.header}>{heading}</div>
+          <div className={classes.header}>
+            {heading}
+            {hasSteps && <div className={classes.dotsWrapper}>{dots}</div>}
+          </div>
           <div className={classes.content}>{children}</div>
-          <div className={classes.actionsWrapper}>{actionItems}</div>
+          <div className={classes.footer}>
+            <div className={classes.actionsWrapper}>{actionItems}</div>
+          </div>
         </div>
       </div>
     );

@@ -23,7 +23,8 @@ const styles = {
     fontSize: 18
   },
   timeInputGroupWrapper: {
-    display: "flex"
+    display: "flex",
+    flexWrap: "wrap"
   },
   timeInputWrapper: {
     flexGrow: 1

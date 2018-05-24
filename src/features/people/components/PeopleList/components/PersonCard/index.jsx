@@ -2,7 +2,13 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import injectStyles from "react-jss";
-import { common, grey, lightBlue, red } from "../../../../../../utils/colours";
+import {
+  common,
+  grey,
+  lightBlue,
+  red,
+  orange
+} from "../../../../../../utils/colours";
 import Button from "../../../../../../components/Button";
 import defaultProfilePicture from "../../../../image/default-profile-picture.png";
 
@@ -20,12 +26,18 @@ const styles = {
     }
   },
   card: {
-    borderRadius: 16,
-    maxWidth: 400,
+    transition: "0.25s",
     backgroundColor: common["white"],
-    margin: "0 auto"
+    borderRadius: 16,
+    cursor: "pointer",
+    border: `1px solid ${grey[300]}`,
+    "&:hover": {
+      boxShadow:
+        "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+    }
   },
   header: {
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
     padding: 24,
@@ -44,7 +56,11 @@ const styles = {
     backgroundColor: red[500]
   },
   resendButtonWrapper: {
-    margin: "0 12px 12px 12px"
+    borderRadius: "0 0 16px 16px",
+    backgroundColor: orange["A400"],
+    "&:hover": {
+      backgroundColor: orange["A200"]
+    }
   },
   picture: {
     width: "100%",
@@ -133,15 +149,29 @@ class PersonCard extends Component {
 
     return (
       <div className={classes.card}>
-        <div className={classes.header}>{`${name} ${surname}`}</div>
+        <div
+          className={classes.header}
+          onClick={() => navigateTo(`/myaccount/people/${id}`)}
+        >{`${name} ${surname}`}</div>
         {!isSignedUp && (
-          <div className={classes.inactiveAlert}>
+          <div
+            className={classes.inactiveAlert}
+            onClick={() => navigateTo(`/myaccount/people/${id}`)}
+          >
             <i className={`fas fa-exclamation ${classes.alertIcon}`} />Not yet
             signed up
           </div>
         )}
-        <div className={classes.roles}>{roles}</div>
-        <div className={classes.pictureWrapper}>
+        <div
+          className={classes.roles}
+          onClick={() => navigateTo(`/myaccount/people/${id}`)}
+        >
+          {roles}
+        </div>
+        <div
+          className={classes.pictureWrapper}
+          onClick={() => navigateTo(`/myaccount/people/${id}`)}
+        >
           <img
             className={classes.picture}
             src={
@@ -157,8 +187,8 @@ class PersonCard extends Component {
             <div className={classes.resendButtonWrapper}>
               <Button
                 colour="secondary"
-                slim
                 fullWidth
+                filled
                 loading={isLoading}
                 handleClick={() => resendInvite()}
               >
@@ -166,16 +196,6 @@ class PersonCard extends Component {
               </Button>
             </div>
           )}
-        <div className={classes.buttons}>
-          <Button
-            colour="primary"
-            filled
-            fullWidth
-            handleClick={() => navigateTo(`/myaccount/people/${id}`)}
-          >
-            View
-          </Button>
-        </div>
       </div>
     );
   }

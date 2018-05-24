@@ -21,6 +21,8 @@ type State = {
   menuOpen: boolean
 };
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   arrowDown: {
     position: "absolute",
@@ -66,7 +68,8 @@ const styles = theme => ({
     color: grey[900],
     fontFamily: "Nunito, sans-serif",
     fontSize: 16,
-    lineHeight: "23px"
+    lineHeight: "23px",
+    marginRight: 24
   },
   helperText: {
     width: "calc(100% - 16px)",
@@ -93,9 +96,7 @@ const styles = theme => ({
     position: "relative"
   },
   menu: {
-    position: "absolute",
-    top: 60,
-    width: "100%",
+    position: "fixed",
     backgroundColor: grey[100],
     border: `2px solid ${common["white"]}`,
     zIndex: 1000,
@@ -103,7 +104,14 @@ const styles = theme => ({
     maxHeight: 200,
     overflow: "auto",
     boxShadow:
-      "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+      "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      top: "5%",
+      left: "5%",
+      width: "90%",
+      maxHeight: "90%",
+      height: "90%"
+    }
   },
   menuItem: {
     padding: "12px 20px",

@@ -28,6 +28,7 @@ class DateSelector extends Component {
       <div className={classes.wrapper}>
         <div className={classes.buttonNavigation}>
           <Button
+            type="dark"
             disabled={isPrevDisabled}
             fullWidth
             filled
@@ -37,12 +38,18 @@ class DateSelector extends Component {
           </Button>
         </div>
         <div className={classes.buttonDate}>
-          <Button fullWidth filled handleClick={() => toggleMonthSelector()}>
+          <Button
+            type="dark"
+            fullWidth
+            filled
+            handleClick={() => toggleMonthSelector()}
+          >
             {dateDisplay}
           </Button>
         </div>
         <div className={classes.buttonNavigation}>
           <Button
+            type="dark"
             disabled={isNextDisabled}
             fullWidth
             filled

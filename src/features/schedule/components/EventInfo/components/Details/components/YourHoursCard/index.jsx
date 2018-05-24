@@ -47,6 +47,7 @@ const styles = {
     }
   },
   card: {
+    border: `1px solid ${grey[300]}`,
     display: "flex",
     flexDirection: "column",
     width: "100%",

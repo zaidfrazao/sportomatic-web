@@ -18,6 +18,7 @@ const styles = {
     textAlign: "center"
   },
   header: {
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
     padding: 24,
@@ -87,6 +88,7 @@ const styles = {
     }
   },
   wrapper: {
+    border: `1px solid ${grey[300]}`,
     margin: 24,
     borderRadius: 16,
     backgroundColor: common["white"]

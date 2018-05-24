@@ -7,6 +7,7 @@ import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
+import SeasonSetupDialog from "./components/SeasonSetupDialog";
 import TeamInfo from "./components/TeamInfo";
 import TeamsList from "./components/TeamsList";
 
@@ -229,14 +230,16 @@ class TeamsLayout extends Component {
       goBack,
       teamOptions
     } = this.props;
-    const { isTeamsLoading, isAddTeamLoading } = this.props.loadingStatus;
+    const { isAddTeamLoading } = this.props.loadingStatus;
     const {
       openAddTeamDialog,
       closeAddTeamDialog,
       openEditTeamDialog,
+      openSeasonSetupDialog,
+      closeSeasonSetupDialog,
       addTeam
     } = this.props.actions;
-    const { isAddTeamDialogOpen } = this.props.dialogs;
+    const { isAddTeamDialogOpen, isSeasonSetupDialogOpen } = this.props.dialogs;
     const { teamID, infoTab } = this.props.match.params;
 
     const ad = this.createAd();
@@ -274,8 +277,9 @@ class TeamsLayout extends Component {
                 <div className={classes.actionsBar}>
                   <div className={classes.flexGrow} />
                   <Button
-                    colour="secondary"
+                    colour="primary"
                     filled
+                    slim
                     handleClick={() => openAddTeamDialog()}
                   >
                     <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
@@ -284,18 +288,13 @@ class TeamsLayout extends Component {
                 </div>
               )}
             <div className={classes.adWrapper}>{ad}</div>
-            {isTeamsLoading || activeInstitutionID === "" ? (
-              <div className={classes.loaderWrapper} />
-            ) : (
-              <div>
-                <TeamsList
-                  teams={filteredTeams}
-                  isUserAdmin={isAdmin}
-                  hasTeamsCreated={hasTeamsCreated}
-                  navigateTo={navigateTo}
-                />
-              </div>
-            )}
+            <TeamsList
+              teams={filteredTeams}
+              isUserAdmin={isAdmin}
+              hasTeamsCreated={hasTeamsCreated}
+              setUpSeason={() => openSeasonSetupDialog()}
+              navigateTo={navigateTo}
+            />
           </div>
           <AddTeamModal
             isOpen={isAddTeamDialogOpen}
@@ -313,6 +312,10 @@ class TeamsLayout extends Component {
                 ),
               closeModal: () => closeAddTeamDialog()
             }}
+          />
+          <SeasonSetupDialog
+            isOpen={isSeasonSetupDialogOpen}
+            closeDialog={() => closeSeasonSetupDialog()}
           />
         </div>
       );

@@ -38,6 +38,7 @@ const styles = {
     marginRight: 16
   },
   headerText: {
+    borderBottom: `1px solid ${grey[300]}`,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

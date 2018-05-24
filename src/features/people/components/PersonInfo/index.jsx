@@ -35,6 +35,7 @@ const styles = {
     flexGrow: 1
   },
   header: {
+    border: `1px solid ${grey[300]}`,
     margin: "0 24px",
     padding: 24,
     borderRadius: 16,
@@ -425,12 +426,7 @@ class PersonInfo extends Component {
         <div className={classes.outerWrapper}>
           <div className={classes.actionsBar}>
             <div className={classes.buttonWrapper}>
-              <Button
-                colour="secondary"
-                filled
-                slim
-                handleClick={() => goBack()}
-              >
+              <Button colour="primary" filled slim handleClick={() => goBack()}>
                 <i
                   className={`fas fa-caret-left ${classes.iconAdjacentText}`}
                 />

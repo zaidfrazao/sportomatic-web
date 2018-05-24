@@ -53,6 +53,7 @@ const styles = {
     padding: 12
   },
   card: {
+    border: `1px solid ${grey[300]}`,
     display: "flex",
     flexDirection: "column",
     width: "100%",
@@ -78,6 +79,7 @@ const styles = {
     color: common["white"]
   },
   header: {
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
     padding: 12,

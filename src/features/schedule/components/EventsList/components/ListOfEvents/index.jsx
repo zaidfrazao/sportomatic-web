@@ -47,6 +47,7 @@ const styles = {
     backgroundColor: common["white"]
   },
   header: {
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     padding: "18px 0",
     width: "100%",
@@ -56,6 +57,7 @@ const styles = {
     backgroundColor: grey[100]
   },
   headerToday: {
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     padding: "18px 0",
     width: "100%",
@@ -65,6 +67,7 @@ const styles = {
     backgroundColor: grey[300]
   },
   headerLeft: {
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "16px 0 0 0",
     padding: "18px 0",
@@ -75,6 +78,7 @@ const styles = {
     backgroundColor: grey[100]
   },
   headerLeftToday: {
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "16px 0 0 0",
     padding: "18px 0",
@@ -85,6 +89,7 @@ const styles = {
     backgroundColor: grey[300]
   },
   headerRight: {
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "0 16px 0 0",
     padding: "18px 0",
@@ -95,6 +100,7 @@ const styles = {
     backgroundColor: grey[100]
   },
   headerRightToday: {
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "0 16px 0 0",
     padding: "18px 0",
@@ -125,6 +131,7 @@ const styles = {
     margin: 8
   },
   wrapper: {
+    border: `1px solid ${grey[300]}`,
     borderRadius: 16,
     backgroundColor: grey[100],
     display: "flex",

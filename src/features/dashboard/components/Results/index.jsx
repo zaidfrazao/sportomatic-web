@@ -31,12 +31,7 @@ class Results extends Component {
         {isMobile && (
           <div className={classes.actionsBar}>
             <div className={classes.buttonWrapper}>
-              <Button
-                colour="secondary"
-                filled
-                slim
-                handleClick={() => goBack()}
-              >
+              <Button colour="primary" filled slim handleClick={() => goBack()}>
                 <i
                   className={`fas fa-caret-left ${classes.iconAdjacentText}`}
                 />

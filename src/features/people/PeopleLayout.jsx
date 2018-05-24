@@ -405,8 +405,9 @@ class PeopleLayout extends Component {
                   <div className={classes.actionsBar}>
                     <div className={classes.flexGrow} />
                     <Button
-                      colour="secondary"
+                      colour="primary"
                       filled
+                      slim
                       handleClick={() => openInvitePersonModal()}
                     >
                       <i

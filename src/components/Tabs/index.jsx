@@ -13,14 +13,16 @@ const styles = theme => ({
     margin: "0 8px",
     padding: 18,
     fontWeight: "bold",
-    color: grey[800],
+    color: grey[700],
     backgroundColor: common["white"],
     cursor: "pointer",
     "&:hover": {
+      color: grey[900],
       backgroundColor: grey[300]
     }
   },
   tabSelected: {
+    border: `1px solid ${grey[300]}`,
     transition: "0.25s",
     display: "flex",
     flexDirection: "column",

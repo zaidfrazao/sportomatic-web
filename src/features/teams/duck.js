@@ -8,6 +8,8 @@ const NAMESPACE = "sportomatic-web/teams";
 
 export const OPEN_ADD_TEAM_DIALOG = `${NAMESPACE}/OPEN_ADD_TEAM_DIALOG`;
 export const CLOSE_ADD_TEAM_DIALOG = `${NAMESPACE}/CLOSE_ADD_TEAM_DIALOG`;
+export const OPEN_SEASON_SETUP_DIALOG = `${NAMESPACE}/OPEN_SEASON_SETUP_DIALOG`;
+export const CLOSE_SEASON_SETUP_DIALOG = `${NAMESPACE}/CLOSE_SEASON_SETUP_DIALOG`;
 export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
 export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
 export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
@@ -64,6 +66,7 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 
 export const dialogsInitialState = {
   isAddTeamDialogOpen: false,
+  isSeasonSetupDialogOpen: false,
   isErrorAddingTeamAlertOpen: false,
   isEditTeamDialogOpen: false,
   isDeleteTeamAlertOpen: false,
@@ -84,6 +87,16 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
       return {
         ...state,
         isTeamErrorAlertOpen: false
+      };
+    case OPEN_SEASON_SETUP_DIALOG:
+      return {
+        ...state,
+        isSeasonSetupDialogOpen: true
+      };
+    case CLOSE_SEASON_SETUP_DIALOG:
+      return {
+        ...state,
+        isSeasonSetupDialogOpen: false
       };
     case OPEN_ADD_TEAM_DIALOG:
       return {
@@ -325,6 +338,18 @@ export function openTeamErrorAlert(errorType) {
 export function closeTeamErrorAlert() {
   return {
     type: CLOSE_TEAM_ERROR_ALERT
+  };
+}
+
+export function openSeasonSetupDialog() {
+  return {
+    type: OPEN_SEASON_SETUP_DIALOG
+  };
+}
+
+export function closeSeasonSetupDialog() {
+  return {
+    type: CLOSE_SEASON_SETUP_DIALOG
   };
 }
 

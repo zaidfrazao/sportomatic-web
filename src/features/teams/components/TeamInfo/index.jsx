@@ -34,6 +34,7 @@ const styles = {
     flexGrow: 1
   },
   header: {
+    border: `1px solid ${grey[300]}`,
     margin: "0 24px",
     padding: 24,
     borderRadius: 16,
@@ -289,8 +290,8 @@ class TeamInfo extends Component {
   }
 
   render() {
-    const { classes, isMobile, infoTab, teamID, isUserAdmin } = this.props;
-    const { editTeam, goBack } = this.props.actions;
+    const { classes, isMobile, infoTab, teamID } = this.props;
+    const { goBack } = this.props.actions;
     const { tabSelected } = this.state;
 
     const info = this.getInfo();
@@ -310,12 +311,7 @@ class TeamInfo extends Component {
         <div className={classes.outerWrapper}>
           <div className={classes.actionsBar}>
             <div className={classes.buttonWrapper}>
-              <Button
-                colour="secondary"
-                filled
-                slim
-                handleClick={() => goBack()}
-              >
+              <Button colour="primary" filled slim handleClick={() => goBack()}>
                 <i
                   className={`fas fa-caret-left ${classes.iconAdjacentText}`}
                 />
@@ -323,20 +319,6 @@ class TeamInfo extends Component {
               </Button>
             </div>
             <div className={classes.flexGrow} />
-            {isUserAdmin &&
-              !isMobile && (
-                <div className={classes.buttonWrapper}>
-                  <Button
-                    colour="secondary"
-                    filled
-                    slim
-                    handleClick={() => editTeam()}
-                  >
-                    <i className={`fas fa-edit ${classes.iconAdjacentText}`} />
-                    Edit team
-                  </Button>
-                </div>
-              )}
           </div>
           {!isMobile && (
             <div className={classes.tabsWrapper}>

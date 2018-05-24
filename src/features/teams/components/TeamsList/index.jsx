@@ -32,7 +32,7 @@ const styles = {
 
 class TeamsList extends Component {
   render() {
-    const { classes, teams, navigateTo, isUserAdmin } = this.props;
+    const { classes, teams, navigateTo, isUserAdmin, setUpSeason } = this.props;
 
     if (teams.length > 0) {
       return (
@@ -46,6 +46,7 @@ class TeamsList extends Component {
                 id={teamInfo.id}
                 status={teamInfo.status}
                 isInSeason={teamInfo.isInSeason}
+                setUpSeason={setUpSeason}
                 navigateTo={navigateTo}
               />
             </div>

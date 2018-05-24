@@ -1,22 +1,25 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
 import Button from "../../../../../../components/Button";
-import { grey, lightBlue } from "../../../../../../utils/colours";
+import { common, grey, orange } from "../../../../../../utils/colours";
 
 const styles = {
   alertIcon: {
     marginRight: 12
   },
-  buttons: {
-    display: "flex",
-    justifyContent: "space-between",
-    borderRadius: "0 0 16px 16px",
-    backgroundColor: lightBlue[500],
+  card: {
+    transition: "0.25s",
+    backgroundColor: common["white"],
+    borderRadius: 16,
+    cursor: "pointer",
+    border: `1px solid ${grey[300]}`,
     "&:hover": {
-      backgroundColor: lightBlue[400]
+      boxShadow:
+        "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
     }
   },
   header: {
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
     padding: 24,
@@ -35,7 +38,11 @@ const styles = {
     backgroundColor: grey[300]
   },
   setupButtonWrapper: {
-    margin: 12
+    borderRadius: "0 0 16px 16px",
+    backgroundColor: orange["A400"],
+    "&:hover": {
+      backgroundColor: orange["A200"]
+    }
   }
 };
 
@@ -47,14 +54,23 @@ class TeamCard extends Component {
       id,
       isInSeason,
       isUserAdmin,
-      navigateTo
+      navigateTo,
+      setUpSeason
     } = this.props;
 
     return (
       <div className={classes.card}>
-        <div className={classes.header}>{name}</div>
+        <div
+          className={classes.header}
+          onClick={() => navigateTo(`/myaccount/teams/${id}`)}
+        >
+          {name}
+        </div>
         {!isInSeason && (
-          <div className={classes.inactiveAlert}>
+          <div
+            className={classes.inactiveAlert}
+            onClick={() => navigateTo(`/myaccount/teams/${id}`)}
+          >
             <i className={`fas fa-exclamation ${classes.alertIcon}`} />Not in
             season
           </div>
@@ -62,21 +78,16 @@ class TeamCard extends Component {
         {isUserAdmin &&
           !isInSeason && (
             <div className={classes.setupButtonWrapper}>
-              <Button colour="secondary" slim fullWidth>
+              <Button
+                colour="secondary"
+                filled
+                fullWidth
+                handleClick={() => setUpSeason()}
+              >
                 Set up new season
               </Button>
             </div>
           )}
-        <div className={classes.buttons}>
-          <Button
-            colour="primary"
-            filled
-            fullWidth
-            handleClick={() => navigateTo(`/myaccount/teams/${id}`)}
-          >
-            View
-          </Button>
-        </div>
       </div>
     );
   }

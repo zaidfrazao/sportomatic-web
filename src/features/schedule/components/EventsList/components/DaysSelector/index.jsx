@@ -30,18 +30,24 @@ class DaysSelector extends Component {
             disabled={isPrevDisabled}
             fullWidth
             filled
+            type="dark"
             handleClick={() => handlePrev()}
           >
             <i className="fas fa-arrow-left" />
           </Button>
         </div>
         <div className={classes.buttonDate}>
-          <Button fullWidth filled handleClick={() => toggleDateSelector()}>
+          <Button
+            fullWidth
+            filled
+            type="dark"
+            handleClick={() => toggleDateSelector()}
+          >
             {dateDisplay}
           </Button>
         </div>
         <div className={classes.buttonNavigation}>
-          <Button fullWidth filled handleClick={() => handleNext()}>
+          <Button fullWidth filled type="dark" handleClick={() => handleNext()}>
             <i className="fas fa-arrow-right" />
           </Button>
         </div>

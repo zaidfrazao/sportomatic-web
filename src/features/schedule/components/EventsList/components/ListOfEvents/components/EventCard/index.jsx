@@ -3,7 +3,6 @@ import injectStyles from "react-jss";
 import {
   common,
   grey,
-  orange,
   red,
   yellow
 } from "../../../../../../../../utils/colours";
@@ -24,19 +23,24 @@ const styles = {
     color: red[700]
   },
   header: {
+    borderBottom: `1px solid ${grey[300]}`,
     fontSize: props => (props.isTablet ? 16 : 14),
     padding: 12,
     lineHeight: props => (props.isTablet ? "22px" : "18px"),
     textAlign: "center",
-    color: common["white"],
-    fontWeight: "bold"
+    fontWeight: "bold",
+    color: grey[800]
   },
   headerIcon: {
     marginRight: 8
   },
+  headerIconCompetitive: {
+    marginRight: 8,
+    color: yellow[800]
+  },
   missingInfoRow: {
     fontSize: props => (props.isTablet ? 16 : 14),
-    color: yellow[800],
+    color: red[700],
     backgroundColor: common["white"],
     padding: "12px 0",
     borderBottom: `1px solid ${grey[100]}`,
@@ -93,14 +97,13 @@ const styles = {
     transition: "0.25s",
     margin: 12,
     borderRadius: 8,
-    border: `1px solid ${orange["A400"]}`,
-    backgroundColor: orange["A400"],
-    color: orange["A400"],
+    border: `1px solid ${grey[300]}`,
+    backgroundColor: grey[100],
+    color: grey[100],
     cursor: "pointer",
     "&:hover": {
-      border: `1px solid ${orange["A200"]}`,
-      color: orange["A200"],
-      backgroundColor: orange["A200"]
+      boxShadow:
+        "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
     }
   }
 };
@@ -110,7 +113,7 @@ class EventCard extends Component {
     const { classes, isCompetitive } = this.props;
 
     if (isCompetitive)
-      return <i className={`fas fa-trophy ${classes.headerIcon}`} />;
+      return <i className={`fas fa-trophy ${classes.headerIconCompetitive}`} />;
     return <i className={`fas fa-dumbbell ${classes.headerIcon}`} />;
   }
 

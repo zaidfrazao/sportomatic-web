@@ -22,6 +22,7 @@ const styles = theme => ({
     }
   },
   buttonSelected: {
+    cursor: "pointer",
     transition: "0.25s",
     position: "relative",
     display: "flex",

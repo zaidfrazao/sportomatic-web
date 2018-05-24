@@ -18,6 +18,7 @@ const styles = {
     margin: 0
   },
   tableFooter: {
+    borderTop: `1px solid ${grey[300]}`,
     borderRadius: "0 0 16px 16px",
     width: "100%",
     backgroundColor: grey[100],
@@ -27,6 +28,7 @@ const styles = {
     fontWeight: "bold"
   },
   tableHeader: {
+    borderBottom: `1px solid ${grey[300]}`,
     borderRadius: "16px 16px 0 0",
     width: "100%",
     backgroundColor: grey[100],
@@ -39,12 +41,13 @@ const styles = {
     width: "100%"
   },
   tableWrapper: {
-    width: 1152,
+    width: 1150,
     border: `2px solid ${grey[100]}`,
     borderSpacing: 2,
     borderCollapse: "collapse"
   },
   wrapper: {
+    border: `1px solid ${grey[300]}`,
     borderRadius: 16,
     backgroundColor: common["white"],
     overflow: "auto"

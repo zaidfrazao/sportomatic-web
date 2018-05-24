@@ -71,6 +71,7 @@ const styles = {
     margin: 0
   },
   tableFooter: {
+    borderTop: `1px solid ${grey[300]}`,
     borderRadius: "0 0 16px 16px",
     width: "100%",
     backgroundColor: grey[100],
@@ -80,6 +81,7 @@ const styles = {
     fontWeight: "bold"
   },
   tableHeader: {
+    borderBottom: `1px solid ${grey[300]}`,
     borderRadius: "16px 16px 0 0",
     width: "100%",
     backgroundColor: grey[100],
@@ -92,12 +94,13 @@ const styles = {
     width: "100%"
   },
   tableWrapper: {
-    width: 1152,
+    width: 1150,
     border: `2px solid ${grey[100]}`,
     borderSpacing: 2,
     borderCollapse: "collapse"
   },
   wrapper: {
+    border: `1px solid ${grey[300]}`,
     borderRadius: 16,
     backgroundColor: common["white"],
     overflow: "auto"
@@ -267,28 +270,8 @@ class HoursTable extends Component {
               rows
             )}
             <tr className={classes.tableFooter}>
-              <td className={classes.tableItem} colSpan={2}>
+              <td className={classes.tableItem} colSpan={4}>
                 TOTAL
-              </td>
-              <td
-                className={
-                  totals.signInDelta > 0
-                    ? classes.tableItemNegative
-                    : classes.tableItemPositive
-                }
-              >
-                {totals.signInDelta > 0 ? "+" : "-"}
-                {Math.abs(totals.signInDelta)} min
-              </td>
-              <td
-                className={
-                  totals.signOutDelta > 0
-                    ? classes.tableItemNegative
-                    : classes.tableItemPositive
-                }
-              >
-                {totals.signOutDelta > 0 ? "+" : "-"}
-                {Math.abs(totals.signOutDelta)} min
               </td>
               <td className={classes.tableItem}>{totals.hours}</td>
             </tr>

@@ -422,9 +422,6 @@ class AddTeamModal extends Component {
       genderOptions
     } = this.state;
 
-    console.log(options);
-    console.log(this.state);
-
     const actions = [
       <Button
         colour="primary"
