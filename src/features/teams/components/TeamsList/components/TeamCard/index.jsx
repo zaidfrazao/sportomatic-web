@@ -30,12 +30,13 @@ const styles = {
   },
   inactiveAlert: {
     fontSize: 14,
-    padding: "12px 0",
-    width: "100%",
+    padding: 24,
+    margin: 12,
+    borderRadius: 16,
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[400],
-    backgroundColor: grey[300]
+    color: grey[500],
+    border: `1px solid ${grey[300]}`
   },
   setupButtonWrapper: {
     borderRadius: "0 0 16px 16px",
@@ -66,15 +67,17 @@ class TeamCard extends Component {
         >
           {name}
         </div>
-        {!isInSeason && (
-          <div
-            className={classes.inactiveAlert}
-            onClick={() => navigateTo(`/myaccount/teams/${id}`)}
-          >
-            <i className={`fas fa-exclamation ${classes.alertIcon}`} />Not in
-            season
-          </div>
-        )}
+        <div
+          className={classes.content}
+          onClick={() => navigateTo(`/myaccount/teams/${id}`)}
+        >
+          {!isInSeason && (
+            <div className={classes.inactiveAlert}>
+              <i className={`fas fa-exclamation ${classes.alertIcon}`} />Not in
+              season
+            </div>
+          )}
+        </div>
         {isUserAdmin &&
           !isInSeason && (
             <div className={classes.setupButtonWrapper}>

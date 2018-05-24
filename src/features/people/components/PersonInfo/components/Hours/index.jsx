@@ -91,7 +91,13 @@ class Hours extends Component {
   }
 
   render() {
-    const { classes, institutionCreationDate, isMobile, hours } = this.props;
+    const {
+      classes,
+      institutionCreationDate,
+      isMobile,
+      isTablet,
+      hours
+    } = this.props;
     const { dateSelectedMoment, isMonthSelectorOpen } = this.state;
 
     const dateDisplay = this.getDateDisplay();
@@ -109,7 +115,12 @@ class Hours extends Component {
           handleNextMonth={() => this.nextMonth()}
         />
         <div className={classes.separator} />
-        <HoursTable hours={hours} dateSelected={dateSelectedMoment.toDate()} />
+        <HoursTable
+          isTablet={isTablet}
+          isMobile={isMobile}
+          hours={hours}
+          dateSelected={dateSelectedMoment.toDate()}
+        />
         <MonthSelector
           isMobile={isMobile}
           isOpen={isMonthSelectorOpen}

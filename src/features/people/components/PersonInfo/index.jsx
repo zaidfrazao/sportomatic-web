@@ -141,6 +141,7 @@ class PersonInfo extends Component {
     const {
       classes,
       isMobile,
+      isTablet,
       infoTab,
       personID,
       hours,
@@ -175,6 +176,7 @@ class PersonInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <Hours
+                isTablet={isTablet}
                 isMobile={isMobile}
                 hours={hours}
                 institutionCreationDate={institutionCreationDate}
@@ -186,6 +188,7 @@ class PersonInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <Wages
+                isTablet={isTablet}
                 isMobile={isMobile}
                 wages={wages}
                 institutionCreationDate={institutionCreationDate}
@@ -261,6 +264,7 @@ class PersonInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <Hours
+                isTablet={isTablet}
                 isMobile={isMobile}
                 hours={hours}
                 institutionCreationDate={institutionCreationDate}
@@ -272,6 +276,7 @@ class PersonInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <Wages
+                isTablet={isTablet}
                 isMobile={isMobile}
                 wages={wages}
                 institutionCreationDate={institutionCreationDate}

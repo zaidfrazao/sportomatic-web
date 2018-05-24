@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import accounting from "accounting";
 import injectStyles from "react-jss";
 import moment from "moment";
-import { common, grey } from "../../../../../../../../utils/colours";
+import { common, grey, lightBlue } from "../../../../../../../../utils/colours";
 
 const styles = {
   emptyState: {
@@ -13,7 +13,8 @@ const styles = {
     color: grey[400]
   },
   tableItem: {
-    padding: 24,
+    fontSize: 14,
+    padding: "18px 24px",
     border: `2px solid ${grey[200]}`,
     margin: 0
   },
@@ -27,21 +28,28 @@ const styles = {
     fontSize: 18,
     fontWeight: "bold"
   },
+  tableFooterItem: {
+    padding: 24,
+    margin: 0
+  },
   tableHeader: {
-    borderBottom: `1px solid ${grey[300]}`,
     borderRadius: "16px 16px 0 0",
     width: "100%",
-    backgroundColor: grey[100],
-    color: grey[800],
+    backgroundColor: lightBlue[800],
+    color: common["white"],
     padding: "24px 0",
     fontSize: 18,
     fontWeight: "bold"
+  },
+  tableHeaderItem: {
+    padding: 24,
+    margin: 0
   },
   tableRow: {
     width: "100%"
   },
   tableWrapper: {
-    width: 1150,
+    width: "calc(100% - 2px)",
     borderCollapse: "collapse"
   },
   wrapper: {
@@ -54,7 +62,7 @@ const styles = {
 
 class WagesTable extends Component {
   getData() {
-    const { classes, wages, dateSelected } = this.props;
+    const { classes, wages, dateSelected, isMobile, isTablet } = this.props;
 
     let total = 0;
 
@@ -93,8 +101,10 @@ class WagesTable extends Component {
         return (
           <tr key={info.id} className={classes.tableRow}>
             <td className={classes.tableItem}>{date}</td>
-            <td className={classes.tableItem}>{title}</td>
-            <td className={classes.tableItem}>{formattedType}</td>
+            {!isMobile && <td className={classes.tableItem}>{title}</td>}
+            {!isTablet && (
+              <td className={classes.tableItem}>{formattedType}</td>
+            )}
             <td className={classes.tableItem}>
               {accounting.formatMoney(wage, "R")}
             </td>
@@ -106,7 +116,7 @@ class WagesTable extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, isMobile, isTablet } = this.props;
 
     const { rows, total } = this.getData();
 
@@ -115,14 +125,17 @@ class WagesTable extends Component {
         <table className={classes.tableWrapper}>
           <tbody>
             <tr className={classes.tableHeader}>
-              <th className={classes.tableItem}>Date</th>
-              <th className={classes.tableItem}>Reason</th>
-              <th className={classes.tableItem}>Type</th>
-              <th className={classes.tableItem}>Amount</th>
+              <th className={classes.tableHeaderItem}>Date</th>
+              {!isMobile && <th className={classes.tableHeaderItem}>Reason</th>}
+              {!isTablet && <th className={classes.tableHeaderItem}>Type</th>}
+              <th className={classes.tableHeaderItem}>Amount</th>
             </tr>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={5} className={classes.emptyState}>
+                <td
+                  colSpan={isMobile ? 2 : isTablet ? 3 : 4}
+                  className={classes.emptyState}
+                >
                   No wages this month
                 </td>
               </tr>
@@ -130,10 +143,13 @@ class WagesTable extends Component {
               rows
             )}
             <tr className={classes.tableFooter}>
-              <td className={classes.tableItem} colSpan={3}>
+              <td
+                className={classes.tableFooterItem}
+                colSpan={isMobile ? 1 : isTablet ? 2 : 3}
+              >
                 TOTAL
               </td>
-              <td className={classes.tableItem}>
+              <td className={classes.tableFooterItem}>
                 {accounting.formatMoney(total, "R")}
               </td>
             </tr>

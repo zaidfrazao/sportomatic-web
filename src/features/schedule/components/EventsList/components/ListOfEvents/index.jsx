@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import injectStyles from "react-jss";
 import moment from "moment";
-import { common, grey } from "../../../../../../utils/colours";
+import { common, grey, lightBlue } from "../../../../../../utils/colours";
 import EventCard from "./components/EventCard";
 
 const styles = {
@@ -25,23 +25,32 @@ const styles = {
     margin: 8
   },
   column: {
+    display: "flex",
+    flexDirection: "column",
     width: "14%",
-    border: `1px solid ${grey[100]}`,
     backgroundColor: common["white"]
   },
+  columnContent: {
+    height: "100%",
+    border: `1px solid ${grey[200]}`
+  },
   columnLeft: {
+    display: "flex",
+    flexDirection: "column",
     width: "14%",
     borderRadius: "16px 0 0 16px",
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[100]}`
+    backgroundColor: grey[50]
   },
   columnRight: {
+    display: "flex",
+    flexDirection: "column",
     width: "14%",
     borderRadius: "0 16px 16px 0",
-    backgroundColor: grey[50],
-    border: `1px solid ${grey[100]}`
+    backgroundColor: grey[50]
   },
   columnTablet: {
+    display: "flex",
+    flexDirection: "column",
     width: "100%",
     borderRadius: 16,
     backgroundColor: common["white"]
@@ -53,8 +62,8 @@ const styles = {
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[100]
+    color: common["white"],
+    backgroundColor: lightBlue[800]
   },
   headerToday: {
     borderBottom: `1px solid ${grey[300]}`,
@@ -63,8 +72,8 @@ const styles = {
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[300]
+    color: common["white"],
+    backgroundColor: lightBlue[600]
   },
   headerLeft: {
     borderBottom: `1px solid ${grey[300]}`,
@@ -74,8 +83,8 @@ const styles = {
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[100]
+    color: common["white"],
+    backgroundColor: lightBlue[800]
   },
   headerLeftToday: {
     borderBottom: `1px solid ${grey[300]}`,
@@ -85,8 +94,8 @@ const styles = {
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[300]
+    color: common["white"],
+    backgroundColor: lightBlue[600]
   },
   headerRight: {
     borderBottom: `1px solid ${grey[300]}`,
@@ -96,8 +105,8 @@ const styles = {
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[100]
+    color: common["white"],
+    backgroundColor: lightBlue[800]
   },
   headerRightToday: {
     borderBottom: `1px solid ${grey[300]}`,
@@ -107,8 +116,8 @@ const styles = {
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[300]
+    color: common["white"],
+    backgroundColor: lightBlue[600]
   },
   headerTablet: {
     fontSize: 18,
@@ -117,8 +126,8 @@ const styles = {
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[100]
+    color: common["white"],
+    backgroundColor: lightBlue[800]
   },
   icon: {
     marginRight: 8
@@ -131,11 +140,9 @@ const styles = {
     margin: 8
   },
   wrapper: {
-    border: `1px solid ${grey[300]}`,
-    borderRadius: 16,
-    backgroundColor: grey[100],
     display: "flex",
-    justifyContent: "space-around"
+    justifyContent: "center",
+    alignItems: "stretch"
   }
 };
 
@@ -244,16 +251,19 @@ class ListOfEvents extends Component {
             <div className={classes.headerTablet}>
               {isToday ? "Today" : formattedDate}
             </div>
-            {eventCards}
-            {eventCards.length === 0 && (
-              <div className={classes.noEvents}>No events</div>
-            )}
-            {canCreate &&
-              showAddButton && (
-                <div className={classes.addEventWrapper}>
-                  <i className={`fas fa-plus ${classes.icon}`} />Add event
-                </div>
+            <div className={classes.columnContent}>
+              {eventCards}
+              {eventCards.length === 0 && (
+                <div className={classes.noEvents}>No events</div>
               )}
+              {canCreate &&
+                showAddButton && (
+                  <div className={classes.addEventWrapper}>
+                    <i className={`fas fa-plus ${classes.icon}`} />Add event
+                  </div>
+                )}
+              <div className={classes.flexGrow} />
+            </div>
           </div>
         );
       }
@@ -266,16 +276,19 @@ class ListOfEvents extends Component {
             >
               {isToday ? "Today" : formattedDate}
             </div>
-            {eventCards}
-            {eventCards.length === 0 && (
-              <div className={classes.noEvents}>No events</div>
-            )}
-            {canCreate &&
-              showAddButton && (
-                <div className={classes.addEventWrapper}>
-                  <i className={`fas fa-plus ${classes.icon}`} />Add event
-                </div>
+            <div className={classes.columnContent}>
+              {eventCards}
+              {eventCards.length === 0 && (
+                <div className={classes.noEvents}>No events</div>
               )}
+              {canCreate &&
+                showAddButton && (
+                  <div className={classes.addEventWrapper}>
+                    <i className={`fas fa-plus ${classes.icon}`} />Add event
+                  </div>
+                )}
+              <div className={classes.flexGrow} />
+            </div>
           </div>
         );
       }
@@ -290,6 +303,29 @@ class ListOfEvents extends Component {
             >
               {isToday ? "Today" : formattedDate}
             </div>
+            <div className={classes.columnContent}>
+              {eventCards}
+              {eventCards.length === 0 && (
+                <div className={classes.noEvents}>No events</div>
+              )}
+              {canCreate &&
+                showAddButton && (
+                  <div className={classes.addEventWrapper}>
+                    <i className={`fas fa-plus ${classes.icon}`} />Add event
+                  </div>
+                )}
+              <div className={classes.flexGrow} />
+            </div>
+          </div>
+        );
+      }
+      const formattedDate = moment(date).format("ddd, D");
+      return (
+        <div className={classes.column}>
+          <div className={isToday ? classes.headerToday : classes.header}>
+            {isToday ? "Today" : formattedDate}
+          </div>
+          <div className={classes.columnContent}>
             {eventCards}
             {eventCards.length === 0 && (
               <div className={classes.noEvents}>No events</div>
@@ -300,25 +336,8 @@ class ListOfEvents extends Component {
                   <i className={`fas fa-plus ${classes.icon}`} />Add event
                 </div>
               )}
+            <div className={classes.flexGrow} />
           </div>
-        );
-      }
-      const formattedDate = moment(date).format("ddd, D");
-      return (
-        <div className={classes.column}>
-          <div className={isToday ? classes.headerToday : classes.header}>
-            {isToday ? "Today" : formattedDate}
-          </div>
-          {eventCards}
-          {eventCards.length === 0 && (
-            <div className={classes.noEvents}>No events</div>
-          )}
-          {canCreate &&
-            showAddButton && (
-              <div className={classes.addEventWrapper}>
-                <i className={`fas fa-plus ${classes.icon}`} />Add event
-              </div>
-            )}
         </div>
       );
     });

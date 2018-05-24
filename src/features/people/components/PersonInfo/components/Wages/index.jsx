@@ -92,7 +92,13 @@ class Wages extends Component {
   }
 
   render() {
-    const { classes, institutionCreationDate, isMobile, wages } = this.props;
+    const {
+      classes,
+      institutionCreationDate,
+      isMobile,
+      isTablet,
+      wages
+    } = this.props;
     const { dateSelectedMoment, isMonthSelectorOpen } = this.state;
 
     const dateDisplay = this.getDateDisplay();
@@ -110,7 +116,12 @@ class Wages extends Component {
           handleNextMonth={() => this.nextMonth()}
         />
         <div className={classes.separator} />
-        <WagesTable wages={wages} dateSelected={dateSelectedMoment.toDate()} />
+        <WagesTable
+          isTablet={isTablet}
+          isMobile={isMobile}
+          wages={wages}
+          dateSelected={dateSelectedMoment.toDate()}
+        />
         <MonthSelector
           isMobile={isMobile}
           isOpen={isMonthSelectorOpen}

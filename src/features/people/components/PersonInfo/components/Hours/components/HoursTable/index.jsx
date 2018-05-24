@@ -5,6 +5,7 @@ import {
   common,
   green,
   grey,
+  lightBlue,
   red
 } from "../../../../../../../../utils/colours";
 
@@ -54,7 +55,8 @@ const styles = {
     color: grey[600]
   },
   tableItem: {
-    padding: 24,
+    fontSize: 14,
+    padding: "18px 24px",
     border: `2px solid ${grey[200]}`,
     margin: 0
   },
@@ -80,21 +82,28 @@ const styles = {
     fontSize: 18,
     fontWeight: "bold"
   },
+  tableFooterItem: {
+    padding: 24,
+    margin: 0
+  },
   tableHeader: {
-    borderBottom: `1px solid ${grey[300]}`,
     borderRadius: "16px 16px 0 0",
     width: "100%",
-    backgroundColor: grey[100],
-    color: grey[800],
+    backgroundColor: lightBlue[800],
+    color: common["white"],
     padding: "24px 0",
     fontSize: 18,
     fontWeight: "bold"
+  },
+  tableHeaderItem: {
+    padding: 24,
+    margin: 0
   },
   tableRow: {
     width: "100%"
   },
   tableWrapper: {
-    width: 1150,
+    width: "calc(100% - 2px)",
     borderCollapse: "collapse"
   },
   wrapper: {
@@ -107,7 +116,7 @@ const styles = {
 
 class HoursTable extends Component {
   getData() {
-    const { classes, hours, dateSelected } = this.props;
+    const { classes, hours, dateSelected, isMobile, isTablet } = this.props;
 
     let totals = {
       signInDelta: 0,
@@ -153,33 +162,37 @@ class HoursTable extends Component {
           return (
             <tr key={info.id} className={classes.tableRow}>
               <td className={classes.tableItem}>{date}</td>
-              <td className={classes.tableItem}>{title}</td>
-              <td className={classes.tableItem}>
-                {signInTime}
-                <span
-                  className={
-                    signInDelta > 0
-                      ? classes.deltaNegative
-                      : classes.deltaPositive
-                  }
-                >
-                  {signInDelta > 0 ? "+" : "-"}
-                  {Math.abs(signInDelta)} min
-                </span>
-              </td>
-              <td className={classes.tableItem}>
-                {signOutTime}
-                <span
-                  className={
-                    signOutDelta > 0
-                      ? classes.deltaNegative
-                      : classes.deltaPositive
-                  }
-                >
-                  {signOutDelta > 0 ? "+" : "-"}
-                  {Math.abs(signOutDelta)} min
-                </span>
-              </td>
+              {!isMobile && <td className={classes.tableItem}>{title}</td>}
+              {!isTablet && (
+                <td className={classes.tableItem}>
+                  {signInTime}
+                  <span
+                    className={
+                      signInDelta > 0
+                        ? classes.deltaNegative
+                        : classes.deltaPositive
+                    }
+                  >
+                    {signInDelta > 0 ? "+" : "-"}
+                    {Math.abs(signInDelta)} min
+                  </span>
+                </td>
+              )}
+              {!isTablet && (
+                <td className={classes.tableItem}>
+                  {signOutTime}
+                  <span
+                    className={
+                      signOutDelta > 0
+                        ? classes.deltaNegative
+                        : classes.deltaPositive
+                    }
+                  >
+                    {signOutDelta > 0 ? "+" : "-"}
+                    {Math.abs(signOutDelta)} min
+                  </span>
+                </td>
+              )}
               <td className={classes.tableItem}>{hours}</td>
             </tr>
           );
@@ -187,8 +200,8 @@ class HoursTable extends Component {
           return (
             <tr key={info.id} className={classes.tableRow}>
               <td className={classes.tableItem}>{date}</td>
-              <td className={classes.tableItem}>{title}</td>
-              <td className={classes.tableItem} colSpan={3}>
+              {!isMobile && <td className={classes.tableItem}>{title}</td>}
+              <td className={classes.tableItem} colSpan={isTablet ? 1 : 3}>
                 <div className={classes.messageCancelled}>
                   <i className={`fas fa-ban ${classes.icon}`} />Event was
                   cancelled
@@ -202,8 +215,8 @@ class HoursTable extends Component {
           return (
             <tr key={info.id} className={classes.tableRow}>
               <td className={classes.tableItem}>{date}</td>
-              <td className={classes.tableItem}>{title}</td>
-              <td className={classes.tableItem} colSpan={3}>
+              {!isMobile && <td className={classes.tableItem}>{title}</td>}
+              <td className={classes.tableItem} colSpan={isTablet ? 1 : 3}>
                 <div
                   className={
                     absentRating === "GOOD"
@@ -227,8 +240,8 @@ class HoursTable extends Component {
           return (
             <tr key={info.id} className={classes.tableRow}>
               <td className={classes.tableItem}>{date}</td>
-              <td className={classes.tableItem}>{title}</td>
-              <td className={classes.tableItem} colSpan={3}>
+              {!isMobile && <td className={classes.tableItem}>{title}</td>}
+              <td className={classes.tableItem} colSpan={isTablet ? 1 : 3}>
                 <div className={classes.messageAwaitingApproval}>
                   <i className={`fas fa-exclamation ${classes.icon}`} />Hours
                   awaiting approval
@@ -243,7 +256,7 @@ class HoursTable extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, isMobile, isTablet } = this.props;
 
     const { rows, totals } = this.getData();
 
@@ -252,15 +265,22 @@ class HoursTable extends Component {
         <table className={classes.tableWrapper}>
           <tbody>
             <tr className={classes.tableHeader}>
-              <th className={classes.tableItem}>Date</th>
-              <th className={classes.tableItem}>Event</th>
-              <th className={classes.tableItem}>Sign in</th>
-              <th className={classes.tableItem}>Sign out</th>
-              <th className={classes.tableItem}>Hours</th>
+              <th className={classes.tableHeaderItem}>Date</th>
+              {!isMobile && <th className={classes.tableHeaderItem}>Event</th>}
+              {!isTablet && (
+                <th className={classes.tableHeaderItem}>Sign in</th>
+              )}
+              {!isTablet && (
+                <th className={classes.tableHeaderItem}>Sign out</th>
+              )}
+              <th className={classes.tableHeaderItem}>Hours</th>
             </tr>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={5} className={classes.emptyState}>
+                <td
+                  colSpan={isMobile ? 2 : isTablet ? 3 : 5}
+                  className={classes.emptyState}
+                >
                   No hours this month
                 </td>
               </tr>
@@ -268,10 +288,13 @@ class HoursTable extends Component {
               rows
             )}
             <tr className={classes.tableFooter}>
-              <td className={classes.tableItem} colSpan={4}>
+              <td
+                className={classes.tableFooterItem}
+                colSpan={isMobile ? 1 : isTablet ? 2 : 4}
+              >
                 TOTAL
               </td>
-              <td className={classes.tableItem}>{totals.hours}</td>
+              <td className={classes.tableFooterItem}>{totals.hours}</td>
             </tr>
           </tbody>
         </table>
