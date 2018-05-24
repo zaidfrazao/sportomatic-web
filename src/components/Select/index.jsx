@@ -114,7 +114,7 @@ const styles = theme => ({
     backgroundColor: common["white"],
     border: `2px solid ${grey[300]}`,
     zIndex: 1000,
-    borderRadius: 4,
+    borderRadius: 8,
     maxHeight: 200,
     overflow: "auto",
     width: 260,
@@ -133,6 +133,18 @@ const styles = theme => ({
     padding: "12px 24px",
     border: `1px solid ${grey[100]}`,
     cursor: "pointer",
+    "&:hover": {
+      backgroundColor: grey[200]
+    },
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      padding: 24
+    }
+  },
+  menuItemSelected: {
+    padding: "12px 24px",
+    border: `1px solid ${grey[100]}`,
+    cursor: "pointer",
+    backgroundColor: grey[100],
     "&:hover": {
       backgroundColor: grey[200]
     },
@@ -266,13 +278,17 @@ class Select extends Component<Props, State> {
   }
 
   getMenuItems() {
-    const { classes, items, handleChange } = this.props;
+    const { classes, items, handleChange, selectedItem } = this.props;
 
     return items.map(item => {
       return (
         <div
           key={item.key}
-          className={classes.menuItem}
+          className={
+            item.key === selectedItem.key
+              ? classes.menuItemSelected
+              : classes.menuItem
+          }
           onClick={() => {
             this.toggleMenu();
             handleChange(item.key, item.label);
