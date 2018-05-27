@@ -3,6 +3,8 @@ import injectSheet from "react-jss";
 import Button from "../../components/Button";
 import { common, grey, lightBlue } from "../../utils/colours";
 
+const mobileBreakpoint = 800;
+
 const styles = {
   action: {
     marginLeft: 12
@@ -62,7 +64,10 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     boxShadow:
-      "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+      "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
+      width: props => (props.size === "medium" ? "50%" : "auto")
+    }
   },
   wrapper: {
     display: props => (props.isOpen ? "flex" : "none"),

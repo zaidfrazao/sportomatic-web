@@ -228,7 +228,9 @@ class TeamsLayout extends Component {
       isAdmin,
       navigateTo,
       goBack,
-      teamOptions
+      teamOptions,
+      userFirstName,
+      userLastName
     } = this.props;
     const { isAddTeamLoading } = this.props.loadingStatus;
     const {
@@ -315,6 +317,9 @@ class TeamsLayout extends Component {
           />
           <SeasonSetupDialog
             isOpen={isSeasonSetupDialogOpen}
+            userFirstName={userFirstName}
+            userLastName={userLastName}
+            people={staff}
             closeDialog={() => closeSeasonSetupDialog()}
           />
         </div>

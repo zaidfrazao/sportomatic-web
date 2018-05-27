@@ -364,7 +364,9 @@ class CoreInterfaceLayout extends Component {
     const isTablet = windowWidth < 1080;
 
     const communityRole = this.getRole();
-    const userName = `${accountInfo.info.name} ${accountInfo.info.surname}`;
+    const userFirstName = accountInfo.info.name;
+    const userLastName = accountInfo.info.surname;
+    const userName = `${userFirstName} ${userLastName}`;
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
     const sideMenuItems = this.getSideMenuItems();
@@ -613,6 +615,8 @@ class CoreInterfaceLayout extends Component {
                       teamOptions={teamOptions}
                       isAdmin={isAdmin}
                       userID={userID}
+                      userFirstName={userFirstName}
+                      userLastName={userLastName}
                       role={role}
                       sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
@@ -629,6 +633,8 @@ class CoreInterfaceLayout extends Component {
                       teamOptions={teamOptions}
                       isAdmin={isAdmin}
                       userID={userID}
+                      userFirstName={userFirstName}
+                      userLastName={userLastName}
                       role={role}
                       sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
@@ -645,6 +651,8 @@ class CoreInterfaceLayout extends Component {
                       teamOptions={teamOptions}
                       isAdmin={isAdmin}
                       userID={userID}
+                      userFirstName={userFirstName}
+                      userLastName={userLastName}
                       role={role}
                       sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}

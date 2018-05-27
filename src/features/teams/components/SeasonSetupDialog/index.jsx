@@ -254,6 +254,7 @@ const initialState = {
       email: "jane@doe.com"
     }
   ],
+  peopleOptions: [],
   roster: [],
   startDayOptions: [],
   endDayOptions: [],
@@ -263,6 +264,50 @@ const initialState = {
 
 class SeasonSetupDialog extends Component {
   state = initialState;
+
+  componentWillMount() {
+    const { userFirstName, userLastName } = this.props;
+
+    this.setState({
+      coaches: [
+        {
+          id: "default",
+          type: {
+            key: "ME",
+            label: "Me"
+          },
+          firstName: userFirstName,
+          lastName: userLastName,
+          email: "",
+          payment: {
+            type: {
+              key: "HOURLY",
+              label: "Paid per hour"
+            },
+            rates: {
+              standard: "100.00",
+              overtime: "150.00",
+              nonCompetitive: "250.00",
+              competitive: "500.00",
+              salary: "3000.00"
+            }
+          }
+        }
+      ],
+      managers: [
+        {
+          id: "default",
+          type: {
+            key: "ME",
+            label: "Me"
+          },
+          firstName: userFirstName,
+          lastName: userLastName,
+          email: ""
+        }
+      ]
+    });
+  }
 
   componentWillReceiveProps(nextProps) {
     const { isOpen } = nextProps;
@@ -657,7 +702,7 @@ class SeasonSetupDialog extends Component {
       managers: [
         ...managers,
         {
-          id: "",
+          id: "none",
           type: {
             key: "CURRENT",
             label: "Current community member"
@@ -681,7 +726,7 @@ class SeasonSetupDialog extends Component {
     });
   }
 
-  addCoaches() {
+  addCoach() {
     const { coaches } = this.state;
 
     this.setState({
@@ -695,7 +740,20 @@ class SeasonSetupDialog extends Component {
           },
           firstName: "",
           lastName: "",
-          email: ""
+          email: "",
+          payment: {
+            type: {
+              key: "HOURLY",
+              label: "Paid per hour"
+            },
+            rates: {
+              standard: "100.00",
+              overtime: "150.00",
+              nonCompetitive: "250.00",
+              competitive: "500.00",
+              salary: "3000.00"
+            }
+          }
         }
       ]
     });
@@ -1231,7 +1289,7 @@ class SeasonSetupDialog extends Component {
 
   getManagers() {
     const { classes } = this.props;
-    const { managers, dateErrors, allowMeManager } = this.state;
+    const { managers, dateErrors, allowMeManager, peopleOptions } = this.state;
 
     return managers.map((info, index) => {
       const headerText = this.getNameHeaderText(info);
@@ -1254,6 +1312,21 @@ class SeasonSetupDialog extends Component {
                 <Select items={typeOptions} selectedItem={info.type} />
               </div>
             </div>
+            {info.type.key !== "ME" && <div className={classes.divider} />}
+            {info.type.key === "CURRENT" && (
+              <div className={classes.timeInputGroupWrapper}>
+                <div className={classes.timeInputWrapper}>
+                  <Select
+                    items={peopleOptions}
+                    placeholder="Select person"
+                    selectedItem={{
+                      key: info.id,
+                      label: `${info.firstName} ${info.lastName}`
+                    }}
+                  />
+                </div>
+              </div>
+            )}
             {dateErrors.validation === "error" && (
               <div className={classes.errorWrapper}>{dateErrors.message}</div>
             )}
@@ -1576,6 +1649,7 @@ class SeasonSetupDialog extends Component {
     return (
       <Dialog
         isOpen={isOpen}
+        size="medium"
         heading="Set Up Season"
         actions={actions}
         hasSteps
