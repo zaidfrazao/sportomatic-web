@@ -86,7 +86,7 @@ class TeamCard extends Component {
                 colour="secondary"
                 filled
                 fullWidth
-                handleClick={() => setUpSeason()}
+                handleClick={() => setUpSeason(name, id)}
               >
                 Set up new season
               </Button>

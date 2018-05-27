@@ -66,7 +66,8 @@ const styles = {
     boxShadow:
       "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
     [`@media (min-width: ${mobileBreakpoint}px)`]: {
-      width: props => (props.size === "medium" ? "50%" : "auto")
+      width: props => (props.size === "medium" ? "60%" : "auto"),
+      height: props => (props.size === "medium" ? "60%" : "auto")
     }
   },
   wrapper: {

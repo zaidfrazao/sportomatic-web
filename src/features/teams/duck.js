@@ -66,7 +66,11 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 
 export const dialogsInitialState = {
   isAddTeamDialogOpen: false,
-  isSeasonSetupDialogOpen: false,
+  seasonSetupDialog: {
+    isOpen: false,
+    teamName: "",
+    teamID: ""
+  },
   isErrorAddingTeamAlertOpen: false,
   isEditTeamDialogOpen: false,
   isDeleteTeamAlertOpen: false,
@@ -91,12 +95,20 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
     case OPEN_SEASON_SETUP_DIALOG:
       return {
         ...state,
-        isSeasonSetupDialogOpen: true
+        seasonSetupDialog: {
+          isOpen: true,
+          teamName: action.payload.teamName,
+          teamID: action.payload.teamID
+        }
       };
     case CLOSE_SEASON_SETUP_DIALOG:
       return {
         ...state,
-        isSeasonSetupDialogOpen: false
+        seasonSetupDialog: {
+          isOpen: false,
+          teamName: "",
+          teamID: ""
+        }
       };
     case OPEN_ADD_TEAM_DIALOG:
       return {
@@ -341,9 +353,13 @@ export function closeTeamErrorAlert() {
   };
 }
 
-export function openSeasonSetupDialog() {
+export function openSeasonSetupDialog(teamName, teamID) {
   return {
-    type: OPEN_SEASON_SETUP_DIALOG
+    type: OPEN_SEASON_SETUP_DIALOG,
+    payload: {
+      teamName,
+      teamID
+    }
   };
 }
 

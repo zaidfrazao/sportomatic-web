@@ -229,6 +229,7 @@ class TeamsLayout extends Component {
       navigateTo,
       goBack,
       teamOptions,
+      userID,
       userFirstName,
       userLastName
     } = this.props;
@@ -241,7 +242,7 @@ class TeamsLayout extends Component {
       closeSeasonSetupDialog,
       addTeam
     } = this.props.actions;
-    const { isAddTeamDialogOpen, isSeasonSetupDialogOpen } = this.props.dialogs;
+    const { isAddTeamDialogOpen, seasonSetupDialog } = this.props.dialogs;
     const { teamID, infoTab } = this.props.match.params;
 
     const ad = this.createAd();
@@ -294,7 +295,7 @@ class TeamsLayout extends Component {
               teams={filteredTeams}
               isUserAdmin={isAdmin}
               hasTeamsCreated={hasTeamsCreated}
-              setUpSeason={() => openSeasonSetupDialog()}
+              setUpSeason={(name, id) => openSeasonSetupDialog(name, id)}
               navigateTo={navigateTo}
             />
           </div>
@@ -316,7 +317,9 @@ class TeamsLayout extends Component {
             }}
           />
           <SeasonSetupDialog
-            isOpen={isSeasonSetupDialogOpen}
+            isOpen={seasonSetupDialog.isOpen}
+            teamName={seasonSetupDialog.teamName}
+            userID={userID}
             userFirstName={userFirstName}
             userLastName={userLastName}
             people={staff}

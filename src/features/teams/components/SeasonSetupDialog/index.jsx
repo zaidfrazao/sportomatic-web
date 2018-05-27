@@ -10,6 +10,8 @@ import TextField from "../../../../components/TextField";
 
 const styles = {
   addWrapper: {
+    maxWidth: 398,
+    margin: "8px auto",
     transition: "0.25s",
     textAlign: "center",
     fontSize: 14,
@@ -18,7 +20,6 @@ const styles = {
     color: grey[300],
     cursor: "pointer",
     padding: 12,
-    margin: 8,
     "&:hover": {
       border: `2px solid ${grey[400]}`,
       color: grey[400]
@@ -46,8 +47,8 @@ const styles = {
     fontWeight: "bold",
     textAlign: "center",
     padding: 12,
-    borderRadius: 8,
-    margin: 12
+    marginTop: 12,
+    borderRadius: 8
   },
   headingTime: {
     marginBottom: 12,
@@ -101,7 +102,8 @@ const styles = {
     color: grey[800]
   },
   sectionWrapper: {
-    margin: "24px 0",
+    maxWidth: 420,
+    margin: "24px auto",
     textAlign: "center",
     borderRadius: 16,
     backgroundColor: grey[100],
@@ -239,7 +241,10 @@ const initialState = {
           competitive: "500.00",
           salary: "3000.00"
         }
-      }
+      },
+      errorAt: "",
+      validation: "default",
+      message: ""
     }
   ],
   managers: [
@@ -251,7 +256,10 @@ const initialState = {
       },
       firstName: "Jane",
       lastName: "Doe",
-      email: "jane@doe.com"
+      email: "jane@doe.com",
+      errorAt: "",
+      validation: "default",
+      message: ""
     }
   ],
   peopleOptions: [],
@@ -266,9 +274,12 @@ class SeasonSetupDialog extends Component {
   state = initialState;
 
   componentWillMount() {
-    const { userFirstName, userLastName } = this.props;
+    const { userID, userFirstName, userLastName, people } = this.props;
+
+    const peopleOptions = this.getPeopleOptions(people);
 
     this.setState({
+      peopleOptions,
       coaches: [
         {
           id: "default",
@@ -291,26 +302,34 @@ class SeasonSetupDialog extends Component {
               competitive: "500.00",
               salary: "3000.00"
             }
-          }
+          },
+          errorAt: "",
+          validation: "default",
+          message: ""
         }
       ],
       managers: [
         {
-          id: "default",
+          id: userID,
           type: {
             key: "ME",
             label: "Me"
           },
           firstName: userFirstName,
           lastName: userLastName,
-          email: ""
+          email: "",
+          errorAt: "",
+          validation: "default",
+          message: ""
         }
       ]
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { isOpen } = nextProps;
+    const { isOpen, people } = nextProps;
+
+    let stateUpdates = {};
 
     if (isOpen !== this.props.isOpen) {
       if (isOpen) {
@@ -318,11 +337,15 @@ class SeasonSetupDialog extends Component {
         const initialEndDate = moment().add(2, "months");
 
         const startDayOptions = this.getDayOptions(
-          initialStartDate.daysInMonth()
+          initialStartDate.daysInMonth(),
+          true
         );
-        const endDayOptions = this.getDayOptions(initialEndDate.daysInMonth());
+        const endDayOptions = this.getDayOptions(
+          initialEndDate.daysInMonth(),
+          false
+        );
 
-        this.setState({
+        stateUpdates = {
           startDayOptions,
           endDayOptions,
           startDate: {
@@ -353,26 +376,72 @@ class SeasonSetupDialog extends Component {
               label: initialEndDate.format("YYYY")
             }
           }
-        });
+        };
       } else {
-        this.setState(initialState);
+        stateUpdates = initialState;
       }
     }
+
+    if (people !== this.props.people) {
+      const peopleOptions = this.getPeopleOptions(people);
+
+      stateUpdates = {
+        ...stateUpdates,
+        peopleOptions
+      };
+    }
+
+    this.setState(stateUpdates);
   }
 
-  getDayOptions(numberOfDays) {
-    return Array(numberOfDays)
-      .fill(1)
-      .map((value, index) => {
-        const day = index + 1;
+  getPeopleOptions(people) {
+    const { userID } = this.props;
+
+    return _.toPairs(people)
+      .filter(([personID, personInfo]) => personID !== userID)
+      .sort((personA, personB) => {
+        if (personA[1].info.name > personB[1].info.name) return +1;
+        if (personA[1].info.name < personB[1].info.name) return -1;
+        if (personA[1].info.surname > personB[1].info.surname) return +1;
+        if (personA[1].info.surname < personB[1].info.surname) return -1;
+        return 0;
+      })
+      .map(([personID, personInfo]) => {
         return {
-          key: day.toLocaleString("en-US", { minimumIntegerDigits: 2 }),
-          label: day.toLocaleString("en-US", { minimumIntegerDigits: 2 })
+          key: personID,
+          label: `${personInfo.info.name} ${personInfo.info.surname}`
         };
       });
   }
 
-  getMonthOptions() {
+  getDayOptions(numberOfDays, isThisMonth) {
+    const currentDay = moment().date();
+
+    if (isThisMonth) {
+      return Array(numberOfDays - currentDay)
+        .fill(1)
+        .map((value, index) => {
+          const day = currentDay + index;
+          return {
+            key: day.toLocaleString("en-US", { minimumIntegerDigits: 2 }),
+            label: day.toLocaleString("en-US", { minimumIntegerDigits: 2 })
+          };
+        });
+    } else {
+      return Array(numberOfDays)
+        .fill(1)
+        .map((value, index) => {
+          const day = index + 1;
+          return {
+            key: day.toLocaleString("en-US", { minimumIntegerDigits: 2 }),
+            label: day.toLocaleString("en-US", { minimumIntegerDigits: 2 })
+          };
+        });
+    }
+  }
+
+  getMonthOptions(isThisYear) {
+    const currentMonth = moment().month();
     const months = [
       "Jan",
       "Feb",
@@ -388,12 +457,25 @@ class SeasonSetupDialog extends Component {
       "Dec"
     ];
 
-    return months.map((month, index) => {
-      return {
-        key: (index + 1).toLocaleString("en-US", { minimumIntegerDigits: 2 }),
-        label: month
-      };
-    });
+    if (isThisYear) {
+      return months
+        .filter((month, index) => index >= currentMonth)
+        .map((month, index) => {
+          return {
+            key: (currentMonth + index + 1).toLocaleString("en-US", {
+              minimumIntegerDigits: 2
+            }),
+            label: month
+          };
+        });
+    } else {
+      return months.map((month, index) => {
+        return {
+          key: (index + 1).toLocaleString("en-US", { minimumIntegerDigits: 2 }),
+          label: month
+        };
+      });
+    }
   }
 
   getYearOptions() {
@@ -432,11 +514,18 @@ class SeasonSetupDialog extends Component {
         "MM-YYYY"
       );
       const daysInNewMonth = newDateMoment.daysInMonth();
-      const startDayOptions = this.getDayOptions(daysInNewMonth);
+      const isThisMonth =
+        newDateMoment.format("MM-YYYY") === moment().format("MM-YYYY");
+      const startDayOptions = this.getDayOptions(daysInNewMonth, isThisMonth);
       const currentDaySelected = parseInt(startDate.day.key, 10);
 
       let newDay = startDate.day;
-      if (currentDaySelected > daysInNewMonth) {
+      if (isThisMonth && currentDaySelected < moment().date()) {
+        newDay = {
+          key: moment().format("DD"),
+          label: moment().format("DD")
+        };
+      } else if (currentDaySelected > daysInNewMonth) {
         newDay = {
           key: moment(newDateMoment)
             .endOf("month")
@@ -461,11 +550,18 @@ class SeasonSetupDialog extends Component {
         "MM-YYYY"
       );
       const daysInNewMonth = newDateMoment.daysInMonth();
-      const startDayOptions = this.getDayOptions(daysInNewMonth);
+      const isThisMonth =
+        newDateMoment.format("MM-YYYY") === moment().format("MM-YYYY");
+      const startDayOptions = this.getDayOptions(daysInNewMonth, isThisMonth);
       const currentDaySelected = parseInt(startDate.day.key, 10);
 
       let newDay = startDate.day;
-      if (currentDaySelected > daysInNewMonth) {
+      if (isThisMonth && currentDaySelected < moment().date()) {
+        newDay = {
+          key: moment().format("DD"),
+          label: moment().format("DD")
+        };
+      } else if (currentDaySelected > daysInNewMonth) {
         newDay = {
           key: moment(newDateMoment)
             .endOf("month")
@@ -503,11 +599,18 @@ class SeasonSetupDialog extends Component {
         "MM-YYYY"
       );
       const daysInNewMonth = newDateMoment.daysInMonth();
-      const endDayOptions = this.getDayOptions(daysInNewMonth);
+      const isThisMonth =
+        newDateMoment.format("MM-YYYY") === moment().format("MM-YYYY");
+      const endDayOptions = this.getDayOptions(daysInNewMonth, isThisMonth);
       const currentDaySelected = parseInt(endDate.day.key, 10);
 
       let newDay = endDate.day;
-      if (currentDaySelected > daysInNewMonth) {
+      if (isThisMonth && currentDaySelected < moment().date()) {
+        newDay = {
+          key: moment().format("DD"),
+          label: moment().format("DD")
+        };
+      } else if (currentDaySelected > daysInNewMonth) {
         newDay = {
           key: moment(newDateMoment)
             .endOf("month")
@@ -532,11 +635,18 @@ class SeasonSetupDialog extends Component {
         "MM-YYYY"
       );
       const daysInNewMonth = newDateMoment.daysInMonth();
-      const endDayOptions = this.getDayOptions(daysInNewMonth);
+      const isThisMonth =
+        newDateMoment.format("MM-YYYY") === moment().format("MM-YYYY");
+      const endDayOptions = this.getDayOptions(daysInNewMonth, isThisMonth);
       const currentDaySelected = parseInt(endDate.day.key, 10);
 
       let newDay = endDate.day;
-      if (currentDaySelected > daysInNewMonth) {
+      if (isThisMonth && currentDaySelected < moment().date()) {
+        newDay = {
+          key: moment().format("DD"),
+          label: moment().format("DD")
+        };
+      } else if (currentDaySelected > daysInNewMonth) {
         newDay = {
           key: moment(newDateMoment)
             .endOf("month")
@@ -575,7 +685,11 @@ class SeasonSetupDialog extends Component {
       endDayOptions
     } = this.state;
 
-    const monthOptions = this.getMonthOptions();
+    const isStartDateThisYear =
+      startDate.year.label === moment().format("YYYY");
+    const startMonthOptions = this.getMonthOptions(isStartDateThisYear);
+    const isEndDateThisYear = endDate.year.label === moment().format("YYYY");
+    const endMonthOptions = this.getMonthOptions(isEndDateThisYear);
     const yearOptions = this.getYearOptions();
 
     return (
@@ -596,7 +710,7 @@ class SeasonSetupDialog extends Component {
               <div className={classes.timeInputWrapper}>
                 <Select
                   selectedItem={startDate.month}
-                  items={monthOptions}
+                  items={startMonthOptions}
                   validation={dateErrors.validation}
                   handleChange={(key, label) =>
                     this.updateStartDate({ key, label }, "month")}
@@ -626,7 +740,7 @@ class SeasonSetupDialog extends Component {
               <div className={classes.timeInputWrapper}>
                 <Select
                   selectedItem={endDate.month}
-                  items={monthOptions}
+                  items={endMonthOptions}
                   validation={dateErrors.validation}
                   handleChange={(key, label) =>
                     this.updateEndDate({ key, label }, "month")}
@@ -709,7 +823,10 @@ class SeasonSetupDialog extends Component {
           },
           firstName: "",
           lastName: "",
-          email: ""
+          email: "",
+          errorAt: "",
+          validation: "default",
+          message: ""
         }
       ]
     });
@@ -733,7 +850,7 @@ class SeasonSetupDialog extends Component {
       coaches: [
         ...coaches,
         {
-          id: "",
+          id: "none",
           type: {
             key: "CURRENT",
             label: "Current community member"
@@ -753,7 +870,10 @@ class SeasonSetupDialog extends Component {
               competitive: "500.00",
               salary: "3000.00"
             }
-          }
+          },
+          errorAt: "",
+          validation: "default",
+          message: ""
         }
       ]
     });
@@ -1287,6 +1407,97 @@ class SeasonSetupDialog extends Component {
     }
   }
 
+  updateManagerType(changeIndex, newValue) {
+    const { userID, userFirstName, userLastName } = this.props;
+    const { managers } = this.state;
+
+    if (newValue.key === "ME") {
+      this.setState({
+        managers: managers.map((value, index) => {
+          if (index === changeIndex) {
+            return {
+              id: userID,
+              type: newValue,
+              firstName: userFirstName,
+              lastName: userLastName,
+              email: "",
+              errorAt: "",
+              validation: "default",
+              message: ""
+            };
+          } else {
+            return value;
+          }
+        }),
+        allowMeManager: false
+      });
+    } else {
+      this.setState({
+        managers: managers.map((value, index) => {
+          if (index === changeIndex) {
+            return {
+              id: "none",
+              type: newValue,
+              firstName: "",
+              lastName: "",
+              email: "",
+              errorAt: "",
+              validation: "default",
+              message: ""
+            };
+          } else {
+            return value;
+          }
+        }),
+        allowMeManager: true
+      });
+    }
+  }
+
+  selectNewManager(id, changeIndex) {
+    const { people } = this.props;
+    const { managers } = this.state;
+
+    this.setState({
+      managers: managers.map((value, index) => {
+        if (index === changeIndex) {
+          return {
+            id,
+            type: {
+              key: "CURRENT",
+              label: "Current community member"
+            },
+            firstName: people[id].info.name,
+            lastName: people[id].info.surname,
+            email: people[id].info.email,
+            errorAt: "",
+            validation: "default",
+            message: ""
+          };
+        } else {
+          return value;
+        }
+      })
+    });
+  }
+
+  updateManagerInfo(changeIndex, type, newValue) {
+    const { managers } = this.state;
+
+    this.setState({
+      managers: managers.map((value, index) => {
+        if (index === changeIndex) {
+          return {
+            ...value,
+            [type]: newValue
+          };
+        } else {
+          return value;
+        }
+      })
+    });
+  }
+
   getManagers() {
     const { classes } = this.props;
     const { managers, dateErrors, allowMeManager, peopleOptions } = this.state;
@@ -1299,7 +1510,7 @@ class SeasonSetupDialog extends Component {
         <div key={`managers-${info.id}`} className={classes.sectionWrapper}>
           <div className={classes.sectionHeader}>
             <div>{headerText}</div>
-            {index !== 0 && (
+            {managers.length !== 1 && (
               <i
                 className={`fas fa-times ${classes.sectionHeaderIcon}`}
                 onClick={() => this.removeManager(index)}
@@ -1309,7 +1520,12 @@ class SeasonSetupDialog extends Component {
           <div className={classes.sectionContent}>
             <div className={classes.timeInputGroupWrapper}>
               <div className={classes.timeInputWrapper}>
-                <Select items={typeOptions} selectedItem={info.type} />
+                <Select
+                  items={typeOptions}
+                  selectedItem={info.type}
+                  handleChange={(key, label) =>
+                    this.updateManagerType(index, { key, label })}
+                />
               </div>
             </div>
             {info.type.key !== "ME" && <div className={classes.divider} />}
@@ -1323,6 +1539,44 @@ class SeasonSetupDialog extends Component {
                       key: info.id,
                       label: `${info.firstName} ${info.lastName}`
                     }}
+                    handleChange={(key, label) =>
+                      this.selectNewManager(key, index)}
+                  />
+                </div>
+              </div>
+            )}
+            {info.type.key === "NEW" && (
+              <div className={classes.timeInputGroupWrapper}>
+                <div className={classes.timeInputWrapper}>
+                  <TextField
+                    placeholder="First name"
+                    value={info.firstName}
+                    handleChange={newValue =>
+                      this.updateManagerInfo(index, "firstName", newValue)}
+                  />
+                </div>
+              </div>
+            )}
+            {info.type.key === "NEW" && (
+              <div className={classes.timeInputGroupWrapper}>
+                <div className={classes.timeInputWrapper}>
+                  <TextField
+                    placeholder="Last name"
+                    value={info.lastName}
+                    handleChange={newValue =>
+                      this.updateManagerInfo(index, "lastName", newValue)}
+                  />
+                </div>
+              </div>
+            )}
+            {info.type.key === "NEW" && (
+              <div className={classes.timeInputGroupWrapper}>
+                <div className={classes.timeInputWrapper}>
+                  <TextField
+                    placeholder="Email"
+                    value={info.email}
+                    handleChange={newValue =>
+                      this.updateManagerInfo(index, "email", newValue)}
                   />
                 </div>
               </div>
@@ -1416,9 +1670,139 @@ class SeasonSetupDialog extends Component {
     });
   }
 
+  updateCoachType(changeIndex, newValue) {
+    const { userID, userFirstName, userLastName } = this.props;
+    const { coaches } = this.state;
+
+    if (newValue.key === "ME") {
+      this.setState({
+        coaches: coaches.map((value, index) => {
+          if (index === changeIndex) {
+            return {
+              id: userID,
+              type: newValue,
+              firstName: userFirstName,
+              lastName: userLastName,
+              email: "",
+              payment: {
+                type: {
+                  key: "HOURLY",
+                  label: "Paid per hour"
+                },
+                rates: {
+                  standard: "100.00",
+                  overtime: "150.00",
+                  competitive: "250.00",
+                  nonCompetitive: "500.00",
+                  salary: "3000.00"
+                }
+              },
+              errorAt: "",
+              validation: "default",
+              message: ""
+            };
+          } else {
+            return value;
+          }
+        }),
+        allowMeCoach: false
+      });
+    } else {
+      this.setState({
+        coaches: coaches.map((value, index) => {
+          if (index === changeIndex) {
+            return {
+              id: "none",
+              type: newValue,
+              firstName: "",
+              lastName: "",
+              email: "",
+              payment: {
+                type: {
+                  key: "HOURLY",
+                  label: "Paid per hour"
+                },
+                rates: {
+                  standard: "100.00",
+                  overtime: "150.00",
+                  competitive: "250.00",
+                  nonCompetitive: "500.00",
+                  salary: "3000.00"
+                }
+              },
+              errorAt: "",
+              validation: "default",
+              message: ""
+            };
+          } else {
+            return value;
+          }
+        }),
+        allowMeCoach: true
+      });
+    }
+  }
+
+  selectNewCoach(id, changeIndex) {
+    const { people } = this.props;
+    const { coaches } = this.state;
+
+    this.setState({
+      coaches: coaches.map((value, index) => {
+        if (index === changeIndex) {
+          return {
+            id,
+            type: {
+              key: "CURRENT",
+              label: "Current community member"
+            },
+            firstName: people[id].info.name,
+            lastName: people[id].info.surname,
+            email: people[id].info.email,
+            payment: {
+              type: {
+                key: "HOURLY",
+                label: "Paid per hour"
+              },
+              rates: {
+                standard: "100.00",
+                overtime: "150.00",
+                competitive: "250.00",
+                nonCompetitive: "500.00",
+                salary: "3000.00"
+              }
+            },
+            errorAt: "",
+            validation: "default",
+            message: ""
+          };
+        } else {
+          return value;
+        }
+      })
+    });
+  }
+
+  updateCoachInfo(changeIndex, type, newValue) {
+    const { coaches } = this.state;
+
+    this.setState({
+      coaches: coaches.map((value, index) => {
+        if (index === changeIndex) {
+          return {
+            ...value,
+            [type]: newValue
+          };
+        } else {
+          return value;
+        }
+      })
+    });
+  }
+
   getCoaches() {
     const { classes } = this.props;
-    const { coaches, dateErrors, allowMeCoach } = this.state;
+    const { coaches, dateErrors, allowMeCoach, peopleOptions } = this.state;
 
     const paymentOptions = this.getPaymentOptions();
 
@@ -1430,7 +1814,7 @@ class SeasonSetupDialog extends Component {
         <div key={`coaches-${info.id}`} className={classes.sectionWrapper}>
           <div className={classes.sectionHeader}>
             <div>{headerText}</div>
-            {index !== 0 && (
+            {coaches.length !== 1 && (
               <i
                 className={`fas fa-times ${classes.sectionHeaderIcon}`}
                 onClick={() => this.removeCoach(index)}
@@ -1440,9 +1824,67 @@ class SeasonSetupDialog extends Component {
           <div className={classes.sectionContent}>
             <div className={classes.timeInputGroupWrapper}>
               <div className={classes.timeInputWrapper}>
-                <Select items={typeOptions} selectedItem={info.type} />
+                <Select
+                  items={typeOptions}
+                  selectedItem={info.type}
+                  handleChange={(key, label) =>
+                    this.updateCoachType(index, { key, label })}
+                />
               </div>
             </div>
+            {info.type.key !== "ME" && <div className={classes.divider} />}
+            {info.type.key === "CURRENT" && (
+              <div className={classes.timeInputGroupWrapper}>
+                <div className={classes.timeInputWrapper}>
+                  <Select
+                    items={peopleOptions}
+                    placeholder="Select person"
+                    selectedItem={{
+                      key: info.id,
+                      label: `${info.firstName} ${info.lastName}`
+                    }}
+                    handleChange={(key, label) =>
+                      this.selectNewCoach(key, index)}
+                  />
+                </div>
+              </div>
+            )}
+            {info.type.key === "NEW" && (
+              <div className={classes.timeInputGroupWrapper}>
+                <div className={classes.timeInputWrapper}>
+                  <TextField
+                    placeholder="First name"
+                    value={info.firstName}
+                    handleChange={newValue =>
+                      this.updateCoachInfo(index, "firstName", newValue)}
+                  />
+                </div>
+              </div>
+            )}
+            {info.type.key === "NEW" && (
+              <div className={classes.timeInputGroupWrapper}>
+                <div className={classes.timeInputWrapper}>
+                  <TextField
+                    placeholder="Last name"
+                    value={info.lastName}
+                    handleChange={newValue =>
+                      this.updateCoachInfo(index, "lastName", newValue)}
+                  />
+                </div>
+              </div>
+            )}
+            {info.type.key === "NEW" && (
+              <div className={classes.timeInputGroupWrapper}>
+                <div className={classes.timeInputWrapper}>
+                  <TextField
+                    placeholder="Email"
+                    value={info.email}
+                    handleChange={newValue =>
+                      this.updateCoachInfo(index, "email", newValue)}
+                  />
+                </div>
+              </div>
+            )}
             <div className={classes.divider} />
             <div className={classes.timeInputGroupWrapper}>
               <div className={classes.timeInputWrapper}>
@@ -1573,6 +2015,39 @@ class SeasonSetupDialog extends Component {
     );
   }
 
+  validateDates() {
+    const { startDate, endDate } = this.state;
+
+    let isValid = true;
+    let newState = {};
+
+    const startDateMoment = moment(
+      `${startDate.day.label}-${startDate.month.label}-${startDate.year.label}`,
+      "DD-MMM-YYYY"
+    );
+    const endDateMoment = moment(
+      `${endDate.day.label}-${endDate.month.label}-${endDate.year.label}`,
+      "DD-MMM-YYYY"
+    );
+
+    if (!endDateMoment.isAfter(startDateMoment)) {
+      isValid = false;
+      newState.dateErrors = {
+        validation: "error",
+        message: "Start date must be before end date"
+      };
+    } else {
+      newState.dateErrors = {
+        validation: "default",
+        message: ""
+      };
+    }
+
+    this.setState(newState);
+
+    return isValid;
+  }
+
   getActionButtons() {
     const { closeDialog } = this.props;
     const { step } = this.state;
@@ -1587,7 +2062,10 @@ class SeasonSetupDialog extends Component {
             colour="primary"
             filled
             slim
-            handleClick={() => this.nextStep()}
+            handleClick={() => {
+              const isValid = this.validateDates();
+              isValid && this.nextStep();
+            }}
           >
             Next
           </Button>
@@ -1619,7 +2097,7 @@ class SeasonSetupDialog extends Component {
   }
 
   render() {
-    const { isOpen } = this.props;
+    const { isOpen, teamName } = this.props;
     const { step } = this.state;
 
     const actions = this.getActionButtons();
@@ -1650,7 +2128,7 @@ class SeasonSetupDialog extends Component {
       <Dialog
         isOpen={isOpen}
         size="medium"
-        heading="Set Up Season"
+        heading={`Set Up Season for ${teamName}`}
         actions={actions}
         hasSteps
         numberOfSteps={5}
