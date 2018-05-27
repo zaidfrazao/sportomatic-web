@@ -230,17 +230,22 @@ class TeamsLayout extends Component {
       goBack,
       teamOptions,
       userID,
+      userEmail,
       userFirstName,
       userLastName
     } = this.props;
-    const { isAddTeamLoading } = this.props.loadingStatus;
+    const {
+      isAddTeamLoading,
+      isCreateSeasonLoading
+    } = this.props.loadingStatus;
     const {
       openAddTeamDialog,
       closeAddTeamDialog,
       openEditTeamDialog,
       openSeasonSetupDialog,
       closeSeasonSetupDialog,
-      addTeam
+      addTeam,
+      createSeason
     } = this.props.actions;
     const { isAddTeamDialogOpen, seasonSetupDialog } = this.props.dialogs;
     const { teamID, infoTab } = this.props.match.params;
@@ -320,10 +325,20 @@ class TeamsLayout extends Component {
             isOpen={seasonSetupDialog.isOpen}
             teamName={seasonSetupDialog.teamName}
             userID={userID}
+            userEmail={userEmail}
             userFirstName={userFirstName}
             userLastName={userLastName}
             people={staff}
             closeDialog={() => closeSeasonSetupDialog()}
+            isLoading={isCreateSeasonLoading}
+            createSeason={seasonInfo =>
+              createSeason(
+                seasonSetupDialog.teamID,
+                activeInstitutionID,
+                userID,
+                `${userFirstName} ${userLastName}`,
+                seasonInfo
+              )}
           />
         </div>
       );

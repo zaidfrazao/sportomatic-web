@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
@@ -5,6 +6,7 @@ import moment from "moment";
 import Button from "../../../../components/Button";
 import { common, grey, lightBlue, red } from "../../../../utils/colours";
 import Dialog from "../../../../components/Dialog";
+import { isValidEmail } from "../../../../utils/validation";
 import Select from "../../../../components/Select";
 import TextField from "../../../../components/TextField";
 
@@ -273,7 +275,13 @@ class SeasonSetupDialog extends Component {
   state = initialState;
 
   componentWillMount() {
-    const { userID, userFirstName, userLastName, people } = this.props;
+    const {
+      userID,
+      userEmail,
+      userFirstName,
+      userLastName,
+      people
+    } = this.props;
 
     const peopleOptions = this.getPeopleOptions(people);
 
@@ -281,14 +289,14 @@ class SeasonSetupDialog extends Component {
       peopleOptions,
       coaches: [
         {
-          id: "default",
+          id: userID,
           type: {
             key: "ME",
             label: "Me"
           },
           firstName: userFirstName,
           lastName: userLastName,
-          email: "",
+          email: userEmail,
           payment: {
             type: {
               key: "HOURLY",
@@ -316,7 +324,7 @@ class SeasonSetupDialog extends Component {
           },
           firstName: userFirstName,
           lastName: userLastName,
-          email: "",
+          email: userEmail,
           errorAt: "",
           validation: "default",
           message: ""
@@ -1428,7 +1436,7 @@ class SeasonSetupDialog extends Component {
   }
 
   updateManagerType(changeIndex, newValue) {
-    const { userID, userFirstName, userLastName } = this.props;
+    const { userID, userEmail, userFirstName, userLastName } = this.props;
     const { managers } = this.state;
 
     if (newValue.key === "ME") {
@@ -1440,7 +1448,7 @@ class SeasonSetupDialog extends Component {
               type: newValue,
               firstName: userFirstName,
               lastName: userLastName,
-              email: "",
+              email: userEmail,
               errorAt: "",
               validation: "default",
               message: ""
@@ -1520,7 +1528,7 @@ class SeasonSetupDialog extends Component {
 
   getManagers() {
     const { classes } = this.props;
-    const { managers, dateErrors, allowMeManager, peopleOptions } = this.state;
+    const { managers, allowMeManager, peopleOptions } = this.state;
 
     return managers.map((info, index) => {
       const headerText = this.getNameHeaderText(info);
@@ -1559,6 +1567,9 @@ class SeasonSetupDialog extends Component {
                       key: info.id,
                       label: `${info.firstName} ${info.lastName}`
                     }}
+                    validation={
+                      info.errorAt === "personSelect" ? "error" : "default"
+                    }
                     handleChange={(key, label) =>
                       this.selectNewManager(key, index)}
                   />
@@ -1571,6 +1582,9 @@ class SeasonSetupDialog extends Component {
                   <TextField
                     placeholder="First name"
                     value={info.firstName}
+                    validation={
+                      info.errorAt === "firstName" ? "error" : "default"
+                    }
                     handleChange={newValue =>
                       this.updateManagerInfo(index, "firstName", newValue)}
                   />
@@ -1583,6 +1597,9 @@ class SeasonSetupDialog extends Component {
                   <TextField
                     placeholder="Last name"
                     value={info.lastName}
+                    validation={
+                      info.errorAt === "lastName" ? "error" : "default"
+                    }
                     handleChange={newValue =>
                       this.updateManagerInfo(index, "lastName", newValue)}
                   />
@@ -1595,14 +1612,15 @@ class SeasonSetupDialog extends Component {
                   <TextField
                     placeholder="Email"
                     value={info.email}
+                    validation={info.errorAt === "email" ? "error" : "default"}
                     handleChange={newValue =>
                       this.updateManagerInfo(index, "email", newValue)}
                   />
                 </div>
               </div>
             )}
-            {dateErrors.validation === "error" && (
-              <div className={classes.errorWrapper}>{dateErrors.message}</div>
+            {info.validation === "error" && (
+              <div className={classes.errorWrapper}>{info.message}</div>
             )}
           </div>
         </div>
@@ -1693,7 +1711,7 @@ class SeasonSetupDialog extends Component {
   }
 
   updateCoachType(changeIndex, newValue) {
-    const { userID, userFirstName, userLastName } = this.props;
+    const { userID, userEmail, userFirstName, userLastName } = this.props;
     const { coaches } = this.state;
 
     if (newValue.key === "ME") {
@@ -1705,7 +1723,7 @@ class SeasonSetupDialog extends Component {
               type: newValue,
               firstName: userFirstName,
               lastName: userLastName,
-              email: "",
+              email: userEmail,
               payment: {
                 type: {
                   key: "HOURLY",
@@ -1824,7 +1842,7 @@ class SeasonSetupDialog extends Component {
 
   getCoaches() {
     const { classes } = this.props;
-    const { coaches, dateErrors, allowMeCoach, peopleOptions } = this.state;
+    const { coaches, allowMeCoach, peopleOptions } = this.state;
 
     const paymentOptions = this.getPaymentOptions();
 
@@ -1865,6 +1883,9 @@ class SeasonSetupDialog extends Component {
                       key: info.id,
                       label: `${info.firstName} ${info.lastName}`
                     }}
+                    validation={
+                      info.errorAt === "personSelect" ? "error" : "default"
+                    }
                     handleChange={(key, label) =>
                       this.selectNewCoach(key, index)}
                   />
@@ -1877,6 +1898,9 @@ class SeasonSetupDialog extends Component {
                   <TextField
                     placeholder="First name"
                     value={info.firstName}
+                    validation={
+                      info.errorAt === "firstName" ? "error" : "default"
+                    }
                     handleChange={newValue =>
                       this.updateCoachInfo(index, "firstName", newValue)}
                   />
@@ -1889,6 +1913,9 @@ class SeasonSetupDialog extends Component {
                   <TextField
                     placeholder="Last name"
                     value={info.lastName}
+                    validation={
+                      info.errorAt === "lastName" ? "error" : "default"
+                    }
                     handleChange={newValue =>
                       this.updateCoachInfo(index, "lastName", newValue)}
                   />
@@ -1901,6 +1928,7 @@ class SeasonSetupDialog extends Component {
                   <TextField
                     placeholder="Email"
                     value={info.email}
+                    validation={info.errorAt === "email" ? "error" : "default"}
                     handleChange={newValue =>
                       this.updateCoachInfo(index, "email", newValue)}
                   />
@@ -1926,12 +1954,15 @@ class SeasonSetupDialog extends Component {
                 <div className={classes.timeInputWrapper}>
                   <TextField
                     type="number"
-                    placeholder="0.00"
+                    placeholder=""
                     value={info.payment.rates.standard}
                     handleChange={newValue =>
                       this.updatePaymentAmount(index, "standard", newValue)}
                     step={10}
                     max={1000}
+                    validation={
+                      info.errorAt === "standard" ? "error" : "default"
+                    }
                   />
                 </div>
               </div>
@@ -1944,12 +1975,15 @@ class SeasonSetupDialog extends Component {
                 <div className={classes.timeInputWrapper}>
                   <TextField
                     type="number"
-                    placeholder="0.00"
+                    placeholder=""
                     value={info.payment.rates.overtime}
                     handleChange={newValue =>
                       this.updatePaymentAmount(index, "overtime", newValue)}
                     step={10}
                     max={1000}
+                    validation={
+                      info.errorAt === "overtime" ? "error" : "default"
+                    }
                   />
                 </div>
               </div>
@@ -1962,7 +1996,7 @@ class SeasonSetupDialog extends Component {
                 <div className={classes.timeInputWrapper}>
                   <TextField
                     type="number"
-                    placeholder="0.00"
+                    placeholder=""
                     value={info.payment.rates.nonCompetitive}
                     handleChange={newValue =>
                       this.updatePaymentAmount(
@@ -1972,6 +2006,9 @@ class SeasonSetupDialog extends Component {
                       )}
                     step={10}
                     max={10000}
+                    validation={
+                      info.errorAt === "nonCompetitive" ? "error" : "default"
+                    }
                   />
                 </div>
               </div>
@@ -1984,12 +2021,15 @@ class SeasonSetupDialog extends Component {
                 <div className={classes.timeInputWrapper}>
                   <TextField
                     type="number"
-                    placeholder="0.00"
+                    placeholder=""
                     value={info.payment.rates.competitive}
                     handleChange={newValue =>
                       this.updatePaymentAmount(index, "competitive", newValue)}
                     step={10}
                     max={10000}
+                    validation={
+                      info.errorAt === "competitive" ? "error" : "default"
+                    }
                   />
                 </div>
               </div>
@@ -2002,18 +2042,19 @@ class SeasonSetupDialog extends Component {
                 <div className={classes.timeInputWrapper}>
                   <TextField
                     type="number"
-                    placeholder="0.00"
+                    placeholder=""
                     value={info.payment.rates.salary}
                     handleChange={newValue =>
                       this.updatePaymentAmount(index, "salary", newValue)}
                     step={500}
                     max={1000000}
+                    validation={info.errorAt === "salary" ? "error" : "default"}
                   />
                 </div>
               </div>
             )}
-            {dateErrors.validation === "error" && (
-              <div className={classes.errorWrapper}>{dateErrors.message}</div>
+            {info.validation === "error" && (
+              <div className={classes.errorWrapper}>{info.message}</div>
             )}
           </div>
         </div>
@@ -2252,8 +2293,477 @@ class SeasonSetupDialog extends Component {
     return isValid;
   }
 
+  validateManagers() {
+    const { managers } = this.state;
+
+    let isValid = true;
+
+    const newManagers = managers.map(info => {
+      const { type, firstName, lastName, email, id } = info;
+
+      switch (type.key) {
+        case "CURRENT":
+          if (id === "none") {
+            isValid = false;
+            return {
+              ...info,
+              errorAt: "personSelect",
+              validation: "error",
+              message: "Please select a person"
+            };
+          } else {
+            return {
+              ...info,
+              errorAt: "",
+              validation: "default",
+              message: ""
+            };
+          }
+        case "NEW":
+          if (firstName === "") {
+            isValid = false;
+            return {
+              ...info,
+              errorAt: "firstName",
+              validation: "error",
+              message: "Please enter a first name"
+            };
+          } else if (firstName.length > 32) {
+            isValid = false;
+            return {
+              ...info,
+              errorAt: "firstName",
+              validation: "error",
+              message: "Max. 32 characters allowed"
+            };
+          } else if (lastName === "") {
+            isValid = false;
+            return {
+              ...info,
+              errorAt: "lastName",
+              validation: "error",
+              message: "Please enter a last name"
+            };
+          } else if (lastName.length > 32) {
+            isValid = false;
+            return {
+              ...info,
+              errorAt: "lastName",
+              validation: "error",
+              message: "Max. 32 characters allowed"
+            };
+          } else if (email === "") {
+            isValid = false;
+            return {
+              ...info,
+              errorAt: "email",
+              validation: "error",
+              message: "Please enter an email address"
+            };
+          } else if (email.length > 64) {
+            isValid = false;
+            return {
+              ...info,
+              errorAt: "email",
+              validation: "error",
+              message: "Max. 64 characters allowed"
+            };
+          } else if (!isValidEmail(email)) {
+            isValid = false;
+            return {
+              ...info,
+              errorAt: "email",
+              validation: "error",
+              message: "This email address is not valid"
+            };
+          } else {
+            return {
+              ...info,
+              errorAt: "",
+              validation: "default",
+              message: ""
+            };
+          }
+        default:
+          return {
+            ...info,
+            errorAt: "",
+            validation: "default",
+            message: ""
+          };
+      }
+    });
+
+    this.setState({
+      managers: newManagers
+    });
+
+    return isValid;
+  }
+
+  validateCoaches() {
+    const { coaches } = this.state;
+
+    let isValid = true;
+
+    const newCoaches = coaches.map(info => {
+      const { type, firstName, lastName, email, id, payment } = info;
+
+      let newCoach = info;
+
+      switch (type.key) {
+        case "CURRENT":
+          if (id === "none") {
+            isValid = false;
+            newCoach = {
+              ...info,
+              errorAt: "personSelect",
+              validation: "error",
+              message: "Please select a person"
+            };
+          } else {
+            newCoach = {
+              ...info,
+              errorAt: "",
+              validation: "default",
+              message: ""
+            };
+          }
+          break;
+        case "NEW":
+          if (firstName === "") {
+            isValid = false;
+            newCoach = {
+              ...info,
+              errorAt: "firstName",
+              validation: "error",
+              message: "Please enter a first name"
+            };
+          } else if (firstName.length > 32) {
+            isValid = false;
+            newCoach = {
+              ...info,
+              errorAt: "firstName",
+              validation: "error",
+              message: "Max. 32 characters allowed"
+            };
+          } else if (lastName === "") {
+            isValid = false;
+            newCoach = {
+              ...info,
+              errorAt: "lastName",
+              validation: "error",
+              message: "Please enter a last name"
+            };
+          } else if (lastName.length > 32) {
+            isValid = false;
+            newCoach = {
+              ...info,
+              errorAt: "lastName",
+              validation: "error",
+              message: "Max. 32 characters allowed"
+            };
+          } else if (email === "") {
+            isValid = false;
+            newCoach = {
+              ...info,
+              errorAt: "email",
+              validation: "error",
+              message: "Please enter an email address"
+            };
+          } else if (email.length > 64) {
+            isValid = false;
+            newCoach = {
+              ...info,
+              errorAt: "email",
+              validation: "error",
+              message: "Max. 64 characters allowed"
+            };
+          } else if (!isValidEmail(email)) {
+            isValid = false;
+            newCoach = {
+              ...info,
+              errorAt: "email",
+              validation: "error",
+              message: "This email address is not valid"
+            };
+          } else {
+            newCoach = {
+              ...info,
+              errorAt: "",
+              validation: "default",
+              message: ""
+            };
+          }
+          break;
+        default:
+          newCoach = {
+            ...info,
+            errorAt: "",
+            validation: "default",
+            message: ""
+          };
+          break;
+      }
+
+      if (isValid) {
+        switch (payment.type.key) {
+          case "HOURLY":
+            if (isNaN(parseFloat(payment.rates.standard))) {
+              isValid = false;
+              newCoach = {
+                ...info,
+                errorAt: "standard",
+                validation: "error",
+                message: "This is not a valid number"
+              };
+            } else if (parseFloat(payment.rates.standard) < 0) {
+              isValid = false;
+              newCoach = {
+                ...info,
+                errorAt: "standard",
+                validation: "error",
+                message: "Wages can't be negative"
+              };
+            } else if (isNaN(parseFloat(payment.rates.overtime))) {
+              isValid = false;
+              newCoach = {
+                ...info,
+                errorAt: "overtime",
+                validation: "error",
+                message: "This is not a valid number"
+              };
+            } else if (parseFloat(payment.rates.overtime) < 0) {
+              isValid = false;
+              newCoach = {
+                ...info,
+                errorAt: "overtime",
+                validation: "error",
+                message: "Wages can't be negative"
+              };
+            } else {
+              newCoach = {
+                ...info,
+                errorAt: "",
+                validation: "default",
+                message: ""
+              };
+            }
+            break;
+          case "FIXED":
+            if (isNaN(parseFloat(payment.rates.nonCompetitive))) {
+              isValid = false;
+              newCoach = {
+                ...info,
+                errorAt: "nonCompetitive",
+                validation: "error",
+                message: "This is not a valid number"
+              };
+            } else if (parseFloat(payment.rates.nonCompetitive) < 0) {
+              isValid = false;
+              newCoach = {
+                ...info,
+                errorAt: "nonCompetitive",
+                validation: "error",
+                message: "Wages can't be negative"
+              };
+            } else if (isNaN(parseFloat(payment.rates.competitive))) {
+              isValid = false;
+              newCoach = {
+                ...info,
+                errorAt: "competitive",
+                validation: "error",
+                message: "This is not a valid number"
+              };
+            } else if (parseFloat(payment.rates.competitive) < 0) {
+              isValid = false;
+              newCoach = {
+                ...info,
+                errorAt: "competitive",
+                validation: "error",
+                message: "Wages can't be negative"
+              };
+            } else {
+              newCoach = {
+                ...info,
+                errorAt: "",
+                validation: "default",
+                message: ""
+              };
+            }
+            break;
+          case "MONTHLY":
+            if (isNaN(parseFloat(payment.rates.salary))) {
+              isValid = false;
+              newCoach = {
+                ...info,
+                errorAt: "salary",
+                validation: "error",
+                message: "This is not a valid number"
+              };
+            } else if (parseFloat(payment.rates.salary) < 0) {
+              isValid = false;
+              newCoach = {
+                ...info,
+                errorAt: "salary",
+                validation: "error",
+                message: "Wages can't be negative"
+              };
+            } else {
+              newCoach = {
+                ...info,
+                errorAt: "",
+                validation: "default",
+                message: ""
+              };
+            }
+            break;
+          default:
+            newCoach = {
+              ...info,
+              errorAt: "",
+              validation: "default",
+              message: ""
+            };
+            break;
+        }
+      }
+
+      return newCoach;
+    });
+
+    this.setState({
+      coaches: newCoaches
+    });
+
+    return isValid;
+  }
+
+  getSeasonInfo() {
+    const {
+      coaches,
+      competitiveEvents,
+      endDate,
+      managers,
+      nonCompetitiveEvents,
+      roster,
+      startDate
+    } = this.state;
+
+    const dates = {
+      start: moment(
+        `${startDate.day.label} ${startDate.month.label} ${startDate.year
+          .label}`,
+        "DD MMM YYYY"
+      ).toDate(),
+      end: moment(
+        `${endDate.day.label} ${endDate.month.label} ${endDate.year.label}`,
+        "DD MMM YYYY"
+      )
+        .endOf("day")
+        .toDate()
+    };
+
+    const reformattedCompetitiveEvents = competitiveEvents.map(info => {
+      const startTime = moment(
+        `${info.startTime.hours.label}:${info.startTime.minutes.label} ${info
+          .startTime.timeOfDay.label}`,
+        "hh:mm A"
+      ).toDate();
+      const endTime = moment(
+        `${info.endTime.hours.label}:${info.endTime.minutes.label} ${info
+          .endTime.timeOfDay.label}`,
+        "hh:mm A"
+      ).toDate();
+      return {
+        day: info.day,
+        times: {
+          start: startTime,
+          end: endTime
+        }
+      };
+    });
+
+    const reformattedNonCompetitiveEvents = nonCompetitiveEvents.map(info => {
+      const startTime = moment(
+        `${info.startTime.hours.label}:${info.startTime.minutes.label} ${info
+          .startTime.timeOfDay.label}`,
+        "hh:mm A"
+      ).toDate();
+      const endTime = moment(
+        `${info.endTime.hours.label}:${info.endTime.minutes.label} ${info
+          .endTime.timeOfDay.label}`,
+        "hh:mm A"
+      ).toDate();
+      return {
+        day: info.day,
+        times: {
+          start: startTime,
+          end: endTime
+        }
+      };
+    });
+
+    const reformattedManagers = managers.map(info => {
+      return {
+        email: info.email,
+        firstName: info.firstName,
+        lastName: info.lastName
+      };
+    });
+
+    const reformattedCoaches = coaches.map(info => {
+      const paymentType = info.payment.type.key;
+
+      let rates = {};
+      switch (paymentType) {
+        case "HOURLY":
+          rates = {
+            standard: parseFloat(info.payment.rates.standard),
+            overtime: parseFloat(info.payment.rates.overtime)
+          };
+          break;
+        case "FIXED":
+          rates = {
+            nonCompetitive: parseFloat(
+              info.payment.rates.nonCompetitive
+            ).toFixed(2),
+            competitive: parseFloat(info.payment.rates.competitive)
+          };
+          break;
+        case "MONTHLY":
+          rates = {
+            salary: parseFloat(info.payment.rates.salary)
+          };
+          break;
+        default:
+          rates = {};
+          break;
+      }
+
+      return {
+        email: info.email,
+        firstName: info.firstName,
+        lastName: info.lastName,
+        payment: {
+          rates,
+          type: paymentType
+        }
+      };
+    });
+
+    return {
+      dates,
+      roster,
+      managers: reformattedManagers,
+      coaches: reformattedCoaches,
+      competitiveEvents: reformattedCompetitiveEvents,
+      nonCompetitiveEvents: reformattedNonCompetitiveEvents
+    };
+  }
+
   getActionButtons() {
-    const { closeDialog } = this.props;
+    const { closeDialog, createSeason, isLoading } = this.props;
     const { step } = this.state;
 
     switch (step) {
@@ -2277,7 +2787,7 @@ class SeasonSetupDialog extends Component {
       case 2:
         return [
           <Button colour="primary" slim handleClick={() => closeDialog()}>
-            Cancel
+            Back
           </Button>,
           <Button
             colour="primary"
@@ -2294,7 +2804,7 @@ class SeasonSetupDialog extends Component {
       case 3:
         return [
           <Button colour="primary" slim handleClick={() => closeDialog()}>
-            Cancel
+            Back
           </Button>,
           <Button
             colour="primary"
@@ -2308,12 +2818,43 @@ class SeasonSetupDialog extends Component {
             Next
           </Button>
         ];
-      case 5:
+      case 4:
         return [
-          <Button colour="primary" slim handleClick={() => this.prevStep()}>
+          <Button colour="primary" slim handleClick={() => closeDialog()}>
             Back
           </Button>,
-          <Button colour="primary" filled slim>
+          <Button
+            colour="primary"
+            filled
+            slim
+            handleClick={() => {
+              const isValid = this.validateManagers();
+              isValid && this.nextStep();
+            }}
+          >
+            Next
+          </Button>
+        ];
+      case 5:
+        return [
+          <Button
+            disabled={isLoading}
+            colour="primary"
+            slim
+            handleClick={() => this.prevStep()}
+          >
+            Back
+          </Button>,
+          <Button
+            colour="primary"
+            filled
+            slim
+            loading={isLoading}
+            handleClick={() => {
+              const isValid = this.validateCoaches();
+              isValid && createSeason(this.getSeasonInfo());
+            }}
+          >
             Create season
           </Button>
         ];

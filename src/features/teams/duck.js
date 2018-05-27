@@ -33,6 +33,9 @@ export const CLOSE_TEAM_ERROR_ALERT = `${NAMESPACE}/CLOSE_TEAM_ERROR_ALERT`;
 export const REQUEST_EVENTS_BY_TEAM = `${NAMESPACE}/REQUEST_EVENTS_BY_TEAM`;
 export const RECEIVE_EVENTS_BY_TEAM = `${NAMESPACE}/RECEIVE_EVENTS_BY_TEAM`;
 export const ERROR_LOADING_EVENTS_BY_TEAM = `${NAMESPACE}/ERROR_LOADING_EVENTS_BY_TEAM`;
+export const REQUEST_CREATE_SEASON = `${NAMESPACE}/REQUEST_CREATE_SEASON`;
+export const RECEIVE_CREATE_SEASON = `${NAMESPACE}/RECEIVE_CREATE_SEASON`;
+export const ERROR_CREATING_SEASON = `${NAMESPACE}/ERROR_CREATING_SEASON`;
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
@@ -193,7 +196,8 @@ export const loadingStatusInitialState = {
   isEditTeamLoading: false,
   isTeamsLoading: false,
   isStaffLoading: false,
-  isEventsByTeamLoading: false
+  isEventsByTeamLoading: false,
+  isCreateSeasonLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -201,6 +205,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
     case RESET_STATE:
     case SIGN_OUT:
       return loadingStatusInitialState;
+    case REQUEST_CREATE_SEASON:
+      return {
+        ...state,
+        isCreateSeasonLoading: true
+      };
+    case ERROR_CREATING_SEASON:
+    case RECEIVE_CREATE_SEASON:
+      return {
+        ...state,
+        isCreateSeasonLoading: false
+      };
     case REQUEST_ADD_TEAM:
       return {
         ...state,
@@ -657,5 +672,55 @@ export function loadEventsByTeam(institutionID, teamID) {
       });
       dispatch(receiveEventsByTeam(events));
     });
+  };
+}
+
+export function requestCreateSeason() {
+  return {
+    type: REQUEST_CREATE_SEASON
+  };
+}
+
+export function receiveCreateSeason(result) {
+  console.log(result);
+  return {
+    type: RECEIVE_CREATE_SEASON
+  };
+}
+
+export function errorCreatingSeason(error: { code: string, message: string }) {
+  return {
+    type: ERROR_CREATING_SEASON,
+    payload: {
+      error
+    }
+  };
+}
+
+export function createSeason(
+  teamID,
+  institutionID,
+  userID,
+  userName,
+  seasonInfo
+) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestCreateSeason());
+
+    const createSeason = firebase.functions().httpsCallable("createSeason");
+
+    return createSeason({
+      teamID,
+      institutionID,
+      userID,
+      userName,
+      seasonInfo
+    })
+      .then(result => {
+        dispatch(receiveCreateSeason(result));
+      })
+      .catch(error => {
+        dispatch(errorCreatingSeason(error));
+      });
   };
 }

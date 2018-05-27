@@ -366,6 +366,7 @@ class CoreInterfaceLayout extends Component {
     const communityRole = this.getRole();
     const userFirstName = accountInfo.info.name;
     const userLastName = accountInfo.info.surname;
+    const userEmail = accountInfo.info.email;
     const userName = `${userFirstName} ${userLastName}`;
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
@@ -615,6 +616,7 @@ class CoreInterfaceLayout extends Component {
                       teamOptions={teamOptions}
                       isAdmin={isAdmin}
                       userID={userID}
+                      userEmail={userEmail}
                       userFirstName={userFirstName}
                       userLastName={userLastName}
                       role={role}
@@ -633,6 +635,7 @@ class CoreInterfaceLayout extends Component {
                       teamOptions={teamOptions}
                       isAdmin={isAdmin}
                       userID={userID}
+                      userEmail={userEmail}
                       userFirstName={userFirstName}
                       userLastName={userLastName}
                       role={role}
@@ -651,6 +654,7 @@ class CoreInterfaceLayout extends Component {
                       teamOptions={teamOptions}
                       isAdmin={isAdmin}
                       userID={userID}
+                      userEmail={userEmail}
                       userFirstName={userFirstName}
                       userLastName={userLastName}
                       role={role}
