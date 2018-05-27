@@ -36,6 +36,7 @@ const styles = {
     textAlign: "center",
     fontWeight: "bold",
     color: grey[500],
+    backgroundColor: grey[100],
     border: `1px solid ${grey[300]}`
   },
   setupButtonWrapper: {

@@ -119,7 +119,10 @@ class TextField extends Component<Props> {
     placeholder: "Example",
     validation: "default",
     helperText: "",
-    value: ""
+    value: "",
+    step: 1,
+    min: 0,
+    max: 1000
   };
 
   getInputStyle() {
@@ -201,7 +204,10 @@ class TextField extends Component<Props> {
       helperText,
       value,
       handleBlur,
-      handleChange
+      handleChange,
+      step,
+      min,
+      max
     } = this.props;
 
     const inputStyle = this.getInputStyle();
@@ -216,6 +222,9 @@ class TextField extends Component<Props> {
           type={type}
           placeholder={placeholder}
           value={value}
+          step={step}
+          min={min}
+          max={max}
           onChange={e => handleChange(e.target.value)}
           onBlur={e => handleBlur(e.target.value)}
         />
