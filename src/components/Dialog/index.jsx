@@ -143,9 +143,19 @@ class Dialog extends Component<Props> {
       .map((value, index) => {
         const step = index + 1;
         if (step <= currentStep) {
-          return <span className={classes.dotHighlighted} />;
+          return (
+            <span
+              key={`dialog-dots-${step}`}
+              className={classes.dotHighlighted}
+            />
+          );
         } else {
-          return <span className={classes.dotNotHighlighted} />;
+          return (
+            <span
+              key={`dialog-dots-${step}`}
+              className={classes.dotNotHighlighted}
+            />
+          );
         }
       });
   }

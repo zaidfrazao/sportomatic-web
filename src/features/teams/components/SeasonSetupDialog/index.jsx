@@ -59,6 +59,9 @@ const styles = {
   icon: {
     marginRight: 8
   },
+  iconAdjacentText: {
+    marginRight: 12
+  },
   timeInputGroupWrapper: {
     display: "flex",
     flexWrap: "wrap"
@@ -128,9 +131,7 @@ const initialState = {
         timeOfDay: {
           key: "PM",
           label: "PM"
-        },
-        validation: "default",
-        message: ""
+        }
       },
       endTime: {
         hours: {
@@ -144,10 +145,10 @@ const initialState = {
         timeOfDay: {
           key: "PM",
           label: "PM"
-        },
-        validation: "default",
-        message: ""
-      }
+        }
+      },
+      validation: "default",
+      message: ""
     }
   ],
   competitiveEvents: [
@@ -165,9 +166,7 @@ const initialState = {
         timeOfDay: {
           key: "PM",
           label: "PM"
-        },
-        validation: "default",
-        message: ""
+        }
       },
       endTime: {
         hours: {
@@ -181,10 +180,10 @@ const initialState = {
         timeOfDay: {
           key: "PM",
           label: "PM"
-        },
-        validation: "default",
-        message: ""
-      }
+        }
+      },
+      validation: "default",
+      message: ""
     }
   ],
   startDate: {
@@ -694,7 +693,9 @@ class SeasonSetupDialog extends Component {
 
     return (
       <div>
-        <div className={classes.headingTime}>Dates</div>
+        <div className={classes.headingTime}>
+          <i className={`fas fa-calendar ${classes.iconAdjacentText}`} />Dates
+        </div>
         <div className={classes.sectionWrapper}>
           <div className={classes.sectionContent}>
             <div className={classes.timeInputGroupWrapper}>
@@ -1022,7 +1023,7 @@ class SeasonSetupDialog extends Component {
 
   getNonCompetitiveEvents() {
     const { classes } = this.props;
-    const { nonCompetitiveEvents, dateErrors } = this.state;
+    const { nonCompetitiveEvents } = this.state;
 
     const dayOfWeekOptions = this.getDayOfWeekOptions();
     const hourOptions = this.getHourOptions();
@@ -1065,6 +1066,7 @@ class SeasonSetupDialog extends Component {
                 <Select
                   items={hourOptions}
                   selectedItem={info.startTime.hours}
+                  validation={info.validation}
                   handleChange={(key, label) =>
                     this.updateNonCompetitive(
                       { key, label },
@@ -1079,6 +1081,7 @@ class SeasonSetupDialog extends Component {
                 <Select
                   items={minuteOptions}
                   selectedItem={info.startTime.minutes}
+                  validation={info.validation}
                   handleChange={(key, label) =>
                     this.updateNonCompetitive(
                       { key, label },
@@ -1102,6 +1105,7 @@ class SeasonSetupDialog extends Component {
                     }
                   ]}
                   selectedItem={info.startTime.timeOfDay}
+                  validation={info.validation}
                   handleChange={(key, label) =>
                     this.updateNonCompetitive(
                       { key, label },
@@ -1119,6 +1123,7 @@ class SeasonSetupDialog extends Component {
                 <Select
                   items={hourOptions}
                   selectedItem={info.endTime.hours}
+                  validation={info.validation}
                   handleChange={(key, label) =>
                     this.updateNonCompetitive(
                       { key, label },
@@ -1133,6 +1138,7 @@ class SeasonSetupDialog extends Component {
                 <Select
                   items={minuteOptions}
                   selectedItem={info.endTime.minutes}
+                  validation={info.validation}
                   handleChange={(key, label) =>
                     this.updateNonCompetitive(
                       { key, label },
@@ -1156,6 +1162,7 @@ class SeasonSetupDialog extends Component {
                     }
                   ]}
                   selectedItem={info.endTime.timeOfDay}
+                  validation={info.validation}
                   handleChange={(key, label) =>
                     this.updateNonCompetitive(
                       { key, label },
@@ -1167,8 +1174,8 @@ class SeasonSetupDialog extends Component {
                 />
               </div>
             </div>
-            {dateErrors.validation === "error" && (
-              <div className={classes.errorWrapper}>{dateErrors.message}</div>
+            {info.validation === "error" && (
+              <div className={classes.errorWrapper}>{info.message}</div>
             )}
           </div>
         </div>
@@ -1183,7 +1190,11 @@ class SeasonSetupDialog extends Component {
 
     return (
       <div>
-        <div className={classes.headingTime}>Practice Times</div>
+        <div className={classes.headingTime}>
+          <i
+            className={`fas fa-dumbbell ${classes.iconAdjacentText}`}
+          />Practice Times
+        </div>
         {events.length === 0 ? (
           <div className={classes.emptyState}>No practices this season</div>
         ) : (
@@ -1201,7 +1212,7 @@ class SeasonSetupDialog extends Component {
 
   getCompetitiveEvents() {
     const { classes } = this.props;
-    const { competitiveEvents, dateErrors } = this.state;
+    const { competitiveEvents } = this.state;
 
     const dayOfWeekOptions = this.getDayOfWeekOptions();
     const hourOptions = this.getHourOptions();
@@ -1239,6 +1250,7 @@ class SeasonSetupDialog extends Component {
                 <Select
                   items={hourOptions}
                   selectedItem={info.startTime.hours}
+                  validation={info.validation}
                   handleChange={(key, label) =>
                     this.updateCompetitive(
                       { key, label },
@@ -1253,6 +1265,7 @@ class SeasonSetupDialog extends Component {
                 <Select
                   items={minuteOptions}
                   selectedItem={info.startTime.minutes}
+                  validation={info.validation}
                   handleChange={(key, label) =>
                     this.updateCompetitive(
                       { key, label },
@@ -1276,6 +1289,7 @@ class SeasonSetupDialog extends Component {
                     }
                   ]}
                   selectedItem={info.startTime.timeOfDay}
+                  validation={info.validation}
                   handleChange={(key, label) =>
                     this.updateCompetitive(
                       { key, label },
@@ -1293,6 +1307,7 @@ class SeasonSetupDialog extends Component {
                 <Select
                   items={hourOptions}
                   selectedItem={info.endTime.hours}
+                  validation={info.validation}
                   handleChange={(key, label) =>
                     this.updateCompetitive(
                       { key, label },
@@ -1307,6 +1322,7 @@ class SeasonSetupDialog extends Component {
                 <Select
                   items={minuteOptions}
                   selectedItem={info.endTime.minutes}
+                  validation={info.validation}
                   handleChange={(key, label) =>
                     this.updateCompetitive(
                       { key, label },
@@ -1330,6 +1346,7 @@ class SeasonSetupDialog extends Component {
                     }
                   ]}
                   selectedItem={info.endTime.timeOfDay}
+                  validation={info.validation}
                   handleChange={(key, label) =>
                     this.updateCompetitive(
                       { key, label },
@@ -1341,8 +1358,8 @@ class SeasonSetupDialog extends Component {
                 />
               </div>
             </div>
-            {dateErrors.validation === "error" && (
-              <div className={classes.errorWrapper}>{dateErrors.message}</div>
+            {info.validation === "error" && (
+              <div className={classes.errorWrapper}>{info.message}</div>
             )}
           </div>
         </div>
@@ -1357,7 +1374,10 @@ class SeasonSetupDialog extends Component {
 
     return (
       <div>
-        <div className={classes.headingTime}>Match Times</div>
+        <div className={classes.headingTime}>
+          <i className={`fas fa-trophy ${classes.iconAdjacentText}`} />Match
+          Times
+        </div>
         {events.length === 0 ? (
           <div className={classes.emptyState}>No matches this season</div>
         ) : (
@@ -1597,7 +1617,9 @@ class SeasonSetupDialog extends Component {
 
     return (
       <div>
-        <div className={classes.headingTime}>Managers</div>
+        <div className={classes.headingTime}>
+          <i className={`fas fa-user ${classes.iconAdjacentText}`} />Managers
+        </div>
         {managers}
         <div className={classes.addWrapper} onClick={() => this.addManager()}>
           <i className={`fas fa-plus ${classes.icon}`} />Add a manager
@@ -2006,7 +2028,9 @@ class SeasonSetupDialog extends Component {
 
     return (
       <div>
-        <div className={classes.headingTime}>Coaches</div>
+        <div className={classes.headingTime}>
+          <i className={`fas fa-user ${classes.iconAdjacentText}`} />Coaches
+        </div>
         {coaches}
         <div className={classes.addWrapper} onClick={() => this.addCoach()}>
           <i className={`fas fa-plus ${classes.icon}`} />Add a coach
@@ -2048,6 +2072,186 @@ class SeasonSetupDialog extends Component {
     return isValid;
   }
 
+  validateNonCompetitiveTimes() {
+    const { nonCompetitiveEvents } = this.state;
+
+    let isValid = true;
+    let disallowedRanges = [];
+
+    const newNonCompetitiveEvents = nonCompetitiveEvents.map(info => {
+      const { day, startTime, endTime } = info;
+
+      const startTimeMoment = moment(
+        `${day}, ${startTime.hours.label}:${startTime.minutes.label} ${startTime
+          .timeOfDay.label}`,
+        "dddd, hh:mm A"
+      );
+      const endTimeMoment = moment(
+        `${day}, ${endTime.hours.label}:${endTime.minutes.label} ${endTime
+          .timeOfDay.label}`,
+        "dddd, hh:mm A"
+      );
+
+      if (!endTimeMoment.isAfter(startTimeMoment)) {
+        isValid = false;
+        return {
+          ...info,
+          validation: "error",
+          message: "Start time must be before end time"
+        };
+      } else {
+        let newValidationState = {
+          ...info,
+          validation: "default",
+          message: ""
+        };
+        disallowedRanges.map(range => {
+          const isStartTimeAllowed = !startTimeMoment.isBetween(
+            range.start,
+            range.end,
+            null,
+            "[]"
+          );
+          const isEndTimeAllowed = !endTimeMoment.isBetween(
+            range.start,
+            range.end,
+            null,
+            "[]"
+          );
+          if (!isStartTimeAllowed || !isEndTimeAllowed) {
+            isValid = false;
+            newValidationState = {
+              ...info,
+              validation: "error",
+              message: "This clashes with another practice time"
+            };
+          }
+        });
+        disallowedRanges.push({
+          start: startTimeMoment,
+          end: endTimeMoment
+        });
+        return newValidationState;
+      }
+    });
+
+    this.setState({
+      nonCompetitiveEvents: newNonCompetitiveEvents
+    });
+
+    return isValid;
+  }
+
+  validateCompetitiveTimes() {
+    const { nonCompetitiveEvents, competitiveEvents } = this.state;
+
+    let isValid = true;
+    let disallowedRanges = [];
+    let disallowedPracticeRanges = nonCompetitiveEvents.map(info => {
+      const { day, startTime, endTime } = info;
+
+      const startTimeMoment = moment(
+        `${day}, ${startTime.hours.label}:${startTime.minutes.label} ${startTime
+          .timeOfDay.label}`,
+        "dddd, hh:mm A"
+      );
+      const endTimeMoment = moment(
+        `${day}, ${endTime.hours.label}:${endTime.minutes.label} ${endTime
+          .timeOfDay.label}`,
+        "dddd, hh:mm A"
+      );
+
+      return {
+        start: startTimeMoment,
+        end: endTimeMoment
+      };
+    });
+
+    const newCompetitiveEvents = competitiveEvents.map(info => {
+      const { day, startTime, endTime } = info;
+      const startTimeMoment = moment(
+        `${day}, ${startTime.hours.label}:${startTime.minutes.label} ${startTime
+          .timeOfDay.label}`,
+        "dddd, hh:mm A"
+      );
+      const endTimeMoment = moment(
+        `${day}, ${endTime.hours.label}:${endTime.minutes.label} ${endTime
+          .timeOfDay.label}`,
+        "dddd, hh:mm A"
+      );
+
+      if (!endTimeMoment.isAfter(startTimeMoment)) {
+        isValid = false;
+        return {
+          ...info,
+          validation: "error",
+          message: "Start time must be before end time"
+        };
+      } else {
+        let newValidationState = {
+          ...info,
+          validation: "default",
+          message: ""
+        };
+        disallowedPracticeRanges.map(range => {
+          const isStartTimeAllowed = !startTimeMoment.isBetween(
+            range.start,
+            range.end,
+            null,
+            "[]"
+          );
+          const isEndTimeAllowed = !endTimeMoment.isBetween(
+            range.start,
+            range.end,
+            null,
+            "[]"
+          );
+          if (!isStartTimeAllowed || !isEndTimeAllowed) {
+            isValid = false;
+            newValidationState = {
+              ...info,
+              validation: "error",
+              message: "This match clashes with a practice"
+            };
+          }
+        });
+        disallowedRanges.map(range => {
+          const isStartTimeAllowed = !startTimeMoment.isBetween(
+            range.start,
+            range.end,
+            null,
+            "[]"
+          );
+          const isEndTimeAllowed = !endTimeMoment.isBetween(
+            range.start,
+            range.end,
+            null,
+            "[]"
+          );
+          if (!isStartTimeAllowed || !isEndTimeAllowed) {
+            isValid = false;
+            newValidationState = {
+              ...info,
+              validation: "error",
+              message: "This clashes with another match time"
+            };
+          }
+        });
+        disallowedRanges.push({
+          start: startTimeMoment,
+          end: endTimeMoment
+        });
+        return newValidationState;
+      }
+    });
+
+    this.setState({
+      competitiveEvents: newCompetitiveEvents
+    });
+
+    return isValid;
+  }
+
   getActionButtons() {
     const { closeDialog } = this.props;
     const { step } = this.state;
@@ -2064,6 +2268,40 @@ class SeasonSetupDialog extends Component {
             slim
             handleClick={() => {
               const isValid = this.validateDates();
+              isValid && this.nextStep();
+            }}
+          >
+            Next
+          </Button>
+        ];
+      case 2:
+        return [
+          <Button colour="primary" slim handleClick={() => closeDialog()}>
+            Cancel
+          </Button>,
+          <Button
+            colour="primary"
+            filled
+            slim
+            handleClick={() => {
+              const isValid = this.validateNonCompetitiveTimes();
+              isValid && this.nextStep();
+            }}
+          >
+            Next
+          </Button>
+        ];
+      case 3:
+        return [
+          <Button colour="primary" slim handleClick={() => closeDialog()}>
+            Cancel
+          </Button>,
+          <Button
+            colour="primary"
+            filled
+            slim
+            handleClick={() => {
+              const isValid = this.validateCompetitiveTimes();
               isValid && this.nextStep();
             }}
           >
