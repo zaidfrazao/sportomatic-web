@@ -4,6 +4,7 @@ import { common, grey } from "../../utils/colours";
 
 const styles = {
   message: {
+    border: `1px solid ${grey[300]}`,
     flexGrow: 1,
     borderRadius: 16,
     backgroundColor: common["white"],
