@@ -23,20 +23,41 @@ const styles = theme => ({
       display: "none"
     }
   },
+  logOutButton: {
+    borderLeft: `2px solid ${grey[300]}`,
+    width: 80,
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      display: "none"
+    }
+  },
+  logOutIcon: {
+    transition: "0.25s",
+    fontSize: 22,
+    color: grey[900],
+    cursor: "pointer",
+    "&:hover": {
+      color: lightBlue[500]
+    }
+  },
   menuIconClosed: {
-    fontSize: 24,
-    transition: "0.5s",
+    fontSize: 22,
+    transition: "0.25s",
     color: grey[900]
   },
   menuIconOpen: {
-    fontSize: 28,
-    transition: "0.5s",
+    fontSize: 26,
+    transition: "0.25s",
     color: lightBlue[500]
   },
   mobileMenuButton: {
+    borderLeft: `2px solid ${grey[300]}`,
     width: 80,
     height: "100%",
-    borderLeft: `1px solid ${grey[300]}`,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -46,10 +67,10 @@ const styles = theme => ({
     }
   },
   sportsToolbarWrapper: {
-    width: "calc(100% - 240px)",
+    width: "calc(100% - 264px)",
     height: "100%",
     [`@media (max-width: ${mobileBreakpoint}px)`]: {
-      width: "calc(100% - 78px)"
+      width: "calc(100% - 84px)"
     }
   },
   wrapper: {
@@ -81,7 +102,7 @@ class AppBar extends Component<Props> {
 
   render() {
     const { classes, selected, sports, isTablet, isSideMenuOpen } = this.props;
-    const { changeSportSelected, toggleSideNav } = this.props.actions;
+    const { changeSportSelected, toggleSideNav, logOut } = this.props.actions;
 
     let menuIconStyle = classes.menuIconClosed;
     if (isSideMenuOpen) {
@@ -103,6 +124,11 @@ class AppBar extends Component<Props> {
                 toggleSideNav: () => toggleSideNav()
               }}
             />
+          </div>
+          <div className={classes.logOutButton} onClick={() => logOut()}>
+            <span className={classes.logOutIcon}>
+              <i className="fas fa-sign-out-alt" />
+            </span>
           </div>
           <div
             className={classes.mobileMenuButton}

@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { common, lightBlue } from "../../../../../../utils/colours";
 import injectStyles from "react-jss";
-import Button from "../../../../../../components/Button";
-import PersonalAllSwitch from "./components/PersonalAllSwitch";
 
 const mobileBreakpoint = 800;
 
@@ -12,7 +10,6 @@ const styles = {
     marginBottom: 12
   },
   communityName: {
-    flexGrow: 1,
     color: common["white"],
     fontSize: 16,
     lineHeight: "20px",
@@ -33,16 +30,11 @@ const styles = {
       margin: 14
     }
   },
-  interactiveSectionWrapper: {
-    width: "100%",
-    margin: "4px 0"
-  },
   nameEmblemWrapper: {
     position: "relative",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 12
+    alignItems: "center"
   },
   switchButtonWrapper: {
     flexGrow: 1,
@@ -66,15 +58,7 @@ type Props = {
 
 class CommunityInfo extends Component<Props> {
   render() {
-    const {
-      classes,
-      emblem,
-      name,
-      logOut,
-      meAllFilter,
-      changeMeAllFilter,
-      switchCommunities
-    } = this.props;
+    const { classes, emblem, name, logOut } = this.props;
 
     return (
       <div className={classes.wrapper}>
@@ -87,35 +71,6 @@ class CommunityInfo extends Component<Props> {
             className={classes.emblem}
           />
           <h2 className={classes.communityName}>{name}</h2>
-        </div>
-        <div className={classes.interactiveSectionWrapper}>
-          <div className={classes.buttonsWrapper}>
-            <div className={classes.switchButtonWrapper}>
-              <Button
-                colour="primary"
-                type="dark"
-                filled
-                slim
-                fullWidth
-                handleClick={() => switchCommunities()}
-              >
-                Communities
-              </Button>
-            </div>
-            <Button
-              colour="primary"
-              type="dark"
-              filled
-              slim
-              handleClick={() => logOut()}
-            >
-              <i className="fas fa-sign-out-alt" />
-            </Button>
-          </div>
-          <PersonalAllSwitch
-            meAllFilter={meAllFilter}
-            changeMeAllFilter={newFilter => changeMeAllFilter(newFilter)}
-          />
         </div>
       </div>
     );

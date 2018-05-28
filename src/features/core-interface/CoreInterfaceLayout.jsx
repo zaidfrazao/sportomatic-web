@@ -198,8 +198,8 @@ class CoreInterfaceLayout extends Component {
         label: "Teams",
         icon: "fas fa-user-friends"
       },
-      communities: {
-        label: "Communities",
+      community: {
+        label: "Community",
         icon: "fas fa-users"
       },
       settings: {
@@ -387,6 +387,7 @@ class CoreInterfaceLayout extends Component {
 
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
+    const versionNumber = "0.9.1";
 
     const communityRole = this.getRole();
     const userFirstName = accountInfo.info.name;
@@ -482,6 +483,7 @@ class CoreInterfaceLayout extends Component {
             isTablet={isMobile}
             isSideMenuOpen={isSideMenuOpen}
             actions={{
+              logOut: () => openLogOutModal(),
               changeSportSelected: key => updateSport(key),
               toggleSideNav: () => toggleSideMenu()
             }}
@@ -496,10 +498,10 @@ class CoreInterfaceLayout extends Component {
               emblem={emblem}
               selectedRole={role}
               meAllFilter={meAllFilter}
+              versionNumber={versionNumber}
               actions={{
-                switchCommunities: () => openManageInstitutionsDialog(),
-                changeMeAllFilter: newFilter => changeMeAllFilter(newFilter),
                 logOut: () => openLogOutModal(),
+                switchCommunities: () => openManageInstitutionsDialog(),
                 changeSelected: key => history.push(`/myaccount/${key}`),
                 toggleSideNav: () => toggleSideMenu(),
                 switchRoles: newRole => switchRole(userID, newRole)
@@ -544,6 +546,8 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route exact path={"/myaccount/overview/"}>
@@ -562,6 +566,8 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route exact path={"/myaccount/overview/:infoTab"}>
@@ -580,6 +586,8 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route exact path={"/myaccount/people/"}>
@@ -598,6 +606,8 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route exact path={"/myaccount/people/:personID"}>
@@ -616,6 +626,8 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route exact path={"/myaccount/people/:personID/:infoTab"}>
@@ -634,6 +646,8 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route exact path={"/myaccount/teams/"}>
@@ -653,6 +667,8 @@ class CoreInterfaceLayout extends Component {
                       isAccountInfoLoading={isAccountInfoLoading}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route exact path={"/myaccount/teams/:teamID"}>
@@ -672,6 +688,8 @@ class CoreInterfaceLayout extends Component {
                       isAccountInfoLoading={isAccountInfoLoading}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route exact path={"/myaccount/teams/:teamID/:infoTab"}>
@@ -691,6 +709,8 @@ class CoreInterfaceLayout extends Component {
                       isAccountInfoLoading={isAccountInfoLoading}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route exact path={"/myaccount/schedule/"}>
@@ -708,6 +728,8 @@ class CoreInterfaceLayout extends Component {
                       permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route exact path={"/myaccount/schedule/:dateSelected"}>
@@ -725,6 +747,8 @@ class CoreInterfaceLayout extends Component {
                       permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route
@@ -745,6 +769,8 @@ class CoreInterfaceLayout extends Component {
                       permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route
@@ -765,6 +791,8 @@ class CoreInterfaceLayout extends Component {
                       permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                   <Route>
@@ -783,6 +811,8 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
                     />
                   </Route>
                 </Switch>

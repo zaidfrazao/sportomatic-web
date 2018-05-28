@@ -1,13 +1,24 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import { common, grey, lightBlue } from "../../../../utils/colours";
 import injectStyles from "react-jss";
+import Button from "../../../../components/Button";
+import { common, grey, lightBlue } from "../../../../utils/colours";
 import CommunityInfo from "./components/CommunityInfo";
 import defaultEmblem from "./images/default-emblem.jpg";
 
 const mobileBreakpoint = 800;
 
 const styles = {
+  logOutButtonWrapper: {
+    margin: 24,
+    textAlign: "center",
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
+      display: "none"
+    }
+  },
+  logOutIcon: {
+    marginRight: 12
+  },
   menu: {
     padding: "12px 0",
     flex: 1
@@ -71,6 +82,12 @@ const styles = {
   },
   menuItemTextSelected: {
     color: common["white"]
+  },
+  versionNumber: {
+    fontSize: 12,
+    color: grey[300],
+    width: "100%",
+    textAlign: "center"
   },
   wrapperDesktop: {
     backgroundColor: "white",
@@ -188,7 +205,8 @@ class SideMenu extends Component<Props> {
       emblem,
       selectedRole,
       availableRoles,
-      meAllFilter
+      meAllFilter,
+      versionNumber
     } = this.props;
     const {
       switchRoles,
@@ -228,6 +246,12 @@ class SideMenu extends Component<Props> {
           availableRoles={availableRoles}
         />
         <div className={classes.menu}>{menuItems}</div>
+        <div className={classes.logOutButtonWrapper}>
+          <Button colour="primary" fullWidth handleClick={() => logOut()}>
+            <i className={`fas fa-sign-out-alt ${classes.logOutIcon}`} />Log out
+          </Button>
+        </div>
+        <div className={classes.versionNumber}>{`v${versionNumber}`}</div>
       </div>
     );
   }
