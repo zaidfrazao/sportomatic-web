@@ -14,10 +14,15 @@ import Schedule from "../schedule/ScheduleView";
 import SideMenu from "./components/SideMenu";
 import Teams from "../teams/TeamsView";
 
+import athleticsIcon from "./images/athletics.png";
+import hockeyIcon from "./images/hockey.png";
 import netballIcon from "./images/netball.png";
-import otherIcon from "./images/other.png";
 import rugbyIcon from "./images/rugby.png";
+import otherIcon from "./images/other.png";
 import soccerIcon from "./images/soccer.png";
+import softballIcon from "./images/softball.png";
+import swimmingIcon from "./images/swimming.png";
+import waterPoloIcon from "./images/water-polo.png";
 
 const styles = {
   content: {
@@ -210,6 +215,14 @@ class CoreInterfaceLayout extends Component {
         label: "All",
         icon: "N/A"
       },
+      athletics: {
+        label: "Athletics",
+        icon: athleticsIcon
+      },
+      hockey: {
+        label: "Hockey",
+        icon: hockeyIcon
+      },
       netball: {
         label: "Netball",
         icon: netballIcon
@@ -222,8 +235,20 @@ class CoreInterfaceLayout extends Component {
         label: "Soccer",
         icon: soccerIcon
       },
+      softball: {
+        label: "Softball",
+        icon: softballIcon
+      },
+      swimming: {
+        label: "Swimming",
+        icon: swimmingIcon
+      },
+      waterPolo: {
+        label: "Water Polo",
+        icon: waterPoloIcon
+      },
       other: {
-        label: "Other Sports",
+        label: "Other",
         icon: otherIcon
       }
     };
