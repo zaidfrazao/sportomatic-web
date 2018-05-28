@@ -67,7 +67,7 @@ const styles = theme => ({
     }
   },
   sportsToolbarWrapper: {
-    width: "calc(100% - 264px)",
+    width: "calc(100% - 322px)",
     height: "100%",
     [`@media (max-width: ${mobileBreakpoint}px)`]: {
       width: "calc(100% - 84px)"
