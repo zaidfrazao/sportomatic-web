@@ -51,10 +51,11 @@ const styles = {
     fontWeight: "bold",
     color: grey[400],
     borderRadius: 8,
-    margin: "12px 12px 0 12px",
+    margin: "0 12px 12px 12px",
     backgroundColor: grey[100]
   },
   resendButtonWrapper: {
+    transition: "0.25s",
     borderRadius: "0 0 16px 16px",
     backgroundColor: orange["A400"],
     "&:hover": {
@@ -152,15 +153,6 @@ class PersonCard extends Component {
           className={classes.header}
           onClick={() => navigateTo(`/myaccount/people/${id}`)}
         >{`${name} ${surname}`}</div>
-        {!isSignedUp && (
-          <div
-            className={classes.inactiveAlert}
-            onClick={() => navigateTo(`/myaccount/people/${id}`)}
-          >
-            <i className={`fas fa-exclamation ${classes.alertIcon}`} />Not yet
-            signed up
-          </div>
-        )}
         <div
           className={classes.roles}
           onClick={() => navigateTo(`/myaccount/people/${id}`)}
@@ -181,6 +173,15 @@ class PersonCard extends Component {
             alt={name}
           />
         </div>
+        {!isSignedUp && (
+          <div
+            className={classes.inactiveAlert}
+            onClick={() => navigateTo(`/myaccount/people/${id}`)}
+          >
+            <i className={`fas fa-exclamation ${classes.alertIcon}`} />Not yet
+            signed up
+          </div>
+        )}
         {isUserAdmin &&
           !isSignedUp && (
             <div className={classes.resendButtonWrapper}>

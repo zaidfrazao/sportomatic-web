@@ -44,6 +44,7 @@ const styles = {
     border: `1px solid ${grey[300]}`
   },
   setupButtonWrapper: {
+    transition: "0.25s",
     borderRadius: "0 0 16px 16px",
     backgroundColor: orange["A400"],
     "&:hover": {
