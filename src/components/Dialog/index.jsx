@@ -71,6 +71,7 @@ const styles = {
     }
   },
   wrapper: {
+    zIndex: 5,
     display: props => (props.isOpen ? "flex" : "none"),
     flexDirection: "column",
     justifyContent: "center",

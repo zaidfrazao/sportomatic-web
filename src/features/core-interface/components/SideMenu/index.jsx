@@ -9,6 +9,10 @@ import defaultEmblem from "./images/default-emblem.jpg";
 const mobileBreakpoint = 800;
 
 const styles = {
+  content: {
+    flexGrow: 1,
+    overflow: "auto"
+  },
   logOutButtonWrapper: {
     margin: 24,
     textAlign: "center",
@@ -93,7 +97,6 @@ const styles = {
     backgroundColor: "white",
     width: 240,
     height: "calc(100vh - 64px)",
-    overflow: "auto",
     borderRight: `2px solid ${grey[300]}`
   },
   wrapperMobileClosed: {
@@ -103,8 +106,7 @@ const styles = {
     position: "absolute",
     left: "calc(100% * -1)",
     width: "100%",
-    height: "calc(100vh - 64px)",
-    overflow: "auto"
+    height: "calc(100vh - 64px)"
   },
   wrapperMobileOpen: {
     zIndex: 2,
@@ -114,7 +116,8 @@ const styles = {
     position: "absolute",
     width: "100%",
     height: "calc(100vh - 64px)",
-    overflow: "auto"
+    display: "flex",
+    flexDirection: "column"
   }
 };
 
@@ -245,13 +248,16 @@ class SideMenu extends Component<Props> {
           logOut={() => logOut()}
           availableRoles={availableRoles}
         />
-        <div className={classes.menu}>{menuItems}</div>
-        <div className={classes.logOutButtonWrapper}>
-          <Button colour="primary" fullWidth handleClick={() => logOut()}>
-            <i className={`fas fa-sign-out-alt ${classes.logOutIcon}`} />Log out
-          </Button>
+        <div className={classes.content}>
+          <div className={classes.menu}>{menuItems}</div>
+          <div className={classes.logOutButtonWrapper}>
+            <Button colour="primary" fullWidth handleClick={() => logOut()}>
+              <i className={`fas fa-sign-out-alt ${classes.logOutIcon}`} />Log
+              out
+            </Button>
+          </div>
+          <div className={classes.versionNumber}>{`v${versionNumber}`}</div>
         </div>
-        <div className={classes.versionNumber}>{`v${versionNumber}`}</div>
       </div>
     );
   }
