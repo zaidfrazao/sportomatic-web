@@ -189,7 +189,8 @@ class EventCard extends Component {
       title,
       eventType,
       venue,
-      notes
+      notes,
+      isMobile
     } = this.props;
 
     const eventTypeIcon = this.getEventTypeIcon();
@@ -226,7 +227,13 @@ class EventCard extends Component {
               </span>
             </div>
             <div className={classes.listWrapper}>
-              <div className={classes.listIconWrapperBottomLeft}>
+              <div
+                className={
+                  isMobile
+                    ? classes.listIconWrapper
+                    : classes.listIconWrapperBottomLeft
+                }
+              >
                 <i className="fas fa-comment-alt" />
               </div>
               <span className={classes.listText}>
@@ -250,7 +257,13 @@ class EventCard extends Component {
               {resultsInfo.icon}
             </div>
             <div className={classes.listWrapper}>
-              <div className={classes.listIconWrapper}>
+              <div
+                className={
+                  isMobile
+                    ? classes.listIconWrapperBottomLeft
+                    : classes.listIconWrapper
+                }
+              >
                 <i className="fas fa-clipboard" />
               </div>
               <span className={classes.listText}>

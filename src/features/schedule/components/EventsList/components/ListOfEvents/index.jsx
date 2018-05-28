@@ -63,7 +63,7 @@ const styles = {
     textAlign: "center",
     fontWeight: "bold",
     color: grey[800],
-    backgroundColor: grey[200]
+    backgroundColor: grey[100]
   },
   headerToday: {
     borderBottom: `1px solid ${grey[300]}`,
@@ -84,7 +84,7 @@ const styles = {
     textAlign: "center",
     fontWeight: "bold",
     color: grey[800],
-    backgroundColor: grey[200]
+    backgroundColor: grey[100]
   },
   headerLeftToday: {
     borderBottom: `1px solid ${grey[300]}`,
@@ -106,7 +106,7 @@ const styles = {
     textAlign: "center",
     fontWeight: "bold",
     color: grey[800],
-    backgroundColor: grey[200]
+    backgroundColor: grey[100]
   },
   headerRightToday: {
     borderBottom: `1px solid ${grey[300]}`,
@@ -128,7 +128,7 @@ const styles = {
     textAlign: "center",
     fontWeight: "bold",
     color: grey[800],
-    backgroundColor: grey[200]
+    backgroundColor: grey[100]
   },
   icon: {
     marginRight: 8
