@@ -36,6 +36,9 @@ export const ERROR_LOADING_EVENTS_BY_TEAM = `${NAMESPACE}/ERROR_LOADING_EVENTS_B
 export const REQUEST_CREATE_SEASON = `${NAMESPACE}/REQUEST_CREATE_SEASON`;
 export const RECEIVE_CREATE_SEASON = `${NAMESPACE}/RECEIVE_CREATE_SEASON`;
 export const ERROR_CREATING_SEASON = `${NAMESPACE}/ERROR_CREATING_SEASON`;
+export const REQUEST_SEASONS = `${NAMESPACE}/REQUEST_SEASONS`;
+export const RECEIVE_SEASONS = `${NAMESPACE}/RECEIVE_SEASONS`;
+export const ERROR_FETCHING_SEASONS = `${NAMESPACE}/ERROR_FETCHING_SEASONS`;
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
@@ -104,6 +107,8 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
           teamID: action.payload.teamID
         }
       };
+    case RECEIVE_CREATE_SEASON:
+    case ERROR_CREATING_SEASON:
     case CLOSE_SEASON_SETUP_DIALOG:
       return {
         ...state,
@@ -192,6 +197,7 @@ function filterReducer(state = filtersInitialState, action = {}) {
 }
 
 export const loadingStatusInitialState = {
+  isSeasonsLoading: false,
   isAddTeamLoading: false,
   isEditTeamLoading: false,
   isTeamsLoading: false,
@@ -205,6 +211,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
     case RESET_STATE:
     case SIGN_OUT:
       return loadingStatusInitialState;
+    case REQUEST_SEASONS:
+      return {
+        ...state,
+        isSeasonsLoading: true
+      };
+    case ERROR_FETCHING_SEASONS:
+    case RECEIVE_SEASONS:
+      return {
+        ...state,
+        isSeasonsLoading: false
+      };
     case REQUEST_CREATE_SEASON:
       return {
         ...state,
@@ -276,6 +293,19 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   }
 }
 
+function seasonsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case REQUEST_SEASONS:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_SEASONS:
+      return action.payload.seasons;
+    default:
+      return state;
+  }
+}
+
 function staffReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
@@ -319,6 +349,7 @@ export const teamsReducer = combineReducers({
   dialogs: dialogsReducer,
   teamsList: teamsListReducer,
   staff: staffReducer,
+  seasons: seasonsReducer,
   loadingStatus: loadingStatusReducer,
   filters: filterReducer,
   uiConfig: uiConfigReducer,
@@ -330,6 +361,7 @@ export const teamsReducer = combineReducers({
 const dialogs = state => state.teams.dialogs;
 const teams = state => state.teams.teamsList;
 const staff = state => state.teams.staff;
+const seasons = state => state.teams.seasons;
 const loadingStatus = state => state.teams.loadingStatus;
 const filters = state => state.teams.filters;
 const uiConfig = state => state.teams.uiConfig;
@@ -339,6 +371,7 @@ export const selector = createStructuredSelector({
   dialogs,
   teams,
   staff,
+  seasons,
   loadingStatus,
   filters,
   uiConfig,
@@ -445,6 +478,49 @@ export function openAddTeamDialog() {
 export function closeAddTeamDialog() {
   return {
     type: CLOSE_ADD_TEAM_DIALOG
+  };
+}
+
+export function requestSeasons() {
+  return {
+    type: REQUEST_SEASONS
+  };
+}
+
+export function receiveSeasons(seasons) {
+  return {
+    type: RECEIVE_SEASONS,
+    payload: {
+      seasons
+    }
+  };
+}
+
+export function errorFetchingSeasons(error: { code: string, message: string }) {
+  return {
+    type: ERROR_FETCHING_SEASONS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadSeasons(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestStaff());
+
+    const seasonsRef = firebase
+      .firestore()
+      .collection("seasons")
+      .where("institutionID", "==", institutionID);
+
+    return seasonsRef.onSnapshot(querySnapshot => {
+      let seasons = {};
+      querySnapshot.forEach(doc => {
+        seasons[doc.id] = doc.data();
+      });
+      dispatch(receiveSeasons(seasons));
+    });
   };
 }
 
@@ -681,8 +757,7 @@ export function requestCreateSeason() {
   };
 }
 
-export function receiveCreateSeason(result) {
-  console.log(result);
+export function receiveCreateSeason() {
   return {
     type: RECEIVE_CREATE_SEASON
   };
@@ -717,7 +792,7 @@ export function createSeason(
       seasonInfo
     })
       .then(result => {
-        dispatch(receiveCreateSeason(result));
+        dispatch(receiveCreateSeason());
       })
       .catch(error => {
         dispatch(errorCreatingSeason(error));

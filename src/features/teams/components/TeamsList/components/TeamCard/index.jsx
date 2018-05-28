@@ -54,11 +54,13 @@ class TeamCard extends Component {
       classes,
       name,
       id,
-      isInSeason,
+      seasonStatus,
       isUserAdmin,
       navigateTo,
       setUpSeason
     } = this.props;
+
+    console.log(this.props);
 
     return (
       <div className={classes.card}>
@@ -72,15 +74,21 @@ class TeamCard extends Component {
           className={classes.content}
           onClick={() => navigateTo(`/myaccount/teams/${id}`)}
         >
-          {!isInSeason && (
+          {seasonStatus === "OUT_OF_SEASON" && (
             <div className={classes.inactiveAlert}>
               <i className={`fas fa-exclamation ${classes.alertIcon}`} />Not in
               season
             </div>
           )}
+          {seasonStatus === "IN_SEASON" && (
+            <div className={classes.inactiveAlert}>Season in progress</div>
+          )}
+          {seasonStatus === "UPCOMING_SEASON" && (
+            <div className={classes.inactiveAlert}>Season starting soon</div>
+          )}
         </div>
         {isUserAdmin &&
-          !isInSeason && (
+          seasonStatus === "OUT_OF_SEASON" && (
             <div className={classes.setupButtonWrapper}>
               <Button
                 colour="secondary"

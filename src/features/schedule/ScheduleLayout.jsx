@@ -68,11 +68,11 @@ class ScheduleLayout extends Component {
     const { dateSelected } = this.props.match.params;
 
     if (dateSelected && activeInstitutionID !== "") {
-      const minDate = moment(dateSelected)
-        .startOf("month")
+      const minDate = moment(dateSelected, "YYYY-MM-DD")
+        .subtract(1, "weeks")
         .toDate();
-      const maxDate = moment(dateSelected)
-        .endOf("month")
+      const maxDate = moment(dateSelected, "YYYY-MM-DD")
+        .add(1, "weeks")
         .toDate();
       loadEvents(activeInstitutionID, minDate, maxDate);
     }
@@ -97,22 +97,14 @@ class ScheduleLayout extends Component {
     } = nextProps.actions;
 
     if (dateSelected !== this.props.match.params.dateSelected && dateSelected) {
-      const minDate = moment(dateSelected)
-        .startOf("month")
+      const minDate = moment(dateSelected, "YYYY-MM-DD")
+        .subtract(1, "weeks")
         .toDate();
-      const maxDate = moment(dateSelected)
-        .endOf("month")
+      const maxDate = moment(dateSelected, "YYYY-MM-DD")
+        .add(1, "weeks")
         .toDate();
 
-      if (
-        _.keys(events).length === 0 ||
-        !moment(dateSelected).isSame(
-          moment(this.props.match.params.dateSelected),
-          "month"
-        )
-      ) {
-        loadEvents(activeInstitutionID, minDate, maxDate);
-      }
+      loadEvents(activeInstitutionID, minDate, maxDate);
     }
 
     if (
@@ -120,11 +112,11 @@ class ScheduleLayout extends Component {
       activeInstitutionID !== ""
     ) {
       if (dateSelected) {
-        const minDate = moment(dateSelected)
-          .startOf("month")
+        const minDate = moment(dateSelected, "YYYY-MM-DD")
+          .subtract(1, "weeks")
           .toDate();
-        const maxDate = moment(dateSelected)
-          .endOf("month")
+        const maxDate = moment(dateSelected, "YYYY-MM-DD")
+          .add(1, "weeks")
           .toDate();
         loadEvents(activeInstitutionID, minDate, maxDate);
       }

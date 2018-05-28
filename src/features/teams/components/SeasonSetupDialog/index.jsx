@@ -334,7 +334,14 @@ class SeasonSetupDialog extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { isOpen, people } = nextProps;
+    const {
+      isOpen,
+      people,
+      userID,
+      userFirstName,
+      userLastName,
+      userEmail
+    } = nextProps;
 
     let stateUpdates = {};
 
@@ -351,10 +358,12 @@ class SeasonSetupDialog extends Component {
           initialEndDate.daysInMonth(),
           false
         );
+        const peopleOptions = this.getPeopleOptions(people);
 
         stateUpdates = {
           startDayOptions,
           endDayOptions,
+          peopleOptions,
           startDate: {
             day: {
               key: initialStartDate.format("DD"),
@@ -382,7 +391,50 @@ class SeasonSetupDialog extends Component {
               key: initialEndDate.format("YYYY"),
               label: initialEndDate.format("YYYY")
             }
-          }
+          },
+          coaches: [
+            {
+              id: userID,
+              type: {
+                key: "ME",
+                label: "Me"
+              },
+              firstName: userFirstName,
+              lastName: userLastName,
+              email: userEmail,
+              payment: {
+                type: {
+                  key: "HOURLY",
+                  label: "Paid per hour"
+                },
+                rates: {
+                  standard: "100.00",
+                  overtime: "150.00",
+                  nonCompetitive: "250.00",
+                  competitive: "500.00",
+                  salary: "3000.00"
+                }
+              },
+              errorAt: "",
+              validation: "default",
+              message: ""
+            }
+          ],
+          managers: [
+            {
+              id: userID,
+              type: {
+                key: "ME",
+                label: "Me"
+              },
+              firstName: userFirstName,
+              lastName: userLastName,
+              email: userEmail,
+              errorAt: "",
+              validation: "default",
+              message: ""
+            }
+          ]
         };
       } else {
         stateUpdates = initialState;
@@ -2651,30 +2703,16 @@ class SeasonSetupDialog extends Component {
     } = this.state;
 
     const dates = {
-      start: moment(
-        `${startDate.day.label} ${startDate.month.label} ${startDate.year
-          .label}`,
-        "DD MMM YYYY"
-      ).toDate(),
-      end: moment(
-        `${endDate.day.label} ${endDate.month.label} ${endDate.year.label}`,
-        "DD MMM YYYY"
-      )
-        .endOf("day")
-        .toDate()
+      start: `${startDate.day.label} ${startDate.month.label} ${startDate.year
+        .label}`,
+      end: `${endDate.day.label} ${endDate.month.label} ${endDate.year.label}`
     };
 
     const reformattedCompetitiveEvents = competitiveEvents.map(info => {
-      const startTime = moment(
-        `${info.startTime.hours.label}:${info.startTime.minutes.label} ${info
-          .startTime.timeOfDay.label}`,
-        "hh:mm A"
-      ).toDate();
-      const endTime = moment(
-        `${info.endTime.hours.label}:${info.endTime.minutes.label} ${info
-          .endTime.timeOfDay.label}`,
-        "hh:mm A"
-      ).toDate();
+      const startTime = `${info.startTime.hours.label}:${info.startTime.minutes
+        .label} ${info.startTime.timeOfDay.label}`;
+      const endTime = `${info.endTime.hours.label}:${info.endTime.minutes
+        .label} ${info.endTime.timeOfDay.label}`;
       return {
         day: info.day,
         times: {
@@ -2685,16 +2723,10 @@ class SeasonSetupDialog extends Component {
     });
 
     const reformattedNonCompetitiveEvents = nonCompetitiveEvents.map(info => {
-      const startTime = moment(
-        `${info.startTime.hours.label}:${info.startTime.minutes.label} ${info
-          .startTime.timeOfDay.label}`,
-        "hh:mm A"
-      ).toDate();
-      const endTime = moment(
-        `${info.endTime.hours.label}:${info.endTime.minutes.label} ${info
-          .endTime.timeOfDay.label}`,
-        "hh:mm A"
-      ).toDate();
+      const startTime = `${info.startTime.hours.label}:${info.startTime.minutes
+        .label} ${info.startTime.timeOfDay.label}`;
+      const endTime = `${info.endTime.hours.label}:${info.endTime.minutes
+        .label} ${info.endTime.timeOfDay.label}`;
       return {
         day: info.day,
         times: {
@@ -2786,7 +2818,12 @@ class SeasonSetupDialog extends Component {
         ];
       case 2:
         return [
-          <Button colour="primary" slim handleClick={() => closeDialog()}>
+          <Button
+            disabled={isLoading}
+            colour="primary"
+            slim
+            handleClick={() => this.prevStep()}
+          >
             Back
           </Button>,
           <Button
@@ -2803,7 +2840,12 @@ class SeasonSetupDialog extends Component {
         ];
       case 3:
         return [
-          <Button colour="primary" slim handleClick={() => closeDialog()}>
+          <Button
+            disabled={isLoading}
+            colour="primary"
+            slim
+            handleClick={() => this.prevStep()}
+          >
             Back
           </Button>,
           <Button
@@ -2820,7 +2862,12 @@ class SeasonSetupDialog extends Component {
         ];
       case 4:
         return [
-          <Button colour="primary" slim handleClick={() => closeDialog()}>
+          <Button
+            disabled={isLoading}
+            colour="primary"
+            slim
+            handleClick={() => this.prevStep()}
+          >
             Back
           </Button>,
           <Button

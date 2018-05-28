@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import injectStyles from "react-jss";
+import moment from "moment";
 import AddTeamModal from "./components/AddTeamModal";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
@@ -69,22 +70,24 @@ class TeamsLayout extends Component {
 
   componentWillMount() {
     const { activeInstitutionID } = this.props;
-    const { loadTeams, loadStaff } = this.props.actions;
+    const { loadTeams, loadStaff, loadSeasons } = this.props.actions;
 
     if (activeInstitutionID !== "") {
       loadTeams(activeInstitutionID);
       loadStaff(activeInstitutionID);
+      loadSeasons(activeInstitutionID);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { activeInstitutionID, teams } = nextProps;
-    const { loadTeams, loadStaff, resetState } = nextProps.actions;
+    const { loadTeams, loadStaff, resetState, loadSeasons } = nextProps.actions;
 
     if (activeInstitutionID !== this.props.activeInstitutionID) {
       resetState();
       loadTeams(activeInstitutionID);
       loadStaff(activeInstitutionID);
+      loadSeasons(activeInstitutionID);
     }
 
     if (teams !== this.props.teams) {
@@ -139,16 +142,39 @@ class TeamsLayout extends Component {
     return ad;
   }
 
-  getTeamsList(teams) {
+  getTeamsList(teams, seasons) {
     return _.toPairs(teams).map(([id, info]) => {
-      let isInSeason = false;
+      let seasonStatus = "OUT_OF_SEASON";
+      const teamSeasons = _.toPairs(seasons)
+        .filter(([seasonID, seasonInfo]) => {
+          return seasonInfo.teamID === id;
+        })
+        .map(([seasonID, seasonInfo]) => {
+          const currentMoment = moment();
+          const seasonStartMoment = moment(
+            seasonInfo.dates.start,
+            "DD MMM YYYY"
+          );
+          const seasonEndMoment = moment(seasonInfo.dates.end, "DD MMM YYYY");
+
+          if (currentMoment.isBetween(seasonStartMoment, seasonEndMoment)) {
+            seasonStatus = "IN_SEASON";
+          } else if (currentMoment.isBefore(seasonStartMoment)) {
+            seasonStatus = "UPCOMING_SEASON";
+          }
+
+          return {
+            id: seasonID,
+            ...seasonInfo
+          };
+        });
 
       return {
         id,
-        isInSeason,
+        seasonStatus,
+        seasons: teamSeasons,
         name: info.info.name,
-        sport: info.info.sport,
-        status: info.status
+        sport: info.info.sport
       };
     });
   }
@@ -232,7 +258,8 @@ class TeamsLayout extends Component {
       userID,
       userEmail,
       userFirstName,
-      userLastName
+      userLastName,
+      seasons
     } = this.props;
     const {
       isAddTeamLoading,
@@ -251,8 +278,8 @@ class TeamsLayout extends Component {
     const { teamID, infoTab } = this.props.match.params;
 
     const ad = this.createAd();
-    const hasTeamsCreated = this.getTeamsList(teams).length > 0;
-    const filteredTeams = this.getTeamsList(this.filterTeams());
+    const hasTeamsCreated = this.getTeamsList(teams, seasons).length > 0;
+    const filteredTeams = this.getTeamsList(this.filterTeams(), seasons);
 
     if (teamID) {
       return (

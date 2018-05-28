@@ -50,7 +50,7 @@ const styles = {
     marginRight: 8
   },
   missingInfoText: {
-    color: yellow[800]
+    color: red[700]
   },
   row: {
     display: "flex",

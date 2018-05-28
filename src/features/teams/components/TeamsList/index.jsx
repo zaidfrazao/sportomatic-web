@@ -34,6 +34,7 @@ class TeamsList extends Component {
   render() {
     const { classes, teams, navigateTo, isUserAdmin, setUpSeason } = this.props;
 
+    console.log(teams);
     if (teams.length > 0) {
       return (
         <div className={classes.cardsWrapper}>
@@ -45,7 +46,7 @@ class TeamsList extends Component {
                 sport={teamInfo.sport}
                 id={teamInfo.id}
                 status={teamInfo.status}
-                isInSeason={teamInfo.isInSeason}
+                seasonStatus={teamInfo.seasonStatus}
                 setUpSeason={setUpSeason}
                 navigateTo={navigateTo}
               />
