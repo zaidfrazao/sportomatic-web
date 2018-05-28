@@ -27,7 +27,7 @@ const styles = theme => ({
     cursor: "pointer",
     boxShadow:
       "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-    borderLeft: `2px solid ${grey[300]}`,
+    borderLeft: `1px solid ${grey[300]}`,
     width: 80,
     height: "100%",
     display: "flex",
@@ -72,7 +72,6 @@ const styles = theme => ({
     }
   },
   sportsToolbarWrapper: {
-    borderBottom: `2px solid ${grey[300]}`,
     width: "calc(100% - 322px)",
     height: "100%",
     [`@media (max-width: ${mobileBreakpoint}px)`]: {
@@ -80,6 +79,7 @@ const styles = theme => ({
     }
   },
   wrapper: {
+    borderBottom: `1px solid ${grey[300]}`,
     backgroundColor: "white"
   }
 });
