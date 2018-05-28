@@ -43,13 +43,13 @@ const styles = theme => ({
   icon: {
     width: 28,
     height: 28,
-    borderRadius: "50%",
+    borderRadius: 8,
     fontSize: 32
   },
   iconSelected: {
     width: 32,
     height: 32,
-    borderRadius: "50%",
+    borderRadius: 8,
     fontSize: 32
   },
   wrapper: {

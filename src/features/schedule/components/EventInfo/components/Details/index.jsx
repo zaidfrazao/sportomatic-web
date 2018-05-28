@@ -59,15 +59,16 @@ const styles = {
     margin: "6px 24px"
   },
   listItemWrapper: {
+    transition: "0.25s",
     display: "flex",
     alignItems: "center",
     borderRadius: 12,
     padding: 24,
-    backgroundColor: grey[100],
+    backgroundColor: grey[200],
     cursor: "pointer",
     margin: 24,
     "&:hover": {
-      backgroundColor: grey[200]
+      backgroundColor: grey[300]
     }
   },
   noItems: {

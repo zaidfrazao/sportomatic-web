@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import accounting from "accounting";
 import injectStyles from "react-jss";
 import moment from "moment";
-import { common, grey, lightBlue } from "../../../../../../../../utils/colours";
+import { common, grey } from "../../../../../../../../utils/colours";
 
 const styles = {
   emptyState: {
@@ -45,8 +45,8 @@ const styles = {
   tableHeader: {
     borderRadius: "16px 16px 0 0",
     width: "100%",
-    backgroundColor: lightBlue[800],
-    color: common["white"],
+    color: grey[800],
+    backgroundColor: grey[100],
     padding: "24px 0",
     fontSize: 18,
     fontWeight: "bold"

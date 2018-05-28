@@ -5,7 +5,6 @@ import {
   common,
   green,
   grey,
-  lightBlue,
   red
 } from "../../../../../../../../utils/colours";
 
@@ -103,8 +102,8 @@ const styles = {
   tableHeader: {
     borderRadius: "16px 16px 0 0",
     width: "100%",
-    backgroundColor: lightBlue[800],
-    color: common["white"],
+    color: grey[800],
+    backgroundColor: grey[100],
     padding: "24px 0",
     fontSize: 18,
     fontWeight: "bold"

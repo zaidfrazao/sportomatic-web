@@ -114,7 +114,7 @@ const styles = {
     color: grey[700]
   },
   timesWrapper: {
-    borderTop: `1px solid ${grey[100]}`,
+    borderBottom: `1px solid ${grey[100]}`,
     display: "flex",
     alignItems: "center"
   }
@@ -303,7 +303,7 @@ class CoachCard extends Component {
       return (
         <div className={classes.buttonSecondaryWrapper}>
           <Button
-            colour="primary"
+            colour="secondary"
             slim
             fullWidth
             handleClick={() => this.toggleMarkAbsentDialog()}
@@ -322,7 +322,7 @@ class CoachCard extends Component {
       return (
         <div className={classes.buttonSecondaryWrapper}>
           <Button
-            colour="primary"
+            colour="secondary"
             slim
             fullWidth
             handleClick={() => this.toggleEditTimesDialog()}
@@ -453,9 +453,6 @@ class CoachCard extends Component {
           />
           {name}
         </div>
-        {hours.status !== "APPROVED" &&
-          !absenteeism.isAbsent &&
-          secondaryAction}
         {!absenteeism.isAbsent && (
           <div className={classes.timesWrapper}>
             <div className={classes.timesIconWrapper}>
@@ -494,6 +491,9 @@ class CoachCard extends Component {
             )}
           </div>
         )}
+        {hours.status !== "APPROVED" &&
+          !absenteeism.isAbsent &&
+          secondaryAction}
         {absenteeism.isAbsent &&
           (absenteeism.rating === "GOOD" ? (
             <div className={classes.absentWrapper}>

@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
-import { grey } from "../../utils/colours";
+import { common, grey } from "../../utils/colours";
 
 const styles = {
   message: {
     flexGrow: 1,
     borderRadius: 16,
-    backgroundColor: grey[300],
-    color: grey[500],
+    backgroundColor: common["white"],
+    color: grey[400],
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",

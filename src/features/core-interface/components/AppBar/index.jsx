@@ -24,6 +24,9 @@ const styles = theme => ({
     }
   },
   logOutButton: {
+    cursor: "pointer",
+    boxShadow:
+      "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
     borderLeft: `2px solid ${grey[300]}`,
     width: 80,
     height: "100%",
@@ -39,7 +42,6 @@ const styles = theme => ({
     transition: "0.25s",
     fontSize: 22,
     color: grey[900],
-    cursor: "pointer",
     "&:hover": {
       color: lightBlue[500]
     }
@@ -55,6 +57,8 @@ const styles = theme => ({
     color: lightBlue[500]
   },
   mobileMenuButton: {
+    boxShadow:
+      "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
     borderLeft: `2px solid ${grey[300]}`,
     width: 80,
     height: "100%",
@@ -62,11 +66,13 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+    cursor: "pointer",
     [`@media (min-width: ${mobileBreakpoint}px)`]: {
       display: "none"
     }
   },
   sportsToolbarWrapper: {
+    borderBottom: `2px solid ${grey[300]}`,
     width: "calc(100% - 322px)",
     height: "100%",
     [`@media (max-width: ${mobileBreakpoint}px)`]: {

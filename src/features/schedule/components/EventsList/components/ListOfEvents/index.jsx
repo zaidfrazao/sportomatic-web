@@ -56,14 +56,14 @@ const styles = {
     backgroundColor: common["white"]
   },
   header: {
-    borderBottom: `1px solid ${grey[300]}`,
+    border: `1px solid ${grey[300]}`,
     fontSize: 18,
     padding: "18px 0",
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: lightBlue[800]
+    color: grey[800],
+    backgroundColor: grey[200]
   },
   headerToday: {
     borderBottom: `1px solid ${grey[300]}`,
@@ -76,15 +76,15 @@ const styles = {
     backgroundColor: lightBlue[600]
   },
   headerLeft: {
-    borderBottom: `1px solid ${grey[300]}`,
+    border: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "16px 0 0 0",
     padding: "18px 0",
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: lightBlue[800]
+    color: grey[800],
+    backgroundColor: grey[200]
   },
   headerLeftToday: {
     borderBottom: `1px solid ${grey[300]}`,
@@ -98,15 +98,15 @@ const styles = {
     backgroundColor: lightBlue[600]
   },
   headerRight: {
-    borderBottom: `1px solid ${grey[300]}`,
+    border: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "0 16px 0 0",
     padding: "18px 0",
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: lightBlue[800]
+    color: grey[800],
+    backgroundColor: grey[200]
   },
   headerRightToday: {
     borderBottom: `1px solid ${grey[300]}`,
@@ -120,14 +120,15 @@ const styles = {
     backgroundColor: lightBlue[600]
   },
   headerTablet: {
+    border: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
     padding: "18px 0",
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: lightBlue[800]
+    color: grey[800],
+    backgroundColor: grey[200]
   },
   icon: {
     marginRight: 8

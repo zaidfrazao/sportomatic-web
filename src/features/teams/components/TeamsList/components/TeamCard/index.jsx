@@ -1,7 +1,12 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
 import Button from "../../../../../../components/Button";
-import { common, grey, orange } from "../../../../../../utils/colours";
+import {
+  common,
+  grey,
+  lightBlue,
+  orange
+} from "../../../../../../utils/colours";
 
 const styles = {
   alertIcon: {
@@ -19,14 +24,13 @@ const styles = {
     }
   },
   header: {
-    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
     padding: 24,
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[100]
+    color: common["white"],
+    backgroundColor: lightBlue[800]
   },
   inactiveAlert: {
     fontSize: 14,

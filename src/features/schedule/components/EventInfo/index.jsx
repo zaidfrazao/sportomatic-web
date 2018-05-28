@@ -16,10 +16,10 @@ import Tabs from "../../../../components/Tabs";
 
 const styles = {
   actionsBar: {
-    margin: "0 12px",
-    backgroundColor: grey[200],
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "flex-end",
+    margin: "0 12px",
+    backgroundColor: grey[200]
   },
   adWrapper: {
     display: "flex",
@@ -45,7 +45,7 @@ const styles = {
     height: 12
   },
   buttonWrapper: {
-    margin: "24px 12px"
+    margin: "24px 24px 0 24px"
   },
   flexGrow: {
     flexGrow: 1
@@ -201,6 +201,8 @@ class EventInfo extends Component {
       infoTab,
       eventID,
       dateSelected,
+      isPastEvent,
+      canCancel,
       userID
     } = this.props;
     const {
@@ -211,9 +213,12 @@ class EventInfo extends Component {
       approveHours,
       updateAbsent
     } = this.props.actions;
+    const { isInfoLoading } = this.props;
     const { tabSelected } = this.state;
 
     const ad = this.createAd();
+    const showButtons = !isPastEvent && !isInfoLoading;
+    const cancelButton = this.getCancelButton(info.status);
 
     if (isMobile) {
       switch (infoTab) {
@@ -221,6 +226,9 @@ class EventInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                {showButtons && canCancel && cancelButton}
+              </div>
               <Details
                 eventType={info.eventType}
                 date={info.formattedDate}
@@ -243,6 +251,9 @@ class EventInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                {showButtons && canCancel && cancelButton}
+              </div>
               <CoachManagement
                 isCancelled={info.status === "CANCELLED"}
                 isCompetitive={info.isCompetitive}
@@ -260,6 +271,9 @@ class EventInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                {showButtons && canCancel && cancelButton}
+              </div>
               <Results />
             </div>
           );
@@ -323,6 +337,9 @@ class EventInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                {showButtons && canCancel && cancelButton}
+              </div>
               <Details
                 eventType={info.eventType}
                 date={info.formattedDate}
@@ -345,6 +362,9 @@ class EventInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                {showButtons && canCancel && cancelButton}
+              </div>
               <CoachManagement
                 isCancelled={info.status === "CANCELLED"}
                 isCompetitive={info.isCompetitive}
@@ -362,6 +382,9 @@ class EventInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                {showButtons && canCancel && cancelButton}
+              </div>
               <Results />
             </div>
           );
@@ -369,6 +392,9 @@ class EventInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                {showButtons && canCancel && cancelButton}
+              </div>
               <Details
                 eventType={info.eventType}
                 date={info.formattedDate}
@@ -538,16 +564,7 @@ class EventInfo extends Component {
   }
 
   render() {
-    const {
-      classes,
-      isPastEvent,
-      canCancel,
-      isMobile,
-      infoTab,
-      eventID,
-      dateSelected
-    } = this.props;
-    const { isInfoLoading } = this.props;
+    const { classes, isMobile, infoTab, eventID, dateSelected } = this.props;
     const { goBack } = this.props.actions;
     const { tabSelected } = this.state;
 
@@ -555,8 +572,6 @@ class EventInfo extends Component {
     const teams = this.getTeams();
     const coaches = this.getCoaches();
     const managers = this.getManagers();
-    const showButtons = !isPastEvent && !isInfoLoading;
-    const cancelButton = this.getCancelButton(info.status);
 
     if (!isMobile && infoTab) {
       return <Redirect to={`/myaccount/schedule/${dateSelected}/${eventID}`} />;
@@ -584,9 +599,6 @@ class EventInfo extends Component {
           <div className={classes.headerInnerWrapper}>{info.title}</div>
         </div>
         <div className={classes.outerWrapper}>
-          <div className={classes.actionsBar}>
-            {showButtons && canCancel && cancelButton}
-          </div>
           {!isMobile && (
             <div className={classes.tabsWrapper}>
               <Tabs

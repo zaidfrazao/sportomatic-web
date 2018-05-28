@@ -32,7 +32,6 @@ const styles = {
   contentWrapper: {
     flex: 1,
     overflow: "auto",
-    borderTop: `2px solid ${grey[300]}`,
     backgroundColor: grey[200]
   },
   coreWrapper: {

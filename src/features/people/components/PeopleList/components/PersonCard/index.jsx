@@ -6,7 +6,6 @@ import {
   common,
   grey,
   lightBlue,
-  red,
   orange
 } from "../../../../../../utils/colours";
 import Button from "../../../../../../components/Button";
@@ -37,23 +36,23 @@ const styles = {
     }
   },
   header: {
-    borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
     padding: 24,
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[100]
+    color: common["white"],
+    backgroundColor: lightBlue[800]
   },
   inactiveAlert: {
     fontSize: 14,
     padding: "12px 0",
-    width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: red[500]
+    color: grey[400],
+    borderRadius: 8,
+    margin: "12px 12px 0 12px",
+    backgroundColor: grey[100]
   },
   resendButtonWrapper: {
     borderRadius: "0 0 16px 16px",

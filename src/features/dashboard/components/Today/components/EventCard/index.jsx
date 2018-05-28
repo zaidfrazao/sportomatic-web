@@ -24,8 +24,8 @@ const styles = {
     padding: 24,
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[100]
+    color: common["white"],
+    backgroundColor: lightBlue[800]
   },
   iconComplete: {
     textAlign: "center",
@@ -47,6 +47,13 @@ const styles = {
     width: props => (props.isMobile ? "100%" : "50%")
   },
   listIconWrapper: {
+    textAlign: "center",
+    backgroundColor: grey[100],
+    width: 60,
+    padding: "24px 0"
+  },
+  listIconWrapperBottomLeft: {
+    borderRadius: "0 0 0 16px",
     textAlign: "center",
     backgroundColor: grey[100],
     width: 60,
@@ -88,10 +95,16 @@ const styles = {
     }
   },
   wrapper: {
+    transition: "0.25s",
+    cursor: "pointer",
     border: `1px solid ${grey[300]}`,
     margin: 24,
     borderRadius: 16,
-    backgroundColor: common["white"]
+    backgroundColor: common["white"],
+    "&:hover": {
+      boxShadow:
+        "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+    }
   }
 };
 
@@ -188,7 +201,7 @@ class EventCard extends Component {
     };
 
     return (
-      <div className={classes.wrapper}>
+      <div className={classes.wrapper} onClick={() => viewEventInfo()}>
         <div className={classes.header}>{title}</div>
         <div className={classes.dateWrapper}>{relativeTime}</div>
         <div className={classes.startEndWrapper}>
@@ -213,7 +226,7 @@ class EventCard extends Component {
               </span>
             </div>
             <div className={classes.listWrapper}>
-              <div className={classes.listIconWrapper}>
+              <div className={classes.listIconWrapperBottomLeft}>
                 <i className="fas fa-comment-alt" />
               </div>
               <span className={classes.listText}>
@@ -245,9 +258,6 @@ class EventCard extends Component {
               </span>
             </div>
           </div>
-        </div>
-        <div className={classes.viewButton} onClick={() => viewEventInfo()}>
-          View
         </div>
       </div>
     );

@@ -3,6 +3,7 @@ import injectStyles from "react-jss";
 import {
   common,
   grey,
+  lightBlue,
   red,
   yellow
 } from "../../../../../../../../utils/colours";
@@ -23,16 +24,18 @@ const styles = {
     color: red[700]
   },
   header: {
-    borderBottom: `1px solid ${grey[300]}`,
+    borderRadius: "16px 16px 0 0",
     fontSize: props => (props.isTablet ? 16 : 14),
     padding: "24px 12px",
     lineHeight: props => (props.isTablet ? "22px" : "18px"),
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800]
+    color: common["white"],
+    backgroundColor: lightBlue[800]
   },
   headerIcon: {
-    marginRight: 8
+    marginRight: 8,
+    color: grey[400]
   },
   headerIconCompetitive: {
     marginRight: 8,

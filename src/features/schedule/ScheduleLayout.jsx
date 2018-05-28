@@ -6,6 +6,7 @@ import moment from "moment";
 import { Redirect } from "react-router-dom";
 import BannerAd from "../../components/BannerAd";
 import { common } from "../../utils/colours";
+import Dialog from "../../components/Dialog";
 import EventsList from "./components/EventsList";
 import EventInfo from "./components/EventInfo";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
@@ -418,13 +419,21 @@ class ScheduleLayout extends Component {
     const {
       openEditEventDialog,
       openCancelEventAlert,
+      closeCancelEventAlert,
       openUncancelEventAlert,
+      closeUncancelEventAlert,
       signIn,
       signOut,
       updateTimes,
       approveHours,
-      updateAbsent
+      updateAbsent,
+      cancelEvent,
+      uncancelEvent
     } = this.props.actions;
+    const {
+      isCancelEventAlertOpen,
+      isUncancelEventAlertOpen
+    } = this.props.dialogs;
     const {
       isEventsLoading,
       isStaffLoading,
@@ -459,6 +468,8 @@ class ScheduleLayout extends Component {
             actions={{
               navigateTo,
               goBack,
+              cancelEvent: () => openCancelEventAlert(),
+              uncancelEvent: () => openUncancelEventAlert(),
               signIn: (coachID, signInTime) =>
                 signIn(eventID, coachID, signInTime),
               signOut: (coachID, signOutTime) =>
@@ -478,11 +489,33 @@ class ScheduleLayout extends Component {
                 ),
               updateAbsent: (coachID, rating) =>
                 updateAbsent(eventID, coachID, rating),
-              editEvent: openEditEventDialog,
-              cancelEvent: openCancelEventAlert,
-              uncancelEvent: openUncancelEventAlert
+              editEvent: openEditEventDialog
             }}
           />
+          <Dialog
+            isOpen={isCancelEventAlertOpen}
+            heading="Cancel Event"
+            type="decision"
+            handleNoClick={() => closeCancelEventAlert()}
+            handleYesClick={() => {
+              cancelEvent(eventID);
+              closeCancelEventAlert();
+            }}
+          >
+            Are you sure you want to cancel this event?
+          </Dialog>
+          <Dialog
+            isOpen={isUncancelEventAlertOpen}
+            heading="Uncancel Event"
+            type="decision"
+            handleNoClick={() => closeUncancelEventAlert()}
+            handleYesClick={() => {
+              uncancelEvent(eventID);
+              closeUncancelEventAlert();
+            }}
+          >
+            Is this event back on?
+          </Dialog>
         </div>
       </div>
     );

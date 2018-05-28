@@ -46,7 +46,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "cen  buttonWrapper: {},ter"
+    alignItems: "center"
   }
 };
 
@@ -58,7 +58,7 @@ type Props = {
 
 class CommunityInfo extends Component<Props> {
   render() {
-    const { classes, emblem, name, logOut } = this.props;
+    const { classes, emblem, name } = this.props;
 
     return (
       <div className={classes.wrapper}>
