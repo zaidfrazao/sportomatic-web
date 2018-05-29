@@ -15,12 +15,12 @@ import SideMenu from "./components/SideMenu";
 import Teams from "../teams/TeamsView";
 
 import athleticsIcon from "./images/athletics.png";
+import crossCountryIcon from "./images/cross-country.png";
 import hockeyIcon from "./images/hockey.png";
 import netballIcon from "./images/netball.png";
 import rugbyIcon from "./images/rugby.png";
 import otherIcon from "./images/other.png";
 import soccerIcon from "./images/soccer.png";
-import softballIcon from "./images/softball.png";
 import swimmingIcon from "./images/swimming.png";
 import waterPoloIcon from "./images/water-polo.png";
 
@@ -53,8 +53,8 @@ const styles = {
     textAlign: "center"
   },
   sportSelectedIcon: {
-    width: 26,
-    height: 26,
+    width: 40,
+    height: 40,
     marginRight: 16
   },
   wrapper: {
@@ -208,48 +208,42 @@ class CoreInterfaceLayout extends Component {
     };
   }
 
-  getSportsItems() {
+  getSportsIcon(sport) {
+    const icons = {
+      Athletics: athleticsIcon,
+      "Cross Country": crossCountryIcon,
+      Hockey: hockeyIcon,
+      Netball: netballIcon,
+      Rugby: rugbyIcon,
+      Soccer: soccerIcon,
+      Swimming: swimmingIcon,
+      "Water Polo": waterPoloIcon,
+      Other: otherIcon
+    };
+
+    if (icons[sport]) return icons[sport];
+    return icons["Other"];
+  }
+
+  getSportsItems(sports) {
+    const sportItems = _.fromPairs(
+      sports.map(sport => {
+        return [
+          sport,
+          {
+            label: sport,
+            icon: this.getSportsIcon(sport)
+          }
+        ];
+      })
+    );
+
     return {
       all: {
         label: "All",
         icon: "N/A"
       },
-      athletics: {
-        label: "Athletics",
-        icon: athleticsIcon
-      },
-      hockey: {
-        label: "Hockey",
-        icon: hockeyIcon
-      },
-      netball: {
-        label: "Netball",
-        icon: netballIcon
-      },
-      rugby: {
-        label: "Rugby",
-        icon: rugbyIcon
-      },
-      soccer: {
-        label: "Soccer",
-        icon: soccerIcon
-      },
-      softball: {
-        label: "Softball",
-        icon: softballIcon
-      },
-      swimming: {
-        label: "Swimming",
-        icon: swimmingIcon
-      },
-      waterPolo: {
-        label: "Water Polo",
-        icon: waterPoloIcon
-      },
-      other: {
-        label: "Other",
-        icon: otherIcon
-      }
+      ...sportItems
     };
   }
 
@@ -396,12 +390,13 @@ class CoreInterfaceLayout extends Component {
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
     const sideMenuItems = this.getSideMenuItems();
-    const sportsItems = this.getSportsItems();
     const switchCommunityInfo = this.getSwitchCommunitiesInfo();
 
     let isAdmin = false;
     let communityName = "Default";
     let emblem = "";
+    let sports = [];
+    let sportsItems = {};
     let permissions = {
       coaches: {
         events: {
@@ -455,6 +450,8 @@ class CoreInterfaceLayout extends Component {
     };
 
     if (institutions[activeInstitutionID]) {
+      sports = institutions[activeInstitutionID].info.sports;
+      sportsItems = this.getSportsItems(sports);
       teamOptions = this.getTeamOptions(institutions[activeInstitutionID]);
       isAdmin =
         accountInfo.institutions[activeInstitutionID].roles.admin ===

@@ -8,7 +8,7 @@ const mobileBreakpoint = 800;
 
 const styles = theme => ({
   content: {
-    height: 64,
+    height: 63,
     display: "flex",
     alignItems: "center"
   },

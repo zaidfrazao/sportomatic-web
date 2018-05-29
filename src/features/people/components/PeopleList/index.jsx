@@ -10,18 +10,15 @@ const styles = {
   cardsWrapper: {
     display: "flex",
     flexWrap: "wrap",
-    padding: 24,
     margin: "0 auto"
   },
   cardWrapper: {
     width: "100%",
-    padding: "24px 0",
+    padding: 24,
     [`@media (min-width: ${mobileBreakpoint}px)`]: {
-      padding: 24,
       width: "calc(50% - 48px)"
     },
     [`@media (min-width: ${tabletBreakpoint}px)`]: {
-      padding: 24,
       width: "calc(33% - 48px)"
     }
   },

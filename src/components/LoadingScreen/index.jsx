@@ -11,8 +11,7 @@ const styles = theme => ({
   },
   logo: {
     width: 240,
-    height: "auto",
-    margin: 10
+    height: "auto"
   },
   wrapper: {
     width: "100%",

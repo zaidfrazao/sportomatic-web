@@ -2,9 +2,15 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
-import moment from "moment";
+import moment from "moment-timezone";
 import Button from "../../../../components/Button";
-import { common, grey, lightBlue, red } from "../../../../utils/colours";
+import {
+  common,
+  grey,
+  lightBlue,
+  red,
+  yellow
+} from "../../../../utils/colours";
 import Dialog from "../../../../components/Dialog";
 import { isValidEmail } from "../../../../utils/validation";
 import Select from "../../../../components/Select";
@@ -63,6 +69,14 @@ const styles = {
   },
   iconAdjacentText: {
     marginRight: 12
+  },
+  matchIcon: {
+    marginRight: 12,
+    color: yellow[800]
+  },
+  practiceIcon: {
+    marginRight: 12,
+    color: grey[600]
   },
   timeInputGroupWrapper: {
     display: "flex",
@@ -347,8 +361,10 @@ class SeasonSetupDialog extends Component {
 
     if (isOpen !== this.props.isOpen) {
       if (isOpen) {
-        const initialStartDate = moment();
-        const initialEndDate = moment().add(2, "months");
+        const initialStartDate = moment().tz("Africa/Johannesburg");
+        const initialEndDate = moment()
+          .tz("Africa/Johannesburg")
+          .add(2, "months");
 
         const startDayOptions = this.getDayOptions(
           initialStartDate.daysInMonth(),
@@ -474,7 +490,9 @@ class SeasonSetupDialog extends Component {
   }
 
   getDayOptions(numberOfDays, isThisMonth) {
-    const currentDay = moment().date();
+    const currentDay = moment()
+      .tz("Africa/Johannesburg")
+      .date();
 
     if (isThisMonth) {
       return Array(numberOfDays - currentDay)
@@ -500,7 +518,9 @@ class SeasonSetupDialog extends Component {
   }
 
   getMonthOptions(isThisYear) {
-    const currentMonth = moment().month();
+    const currentMonth = moment()
+      .tz("Africa/Johannesburg")
+      .month();
     const months = [
       "Jan",
       "Feb",
@@ -538,8 +558,11 @@ class SeasonSetupDialog extends Component {
   }
 
   getYearOptions() {
-    const thisYear = moment().format("YYYY");
+    const thisYear = moment()
+      .tz("Africa/Johannesburg")
+      .format("YYYY");
     const nextYear = moment()
+      .tz("Africa/Johannesburg")
       .add(1, "year")
       .format("YYYY");
     const years = [thisYear, nextYear];
@@ -571,25 +594,40 @@ class SeasonSetupDialog extends Component {
       const newDateMoment = moment(
         `${newValue.key}-${startDate.year.key}`,
         "MM-YYYY"
-      );
+      ).tz("Africa/Johannesburg");
       const daysInNewMonth = newDateMoment.daysInMonth();
       const isThisMonth =
-        newDateMoment.format("MM-YYYY") === moment().format("MM-YYYY");
+        newDateMoment.format("MM-YYYY") ===
+        moment()
+          .tz("Africa/Johannesburg")
+          .format("MM-YYYY");
       const startDayOptions = this.getDayOptions(daysInNewMonth, isThisMonth);
       const currentDaySelected = parseInt(startDate.day.key, 10);
 
       let newDay = startDate.day;
-      if (isThisMonth && currentDaySelected < moment().date()) {
+      if (
+        isThisMonth &&
+        currentDaySelected <
+          moment()
+            .tz("Africa/Johannesburg")
+            .date()
+      ) {
         newDay = {
-          key: moment().format("DD"),
-          label: moment().format("DD")
+          key: moment()
+            .tz("Africa/Johannesburg")
+            .format("DD"),
+          label: moment()
+            .tz("Africa/Johannesburg")
+            .format("DD")
         };
       } else if (currentDaySelected > daysInNewMonth) {
         newDay = {
           key: moment(newDateMoment)
+            .tz("Africa/Johannesburg")
             .endOf("month")
             .format("DD"),
           label: moment(newDateMoment)
+            .tz("Africa/Johannesburg")
             .endOf("month")
             .format("DD")
         };
@@ -607,25 +645,40 @@ class SeasonSetupDialog extends Component {
       const newDateMoment = moment(
         `${startDate.month.key}-${newValue.key}`,
         "MM-YYYY"
-      );
+      ).tz("Africa/Johannesburg");
       const daysInNewMonth = newDateMoment.daysInMonth();
       const isThisMonth =
-        newDateMoment.format("MM-YYYY") === moment().format("MM-YYYY");
+        newDateMoment.format("MM-YYYY") ===
+        moment()
+          .tz("Africa/Johannesburg")
+          .format("MM-YYYY");
       const startDayOptions = this.getDayOptions(daysInNewMonth, isThisMonth);
       const currentDaySelected = parseInt(startDate.day.key, 10);
 
       let newDay = startDate.day;
-      if (isThisMonth && currentDaySelected < moment().date()) {
+      if (
+        isThisMonth &&
+        currentDaySelected <
+          moment()
+            .tz("Africa/Johannesburg")
+            .date()
+      ) {
         newDay = {
-          key: moment().format("DD"),
-          label: moment().format("DD")
+          key: moment()
+            .tz("Africa/Johannesburg")
+            .format("DD"),
+          label: moment()
+            .tz("Africa/Johannesburg")
+            .format("DD")
         };
       } else if (currentDaySelected > daysInNewMonth) {
         newDay = {
           key: moment(newDateMoment)
+            .tz("Africa/Johannesburg")
             .endOf("month")
             .format("DD"),
           label: moment(newDateMoment)
+            .tz("Africa/Johannesburg")
             .endOf("month")
             .format("DD")
         };
@@ -656,25 +709,40 @@ class SeasonSetupDialog extends Component {
       const newDateMoment = moment(
         `${newValue.key}-${endDate.year.key}`,
         "MM-YYYY"
-      );
+      ).tz("Africa/Johannesburg");
       const daysInNewMonth = newDateMoment.daysInMonth();
       const isThisMonth =
-        newDateMoment.format("MM-YYYY") === moment().format("MM-YYYY");
+        newDateMoment.format("MM-YYYY") ===
+        moment()
+          .tz("Africa/Johannesburg")
+          .format("MM-YYYY");
       const endDayOptions = this.getDayOptions(daysInNewMonth, isThisMonth);
       const currentDaySelected = parseInt(endDate.day.key, 10);
 
       let newDay = endDate.day;
-      if (isThisMonth && currentDaySelected < moment().date()) {
+      if (
+        isThisMonth &&
+        currentDaySelected <
+          moment()
+            .tz("Africa/Johannesburg")
+            .date()
+      ) {
         newDay = {
-          key: moment().format("DD"),
-          label: moment().format("DD")
+          key: moment()
+            .tz("Africa/Johannesburg")
+            .format("DD"),
+          label: moment()
+            .tz("Africa/Johannesburg")
+            .format("DD")
         };
       } else if (currentDaySelected > daysInNewMonth) {
         newDay = {
           key: moment(newDateMoment)
+            .tz("Africa/Johannesburg")
             .endOf("month")
             .format("DD"),
           label: moment(newDateMoment)
+            .tz("Africa/Johannesburg")
             .endOf("month")
             .format("DD")
         };
@@ -692,25 +760,40 @@ class SeasonSetupDialog extends Component {
       const newDateMoment = moment(
         `${endDate.month.key}-${newValue.key}`,
         "MM-YYYY"
-      );
+      ).tz("Africa/Johannesburg");
       const daysInNewMonth = newDateMoment.daysInMonth();
       const isThisMonth =
-        newDateMoment.format("MM-YYYY") === moment().format("MM-YYYY");
+        newDateMoment.format("MM-YYYY") ===
+        moment()
+          .tz("Africa/Johannesburg")
+          .format("MM-YYYY");
       const endDayOptions = this.getDayOptions(daysInNewMonth, isThisMonth);
       const currentDaySelected = parseInt(endDate.day.key, 10);
 
       let newDay = endDate.day;
-      if (isThisMonth && currentDaySelected < moment().date()) {
+      if (
+        isThisMonth &&
+        currentDaySelected <
+          moment()
+            .tz("Africa/Johannesburg")
+            .date()
+      ) {
         newDay = {
-          key: moment().format("DD"),
-          label: moment().format("DD")
+          key: moment()
+            .tz("Africa/Johannesburg")
+            .format("DD"),
+          label: moment()
+            .tz("Africa/Johannesburg")
+            .format("DD")
         };
       } else if (currentDaySelected > daysInNewMonth) {
         newDay = {
           key: moment(newDateMoment)
+            .tz("Africa/Johannesburg")
             .endOf("month")
             .format("DD"),
           label: moment(newDateMoment)
+            .tz("Africa/Johannesburg")
             .endOf("month")
             .format("DD")
         };
@@ -745,9 +828,16 @@ class SeasonSetupDialog extends Component {
     } = this.state;
 
     const isStartDateThisYear =
-      startDate.year.label === moment().format("YYYY");
+      startDate.year.label ===
+      moment()
+        .tz("Africa/Johannesburg")
+        .format("YYYY");
     const startMonthOptions = this.getMonthOptions(isStartDateThisYear);
-    const isEndDateThisYear = endDate.year.label === moment().format("YYYY");
+    const isEndDateThisYear =
+      endDate.year.label ===
+      moment()
+        .tz("Africa/Johannesburg")
+        .format("YYYY");
     const endMonthOptions = this.getMonthOptions(isEndDateThisYear);
     const yearOptions = this.getYearOptions();
 
@@ -1251,9 +1341,8 @@ class SeasonSetupDialog extends Component {
     return (
       <div>
         <div className={classes.headingTime}>
-          <i
-            className={`fas fa-dumbbell ${classes.iconAdjacentText}`}
-          />Practice Times
+          <i className={`fas fa-dumbbell ${classes.practiceIcon}`} />Practice
+          Times
         </div>
         {events.length === 0 ? (
           <div className={classes.emptyState}>No practices this season</div>
@@ -1435,8 +1524,7 @@ class SeasonSetupDialog extends Component {
     return (
       <div>
         <div className={classes.headingTime}>
-          <i className={`fas fa-trophy ${classes.iconAdjacentText}`} />Match
-          Times
+          <i className={`fas fa-trophy ${classes.matchIcon}`} />Match Times
         </div>
         {events.length === 0 ? (
           <div className={classes.emptyState}>No matches this season</div>
@@ -2141,11 +2229,11 @@ class SeasonSetupDialog extends Component {
     const startDateMoment = moment(
       `${startDate.day.label}-${startDate.month.label}-${startDate.year.label}`,
       "DD-MMM-YYYY"
-    );
+    ).tz("Africa/Johannesburg");
     const endDateMoment = moment(
       `${endDate.day.label}-${endDate.month.label}-${endDate.year.label}`,
       "DD-MMM-YYYY"
-    );
+    ).tz("Africa/Johannesburg");
 
     if (!endDateMoment.isAfter(startDateMoment)) {
       isValid = false;
@@ -2178,12 +2266,12 @@ class SeasonSetupDialog extends Component {
         `${day}, ${startTime.hours.label}:${startTime.minutes.label} ${startTime
           .timeOfDay.label}`,
         "dddd, hh:mm A"
-      );
+      ).tz("Africa/Johannesburg");
       const endTimeMoment = moment(
         `${day}, ${endTime.hours.label}:${endTime.minutes.label} ${endTime
           .timeOfDay.label}`,
         "dddd, hh:mm A"
-      );
+      ).tz("Africa/Johannesburg");
 
       if (!endTimeMoment.isAfter(startTimeMoment)) {
         isValid = false;
@@ -2247,12 +2335,12 @@ class SeasonSetupDialog extends Component {
         `${day}, ${startTime.hours.label}:${startTime.minutes.label} ${startTime
           .timeOfDay.label}`,
         "dddd, hh:mm A"
-      );
+      ).tz("Africa/Johannesburg");
       const endTimeMoment = moment(
         `${day}, ${endTime.hours.label}:${endTime.minutes.label} ${endTime
           .timeOfDay.label}`,
         "dddd, hh:mm A"
-      );
+      ).tz("Africa/Johannesburg");
 
       return {
         start: startTimeMoment,
@@ -2266,12 +2354,12 @@ class SeasonSetupDialog extends Component {
         `${day}, ${startTime.hours.label}:${startTime.minutes.label} ${startTime
           .timeOfDay.label}`,
         "dddd, hh:mm A"
-      );
+      ).tz("Africa/Johannesburg");
       const endTimeMoment = moment(
         `${day}, ${endTime.hours.label}:${endTime.minutes.label} ${endTime
           .timeOfDay.label}`,
         "dddd, hh:mm A"
-      );
+      ).tz("Africa/Johannesburg");
 
       if (!endTimeMoment.isAfter(startTimeMoment)) {
         isValid = false;

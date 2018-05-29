@@ -10,12 +10,11 @@ const styles = {
   cardsWrapper: {
     display: "flex",
     flexWrap: "wrap",
-    padding: 24,
     margin: "0 auto"
   },
   cardWrapper: {
     width: "100%",
-    padding: "24px 0",
+    padding: 24,
     [`@media (min-width: ${mobileBreakpoint}px)`]: {
       padding: 24,
       width: "calc(50% - 48px)"
@@ -34,7 +33,6 @@ class TeamsList extends Component {
   render() {
     const { classes, teams, navigateTo, isUserAdmin, setUpSeason } = this.props;
 
-    console.log(teams);
     if (teams.length > 0) {
       return (
         <div className={classes.cardsWrapper}>

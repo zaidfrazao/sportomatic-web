@@ -5,12 +5,16 @@ import injectSheet from "react-jss";
 import moment from "moment";
 import { Redirect } from "react-router-dom";
 import BannerAd from "../../components/BannerAd";
+import Button from "../../components/Button";
 import { common } from "../../utils/colours";
 import Dialog from "../../components/Dialog";
 import EventsList from "./components/EventsList";
 import EventInfo from "./components/EventInfo";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
+import PersonalAllSwitch from "./components/PersonalAllSwitch";
+
+const mobileBreakpoint = 800;
 
 const styles = {
   adWrapper: {
@@ -21,7 +25,14 @@ const styles = {
   actionsBar: {
     display: "flex",
     justifyContent: "center",
-    margin: "24px 24px 0 24px"
+    margin: "24px 24px 0 24px",
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      flexDirection: "column",
+      alignItems: "center"
+    }
+  },
+  buttonSeparator: {
+    height: 12
   },
   contentWrapper: {
     height: "100%",
@@ -198,14 +209,8 @@ class ScheduleLayout extends Component {
 
   filterEvents() {
     const { sportFilter } = this.props;
-    const {
-      eventType,
-      division,
-      ageGroup,
-      gender,
-      searchText
-    } = this.props.filters;
-    const { events, teams, users, userID, meAllFilter } = this.props;
+    const { eventType, division, ageGroup, gender } = this.props.filters;
+    const { events, teams, userID, meAllFilter } = this.props;
 
     return _.fromPairs(
       _.toPairs(events).filter(([id, info]) => {
@@ -214,11 +219,6 @@ class ScheduleLayout extends Component {
         let coachMatch = true;
         let managerMatch = true;
         let roleMatch = true;
-
-        if (searchText !== "") {
-          const eventTitle = _.toLower(info.requiredInfo.title);
-          titleMatch = eventTitle.includes(_.toLower(searchText));
-        }
 
         if (meAllFilter === "me") {
           const eventCoaches = _.keys(info.coaches);
@@ -229,47 +229,15 @@ class ScheduleLayout extends Component {
           roleMatch = roleMatch || eventManagers.includes(userID);
         }
 
-        if (searchText !== "") {
-          const eventCoaches = _.keys(info.coaches);
-          const eventManagers = _.keys(info.managers);
-          eventCoaches.map(coachID => {
-            const coachName = `${_.toLower(
-              users[coachID].info.name
-            )} ${_.toLower(users[coachID].info.surname)}`;
-            coachMatch =
-              coachMatch && coachName.includes(_.toLower(searchText));
-          });
-          eventManagers.map(managerID => {
-            const managerName = `${_.toLower(
-              users[managerID].info.name
-            )} ${_.toLower(users[managerID].info.surname)}`;
-            managerMatch =
-              managerMatch && managerName.includes(_.toLower(searchText));
-          });
-          if (eventCoaches.length === 0) coachMatch = false;
-          if (eventManagers.length === 0) managerMatch = false;
-        }
-
         if (eventType !== "All") {
           allowThroughFilter =
             allowThroughFilter && info.requiredInfo.type === eventType;
         }
         _.keys(info.teams).map(teamID => {
           if (teams[teamID] && sportFilter !== "all") {
-            if (sportFilter === "other") {
-              let teamSport = teams[teamID].info.sport;
-              if (teamSport === "Soccer / Football") {
-                teamSport = "soccer";
-              }
-              const supportedSports = ["netball", "rugby", "soccer"];
-              allowThroughFilter =
-                allowThroughFilter &&
-                !supportedSports.includes(_.lowerCase(teamSport));
-            } else {
-              allowThroughFilter =
-                allowThroughFilter &&
-                _.lowerCase(teams[teamID].info.sport).includes(sportFilter);
-            }
+            allowThroughFilter =
+              allowThroughFilter &&
+              teams[teamID].info.sport.includes(sportFilter);
           }
           if (teams[teamID] && division !== "All") {
             allowThroughFilter =
@@ -372,10 +340,13 @@ class ScheduleLayout extends Component {
 
   getEventListView(canCreate) {
     const {
+      isAdmin,
       isTablet,
       isMobile,
       classes,
       navigateTo,
+      meAllFilter,
+      changeMeAllFilter,
       institutionCreationDate
     } = this.props;
     const { dateSelected } = this.props.match.params;
@@ -387,6 +358,21 @@ class ScheduleLayout extends Component {
       <div className={classes.root}>
         <div className={classes.contentWrapper}>
           <div className={classes.adWrapper}>{ad}</div>
+          <div className={classes.actionsBar}>
+            <PersonalAllSwitch
+              isMobile={isMobile}
+              meAllFilter={meAllFilter}
+              changeMeAllFilter={changeMeAllFilter}
+            />
+            {isMobile && <div className={classes.buttonSeparator} />}
+            <div className={classes.flexGrow} />
+            {isAdmin && (
+              <Button colour="primary" filled slim fullWidth={isMobile}>
+                <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
+                Add new event
+              </Button>
+            )}
+          </div>
           <EventsList
             canCreate={canCreate}
             isMobile={isMobile}

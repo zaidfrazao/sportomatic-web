@@ -11,9 +11,10 @@ import {
 const styles = {
   cancelledRow: {
     fontSize: props => (props.isTablet ? 16 : 14),
-    color: red[700],
-    backgroundColor: common["white"],
-    padding: "12px 0",
+    backgroundColor: red[600],
+    fontWeight: "bold",
+    color: common["white"],
+    padding: "12px 4px",
     borderBottom: `1px solid ${grey[100]}`,
     textAlign: "center"
   },
@@ -21,7 +22,7 @@ const styles = {
     marginRight: 8
   },
   cancelledText: {
-    color: red[700]
+    color: common["white"]
   },
   header: {
     borderRadius: "16px 16px 0 0",
@@ -42,10 +43,11 @@ const styles = {
     color: yellow[800]
   },
   missingInfoRow: {
+    fontWeight: "bold",
     fontSize: props => (props.isTablet ? 16 : 14),
-    color: red[700],
-    backgroundColor: common["white"],
-    padding: "12px 0",
+    color: common["white"],
+    backgroundColor: red[600],
+    padding: "12px 4px",
     borderBottom: `1px solid ${grey[100]}`,
     textAlign: "center"
   },
@@ -53,7 +55,7 @@ const styles = {
     marginRight: 8
   },
   missingInfoText: {
-    color: red[700]
+    color: common["white"]
   },
   row: {
     display: "flex",

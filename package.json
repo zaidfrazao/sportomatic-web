@@ -11,6 +11,7 @@
     "lint-staged": "^4.3.0",
     "lodash": "^4.17.4",
     "moment": "^2.20.1",
+    "moment-timezone": "^0.5.17",
     "prettier": "^1.7.4",
     "react": "^16.0.0",
     "react-avatar-editor": "^10.3.0",

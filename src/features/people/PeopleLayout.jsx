@@ -10,17 +10,27 @@ import InvitePersonDialog from "./components/InvitePersonDialog";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import PeopleList from "./components/PeopleList";
+import PersonalAllSwitch from "./components/PersonalAllSwitch";
 import PersonInfo from "./components/PersonInfo";
+
+const mobileBreakpoint = 800;
 
 const styles = {
   actionsBar: {
     display: "flex",
     justifyContent: "center",
-    margin: "0 24px 24px 24px"
+    margin: "24px 24px 0 24px",
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      flexDirection: "column",
+      alignItems: "center"
+    }
   },
   adWrapper: {
     display: "flex",
     justifyContent: "center"
+  },
+  buttonSeparator: {
+    height: 12
   },
   fabPosition: {
     color: "#fff",
@@ -225,33 +235,13 @@ class PeopleLayout extends Component {
         }
 
         if (sportFilter !== "all") {
-          if (sportFilter === "other") {
-            const supportedSports = ["netball", "rugby", "soccer"];
-            let doesSport = false;
-            _.toPairs(personInfo.info.sports).map(([sport, isPreferred]) => {
-              let reformattedSport = _.toLower(sport);
-              if (reformattedSport === "soccer / football") {
-                reformattedSport = "soccer";
-              }
-              if (
-                !supportedSports.includes(reformattedSport) &&
-                isPreferred &&
-                reformattedSport !== "unknown"
-              ) {
-                doesSport = true;
-              }
-            });
-            allowThroughFilter = allowThroughFilter && doesSport;
-          } else {
-            let doesSport = false;
-            _.toPairs(personInfo.info.sports).map(([sport, isPreferred]) => {
-              if (isPreferred) {
-                doesSport =
-                  doesSport || _.lowerCase(sport).includes(sportFilter);
-              }
-            });
-            allowThroughFilter = allowThroughFilter && doesSport;
-          }
+          let doesSport = false;
+          _.toPairs(personInfo.info.sports).map(([sport, isPreferred]) => {
+            if (isPreferred) {
+              doesSport = doesSport || sport.includes(sportFilter);
+            }
+          });
+          allowThroughFilter = allowThroughFilter && doesSport;
         }
 
         allowThroughFilter =
@@ -329,7 +319,9 @@ class PeopleLayout extends Component {
       navigateTo,
       goBack,
       isAdmin,
-      institutionCreationDate
+      institutionCreationDate,
+      meAllFilter,
+      changeMeAllFilter
     } = this.props;
     const { resendInfo } = this.props.uiConfig;
     const {
@@ -400,24 +392,28 @@ class PeopleLayout extends Component {
                   : classes.staffTabNoCards
               }
             >
-              {!isMobile &&
-                isAdmin && (
-                  <div className={classes.actionsBar}>
-                    <div className={classes.flexGrow} />
-                    <Button
-                      colour="primary"
-                      filled
-                      slim
-                      handleClick={() => openInvitePersonModal()}
-                    >
-                      <i
-                        className={`fas fa-plus ${classes.iconAdjacentText}`}
-                      />
-                      Invite new person
-                    </Button>
-                  </div>
-                )}
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <PersonalAllSwitch
+                  isMobile={isMobile}
+                  meAllFilter={meAllFilter}
+                  changeMeAllFilter={changeMeAllFilter}
+                />
+                {isMobile && <div className={classes.buttonSeparator} />}
+                <div className={classes.flexGrow} />
+                {isAdmin && (
+                  <Button
+                    colour="primary"
+                    filled
+                    slim
+                    fullWidth={isMobile}
+                    handleClick={() => openInvitePersonModal()}
+                  >
+                    <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
+                    Invite new person
+                  </Button>
+                )}
+              </div>
               {activeInstitutionID === "" ||
               isCoachesLoading ||
               isManagersLoading ||

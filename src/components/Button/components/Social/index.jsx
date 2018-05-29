@@ -5,6 +5,7 @@ import { common, blue, orange } from "../../../../utils/colours";
 
 const styles = theme => ({
   facebookFilled: {
+    transition: "0.25s",
     color: common["white"],
     backgroundColor: blue[900],
     border: `2px solid ${blue[900]}`,
@@ -14,6 +15,7 @@ const styles = theme => ({
     }
   },
   facebookOutlined: {
+    transition: "0.25s",
     color: blue[900],
     backgroundColor: "rgba(0, 0, 0, 0)",
     border: `2px solid ${blue[900]}`,
@@ -25,6 +27,7 @@ const styles = theme => ({
     width: "100%"
   },
   googleFilled: {
+    transition: "0.25s",
     color: common["white"],
     backgroundColor: orange[900],
     border: `2px solid ${orange[900]}`,
@@ -34,6 +37,7 @@ const styles = theme => ({
     }
   },
   googleOutlined: {
+    transition: "0.25s",
     color: orange[900],
     backgroundColor: "rgba(0, 0, 0, 0)",
     border: `2px solid ${orange[900]}`,

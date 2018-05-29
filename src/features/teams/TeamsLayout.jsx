@@ -8,20 +8,30 @@ import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
+import PersonalAllSwitch from "./components/PersonalAllSwitch";
 import SeasonSetupDialog from "./components/SeasonSetupDialog";
 import TeamInfo from "./components/TeamInfo";
 import TeamsList from "./components/TeamsList";
+
+const mobileBreakpoint = 800;
 
 const styles = {
   actionsBar: {
     display: "flex",
     justifyContent: "center",
-    margin: "0 24px 24px 24px"
+    margin: "24px 24px 0 24px",
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      flexDirection: "column",
+      alignItems: "center"
+    }
   },
   adWrapper: {
     width: "100%",
     display: "flex",
     justifyContent: "center"
+  },
+  buttonSeparator: {
+    height: 12
   },
   fabPosition: {
     color: "#fff",
@@ -210,20 +220,8 @@ class TeamsLayout extends Component {
             allowThroughFilter && teamInfo.info.gender === gender;
         }
         if (sportFilter !== "all") {
-          if (sportFilter === "other") {
-            let teamSport = teamInfo.info.sport;
-            if (teamSport === "Soccer / Football") {
-              teamSport = "soccer";
-            }
-            const supportedSports = ["netball", "rugby", "soccer"];
-            allowThroughFilter =
-              allowThroughFilter &&
-              !supportedSports.includes(_.lowerCase(teamSport));
-          } else {
-            allowThroughFilter =
-              allowThroughFilter &&
-              _.lowerCase(teamInfo.info.sport).includes(sportFilter);
-          }
+          allowThroughFilter =
+            allowThroughFilter && teamInfo.info.sport.includes(sportFilter);
         }
         if (division !== "All") {
           allowThroughFilter =
@@ -259,7 +257,9 @@ class TeamsLayout extends Component {
       userEmail,
       userFirstName,
       userLastName,
-      seasons
+      seasons,
+      meAllFilter,
+      changeMeAllFilter
     } = this.props;
     const {
       isAddTeamLoading,
@@ -307,22 +307,28 @@ class TeamsLayout extends Component {
       return (
         <div className={classes.root}>
           <div className={classes.teamCards}>
-            {isAdmin &&
-              !isMobile && (
-                <div className={classes.actionsBar}>
-                  <div className={classes.flexGrow} />
-                  <Button
-                    colour="primary"
-                    filled
-                    slim
-                    handleClick={() => openAddTeamDialog()}
-                  >
-                    <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
-                    Add new team
-                  </Button>
-                </div>
-              )}
             <div className={classes.adWrapper}>{ad}</div>
+            <div className={classes.actionsBar}>
+              <PersonalAllSwitch
+                isMobile={isMobile}
+                meAllFilter={meAllFilter}
+                changeMeAllFilter={changeMeAllFilter}
+              />
+              {isMobile && <div className={classes.buttonSeparator} />}
+              <div className={classes.flexGrow} />
+              {isAdmin && (
+                <Button
+                  colour="primary"
+                  filled
+                  slim
+                  fullWidth={isMobile}
+                  handleClick={() => openAddTeamDialog()}
+                >
+                  <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
+                  Add new team
+                </Button>
+              )}
+            </div>
             <TeamsList
               teams={filteredTeams}
               isUserAdmin={isAdmin}

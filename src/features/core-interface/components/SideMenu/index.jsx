@@ -91,7 +91,8 @@ const styles = {
     fontSize: 12,
     color: grey[300],
     width: "100%",
-    textAlign: "center"
+    textAlign: "center",
+    marginBottom: 24
   },
   wrapperDesktop: {
     backgroundColor: "white",

@@ -8,6 +8,7 @@ import EventCard from "./components/EventCard";
 
 const styles = {
   addEventWrapper: {
+    transition: "0.25s",
     textAlign: "center",
     fontSize: 14,
     borderRadius: 12,

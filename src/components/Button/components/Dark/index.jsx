@@ -13,6 +13,7 @@ const styles = theme => ({
     cursor: "pointer"
   },
   primaryFilled: {
+    transition: "0.25s",
     color: common["white"],
     backgroundColor: lightBlue[800],
     border: `2px solid ${lightBlue[800]}`,
@@ -22,6 +23,7 @@ const styles = theme => ({
     }
   },
   primaryOutlined: {
+    transition: "0.25s",
     color: lightBlue[800],
     backgroundColor: "rgba(0, 0, 0, 0)",
     border: `2px solid ${lightBlue[800]}`,
@@ -30,6 +32,7 @@ const styles = theme => ({
     }
   },
   secondaryFilled: {
+    transition: "0.25s",
     color: common["white"],
     backgroundColor: orange["A700"],
     border: `2px solid ${orange["A700"]}`,
@@ -39,6 +42,7 @@ const styles = theme => ({
     }
   },
   secondaryOutlined: {
+    transition: "0.25s",
     color: orange["A700"],
     backgroundColor: "rgba(0, 0, 0, 0)",
     border: `2px solid ${orange["A700"]}`,
