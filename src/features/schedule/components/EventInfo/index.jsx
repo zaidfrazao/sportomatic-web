@@ -478,7 +478,7 @@ class EventInfo extends Component {
       return _.toPairs(info.coaches).map(([coachID, eventCoachInfo]) => {
         const coachInfo = coaches[coachID];
         if (coachInfo) {
-          let wageSettings = {
+          let payment = {
             rates: {
               standard: 100,
               overtime: 150
@@ -486,12 +486,12 @@ class EventInfo extends Component {
             type: "HOURLY"
           };
 
-          if (eventCoachInfo.wageSettings) {
-            wageSettings = eventCoachInfo;
+          if (eventCoachInfo.payment) {
+            payment = eventCoachInfo.payment;
           }
 
           return {
-            wageSettings,
+            payment,
             id: coachID,
             absenteeism: {
               isAbsent: !eventCoachInfo.attendance.didAttend,
@@ -517,7 +517,7 @@ class EventInfo extends Component {
               isAbsent: false,
               rating: ""
             },
-            wageSettings: {
+            payment: {
               rates: {
                 standard: 100,
                 overtime: 150

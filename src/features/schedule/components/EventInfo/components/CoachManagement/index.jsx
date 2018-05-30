@@ -66,8 +66,8 @@ class CoachManagement extends Component {
           name={info.name}
           profilePicture={info.profilePicture}
           hours={info.hours}
-          wageSettings={info.wageSettings}
           absenteeism={info.absenteeism}
+          payment={info.payment}
           eventTimes={eventTimes}
           signIn={signIn}
           signOut={signOut}

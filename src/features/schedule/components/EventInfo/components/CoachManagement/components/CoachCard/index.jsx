@@ -141,8 +141,8 @@ class CoachCard extends Component {
   }
 
   getWages() {
-    const { isCompetitive, wageSettings, hours, eventTimes } = this.props;
-    const { type, rates } = wageSettings;
+    const { isCompetitive, hours, eventTimes, payment } = this.props;
+    const { type, rates } = payment;
 
     if (type === "HOURLY") {
       const signInMoment = moment(hours.times.signIn);
@@ -362,7 +362,7 @@ class CoachCard extends Component {
       signIn,
       signOut,
       approveHours,
-      wageSettings
+      payment
     } = this.props;
 
     switch (hours.status) {
@@ -407,7 +407,7 @@ class CoachCard extends Component {
       case "AWAITING_APPROVAL":
         const wage = this.getWages();
         const shouldCreateWage =
-          wageSettings.type === "HOURLY" || wageSettings.type === "FIXED";
+          payment.type === "HOURLY" || payment.type === "FIXED";
 
         return (
           <div className={classes.buttonPrimaryWrapper}>
@@ -416,12 +416,7 @@ class CoachCard extends Component {
               filled
               fullWidth
               handleClick={() =>
-                approveHours(
-                  coachID,
-                  shouldCreateWage,
-                  wage,
-                  wageSettings.type
-                )}
+                approveHours(coachID, shouldCreateWage, wage, payment.type)}
             >
               Approve
             </Button>
@@ -442,6 +437,8 @@ class CoachCard extends Component {
     const times = this.getTimes();
     const primaryAction = this.getPrimaryAction();
     const secondaryAction = this.getSecondaryAction();
+
+    console.log(this.props);
 
     return (
       <div className={classes.card}>

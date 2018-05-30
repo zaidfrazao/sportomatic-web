@@ -109,7 +109,7 @@ class WagesTable extends Component {
         let formattedType = "Hourly rate";
         if (type === "FIXED") {
           formattedType = "Fixed rate per session";
-        } else if (type === "SALARY") {
+        } else if (type === "MONTHLY") {
           formattedType = "Monthly salary";
         } else if (type === "DEDUCTION") {
           formattedType = "Deduction";

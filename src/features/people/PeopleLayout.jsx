@@ -256,7 +256,12 @@ class PeopleLayout extends Component {
     const { personID } = this.props.match.params;
     const { eventsByCoach } = this.props;
 
+    const currentDate = new Date(Date.now());
+
     return _.toPairs(eventsByCoach)
+      .filter(([eventID, eventInfo]) => {
+        return eventInfo.requiredInfo.times.start < currentDate;
+      })
       .map(([eventID, eventInfo]) => {
         const eventCoachInfo = eventInfo.coaches[personID];
 
@@ -271,7 +276,7 @@ class PeopleLayout extends Component {
               end: eventInfo.requiredInfo.times.end
             },
             absenteeism: {
-              wasAbsent: eventInfo.coaches[personID].attendance.willAttend,
+              wasAbsent: !eventInfo.coaches[personID].attendance.willAttend,
               rating: eventInfo.coaches[personID].absenteeism.rating
             },
             hours: eventInfo.coaches[personID].hours
