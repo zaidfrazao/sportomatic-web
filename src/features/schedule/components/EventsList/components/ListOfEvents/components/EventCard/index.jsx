@@ -25,7 +25,7 @@ const styles = {
     color: common["white"]
   },
   header: {
-    borderRadius: "16px 16px 0 0",
+    borderRadius: "8px 8px 0 0",
     fontSize: props => (props.isTablet ? 16 : 14),
     padding: "24px 12px",
     lineHeight: props => (props.isTablet ? "22px" : "18px"),

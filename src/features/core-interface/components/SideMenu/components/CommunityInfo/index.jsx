@@ -1,13 +1,13 @@
 import React, { Component } from "react";
+import Button from "../../../../../../components/Button";
 import { common, lightBlue } from "../../../../../../utils/colours";
 import injectStyles from "react-jss";
 
 const mobileBreakpoint = 800;
 
 const styles = {
-  buttonsWrapper: {
-    display: "flex",
-    marginBottom: 12
+  buttonWrapper: {
+    marginTop: 12
   },
   communityName: {
     color: common["white"],
@@ -36,8 +36,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center"
   },
-  switchButtonWrapper: {
-    flexGrow: 1,
+  switchIcon: {
     marginRight: 8
   },
   wrapper: {
@@ -45,7 +44,6 @@ const styles = {
     padding: 28,
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center"
   }
 };
@@ -58,7 +56,7 @@ type Props = {
 
 class CommunityInfo extends Component<Props> {
   render() {
-    const { classes, emblem, name } = this.props;
+    const { classes, emblem, name, switchCommunities } = this.props;
 
     return (
       <div className={classes.wrapper}>
@@ -71,6 +69,16 @@ class CommunityInfo extends Component<Props> {
             className={classes.emblem}
           />
           <h2 className={classes.communityName}>{name}</h2>
+        </div>
+        <div className={classes.buttonWrapper}>
+          <Button
+            type="dark"
+            filled
+            slim
+            handleClick={() => switchCommunities()}
+          >
+            <i className={`fas fa-exchange-alt ${classes.switchIcon}`} />Switch
+          </Button>
         </div>
       </div>
     );

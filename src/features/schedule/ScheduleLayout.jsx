@@ -399,7 +399,8 @@ class ScheduleLayout extends Component {
       role,
       userID,
       navigateTo,
-      goBack
+      goBack,
+      isAdmin
     } = this.props;
     const { dateSelected, eventID, infoTab } = this.props.match.params;
     const {
@@ -448,6 +449,7 @@ class ScheduleLayout extends Component {
             isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
             isPastEvent={isPastEvent}
             dateSelected={dateSelected}
+            isAdmin={isAdmin}
             isMobile={isMobile}
             isTablet={isTablet}
             infoTab={infoTab}
@@ -508,9 +510,8 @@ class ScheduleLayout extends Component {
   }
 
   render() {
-    const { eventID } = this.props.match.params;
+    const { eventID, isAdmin } = this.props.match.params;
 
-    const permissions = this.getPermissions();
     const shouldRedirect = this.checkIfShouldRedirect();
 
     if (shouldRedirect) {
@@ -520,9 +521,9 @@ class ScheduleLayout extends Component {
     }
 
     if (eventID) {
-      return this.getEventInfoView(permissions.canEdit, permissions.canCancel);
+      return this.getEventInfoView(isAdmin, isAdmin);
     } else {
-      return this.getEventListView(permissions.canCreate);
+      return this.getEventListView(isAdmin);
     }
   }
 }

@@ -202,7 +202,7 @@ class EventInfo extends Component {
       eventID,
       dateSelected,
       isPastEvent,
-      canCancel,
+      isAdmin,
       userID
     } = this.props;
     const {
@@ -227,7 +227,7 @@ class EventInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <div className={classes.actionsBar}>
-                {showButtons && canCancel && cancelButton}
+                {showButtons && isAdmin && cancelButton}
               </div>
               <Details
                 eventType={info.eventType}
@@ -252,7 +252,7 @@ class EventInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <div className={classes.actionsBar}>
-                {showButtons && canCancel && cancelButton}
+                {showButtons && isAdmin && cancelButton}
               </div>
               <CoachManagement
                 isCancelled={info.status === "CANCELLED"}
@@ -272,7 +272,7 @@ class EventInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <div className={classes.actionsBar}>
-                {showButtons && canCancel && cancelButton}
+                {showButtons && isAdmin && cancelButton}
               </div>
               <Results />
             </div>
@@ -338,7 +338,7 @@ class EventInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <div className={classes.actionsBar}>
-                {showButtons && canCancel && cancelButton}
+                {showButtons && isAdmin && cancelButton}
               </div>
               <Details
                 eventType={info.eventType}
@@ -363,7 +363,7 @@ class EventInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <div className={classes.actionsBar}>
-                {showButtons && canCancel && cancelButton}
+                {showButtons && isAdmin && cancelButton}
               </div>
               <CoachManagement
                 isCancelled={info.status === "CANCELLED"}
@@ -383,7 +383,7 @@ class EventInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <div className={classes.actionsBar}>
-                {showButtons && canCancel && cancelButton}
+                {showButtons && isAdmin && cancelButton}
               </div>
               <Results />
             </div>
@@ -393,7 +393,7 @@ class EventInfo extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <div className={classes.actionsBar}>
-                {showButtons && canCancel && cancelButton}
+                {showButtons && isAdmin && cancelButton}
               </div>
               <Details
                 eventType={info.eventType}

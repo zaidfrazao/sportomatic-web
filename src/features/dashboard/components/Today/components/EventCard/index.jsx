@@ -10,6 +10,19 @@ import {
 } from "../../../../../../utils/colours";
 
 const styles = {
+  cancelledIcon: {
+    marginRight: 12
+  },
+  cancelledWrapper: {
+    width: "100%",
+    margin: 12,
+    borderRadius: 16,
+    backgroundColor: red[500],
+    color: common["white"],
+    fontWeight: "bold",
+    padding: 24,
+    textAlign: "center"
+  },
   dateWrapper: {
     margin: "24px 0 8px 0",
     padding: "0 12px",
@@ -190,7 +203,8 @@ class EventCard extends Component {
       eventType,
       venue,
       notes,
-      isMobile
+      isMobile,
+      isCancelled
     } = this.props;
 
     const eventTypeIcon = this.getEventTypeIcon();
@@ -210,68 +224,78 @@ class EventCard extends Component {
           <div className={classes.timesSeparator}>-</div>
           <div className={classes.timeWrapper}>{formattedTimes.end}</div>
         </div>
-        <div className={classes.infoWrapper}>
-          <div className={classes.infoSectionWrapper}>
-            <div className={classes.listWrapper}>
-              <div className={classes.listIconWrapper}>
-                <i className={eventTypeIcon} />
+        {!isCancelled ? (
+          <div className={classes.infoWrapper}>
+            <div className={classes.infoSectionWrapper}>
+              <div className={classes.listWrapper}>
+                <div className={classes.listIconWrapper}>
+                  <i className={eventTypeIcon} />
+                </div>
+                <span className={classes.listText}>{eventType}</span>
               </div>
-              <span className={classes.listText}>{eventType}</span>
+              <div className={classes.listWrapper}>
+                <div className={classes.listIconWrapper}>
+                  <i className="fas fa-map-marker" />
+                </div>
+                <span className={classes.listText}>
+                  {venue === "" ? "No venue given" : venue}
+                </span>
+              </div>
+              <div className={classes.listWrapper}>
+                <div
+                  className={
+                    isMobile
+                      ? classes.listIconWrapper
+                      : classes.listIconWrapperBottomLeft
+                  }
+                >
+                  <i className="fas fa-comment-alt" />
+                </div>
+                <span className={classes.listText}>
+                  {notes === "" ? "No additional notes given" : notes}
+                </span>
+              </div>
             </div>
-            <div className={classes.listWrapper}>
-              <div className={classes.listIconWrapper}>
-                <i className="fas fa-map-marker" />
+            <div className={classes.infoSectionWrapper}>
+              <div className={classes.listWrapper}>
+                <div className={classes.listIconWrapper}>
+                  <i className="fas fa-clock" />
+                </div>
+                <span className={classes.listText}>{hoursInfo.text}</span>
+                {hoursInfo.icon}
               </div>
-              <span className={classes.listText}>
-                {venue === "" ? "No venue given" : venue}
-              </span>
-            </div>
-            <div className={classes.listWrapper}>
-              <div
-                className={
-                  isMobile
-                    ? classes.listIconWrapper
-                    : classes.listIconWrapperBottomLeft
-                }
-              >
-                <i className="fas fa-comment-alt" />
+              <div className={classes.listWrapper}>
+                <div className={classes.listIconWrapper}>
+                  <i className="fas fa-list-ol" />
+                </div>
+                <span className={classes.listText}>{resultsInfo.text}</span>
+                {resultsInfo.icon}
               </div>
-              <span className={classes.listText}>
-                {notes === "" ? "No additional notes given" : notes}
-              </span>
+              <div className={classes.listWrapper}>
+                <div
+                  className={
+                    isMobile
+                      ? classes.listIconWrapperBottomLeft
+                      : classes.listIconWrapper
+                  }
+                >
+                  <i className="fas fa-clipboard" />
+                </div>
+                <span className={classes.listText}>
+                  Attendance feature coming soon
+                </span>
+              </div>
             </div>
           </div>
-          <div className={classes.infoSectionWrapper}>
-            <div className={classes.listWrapper}>
-              <div className={classes.listIconWrapper}>
-                <i className="fas fa-clock" />
-              </div>
-              <span className={classes.listText}>{hoursInfo.text}</span>
-              {hoursInfo.icon}
-            </div>
-            <div className={classes.listWrapper}>
-              <div className={classes.listIconWrapper}>
-                <i className="fas fa-list-ol" />
-              </div>
-              <span className={classes.listText}>{resultsInfo.text}</span>
-              {resultsInfo.icon}
-            </div>
-            <div className={classes.listWrapper}>
-              <div
-                className={
-                  isMobile
-                    ? classes.listIconWrapperBottomLeft
-                    : classes.listIconWrapper
-                }
-              >
-                <i className="fas fa-clipboard" />
-              </div>
-              <span className={classes.listText}>
-                Attendance feature coming soon
-              </span>
+        ) : (
+          <div className={classes.infoWrapper}>
+            <div className={classes.cancelledWrapper}>
+              <i
+                className={`fas fa-exclamation ${classes.cancelledIcon}`}
+              />Cancelled
             </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }

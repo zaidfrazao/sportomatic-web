@@ -380,7 +380,7 @@ class CoreInterfaceLayout extends Component {
 
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
-    const versionNumber = "0.9.1";
+    const versionNumber = "0.9.2";
 
     const communityRole = this.getRole();
     const userFirstName = accountInfo.info.name;

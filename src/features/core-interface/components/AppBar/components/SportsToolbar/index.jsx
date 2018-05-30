@@ -29,7 +29,7 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    padding: "0 18px",
+    padding: "0 12px",
     margin: 8,
     fontWeight: "bold",
     borderRadius: 14,

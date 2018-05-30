@@ -59,12 +59,15 @@ class Today extends Component {
   getEventCards() {
     const { navigateTo, isMobile, events } = this.props;
 
+    console.log(events);
+
     return _.toPairs(events).map(([eventID, eventInfo]) => {
       const eventDateMoment = moment(eventInfo.requiredInfo.times.start);
       const eventDateString = eventDateMoment.format("YYYY-MM-DD");
       const title = eventInfo.requiredInfo.title;
       const type = eventInfo.requiredInfo.type;
       const isCompetitive = eventInfo.requiredInfo.isCompetitive;
+      const isCancelled = eventInfo.requiredInfo.status === "CANCELLED";
       const venue = eventInfo.optionalInfo.venue;
       const notes = eventInfo.optionalInfo.notes;
       const times = eventInfo.requiredInfo.times;
@@ -76,6 +79,7 @@ class Today extends Component {
         <EventCard
           key={`today-card-${eventID}`}
           isMobile={isMobile}
+          isCancelled={isCancelled}
           isCompetitive={isCompetitive}
           title={title}
           relativeTime={relativeTime}
