@@ -5,10 +5,10 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import injectStyles from "react-jss";
 import { grey } from "../../utils/colours";
 import AppBar from "./components/AppBar";
+import Community from "../community/CommunityView";
 import Dashboard from "../dashboard/DashboardView";
 import Dialog from "../../components/Dialog";
 import LoadingScreen from "../../components/LoadingScreen";
-import SwitchCommunitiesDialog from "./components/SwitchCommunitiesDialog";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
 import SideMenu from "./components/SideMenu";
@@ -161,6 +161,9 @@ class CoreInterfaceLayout extends Component {
         break;
       case "teams":
         updateSideMenu("teams");
+        break;
+      case "community":
+        updateSideMenu("community");
         break;
       case "settings":
         updateSideMenu("settings");
@@ -352,8 +355,6 @@ class CoreInterfaceLayout extends Component {
       signOut,
       openLogOutModal,
       closeLogOutModal,
-      openManageInstitutionsDialog,
-      closeManageInstitutionsDialog,
       updateSport,
       switchRole,
       changeMeAllFilter,
@@ -373,14 +374,11 @@ class CoreInterfaceLayout extends Component {
       sideMenuItemSelected,
       meAllFilter
     } = this.props.uiConfig;
-    const {
-      isLogOutModalOpen,
-      isManageInstitutionsDialogOpen
-    } = this.props.dialogs;
+    const { isLogOutModalOpen } = this.props.dialogs;
 
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
-    const versionNumber = "0.9.2";
+    const versionNumber = "0.9.3";
 
     const communityRole = this.getRole();
     const userFirstName = accountInfo.info.name;
@@ -390,7 +388,6 @@ class CoreInterfaceLayout extends Component {
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
     const sideMenuItems = this.getSideMenuItems();
-    const switchCommunityInfo = this.getSwitchCommunitiesInfo();
 
     let isAdmin = false;
     let communityName = "Default";
@@ -428,19 +425,6 @@ class CoreInterfaceLayout extends Component {
         }
       }
     };
-    let paymentDefaults = {
-      maxOvertimeHours: 3,
-      payDay: {
-        day: 1,
-        isEndOfTheMonth: false
-      },
-      rates: {
-        overtime: 150,
-        salary: 6000,
-        standard: 100
-      },
-      type: "HOURLY"
-    };
     let institutionCreationDate = new Date(Date.now());
     let teamOptions = {
       ageGroups: [],
@@ -459,7 +443,6 @@ class CoreInterfaceLayout extends Component {
       communityName = institutions[activeInstitutionID].info.name;
       emblem = institutions[activeInstitutionID].info.emblemURL;
       permissions = institutions[activeInstitutionID].permissions;
-      paymentDefaults = institutions[activeInstitutionID].paymentDefaults;
       institutionCreationDate =
         institutions[activeInstitutionID].metadata.creationDate;
     }
@@ -497,7 +480,6 @@ class CoreInterfaceLayout extends Component {
               versionNumber={versionNumber}
               actions={{
                 logOut: () => openLogOutModal(),
-                switchCommunities: () => openManageInstitutionsDialog(),
                 changeSelected: key => history.push(`/myaccount/${key}`),
                 toggleSideNav: () => toggleSideMenu(),
                 switchRoles: newRole => switchRole(userID, newRole)
@@ -536,7 +518,6 @@ class CoreInterfaceLayout extends Component {
                       sportFilter={sportSelected}
                       meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      paymentDefaults={paymentDefaults}
                       userID={userID}
                       userName={userName}
                       institutionCreationDate={institutionCreationDate}
@@ -556,7 +537,6 @@ class CoreInterfaceLayout extends Component {
                       sportFilter={sportSelected}
                       meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      paymentDefaults={paymentDefaults}
                       userID={userID}
                       userName={userName}
                       institutionCreationDate={institutionCreationDate}
@@ -576,7 +556,6 @@ class CoreInterfaceLayout extends Component {
                       sportFilter={sportSelected}
                       meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      paymentDefaults={paymentDefaults}
                       userID={userID}
                       userName={userName}
                       institutionCreationDate={institutionCreationDate}
@@ -596,7 +575,6 @@ class CoreInterfaceLayout extends Component {
                       sportFilter={sportSelected}
                       meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      paymentDefaults={paymentDefaults}
                       userID={userID}
                       userName={userName}
                       institutionCreationDate={institutionCreationDate}
@@ -616,7 +594,6 @@ class CoreInterfaceLayout extends Component {
                       sportFilter={sportSelected}
                       meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      paymentDefaults={paymentDefaults}
                       userID={userID}
                       userName={userName}
                       institutionCreationDate={institutionCreationDate}
@@ -636,7 +613,6 @@ class CoreInterfaceLayout extends Component {
                       sportFilter={sportSelected}
                       meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      paymentDefaults={paymentDefaults}
                       userID={userID}
                       userName={userName}
                       institutionCreationDate={institutionCreationDate}
@@ -707,6 +683,40 @@ class CoreInterfaceLayout extends Component {
                       goBack={() => this.goBack()}
                       changeMeAllFilter={newFilter =>
                         changeMeAllFilter(newFilter)}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/community/"}>
+                    <Community
+                      isAdmin={isAdmin}
+                      userID={userID}
+                      role={communityRole}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      meAllFilter={meAllFilter}
+                      activeCommunityID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
+                      communities={institutions}
+                      switchCommunity={communityID =>
+                        switchInstitution(userID, communityID, "ADMIN")}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/community/:infoTab"}>
+                    <Community
+                      isAdmin={isAdmin}
+                      userID={userID}
+                      role={communityRole}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      meAllFilter={meAllFilter}
+                      activeCommunityID={activeInstitutionID}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
+                      communities={institutions}
+                      switchCommunity={communityID =>
+                        switchInstitution(userID, communityID, "ADMIN")}
                     />
                   </Route>
                   <Route exact path={"/myaccount/schedule/"}>
@@ -801,7 +811,6 @@ class CoreInterfaceLayout extends Component {
                       sportFilter={sportSelected}
                       meAllFilter={meAllFilter}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      paymentDefaults={paymentDefaults}
                       userID={userID}
                       userName={userName}
                       institutionCreationDate={institutionCreationDate}
@@ -827,20 +836,6 @@ class CoreInterfaceLayout extends Component {
           >
             Are you sure you want to log out?
           </Dialog>
-          <SwitchCommunitiesDialog
-            isOpen={isManageInstitutionsDialogOpen}
-            isMobile={isMobile}
-            communities={switchCommunityInfo}
-            activeCommunityID={activeInstitutionID}
-            actions={{
-              closeDialog: () => closeManageInstitutionsDialog(),
-              updateActiveCommunity: newCommunityID => {
-                this.navigateTo("/myaccount/overview");
-                switchInstitution(userID, newCommunityID, role);
-                closeManageInstitutionsDialog();
-              }
-            }}
-          />
         </div>
       );
     }

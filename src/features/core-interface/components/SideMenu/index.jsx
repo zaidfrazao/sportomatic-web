@@ -156,7 +156,7 @@ class SideMenu extends Component<Props> {
     const { changeSelected, toggleSideNav } = this.props.actions;
 
     return _.toPairs(items).map(([key, item]) => {
-      if (key === "reports" || key === "settings" || key === "community") {
+      if (key === "reports" || key === "settings") {
         return (
           <div
             key={`side-menu-item-${key}`}
@@ -207,18 +207,9 @@ class SideMenu extends Component<Props> {
       isTablet,
       communityName,
       emblem,
-      selectedRole,
-      availableRoles,
-      meAllFilter,
       versionNumber
     } = this.props;
-    const {
-      switchRoles,
-      toggleSideNav,
-      logOut,
-      changeMeAllFilter,
-      switchCommunities
-    } = this.props.actions;
+    const { logOut } = this.props.actions;
     const menuItems = this.getMenuItems();
 
     let wrapperStyle = classes.wrapperDesktop;
@@ -235,19 +226,7 @@ class SideMenu extends Component<Props> {
         <CommunityInfo
           emblem={emblem === "" ? defaultEmblem : emblem}
           name={communityName}
-          selectedRole={selectedRole}
-          switchCommunities={switchCommunities}
-          switchRoles={newRole => {
-            toggleSideNav();
-            switchRoles(newRole);
-          }}
-          changeMeAllFilter={newFilter => {
-            toggleSideNav();
-            changeMeAllFilter(newFilter);
-          }}
-          meAllFilter={meAllFilter}
           logOut={() => logOut()}
-          availableRoles={availableRoles}
         />
         <div className={classes.content}>
           <div className={classes.menu}>{menuItems}</div>

@@ -510,7 +510,8 @@ class ScheduleLayout extends Component {
   }
 
   render() {
-    const { eventID, isAdmin } = this.props.match.params;
+    const { isAdmin } = this.props;
+    const { eventID } = this.props.match.params;
 
     const shouldRedirect = this.checkIfShouldRedirect();
 

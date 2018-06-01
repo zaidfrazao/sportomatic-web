@@ -1,7 +1,9 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import injectSheet from "react-jss";
-import { common, grey } from "../../../../../../utils/colours";
-import defaultProfilePicture from "./images/default-profile-picture.png";
+import Button from "../../../../components/Button";
+import { common, grey, red } from "../../../../utils/colours";
+import defaultEmblem from "../../image/default-emblem.jpg";
 import athleticsIcon from "./images/athletics.png";
 import crossCountryIcon from "./images/cross-country.png";
 import hockeyIcon from "./images/hockey.png";
@@ -12,9 +14,16 @@ import soccerIcon from "./images/soccer.png";
 import swimmingIcon from "./images/swimming.png";
 import waterPoloIcon from "./images/water-polo.png";
 
+const mobileBreakpoint = 800;
 const tabletBreakpoint = 1080;
 
 const styles = {
+  addIcon: {
+    marginRight: 8
+  },
+  addSportButtonWrapper: {
+    margin: 12
+  },
   column: {
     width: "100%",
     [`@media (min-width: ${tabletBreakpoint}px)`]: {
@@ -22,22 +31,61 @@ const styles = {
       width: "calc(50% - 48px)"
     }
   },
-  emailIconWrapper: {
-    textAlign: "center",
-    backgroundColor: grey[100],
-    width: 60,
-    padding: "24px 0"
+  communityName: {
+    color: grey[800],
+    fontSize: 16,
+    lineHeight: "20px",
+    margin: 4,
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      fontSize: 20,
+      lineHeight: "28px"
+    }
   },
-  emailText: {
-    flex: 1,
-    overflow: "auto",
-    padding: 12,
-    color: grey[700]
+  deleteButton: {
+    transition: "0.25s",
+    cursor: "pointer",
+    fontSize: 24,
+    margin: "0 24px",
+    color: grey[300],
+    "&:hover": {
+      color: red[500]
+    }
   },
-  emailWrapper: {
-    borderTop: `1px solid ${grey[100]}`,
-    display: "flex",
+  emblem: {
+    borderRadius: "50%",
+    padding: 4,
+    margin: 4,
+    width: 50,
+    ehgiht: 50,
+    backgroundColor: common["white"],
+    "@media (max-width: 600px)": {
+      margin: 14
+    }
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    margin: "0 auto"
+  },
+  iconSportWrapper: {
+    flexGrow: 1,
+    flexDirection: "flex",
     alignItems: "center"
+  },
+  nameEmblemWrapper: {
+    position: "relative",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "24px 12px"
+  },
+  noItems: {
+    backgroundColor: grey[100],
+    color: grey[500],
+    borderRadius: 12,
+    padding: 24,
+    margin: 24,
+    textAlign: "center"
   },
   infoItemIconWrapper: {
     textAlign: "center",
@@ -53,16 +101,6 @@ const styles = {
   infoItemWrapper: {
     borderTop: `1px solid ${grey[100]}`,
     display: "flex",
-    alignItems: "center"
-  },
-  icon: {
-    width: 24,
-    height: 24,
-    margin: "0 auto"
-  },
-  iconSportWrapper: {
-    flexGrow: 1,
-    flexDirection: "flex",
     alignItems: "center"
   },
   lastInfoItemIconWrapper: {
@@ -89,59 +127,11 @@ const styles = {
   },
   listItemInactiveWrapper: {
     display: "flex",
+    justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 12,
     padding: 24,
     margin: "0 24px"
-  },
-  listItemWrapper: {
-    transition: "0.25s",
-    display: "flex",
-    alignItems: "center",
-    borderRadius: 12,
-    padding: 24,
-    margin: 24,
-    backgroundColor: grey[200],
-    cursor: "pointer",
-    "&:hover": {
-      backgroundColor: grey[300]
-    }
-  },
-  noItems: {
-    backgroundColor: grey[100],
-    color: grey[500],
-    borderRadius: 12,
-    padding: 24,
-    margin: 24,
-    textAlign: "center"
-  },
-  phoneNumberIconWrapper: {
-    borderRadius: "0 0 0 16px",
-    textAlign: "center",
-    backgroundColor: grey[100],
-    width: 60,
-    padding: "24px 0"
-  },
-  phoneNumberText: {
-    flex: 1,
-    paddingLeft: 12,
-    color: grey[700]
-  },
-  phoneNumberWrapper: {
-    borderTop: `1px solid ${grey[100]}`,
-    display: "flex",
-    alignItems: "center"
-  },
-  profilePicture: {
-    borderRadius: 8,
-    backgroundColor: grey[300],
-    width: 200,
-    height: 200,
-    margin: 24
-  },
-  profilePictureWrapper: {
-    display: "flex",
-    justifyContent: "center"
   },
   section: {
     border: `1px solid ${grey[300]}`,
@@ -172,7 +162,7 @@ const styles = {
   }
 };
 
-class Details extends Component {
+class CommunityInfo extends Component {
   getSportsIcon(sport) {
     const icons = {
       Athletics: athleticsIcon,
@@ -190,40 +180,10 @@ class Details extends Component {
     return icons["Other"];
   }
 
-  getTeamItems() {
-    const { classes, teams, navigateTo } = this.props;
-
-    const lastIndex = teams.length - 1;
-
-    return teams.map((info, index) => {
-      if (index !== lastIndex) {
-        return (
-          <div key={info.id}>
-            <div
-              className={classes.listItemWrapper}
-              onClick={() => navigateTo(`/myaccount/teams/${info.id}`)}
-            >
-              {info.name}
-            </div>
-            <div className={classes.listItemSeparator} />
-          </div>
-        );
-      } else {
-        return (
-          <div
-            key={info.id}
-            className={classes.listItemWrapper}
-            onClick={() => navigateTo(`/myaccount/teams/${info.id}`)}
-          >
-            {info.name}
-          </div>
-        );
-      }
-    });
-  }
-
   getSportsItems() {
-    const { classes, sports } = this.props;
+    const { classes, info } = this.props;
+    const { removeSport } = this.props.actions;
+    const { sports } = info;
 
     const lastIndex = sports.length - 1;
 
@@ -237,6 +197,10 @@ class Details extends Component {
               <img alt={`${sport} icon`} className={classes.icon} src={icon} />
             </div>
             <span className={classes.infoItemText}>{sport}</span>
+            <i
+              className={`fas fa-minus-circle ${classes.deleteButton}`}
+              onClick={() => removeSport(sport)}
+            />
           </div>
         );
       } else {
@@ -246,6 +210,10 @@ class Details extends Component {
               <img alt={`${sport} icon`} className={classes.icon} src={icon} />
             </div>
             <span className={classes.lastInfoItemText}>{sport}</span>
+            <i
+              className={`fas fa-minus-circle ${classes.deleteButton}`}
+              onClick={() => removeSport(sport)}
+            />
           </div>
         );
       }
@@ -253,62 +221,84 @@ class Details extends Component {
   }
 
   render() {
+    const { classes, info } = this.props;
     const {
-      classes,
-      email,
+      name,
+      physicalAddress,
+      emblemURL,
+      publicEmail,
       phoneNumber,
-      firstName,
-      lastName,
-      profilePicture
-    } = this.props;
+      gender,
+      type
+    } = info;
 
-    const teamItems = this.getTeamItems();
+    const emblem = emblemURL === "" ? defaultEmblem : emblemURL;
     const sportsItems = this.getSportsItems();
 
     return (
       <div className={classes.wrapper}>
         <div className={classes.column}>
           <div className={classes.section}>
-            <div className={classes.profilePictureWrapper}>
+            <div className={classes.nameEmblemWrapper}>
               <img
-                className={classes.profilePicture}
-                src={
-                  profilePicture === "" ? defaultProfilePicture : profilePicture
-                }
-                alt={`${firstName} ${lastName}`}
+                src={emblem}
+                width="50"
+                height="50"
+                alt={`${name} emblem`}
+                className={classes.emblem}
               />
+              <h2 className={classes.communityName}>{name}</h2>
             </div>
-            <div className={classes.emailWrapper}>
-              <div className={classes.emailIconWrapper}>
-                <i className="fas fa-envelope" />
+            <div className={classes.infoItemWrapper}>
+              <div className={classes.infoItemIconWrapper}>
+                <i className="fas fa-school" />
               </div>
-              <span className={classes.emailText}>{email}</span>
+              <span className={classes.infoItemText}>{type}</span>
             </div>
-            <div className={classes.phoneNumberWrapper}>
-              <div className={classes.phoneNumberIconWrapper}>
+            <div className={classes.infoItemWrapper}>
+              <div className={classes.infoItemIconWrapper}>
+                <i className="fas fa-venus-mars" />
+              </div>
+              <span className={classes.infoItemText}>{gender}</span>
+            </div>
+            <div className={classes.infoItemWrapper}>
+              <div className={classes.infoItemIconWrapper}>
                 <i className="fas fa-phone" />
               </div>
-              <span className={classes.phoneNumberText}>
+              <span className={classes.infoItemText}>
                 {phoneNumber === "" ? "No phone number given" : phoneNumber}
+              </span>
+            </div>
+            <div className={classes.infoItemWrapper}>
+              <div className={classes.infoItemIconWrapper}>
+                <i className="fas fa-map-marker" />
+              </div>
+              <span className={classes.infoItemText}>
+                {physicalAddress === ""
+                  ? "No physical address given"
+                  : physicalAddress}
+              </span>
+            </div>
+            <div className={classes.lastInfoItemWrapper}>
+              <div className={classes.lastInfoItemIconWrapper}>
+                <i className="fas fa-envelope" />
+              </div>
+              <span className={classes.lastInfoItemText}>
+                {publicEmail === "" ? "No public email given" : publicEmail}
               </span>
             </div>
           </div>
         </div>
         <div className={classes.column}>
           <div className={classes.section}>
-            <div className={classes.sectionHeading}>Teams</div>
-            {teamItems.length === 0 ? (
-              <div className={classes.noItems}>
-                This person is not in a team
-              </div>
-            ) : (
-              teamItems
-            )}
-          </div>
-          <div className={classes.section}>
-            <div className={classes.sectionHeading}>Preferred Sports</div>
+            <div className={classes.sectionHeading}>Available Sports</div>
+            <div className={classes.addSportButtonWrapper}>
+              <Button colour="primary" slim filled fullWidth>
+                <i className={`fas fa-plus ${classes.addIcon}`} />Add sport
+              </Button>
+            </div>
             {sportsItems.length === 0 ? (
-              <div className={classes.noItems}>No sports selected</div>
+              <div className={classes.noItems}>No sports available</div>
             ) : (
               <div className={classes.sportsListWrapper}>{sportsItems}</div>
             )}
@@ -319,4 +309,4 @@ class Details extends Component {
   }
 }
 
-export default injectSheet(styles)(Details);
+export default injectSheet(styles)(CommunityInfo);
