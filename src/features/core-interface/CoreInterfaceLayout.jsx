@@ -354,6 +354,39 @@ class CoreInterfaceLayout extends Component {
     };
   }
 
+  getHeaderText(sideMenuItems, sportsItems) {
+    const { classes } = this.props;
+    const { sportSelected, sideMenuItemSelected } = this.props.uiConfig;
+
+    const sideMenuItem = sideMenuItems[sideMenuItemSelected];
+
+    if (
+      sportSelected === "all" ||
+      sideMenuItem.label === "Community" ||
+      sideMenuItem.label === "Settings"
+    ) {
+      return (
+        <h1 className={classes.headerText}>
+          <i className={`${sideMenuItem.icon} ${classes.headerIcon}`} />
+          {sideMenuItem.label}
+        </h1>
+      );
+    } else {
+      return (
+        <h1 className={classes.headerText}>
+          <img
+            src={sportsItems[sportSelected].icon}
+            alt="Sport selected icon"
+            className={classes.sportSelectedIcon}
+          />
+          {`${sportsItems[sportSelected].label} ${sideMenuItems[
+            sideMenuItemSelected
+          ].label}`}
+        </h1>
+      );
+    }
+  }
+
   render() {
     const { classes, institutions, history } = this.props;
     const {
@@ -453,6 +486,8 @@ class CoreInterfaceLayout extends Component {
         institutions[activeInstitutionID].metadata.creationDate;
     }
 
+    const headerText = this.getHeaderText(sideMenuItems, sportsItems);
+
     if (!isLoggedIn) {
       return <Redirect to="/sign-in" />;
     }
@@ -492,26 +527,7 @@ class CoreInterfaceLayout extends Component {
               }}
             />
             <div className={classes.contentWrapper}>
-              {sportSelected === "all" ? (
-                <h1 className={classes.headerText}>
-                  <i
-                    className={`${sideMenuItems[sideMenuItemSelected]
-                      .icon} ${classes.headerIcon}`}
-                  />
-                  {sideMenuItems[sideMenuItemSelected].label}
-                </h1>
-              ) : (
-                <h1 className={classes.headerText}>
-                  <img
-                    src={sportsItems[sportSelected].icon}
-                    alt="Sport selected icon"
-                    className={classes.sportSelectedIcon}
-                  />
-                  {`${sportsItems[sportSelected].label} ${sideMenuItems[
-                    sideMenuItemSelected
-                  ].label}`}
-                </h1>
-              )}
+              {headerText}
               <div className={classes.content}>
                 <Switch>
                   <Route exact path={"/myaccount/"}>
