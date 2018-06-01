@@ -24,15 +24,23 @@ import soccerIcon from "./images/soccer.png";
 import swimmingIcon from "./images/swimming.png";
 import waterPoloIcon from "./images/water-polo.png";
 
+const mobileBreakpoint = 800;
+
 const styles = {
   content: {
     maxWidth: 1200,
     margin: "0 auto"
   },
   contentWrapper: {
+    position: "relative",
+    top: 64,
     flex: 1,
     overflow: "auto",
-    backgroundColor: grey[200]
+    marginLeft: 242,
+    backgroundColor: grey[200],
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      marginLeft: 0
+    }
   },
   coreWrapper: {
     display: "flex",
@@ -57,9 +65,7 @@ const styles = {
     height: 40,
     marginRight: 16
   },
-  wrapper: {
-    backgroundColor: grey[200]
-  }
+  wrapper: {}
 };
 
 class CoreInterfaceLayout extends Component {
@@ -378,7 +384,7 @@ class CoreInterfaceLayout extends Component {
 
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
-    const versionNumber = "0.9.3";
+    const versionNumber = "0.9.4";
 
     const communityRole = this.getRole();
     const userFirstName = accountInfo.info.name;

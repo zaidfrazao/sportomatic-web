@@ -95,30 +95,37 @@ const styles = {
     marginBottom: 24
   },
   wrapperDesktop: {
+    boxShadow:
+      "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+    position: "fixed",
     backgroundColor: "white",
     width: 240,
     height: "calc(100vh - 64px)",
-    borderRight: `2px solid ${grey[300]}`
+    borderRight: `2px solid ${grey[300]}`,
+    top: 64,
+    zIndex: 2
   },
   wrapperMobileClosed: {
     zIndex: 2,
     transition: "0.5s",
     backgroundColor: "white",
-    position: "absolute",
+    position: "fixed",
     left: "calc(100% * -1)",
     width: "100%",
-    height: "calc(100vh - 64px)"
+    height: "calc(100vh - 64px)",
+    top: 64
   },
   wrapperMobileOpen: {
     zIndex: 2,
     transition: "0.5s",
     backgroundColor: "white",
     left: 0,
-    position: "absolute",
+    position: "fixed",
     width: "100%",
     height: "calc(100vh - 64px)",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    top: 64
   }
 };
 

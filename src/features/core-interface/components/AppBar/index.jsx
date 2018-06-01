@@ -25,8 +25,6 @@ const styles = theme => ({
   },
   logOutButton: {
     cursor: "pointer",
-    boxShadow:
-      "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
     borderLeft: `1px solid ${grey[300]}`,
     width: 80,
     height: "100%",
@@ -57,8 +55,6 @@ const styles = theme => ({
     color: lightBlue[500]
   },
   mobileMenuButton: {
-    boxShadow:
-      "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
     borderLeft: `2px solid ${grey[300]}`,
     width: 80,
     height: "100%",
@@ -79,6 +75,11 @@ const styles = theme => ({
     }
   },
   wrapper: {
+    zIndex: 1,
+    position: "fixed",
+    width: "100%",
+    boxShadow:
+      "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
     borderBottom: `1px solid ${grey[300]}`,
     backgroundColor: "white"
   }
