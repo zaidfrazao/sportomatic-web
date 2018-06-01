@@ -43,7 +43,6 @@ const styles = theme => ({
   icon: {
     width: 28,
     height: 28,
-    borderRadius: 8,
     fontSize: 32
   },
   iconSelected: {

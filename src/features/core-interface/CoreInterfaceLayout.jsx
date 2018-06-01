@@ -433,37 +433,6 @@ class CoreInterfaceLayout extends Component {
     let emblem = "";
     let sports = [];
     let sportsItems = {};
-    let permissions = {
-      coaches: {
-        events: {
-          canCancel: false,
-          canCreate: false,
-          canEdit: false
-        },
-        results: {
-          canApprove: false,
-          canEdit: true
-        },
-        teams: {
-          canEdit: false
-        }
-      },
-      managers: {
-        events: {
-          canCancel: true,
-          canCreate: false,
-          canEdit: true
-        },
-        teams: {
-          canEdit: false
-        },
-        wages: {
-          canCreate: false,
-          canEdit: false,
-          canView: false
-        }
-      }
-    };
     let institutionCreationDate = new Date(Date.now());
     let teamOptions = {
       ageGroups: [],
@@ -481,7 +450,6 @@ class CoreInterfaceLayout extends Component {
         "APPROVED";
       communityName = institutions[activeInstitutionID].info.name;
       emblem = institutions[activeInstitutionID].info.emblemURL;
-      permissions = institutions[activeInstitutionID].permissions;
       institutionCreationDate =
         institutions[activeInstitutionID].metadata.creationDate;
     }
@@ -753,7 +721,6 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       institutionCreationDate={institutionCreationDate}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
                       changeMeAllFilter={newFilter =>
@@ -772,7 +739,6 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       institutionCreationDate={institutionCreationDate}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
                       changeMeAllFilter={newFilter =>
@@ -794,7 +760,6 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       institutionCreationDate={institutionCreationDate}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
                       changeMeAllFilter={newFilter =>
@@ -816,7 +781,6 @@ class CoreInterfaceLayout extends Component {
                       activeInstitutionID={activeInstitutionID}
                       institutionCreationDate={institutionCreationDate}
                       isAccountInfoLoading={isAccountInfoLoading}
-                      permissions={permissions}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
                       changeMeAllFilter={newFilter =>
