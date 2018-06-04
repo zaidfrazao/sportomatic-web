@@ -237,13 +237,23 @@ class CoreInterfaceLayout extends Component {
   getSportsItems(sports) {
     const sportItems = _.fromPairs(
       sports.map(sport => {
-        return [
-          sport,
-          {
-            label: sport,
-            icon: this.getSportsIcon(sport)
-          }
-        ];
+        if (sport.info) {
+          return [
+            sport.info.name,
+            {
+              label: sport.info.name,
+              icon: this.getSportsIcon(sport.info.name)
+            }
+          ];
+        } else {
+          return [
+            sport,
+            {
+              label: sport,
+              icon: this.getSportsIcon(sport)
+            }
+          ];
+        }
       })
     );
 
@@ -339,10 +349,17 @@ class CoreInterfaceLayout extends Component {
       };
     });
     const sports = institutionInfo.info.sports.map(sport => {
-      return {
-        key: sport,
-        label: sport
-      };
+      if (sport.info) {
+        return {
+          key: sport.info.name,
+          label: sport.info.name
+        };
+      } else {
+        return {
+          key: sport,
+          label: sport
+        };
+      }
     });
     const genders = _.lowerCase(institutionInfo.info.gender);
 
@@ -417,7 +434,7 @@ class CoreInterfaceLayout extends Component {
 
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
-    const versionNumber = "0.9.4";
+    const versionNumber = "0.9.5";
 
     const communityRole = this.getRole();
     const userFirstName = accountInfo.info.name;
@@ -442,7 +459,13 @@ class CoreInterfaceLayout extends Component {
     };
 
     if (institutions[activeInstitutionID]) {
-      sports = institutions[activeInstitutionID].info.sports;
+      sports = institutions[activeInstitutionID].info.sports.map(sport => {
+        if (sport.info) {
+          return sport.info.name;
+        } else {
+          return sport;
+        }
+      });
       sportsItems = this.getSportsItems(sports);
       teamOptions = this.getTeamOptions(institutions[activeInstitutionID]);
       isAdmin =
@@ -677,6 +700,10 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/community/"}>
                     <Community
+                      sports={sports}
+                      genders={teamOptions.genders}
+                      ageGroups={teamOptions.ageGroups}
+                      divisions={teamOptions.divisions}
                       isAdmin={isAdmin}
                       userID={userID}
                       role={communityRole}
@@ -694,6 +721,10 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/community/:infoTab"}>
                     <Community
+                      sports={sports}
+                      genders={teamOptions.genders}
+                      ageGroups={teamOptions.ageGroups}
+                      divisions={teamOptions.divisions}
                       isAdmin={isAdmin}
                       userID={userID}
                       role={communityRole}

@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
 import { Redirect } from "react-router-dom";
+import AddSportDialog from "./components/AddSportDialog";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
 import { common, grey, lightBlue } from "../../utils/colours";
@@ -84,16 +85,21 @@ class CommunityLayout extends Component {
   removeSport() {
     const { activeCommunityID, communities } = this.props;
     const { removeSportDialog } = this.props.dialogs;
-    const { closeRemovSportDialog, removeSport } = this.props.actions;
+    const { closeRemoveSportDialog, removeSport } = this.props.actions;
     const { removeConfirmText } = this.state;
 
-    const newSports = _.without(
-      communities[activeCommunityID].info.sports,
-      removeSportDialog.sport
-    );
+    const newSports = communities[
+      activeCommunityID
+    ].info.sports.filter(sport => {
+      if (sport.info) {
+        return sport.info.name !== removeSportDialog.sport;
+      } else {
+        return sport !== removeSportDialog.sport;
+      }
+    });
 
     if (removeConfirmText.value === "REMOVE_SPORT") {
-      closeRemovSportDialog();
+      closeRemoveSportDialog();
       removeSport(activeCommunityID, newSports);
       this.setState({
         removeConfirmText: {
@@ -184,6 +190,7 @@ class CommunityLayout extends Component {
       const communityInfo = communities[activeCommunityID];
       const type = communityInfo.info.type;
       const gender = communityInfo.info.gender;
+      const sports = communityInfo.info.sports;
 
       if (gender === "MALE") {
         if (type === "Primary School" || type === "High School") {
@@ -199,6 +206,14 @@ class CommunityLayout extends Component {
         }
       }
 
+      const reformattedSports = sports.map(sport => {
+        if (sport.info) {
+          return sport.info.name;
+        } else {
+          return sport;
+        }
+      });
+
       info = {
         id: activeCommunityID,
         gender: formattedGender,
@@ -209,7 +224,7 @@ class CommunityLayout extends Component {
         publicEmail: communityInfo.info.publicEmail,
         subType: communityInfo.info.subType,
         type: communityInfo.info.type,
-        sports: communityInfo.info.sports
+        sports: reformattedSports
       };
     }
 
@@ -330,7 +345,7 @@ class CommunityLayout extends Component {
       navigateTo,
       goBack
     } = this.props;
-    const { openRemovSportDialog } = this.props.actions;
+    const { openRemoveSportDialog, openAddSportDialog } = this.props.actions;
 
     const ad = this.createAd();
     const communityInfo = this.getCommunityInfo();
@@ -349,7 +364,8 @@ class CommunityLayout extends Component {
             actions={{
               navigateTo,
               goBack,
-              removeSport: sport => openRemovSportDialog(sport)
+              addSport: () => openAddSportDialog(),
+              removeSport: sport => openRemoveSportDialog(sport)
             }}
           />
         </div>
@@ -370,10 +386,39 @@ class CommunityLayout extends Component {
     ];
   }
 
+  getSportsAllowed() {
+    const { sports } = this.props;
+
+    let sportsAllowed = {
+      Hockey: true,
+      Netball: true,
+      Rugby: true
+    };
+
+    sports.map(sport => {
+      sportsAllowed[sport] = false;
+    });
+
+    return sportsAllowed;
+  }
+
   render() {
-    const { classes, isMobile } = this.props;
-    const { removeSportDialog } = this.props.dialogs;
-    const { closeRemovSportDialog } = this.props.actions;
+    const {
+      classes,
+      isMobile,
+      ageGroups,
+      divisions,
+      activeCommunityID,
+      genders,
+      sports
+    } = this.props;
+    const { addSportDialog, removeSportDialog } = this.props.dialogs;
+    const { isAddSportLoading } = this.props.dialogs;
+    const {
+      closeAddSportDialog,
+      closeRemoveSportDialog,
+      addSport
+    } = this.props.actions;
     const { infoTab } = this.props.match.params;
     const { tabSelected, removeConfirmText } = this.state;
 
@@ -383,6 +428,7 @@ class CommunityLayout extends Component {
 
     const tabs = this.getTabs();
     const sectionDisplay = this.getSectionDisplay();
+    const sportsAllowed = this.getSportsAllowed();
 
     return (
       <div>
@@ -399,11 +445,11 @@ class CommunityLayout extends Component {
         <Dialog
           isOpen={removeSportDialog.isOpen}
           heading={`Remove ${removeSportDialog.sport}`}
-          handleOkClick={() => closeRemovSportDialog()}
+          handleOkClick={() => closeRemoveSportDialog()}
           actions={[
             <Button
               colour="primary"
-              handleClick={() => closeRemovSportDialog()}
+              handleClick={() => closeRemoveSportDialog()}
             >
               Cancel
             </Button>,
@@ -417,9 +463,7 @@ class CommunityLayout extends Component {
           ]}
         >
           <span>
-            {
-              "Type REMOVE_SPORT to confirm that you want to delete this sport: "
-            }
+            {"Type REMOVE_SPORT to confirm that you want to remove this sport:"}
           </span>
           <TextField
             placeholder=""
@@ -429,6 +473,17 @@ class CommunityLayout extends Component {
             handleChange={newValue => this.updateRemoveConfirm(newValue)}
           />
         </Dialog>
+        <AddSportDialog
+          isOpen={addSportDialog.isOpen}
+          isLoading={isAddSportLoading}
+          sportsAllowed={sportsAllowed}
+          ageGroupOptions={ageGroups}
+          divisionOptions={divisions}
+          genders={genders}
+          establishedSports={sports}
+          addSport={sportInfo => addSport(activeCommunityID, sportInfo)}
+          closeDialog={() => closeAddSportDialog()}
+        />
       </div>
     );
   }

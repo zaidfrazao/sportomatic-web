@@ -7,7 +7,7 @@ import {
   lightBlue,
   orange
 } from "../../../../../../utils/colours";
-import defaultEmblem from "../../../../image/default-emblem.jpg";
+import defaultEmblem from "../../../../images/default-emblem.jpg";
 
 const styles = {
   activeRibbon: {

@@ -3,16 +3,17 @@ import React, { Component } from "react";
 import injectSheet from "react-jss";
 import Button from "../../../../components/Button";
 import { common, grey, red } from "../../../../utils/colours";
-import defaultEmblem from "../../image/default-emblem.jpg";
-import athleticsIcon from "./images/athletics.png";
-import crossCountryIcon from "./images/cross-country.png";
-import hockeyIcon from "./images/hockey.png";
-import netballIcon from "./images/netball.png";
-import rugbyIcon from "./images/rugby.png";
-import otherIcon from "./images/other.png";
-import soccerIcon from "./images/soccer.png";
-import swimmingIcon from "./images/swimming.png";
-import waterPoloIcon from "./images/water-polo.png";
+import defaultEmblem from "../../images/default-emblem.jpg";
+
+import athleticsIcon from "../../images/athletics.png";
+import crossCountryIcon from "../../images/cross-country.png";
+import hockeyIcon from "../../images/hockey.png";
+import netballIcon from "../../images/netball.png";
+import rugbyIcon from "../../images/rugby.png";
+import otherIcon from "../../images/other.png";
+import soccerIcon from "../../images/soccer.png";
+import swimmingIcon from "../../images/swimming.png";
+import waterPoloIcon from "../../images/water-polo.png";
 
 const mobileBreakpoint = 800;
 const tabletBreakpoint = 1080;
@@ -22,7 +23,7 @@ const styles = {
     marginRight: 8
   },
   addSportButtonWrapper: {
-    margin: 12
+    margin: "12px 24px"
   },
   column: {
     width: "100%",
@@ -222,6 +223,7 @@ class CommunityInfo extends Component {
 
   render() {
     const { classes, info } = this.props;
+    const { addSport } = this.props.actions;
     const {
       name,
       physicalAddress,
@@ -293,7 +295,13 @@ class CommunityInfo extends Component {
           <div className={classes.section}>
             <div className={classes.sectionHeading}>Available Sports</div>
             <div className={classes.addSportButtonWrapper}>
-              <Button colour="primary" slim filled fullWidth>
+              <Button
+                colour="primary"
+                slim
+                filled
+                fullWidth
+                handleClick={() => addSport()}
+              >
                 <i className={`fas fa-plus ${classes.addIcon}`} />Add sport
               </Button>
             </div>

@@ -8,10 +8,15 @@ const NAMESPACE = "sportomatic-web/community";
 
 export const OPEN_REMOVE_SPORT_DIALOG = `${NAMESPACE}/OPEN_REMOVE_SPORT_DIALOG`;
 export const CLOSE_REMOVE_SPORT_DIALOG = `${NAMESPACE}/CLOSE_REMOVE_SPORT_DIALOG`;
+export const OPEN_ADD_SPORT_DIALOG = `${NAMESPACE}/OPEN_ADD_SPORT_DIALOG`;
+export const CLOSE_ADD_SPORT_DIALOG = `${NAMESPACE}/CLOSE_ADD_SPORT_DIALOG`;
 export const RESET_COMMUNITY_STATE = `${NAMESPACE}/RESET_COMMUNITY_STATE`;
 export const REQUEST_REMOVE_SPORT = `${NAMESPACE}/REQUEST_REMOVE_SPORT`;
 export const RECEIVE_REMOVE_SPORT = `${NAMESPACE}/RECEIVE_REMOVE_SPORT`;
 export const ERROR_REMOVING_SPORT = `${NAMESPACE}/ERROR_REMOVING_SPORT`;
+export const REQUEST_ADD_SPORT = `${NAMESPACE}/REQUEST_ADD_SPORT`;
+export const RECEIVE_ADD_SPORT = `${NAMESPACE}/RECEIVE_ADD_SPORT`;
+export const ERROR_ADDING_SPORT = `${NAMESPACE}/ERROR_ADDING_SPORT`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -30,6 +35,10 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 }
 
 export const dialogsInitialState = {
+  addSportDialog: {
+    isOpen: false,
+    sport: ""
+  },
   removeSportDialog: {
     isOpen: false,
     sport: ""
@@ -41,6 +50,20 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
     case RESET_COMMUNITY_STATE:
     case SIGN_OUT:
       return dialogsInitialState;
+    case OPEN_ADD_SPORT_DIALOG:
+      return {
+        ...state,
+        addSportDialog: {
+          isOpen: true
+        }
+      };
+    case CLOSE_ADD_SPORT_DIALOG:
+      return {
+        ...state,
+        addSportDialog: {
+          isOpen: false
+        }
+      };
     case OPEN_REMOVE_SPORT_DIALOG:
       return {
         ...state,
@@ -62,19 +85,46 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
   }
 }
 
+export const loadingStatusInitialState = {
+  isAddSportLoading: false
+};
+
+function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
+  switch (action.type) {
+    case SIGN_OUT:
+      return loadingStatusInitialState;
+    case REQUEST_ADD_SPORT:
+      return {
+        ...state,
+        isAddSportLoading: true
+      };
+    case RECEIVE_ADD_SPORT:
+    case ERROR_ADDING_SPORT:
+      return {
+        ...state,
+        isAddSportLoading: false
+      };
+    default:
+      return state;
+  }
+}
+
 export const communityReducer = combineReducers({
   uiConfig: uiConfigReducer,
-  dialogs: dialogsReducer
+  dialogs: dialogsReducer,
+  loadingStatus: loadingStatusReducer
 });
 
 // Selectors
 
 const uiConfig = state => state.community.uiConfig;
 const dialogs = state => state.community.dialogs;
+const loadingStatus = state => state.community.loadingStatus;
 
 export const selector = createStructuredSelector({
   uiConfig,
-  dialogs
+  dialogs,
+  loadingStatus
 });
 
 // Action Creators
@@ -85,7 +135,7 @@ export function resetState() {
   };
 }
 
-export function openRemovSportDialog(sport) {
+export function openRemoveSportDialog(sport) {
   return {
     type: OPEN_REMOVE_SPORT_DIALOG,
     payload: {
@@ -94,9 +144,21 @@ export function openRemovSportDialog(sport) {
   };
 }
 
-export function closeRemovSportDialog() {
+export function closeRemoveSportDialog() {
   return {
     type: CLOSE_REMOVE_SPORT_DIALOG
+  };
+}
+
+export function openAddSportDialog() {
+  return {
+    type: OPEN_ADD_SPORT_DIALOG
+  };
+}
+
+export function closeAddSportDialog() {
+  return {
+    type: CLOSE_ADD_SPORT_DIALOG
   };
 }
 
@@ -136,6 +198,55 @@ export function removeSport(communityID, sports) {
       })
       .catch(error => {
         dispatch(errorRemovingSport(error));
+      });
+  };
+}
+
+export function requestAddSport() {
+  return {
+    type: REQUEST_ADD_SPORT
+  };
+}
+
+export function receiveAddSport() {
+  return {
+    type: RECEIVE_ADD_SPORT
+  };
+}
+
+export function errorAddingSport(error: { code: string, message: string }) {
+  return {
+    type: ERROR_ADDING_SPORT,
+    payload: {
+      error
+    }
+  };
+}
+
+export function addSport(communityID, sportInfo) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestAddSport());
+
+    const sports = [
+      ...sportInfo.establishedSports,
+      {
+        info: sportInfo.info,
+        ageGroups: sportInfo.ageGroups,
+        divisions: sportInfo.divisions
+      }
+    ];
+    const db = firebase.firestore();
+    const communityRef = db.collection("institutions").doc(communityID);
+
+    return communityRef
+      .update({
+        "info.sports": sports
+      })
+      .then(() => {
+        dispatch(receiveAddSport());
+      })
+      .catch(error => {
+        dispatch(errorAddingSport(error));
       });
   };
 }
