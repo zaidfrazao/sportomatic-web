@@ -179,8 +179,8 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 
 export const loadingStatusInitialState = {
   isReadNotificationsLoading: false,
-  isAccountInfoLoading: false,
-  isInstitutionsLoading: false,
+  isAccountInfoLoading: true,
+  isInstitutionsLoading: true,
   isInstitutionCreationLoading: false,
   isVerifiedInstitutionsLoading: false,
   isJoinInstitutionLoading: false

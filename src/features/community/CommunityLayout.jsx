@@ -355,10 +355,10 @@ class CommunityLayout extends Component {
         <div className={classes.contentWrapper}>
           <div className={classes.adWrapper}>{ad}</div>
           <CommunityInfo
+            isAdmin={isAdmin}
             userID={userID}
             info={communityInfo}
             communityID={activeCommunityID}
-            isAdmin={isAdmin}
             isMobile={isMobile}
             isTablet={isTablet}
             actions={{
@@ -413,7 +413,7 @@ class CommunityLayout extends Component {
       sports
     } = this.props;
     const { addSportDialog, removeSportDialog } = this.props.dialogs;
-    const { isAddSportLoading } = this.props.dialogs;
+    const { isAddSportLoading } = this.props.loadingStatus;
     const {
       closeAddSportDialog,
       closeRemoveSportDialog,
@@ -474,14 +474,17 @@ class CommunityLayout extends Component {
           />
         </Dialog>
         <AddSportDialog
-          isOpen={addSportDialog.isOpen}
+          isOpen={addSportDialog.isOpen || sports.length === 0}
           isLoading={isAddSportLoading}
           sportsAllowed={sportsAllowed}
           ageGroupOptions={ageGroups}
           divisionOptions={divisions}
           genders={genders}
           establishedSports={sports}
-          addSport={sportInfo => addSport(activeCommunityID, sportInfo)}
+          addSport={sportInfo => {
+            closeAddSportDialog();
+            addSport(activeCommunityID, sportInfo);
+          }}
           closeDialog={() => closeAddSportDialog()}
         />
       </div>

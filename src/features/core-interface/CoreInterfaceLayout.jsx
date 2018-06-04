@@ -431,7 +431,9 @@ class CoreInterfaceLayout extends Component {
       meAllFilter
     } = this.props.uiConfig;
     const { isLogOutModalOpen } = this.props.dialogs;
+    const { pathname } = this.props.location;
 
+    const featureName = pathname.split("/")[2];
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
     const versionNumber = "0.9.5";
@@ -486,6 +488,11 @@ class CoreInterfaceLayout extends Component {
     if (isAccountInfoLoading || isInstitutionsLoading) {
       return <LoadingScreen />;
     } else {
+      if (sports.length === 0 && featureName !== "community") {
+        console.log(sports);
+        console.log(featureName);
+        return <Redirect to="/myaccount/community" />;
+      }
       return (
         <div className={classes.wrapper}>
           <AppBar

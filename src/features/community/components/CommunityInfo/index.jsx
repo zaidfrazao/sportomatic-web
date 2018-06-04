@@ -182,7 +182,7 @@ class CommunityInfo extends Component {
   }
 
   getSportsItems() {
-    const { classes, info } = this.props;
+    const { classes, info, isAdmin } = this.props;
     const { removeSport } = this.props.actions;
     const { sports } = info;
 
@@ -198,10 +198,12 @@ class CommunityInfo extends Component {
               <img alt={`${sport} icon`} className={classes.icon} src={icon} />
             </div>
             <span className={classes.infoItemText}>{sport}</span>
-            <i
-              className={`fas fa-minus-circle ${classes.deleteButton}`}
-              onClick={() => removeSport(sport)}
-            />
+            {isAdmin && (
+              <i
+                className={`fas fa-minus-circle ${classes.deleteButton}`}
+                onClick={() => removeSport(sport)}
+              />
+            )}
           </div>
         );
       } else {
@@ -211,10 +213,12 @@ class CommunityInfo extends Component {
               <img alt={`${sport} icon`} className={classes.icon} src={icon} />
             </div>
             <span className={classes.lastInfoItemText}>{sport}</span>
-            <i
-              className={`fas fa-minus-circle ${classes.deleteButton}`}
-              onClick={() => removeSport(sport)}
-            />
+            {isAdmin && (
+              <i
+                className={`fas fa-minus-circle ${classes.deleteButton}`}
+                onClick={() => removeSport(sport)}
+              />
+            )}
           </div>
         );
       }
@@ -222,7 +226,7 @@ class CommunityInfo extends Component {
   }
 
   render() {
-    const { classes, info } = this.props;
+    const { classes, info, isAdmin } = this.props;
     const { addSport } = this.props.actions;
     const {
       name,
@@ -294,17 +298,19 @@ class CommunityInfo extends Component {
         <div className={classes.column}>
           <div className={classes.section}>
             <div className={classes.sectionHeading}>Available Sports</div>
-            <div className={classes.addSportButtonWrapper}>
-              <Button
-                colour="primary"
-                slim
-                filled
-                fullWidth
-                handleClick={() => addSport()}
-              >
-                <i className={`fas fa-plus ${classes.addIcon}`} />Add sport
-              </Button>
-            </div>
+            {isAdmin && (
+              <div className={classes.addSportButtonWrapper}>
+                <Button
+                  colour="primary"
+                  slim
+                  filled
+                  fullWidth
+                  handleClick={() => addSport()}
+                >
+                  <i className={`fas fa-plus ${classes.addIcon}`} />Add sport
+                </Button>
+              </div>
+            )}
             {sportsItems.length === 0 ? (
               <div className={classes.noItems}>No sports available</div>
             ) : (

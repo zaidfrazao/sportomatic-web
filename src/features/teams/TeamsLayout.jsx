@@ -183,8 +183,7 @@ class TeamsLayout extends Component {
         id,
         seasonStatus,
         seasons: teamSeasons,
-        name: info.info.name,
-        sport: info.info.sport
+        ...info.info
       };
     });
   }

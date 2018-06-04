@@ -731,7 +731,7 @@ class AddSportDialog extends Component {
 
   renderCustomInfoEditing() {
     const { classes } = this.props;
-    const { customErrors, info, sport } = this.state;
+    const { customErrors, info, sport, gender } = this.state;
 
     return (
       <div className={classes.customInfoWrapper}>
@@ -750,16 +750,16 @@ class AddSportDialog extends Component {
             handleChange={newValue => this.updateCustomSport("name", newValue)}
           />
         )}
-        {info.gender.key !== "MALE" &&
-          info.gender.key !== "FEMALE" && (
+        {gender !== "male" &&
+          gender !== "female" && (
             <div className={classes.heading}>
               <i
                 className={`fas fa-venus-mars ${classes.iconAdjacentText}`}
               />Athlete Genders
             </div>
           )}
-        {info.gender.key !== "MALE" &&
-          info.gender.key !== "FEMALE" && (
+        {gender !== "male" &&
+          gender !== "female" && (
             <Select
               items={[
                 {
@@ -1635,27 +1635,43 @@ class AddSportDialog extends Component {
   }
 
   getActionButtons() {
-    const { closeDialog, addSport, isLoading } = this.props;
+    const { closeDialog, addSport, isLoading, establishedSports } = this.props;
     const { step } = this.state;
 
     switch (step) {
       case 1:
-        return [
-          <Button colour="primary" slim handleClick={() => closeDialog()}>
-            Cancel
-          </Button>,
-          <Button
-            colour="primary"
-            filled
-            slim
-            handleClick={() => {
-              const isValid = this.validateSportSelection();
-              isValid && this.updateStep(2);
-            }}
-          >
-            Next
-          </Button>
-        ];
+        if (establishedSports.length === 0) {
+          return [
+            <Button
+              colour="primary"
+              filled
+              slim
+              handleClick={() => {
+                const isValid = this.validateSportSelection();
+                isValid && this.updateStep(2);
+              }}
+            >
+              Next
+            </Button>
+          ];
+        } else {
+          return [
+            <Button colour="primary" slim handleClick={() => closeDialog()}>
+              Cancel
+            </Button>,
+            <Button
+              colour="primary"
+              filled
+              slim
+              handleClick={() => {
+                const isValid = this.validateSportSelection();
+                isValid && this.updateStep(2);
+              }}
+            >
+              Next
+            </Button>
+          ];
+        }
       case 2:
         return [
           <Button

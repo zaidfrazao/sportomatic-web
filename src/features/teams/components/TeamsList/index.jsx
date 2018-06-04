@@ -36,20 +36,42 @@ class TeamsList extends Component {
     if (teams.length > 0) {
       return (
         <div className={classes.cardsWrapper}>
-          {teams.map(teamInfo => (
-            <div className={classes.cardWrapper} key={teamInfo.id}>
-              <TeamCard
-                isUserAdmin={isUserAdmin}
-                name={teamInfo.name}
-                sport={teamInfo.sport}
-                id={teamInfo.id}
-                status={teamInfo.status}
-                seasonStatus={teamInfo.seasonStatus}
-                setUpSeason={setUpSeason}
-                navigateTo={navigateTo}
-              />
-            </div>
-          ))}
+          {teams
+            .sort((teamA, teamB) => {
+              if (teamA.sport > teamB.sport) {
+                return +1;
+              } else if (teamA.sport < teamB.sport) {
+                return -1;
+              } else {
+                if (teamA.ageGroup > teamB.ageGroup) {
+                  return +1;
+                } else if (teamA.ageGroup < teamB.ageGroup) {
+                  return -1;
+                } else {
+                  if (teamA.division > teamB.division) {
+                    return +1;
+                  } else if (teamA.division < teamB.division) {
+                    return -1;
+                  } else {
+                    return 0;
+                  }
+                }
+              }
+            })
+            .map(teamInfo => (
+              <div className={classes.cardWrapper} key={teamInfo.id}>
+                <TeamCard
+                  isUserAdmin={isUserAdmin}
+                  name={teamInfo.name}
+                  sport={teamInfo.sport}
+                  id={teamInfo.id}
+                  status={teamInfo.status}
+                  seasonStatus={teamInfo.seasonStatus}
+                  setUpSeason={setUpSeason}
+                  navigateTo={navigateTo}
+                />
+              </div>
+            ))}
         </div>
       );
     } else {
