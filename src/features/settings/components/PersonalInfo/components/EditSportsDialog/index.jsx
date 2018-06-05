@@ -1,5 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
+import _ from "lodash";
 import injectSheet from "react-jss";
 import Button from "../../../../../../components/Button";
 import { common, grey, lightBlue, red } from "../../../../../../utils/colours";
@@ -114,9 +115,27 @@ const initialState = {
 class EditSportsDialog extends Component {
   state = initialState;
 
-  updateSport(newSport) {
+  componentWillReceiveProps(nextProps) {
+    const { isOpen, initialSports } = nextProps;
+
+    if (isOpen !== this.props.isOpen && isOpen) {
+      this.setState({
+        sports: initialSports
+      });
+    }
+  }
+
+  addSport(newSport) {
     this.setState({
-      sport: newSport
+      sports: [...this.state.sports, newSport]
+    });
+  }
+
+  removeSport(newSport) {
+    const newSports = _.without(this.state.sports, newSport);
+
+    this.setState({
+      sports: newSports
     });
   }
 
@@ -136,7 +155,13 @@ class EditSportsDialog extends Component {
               ? classes.sportOptionSelectedWrapper
               : classes.sportOptionWrapper
           }
-          onClick={() => this.updateSport("Hockey")}
+          onClick={() => {
+            if (sports.includes("Hockey")) {
+              this.removeSport("Hockey");
+            } else {
+              this.addSport("Hockey");
+            }
+          }}
         >
           <img
             className={classes.sportIcon}
@@ -159,7 +184,13 @@ class EditSportsDialog extends Component {
               ? classes.sportOptionSelectedWrapper
               : classes.sportOptionWrapper
           }
-          onClick={() => this.updateSport("Netball")}
+          onClick={() => {
+            if (sports.includes("Netball")) {
+              this.removeSport("Netball");
+            } else {
+              this.addSport("Netball");
+            }
+          }}
         >
           <img
             className={classes.sportIcon}
@@ -182,7 +213,13 @@ class EditSportsDialog extends Component {
               ? classes.sportOptionSelectedWrapper
               : classes.sportOptionWrapper
           }
-          onClick={() => this.updateSport("Rugby")}
+          onClick={() => {
+            if (sports.includes("Rugby")) {
+              this.removeSport("Rugby");
+            } else {
+              this.addSport("Rugby");
+            }
+          }}
         >
           <img className={classes.sportIcon} alt="Rugby icon" src={rugbyIcon} />
           <div
@@ -212,7 +249,14 @@ class EditSportsDialog extends Component {
         colour="primary"
         filled
         slim
-        handleClick={() => editSports(sports)}
+        handleClick={() =>
+          editSports(
+            _.fromPairs(
+              sports.map(sport => {
+                return [sport, true];
+              })
+            )
+          )}
       >
         Update
       </Button>

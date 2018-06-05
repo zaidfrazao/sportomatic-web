@@ -424,6 +424,7 @@ class CoreInterfaceLayout extends Component {
     const { isLogOutModalOpen } = this.props.dialogs;
     const { pathname } = this.props.location;
 
+    const allowedSports = ["Hockey", "Netball", "Rugby"];
     const featureName = pathname.split("/")[2];
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
@@ -438,7 +439,9 @@ class CoreInterfaceLayout extends Component {
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
     const sideMenuItems = this.getSideMenuItems();
     const userSports = _.toPairs(accountInfo.info.sports)
-      .filter(([name, isPreferred]) => isPreferred)
+      .filter(([name, isPreferred]) => {
+        return isPreferred && allowedSports.includes(name);
+      })
       .map(([name, isPreferred]) => name);
 
     let isAdmin = false;

@@ -277,7 +277,14 @@ class PersonalInfo extends Component {
     } = this.props;
     const { editSports, editPersonalInfo } = this.props.actions;
     const { isEditSportsDialogOpen, isEditPersonalInfoDialogOpen } = this.state;
-    const { firstName, lastName, phoneNumber, profilePictureURL, email } = info;
+    const {
+      firstName,
+      lastName,
+      phoneNumber,
+      profilePictureURL,
+      email,
+      sports
+    } = info;
 
     const profilePicture =
       profilePictureURL === "" ? defaultProfilePicture : profilePictureURL;
@@ -355,7 +362,7 @@ class PersonalInfo extends Component {
         <EditSportsDialog
           isOpen={isEditSportsDialogOpen}
           isLoading={isEditSportsLoading}
-          initialSports={[]}
+          initialSports={sports}
           editSports={newSports => editSports(newSports)}
           closeDialog={() => this.closeEditSportsDialog()}
         />
