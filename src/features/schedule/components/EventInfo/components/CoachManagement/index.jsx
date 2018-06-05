@@ -50,18 +50,22 @@ class CoachManagement extends Component {
   getCoaches() {
     const {
       classes,
+      isAdmin,
       coaches,
       eventTimes,
       signIn,
       signOut,
       updateTimes,
       approveHours,
-      updateAbsent
+      updateAbsent,
+      isCompetitive
     } = this.props;
 
     return coaches.map(info => (
       <div key={info.id} className={classes.coachCardWrapper}>
         <CoachCard
+          isCompetitive={isCompetitive}
+          isAdmin={isAdmin}
           coachID={info.id}
           name={info.name}
           profilePicture={info.profilePicture}

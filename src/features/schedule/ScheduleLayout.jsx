@@ -366,12 +366,13 @@ class ScheduleLayout extends Component {
             />
             {isMobile && <div className={classes.buttonSeparator} />}
             <div className={classes.flexGrow} />
-            {isAdmin && (
-              <Button colour="primary" filled slim fullWidth={isMobile}>
-                <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
-                Add new event
-              </Button>
-            )}
+            {false &&
+              isAdmin && (
+                <Button colour="primary" filled slim fullWidth={isMobile}>
+                  <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
+                  Add new event
+                </Button>
+              )}
           </div>
           <EventsList
             canCreate={canCreate}

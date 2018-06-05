@@ -263,9 +263,8 @@ class Details extends Component {
     return managers.map((info, index) => {
       if (index !== lastIndex) {
         return (
-          <div>
+          <div key={info.id}>
             <div
-              key={info.id}
               className={classes.listItemWrapper}
               onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
             >
@@ -348,6 +347,26 @@ class Details extends Component {
     return absenteeism;
   }
 
+  getCoachPayment(userID) {
+    const { coaches } = this.props;
+
+    let payment = {
+      type: "N/A",
+      rates: {
+        standard: 0,
+        overtime: 0,
+        competitive: 0,
+        nonCompetitive: 0,
+        salary: 0
+      }
+    };
+    coaches.map(coachInfo => {
+      if (coachInfo.id === userID) payment = coachInfo.payment;
+    });
+
+    return payment;
+  }
+
   getEventTypeIcon() {
     const { isCompetitive } = this.props;
 
@@ -362,6 +381,7 @@ class Details extends Component {
       times,
       date,
       isCancelled,
+      isCompetitive,
       venue,
       notes,
       userID,
@@ -373,6 +393,7 @@ class Details extends Component {
     const isCoaching = this.checkIfUserCoaching(userID);
     const hours = this.getCoachHours(userID);
     const absenteeism = this.getCoachAbsenteeism(userID);
+    const payment = this.getCoachPayment(userID);
     const teamItems = this.getTeamItems();
     const coachItems = this.getCoachItems();
     const managerItems = this.getManagerItems();
@@ -395,9 +416,11 @@ class Details extends Component {
             !isCancelled && (
               <div className={classes.yourHoursWrapper}>
                 <YourHoursCard
+                  isCompetitive={isCompetitive}
                   coachID={userID}
                   hours={hours}
                   absenteeism={absenteeism}
+                  payment={payment}
                   eventTimes={times}
                   signIn={signIn}
                   signOut={signOut}

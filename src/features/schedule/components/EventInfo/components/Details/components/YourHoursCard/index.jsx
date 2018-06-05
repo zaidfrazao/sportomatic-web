@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import accounting from "accounting";
 import injectStyles from "react-jss";
 import moment from "moment";
 import {
@@ -265,10 +266,37 @@ class YourHoursCard extends Component {
   }
 
   render() {
-    const { classes, absenteeism } = this.props;
+    const { classes, absenteeism, payment, isCompetitive } = this.props;
 
     const times = this.getTimes();
     const primaryAction = this.getPrimaryAction();
+
+    let paymentLine1 = "";
+    let paymentLine2 = "";
+    if (payment.type === "HOURLY") {
+      paymentLine1 = `${accounting.formatMoney(
+        parseFloat(payment.rates.standard),
+        "R"
+      )} / standard hour`;
+      paymentLine2 = `${accounting.formatMoney(
+        parseFloat(payment.rates.overtime),
+        "R"
+      )} / overtime hour`;
+    } else if (payment.type === "FIXED") {
+      if (isCompetitive) {
+        paymentLine1 = `Fixed amount of ${accounting.formatMoney(
+          parseFloat(payment.rates.competitive),
+          "R"
+        )}`;
+      } else {
+        paymentLine1 = `Fixed amount of ${accounting.formatMoney(
+          parseFloat(payment.rates.nonCompetitive),
+          "R"
+        )}`;
+      }
+    } else {
+      paymentLine1 = "No wages will be logged";
+    }
 
     return (
       <div className={classes.card}>
@@ -311,6 +339,21 @@ class YourHoursCard extends Component {
             )}
           </div>
         )}
+        {!absenteeism.isAbsent && (
+          <div className={classes.timesWrapper}>
+            <div className={classes.timesIconWrapper}>
+              <span>Pay</span>
+            </div>
+            <span className={classes.timesText}>{paymentLine1}</span>
+          </div>
+        )}
+        {payment.type === "HOURLY" &&
+          !absenteeism.isAbsent && (
+            <div className={classes.timesWrapper}>
+              <div className={classes.timesIconWrapper} />
+              <span className={classes.timesText}>{paymentLine2}</span>
+            </div>
+          )}
         {absenteeism.isAbsent &&
           (absenteeism.rating === "GOOD" ? (
             <div className={classes.absentWrapper}>

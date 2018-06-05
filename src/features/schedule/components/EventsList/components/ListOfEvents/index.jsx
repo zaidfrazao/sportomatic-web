@@ -258,7 +258,8 @@ class ListOfEvents extends Component {
               {eventCards.length === 0 && (
                 <div className={classes.noEvents}>No events</div>
               )}
-              {canCreate &&
+              {false &&
+                canCreate &&
                 showAddButton && (
                   <div className={classes.addEventWrapper}>
                     <i className={`fas fa-plus ${classes.icon}`} />Add event
@@ -283,7 +284,8 @@ class ListOfEvents extends Component {
               {eventCards.length === 0 && (
                 <div className={classes.noEvents}>No events</div>
               )}
-              {canCreate &&
+              {false &&
+                canCreate &&
                 showAddButton && (
                   <div className={classes.addEventWrapper}>
                     <i className={`fas fa-plus ${classes.icon}`} />Add event
@@ -310,7 +312,8 @@ class ListOfEvents extends Component {
               {eventCards.length === 0 && (
                 <div className={classes.noEvents}>No events</div>
               )}
-              {canCreate &&
+              {false &&
+                canCreate &&
                 showAddButton && (
                   <div className={classes.addEventWrapper}>
                     <i className={`fas fa-plus ${classes.icon}`} />Add event
@@ -332,7 +335,8 @@ class ListOfEvents extends Component {
             {eventCards.length === 0 && (
               <div className={classes.noEvents}>No events</div>
             )}
-            {canCreate &&
+            {false &&
+              canCreate &&
               showAddButton && (
                 <div className={classes.addEventWrapper}>
                   <i className={`fas fa-plus ${classes.icon}`} />Add event

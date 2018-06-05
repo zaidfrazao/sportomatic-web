@@ -79,6 +79,9 @@ export const ERROR_UPDATING_TIMES = `${NAMESPACE}/ERROR_UPDATING_TIMES`;
 export const REQUEST_APPROVE_HOURS = `${NAMESPACE}/REQUEST_APPROVE_HOURS`;
 export const RECEIVE_APPROVE_HOURS = `${NAMESPACE}/RECEIVE_APPROVE_HOURS`;
 export const ERROR_APPROVING_HOURS = `${NAMESPACE}/ERROR_APPROVING_HOURS`;
+export const REQUEST_SEASON_INFO = `${NAMESPACE}/REQUEST_SEASON_INFO`;
+export const RECEIVE_SEASON_INFO = `${NAMESPACE}/RECEIVE_SEASON_INFO`;
+export const ERROR_FETCHING_SEASON_INFO = `${NAMESPACE}/ERROR_FETCHING_SEASON_INFO`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -319,7 +322,8 @@ export const loadingStatusInitialState = {
   isEventsLoading: false,
   isCreationDateLoading: false,
   isTeamsLoading: false,
-  isStaffLoading: false
+  isStaffLoading: false,
+  isSeasonInfoLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -327,6 +331,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
     case RESET_SCHEDULE_STATE:
     case SIGN_OUT:
       return loadingStatusInitialState;
+    case REQUEST_SEASON_INFO:
+      return {
+        ...state,
+        isSeasonInfoLoading: true
+      };
+    case ERROR_FETCHING_SEASON_INFO:
+    case RECEIVE_SEASON_INFO:
+      return {
+        ...state,
+        isSeasonInfoLoading: false
+      };
     case REQUEST_ADD_EVENT:
       return {
         ...state,
@@ -451,6 +466,19 @@ function teamsReducer(state = {}, action = {}) {
   }
 }
 
+function seasonInfoReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RESET_SCHEDULE_STATE:
+    case REQUEST_SEASON_INFO:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_SEASON_INFO:
+      return action.payload.info;
+    default:
+      return state;
+  }
+}
+
 export const scheduleReducer = combineReducers({
   uiConfig: uiConfigReducer,
   dialogs: dialogsReducer,
@@ -458,7 +486,8 @@ export const scheduleReducer = combineReducers({
   loadingStatus: loadingStatusReducer,
   teams: teamsReducer,
   users: usersReducer,
-  filters: filterReducer
+  filters: filterReducer,
+  seasonInfo: seasonInfoReducer
 });
 
 // Selectors
@@ -470,6 +499,7 @@ const loadingStatus = state => state.schedule.loadingStatus;
 const teams = state => state.schedule.teams;
 const users = state => state.schedule.users;
 const filters = state => state.schedule.filters;
+const seasonInfo = state => state.schedule.seasonInfo;
 
 export const selector = createStructuredSelector({
   uiConfig,
@@ -478,7 +508,8 @@ export const selector = createStructuredSelector({
   loadingStatus,
   teams,
   users,
-  filters
+  filters,
+  seasonInfo
 });
 
 // Action Creators
@@ -1319,6 +1350,51 @@ export function removeReplacementCoach(eventID, coachID, replacementCoachID) {
       .update(updates)
       .then(() => dispatch(receiveReplacementCoachRemoval()))
       .catch(error => dispatch(errorRemovingReplacementCoach(error)));
+  };
+}
+
+export function requestSeasonInfo() {
+  return {
+    type: REQUEST_SEASON_INFO
+  };
+}
+
+export function receiveSeasonInfo(info) {
+  return {
+    type: RECEIVE_SEASON_INFO,
+    payload: {
+      info
+    }
+  };
+}
+
+export function errorFetchingSeasonInfo(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_FETCHING_SEASON_INFO,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadSeasonInfo(seasonID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestSeasonInfo());
+    const seasonRef = firebase
+      .firestore()
+      .collection("seasons")
+      .doc(seasonID);
+
+    return seasonRef
+      .get()
+      .then(doc => {
+        const seasonInfo = doc.data();
+        dispatch(receiveSeasonInfo(seasonInfo));
+      })
+      .catch(error => dispatch(errorFetchingSeasonInfo(error)));
   };
 }
 

@@ -255,6 +255,7 @@ class EventInfo extends Component {
                 {showButtons && isAdmin && cancelButton}
               </div>
               <CoachManagement
+                isAdmin={isAdmin}
                 isCancelled={info.status === "CANCELLED"}
                 isCompetitive={info.isCompetitive}
                 coaches={coaches}
@@ -366,6 +367,7 @@ class EventInfo extends Component {
                 {showButtons && isAdmin && cancelButton}
               </div>
               <CoachManagement
+                isAdmin={isAdmin}
                 isCancelled={info.status === "CANCELLED"}
                 isCompetitive={info.isCompetitive}
                 coaches={coaches}

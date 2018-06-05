@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import accounting from "accounting";
 import injectStyles from "react-jss";
 import moment from "moment";
 import {
@@ -182,14 +183,15 @@ class CoachCard extends Component {
       }
 
       const wage =
-        standardHours * rates.standard + overtimeHours * rates.overtime;
+        standardHours * parseFloat(rates.standard) +
+        overtimeHours * parseFloat(rates.overtime);
 
       return wage;
     } else if (type === "FIXED") {
-      let wage = rates.nonCompetitive;
+      let wage = parseFloat(rates.nonCompetitive);
 
       if (isCompetitive) {
-        wage = rates.competitive;
+        wage = parseFloat(rates.competitive);
       }
 
       return wage;
@@ -432,13 +434,47 @@ class CoachCard extends Component {
   }
 
   render() {
-    const { classes, name, profilePicture, hours, absenteeism } = this.props;
+    const {
+      classes,
+      name,
+      profilePicture,
+      hours,
+      absenteeism,
+      isAdmin,
+      payment,
+      isCompetitive
+    } = this.props;
 
     const times = this.getTimes();
     const primaryAction = this.getPrimaryAction();
     const secondaryAction = this.getSecondaryAction();
 
-    console.log(this.props);
+    let paymentLine1 = "";
+    let paymentLine2 = "";
+    if (payment.type === "HOURLY") {
+      paymentLine1 = `${accounting.formatMoney(
+        parseFloat(payment.rates.standard),
+        "R"
+      )} / standard hour`;
+      paymentLine2 = `${accounting.formatMoney(
+        parseFloat(payment.rates.overtime),
+        "R"
+      )} / overtime hour`;
+    } else if (payment.type === "FIXED") {
+      if (isCompetitive) {
+        paymentLine1 = `Fixed amount of ${accounting.formatMoney(
+          parseFloat(payment.rates.competitive),
+          "R"
+        )}`;
+      } else {
+        paymentLine1 = `Fixed amount of ${accounting.formatMoney(
+          parseFloat(payment.rates.nonCompetitive),
+          "R"
+        )}`;
+      }
+    } else {
+      paymentLine1 = "No wages will be logged";
+    }
 
     return (
       <div className={classes.card}>
@@ -488,6 +524,23 @@ class CoachCard extends Component {
             )}
           </div>
         )}
+        {isAdmin &&
+          !absenteeism.isAbsent && (
+            <div className={classes.timesWrapper}>
+              <div className={classes.timesIconWrapper}>
+                <span>Pay</span>
+              </div>
+              <span className={classes.timesText}>{paymentLine1}</span>
+            </div>
+          )}
+        {isAdmin &&
+          payment.type === "HOURLY" &&
+          !absenteeism.isAbsent && (
+            <div className={classes.timesWrapper}>
+              <div className={classes.timesIconWrapper} />
+              <span className={classes.timesText}>{paymentLine2}</span>
+            </div>
+          )}
         {hours.status !== "APPROVED" &&
           !absenteeism.isAbsent &&
           secondaryAction}
