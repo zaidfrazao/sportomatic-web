@@ -7,6 +7,7 @@ import Dialog from "../../../../components/Dialog";
 import { isValidEmail } from "../../../../utils/validation";
 import Select from "../../../../components/Select";
 import TextField from "../../../../components/TextField";
+import { toPhoneFormat } from "../../../../utils/format";
 
 const styles = theme => ({
   contentWrapper: {
@@ -40,6 +41,11 @@ class InvitePersonDialog extends Component {
       },
       validation: "default",
       message: ""
+    },
+    phoneNumber: {
+      value: "",
+      validation: "default",
+      message: ""
     }
   };
 
@@ -62,17 +68,24 @@ class InvitePersonDialog extends Component {
   onKeyPressed(e) {
     const { isOpen, isLoading } = this.props;
     const { invitePerson } = this.props.actions;
-    const { email, type, firstName, lastName } = this.state;
+    const { email, type, firstName, lastName, phoneNumber } = this.state;
 
     if (isOpen && !isLoading && e.keyCode === 13) {
-      const isValid = this.validateForm(type, firstName, lastName, email);
+      const isValid = this.validateForm(
+        type,
+        firstName,
+        lastName,
+        email,
+        phoneNumber
+      );
 
       if (isValid) {
         invitePerson(
           type.value.key,
           firstName.value,
           lastName.value,
-          email.value
+          email.value,
+          phoneNumber.value
         );
       }
     }
@@ -102,6 +115,11 @@ class InvitePersonDialog extends Component {
         },
         validation: "default",
         message: ""
+      },
+      phoneNumber: {
+        value: "",
+        validation: "default",
+        message: ""
       }
     });
   }
@@ -115,7 +133,7 @@ class InvitePersonDialog extends Component {
     });
   }
 
-  validateForm(type, firstName, lastName, email) {
+  validateForm(type, firstName, lastName, email, phoneNumber) {
     let isValid = true;
     let newState = {};
 
@@ -212,6 +230,27 @@ class InvitePersonDialog extends Component {
       };
     }
 
+    if (phoneNumber.value === "") {
+      isValid = false;
+      newState.phoneNumber = {
+        value: phoneNumber.value,
+        validation: "error",
+        message: "Please enter a phone number"
+      };
+    } else if (phoneNumber.value.length !== 14) {
+      newState.phoneNumber = {
+        value: phoneNumber.value,
+        validation: "error",
+        message: "This is not a valid phone number"
+      };
+    } else {
+      newState.phoneNumber = {
+        value: phoneNumber.value,
+        validation: "default",
+        message: ""
+      };
+    }
+
     this.setState(newState);
 
     return isValid;
@@ -220,7 +259,7 @@ class InvitePersonDialog extends Component {
   render() {
     const { classes, isOpen, isLoading } = this.props;
     const { closeModal, invitePerson } = this.props.actions;
-    const { email, type, firstName, lastName } = this.state;
+    const { email, type, firstName, lastName, phoneNumber } = this.state;
 
     const actions = [
       <Button
@@ -240,14 +279,21 @@ class InvitePersonDialog extends Component {
         colour="primary"
         loading={isLoading}
         handleClick={() => {
-          const isValid = this.validateForm(type, firstName, lastName, email);
+          const isValid = this.validateForm(
+            type,
+            firstName,
+            lastName,
+            email,
+            phoneNumber
+          );
 
           if (isValid) {
             invitePerson(
               type.value.key,
               firstName.value,
               lastName.value,
-              email.value
+              email.value,
+              phoneNumber.value
             );
           }
         }}
@@ -304,6 +350,15 @@ class InvitePersonDialog extends Component {
             validation={email.validation}
             helperText={email.message}
             handleChange={newValue => this.handleChange("email", newValue)}
+          />
+          <TextField
+            type="text"
+            placeholder="Phone number"
+            value={phoneNumber.value}
+            validation={phoneNumber.validation}
+            helperText={phoneNumber.message}
+            handleChange={newValue =>
+              this.handleChange("phoneNumber", toPhoneFormat(newValue))}
           />
         </div>
       </Dialog>

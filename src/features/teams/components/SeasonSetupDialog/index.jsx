@@ -15,6 +15,7 @@ import Dialog from "../../../../components/Dialog";
 import { isValidEmail } from "../../../../utils/validation";
 import Select from "../../../../components/Select";
 import TextField from "../../../../components/TextField";
+import { toPhoneFormat } from "../../../../utils/format";
 
 const styles = {
   addWrapper: {
@@ -244,6 +245,7 @@ const initialState = {
       firstName: "John",
       lastName: "Doe",
       email: "john@doe.com",
+      phoneNumber: "",
       payment: {
         type: {
           key: "HOURLY",
@@ -272,6 +274,7 @@ const initialState = {
       firstName: "Jane",
       lastName: "Doe",
       email: "jane@doe.com",
+      phoneNumber: "",
       errorAt: "",
       validation: "default",
       message: ""
@@ -311,6 +314,7 @@ class SeasonSetupDialog extends Component {
           firstName: userFirstName,
           lastName: userLastName,
           email: userEmail,
+          phoneNumber: "",
           payment: {
             type: {
               key: "HOURLY",
@@ -339,6 +343,7 @@ class SeasonSetupDialog extends Component {
           firstName: userFirstName,
           lastName: userLastName,
           email: userEmail,
+          phoneNumber: "",
           errorAt: "",
           validation: "default",
           message: ""
@@ -418,6 +423,7 @@ class SeasonSetupDialog extends Component {
               firstName: userFirstName,
               lastName: userLastName,
               email: userEmail,
+              phoneNumber: "",
               payment: {
                 type: {
                   key: "HOURLY",
@@ -446,6 +452,7 @@ class SeasonSetupDialog extends Component {
               firstName: userFirstName,
               lastName: userLastName,
               email: userEmail,
+              phoneNumber: "",
               errorAt: "",
               validation: "default",
               message: ""
@@ -975,6 +982,7 @@ class SeasonSetupDialog extends Component {
           firstName: "",
           lastName: "",
           email: "",
+          phoneNumber: "",
           errorAt: "",
           validation: "default",
           message: ""
@@ -1009,6 +1017,7 @@ class SeasonSetupDialog extends Component {
           firstName: "",
           lastName: "",
           email: "",
+          phoneNumber: "",
           payment: {
             type: {
               key: "HOURLY",
@@ -1589,6 +1598,7 @@ class SeasonSetupDialog extends Component {
               firstName: userFirstName,
               lastName: userLastName,
               email: userEmail,
+              phoneNumber: "",
               errorAt: "",
               validation: "default",
               message: ""
@@ -1609,6 +1619,7 @@ class SeasonSetupDialog extends Component {
               firstName: "",
               lastName: "",
               email: "",
+              phoneNumber: "",
               errorAt: "",
               validation: "default",
               message: ""
@@ -1638,6 +1649,7 @@ class SeasonSetupDialog extends Component {
             firstName: people[id].info.name,
             lastName: people[id].info.surname,
             email: people[id].info.email,
+            phoneNumber: people[id].info.phoneNumber,
             errorAt: "",
             validation: "default",
             message: ""
@@ -1759,6 +1771,25 @@ class SeasonSetupDialog extends Component {
                 </div>
               </div>
             )}
+            {info.type.key === "NEW" && (
+              <div className={classes.timeInputGroupWrapper}>
+                <div className={classes.timeInputWrapper}>
+                  <TextField
+                    placeholder="Phone number"
+                    value={info.phoneNumber}
+                    validation={
+                      info.errorAt === "phoneNumber" ? "error" : "default"
+                    }
+                    handleChange={newValue =>
+                      this.updateManagerInfo(
+                        index,
+                        "phoneNumber",
+                        toPhoneFormat(newValue)
+                      )}
+                  />
+                </div>
+              </div>
+            )}
             {info.validation === "error" && (
               <div className={classes.errorWrapper}>{info.message}</div>
             )}
@@ -1864,6 +1895,7 @@ class SeasonSetupDialog extends Component {
               firstName: userFirstName,
               lastName: userLastName,
               email: userEmail,
+              phoneNumber: "",
               payment: {
                 type: {
                   key: "HOURLY",
@@ -1897,6 +1929,7 @@ class SeasonSetupDialog extends Component {
               firstName: "",
               lastName: "",
               email: "",
+              phoneNumber: "",
               payment: {
                 type: {
                   key: "HOURLY",
@@ -1939,6 +1972,7 @@ class SeasonSetupDialog extends Component {
             firstName: people[id].info.name,
             lastName: people[id].info.surname,
             email: people[id].info.email,
+            phoneNumber: people[id].info.phoneNumber,
             payment: {
               type: {
                 key: "HOURLY",
@@ -2071,6 +2105,25 @@ class SeasonSetupDialog extends Component {
                     validation={info.errorAt === "email" ? "error" : "default"}
                     handleChange={newValue =>
                       this.updateCoachInfo(index, "email", newValue)}
+                  />
+                </div>
+              </div>
+            )}
+            {info.type.key === "NEW" && (
+              <div className={classes.timeInputGroupWrapper}>
+                <div className={classes.timeInputWrapper}>
+                  <TextField
+                    placeholder="Phone number"
+                    value={info.phoneNumber}
+                    validation={
+                      info.errorAt === "phoneNumber" ? "error" : "default"
+                    }
+                    handleChange={newValue =>
+                      this.updateCoachInfo(
+                        index,
+                        "phoneNumber",
+                        toPhoneFormat(newValue)
+                      )}
                   />
                 </div>
               </div>
@@ -2439,7 +2492,7 @@ class SeasonSetupDialog extends Component {
     let isValid = true;
 
     const newManagers = managers.map(info => {
-      const { type, firstName, lastName, email, id } = info;
+      const { type, firstName, lastName, email, phoneNumber, id } = info;
 
       switch (type.key) {
         case "CURRENT":
@@ -2491,6 +2544,22 @@ class SeasonSetupDialog extends Component {
               errorAt: "lastName",
               validation: "error",
               message: "Max. 32 characters allowed"
+            };
+          } else if (phoneNumber === "") {
+            isValid = false;
+            return {
+              ...info,
+              errorAt: "phoneNumber",
+              validation: "error",
+              message: "Please enter a phone number"
+            };
+          } else if (phoneNumber.length !== 14) {
+            isValid = false;
+            return {
+              ...info,
+              errorAt: "phoneNumber",
+              validation: "error",
+              message: "This is not a valid phone number"
             };
           } else if (email === "") {
             isValid = false;
@@ -2547,7 +2616,15 @@ class SeasonSetupDialog extends Component {
     let isValid = true;
 
     const newCoaches = coaches.map(info => {
-      const { type, firstName, lastName, email, id, payment } = info;
+      const {
+        type,
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        id,
+        payment
+      } = info;
 
       let newCoach = info;
 
@@ -2602,6 +2679,22 @@ class SeasonSetupDialog extends Component {
               errorAt: "lastName",
               validation: "error",
               message: "Max. 32 characters allowed"
+            };
+          } else if (phoneNumber === "") {
+            isValid = false;
+            return {
+              ...info,
+              errorAt: "phoneNumber",
+              validation: "error",
+              message: "Please enter a phone number"
+            };
+          } else if (phoneNumber.length !== 14) {
+            isValid = false;
+            return {
+              ...info,
+              errorAt: "phoneNumber",
+              validation: "error",
+              message: "This is not a valid phone number"
             };
           } else if (email === "") {
             isValid = false;
@@ -2828,7 +2921,8 @@ class SeasonSetupDialog extends Component {
       return {
         email: info.email,
         firstName: info.firstName,
-        lastName: info.lastName
+        lastName: info.lastName,
+        phoneNumber: info.phoneNumber
       };
     });
 
@@ -2865,6 +2959,7 @@ class SeasonSetupDialog extends Component {
         email: info.email,
         firstName: info.firstName,
         lastName: info.lastName,
+        phoneNumber: info.phoneNumber,
         payment: {
           rates,
           type: paymentType

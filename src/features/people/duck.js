@@ -547,6 +547,7 @@ export function fetchInviteeInfo(
   firstName,
   lastName,
   email,
+  phoneNumber,
   institutionID,
   creatorID
 ) {
@@ -586,7 +587,15 @@ export function fetchInviteeInfo(
       .catch(error => {
         dispatch(errorFetchingInviteeInfo(error));
         dispatch(
-          createUser(email, firstName, lastName, type, creatorID, institutionID)
+          createUser(
+            email,
+            firstName,
+            lastName,
+            type,
+            phoneNumber,
+            creatorID,
+            institutionID
+          )
         );
       });
   };
@@ -629,6 +638,7 @@ export function createUser(
   firstName,
   lastName,
   type,
+  phoneNumber,
   creatorID,
   institutionID
 ) {
@@ -650,9 +660,9 @@ export function createUser(
       },
       info: {
         email,
+        phoneNumber,
         name: firstName,
         surname: lastName,
-        phoneNumber: "",
         profilePictureURL: "",
         sports: {}
       },

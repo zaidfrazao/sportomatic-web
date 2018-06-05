@@ -452,12 +452,19 @@ class PeopleLayout extends Component {
                   isInviteUserLoading
                 }
                 actions={{
-                  invitePerson: (type, firstName, lastName, email) =>
+                  invitePerson: (
+                    type,
+                    firstName,
+                    lastName,
+                    email,
+                    phoneNumber
+                  ) =>
                     fetchInviteeInfo(
                       type,
                       firstName,
                       lastName,
                       email,
+                      phoneNumber,
                       activeInstitutionID,
                       userID
                     ),
