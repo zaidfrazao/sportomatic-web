@@ -89,7 +89,8 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
 }
 
 export const loadingStatusInitialState = {
-  isAddSportLoading: false
+  isAddSportLoading: false,
+  isEditCommunityLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -106,6 +107,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isAddSportLoading: false
+      };
+    case REQUEST_EDIT_COMMUNITY_INFO:
+      return {
+        ...state,
+        isEditCommunityLoading: true
+      };
+    case RECEIVE_EDIT_COMMUNITY_INFO:
+    case ERROR_EDITING_COMMUNITY_INFO:
+      return {
+        ...state,
+        isEditCommunityLoading: false
       };
     default:
       return state;
@@ -281,7 +293,6 @@ export function errorEditingCommunityInfo(error: {
 export function editCommunityInfo(
   communityID,
   blob,
-  gender,
   name,
   abbreviation,
   phoneNumber,
@@ -303,7 +314,6 @@ export function editCommunityInfo(
       .then(snapshot => {
         return communityRef
           .update({
-            "info.gender": gender,
             "info.name": name,
             "info.abbreviation": abbreviation,
             "info.phoneNumber": phoneNumber,

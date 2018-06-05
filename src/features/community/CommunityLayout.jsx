@@ -346,6 +346,7 @@ class CommunityLayout extends Component {
       navigateTo,
       goBack
     } = this.props;
+    const { isEditCommunityLoading } = this.props.loadingStatus;
     const {
       openRemoveSportDialog,
       openAddSportDialog,
@@ -366,12 +367,12 @@ class CommunityLayout extends Component {
             communityID={activeCommunityID}
             isMobile={isMobile}
             isTablet={isTablet}
+            isLoading={isEditCommunityLoading}
             actions={{
               navigateTo,
               goBack,
               editCommunityInfo: (
                 blob,
-                gender,
                 name,
                 abbreviation,
                 phoneNumber,
@@ -381,7 +382,6 @@ class CommunityLayout extends Component {
                 editCommunityInfo(
                   activeCommunityID,
                   blob,
-                  gender,
                   name,
                   abbreviation,
                   phoneNumber,

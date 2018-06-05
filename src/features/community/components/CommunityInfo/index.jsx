@@ -68,11 +68,10 @@ const styles = {
   },
   emblem: {
     borderRadius: "50%",
-    padding: 4,
     margin: 4,
     width: 50,
     ehgiht: 50,
-    backgroundColor: common["white"],
+    backgroundColor: grey[200],
     "@media (max-width: 600px)": {
       margin: 14
     }
@@ -182,6 +181,16 @@ class CommunityInfo extends Component {
     isEditDialogOpen: false
   };
 
+  componentWillReceiveProps(nextProps) {
+    const { isLoading } = nextProps;
+
+    if (isLoading !== this.props.isLoading && !isLoading) {
+      this.setState({
+        isEditDialogOpen: false
+      });
+    }
+  }
+
   openEditDialog() {
     this.setState({
       isEditDialogOpen: true
@@ -256,7 +265,7 @@ class CommunityInfo extends Component {
   }
 
   render() {
-    const { classes, info, isAdmin } = this.props;
+    const { classes, info, isAdmin, isLoading } = this.props;
     const { addSport, editCommunityInfo } = this.props.actions;
     const { isEditDialogOpen } = this.state;
     const {
@@ -360,6 +369,7 @@ class CommunityInfo extends Component {
         </div>
         <EditCommunityInfoModal
           isOpen={isEditDialogOpen}
+          isLoading={isLoading}
           initialInfo={{
             name,
             abbreviation,
@@ -367,28 +377,25 @@ class CommunityInfo extends Component {
             emblemURL,
             publicEmail,
             phoneNumber,
-            gender,
             type
           }}
           actions={{
             editCommunityInfo: (
-              gender,
+              blob,
               name,
               abbreviation,
               phoneNumber,
               physicalAddress,
               publicEmail
-            ) => {
-              this.closeEditDialog();
+            ) =>
               editCommunityInfo(
-                gender,
+                blob,
                 name,
                 abbreviation,
                 phoneNumber,
                 physicalAddress,
                 publicEmail
-              );
-            },
+              ),
             closeModal: () => this.closeEditDialog()
           }}
         />

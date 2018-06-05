@@ -7,12 +7,9 @@ import Button from "../../../../../../components/Button";
 import { common, lightBlue } from "../../../../../../utils/colours";
 import Dialog from "../../../../../../components/Dialog";
 import { isValidEmail } from "../../../../../../utils/validation";
-import Select from "../../../../../../components/Select";
 import Slider from "../../../../../../components/Slider";
 import TextField from "../../../../../../components/TextField";
 import { toPhoneFormat } from "../../../../../../utils/format";
-
-import defaultEmblem from "../../../../images/default-emblem.jpg";
 
 const styles = theme => ({
   contentWrapper: {
@@ -68,6 +65,7 @@ const initialState = {
   emblemURL: "",
   imageScale: 1,
   image: "",
+  isImageLoading: false,
   abbreviation: {
     value: "",
     validation: "default",
@@ -92,14 +90,6 @@ const initialState = {
     value: "",
     validation: "default",
     message: ""
-  },
-  gender: {
-    value: {
-      key: "none",
-      label: ""
-    },
-    validation: "default",
-    message: ""
   }
 };
 
@@ -118,23 +108,20 @@ class EditCommunityInfoModal extends Component {
     }
 
     if (isOpen !== this.props.isOpen && isOpen) {
-      let genderKey = "MIXED";
-      if (
-        initialInfo.gender === "All Boys" ||
-        initialInfo.gender === "All Men" ||
-        initialInfo.gender === "MALE"
-      ) {
-        genderKey = "MALE";
-      } else if (
-        initialInfo.gender === "All Girls" ||
-        initialInfo.gender === "All Women" ||
-        initialInfo.gender === "FEMALE"
-      ) {
-        genderKey = "FEMALE";
-      }
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = "blob";
+      xhr.onload = e => {
+        let file = new File([xhr.response], "emblem.jpeg", {
+          type: "image/jpeg",
+          lastModified: Date.now()
+        });
+        this.updateImage(file);
+      };
+      xhr.open("GET", initialInfo.emblemURL);
+      xhr.send();
 
       this.setState({
-        emblemURL: initialInfo.emblemURL,
+        isImageLoading: true,
         image: initialInfo.emblemURL,
         abbreviation: {
           value: initialInfo.abbreviation,
@@ -160,14 +147,6 @@ class EditCommunityInfoModal extends Component {
           value: initialInfo.name,
           validation: "default",
           message: ""
-        },
-        gender: {
-          value: {
-            key: genderKey,
-            label: initialInfo.gender
-          },
-          validation: "default",
-          message: ""
         }
       });
     }
@@ -177,30 +156,42 @@ class EditCommunityInfoModal extends Component {
     document.removeEventListener("keydown", this.onKeyPressed.bind(this));
   }
 
+  updateImage(image) {
+    this.setState({
+      image
+    });
+    this.stopImageLoading();
+  }
+
+  stopImageLoading() {
+    this.setState({
+      isImageLoading: false
+    });
+  }
+
   onKeyPressed(e) {
-    // const { isOpen, isLoading } = this.props;
-    // const { addTeam } = this.props.actions;
-    // const { ageGroup, division, sport, gender, name } = this.state;
-    //
-    // if (isOpen && !isLoading && e.keyCode === 13) {
-    //   const isValid = this.validateForm(
-    //     ageGroup,
-    //     division,
-    //     sport,
-    //     gender,
-    //     name
-    //   );
-    //
-    //   if (isValid) {
-    //     addTeam(
-    //       ageGroup.value.key,
-    //       division.value.key,
-    //       sport.value.key,
-    //       gender.value.key,
-    //       name.value
-    //     );
-    //   }
-    // }
+    const { isOpen, isLoading } = this.props;
+    const {
+      name,
+      abbreviation,
+      phoneNumber,
+      physicalAddress,
+      publicEmail
+    } = this.state;
+
+    if (isOpen && !isLoading && e.keyCode === 13) {
+      const isValid = this.validateForm(
+        name,
+        abbreviation,
+        phoneNumber,
+        physicalAddress,
+        publicEmail
+      );
+
+      if (isValid) {
+        this.handleSave();
+      }
+    }
   }
 
   resetState() {
@@ -233,31 +224,9 @@ class EditCommunityInfoModal extends Component {
     return words.reduce((abbrev, word) => abbrev + _.upperFirst(word)[0], "");
   }
 
-  validateForm(
-    gender,
-    name,
-    abbreviation,
-    phoneNumber,
-    physicalAddress,
-    publicEmail
-  ) {
+  validateForm(name, abbreviation, phoneNumber, physicalAddress, publicEmail) {
     let isValid = true;
     let newState = {};
-
-    if (gender.value.key === "none") {
-      isValid = false;
-      newState.type = {
-        value: gender.value,
-        validation: "error",
-        message: "Please select a gender"
-      };
-    } else {
-      newState.type = {
-        value: gender.value,
-        validation: "default",
-        message: ""
-      };
-    }
 
     if (name.value === "") {
       isValid = false;
@@ -387,14 +356,6 @@ class EditCommunityInfoModal extends Component {
     });
   }
 
-  onClickSave() {
-    if (this.editor) {
-      const canvas = this.editor.getImageScaledToCanvas();
-
-      console.log(canvas);
-    }
-  }
-
   handleSave = data => {
     const { editCommunityInfo } = this.props.actions;
     const {
@@ -402,14 +363,12 @@ class EditCommunityInfoModal extends Component {
       abbreviation,
       phoneNumber,
       physicalAddress,
-      publicEmail,
-      gender
+      publicEmail
     } = this.state;
 
     this.editor.getImageScaledToCanvas().toBlob(blob => {
       editCommunityInfo(
         blob,
-        gender.value.label,
         name.value,
         abbreviation.value,
         phoneNumber.value,
@@ -435,8 +394,8 @@ class EditCommunityInfoModal extends Component {
       physicalAddress,
       publicEmail,
       image,
-      gender,
-      imageScale
+      imageScale,
+      isImageLoading
     } = this.state;
 
     const actions = [
@@ -455,10 +414,9 @@ class EditCommunityInfoModal extends Component {
         slim
         filled
         colour="primary"
-        loading={isLoading}
+        loading={isLoading || isImageLoading}
         handleClick={() => {
           const isValid = this.validateForm(
-            gender,
             name,
             abbreviation,
             phoneNumber,
@@ -480,7 +438,7 @@ class EditCommunityInfoModal extends Component {
               <AvatarEditor
                 ref={this.setEditorRef}
                 onSave={this.handleSave}
-                image={!image || image === "" ? defaultEmblem : image}
+                image={image}
                 border={25}
                 color={[0, 0, 0, 0.2]}
                 scale={imageScale}
@@ -498,7 +456,7 @@ class EditCommunityInfoModal extends Component {
               />
             </div>
             <div className={classes.inputWrapper}>
-              <label for="file" className={classes.uploadButton}>
+              <label htmlFor="file" className={classes.uploadButton}>
                 <i className={`fas fa-upload ${classes.uploadIcon}`} />
               </label>
               <input
@@ -510,28 +468,6 @@ class EditCommunityInfoModal extends Component {
               />
             </div>
           </div>
-          <Select
-            placeholder="Gender"
-            items={[
-              {
-                key: "MIXED",
-                label: "Both"
-              },
-              {
-                key: "FEMALE",
-                label: "All Girls"
-              },
-              {
-                key: "MALE",
-                label: "All Boys"
-              }
-            ]}
-            selectedItem={gender.value}
-            validation={gender.validation}
-            helperText={gender.message}
-            handleChange={(key, label) =>
-              this.handleChange("gender", { key, label })}
-          />
           <TextField
             type="text"
             placeholder="Community name"

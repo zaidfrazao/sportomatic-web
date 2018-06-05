@@ -16,5 +16,8 @@
   "start_url": "./index.html",
   "display": "standalone",
   "theme_color": "#03A9F4",
-  "background_color": "#FFF"
+  "background_color": "#FFF",
+  "permissions": [
+    "https://firebasestorage.googleapis.com/"
+  ],
 }
