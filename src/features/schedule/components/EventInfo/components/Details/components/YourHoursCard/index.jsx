@@ -294,8 +294,10 @@ class YourHoursCard extends Component {
           "R"
         )}`;
       }
+    } else if (payment.type === "MONTHLY") {
+      paymentLine1 = "Paid monthly salary";
     } else {
-      paymentLine1 = "No wages will be logged";
+      paymentLine1 = "Wages not tracked";
     }
 
     return (
