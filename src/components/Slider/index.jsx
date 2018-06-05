@@ -12,6 +12,7 @@ const styles = theme => ({
     outline: "none",
     opacity: 0.7,
     transition: "opacity .2s",
+    cursor: "pointer",
     "&::-webkit-slider-thumb": {
       appearance: "none",
       width: 25,
@@ -52,11 +53,22 @@ const styles = theme => ({
 
 class Slider extends Component {
   static defaultProps = {
-    disabled: false
+    disabled: false,
+    step: 1,
+    min: 0,
+    max: 100
   };
 
   render() {
-    const { classes, min, max, value, disabled, handleChange } = this.props;
+    const {
+      classes,
+      min,
+      max,
+      step,
+      value,
+      disabled,
+      handleChange
+    } = this.props;
 
     return (
       <div className={classes.wrapper}>
@@ -64,6 +76,7 @@ class Slider extends Component {
           type="range"
           min={min}
           max={max}
+          step={step}
           value={value}
           onChange={e => {
             !disabled && handleChange(e.target.value);

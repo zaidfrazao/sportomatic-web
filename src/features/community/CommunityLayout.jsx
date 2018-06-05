@@ -218,6 +218,7 @@ class CommunityLayout extends Component {
         id: activeCommunityID,
         gender: formattedGender,
         name: communityInfo.info.name,
+        abbreviation: communityInfo.info.abbreviation,
         emblemURL: communityInfo.info.emblemURL,
         phoneNumber: communityInfo.info.phoneNumber,
         physicalAddress: communityInfo.info.physicalAddress,
@@ -345,7 +346,11 @@ class CommunityLayout extends Component {
       navigateTo,
       goBack
     } = this.props;
-    const { openRemoveSportDialog, openAddSportDialog } = this.props.actions;
+    const {
+      openRemoveSportDialog,
+      openAddSportDialog,
+      editCommunityInfo
+    } = this.props.actions;
 
     const ad = this.createAd();
     const communityInfo = this.getCommunityInfo();
@@ -364,6 +369,23 @@ class CommunityLayout extends Component {
             actions={{
               navigateTo,
               goBack,
+              editCommunityInfo: (
+                gender,
+                name,
+                abbreviation,
+                phoneNumber,
+                physicalAddress,
+                publicEmail
+              ) =>
+                editCommunityInfo(
+                  activeCommunityID,
+                  gender,
+                  name,
+                  abbreviation,
+                  phoneNumber,
+                  physicalAddress,
+                  publicEmail
+                ),
               addSport: () => openAddSportDialog(),
               removeSport: sport => openRemoveSportDialog(sport)
             }}

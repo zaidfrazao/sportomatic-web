@@ -17,6 +17,9 @@ export const ERROR_REMOVING_SPORT = `${NAMESPACE}/ERROR_REMOVING_SPORT`;
 export const REQUEST_ADD_SPORT = `${NAMESPACE}/REQUEST_ADD_SPORT`;
 export const RECEIVE_ADD_SPORT = `${NAMESPACE}/RECEIVE_ADD_SPORT`;
 export const ERROR_ADDING_SPORT = `${NAMESPACE}/ERROR_ADDING_SPORT`;
+export const REQUEST_EDIT_COMMUNITY_INFO = `${NAMESPACE}/REQUEST_EDIT_COMMUNITY_INFO`;
+export const RECEIVE_EDIT_COMMUNITY_INFO = `${NAMESPACE}/RECEIVE_EDIT_COMMUNITY_INFO`;
+export const ERROR_EDITING_COMMUNITY_INFO = `${NAMESPACE}/ERROR_EDITING_COMMUNITY_INFO`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -247,6 +250,63 @@ export function addSport(communityID, sportInfo) {
       })
       .catch(error => {
         dispatch(errorAddingSport(error));
+      });
+  };
+}
+
+export function requestEditCommunityInfo() {
+  return {
+    type: REQUEST_EDIT_COMMUNITY_INFO
+  };
+}
+
+export function receiveEditCommunityInfo() {
+  return {
+    type: RECEIVE_EDIT_COMMUNITY_INFO
+  };
+}
+
+export function errorEditingCommunityInfo(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_EDITING_COMMUNITY_INFO,
+    payload: {
+      error
+    }
+  };
+}
+
+export function editCommunityInfo(
+  communityID,
+  gender,
+  name,
+  abbreviation,
+  phoneNumber,
+  physicalAddress,
+  publicEmail
+) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEditCommunityInfo());
+
+    const db = firebase.firestore();
+    const communityRef = db.collection("institutions").doc(communityID);
+
+    return communityRef
+      .update({
+        "info.gender": gender,
+        "info.name": name,
+        "info.abbreviation": abbreviation,
+        "info.phoneNumber": phoneNumber,
+        "info.physicalAddress": physicalAddress,
+        "info.publicEmail": publicEmail
+      })
+      .then(() => {
+        dispatch(receiveEditCommunityInfo());
+      })
+      .catch(error => {
+        dispatch(errorEditingCommunityInfo(error));
       });
   };
 }

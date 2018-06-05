@@ -2,8 +2,9 @@
 import React, { Component } from "react";
 import injectSheet from "react-jss";
 import Button from "../../../../components/Button";
-import { common, grey, red } from "../../../../utils/colours";
+import { common, grey, lightBlue, red } from "../../../../utils/colours";
 import defaultEmblem from "../../images/default-emblem.jpg";
+import EditCommunityInfoModal from "./components/EditCommunityInfoModal";
 
 import athleticsIcon from "../../images/athletics.png";
 import crossCountryIcon from "../../images/cross-country.png";
@@ -50,6 +51,19 @@ const styles = {
     color: grey[300],
     "&:hover": {
       color: red[500]
+    }
+  },
+  editButton: {
+    transition: "0.25s",
+    position: "absolute",
+    right: 0,
+    top: 0,
+    padding: 24,
+    color: common["black"],
+    cursor: "pointer",
+    fontSize: 20,
+    "&:hover": {
+      color: lightBlue[500]
     }
   },
   emblem: {
@@ -164,6 +178,22 @@ const styles = {
 };
 
 class CommunityInfo extends Component {
+  state = {
+    isEditDialogOpen: false
+  };
+
+  openEditDialog() {
+    this.setState({
+      isEditDialogOpen: true
+    });
+  }
+
+  closeEditDialog() {
+    this.setState({
+      isEditDialogOpen: false
+    });
+  }
+
   getSportsIcon(sport) {
     const icons = {
       Athletics: athleticsIcon,
@@ -227,9 +257,11 @@ class CommunityInfo extends Component {
 
   render() {
     const { classes, info, isAdmin } = this.props;
-    const { addSport } = this.props.actions;
+    const { addSport, editCommunityInfo } = this.props.actions;
+    const { isEditDialogOpen } = this.state;
     const {
       name,
+      abbreviation,
       physicalAddress,
       emblemURL,
       publicEmail,
@@ -246,6 +278,14 @@ class CommunityInfo extends Component {
         <div className={classes.column}>
           <div className={classes.section}>
             <div className={classes.nameEmblemWrapper}>
+              {isAdmin && (
+                <div
+                  className={classes.editButton}
+                  onClick={() => this.openEditDialog()}
+                >
+                  <i className="fas fa-edit" />
+                </div>
+              )}
               <img
                 src={emblem}
                 width="50"
@@ -318,6 +358,40 @@ class CommunityInfo extends Component {
             )}
           </div>
         </div>
+        <EditCommunityInfoModal
+          isOpen={isEditDialogOpen}
+          initialInfo={{
+            name,
+            abbreviation,
+            physicalAddress,
+            emblemURL,
+            publicEmail,
+            phoneNumber,
+            gender,
+            type
+          }}
+          actions={{
+            editCommunityInfo: (
+              gender,
+              name,
+              abbreviation,
+              phoneNumber,
+              physicalAddress,
+              publicEmail
+            ) => {
+              this.closeEditDialog();
+              editCommunityInfo(
+                gender,
+                name,
+                abbreviation,
+                phoneNumber,
+                physicalAddress,
+                publicEmail
+              );
+            },
+            closeModal: () => this.closeEditDialog()
+          }}
+        />
       </div>
     );
   }
