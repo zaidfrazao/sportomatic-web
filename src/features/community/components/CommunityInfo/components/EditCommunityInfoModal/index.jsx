@@ -4,6 +4,7 @@ import _ from "lodash";
 import AvatarEditor from "react-avatar-editor";
 import injectStyles from "react-jss";
 import Button from "../../../../../../components/Button";
+import { common, lightBlue } from "../../../../../../utils/colours";
 import Dialog from "../../../../../../components/Dialog";
 import { isValidEmail } from "../../../../../../utils/validation";
 import Select from "../../../../../../components/Select";
@@ -17,7 +18,8 @@ const styles = theme => ({
   contentWrapper: {
     minWidth: 280,
     maxWidth: 320,
-    margin: "0 auto"
+    margin: "0 auto",
+    overflow: "hidden"
   },
   emblem: {
     cursor: "grab",
@@ -30,15 +32,42 @@ const styles = theme => ({
     alignItems: "center",
     marginBottom: 12
   },
+  input: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    opacity: 0,
+    cursor: "pointer"
+  },
+  inputWrapper: {
+    position: "relative",
+    cursor: "pointer"
+  },
   sliderWrapper: {
     marginRight: 8,
     flexGrow: 1
+  },
+  uploadButton: {
+    display: "block",
+    borderRadius: 8,
+    padding: 12,
+    backgroundColor: lightBlue[500],
+    color: common["white"],
+    fontSize: 18,
+    transition: "0.25s",
+    cursor: "pointer",
+    "&:hover": {
+      backgroundColor: lightBlue[400]
+    }
   }
 });
 
 const initialState = {
   emblemURL: "",
   imageScale: 1,
+  image: "",
   abbreviation: {
     value: "",
     validation: "default",
@@ -106,6 +135,7 @@ class EditCommunityInfoModal extends Component {
 
       this.setState({
         emblemURL: initialInfo.emblemURL,
+        image: initialInfo.emblemURL,
         abbreviation: {
           value: initialInfo.abbreviation,
           validation: "default",
@@ -365,18 +395,46 @@ class EditCommunityInfoModal extends Component {
     }
   }
 
-  setEditorRef = editor => (this.editor = editor);
-
-  render() {
-    const { classes, isOpen, isLoading } = this.props;
-    const { closeModal, editCommunityInfo } = this.props.actions;
+  handleSave = data => {
+    const { editCommunityInfo } = this.props.actions;
     const {
       name,
       abbreviation,
       phoneNumber,
       physicalAddress,
       publicEmail,
-      emblemURL,
+      gender
+    } = this.state;
+
+    this.editor.getImageScaledToCanvas().toBlob(blob => {
+      editCommunityInfo(
+        blob,
+        gender.value.label,
+        name.value,
+        abbreviation.value,
+        phoneNumber.value,
+        physicalAddress.value,
+        publicEmail.value
+      );
+    }, "image/jpeg");
+  };
+
+  handleNewImage = e => {
+    this.setState({ image: e.target.files[0] });
+  };
+
+  setEditorRef = editor => (this.editor = editor);
+
+  render() {
+    const { classes, isOpen, isLoading } = this.props;
+    const { closeModal } = this.props.actions;
+    const {
+      name,
+      abbreviation,
+      phoneNumber,
+      physicalAddress,
+      publicEmail,
+      image,
       gender,
       imageScale
     } = this.state;
@@ -407,15 +465,7 @@ class EditCommunityInfoModal extends Component {
             physicalAddress,
             publicEmail
           );
-          isValid &&
-            editCommunityInfo(
-              gender.value.label,
-              name.value,
-              abbreviation.value,
-              phoneNumber.value,
-              physicalAddress.value,
-              publicEmail.value
-            );
+          isValid && this.handleSave();
         }}
       >
         Save
@@ -429,9 +479,8 @@ class EditCommunityInfoModal extends Component {
             <div className={classes.emblem}>
               <AvatarEditor
                 ref={this.setEditorRef}
-                image={
-                  !emblemURL || emblemURL === "" ? defaultEmblem : emblemURL
-                }
+                onSave={this.handleSave}
+                image={!image || image === "" ? defaultEmblem : image}
                 border={25}
                 color={[0, 0, 0, 0.2]}
                 scale={imageScale}
@@ -448,9 +497,18 @@ class EditCommunityInfoModal extends Component {
                   this.updateImageScale(parseFloat(newValue))}
               />
             </div>
-            <Button filled handleClick={() => this.onClickSave()}>
-              <i className={`fas fa-upload ${classes.uploadIcon}`} />
-            </Button>
+            <div className={classes.inputWrapper}>
+              <label for="file" className={classes.uploadButton}>
+                <i className={`fas fa-upload ${classes.uploadIcon}`} />
+              </label>
+              <input
+                name="file"
+                accept="image/*"
+                className={classes.input}
+                type="file"
+                onChange={this.handleNewImage}
+              />
+            </div>
           </div>
           <Select
             placeholder="Gender"

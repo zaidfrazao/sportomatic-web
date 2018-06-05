@@ -280,6 +280,7 @@ export function errorEditingCommunityInfo(error: {
 
 export function editCommunityInfo(
   communityID,
+  blob,
   gender,
   name,
   abbreviation,
@@ -292,18 +293,30 @@ export function editCommunityInfo(
 
     const db = firebase.firestore();
     const communityRef = db.collection("institutions").doc(communityID);
+    const storageRef = firebase.storage().ref();
+    const newImageRef = storageRef.child(
+      `institutions/${communityID}/emblem.jpeg`
+    );
 
-    return communityRef
-      .update({
-        "info.gender": gender,
-        "info.name": name,
-        "info.abbreviation": abbreviation,
-        "info.phoneNumber": phoneNumber,
-        "info.physicalAddress": physicalAddress,
-        "info.publicEmail": publicEmail
-      })
-      .then(() => {
-        dispatch(receiveEditCommunityInfo());
+    return newImageRef
+      .put(blob)
+      .then(snapshot => {
+        return communityRef
+          .update({
+            "info.gender": gender,
+            "info.name": name,
+            "info.abbreviation": abbreviation,
+            "info.phoneNumber": phoneNumber,
+            "info.physicalAddress": physicalAddress,
+            "info.publicEmail": publicEmail,
+            "info.emblemURL": snapshot.downloadURL
+          })
+          .then(() => {
+            dispatch(receiveEditCommunityInfo());
+          })
+          .catch(error => {
+            dispatch(errorEditingCommunityInfo(error));
+          });
       })
       .catch(error => {
         dispatch(errorEditingCommunityInfo(error));

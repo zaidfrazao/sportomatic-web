@@ -370,6 +370,7 @@ class CommunityLayout extends Component {
               navigateTo,
               goBack,
               editCommunityInfo: (
+                blob,
                 gender,
                 name,
                 abbreviation,
@@ -379,6 +380,7 @@ class CommunityLayout extends Component {
               ) =>
                 editCommunityInfo(
                   activeCommunityID,
+                  blob,
                   gender,
                   name,
                   abbreviation,
