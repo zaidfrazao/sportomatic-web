@@ -11,18 +11,14 @@ import Dialog from "../../components/Dialog";
 import LoadingScreen from "../../components/LoadingScreen";
 import People from "../people/PeopleView";
 import Schedule from "../schedule/ScheduleView";
+import Settings from "../settings/SettingsView";
 import SideMenu from "./components/SideMenu";
 import Teams from "../teams/TeamsView";
 
-import athleticsIcon from "./images/athletics.png";
-import crossCountryIcon from "./images/cross-country.png";
 import hockeyIcon from "./images/hockey.png";
 import netballIcon from "./images/netball.png";
 import rugbyIcon from "./images/rugby.png";
 import otherIcon from "./images/other.png";
-import soccerIcon from "./images/soccer.png";
-import swimmingIcon from "./images/swimming.png";
-import waterPoloIcon from "./images/water-polo.png";
 
 const mobileBreakpoint = 800;
 
@@ -219,14 +215,9 @@ class CoreInterfaceLayout extends Component {
 
   getSportsIcon(sport) {
     const icons = {
-      Athletics: athleticsIcon,
-      "Cross Country": crossCountryIcon,
       Hockey: hockeyIcon,
       Netball: netballIcon,
       Rugby: rugbyIcon,
-      Soccer: soccerIcon,
-      Swimming: swimmingIcon,
-      "Water Polo": waterPoloIcon,
       Other: otherIcon
     };
 
@@ -446,6 +437,9 @@ class CoreInterfaceLayout extends Component {
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
     const sideMenuItems = this.getSideMenuItems();
+    const userSports = _.toPairs(accountInfo.info.sports)
+      .filter(([name, isPreferred]) => isPreferred)
+      .map(([name, isPreferred]) => name);
 
     let isAdmin = false;
     let communityName = "Default";
@@ -489,8 +483,6 @@ class CoreInterfaceLayout extends Component {
       return <LoadingScreen />;
     } else {
       if (sports.length === 0 && featureName !== "community") {
-        console.log(sports);
-        console.log(featureName);
         return <Redirect to="/myaccount/community" />;
       }
       return (
@@ -745,6 +737,23 @@ class CoreInterfaceLayout extends Component {
                       communities={institutions}
                       switchCommunity={communityID =>
                         switchInstitution(userID, communityID, "ADMIN")}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/settings/"}>
+                    <Settings
+                      isAdmin={isAdmin}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      userID={userID}
+                      personalInfo={{
+                        firstName: accountInfo.info.name,
+                        lastName: accountInfo.info.surname,
+                        email: accountInfo.info.email,
+                        profilePictureURL: accountInfo.info.profilePictureURL,
+                        phoneNumber: accountInfo.info.phoneNumber,
+                        sports: userSports
+                      }}
                     />
                   </Route>
                   <Route exact path={"/myaccount/schedule/"}>

@@ -1,20 +1,15 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import injectSheet from "react-jss";
-import Button from "../../../../components/Button";
 import { common, grey, lightBlue, red } from "../../../../utils/colours";
-import defaultEmblem from "../../images/default-emblem.jpg";
-import EditCommunityInfoModal from "./components/EditCommunityInfoModal";
+import defaultProfilePicture from "../../images/default-profile-picture.png";
+import EditPersonalInfoModal from "./components/EditPersonalInfoModal";
+import EditSportsDialog from "./components/EditSportsDialog";
 
-import athleticsIcon from "../../images/athletics.png";
-import crossCountryIcon from "../../images/cross-country.png";
 import hockeyIcon from "../../images/hockey.png";
 import netballIcon from "../../images/netball.png";
 import rugbyIcon from "../../images/rugby.png";
 import otherIcon from "../../images/other.png";
-import soccerIcon from "../../images/soccer.png";
-import swimmingIcon from "../../images/swimming.png";
-import waterPoloIcon from "../../images/water-polo.png";
 
 const mobileBreakpoint = 800;
 const tabletBreakpoint = 1080;
@@ -31,16 +26,6 @@ const styles = {
     [`@media (min-width: ${tabletBreakpoint}px)`]: {
       padding: "0 24px",
       width: "calc(50% - 48px)"
-    }
-  },
-  communityName: {
-    color: grey[800],
-    fontSize: 16,
-    lineHeight: "20px",
-    margin: 4,
-    [`@media (max-width: ${mobileBreakpoint}px)`]: {
-      fontSize: 20,
-      lineHeight: "28px"
     }
   },
   deleteButton: {
@@ -66,16 +51,6 @@ const styles = {
       color: lightBlue[500]
     }
   },
-  emblem: {
-    borderRadius: "50%",
-    margin: 4,
-    width: 50,
-    ehgiht: 50,
-    backgroundColor: grey[200],
-    "@media (max-width: 600px)": {
-      margin: 14
-    }
-  },
   icon: {
     width: 24,
     height: 24,
@@ -85,6 +60,16 @@ const styles = {
     flexGrow: 1,
     flexDirection: "flex",
     alignItems: "center"
+  },
+  name: {
+    color: grey[800],
+    fontSize: 16,
+    lineHeight: "20px",
+    margin: 4,
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      fontSize: 20,
+      lineHeight: "28px"
+    }
   },
   nameEmblemWrapper: {
     position: "relative",
@@ -147,6 +132,16 @@ const styles = {
     padding: 24,
     margin: "0 24px"
   },
+  profilePicture: {
+    borderRadius: "50%",
+    margin: 4,
+    width: 50,
+    ehgiht: 50,
+    backgroundColor: grey[200],
+    "@media (max-width: 600px)": {
+      margin: 14
+    }
+  },
   section: {
     border: `1px solid ${grey[300]}`,
     borderRadius: 16,
@@ -158,6 +153,7 @@ const styles = {
     backgroundColor: common["white"]
   },
   sectionHeading: {
+    position: "relative",
     borderBottom: `1px solid ${grey[300]}`,
     fontSize: 18,
     borderRadius: "16px 16px 0 0",
@@ -176,9 +172,10 @@ const styles = {
   }
 };
 
-class CommunityInfo extends Component {
+class PersonalInfo extends Component {
   state = {
-    isEditDialogOpen: false
+    isEditPersonalInfoDialogOpen: false,
+    isEditSportsDialogOpen: false
   };
 
   componentWillReceiveProps(nextProps) {
@@ -191,28 +188,35 @@ class CommunityInfo extends Component {
     }
   }
 
-  openEditDialog() {
+  openEditSportsDialog() {
     this.setState({
-      isEditDialogOpen: true
+      isEditSportsDialogOpen: true
     });
   }
 
-  closeEditDialog() {
+  closeEditSportsDialog() {
     this.setState({
-      isEditDialogOpen: false
+      isEditSportsDialogOpen: false
+    });
+  }
+
+  openEditPersonalInfoDialog() {
+    this.setState({
+      isEditPersonalInfoDialogOpen: true
+    });
+  }
+
+  closeEditPersonalInfoDialog() {
+    this.setState({
+      isEditPersonalInfoDialogOpen: false
     });
   }
 
   getSportsIcon(sport) {
     const icons = {
-      Athletics: athleticsIcon,
-      "Cross Country": crossCountryIcon,
       Hockey: hockeyIcon,
       Netball: netballIcon,
       Rugby: rugbyIcon,
-      Soccer: soccerIcon,
-      Swimming: swimmingIcon,
-      "Water Polo": waterPoloIcon,
       Other: otherIcon
     };
 
@@ -265,21 +269,18 @@ class CommunityInfo extends Component {
   }
 
   render() {
-    const { classes, info, isAdmin, isLoading } = this.props;
-    const { addSport, editCommunityInfo } = this.props.actions;
-    const { isEditDialogOpen } = this.state;
     const {
-      name,
-      abbreviation,
-      physicalAddress,
-      emblemURL,
-      publicEmail,
-      phoneNumber,
-      gender,
-      type
-    } = info;
+      classes,
+      info,
+      isEditSportsLoading,
+      isEditPersonalInfoLoading
+    } = this.props;
+    const { editSports, editPersonalInfo } = this.props.actions;
+    const { isEditSportsDialogOpen, isEditPersonalInfoDialogOpen } = this.state;
+    const { firstName, lastName, phoneNumber, profilePictureURL, email } = info;
 
-    const emblem = emblemURL === "" ? defaultEmblem : emblemURL;
+    const profilePicture =
+      profilePictureURL === "" ? defaultProfilePicture : profilePictureURL;
     const sportsItems = this.getSportsItems();
 
     return (
@@ -287,34 +288,26 @@ class CommunityInfo extends Component {
         <div className={classes.column}>
           <div className={classes.section}>
             <div className={classes.nameEmblemWrapper}>
-              {isAdmin && (
-                <div
-                  className={classes.editButton}
-                  onClick={() => this.openEditDialog()}
-                >
-                  <i className="fas fa-edit" />
-                </div>
-              )}
+              <div
+                className={classes.editButton}
+                onClick={() => this.openEditPersonalInfoDialog()}
+              >
+                <i className="fas fa-edit" />
+              </div>
               <img
-                src={emblem}
+                src={profilePicture}
                 width="50"
                 height="50"
-                alt={`${name} emblem`}
-                className={classes.emblem}
+                alt={`${firstName} ${lastName} profile`}
+                className={classes.profilePicture}
               />
-              <h2 className={classes.communityName}>{name}</h2>
+              <h2 className={classes.name}>{`${firstName} ${lastName}`}</h2>
             </div>
             <div className={classes.infoItemWrapper}>
               <div className={classes.infoItemIconWrapper}>
-                <i className="fas fa-school" />
+                <i className="fas fa-envelope" />
               </div>
-              <span className={classes.infoItemText}>{type}</span>
-            </div>
-            <div className={classes.infoItemWrapper}>
-              <div className={classes.infoItemIconWrapper}>
-                <i className="fas fa-venus-mars" />
-              </div>
-              <span className={classes.infoItemText}>{gender}</span>
+              <span className={classes.infoItemText}>{email}</span>
             </div>
             <div className={classes.infoItemWrapper}>
               <div className={classes.infoItemIconWrapper}>
@@ -324,84 +317,51 @@ class CommunityInfo extends Component {
                 {phoneNumber === "" ? "No phone number given" : phoneNumber}
               </span>
             </div>
-            <div className={classes.infoItemWrapper}>
-              <div className={classes.infoItemIconWrapper}>
-                <i className="fas fa-map-marker" />
-              </div>
-              <span className={classes.infoItemText}>
-                {physicalAddress === ""
-                  ? "No physical address given"
-                  : physicalAddress}
-              </span>
-            </div>
-            <div className={classes.lastInfoItemWrapper}>
-              <div className={classes.lastInfoItemIconWrapper}>
-                <i className="fas fa-envelope" />
-              </div>
-              <span className={classes.lastInfoItemText}>
-                {publicEmail === "" ? "No public email given" : publicEmail}
-              </span>
-            </div>
           </div>
         </div>
         <div className={classes.column}>
           <div className={classes.section}>
-            <div className={classes.sectionHeading}>Available Sports</div>
-            {isAdmin && (
-              <div className={classes.addSportButtonWrapper}>
-                <Button
-                  colour="primary"
-                  slim
-                  filled
-                  fullWidth
-                  handleClick={() => addSport()}
-                >
-                  <i className={`fas fa-plus ${classes.addIcon}`} />Add sport
-                </Button>
+            <div className={classes.sectionHeading}>
+              Preferred Sports
+              <div
+                className={classes.editButton}
+                onClick={() => this.openEditSportsDialog()}
+              >
+                <i className="fas fa-edit" />
               </div>
-            )}
+            </div>
             {sportsItems.length === 0 ? (
-              <div className={classes.noItems}>No sports available</div>
+              <div className={classes.noItems}>No sports selected</div>
             ) : (
               <div className={classes.sportsListWrapper}>{sportsItems}</div>
             )}
           </div>
         </div>
-        <EditCommunityInfoModal
-          isOpen={isEditDialogOpen}
-          isLoading={isLoading}
+        <EditPersonalInfoModal
+          isOpen={isEditPersonalInfoDialogOpen}
+          isLoading={isEditPersonalInfoLoading}
           initialInfo={{
-            name,
-            abbreviation,
-            physicalAddress,
-            emblemURL,
-            publicEmail,
+            firstName,
+            lastName,
             phoneNumber,
-            type
+            profilePictureURL
           }}
           actions={{
-            editCommunityInfo: (
-              blob,
-              name,
-              abbreviation,
-              phoneNumber,
-              physicalAddress,
-              publicEmail
-            ) =>
-              editCommunityInfo(
-                blob,
-                name,
-                abbreviation,
-                phoneNumber,
-                physicalAddress,
-                publicEmail
-              ),
-            closeModal: () => this.closeEditDialog()
+            editPersonalInfo: (blob, firstName, lastName, phoneNumber) =>
+              editPersonalInfo(blob, firstName, lastName, phoneNumber),
+            closeModal: () => this.closeEditPersonalInfoDialog()
           }}
+        />
+        <EditSportsDialog
+          isOpen={isEditSportsDialogOpen}
+          isLoading={isEditSportsLoading}
+          initialSports={[]}
+          editSports={newSports => editSports(newSports)}
+          closeDialog={() => this.closeEditSportsDialog()}
         />
       </div>
     );
   }
 }
 
-export default injectSheet(styles)(CommunityInfo);
+export default injectSheet(styles)(PersonalInfo);

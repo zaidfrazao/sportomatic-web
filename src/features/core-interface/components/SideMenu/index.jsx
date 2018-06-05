@@ -163,7 +163,7 @@ class SideMenu extends Component<Props> {
     const { changeSelected, toggleSideNav } = this.props.actions;
 
     return _.toPairs(items).map(([key, item]) => {
-      if (key === "reports" || key === "settings") {
+      if (key === "reports") {
         return (
           <div
             key={`side-menu-item-${key}`}

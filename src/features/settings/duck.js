@@ -1,134 +1,53 @@
 import { combineReducers } from "redux";
-import firebase from "firebase";
 import { createStructuredSelector } from "reselect";
+import firebase from "firebase";
 
 // Actions
 
 const NAMESPACE = "sportomatic-web/settings";
 
-export const UPDATE_TAB = `${NAMESPACE}/UPDATE_TAB`;
-export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
-export const REQUEST_UPDATE_BASIC_INFO = `${NAMESPACE}/REQUEST_UPDATE_BASIC_INFO`;
-export const RECEIVE_UPDATE_BASIC_INFO = `${NAMESPACE}/RECEIVE_UPDATE_BASIC_INFO`;
-export const ERROR_UPDATING_BASIC_INFO = `${NAMESPACE}/ERROR_UPDATING_BASIC_INFO`;
-export const REQUEST_UPDATE_SPORTS = `${NAMESPACE}/REQUEST_UPDATE_SPORTS`;
-export const RECEIVE_UPDATE_SPORTS = `${NAMESPACE}/RECEIVE_UPDATE_SPORTS`;
-export const ERROR_UPDATING_SPORTS = `${NAMESPACE}/ERROR_UPDATING_SPORTS`;
-export const REQUEST_UPDATE_LOGIN_DETAILS = `${NAMESPACE}/REQUEST_UPDATE_LOGIN_DETAILS`;
-export const RECEIVE_UPDATE_LOGIN_DETAILS = `${NAMESPACE}/RECEIVE_UPDATE_LOGIN_DETAILS`;
-export const ERROR_UPDATING_LOGIN_DETAILS = `${NAMESPACE}/ERROR_UPDATING_LOGIN_DETAILS`;
-export const REQUEST_UPDATE_PAYMENT_DEFAULTS = `${NAMESPACE}/REQUEST_UPDATE_PAYMENT_DEFAULTS`;
-export const RECEIVE_UPDATE_PAYMENT_DEFAULTS = `${NAMESPACE}/RECEIVE_UPDATE_PAYMENT_DEFAULTS`;
-export const ERROR_UPDATING_PAYMENT_DEFAULTS = `${NAMESPACE}/ERROR_UPDATING_PAYMENT_DEFAULTS`;
-export const REQUEST_UPDATE_PERMISSIONS = `${NAMESPACE}/REQUEST_UPDATE_PERMISSIONS`;
-export const RECEIVE_UPDATE_PERMISSIONS = `${NAMESPACE}/RECEIVE_UPDATE_PERMISSIONS`;
-export const ERROR_UPDATING_PERMISSIONS = `${NAMESPACE}/ERROR_UPDATING_PERMISSIONS`;
-export const REQUEST_UPDATE_PROFILE_PICTURE = `${NAMESPACE}/REQUEST_UPDATE_PROFILE_PICTURE`;
-export const RECEIVE_UPDATE_PROFILE_PICTURE = `${NAMESPACE}/RECEIVE_UPDATE_PROFILE_PICTURE`;
-export const ERROR_UPDATING_PROFILE_PICTURE = `${NAMESPACE}/ERROR_UPDATING_PROFILE_PICTURE`;
+export const RESET_SETTINGS_STATE = `${NAMESPACE}/RESET_SETTINGS_STATE`;
+export const REQUEST_EDIT_SPORTS = `${NAMESPACE}/REQUEST_EDIT_SPORTS`;
+export const RECEIVE_EDIT_SPORTS = `${NAMESPACE}/RECEIVE_EDIT_SPORTS`;
+export const ERROR_EDITING_SPORTS = `${NAMESPACE}/ERROR_EDITING_SPORTS`;
+export const REQUEST_EDIT_PERSONAL_INFO = `${NAMESPACE}/REQUEST_EDIT_PERSONAL_INFO`;
+export const RECEIVE_EDIT_PERSONAL_INFO = `${NAMESPACE}/RECEIVE_EDIT_PERSONAL_INFO`;
+export const ERROR_EDITING_PERSONAL_INFO = `${NAMESPACE}/ERROR_EDITING_PERSONAL_INFO`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
 // Reducers
 
-export const uiConfigInitialState = {
-  currentTab: "PERSONAL"
-};
-
-function uiConfigReducer(state = uiConfigInitialState, action = {}) {
-  switch (action.type) {
-    case RESET_STATE:
-    case SIGN_OUT:
-      return uiConfigInitialState;
-    case UPDATE_TAB:
-      return {
-        ...state,
-        currentTab: action.payload.newTab
-      };
-    default:
-      return state;
-  }
-}
-
 export const loadingStatusInitialState = {
-  isUpdateBasicInfoLoading: false,
-  isUpdateSportsLoading: false,
-  isUpdateLoginDetailsLoading: false,
-  isUpdatePermissionsLoading: false,
-  isUpdatePaymentDefaultsLoading: false,
-  isUpdateProfilePictureLoading: false
+  isEditSportsLoading: false,
+  isEditPersonalInfoLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
   switch (action.type) {
-    case RESET_STATE:
     case SIGN_OUT:
       return loadingStatusInitialState;
-    case REQUEST_UPDATE_BASIC_INFO:
+    case REQUEST_EDIT_SPORTS:
       return {
         ...state,
-        isUpdateBasicInfoLoading: true
+        isEditSportsLoading: true
       };
-    case RECEIVE_UPDATE_BASIC_INFO:
-    case ERROR_UPDATING_BASIC_INFO:
+    case RECEIVE_EDIT_SPORTS:
+    case ERROR_EDITING_SPORTS:
       return {
         ...state,
-        isUpdateBasicInfoLoading: false
+        isEditSportsLoading: false
       };
-    case REQUEST_UPDATE_SPORTS:
+    case REQUEST_EDIT_PERSONAL_INFO:
       return {
         ...state,
-        isUpdateSportsLoading: true
+        isEditPersonalInfoLoading: true
       };
-    case RECEIVE_UPDATE_SPORTS:
-    case ERROR_UPDATING_SPORTS:
+    case RECEIVE_EDIT_PERSONAL_INFO:
+    case ERROR_EDITING_PERSONAL_INFO:
       return {
         ...state,
-        isUpdateSportsLoading: false
-      };
-    case REQUEST_UPDATE_LOGIN_DETAILS:
-      return {
-        ...state,
-        isUpdateLoginDetailsLoading: true
-      };
-    case RECEIVE_UPDATE_LOGIN_DETAILS:
-    case ERROR_UPDATING_LOGIN_DETAILS:
-      return {
-        ...state,
-        isUpdateLoginDetailsLoading: false
-      };
-    case REQUEST_UPDATE_PAYMENT_DEFAULTS:
-      return {
-        ...state,
-        isUpdatePaymentDefaultsLoading: true
-      };
-    case RECEIVE_UPDATE_PAYMENT_DEFAULTS:
-    case ERROR_UPDATING_PAYMENT_DEFAULTS:
-      return {
-        ...state,
-        isUpdatePaymentDefaultsLoading: false
-      };
-    case REQUEST_UPDATE_PERMISSIONS:
-      return {
-        ...state,
-        isUpdatePermissionsLoading: true
-      };
-    case RECEIVE_UPDATE_PERMISSIONS:
-    case ERROR_UPDATING_PERMISSIONS:
-      return {
-        ...state,
-        isUpdatePermissionsLoading: false
-      };
-    case REQUEST_UPDATE_PROFILE_PICTURE:
-      return {
-        ...state,
-        isUpdateProfilePictureLoading: true
-      };
-    case RECEIVE_UPDATE_PROFILE_PICTURE:
-    case ERROR_UPDATING_PROFILE_PICTURE:
-      return {
-        ...state,
-        isUpdateProfilePictureLoading: false
+        isEditPersonalInfoLoading: false
       };
     default:
       return state;
@@ -136,17 +55,14 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
 }
 
 export const settingsReducer = combineReducers({
-  uiConfig: uiConfigReducer,
   loadingStatus: loadingStatusReducer
 });
 
 // Selectors
 
-const uiConfig = state => state.settings.uiConfig;
 const loadingStatus = state => state.settings.loadingStatus;
 
 export const selector = createStructuredSelector({
-  uiConfig,
   loadingStatus
 });
 
@@ -154,105 +70,35 @@ export const selector = createStructuredSelector({
 
 export function resetState() {
   return {
-    type: RESET_STATE
+    type: RESET_SETTINGS_STATE
   };
 }
 
-export function updateTab(newTab) {
+export function requestEditSports() {
   return {
-    type: UPDATE_TAB,
-    payload: {
-      newTab
-    }
+    type: REQUEST_EDIT_SPORTS
   };
 }
 
-export function requestUpdateBasicInfo() {
+export function receiveEditSports() {
   return {
-    type: REQUEST_UPDATE_BASIC_INFO
+    type: RECEIVE_EDIT_SPORTS
   };
 }
 
-export function receiveUpdateBasicInfo() {
+export function errorEditingSports(error: { code: string, message: string }) {
   return {
-    type: RECEIVE_UPDATE_BASIC_INFO
-  };
-}
-
-export function errorUpdatingBasicInfo(error: {
-  code: string,
-  message: string
-}) {
-  return {
-    type: ERROR_UPDATING_BASIC_INFO,
+    type: ERROR_EDITING_SPORTS,
     payload: {
       error
     }
   };
 }
 
-export function updateBasicInfo(
-  userID: string,
-  name: string,
-  surname: string,
-  phoneNumber: string
-) {
+export function editSports(userID, sports) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestUpdateBasicInfo());
-    const db = firebase.firestore();
-    let batch = db.batch();
+    dispatch(requestEditSports());
 
-    const institutionRef = db.collection("institutions").doc(userID);
-    batch.update(institutionRef, {
-      "info.abbreviation": `${name[0]}${surname[0]}`,
-      "info.name": `${name[0]}${surname[0]} Personal`,
-      "info.phoneNumber": phoneNumber
-    });
-    const userRef = db.collection("users").doc(userID);
-    batch.update(userRef, {
-      "completeness.hasName": true,
-      "completeness.hasSurname": true,
-      "completeness.hasPhoneNumber": true,
-      "info.name": name,
-      "info.surname": surname,
-      "info.phoneNumber": phoneNumber
-    });
-
-    return batch
-      .commit()
-      .then(user => {
-        dispatch(receiveUpdateBasicInfo());
-      })
-      .catch(error => {
-        dispatch(errorUpdatingBasicInfo(error));
-      });
-  };
-}
-
-export function requestUpdateSports() {
-  return {
-    type: REQUEST_UPDATE_SPORTS
-  };
-}
-
-export function receiveUpdateSports() {
-  return {
-    type: RECEIVE_UPDATE_SPORTS
-  };
-}
-
-export function errorUpdatingSports(error: { code: string, message: string }) {
-  return {
-    type: ERROR_UPDATING_SPORTS,
-    payload: {
-      error
-    }
-  };
-}
-
-export function updateSports(userID, sports) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestUpdateSports());
     const db = firebase.firestore();
     const userRef = db.collection("users").doc(userID);
 
@@ -260,187 +106,48 @@ export function updateSports(userID, sports) {
       .update({
         "info.sports": sports
       })
-      .then(user => {
-        dispatch(receiveUpdateSports());
-      })
-      .catch(error => {
-        dispatch(errorUpdatingSports(error));
-      });
-  };
-}
-
-export function requestUpdateLoginDetails() {
-  return {
-    type: REQUEST_UPDATE_LOGIN_DETAILS
-  };
-}
-
-export function receiveUpdateLoginDetails() {
-  return {
-    type: RECEIVE_UPDATE_LOGIN_DETAILS
-  };
-}
-
-export function errorUpdatingLoginDetails(error: {
-  code: string,
-  message: string
-}) {
-  return {
-    type: ERROR_UPDATING_LOGIN_DETAILS,
-    payload: {
-      error
-    }
-  };
-}
-
-export function updateLoginDetails(userID, email, password) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestUpdateLoginDetails());
-    const db = firebase.firestore();
-    const userRef = db.collection("users").doc(userID);
-
-    return firebase
-      .auth()
-      .currentUser.updatePassword(password)
       .then(() => {
-        firebase
-          .auth()
-          .currentUser.updateEmail(email)
-          .then(() => {
-            userRef
-              .update({
-                "info.email": email
-              })
-              .then(() => {
-                dispatch(receiveUpdateLoginDetails());
-              })
-              .catch(error => {
-                dispatch(errorUpdatingLoginDetails(error));
-              });
-          })
-          .catch(error => {
-            dispatch(errorUpdatingLoginDetails(error));
-          });
+        dispatch(receiveEditSports());
       })
       .catch(error => {
-        dispatch(errorUpdatingLoginDetails(error));
+        dispatch(errorEditingSports(error));
       });
   };
 }
 
-export function requestUpdatePermissions() {
+export function requestEditPersonalInfo() {
   return {
-    type: REQUEST_UPDATE_PERMISSIONS
+    type: REQUEST_EDIT_PERSONAL_INFO
   };
 }
 
-export function receiveUpdatePermissions() {
+export function receiveEditPersonalInfo() {
   return {
-    type: RECEIVE_UPDATE_PERMISSIONS
+    type: RECEIVE_EDIT_PERSONAL_INFO
   };
 }
 
-export function errorUpdatingPermissions(error: {
+export function errorEditingPersonalInfo(error: {
   code: string,
   message: string
 }) {
   return {
-    type: ERROR_UPDATING_PERMISSIONS,
+    type: ERROR_EDITING_PERSONAL_INFO,
     payload: {
       error
     }
   };
 }
 
-export function updatePermissions(institutionID, permissions) {
+export function editPersonalInfo(
+  userID,
+  blob,
+  firstName,
+  lastName,
+  phoneNumber
+) {
   return function(dispatch: DispatchAlias) {
-    dispatch(requestUpdatePermissions());
-    const db = firebase.firestore();
-    const institutionRef = db.collection("institutions").doc(institutionID);
-
-    return institutionRef
-      .update({
-        permissions
-      })
-      .then(user => {
-        dispatch(receiveUpdatePermissions());
-      })
-      .catch(error => {
-        dispatch(errorUpdatingPermissions(error));
-      });
-  };
-}
-
-export function requestUpdatePaymentDefaults() {
-  return {
-    type: REQUEST_UPDATE_PAYMENT_DEFAULTS
-  };
-}
-
-export function receiveUpdatePaymentDefaults() {
-  return {
-    type: RECEIVE_UPDATE_PAYMENT_DEFAULTS
-  };
-}
-
-export function errorUpdatingPaymentDefaults(error: {
-  code: string,
-  message: string
-}) {
-  return {
-    type: ERROR_UPDATING_PAYMENT_DEFAULTS,
-    payload: {
-      error
-    }
-  };
-}
-
-export function updatePaymentDefaults(institutionID, paymentDefaults) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestUpdatePaymentDefaults());
-    const db = firebase.firestore();
-    const institutionRef = db.collection("institutions").doc(institutionID);
-
-    return institutionRef
-      .update({
-        paymentDefaults
-      })
-      .then(user => {
-        dispatch(receiveUpdatePaymentDefaults());
-      })
-      .catch(error => {
-        dispatch(errorUpdatingPaymentDefaults(error));
-      });
-  };
-}
-
-export function requestUpdateProfilePicture() {
-  return {
-    type: REQUEST_UPDATE_PROFILE_PICTURE
-  };
-}
-
-export function receiveUpdateProfilePicture() {
-  return {
-    type: RECEIVE_UPDATE_PROFILE_PICTURE
-  };
-}
-
-export function errorUpdatingProfilePicture(error: {
-  code: string,
-  message: string
-}) {
-  return {
-    type: ERROR_UPDATING_PROFILE_PICTURE,
-    payload: {
-      error
-    }
-  };
-}
-
-export function updateProfilePicture(userID, blob) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestUpdateProfilePicture());
+    dispatch(requestEditPersonalInfo());
 
     const db = firebase.firestore();
     const userRef = db.collection("users").doc(userID);
@@ -452,19 +159,22 @@ export function updateProfilePicture(userID, blob) {
     return newImageRef
       .put(blob)
       .then(snapshot => {
-        let batch = db.batch();
-
-        batch.update(userRef, {
-          "info.profilePictureURL": snapshot.downloadURL
-        });
-
-        batch
-          .commit()
-          .then(() => dispatch(receiveUpdateProfilePicture()))
-          .catch(error => dispatch(errorUpdatingProfilePicture(error)));
+        return userRef
+          .update({
+            "info.name": firstName,
+            "info.surname": lastName,
+            "info.phoneNumber": phoneNumber,
+            "info.profilePictureURL": snapshot.downloadURL
+          })
+          .then(() => {
+            dispatch(receiveEditPersonalInfo());
+          })
+          .catch(error => {
+            dispatch(errorEditingPersonalInfo(error));
+          });
       })
       .catch(error => {
-        dispatch(errorUpdatingProfilePicture(error));
+        dispatch(errorEditingPersonalInfo(error));
       });
   };
 }
