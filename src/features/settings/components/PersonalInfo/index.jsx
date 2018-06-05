@@ -316,11 +316,11 @@ class PersonalInfo extends Component {
               </div>
               <span className={classes.infoItemText}>{email}</span>
             </div>
-            <div className={classes.infoItemWrapper}>
-              <div className={classes.infoItemIconWrapper}>
+            <div className={classes.lastInfoItemWrapper}>
+              <div className={classes.lastInfoItemIconWrapper}>
                 <i className="fas fa-phone" />
               </div>
-              <span className={classes.infoItemText}>
+              <span className={classes.lastInfoItemText}>
                 {phoneNumber === "" ? "No phone number given" : phoneNumber}
               </span>
             </div>

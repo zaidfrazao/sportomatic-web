@@ -50,7 +50,7 @@ const styles = theme => ({
     color: grey[900]
   },
   menuIconOpen: {
-    fontSize: 26,
+    fontSize: 22,
     transition: "0.25s",
     color: lightBlue[500]
   },
