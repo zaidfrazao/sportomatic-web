@@ -172,7 +172,7 @@ class HoursTable extends Component {
           const signOutMoment = moment(info.hours.times.signOut);
           const signInTime = signInMoment.format("hh:mm A");
           const signOutTime = signOutMoment.format("hh:mm A");
-          const hours = signOutMoment.diff(signInMoment, "hours");
+          const hours = signOutMoment.diff(signInMoment, "hours", true);
           const startMoment = moment(info.times.start);
           const endMoment = moment(info.times.end);
           const signInDelta = signInMoment.diff(startMoment, "minutes");
@@ -216,7 +216,7 @@ class HoursTable extends Component {
                   </span>
                 </td>
               )}
-              <td className={classes.tableItem}>{hours}</td>
+              <td className={classes.tableItem}>{hours.toFixed(2)}</td>
             </tr>
           );
         } else if (eventStatus === "CANCELLED") {
@@ -317,7 +317,9 @@ class HoursTable extends Component {
               >
                 TOTAL
               </td>
-              <td className={classes.tableFooterItemRight}>{totals.hours}</td>
+              <td className={classes.tableFooterItemRight}>
+                {totals.hours.toFixed(2)}
+              </td>
             </tr>
           </tbody>
         </table>
