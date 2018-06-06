@@ -34,12 +34,12 @@ class Today extends Component {
     const startTimeMoment = moment(times.start);
     const endTimeMoment = moment(times.end);
 
-    if (startTimeMoment.isAfter(currentTimeMoment)) {
-      return `Starts ${startTimeMoment.to(currentTimeMoment)}`;
-    } else if (endTimeMoment.isAfter(currentTimeMoment)) {
-      return `Ends ${currentTimeMoment.to(endTimeMoment)}`;
+    if (currentTimeMoment.isBefore(startTimeMoment)) {
+      return `Starts in about ${currentTimeMoment.to(startTimeMoment, true)}`;
+    } else if (currentTimeMoment.isAfter(startTimeMoment)) {
+      return `Ends in about ${currentTimeMoment.to(endTimeMoment, true)}`;
     } else {
-      return `Ended ${endTimeMoment.from(currentTimeMoment)}`;
+      return `Ended about ${endTimeMoment.from(currentTimeMoment, true)}`;
     }
   }
 
