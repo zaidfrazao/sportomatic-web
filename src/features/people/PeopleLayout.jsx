@@ -344,7 +344,8 @@ class PeopleLayout extends Component {
       fetchInviteeInfo,
       resendInvite,
       closePostInviteAlert,
-      closeResendInviteAlert
+      closeResendInviteAlert,
+      updateAdminStatus
     } = this.props.actions;
     const {
       isInvitePersonModalOpen,
@@ -375,7 +376,9 @@ class PeopleLayout extends Component {
               isTablet={isTablet}
               actions={{
                 navigateTo,
-                goBack
+                goBack,
+                updateAdminStatus: newStatus =>
+                  updateAdminStatus(personID, activeInstitutionID, newStatus)
               }}
             />
           </div>

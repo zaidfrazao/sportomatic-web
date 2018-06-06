@@ -15,10 +15,9 @@ import Wages from "./components/Wages";
 
 const styles = {
   actionsBar: {
-    margin: "0 12px",
-    backgroundColor: grey[200],
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "flex-end",
+    backgroundColor: grey[200]
   },
   adWrapper: {
     display: "flex",
@@ -44,7 +43,7 @@ const styles = {
     height: 12
   },
   buttonWrapper: {
-    margin: "24px 12px"
+    margin: "24px 24px 0 24px"
   },
   flexGrow: {
     flexGrow: 1
@@ -156,6 +155,37 @@ class PersonInfo extends Component {
     return reformattedInfo;
   }
 
+  getAdminButton(info) {
+    const { classes } = this.props;
+    const { updateAdminStatus } = this.props.actions;
+
+    if (info.isAdmin) {
+      return (
+        <Button
+          colour="primary"
+          slim
+          filled
+          handleClick={() => updateAdminStatus("N/A")}
+        >
+          <i className={`fas fa-ban ${classes.iconAdjacentText}`} />
+          Revoke admin privileges
+        </Button>
+      );
+    } else {
+      return (
+        <Button
+          colour="primary"
+          slim
+          filled
+          handleClick={() => updateAdminStatus("APPROVED")}
+        >
+          <i className={`fas fa-unlock-alt ${classes.iconAdjacentText}`} />
+          Give admin privileges
+        </Button>
+      );
+    }
+  }
+
   getSectionDisplay(info, teams) {
     const {
       classes,
@@ -165,12 +195,14 @@ class PersonInfo extends Component {
       personID,
       hours,
       wages,
+      userID,
       institutionCreationDate
     } = this.props;
     const { navigateTo } = this.props.actions;
     const { tabSelected } = this.state;
 
     const ad = this.createAd();
+    const adminButton = this.getAdminButton(info);
 
     if (isMobile) {
       switch (infoTab) {
@@ -178,6 +210,11 @@ class PersonInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <div className={classes.buttonWrapper}>
+                  {personID !== userID && adminButton}
+                </div>
+              </div>
               <Details
                 email={info.email}
                 firstName={info.firstName}
@@ -194,6 +231,11 @@ class PersonInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <div className={classes.buttonWrapper}>
+                  {personID !== userID && adminButton}
+                </div>
+              </div>
               <Hours
                 isTablet={isTablet}
                 isMobile={isMobile}
@@ -206,6 +248,11 @@ class PersonInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <div className={classes.buttonWrapper}>
+                  {personID !== userID && adminButton}
+                </div>
+              </div>
               <Wages
                 isTablet={isTablet}
                 isMobile={isMobile}
@@ -266,6 +313,11 @@ class PersonInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <div className={classes.buttonWrapper}>
+                  {personID !== userID && adminButton}
+                </div>
+              </div>
               <Details
                 email={info.email}
                 firstName={info.firstName}
@@ -282,6 +334,11 @@ class PersonInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <div className={classes.buttonWrapper}>
+                  {personID !== userID && adminButton}
+                </div>
+              </div>
               <Hours
                 isTablet={isTablet}
                 isMobile={isMobile}
@@ -294,6 +351,11 @@ class PersonInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <div className={classes.buttonWrapper}>
+                  {personID !== userID && adminButton}
+                </div>
+              </div>
               <Wages
                 isTablet={isTablet}
                 isMobile={isMobile}
@@ -306,6 +368,11 @@ class PersonInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <div className={classes.buttonWrapper}>
+                  {personID !== userID && adminButton}
+                </div>
+              </div>
               <Details
                 email={info.email}
                 firstName={info.firstName}

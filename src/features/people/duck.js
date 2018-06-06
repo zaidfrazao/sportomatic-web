@@ -39,6 +39,9 @@ export const CLOSE_RESEND_INVITE_ALERT = `${NAMESPACE}/CLOSE_RESEND_INVITE_ALERT
 export const REQUEST_WAGES_BY_COACH = `${NAMESPACE}/REQUEST_WAGES_BY_COACH`;
 export const RECEIVE_WAGES_BY_COACH = `${NAMESPACE}/RECEIVE_WAGES_BY_COACH`;
 export const ERROR_LOADING_WAGES_BY_COACH = `${NAMESPACE}/ERROR_LOADING_WAGES_BY_COACH`;
+export const REQUEST_UPDATE_ADMIN_STATUS = `${NAMESPACE}/REQUEST_UPDATE_ADMIN_STATUS`;
+export const RECEIVE_UPDATE_ADMIN_STATUS = `${NAMESPACE}/RECEIVE_UPDATE_ADMIN_STATUS`;
+export const ERROR_UPDATING_ADMIN_STATUS = `${NAMESPACE}/ERROR_UPDATING_ADMIN_STATUS`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -736,6 +739,56 @@ export function createUser(
             `An unknown error occurred while trying to invite ${firstName} ${lastName}.`
           )
         );
+      });
+  };
+}
+
+export function requestUpdateAdminStatus() {
+  return {
+    type: REQUEST_UPDATE_ADMIN_STATUS
+  };
+}
+
+export function receiveUpdateAdminStatus() {
+  return {
+    type: RECEIVE_UPDATE_ADMIN_STATUS
+  };
+}
+
+export function errorUpdatingAdminStatus(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_UPDATING_ADMIN_STATUS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function updateAdminStatus(userID, communityID, newStatus) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestUpdateAdminStatus());
+    const db = firebase.firestore();
+    const userRef = db.collection("users").doc(userID);
+
+    return userRef
+      .update({
+        [`institutions.${communityID}`]: {
+          roles: {
+            admin: newStatus,
+            coach: "N/A",
+            manager: "N/A"
+          },
+          status: "STAFF"
+        }
+      })
+      .then(() => {
+        dispatch(receiveUpdateAdminStatus());
+      })
+      .catch(error => {
+        dispatch(errorUpdatingAdminStatus(error));
       });
   };
 }
