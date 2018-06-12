@@ -93,13 +93,15 @@ class PeopleLayout extends Component {
       loadStaff,
       loadTeams,
       loadEventsByCoach,
-      loadWagesByCoach
+      loadWagesByCoach,
+      loadSeasons
     } = this.props.actions;
 
     if (activeInstitutionID !== "") {
       loadAdmins(activeInstitutionID);
       loadStaff(activeInstitutionID);
       loadTeams(activeInstitutionID);
+      loadSeasons(activeInstitutionID);
 
       if (personID) {
         loadEventsByCoach(activeInstitutionID, personID);
@@ -117,7 +119,8 @@ class PeopleLayout extends Component {
       loadTeams,
       loadEventsByCoach,
       loadWagesByCoach,
-      resetState
+      resetState,
+      loadSeasons
     } = nextProps.actions;
 
     let sports = this.state.sports;
@@ -140,6 +143,7 @@ class PeopleLayout extends Component {
       loadAdmins(activeInstitutionID);
       loadStaff(activeInstitutionID);
       loadTeams(activeInstitutionID);
+      loadSeasons(activeInstitutionID);
 
       if (personID) {
         loadEventsByCoach(activeInstitutionID, personID);
@@ -208,7 +212,7 @@ class PeopleLayout extends Component {
       });
   }
 
-  filterPeople(staff) {
+  filterPeople(staff, seasons) {
     const { sportFilter } = this.props;
     const { teams, userID, meAllFilter } = this.props;
 
@@ -221,9 +225,23 @@ class PeopleLayout extends Component {
 
         if (meAllFilter === "me") {
           roleMatch = false;
-          _.values(teams).map(teamInfo => {
-            const teamCoaches = _.keys(teamInfo.coaches);
-            const teamManagers = _.keys(teamInfo.managers);
+          _.toPairs(teams).map(([teamID, teamInfo]) => {
+            let coaches = {};
+            let managers = {};
+            _.toPairs(seasons)
+              .filter(([seasonID, seasonInfo]) => {
+                return seasonInfo.teamID === teamID;
+              })
+              .map(([seasonID, seasonInfo]) => {
+                coaches = { ...coaches, ...seasonInfo.coaches };
+                managers = { ...managers, ...seasonInfo.managers };
+                return {
+                  id: seasonID,
+                  ...seasonInfo
+                };
+              });
+            const teamCoaches = _.keys(coaches);
+            const teamManagers = _.keys(managers);
 
             if (teamCoaches.includes(userID) || teamManagers.includes(userID)) {
               roleMatch =
@@ -326,7 +344,8 @@ class PeopleLayout extends Component {
       isAdmin,
       institutionCreationDate,
       meAllFilter,
-      changeMeAllFilter
+      changeMeAllFilter,
+      seasons
     } = this.props;
     const { resendInfo } = this.props.uiConfig;
     const {
@@ -386,7 +405,7 @@ class PeopleLayout extends Component {
       );
     } else {
       const staffCardsInfo = this.getStaffCardsInfo(
-        this.filterPeople(users, false)
+        this.filterPeople(users, seasons)
       );
       const ad = this.createAd();
 
@@ -436,6 +455,7 @@ class PeopleLayout extends Component {
                     isLoading={isResendInviteLoading}
                     resendID={resendInfo.id}
                     isUserAdmin={isAdmin}
+                    seasons={seasons}
                     resendInvite={(inviteeName, inviteeID, inviteeEmail) =>
                       resendInvite(
                         inviteeName,

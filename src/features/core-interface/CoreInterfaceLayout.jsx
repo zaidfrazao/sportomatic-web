@@ -428,7 +428,7 @@ class CoreInterfaceLayout extends Component {
     const featureName = pathname.split("/")[2];
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
-    const versionNumber = "0.9.10";
+    const versionNumber = "0.9.11";
 
     const communityRole = this.getRole();
     const userFirstName = accountInfo.info.name;
@@ -651,6 +651,7 @@ class CoreInterfaceLayout extends Component {
                       isMobile={isMobile}
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
+                      institutionCreationDate={institutionCreationDate}
                       isAccountInfoLoading={isAccountInfoLoading}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
@@ -672,6 +673,7 @@ class CoreInterfaceLayout extends Component {
                       isMobile={isMobile}
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
+                      institutionCreationDate={institutionCreationDate}
                       isAccountInfoLoading={isAccountInfoLoading}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
@@ -693,6 +695,7 @@ class CoreInterfaceLayout extends Component {
                       isMobile={isMobile}
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
+                      institutionCreationDate={institutionCreationDate}
                       isAccountInfoLoading={isAccountInfoLoading}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}

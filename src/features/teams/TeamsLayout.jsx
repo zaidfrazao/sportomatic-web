@@ -188,7 +188,7 @@ class TeamsLayout extends Component {
     });
   }
 
-  filterTeams() {
+  filterTeams(seasons) {
     const { gender, division, ageGroup, showDeletedTeams } = this.props.filters;
     const { teams, userID, meAllFilter, sportFilter } = this.props;
 
@@ -205,9 +205,23 @@ class TeamsLayout extends Component {
         }
 
         if (meAllFilter === "me") {
+          let coaches = {};
+          let managers = {};
+          _.toPairs(seasons)
+            .filter(([seasonID, seasonInfo]) => {
+              return seasonInfo.teamID === teamID;
+            })
+            .map(([seasonID, seasonInfo]) => {
+              coaches = { ...coaches, ...seasonInfo.coaches };
+              managers = { ...managers, ...seasonInfo.managers };
+              return {
+                id: seasonID,
+                ...seasonInfo
+              };
+            });
           roleMatch = false;
-          const teamCoaches = _.keys(teamInfo.coaches);
-          const teamManagers = _.keys(teamInfo.managers);
+          const teamCoaches = _.keys(coaches);
+          const teamManagers = _.keys(managers);
 
           if (teamCoaches.includes(userID) || teamManagers.includes(userID)) {
             roleMatch = roleMatch || true;
@@ -258,7 +272,8 @@ class TeamsLayout extends Component {
       userLastName,
       seasons,
       meAllFilter,
-      changeMeAllFilter
+      changeMeAllFilter,
+      institutionCreationDate
     } = this.props;
     const {
       isAddTeamLoading,
@@ -277,19 +292,32 @@ class TeamsLayout extends Component {
     const { teamID, infoTab } = this.props.match.params;
 
     const ad = this.createAd();
-    const hasTeamsCreated = this.getTeamsList(teams, seasons).length > 0;
-    const filteredTeams = this.getTeamsList(this.filterTeams(), seasons);
+    const teamsList = this.getTeamsList(teams, seasons);
+    const hasTeamsCreated = teamsList.length > 0;
+    const filteredTeams = this.getTeamsList(this.filterTeams(seasons), seasons);
 
     if (teamID) {
+      const teamSeasons = _.fromPairs(
+        _.toPairs(seasons)
+          .filter(([seasonID, seasonInfo]) => {
+            return seasonInfo.teamID === teamID;
+          })
+          .map(([seasonID, seasonInfo]) => {
+            return [seasonID, seasonInfo];
+          })
+      );
+
       return (
         <div className={classes.root}>
           <div className={classes.infoWrapper}>
             <TeamInfo
               staff={staff}
               info={teams[teamID]}
+              seasons={teamSeasons}
               teamID={teamID}
               isMobile={isMobile}
               isUserAdmin={isAdmin}
+              institutionCreationDate={institutionCreationDate}
               infoTab={infoTab}
               actions={{
                 navigateTo,

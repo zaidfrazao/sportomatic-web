@@ -97,18 +97,14 @@ class PersonCard extends Component {
   }
 
   getRoles(personTeams) {
-    const { teams, id, isAdmin } = this.props;
+    const { id, isAdmin, seasons } = this.props;
 
     let isManager = false;
     let isCoach = false;
 
-    personTeams.map(personTeamInfo => {
-      const completeTeamInfo = teams[personTeamInfo.id];
-
-      if (completeTeamInfo) {
-        if (completeTeamInfo.coaches[id]) isCoach = true;
-        if (completeTeamInfo.managers[id]) isManager = true;
-      }
+    _.toPairs(seasons).map(([seasonID, seasonInfo]) => {
+      isCoach = isCoach || seasonInfo.coaches[id];
+      isManager = isManager || seasonInfo.managers[id];
     });
 
     if (isAdmin && isManager && isCoach) {

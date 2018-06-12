@@ -37,7 +37,8 @@ class PeopleList extends Component {
       resendID,
       isUserAdmin,
       teams,
-      navigateTo
+      navigateTo,
+      seasons
     } = this.props;
 
     if (people.length > 0) {
@@ -53,6 +54,7 @@ class PeopleList extends Component {
                 profilePictureURL={personInfo.profilePictureURL}
                 id={personInfo.id}
                 isSignedUp={personInfo.isSignedUp}
+                seasons={seasons}
                 teams={teams}
                 navigateTo={navigateTo}
                 isLoading={isLoading && resendID === personInfo.id}

@@ -583,9 +583,7 @@ export function updateAccount(
         email,
         phoneNumber: "",
         profilePictureURL: "",
-        sports: {
-          Unknown: true
-        }
+        sports: {}
       }
     });
 
@@ -698,16 +696,7 @@ export function createAccount(
         phoneNumber: "",
         physicalAddress: "",
         publicEmail: "",
-        sports: [
-          "Athletics",
-          "Cricket",
-          "Hockey",
-          "Netball",
-          "Rugby",
-          "Soccer",
-          "Swimming",
-          "Tennis"
-        ]
+        sports: []
       },
       metadata: {
         creationDate: new Date(Date.now()),
@@ -773,9 +762,7 @@ export function createAccount(
         email,
         phoneNumber,
         profilePictureURL,
-        sports: {
-          Unknown: true
-        }
+        sports: {}
       },
       institutions: {
         [newInstitutionID]: {

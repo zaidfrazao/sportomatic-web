@@ -13,12 +13,6 @@ import Seasons from "./components/Seasons";
 import Tabs from "../../../../components/Tabs";
 
 const styles = {
-  actionsBar: {
-    margin: "0 12px",
-    backgroundColor: grey[200],
-    display: "flex",
-    justifyContent: "center"
-  },
   adWrapper: {
     display: "flex",
     alignItems: "center",
@@ -42,12 +36,6 @@ const styles = {
   buttonSeparator: {
     height: 12
   },
-  buttonWrapper: {
-    margin: "24px 12px"
-  },
-  flexGrow: {
-    flexGrow: 1
-  },
   header: {
     display: "flex",
     border: `1px solid ${grey[300]}`,
@@ -63,9 +51,6 @@ const styles = {
     flexGrow: 1,
     textAlign: "center",
     padding: 24
-  },
-  iconAdjacentText: {
-    marginRight: 8
   },
   menuButtonWrapper: {
     margin: "0 24px"
@@ -133,8 +118,16 @@ class TeamInfo extends Component {
     return reformattedInfo;
   }
 
-  getSectionDisplay(info, coaches, managers) {
-    const { classes, isMobile, infoTab, teamID } = this.props;
+  getSectionDisplay(info) {
+    const {
+      classes,
+      isMobile,
+      infoTab,
+      teamID,
+      seasons,
+      staff,
+      institutionCreationDate
+    } = this.props;
     const { navigateTo } = this.props.actions;
     const { tabSelected } = this.state;
 
@@ -153,8 +146,8 @@ class TeamInfo extends Component {
                 division={info.division}
                 sport={info.sport}
                 gender={info.gender}
-                coaches={coaches}
-                managers={managers}
+                seasons={seasons}
+                staff={staff}
                 navigateTo={navigateTo}
               />
             </div>
@@ -163,7 +156,12 @@ class TeamInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Seasons />
+              <Seasons
+                seasons={seasons}
+                institutionCreationDate={institutionCreationDate}
+                staff={staff}
+                navigateTo={navigateTo}
+              />
             </div>
           );
         default:
@@ -210,8 +208,8 @@ class TeamInfo extends Component {
                 division={info.division}
                 sport={info.sport}
                 gender={info.gender}
-                coaches={coaches}
-                managers={managers}
+                seasons={seasons}
+                staff={staff}
                 navigateTo={navigateTo}
               />
             </div>
@@ -220,7 +218,12 @@ class TeamInfo extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Seasons />
+              <Seasons
+                seasons={seasons}
+                institutionCreationDate={institutionCreationDate}
+                staff={staff}
+                navigateTo={navigateTo}
+              />
             </div>
           );
         default:
@@ -234,8 +237,8 @@ class TeamInfo extends Component {
                 division={info.division}
                 sport={info.sport}
                 gender={info.gender}
-                coaches={coaches}
-                managers={managers}
+                seasons={seasons}
+                staff={staff}
                 navigateTo={navigateTo}
               />
             </div>
@@ -259,54 +262,24 @@ class TeamInfo extends Component {
     return allTabs;
   }
 
-  getManagers() {
-    const { info, staff } = this.props;
+  getSeasons() {
+    const { seasons } = this.props;
 
-    if (info) {
-      return _.toPairs(info.managers).map(([managerID, eventManagerInfo]) => {
-        const managerInfo = staff[managerID];
-        if (managerInfo) {
-          return {
-            id: managerID,
-            name: `${managerInfo.info.name} ${managerInfo.info.surname}`,
-            profilePicture: managerInfo.info.profilePictureURL
-          };
+    return _.toPairs(seasons)
+      .map(([seasonID, seasonInfo]) => {
+        return seasonInfo;
+      })
+      .sort((seasonA, seasonB) => {
+        if (seasonA.dates.start < seasonB.dates.start) {
+          return +1;
         } else {
-          return {
-            id: managerID,
-            name: "Error finding manager",
-            profilePicture: ""
-          };
+          if (seasonA.dates.end < seasonB.dates.end) {
+            return +1;
+          } else {
+            return -1;
+          }
         }
       });
-    } else {
-      return [];
-    }
-  }
-
-  getCoaches() {
-    const { info, staff } = this.props;
-
-    if (info) {
-      return _.toPairs(info.coaches).map(([coachID, eventCoachInfo]) => {
-        const coachInfo = staff[coachID];
-        if (coachInfo) {
-          return {
-            id: coachID,
-            name: `${coachInfo.info.name} ${coachInfo.info.surname}`,
-            profilePicture: coachInfo.info.profilePictureURL
-          };
-        } else {
-          return {
-            id: coachID,
-            name: "Error finding manager",
-            profilePicture: ""
-          };
-        }
-      });
-    } else {
-      return [];
-    }
   }
 
   render() {
@@ -315,14 +288,12 @@ class TeamInfo extends Component {
     const { tabSelected } = this.state;
 
     const info = this.getInfo();
-    const coaches = this.getCoaches();
-    const managers = this.getManagers();
 
     if (!isMobile && infoTab) {
       return <Redirect to={`/myaccount/teams/${teamID}`} />;
     }
 
-    const sectionDisplay = this.getSectionDisplay(info, coaches, managers);
+    const sectionDisplay = this.getSectionDisplay(info);
     const tabs = this.getTabs();
 
     return (

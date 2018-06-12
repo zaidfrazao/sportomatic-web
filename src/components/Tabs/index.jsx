@@ -15,10 +15,10 @@ const styles = theme => ({
     fontWeight: "bold",
     color: grey[700],
     backgroundColor: common["white"],
+    border: `1px solid ${grey[300]}`,
     cursor: "pointer",
     "&:hover": {
-      color: grey[900],
-      backgroundColor: grey[300]
+      backgroundColor: grey[100]
     }
   },
   tabSelected: {

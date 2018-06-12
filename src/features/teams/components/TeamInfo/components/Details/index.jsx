@@ -1,5 +1,8 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
+import _ from "lodash";
 import injectSheet from "react-jss";
+import moment from "moment";
 import { common, grey } from "../../../../../../utils/colours";
 import defaultProfilePicture from "./images/default-profile-picture.png";
 
@@ -95,6 +98,18 @@ const styles = {
     margin: 24,
     textAlign: "center"
   },
+  rosterHeading: {
+    border: `1px solid ${grey[300]}`,
+    fontSize: 18,
+    borderRadius: 16,
+    padding: "18px 0",
+    marginBottom: 24,
+    width: "100%",
+    textAlign: "center",
+    fontWeight: "bold",
+    color: grey[800],
+    backgroundColor: grey[100]
+  },
   profilePicture: {
     borderRadius: "50%",
     backgroundColor: grey[300],
@@ -149,66 +164,108 @@ const styles = {
 };
 
 class Details extends Component {
-  getCoachItems() {
-    const { classes, coaches, navigateTo } = this.props;
+  getCoachItems(currentSeason) {
+    const { classes, staff, navigateTo } = this.props;
 
+    const coaches = _.toPairs(staff)
+      .filter(([id, info]) => {
+        return currentSeason.coaches && currentSeason.coaches[id];
+      })
+      .map(([id, info]) => {
+        return { id, ...info };
+      });
     const lastIndex = coaches.length - 1;
 
-    return coaches.map((info, index) => {
-      if (index !== lastIndex) {
-        return (
-          <div>
+    return coaches
+      .filter(info => {
+        return currentSeason.coaches && currentSeason.coaches[info.id];
+      })
+      .map((info, index) => {
+        if (index !== lastIndex) {
+          return (
+            <div>
+              <div
+                key={info.id}
+                className={classes.listItemWrapper}
+                onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+              >
+                <img
+                  alt={info.info.name}
+                  className={classes.profilePicture}
+                  src={
+                    info.info.profilePictureURL === ""
+                      ? defaultProfilePicture
+                      : info.info.profilePictureURL
+                  }
+                />
+                {`${info.info.name} ${info.info.surname}`}
+              </div>
+              <div className={classes.listItemSeparator} />
+            </div>
+          );
+        } else {
+          return (
             <div
               key={info.id}
               className={classes.listItemWrapper}
               onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
             >
               <img
-                alt={info.name}
+                alt={info.info.name}
                 className={classes.profilePicture}
                 src={
-                  info.profilePicture === ""
+                  info.info.profilePictureURL === ""
                     ? defaultProfilePicture
-                    : info.profilePicture
+                    : info.info.profilePictureURL
                 }
               />
-              {info.name}
+              {`${info.info.name} ${info.info.surname}`}
             </div>
-            <div className={classes.listItemSeparator} />
-          </div>
-        );
-      } else {
-        return (
-          <div
-            key={info.id}
-            className={classes.listItemWrapper}
-            onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
-          >
-            <img
-              alt={info.name}
-              className={classes.profilePicture}
-              src={
-                info.profilePicture === ""
-                  ? defaultProfilePicture
-                  : info.profilePicture
-              }
-            />
-            {info.name}
-          </div>
-        );
-      }
-    });
+          );
+        }
+      });
   }
 
-  getManagerItems() {
-    const { classes, managers, navigateTo } = this.props;
+  getManagerItems(currentSeason) {
+    const { classes, staff, navigateTo } = this.props;
 
+    const managers = _.toPairs(staff)
+      .filter(([id, info]) => {
+        return currentSeason.managers && currentSeason.managers[id];
+      })
+      .map(([id, info]) => {
+        return { id, ...info };
+      });
     const lastIndex = managers.length - 1;
 
-    return managers.map((info, index) => {
-      if (index !== lastIndex) {
-        return (
-          <div>
+    return managers
+      .filter(info => {
+        return currentSeason.managers && currentSeason.managers[info.id];
+      })
+      .map((info, index) => {
+        if (index !== lastIndex) {
+          return (
+            <div key={info.id}>
+              <div
+                className={classes.listItemWrapper}
+                onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+              >
+                <img
+                  alt={info.name}
+                  className={classes.profilePicture}
+                  src={
+                    info.info.profilePictureURL === ""
+                      ? defaultProfilePicture
+                      : info.info.profilePictureURL
+                  }
+                />
+                {`${info.info.name} ${info.info.surname}`}
+              </div>
+              <div className={classes.listItemSeparator} />
+            </div>
+          );
+        } else {
+          return (
             <div
               key={info.id}
               className={classes.listItemWrapper}
@@ -218,37 +275,16 @@ class Details extends Component {
                 alt={info.name}
                 className={classes.profilePicture}
                 src={
-                  info.profilePicture === ""
+                  info.info.profilePictureURL === ""
                     ? defaultProfilePicture
-                    : info.profilePicture
+                    : info.info.profilePictureURL
                 }
               />
-              {info.name}
+              {`${info.info.name} ${info.info.surname}`}
             </div>
-            <div className={classes.listItemSeparator} />
-          </div>
-        );
-      } else {
-        return (
-          <div
-            key={info.id}
-            className={classes.listItemWrapper}
-            onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
-          >
-            <img
-              alt={info.name}
-              className={classes.profilePicture}
-              src={
-                info.profilePicture === ""
-                  ? defaultProfilePicture
-                  : info.profilePicture
-              }
-            />
-            {info.name}
-          </div>
-        );
-      }
-    });
+          );
+        }
+      });
   }
 
   formatGender() {
@@ -284,11 +320,30 @@ class Details extends Component {
     return ageGroup;
   }
 
+  getCurrentSeason() {
+    const { seasons } = this.props;
+
+    let seasonInfo = {};
+
+    _.toPairs(seasons).map(([id, info]) => {
+      const currentMoment = moment();
+      const seasonStartMoment = moment(info.dates.start, "DD MMM YYYY");
+      const seasonEndMoment = moment(info.dates.end, "DD MMM YYYY");
+
+      if (currentMoment.isBetween(seasonStartMoment, seasonEndMoment)) {
+        seasonInfo = { ...info, status: "IN_SEASON" };
+      }
+    });
+
+    return seasonInfo;
+  }
+
   render() {
     const { classes, division, sport, isMobile } = this.props;
 
-    const coachItems = this.getCoachItems();
-    const managerItems = this.getManagerItems();
+    const currentSeason = this.getCurrentSeason();
+    const coachItems = this.getCoachItems(currentSeason);
+    const managerItems = this.getManagerItems(currentSeason);
     const gender = this.formatGender();
     const ageGroup = this.formatAgeGroup();
 
@@ -330,28 +385,44 @@ class Details extends Component {
             </div>
           </div>
         </div>
-        <div className={classes.column}>
-          <div className={classes.section}>
-            <div className={classes.sectionHeading}>Coaches</div>
-            {coachItems.length === 0 ? (
-              <div className={classes.noItems}>
-                No coaches on current roster
-              </div>
-            ) : (
-              coachItems
-            )}
+        {currentSeason.status === "IN_SEASON" ? (
+          <div className={classes.column}>
+            <div className={classes.rosterHeading}>Current Roster</div>
+            <div className={classes.section}>
+              <div className={classes.sectionHeading}>Coaches</div>
+              {coachItems.length === 0 ? (
+                <div className={classes.noItems}>
+                  No coaches on current roster
+                </div>
+              ) : (
+                coachItems
+              )}
+            </div>
+            <div className={classes.section}>
+              <div className={classes.sectionHeading}>Managers</div>
+              {managerItems.length === 0 ? (
+                <div className={classes.noItems}>
+                  No managers on current roster
+                </div>
+              ) : (
+                managerItems
+              )}
+            </div>
+            <div className={classes.section}>
+              <div className={classes.sectionHeading}>Athletes</div>
+              <div className={classes.noItems}>Coming soon</div>
+            </div>
           </div>
-          <div className={classes.section}>
-            <div className={classes.sectionHeading}>Managers</div>
-            {coachItems.length === 0 ? (
+        ) : (
+          <div className={classes.column}>
+            <div className={classes.section}>
+              <div className={classes.sectionHeading}>Current Roster</div>
               <div className={classes.noItems}>
-                No managers on current roster
+                This team is currently not in season
               </div>
-            ) : (
-              managerItems
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }

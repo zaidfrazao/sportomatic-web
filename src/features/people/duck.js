@@ -42,6 +42,9 @@ export const ERROR_LOADING_WAGES_BY_COACH = `${NAMESPACE}/ERROR_LOADING_WAGES_BY
 export const REQUEST_UPDATE_ADMIN_STATUS = `${NAMESPACE}/REQUEST_UPDATE_ADMIN_STATUS`;
 export const RECEIVE_UPDATE_ADMIN_STATUS = `${NAMESPACE}/RECEIVE_UPDATE_ADMIN_STATUS`;
 export const ERROR_UPDATING_ADMIN_STATUS = `${NAMESPACE}/ERROR_UPDATING_ADMIN_STATUS`;
+export const REQUEST_SEASONS = `${NAMESPACE}/REQUEST_SEASONS`;
+export const RECEIVE_SEASONS = `${NAMESPACE}/RECEIVE_SEASONS`;
+export const ERROR_FETCHING_SEASONS = `${NAMESPACE}/ERROR_FETCHING_SEASONS`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -330,6 +333,19 @@ function wagesByCoachReducer(state = {}, action = {}) {
   }
 }
 
+function seasonsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case REQUEST_SEASONS:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_SEASONS:
+      return action.payload.seasons;
+    default:
+      return state;
+  }
+}
+
 export const peopleReducer = combineReducers({
   uiConfig: uiConfigReducer,
   users: usersReducer,
@@ -338,6 +354,7 @@ export const peopleReducer = combineReducers({
   wagesByCoach: wagesByCoachReducer,
   teams: teamsReducer,
   filters: filterReducer,
+  seasons: seasonsReducer,
   eventsByCoach: eventsByCoachReducer
 });
 
@@ -351,6 +368,7 @@ const loadingStatus = state => state.people.loadingStatus;
 const filters = state => state.people.filters;
 const eventsByCoach = state => state.people.eventsByCoach;
 const wagesByCoach = state => state.people.wagesByCoach;
+const seasons = state => state.people.seasons;
 
 export const selector = createStructuredSelector({
   uiConfig,
@@ -360,7 +378,8 @@ export const selector = createStructuredSelector({
   teams,
   filters,
   eventsByCoach,
-  wagesByCoach
+  wagesByCoach,
+  seasons
 });
 
 // Action Creators
@@ -368,6 +387,49 @@ export const selector = createStructuredSelector({
 export function resetState() {
   return {
     type: RESET_STATE
+  };
+}
+
+export function requestSeasons() {
+  return {
+    type: REQUEST_SEASONS
+  };
+}
+
+export function receiveSeasons(seasons) {
+  return {
+    type: RECEIVE_SEASONS,
+    payload: {
+      seasons
+    }
+  };
+}
+
+export function errorFetchingSeasons(error: { code: string, message: string }) {
+  return {
+    type: ERROR_FETCHING_SEASONS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadSeasons(institutionID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestStaff());
+
+    const seasonsRef = firebase
+      .firestore()
+      .collection("seasons")
+      .where("institutionID", "==", institutionID);
+
+    return seasonsRef.onSnapshot(querySnapshot => {
+      let seasons = {};
+      querySnapshot.forEach(doc => {
+        seasons[doc.id] = doc.data();
+      });
+      dispatch(receiveSeasons(seasons));
+    });
   };
 }
 
