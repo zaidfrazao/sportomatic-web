@@ -242,7 +242,7 @@ class Seasons extends Component {
 
       return sortedSeasons[
         selectedIndex
-      ].nonCompetitiveEvents.map((details, index) => {
+      ].competitiveEvents.map((details, index) => {
         const display = `${details.day}, ${details.times.start} - ${details
           .times.end}`;
         if (index !== lastIndex) {
