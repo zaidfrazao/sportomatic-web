@@ -428,7 +428,7 @@ class CoreInterfaceLayout extends Component {
     const featureName = pathname.split("/")[2];
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
-    const versionNumber = "0.9.12";
+    const versionNumber = "0.9.13";
 
     const communityRole = this.getRole();
     const userFirstName = accountInfo.info.name;
