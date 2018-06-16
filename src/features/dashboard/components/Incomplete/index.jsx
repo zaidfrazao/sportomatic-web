@@ -6,6 +6,7 @@ import moment from "moment";
 import EmptyState from "../../../../components/EmptyState";
 import EventCard from "./components/EventCard";
 import { grey } from "../../../../utils/colours";
+import ProfileCompletionCard from "./components/ProfileCompletionCard";
 
 const tabletBreakpoint = 1080;
 
@@ -89,10 +90,25 @@ class Today extends Component {
     });
   }
 
+  getPreferredSportsText(sports) {
+    let text = "";
+    sports.map((sportName, index) => {
+      if (index === 0) {
+        text = sportName;
+      } else {
+        text = `${text}, ${sportName}`;
+      }
+    });
+    return text;
+  }
+
   render() {
-    const { classes } = this.props;
+    const { classes, navigateTo, personalInfo, isProfileComplete } = this.props;
 
     const eventCards = this.getEventCards();
+    const preferredSports = this.getPreferredSportsText(
+      personalInfo.preferredSports
+    );
 
     return (
       <div className={classes.wrapper}>
@@ -101,7 +117,20 @@ class Today extends Component {
             <EmptyState message="No incomplete events" />
           </div>
         ) : (
-          <div className={classes.cardsWrapper}>{eventCards}</div>
+          <div className={classes.cardsWrapper}>
+            {!isProfileComplete && (
+              <div className={classes.cardWrapper}>
+                <ProfileCompletionCard
+                  email={personalInfo.email}
+                  phoneNumber={personalInfo.phoneNumber}
+                  preferredSports={preferredSports}
+                  profilePicture={personalInfo.profilePicture}
+                  goToSettings={() => navigateTo("/myaccount/settings/")}
+                />
+              </div>
+            )}
+            {eventCards}
+          </div>
         )}
       </div>
     );

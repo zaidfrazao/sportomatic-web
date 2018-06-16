@@ -7,12 +7,26 @@ import EmptyState from "../../../../components/EmptyState";
 import EventCard from "./components/EventCard";
 import { grey } from "../../../../utils/colours";
 
+const tabletBreakpoint = 1080;
+
 const styles = {
   actionsBar: {
     margin: "24px 24px 0 24px",
     backgroundColor: grey[200],
     display: "flex",
     justifyContent: "center"
+  },
+  cardsWrapper: {
+    display: "flex",
+    flexWrap: "wrap",
+    margin: "0 auto"
+  },
+  cardWrapper: {
+    width: "100%",
+    padding: 12,
+    [`@media (min-width: ${tabletBreakpoint}px)`]: {
+      width: "calc(50% - 24px)"
+    }
   },
   emptyState: {
     padding: 24
@@ -60,7 +74,7 @@ class Today extends Component {
   }
 
   getEventCards() {
-    const { navigateTo, isMobile, events } = this.props;
+    const { classes, navigateTo, isMobile, events } = this.props;
 
     return _.toPairs(events).map(([eventID, eventInfo]) => {
       const eventDateMoment = moment(eventInfo.requiredInfo.times.start);
@@ -77,23 +91,24 @@ class Today extends Component {
       const isHoursLogged = this.checkIfHoursLogged(eventInfo.coaches);
 
       return (
-        <EventCard
-          key={`today-card-${eventID}`}
-          isMobile={isMobile}
-          isCancelled={isCancelled}
-          isCompetitive={isCompetitive}
-          title={title}
-          relativeTime={relativeTime}
-          times={times}
-          eventType={type}
-          venue={venue}
-          notes={notes}
-          isHoursLogged={isHoursLogged}
-          hasHoursLogging={hasHoursLogging}
-          isResultsLogged={false}
-          viewEventInfo={() =>
-            navigateTo(`/myaccount/schedule/${eventDateString}/${eventID}`)}
-        />
+        <div className={classes.cardWrapper} key={`today-card-${eventID}`}>
+          <EventCard
+            isMobile={isMobile}
+            isCancelled={isCancelled}
+            isCompetitive={isCompetitive}
+            title={title}
+            relativeTime={relativeTime}
+            times={times}
+            eventType={type}
+            venue={venue}
+            notes={notes}
+            isHoursLogged={isHoursLogged}
+            hasHoursLogging={hasHoursLogging}
+            isResultsLogged={false}
+            viewEventInfo={() =>
+              navigateTo(`/myaccount/schedule/${eventDateString}/${eventID}`)}
+          />
+        </div>
       );
     });
   }
@@ -110,7 +125,7 @@ class Today extends Component {
             <EmptyState message="No events today" />
           </div>
         ) : (
-          eventCards
+          <div className={classes.cardsWrapper}>{eventCards}</div>
         )}
       </div>
     );

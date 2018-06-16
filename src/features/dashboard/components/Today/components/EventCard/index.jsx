@@ -57,7 +57,7 @@ const styles = {
     flexWrap: "wrap"
   },
   infoSectionWrapper: {
-    width: props => (props.isMobile ? "100%" : "50%")
+    width: "100%"
   },
   listIconWrapper: {
     textAlign: "center",
@@ -192,8 +192,8 @@ class EventCard extends Component {
       eventType,
       venue,
       notes,
-      isMobile,
-      isCancelled
+      isCancelled,
+      isCompetitive
     } = this.props;
 
     const eventTypeIcon = this.getEventTypeIcon();
@@ -231,13 +231,7 @@ class EventCard extends Component {
                 </span>
               </div>
               <div className={classes.listWrapper}>
-                <div
-                  className={
-                    isMobile
-                      ? classes.listIconWrapper
-                      : classes.listIconWrapperBottomLeft
-                  }
-                >
+                <div className={classes.listIconWrapper}>
                   <i className="fas fa-comment-alt" />
                 </div>
                 <span className={classes.listText}>
@@ -253,21 +247,17 @@ class EventCard extends Component {
                 <span className={classes.listText}>{hoursInfo.text}</span>
                 {hoursInfo.icon}
               </div>
-              <div className={classes.listWrapper}>
-                <div className={classes.listIconWrapper}>
-                  <i className="fas fa-list-ol" />
+              {isCompetitive && (
+                <div className={classes.listWrapper}>
+                  <div className={classes.listIconWrapper}>
+                    <i className="fas fa-list-ol" />
+                  </div>
+                  <span className={classes.listText}>{resultsInfo.text}</span>
+                  {resultsInfo.icon}
                 </div>
-                <span className={classes.listText}>{resultsInfo.text}</span>
-                {resultsInfo.icon}
-              </div>
+              )}
               <div className={classes.listWrapper}>
-                <div
-                  className={
-                    isMobile
-                      ? classes.listIconWrapperBottomLeft
-                      : classes.listIconWrapper
-                  }
-                >
+                <div className={classes.listIconWrapperBottomLeft}>
                   <i className="fas fa-clipboard" />
                 </div>
                 <span className={classes.listText}>

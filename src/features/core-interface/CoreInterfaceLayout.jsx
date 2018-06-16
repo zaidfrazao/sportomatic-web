@@ -434,6 +434,8 @@ class CoreInterfaceLayout extends Component {
     const userFirstName = accountInfo.info.name;
     const userLastName = accountInfo.info.surname;
     const userEmail = accountInfo.info.email;
+    const userPhoneNumber = accountInfo.info.phoneNumber;
+    const userProfilePicture = accountInfo.info.profilePictureURL;
     const userName = `${userFirstName} ${userLastName}`;
     const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
@@ -538,6 +540,12 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      personalInfo={{
+                        email: userEmail,
+                        phoneNumber: userPhoneNumber,
+                        profilePicture: userProfilePicture,
+                        preferredSports: userSports
+                      }}
                       changeMeAllFilter={newFilter =>
                         changeMeAllFilter(newFilter)}
                     />
@@ -557,6 +565,12 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      personalInfo={{
+                        email: userEmail,
+                        phoneNumber: userPhoneNumber,
+                        profilePicture: userProfilePicture,
+                        preferredSports: userSports
+                      }}
                       changeMeAllFilter={newFilter =>
                         changeMeAllFilter(newFilter)}
                     />
@@ -576,6 +590,12 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      personalInfo={{
+                        email: userEmail,
+                        phoneNumber: userPhoneNumber,
+                        profilePicture: userProfilePicture,
+                        preferredSports: userSports
+                      }}
                       changeMeAllFilter={newFilter =>
                         changeMeAllFilter(newFilter)}
                     />
@@ -855,6 +875,12 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      personalInfo={{
+                        email: userEmail,
+                        phoneNumber: userPhoneNumber,
+                        profilePicture: userProfilePicture,
+                        preferredSports: userSports
+                      }}
                       changeMeAllFilter={newFilter =>
                         changeMeAllFilter(newFilter)}
                     />

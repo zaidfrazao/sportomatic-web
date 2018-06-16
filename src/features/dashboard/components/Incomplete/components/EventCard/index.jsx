@@ -163,7 +163,14 @@ class EventCard extends Component {
   }
 
   render() {
-    const { classes, date, times, viewEventInfo, title } = this.props;
+    const {
+      classes,
+      date,
+      times,
+      viewEventInfo,
+      title,
+      isCompetitive
+    } = this.props;
 
     const hoursInfo = this.getHoursInfo();
     const resultsInfo = this.getResultsInfo();
@@ -190,13 +197,15 @@ class EventCard extends Component {
               <span className={classes.listText}>{hoursInfo.text}</span>
               {hoursInfo.icon}
             </div>
-            <div className={classes.listWrapper}>
-              <div className={classes.listIconWrapper}>
-                <i className="fas fa-list-ol" />
+            {isCompetitive && (
+              <div className={classes.listWrapper}>
+                <div className={classes.listIconWrapper}>
+                  <i className="fas fa-list-ol" />
+                </div>
+                <span className={classes.listText}>{resultsInfo.text}</span>
+                {resultsInfo.icon}
               </div>
-              <span className={classes.listText}>{resultsInfo.text}</span>
-              {resultsInfo.icon}
-            </div>
+            )}
             <div className={classes.listWrapper}>
               <div className={classes.listIconWrapperBottomLeft}>
                 <i className="fas fa-clipboard" />

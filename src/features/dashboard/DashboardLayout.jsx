@@ -130,6 +130,23 @@ class DashboardLayout extends Component {
     return ad;
   }
 
+  checkIfProfileComplete() {
+    const { personalInfo } = this.props;
+
+    let profileComplete = true;
+    if (personalInfo.email === "") {
+      profileComplete = false;
+    } else if (personalInfo.phoneNumber === "") {
+      profileComplete = false;
+    } else if (personalInfo.profilePicture === "") {
+      profileComplete = false;
+    } else if (personalInfo.preferredSports.length === 0) {
+      profileComplete = false;
+    }
+
+    return profileComplete;
+  }
+
   getSectionDisplay() {
     const {
       classes,
@@ -137,14 +154,20 @@ class DashboardLayout extends Component {
       navigateTo,
       todaysEvents,
       goBack,
-      incompleteEvents
+      incompleteEvents,
+      personalInfo
     } = this.props;
     const { infoTab } = this.props.match.params;
     const { tabSelected } = this.state;
 
     const ad = this.createAd();
-    const incompleteCount = _.keys(incompleteEvents).length;
+    const isProfileComplete = this.checkIfProfileComplete();
+    let incompleteCount = _.keys(incompleteEvents).length;
     const notificationCount = 0;
+
+    if (!isProfileComplete) {
+      incompleteCount++;
+    }
 
     if (isMobile) {
       switch (infoTab) {
@@ -198,7 +221,12 @@ class DashboardLayout extends Component {
                 </div>
               </div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Incomplete events={incompleteEvents} navigateTo={navigateTo} />
+              <Incomplete
+                isProfileComplete={isProfileComplete}
+                personalInfo={personalInfo}
+                events={incompleteEvents}
+                navigateTo={navigateTo}
+              />
             </div>
           );
         case "notifications":
@@ -308,7 +336,8 @@ class DashboardLayout extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <Incomplete
-                isMobile={isMobile}
+                isProfileComplete={isProfileComplete}
+                personalInfo={personalInfo}
                 events={incompleteEvents}
                 navigateTo={navigateTo}
               />
