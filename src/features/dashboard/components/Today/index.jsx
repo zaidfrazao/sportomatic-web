@@ -36,10 +36,13 @@ class Today extends Component {
 
     if (currentTimeMoment.isBefore(startTimeMoment)) {
       return `Starts in about ${currentTimeMoment.to(startTimeMoment, true)}`;
-    } else if (currentTimeMoment.isAfter(startTimeMoment)) {
+    } else if (
+      currentTimeMoment.isAfter(startTimeMoment) &&
+      currentTimeMoment.isBefore(endTimeMoment)
+    ) {
       return `Ends in about ${currentTimeMoment.to(endTimeMoment, true)}`;
     } else {
-      return `Ended about ${endTimeMoment.from(currentTimeMoment, true)}`;
+      return `Ended about ${endTimeMoment.from(currentTimeMoment, true)} ago`;
     }
   }
 

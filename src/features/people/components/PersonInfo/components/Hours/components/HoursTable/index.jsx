@@ -165,7 +165,7 @@ class HoursTable extends Component {
         const eventStatus = info.status;
         const date = moment(info.date).format("D MMMM YYYY");
         const title = info.title;
-        const wasAbsent = info.absenteeism.wasAbsent;
+        const wasAbsent = !info.absenteeism.didAttend;
 
         if (hoursStatus === "APPROVED") {
           const signInMoment = moment(info.hours.times.signIn);

@@ -173,8 +173,7 @@ class ListOfEvents extends Component {
 
     _.toPairs(coaches).map(([coachID, coachInfo]) => {
       isActionsRequired =
-        coachInfo.hours.status !== "APPROVED" &&
-        coachInfo.attendance.willAttend;
+        coachInfo.hours.status !== "APPROVED" && coachInfo.attendance.didAttend;
     });
 
     return isActionsRequired;

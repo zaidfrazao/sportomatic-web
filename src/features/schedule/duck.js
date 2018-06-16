@@ -2,6 +2,7 @@ import _ from "lodash";
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
+import moment from "moment";
 
 // Actions
 
@@ -1135,9 +1136,15 @@ export function cancelEvent(eventID) {
     const db = firebase.firestore();
     const eventRef = db.collection("events").doc(eventID);
 
+    const versionID = moment().format("DD-MM-YYYY|HH:mm:ss");
+
     return eventRef
       .update({
-        "requiredInfo.status": "CANCELLED"
+        "requiredInfo.status": "CANCELLED",
+        [`versionHistory.${versionID}`]: {
+          change: "CANCELLED",
+          via: "CANCEL_BUTTON"
+        }
       })
       .then(() => dispatch(receiveCancelEvent()))
       .catch(error => dispatch(errorCancellingEvent(error)));
@@ -1150,9 +1157,15 @@ export function uncancelEvent(eventID) {
     const db = firebase.firestore();
     const eventRef = db.collection("events").doc(eventID);
 
+    const versionID = moment().format("DD-MM-YYYY|HH:mm:ss");
+
     return eventRef
       .update({
-        "requiredInfo.status": "ACTIVE"
+        "requiredInfo.status": "ACTIVE",
+        [`versionHistory.${versionID}`]: {
+          change: "UNCANCELLED",
+          via: "UNCANCEL_BUTTON"
+        }
       })
       .then(() => dispatch(receiveUncancelEvent()))
       .catch(error => dispatch(errorUncancellingEvent(error)));
