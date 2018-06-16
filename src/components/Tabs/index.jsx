@@ -1,12 +1,20 @@
 import React, { Component } from "react";
-import { common, grey, lightBlue } from "../../utils/colours";
+import { common, grey, lightBlue, red } from "../../utils/colours";
 import injectSheet from "react-jss";
 
 const styles = theme => ({
+  count: {
+    margin: "0 8px",
+    padding: "4px 8px",
+    backgroundColor: red[500],
+    borderRadius: 8,
+    color: common["white"]
+  },
   tab: {
     transition: "0.25s",
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
     borderRadius: 8,
@@ -25,7 +33,8 @@ const styles = theme => ({
     border: `1px solid ${grey[300]}`,
     transition: "0.25s",
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
     borderRadius: 8,
@@ -53,6 +62,9 @@ class Tabs extends Component {
       if (selected === tab.key) {
         return (
           <div key={tab.key} className={classes.tabSelected}>
+            {tab.count !== undefined && (
+              <span className={classes.count}>{tab.count}</span>
+            )}
             {tab.label}
           </div>
         );
@@ -63,6 +75,9 @@ class Tabs extends Component {
             className={classes.tab}
             onClick={() => handleClick(tab.key)}
           >
+            {tab.count !== undefined && (
+              <span className={classes.count}>{tab.count}</span>
+            )}
             {tab.label}
           </div>
         );

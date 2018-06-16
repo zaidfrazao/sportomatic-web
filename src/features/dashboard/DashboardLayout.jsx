@@ -1,10 +1,11 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
+import _ from "lodash";
 import { Redirect } from "react-router-dom";
 import injectStyles from "react-jss";
 import Button from "../../components/Button";
 import BannerAd from "../../components/BannerAd";
-import { common, grey, lightBlue } from "../../utils/colours";
+import { common, grey, lightBlue, red } from "../../utils/colours";
 import Incomplete from "./components/Incomplete";
 import Results from "./components/Results";
 import Today from "./components/Today";
@@ -35,6 +36,13 @@ const styles = {
   },
   buttonSeparator: {
     height: 12
+  },
+  count: {
+    margin: "0 8px",
+    padding: "4px 8px",
+    backgroundColor: red[500],
+    borderRadius: 8,
+    color: common["white"]
   },
   header: {
     display: "flex",
@@ -135,6 +143,8 @@ class DashboardLayout extends Component {
     const { tabSelected } = this.state;
 
     const ad = this.createAd();
+    const incompleteCount = _.keys(incompleteEvents).length;
+    const notificationCount = 0;
 
     if (isMobile) {
       switch (infoTab) {
@@ -239,7 +249,9 @@ class DashboardLayout extends Component {
                     handleClick={() =>
                       navigateTo("/myaccount/overview/incomplete")}
                   >
-                    Incomplete
+                    <span className={classes.count}>
+                      {incompleteCount}
+                    </span>Incomplete
                   </Button>
                 </div>
               </div>
@@ -254,7 +266,9 @@ class DashboardLayout extends Component {
                     handleClick={() =>
                       navigateTo("/myaccount/overview/notifications")}
                   >
-                    Notifications
+                    <span className={classes.count}>
+                      {notificationCount}
+                    </span>Notifications
                   </Button>
                 </div>
               </div>
@@ -311,6 +325,11 @@ class DashboardLayout extends Component {
   }
 
   getTabs() {
+    const { incompleteEvents } = this.props;
+
+    const incompleteCount = _.keys(incompleteEvents).length;
+    const notificationCount = 0;
+
     return [
       {
         key: "today",
@@ -322,11 +341,13 @@ class DashboardLayout extends Component {
       },
       {
         key: "incomplete",
-        label: "Incomplete"
+        label: "Incomplete",
+        count: incompleteCount
       },
       {
         key: "notifications",
-        label: "Notifications"
+        label: "Notifications",
+        count: notificationCount
       }
     ];
   }
