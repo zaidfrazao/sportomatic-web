@@ -122,7 +122,8 @@ class Today extends Component {
       personalInfo,
       personalProfileProgress,
       communityInfo,
-      communityProfileProgress
+      communityProfileProgress,
+      isAdmin
     } = this.props;
 
     const eventCards = this.getEventCards();
@@ -131,11 +132,19 @@ class Today extends Component {
     );
     const communitySports = this.getCommunitySportsText(communityInfo.sports);
 
+    let showEmptyState = eventCards.length === 0;
+    if (isAdmin) {
+      showEmptyState =
+        showEmptyState &&
+        personalProfileProgress === "100" &&
+        communityProfileProgress === "100";
+    } else {
+      showEmptyState = showEmptyState && personalProfileProgress === "100";
+    }
+
     return (
       <div className={classes.wrapper}>
-        {personalProfileProgress === "100" &&
-        communityProfileProgress === "100" &&
-        eventCards.length === 0 ? (
+        {showEmptyState ? (
           <div className={classes.emptyState}>
             <EmptyState message="No incomplete events" />
           </div>
@@ -153,19 +162,20 @@ class Today extends Component {
                 />
               </div>
             )}
-            {communityProfileProgress !== "100" && (
-              <div className={classes.cardWrapper}>
-                <CommunityCompletionCard
-                  publicEmail={communityInfo.publicEmail}
-                  phoneNumber={communityInfo.phoneNumber}
-                  physicalAddress={communityInfo.physicalAddress}
-                  sports={communitySports}
-                  emblem={communityInfo.emblem}
-                  communityProfileProgress={communityProfileProgress}
-                  goToSettings={() => navigateTo("/myaccount/community/")}
-                />
-              </div>
-            )}
+            {communityProfileProgress !== "100" &&
+              isAdmin && (
+                <div className={classes.cardWrapper}>
+                  <CommunityCompletionCard
+                    publicEmail={communityInfo.publicEmail}
+                    phoneNumber={communityInfo.phoneNumber}
+                    physicalAddress={communityInfo.physicalAddress}
+                    sports={communitySports}
+                    emblem={communityInfo.emblem}
+                    communityProfileProgress={communityProfileProgress}
+                    goToSettings={() => navigateTo("/myaccount/community/")}
+                  />
+                </div>
+              )}
             {eventCards}
           </div>
         )}

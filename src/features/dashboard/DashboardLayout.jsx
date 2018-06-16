@@ -135,16 +135,16 @@ class DashboardLayout extends Component {
 
     let personalProfileProgress = 4;
     if (personalInfo.email === "") {
-      personalProfileProgress--;
+      personalProfileProgress = personalProfileProgress - 1;
     }
     if (personalInfo.phoneNumber === "") {
-      personalProfileProgress--;
+      personalProfileProgress = personalProfileProgress - 1;
     }
     if (personalInfo.profilePicture === "") {
-      personalProfileProgress--;
+      personalProfileProgress = personalProfileProgress - 1;
     }
     if (personalInfo.preferredSports.length === 0) {
-      personalProfileProgress--;
+      personalProfileProgress = personalProfileProgress - 1;
     }
 
     return (personalProfileProgress / 4 * 100).toFixed(0);
@@ -155,19 +155,19 @@ class DashboardLayout extends Component {
 
     let communityProfileProgress = 5;
     if (communityInfo.publicEmail === "") {
-      communityProfileProgress--;
+      communityProfileProgress = communityProfileProgress - 1;
     }
     if (communityInfo.phoneNumber === "") {
-      communityProfileProgress--;
+      communityProfileProgress = communityProfileProgress - 1;
     }
     if (communityInfo.emblem === "") {
-      communityProfileProgress--;
+      communityProfileProgress = communityProfileProgress - 1;
     }
-    if (communityInfo.phoneNumber === "") {
-      communityProfileProgress--;
+    if (communityInfo.physicalAddress === "") {
+      communityProfileProgress = communityProfileProgress - 1;
     }
-    if (_.keys(communityInfo.sports).length === 0) {
-      communityProfileProgress--;
+    if (communityInfo.sports.length === 0) {
+      communityProfileProgress = communityProfileProgress - 1;
     }
 
     return (communityProfileProgress / 5 * 100).toFixed(0);
@@ -182,7 +182,8 @@ class DashboardLayout extends Component {
       goBack,
       incompleteEvents,
       personalInfo,
-      communityInfo
+      communityInfo,
+      isAdmin
     } = this.props;
     const { infoTab } = this.props.match.params;
     const { tabSelected } = this.state;
@@ -199,7 +200,7 @@ class DashboardLayout extends Component {
     if (personalProfileProgress !== "100") {
       incompleteCount = incompleteCount + 1;
     }
-    if (communityProfileProgress !== "100") {
+    if (communityProfileProgress !== "100" && isAdmin) {
       incompleteCount = incompleteCount + 1;
     }
 
@@ -260,6 +261,7 @@ class DashboardLayout extends Component {
               </div>
               <div className={classes.adWrapper}>{ad}</div>
               <Incomplete
+                isAdmin={isAdmin}
                 communityInfo={communityInfo}
                 personalProfileProgress={personalProfileProgress}
                 communityProfileProgress={communityProfileProgress}
@@ -378,6 +380,7 @@ class DashboardLayout extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <Incomplete
+                isAdmin={isAdmin}
                 communityInfo={communityInfo}
                 communityProfileProgress={communityProfileProgress}
                 personalProfileProgress={personalProfileProgress}
@@ -406,7 +409,7 @@ class DashboardLayout extends Component {
   }
 
   getTabs() {
-    const { todaysEvents, incompleteEvents } = this.props;
+    const { todaysEvents, incompleteEvents, isAdmin } = this.props;
 
     const personalProfileProgress = this.checkIfPersonalProfileComplete();
     const communityProfileProgress = this.checkIfCommunityProfileComplete();
@@ -418,7 +421,7 @@ class DashboardLayout extends Component {
     if (personalProfileProgress !== "100") {
       incompleteCount = incompleteCount + 1;
     }
-    if (communityProfileProgress !== "100") {
+    if (communityProfileProgress !== "100" && isAdmin) {
       incompleteCount = incompleteCount + 1;
     }
 
