@@ -50,7 +50,7 @@ class Today extends Component {
       isHoursLogged =
         isHoursLogged &&
         (coachInfo.hours.status === "APPROVED" ||
-          !coachInfo.attendance.willAttend);
+          !coachInfo.attendance.didAttend);
     });
 
     return isHoursLogged;

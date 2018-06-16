@@ -191,7 +191,11 @@ class DashboardLayout extends Component {
                     <i className="fas fa-caret-left" />
                   </div>
                 </div>
-                <div className={classes.headerInnerWrapper}>Incomplete</div>
+                <div className={classes.headerInnerWrapper}>
+                  {incompleteCount > 0 && (
+                    <span className={classes.count}>{incompleteCount}</span>
+                  )}Incomplete
+                </div>
               </div>
               <div className={classes.adWrapper}>{ad}</div>
               <Incomplete events={incompleteEvents} navigateTo={navigateTo} />
@@ -206,7 +210,11 @@ class DashboardLayout extends Component {
                     <i className="fas fa-caret-left" />
                   </div>
                 </div>
-                <div className={classes.headerInnerWrapper}>Notifications</div>
+                <div className={classes.headerInnerWrapper}>
+                  {notificationCount > 0 && (
+                    <span className={classes.count}>{notificationCount}</span>
+                  )}Notifications
+                </div>
               </div>
               <div className={classes.adWrapper}>{ad}</div>
               <Results isMobile={isMobile} />
@@ -249,9 +257,9 @@ class DashboardLayout extends Component {
                     handleClick={() =>
                       navigateTo("/myaccount/overview/incomplete")}
                   >
-                    <span className={classes.count}>
-                      {incompleteCount}
-                    </span>Incomplete
+                    {incompleteCount > 0 && (
+                      <span className={classes.count}>{incompleteCount}</span>
+                    )}Incomplete
                   </Button>
                 </div>
               </div>
@@ -266,9 +274,9 @@ class DashboardLayout extends Component {
                     handleClick={() =>
                       navigateTo("/myaccount/overview/notifications")}
                   >
-                    <span className={classes.count}>
-                      {notificationCount}
-                    </span>Notifications
+                    {notificationCount > 0 && (
+                      <span className={classes.count}>{notificationCount}</span>
+                    )}Notifications
                   </Button>
                 </div>
               </div>

@@ -62,9 +62,10 @@ class Tabs extends Component {
       if (selected === tab.key) {
         return (
           <div key={tab.key} className={classes.tabSelected}>
-            {tab.count !== undefined && (
-              <span className={classes.count}>{tab.count}</span>
-            )}
+            {tab.count !== undefined &&
+              tab.count > 0 && (
+                <span className={classes.count}>{tab.count}</span>
+              )}
             {tab.label}
           </div>
         );
@@ -75,9 +76,10 @@ class Tabs extends Component {
             className={classes.tab}
             onClick={() => handleClick(tab.key)}
           >
-            {tab.count !== undefined && (
-              <span className={classes.count}>{tab.count}</span>
-            )}
+            {tab.count !== undefined &&
+              tab.count > 0 && (
+                <span className={classes.count}>{tab.count}</span>
+              )}
             {tab.label}
           </div>
         );

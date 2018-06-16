@@ -261,7 +261,7 @@ class EventInfo extends Component {
                 coaches={coaches}
                 eventTimes={info.times}
                 signIn={signIn}
-                signOut={signIn}
+                signOut={signOut}
                 updateTimes={updateTimes}
                 approveHours={approveHours}
                 updateAbsent={updateAbsent}
