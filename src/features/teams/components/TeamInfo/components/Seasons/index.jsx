@@ -3,6 +3,7 @@ import _ from "lodash";
 import injectSheet from "react-jss";
 import moment from "moment";
 import DateSelector from "./components/DateSelector";
+import EditSeasonDialog from "./components/EditSeasonDialog";
 import EmptyState from "../../../../../../components/EmptyState";
 import { common, grey } from "../../../../../../utils/colours";
 import Select from "../../../../../../components/Select";
@@ -24,7 +25,7 @@ const styles = {
   },
   infoItemText: {
     flex: 1,
-    padding: 12,
+    textAlign: "center",
     color: grey[700]
   },
   infoItemWrapper: {
@@ -33,7 +34,7 @@ const styles = {
   },
   lastInfoItemText: {
     flex: 1,
-    padding: 12,
+    textAlign: "center",
     color: grey[700]
   },
   lastInfoItemWrapper: {
@@ -114,6 +115,7 @@ const styles = {
 
 class Seasons extends Component {
   state = {
+    isEditDialogOpen: false,
     selectedIndex: 0,
     sortedSeasons: [],
     section: {
@@ -146,7 +148,16 @@ class Seasons extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { seasons } = nextProps;
+    const { seasons, isEditSeasonLoading } = nextProps;
+
+    if (
+      isEditSeasonLoading !== this.props.isEditSeasonLoading &&
+      !isEditSeasonLoading
+    ) {
+      this.setState({
+        isEditDialogOpen: false
+      });
+    }
 
     if (seasons !== this.props.seasons) {
       let selectedIndex = 0;
@@ -168,6 +179,18 @@ class Seasons extends Component {
         sortedSeasons
       });
     }
+  }
+
+  openEditDialog() {
+    this.setState({
+      isEditDialogOpen: true
+    });
+  }
+
+  closeEditDialog() {
+    this.setState({
+      isEditDialogOpen: false
+    });
   }
 
   prevSeason() {
@@ -414,8 +437,26 @@ class Seasons extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const { selectedIndex, sortedSeasons, section } = this.state;
+    const {
+      classes,
+      isUserAdmin,
+      editSeason,
+      teamName,
+      staff,
+      userID,
+      userEmail,
+      userFirstName,
+      userLastName,
+      teamID,
+      activeInstitutionID,
+      isEditSeasonLoading
+    } = this.props;
+    const {
+      selectedIndex,
+      sortedSeasons,
+      section,
+      isEditDialogOpen
+    } = this.state;
 
     const isPrevDisabled = this.checkIfPrevDisabled();
     const isNextDisabled = this.checkIfNextDisabled();
@@ -430,10 +471,12 @@ class Seasons extends Component {
         {sortedSeasons.length !== 0 && (
           <div className={classes.dateSelectorWrapper}>
             <DateSelector
+              isUserAdmin={isUserAdmin}
               isPrevDisabled={isPrevDisabled}
               isNextDisabled={isNextDisabled}
               seasons={sortedSeasons}
               selectedIndex={selectedIndex}
+              openEditDialog={() => this.openEditDialog()}
               handlePrevSeason={() => this.prevSeason()}
               handleNextSeason={() => this.nextSeason()}
             />
@@ -502,6 +545,27 @@ class Seasons extends Component {
             </div>
           </div>
         )}
+        <EditSeasonDialog
+          isOpen={isEditDialogOpen}
+          teamName={teamName}
+          userID={userID}
+          userEmail={userEmail}
+          userFirstName={userFirstName}
+          userLastName={userLastName}
+          people={staff}
+          closeDialog={() => this.closeEditDialog()}
+          isLoading={isEditSeasonLoading}
+          initialInfo={sortedSeasons[selectedIndex]}
+          editSeason={seasonInfo =>
+            editSeason(
+              sortedSeasons[selectedIndex].id,
+              teamID,
+              activeInstitutionID,
+              userID,
+              `${userFirstName} ${userLastName}`,
+              seasonInfo
+            )}
+        />
       </div>
     );
   }

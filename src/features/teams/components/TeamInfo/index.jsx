@@ -126,9 +126,16 @@ class TeamInfo extends Component {
       teamID,
       seasons,
       staff,
-      institutionCreationDate
+      institutionCreationDate,
+      isUserAdmin,
+      userID,
+      userEmail,
+      userFirstName,
+      userLastName,
+      activeInstitutionID,
+      isEditSeasonLoading
     } = this.props;
-    const { navigateTo } = this.props.actions;
+    const { navigateTo, editSeason } = this.props.actions;
     const { tabSelected } = this.state;
 
     const ad = this.createAd();
@@ -158,9 +165,19 @@ class TeamInfo extends Component {
               <div className={classes.adWrapper}>{ad}</div>
               <Seasons
                 seasons={seasons}
+                teamName={info.name}
+                teamID={teamID}
+                activeInstitutionID={activeInstitutionID}
                 institutionCreationDate={institutionCreationDate}
+                isEditSeasonLoading={isEditSeasonLoading}
                 staff={staff}
+                isUserAdmin={isUserAdmin}
                 navigateTo={navigateTo}
+                userID={userID}
+                userEmail={userEmail}
+                userFirstName={userFirstName}
+                userLastName={userLastName}
+                editSeason={editSeason}
               />
             </div>
           );
@@ -220,9 +237,19 @@ class TeamInfo extends Component {
               <div className={classes.adWrapper}>{ad}</div>
               <Seasons
                 seasons={seasons}
+                teamName={info.name}
                 institutionCreationDate={institutionCreationDate}
                 staff={staff}
+                isUserAdmin={isUserAdmin}
                 navigateTo={navigateTo}
+                userID={userID}
+                userEmail={userEmail}
+                userFirstName={userFirstName}
+                userLastName={userLastName}
+                teamID={teamID}
+                activeInstitutionID={activeInstitutionID}
+                isEditSeasonLoading={isEditSeasonLoading}
+                editSeason={editSeason}
               />
             </div>
           );

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
+import moment from "moment";
 import Button from "../../../../../../../../components/Button";
-import { common, grey } from "../../../../../../../../utils/colours";
+import { common, grey, lightBlue } from "../../../../../../../../utils/colours";
 
 const styles = {
   buttonDate: {
@@ -17,8 +18,19 @@ const styles = {
     backgroundColor: common["white"],
     border: `1px solid ${grey[300]}`
   },
+  editButton: {
+    transition: "0.25s",
+    margin: "0 24px",
+    color: common["black"],
+    cursor: "pointer",
+    fontSize: 20,
+    "&:hover": {
+      color: lightBlue[500]
+    }
+  },
   wrapper: {
-    display: "flex"
+    display: "flex",
+    alignItems: "center"
   }
 };
 
@@ -31,8 +43,14 @@ class DateSelector extends Component {
       handleNextSeason,
       handlePrevSeason,
       seasons,
-      selectedIndex
+      selectedIndex,
+      openEditDialog,
+      isUserAdmin
     } = this.props;
+
+    const showEditButton =
+      isUserAdmin &&
+      moment(seasons[selectedIndex].dates.end, "DD MMM YYYY").isAfter(moment());
 
     return (
       <div className={classes.wrapper}>
@@ -47,8 +65,18 @@ class DateSelector extends Component {
             <i className="fas fa-arrow-left" />
           </Button>
         </div>
-        <div className={classes.buttonDate}>{`${seasons[selectedIndex].dates
-          .start} - ${seasons[selectedIndex].dates.end}`}</div>
+        <div className={classes.buttonDate}>
+          {`${seasons[selectedIndex].dates.start} - ${seasons[selectedIndex]
+            .dates.end}`}
+          {showEditButton && (
+            <div
+              className={classes.editButton}
+              onClick={() => openEditDialog()}
+            >
+              <i className="fas fa-edit" />
+            </div>
+          )}
+        </div>
         <div className={classes.buttonNavigation}>
           <Button
             type="dark"

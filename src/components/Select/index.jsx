@@ -173,9 +173,9 @@ const styles = theme => ({
     display: "inline-block",
     borderRadius: 4,
     boxSizing: "border-box",
-    backgroundColor: common["white"],
+    backgroundColor: props => (props.disabled ? grey[200] : common["white"]),
     position: "relative",
-    cursor: "pointer"
+    cursor: props => (props.disabled ? "not-allowed" : "pointer")
   },
   selectBasic: {
     border: `1px solid ${grey[400]}`
@@ -196,6 +196,7 @@ class Select extends Component<Props, State> {
     placeholder: "Select an item",
     items: [],
     validation: "default",
+    disabled: false,
     selectedItem: {
       key: "none",
       label: "N/A"
@@ -223,13 +224,16 @@ class Select extends Component<Props, State> {
   }
 
   outsideClickListener(event) {
+    const { disabled } = this.props;
     const { menuOpen } = this.state;
 
-    if (menuOpen) {
-      this.toggleMenu();
-    } else {
-      if (this.node && this.node.contains(event.target)) {
+    if (!disabled) {
+      if (menuOpen) {
         this.toggleMenu();
+      } else {
+        if (this.node && this.node.contains(event.target)) {
+          this.toggleMenu();
+        }
       }
     }
   }

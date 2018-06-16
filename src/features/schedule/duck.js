@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
@@ -703,10 +704,15 @@ export function requestEvents(institutionID) {
 }
 
 export function receiveEvents(events) {
+  const filteredEvents = _.fromPairs(
+    _.toPairs(events).filter(([eventID, eventInfo]) => {
+      return eventInfo.requiredInfo.status !== "DELETED";
+    })
+  );
   return {
     type: RECEIVE_EVENTS,
     payload: {
-      events
+      events: filteredEvents
     }
   };
 }

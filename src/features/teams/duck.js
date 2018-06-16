@@ -36,6 +36,9 @@ export const ERROR_LOADING_EVENTS_BY_TEAM = `${NAMESPACE}/ERROR_LOADING_EVENTS_B
 export const REQUEST_CREATE_SEASON = `${NAMESPACE}/REQUEST_CREATE_SEASON`;
 export const RECEIVE_CREATE_SEASON = `${NAMESPACE}/RECEIVE_CREATE_SEASON`;
 export const ERROR_CREATING_SEASON = `${NAMESPACE}/ERROR_CREATING_SEASON`;
+export const REQUEST_EDIT_SEASON = `${NAMESPACE}/REQUEST_EDIT_SEASON`;
+export const RECEIVE_EDIT_SEASON = `${NAMESPACE}/RECEIVE_EDIT_SEASON`;
+export const ERROR_EDITTING_SEASON = `${NAMESPACE}/ERROR_EDITTING_SEASON`;
 export const REQUEST_SEASONS = `${NAMESPACE}/REQUEST_SEASONS`;
 export const RECEIVE_SEASONS = `${NAMESPACE}/RECEIVE_SEASONS`;
 export const ERROR_FETCHING_SEASONS = `${NAMESPACE}/ERROR_FETCHING_SEASONS`;
@@ -203,7 +206,8 @@ export const loadingStatusInitialState = {
   isTeamsLoading: false,
   isStaffLoading: false,
   isEventsByTeamLoading: false,
-  isCreateSeasonLoading: false
+  isCreateSeasonLoading: false,
+  isEditSeasonLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -232,6 +236,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isCreateSeasonLoading: false
+      };
+    case REQUEST_EDIT_SEASON:
+      return {
+        ...state,
+        isEditSeasonLoading: true
+      };
+    case ERROR_EDITTING_SEASON:
+    case RECEIVE_EDIT_SEASON:
+      return {
+        ...state,
+        isEditSeasonLoading: false
       };
     case REQUEST_ADD_TEAM:
       return {
@@ -517,6 +532,7 @@ export function loadSeasons(institutionID) {
     return seasonsRef.onSnapshot(querySnapshot => {
       let seasons = {};
       querySnapshot.forEach(doc => {
+        console.log(doc);
         seasons[doc.id] = doc.data();
       });
       dispatch(receiveSeasons(seasons));
@@ -796,6 +812,57 @@ export function createSeason(
       })
       .catch(error => {
         dispatch(errorCreatingSeason(error));
+      });
+  };
+}
+
+export function requestEditSeason() {
+  return {
+    type: REQUEST_EDIT_SEASON
+  };
+}
+
+export function receiveEditSeason() {
+  return {
+    type: RECEIVE_EDIT_SEASON
+  };
+}
+
+export function errorEdittingSeason(error: { code: string, message: string }) {
+  return {
+    type: ERROR_EDITTING_SEASON,
+    payload: {
+      error
+    }
+  };
+}
+
+export function editSeason(
+  seasonID,
+  teamID,
+  institutionID,
+  userID,
+  userName,
+  seasonInfo
+) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEditSeason());
+
+    const editSeason = firebase.functions().httpsCallable("editSeason");
+
+    return editSeason({
+      seasonID,
+      teamID,
+      institutionID,
+      userID,
+      userName,
+      seasonInfo
+    })
+      .then(result => {
+        dispatch(receiveEditSeason());
+      })
+      .catch(error => {
+        dispatch(errorEdittingSeason(error));
       });
   };
 }

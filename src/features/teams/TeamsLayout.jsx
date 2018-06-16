@@ -277,7 +277,8 @@ class TeamsLayout extends Component {
     } = this.props;
     const {
       isAddTeamLoading,
-      isCreateSeasonLoading
+      isCreateSeasonLoading,
+      isEditSeasonLoading
     } = this.props.loadingStatus;
     const {
       openAddTeamDialog,
@@ -286,7 +287,8 @@ class TeamsLayout extends Component {
       openSeasonSetupDialog,
       closeSeasonSetupDialog,
       addTeam,
-      createSeason
+      createSeason,
+      editSeason
     } = this.props.actions;
     const { isAddTeamDialogOpen, seasonSetupDialog } = this.props.dialogs;
     const { teamID, infoTab } = this.props.match.params;
@@ -317,11 +319,18 @@ class TeamsLayout extends Component {
               teamID={teamID}
               isMobile={isMobile}
               isUserAdmin={isAdmin}
+              userID={userID}
+              userEmail={userEmail}
+              userFirstName={userFirstName}
+              userLastName={userLastName}
+              isEditSeasonLoading={isEditSeasonLoading}
               institutionCreationDate={institutionCreationDate}
+              activeInstitutionID={activeInstitutionID}
               infoTab={infoTab}
               actions={{
                 navigateTo,
                 goBack,
+                editSeason,
                 editTeam: () => {
                   openEditTeamDialog();
                 }
