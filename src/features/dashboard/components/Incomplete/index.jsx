@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
 import moment from "moment";
+import CommunityCompletionCard from "./components/CommunityCompletionCard";
 import EmptyState from "../../../../components/EmptyState";
 import EventCard from "./components/EventCard";
 import { grey } from "../../../../utils/colours";
@@ -102,30 +103,66 @@ class Today extends Component {
     return text;
   }
 
+  getCommunitySportsText(sports) {
+    let text = "";
+    sports.map((sportName, index) => {
+      if (index === 0) {
+        text = sportName;
+      } else {
+        text = `${text}, ${sportName}`;
+      }
+    });
+    return text;
+  }
+
   render() {
-    const { classes, navigateTo, personalInfo, isProfileComplete } = this.props;
+    const {
+      classes,
+      navigateTo,
+      personalInfo,
+      personalProfileProgress,
+      communityInfo,
+      communityProfileProgress
+    } = this.props;
 
     const eventCards = this.getEventCards();
     const preferredSports = this.getPreferredSportsText(
       personalInfo.preferredSports
     );
+    const communitySports = this.getCommunitySportsText(communityInfo.sports);
 
     return (
       <div className={classes.wrapper}>
-        {eventCards.length === 0 ? (
+        {personalProfileProgress === "100" &&
+        communityProfileProgress === "100" &&
+        eventCards.length === 0 ? (
           <div className={classes.emptyState}>
             <EmptyState message="No incomplete events" />
           </div>
         ) : (
           <div className={classes.cardsWrapper}>
-            {!isProfileComplete && (
+            {personalProfileProgress !== "100" && (
               <div className={classes.cardWrapper}>
                 <ProfileCompletionCard
                   email={personalInfo.email}
                   phoneNumber={personalInfo.phoneNumber}
                   preferredSports={preferredSports}
                   profilePicture={personalInfo.profilePicture}
+                  personalProfileProgress={personalProfileProgress}
                   goToSettings={() => navigateTo("/myaccount/settings/")}
+                />
+              </div>
+            )}
+            {communityProfileProgress !== "100" && (
+              <div className={classes.cardWrapper}>
+                <CommunityCompletionCard
+                  publicEmail={communityInfo.publicEmail}
+                  phoneNumber={communityInfo.phoneNumber}
+                  physicalAddress={communityInfo.physicalAddress}
+                  sports={communitySports}
+                  emblem={communityInfo.emblem}
+                  communityProfileProgress={communityProfileProgress}
+                  goToSettings={() => navigateTo("/myaccount/community/")}
                 />
               </div>
             )}

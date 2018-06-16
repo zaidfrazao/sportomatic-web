@@ -98,16 +98,16 @@ const styles = {
   }
 };
 
-class ProfileCompletionCard extends Component {
+class CommunityCompletionCard extends Component {
   getEmailInfo() {
-    const { classes, email } = this.props;
+    const { classes, publicEmail } = this.props;
 
     let text = "";
     let icon = <div />;
     let complete = false;
 
-    if (email !== "") {
-      text = email;
+    if (publicEmail !== "") {
+      text = publicEmail;
       icon = (
         <div className={classes.iconComplete}>
           <i className="fas fa-check" />
@@ -161,22 +161,22 @@ class ProfileCompletionCard extends Component {
     };
   }
 
-  getPreferredSportsInfo() {
-    const { classes, preferredSports } = this.props;
+  getSportsInfo() {
+    const { classes, sports } = this.props;
 
     let text = "";
     let icon = <div />;
     let complete = false;
 
-    if (preferredSports !== "") {
-      text = preferredSports;
+    if (sports !== "") {
+      text = sports;
       icon = (
         <div className={classes.iconComplete}>
           <i className="fas fa-check" />
         </div>
       );
     } else {
-      text = "No preferred sports selected";
+      text = "No sports selected";
       icon = (
         <div className={classes.iconIncomplete}>
           <i className="fas fa-times" />
@@ -192,22 +192,53 @@ class ProfileCompletionCard extends Component {
     };
   }
 
-  getProfilePictureInfo() {
-    const { classes, profilePicture } = this.props;
+  getPhysicalAddressInfo() {
+    const { classes, physicalAddress } = this.props;
 
     let text = "";
     let icon = <div />;
     let complete = false;
 
-    if (profilePicture !== "") {
-      text = "Profile picture uploaded";
+    if (physicalAddress !== "") {
+      text = physicalAddress;
       icon = (
         <div className={classes.iconComplete}>
           <i className="fas fa-check" />
         </div>
       );
     } else {
-      text = "No profile picture uploaded";
+      text = "No physical address given";
+      icon = (
+        <div className={classes.iconIncomplete}>
+          <i className="fas fa-times" />
+        </div>
+      );
+      complete = true;
+    }
+
+    return {
+      text,
+      icon,
+      complete
+    };
+  }
+
+  getEmblemInfo() {
+    const { classes, emblem } = this.props;
+
+    let text = "";
+    let icon = <div />;
+    let complete = false;
+
+    if (emblem !== "") {
+      text = "Emblem uploaded";
+      icon = (
+        <div className={classes.iconComplete}>
+          <i className="fas fa-check" />
+        </div>
+      );
+    } else {
+      text = "No emblem uploaded";
       icon = (
         <div className={classes.iconIncomplete}>
           <i className="fas fa-times" />
@@ -224,28 +255,29 @@ class ProfileCompletionCard extends Component {
   }
 
   render() {
-    const { classes, goToSettings, personalProfileProgress } = this.props;
+    const { classes, goToSettings, communityProfileProgress } = this.props;
 
     const emailInfo = this.getEmailInfo();
     const phoneNumberInfo = this.getPhoneNumberInfo();
-    const preferredSportsInfo = this.getPreferredSportsInfo();
-    const profilePictureInfo = this.getProfilePictureInfo();
+    const sportsInfo = this.getSportsInfo();
+    const emblemInfo = this.getEmblemInfo();
+    const physicalAddressInfo = this.getPhysicalAddressInfo();
 
     return (
       <div className={classes.wrapper}>
-        <div className={classes.dateWrapper}>Personal Profile Progress</div>
+        <div className={classes.dateWrapper}>Community Profile Progress</div>
         <div className={classes.progressBarWrapper}>
-          <ProgressBar progress={personalProfileProgress} />
+          <ProgressBar progress={communityProfileProgress} />
         </div>
         <div className={classes.infoWrapper}>
           <div className={classes.infoSectionWrapper}>
             <div className={classes.listWrapper}>
               <div className={classes.listIconWrapper}>
-                <i className="fas fa-envelope" />
+                <i className="fas fa-futbol" />
               </div>
-              <span className={classes.listText}>{emailInfo.text}</span>
-              {!emailInfo.complete ? (
-                emailInfo.icon
+              <span className={classes.listText}>{sportsInfo.text}</span>
+              {!sportsInfo.complete ? (
+                sportsInfo.icon
               ) : (
                 <div className={classes.buttonWrapper}>
                   <Button
@@ -281,13 +313,13 @@ class ProfileCompletionCard extends Component {
             </div>
             <div className={classes.listWrapper}>
               <div className={classes.listIconWrapper}>
-                <i className="fas fa-futbol" />
+                <i className="fas fa-map-marker" />
               </div>
               <span className={classes.listText}>
-                {preferredSportsInfo.text}
+                {physicalAddressInfo.text}
               </span>
-              {!preferredSportsInfo.complete ? (
-                preferredSportsInfo.icon
+              {!physicalAddressInfo.complete ? (
+                physicalAddressInfo.icon
               ) : (
                 <div className={classes.buttonWrapper}>
                   <Button
@@ -303,13 +335,31 @@ class ProfileCompletionCard extends Component {
             </div>
             <div className={classes.listWrapper}>
               <div className={classes.listIconWrapper}>
-                <i className="fas fa-camera" />
+                <i className="fas fa-envelope" />
               </div>
-              <span className={classes.listText}>
-                {profilePictureInfo.text}
-              </span>
-              {!profilePictureInfo.complete ? (
-                profilePictureInfo.icon
+              <span className={classes.listText}>{emailInfo.text}</span>
+              {!emailInfo.complete ? (
+                emailInfo.icon
+              ) : (
+                <div className={classes.buttonWrapper}>
+                  <Button
+                    type="dark"
+                    slim
+                    filled
+                    handleClick={() => goToSettings()}
+                  >
+                    Complete
+                  </Button>
+                </div>
+              )}
+            </div>
+            <div className={classes.listWrapper}>
+              <div className={classes.listIconWrapper}>
+                <i className="fas fa-image" />
+              </div>
+              <span className={classes.listText}>{emblemInfo.text}</span>
+              {!emblemInfo.complete ? (
+                emblemInfo.icon
               ) : (
                 <div className={classes.buttonWrapper}>
                   <Button
@@ -330,4 +380,4 @@ class ProfileCompletionCard extends Component {
   }
 }
 
-export default injectStyles(styles)(ProfileCompletionCard);
+export default injectStyles(styles)(CommunityCompletionCard);

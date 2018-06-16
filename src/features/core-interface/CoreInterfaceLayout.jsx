@@ -449,6 +449,9 @@ class CoreInterfaceLayout extends Component {
     let isAdmin = false;
     let communityName = "Default";
     let emblem = "";
+    let phoneNumber = "";
+    let physicalAddress = "";
+    let publicEmail = "";
     let sports = [];
     let sportsItems = {};
     let institutionCreationDate = new Date(Date.now());
@@ -474,6 +477,9 @@ class CoreInterfaceLayout extends Component {
         "APPROVED";
       communityName = institutions[activeInstitutionID].info.name;
       emblem = institutions[activeInstitutionID].info.emblemURL;
+      phoneNumber = institutions[activeInstitutionID].info.phoneNumber;
+      publicEmail = institutions[activeInstitutionID].info.publicEmail;
+      physicalAddress = institutions[activeInstitutionID].info.physicalAddress;
       institutionCreationDate =
         institutions[activeInstitutionID].metadata.creationDate;
     }
@@ -540,6 +546,13 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      communityInfo={{
+                        phoneNumber,
+                        publicEmail,
+                        emblem,
+                        sports,
+                        physicalAddress
+                      }}
                       personalInfo={{
                         email: userEmail,
                         phoneNumber: userPhoneNumber,
@@ -565,6 +578,13 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      communityInfo={{
+                        phoneNumber,
+                        publicEmail,
+                        emblem,
+                        sports,
+                        physicalAddress
+                      }}
                       personalInfo={{
                         email: userEmail,
                         phoneNumber: userPhoneNumber,
@@ -590,6 +610,13 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      communityInfo={{
+                        phoneNumber,
+                        publicEmail,
+                        emblem,
+                        sports,
+                        physicalAddress
+                      }}
                       personalInfo={{
                         email: userEmail,
                         phoneNumber: userPhoneNumber,
@@ -875,6 +902,13 @@ class CoreInterfaceLayout extends Component {
                       institutionCreationDate={institutionCreationDate}
                       navigateTo={path => this.navigateTo(path)}
                       goBack={() => this.goBack()}
+                      communityInfo={{
+                        phoneNumber,
+                        publicEmail,
+                        emblem,
+                        sports,
+                        physicalAddress
+                      }}
                       personalInfo={{
                         email: userEmail,
                         phoneNumber: userPhoneNumber,

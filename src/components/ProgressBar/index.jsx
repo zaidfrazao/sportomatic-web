@@ -23,9 +23,7 @@ class ProgressBar extends Component {
   };
 
   render() {
-    const { classes, progress } = this.props;
-
-    console.log(progress);
+    const { classes } = this.props;
 
     return (
       <div className={classes.wrapper}>

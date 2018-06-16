@@ -130,21 +130,47 @@ class DashboardLayout extends Component {
     return ad;
   }
 
-  checkIfProfileComplete() {
+  checkIfPersonalProfileComplete() {
     const { personalInfo } = this.props;
 
-    let profileComplete = true;
+    let personalProfileProgress = 4;
     if (personalInfo.email === "") {
-      profileComplete = false;
-    } else if (personalInfo.phoneNumber === "") {
-      profileComplete = false;
-    } else if (personalInfo.profilePicture === "") {
-      profileComplete = false;
-    } else if (personalInfo.preferredSports.length === 0) {
-      profileComplete = false;
+      personalProfileProgress--;
+    }
+    if (personalInfo.phoneNumber === "") {
+      personalProfileProgress--;
+    }
+    if (personalInfo.profilePicture === "") {
+      personalProfileProgress--;
+    }
+    if (personalInfo.preferredSports.length === 0) {
+      personalProfileProgress--;
     }
 
-    return profileComplete;
+    return (personalProfileProgress / 4 * 100).toFixed(0);
+  }
+
+  checkIfCommunityProfileComplete() {
+    const { communityInfo } = this.props;
+
+    let communityProfileProgress = 5;
+    if (communityInfo.publicEmail === "") {
+      communityProfileProgress--;
+    }
+    if (communityInfo.phoneNumber === "") {
+      communityProfileProgress--;
+    }
+    if (communityInfo.emblem === "") {
+      communityProfileProgress--;
+    }
+    if (communityInfo.phoneNumber === "") {
+      communityProfileProgress--;
+    }
+    if (_.keys(communityInfo.sports).length === 0) {
+      communityProfileProgress--;
+    }
+
+    return (communityProfileProgress / 5 * 100).toFixed(0);
   }
 
   getSectionDisplay() {
@@ -155,18 +181,26 @@ class DashboardLayout extends Component {
       todaysEvents,
       goBack,
       incompleteEvents,
-      personalInfo
+      personalInfo,
+      communityInfo
     } = this.props;
     const { infoTab } = this.props.match.params;
     const { tabSelected } = this.state;
 
     const ad = this.createAd();
-    const isProfileComplete = this.checkIfProfileComplete();
+
+    const personalProfileProgress = this.checkIfPersonalProfileComplete();
+    const communityProfileProgress = this.checkIfCommunityProfileComplete();
+
+    const todayCount = _.keys(todaysEvents).length;
     let incompleteCount = _.keys(incompleteEvents).length;
     const notificationCount = 0;
 
-    if (!isProfileComplete) {
-      incompleteCount++;
+    if (personalProfileProgress !== "100") {
+      incompleteCount = incompleteCount + 1;
+    }
+    if (communityProfileProgress !== "100") {
+      incompleteCount = incompleteCount + 1;
     }
 
     if (isMobile) {
@@ -180,7 +214,11 @@ class DashboardLayout extends Component {
                     <i className="fas fa-caret-left" />
                   </div>
                 </div>
-                <div className={classes.headerInnerWrapper}>Today</div>
+                <div className={classes.headerInnerWrapper}>
+                  {todayCount > 0 && (
+                    <span className={classes.count}>{todayCount}</span>
+                  )}Today
+                </div>
               </div>
               <div className={classes.adWrapper}>{ad}</div>
               <Today
@@ -222,7 +260,9 @@ class DashboardLayout extends Component {
               </div>
               <div className={classes.adWrapper}>{ad}</div>
               <Incomplete
-                isProfileComplete={isProfileComplete}
+                communityInfo={communityInfo}
+                personalProfileProgress={personalProfileProgress}
+                communityProfileProgress={communityProfileProgress}
                 personalInfo={personalInfo}
                 events={incompleteEvents}
                 navigateTo={navigateTo}
@@ -259,7 +299,9 @@ class DashboardLayout extends Component {
                   fullWidth
                   handleClick={() => navigateTo("/myaccount/overview/today")}
                 >
-                  Today
+                  {todayCount > 0 && (
+                    <span className={classes.count}>{todayCount}</span>
+                  )}Today
                 </Button>
               </div>
               <div className={classes.buttonSeparator} />
@@ -336,7 +378,9 @@ class DashboardLayout extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <Incomplete
-                isProfileComplete={isProfileComplete}
+                communityInfo={communityInfo}
+                communityProfileProgress={communityProfileProgress}
+                personalProfileProgress={personalProfileProgress}
                 personalInfo={personalInfo}
                 events={incompleteEvents}
                 navigateTo={navigateTo}
@@ -362,15 +406,27 @@ class DashboardLayout extends Component {
   }
 
   getTabs() {
-    const { incompleteEvents } = this.props;
+    const { todaysEvents, incompleteEvents } = this.props;
 
-    const incompleteCount = _.keys(incompleteEvents).length;
+    const personalProfileProgress = this.checkIfPersonalProfileComplete();
+    const communityProfileProgress = this.checkIfCommunityProfileComplete();
+
+    const todayCount = _.keys(todaysEvents).length;
+    let incompleteCount = _.keys(incompleteEvents).length;
     const notificationCount = 0;
+
+    if (personalProfileProgress !== "100") {
+      incompleteCount = incompleteCount + 1;
+    }
+    if (communityProfileProgress !== "100") {
+      incompleteCount = incompleteCount + 1;
+    }
 
     return [
       {
         key: "today",
-        label: "Today"
+        label: "Today",
+        count: todayCount
       },
       {
         key: "results",
