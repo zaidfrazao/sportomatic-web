@@ -10,19 +10,6 @@ import {
 } from "../../../../../../utils/colours";
 
 const styles = {
-  cancelledIcon: {
-    marginRight: 12
-  },
-  cancelledWrapper: {
-    width: "100%",
-    margin: 12,
-    borderRadius: 16,
-    backgroundColor: red[500],
-    color: common["white"],
-    fontWeight: "bold",
-    padding: 24,
-    textAlign: "center"
-  },
   dateWrapper: {
     margin: "24px 0 8px 0",
     padding: "0 12px",
@@ -57,7 +44,7 @@ const styles = {
     flexWrap: "wrap"
   },
   infoSectionWrapper: {
-    width: props => (props.isMobile ? "100%" : "50%")
+    width: "100%"
   },
   listIconWrapper: {
     textAlign: "center",
@@ -111,13 +98,6 @@ const styles = {
 };
 
 class EventCard extends Component {
-  getEventTypeIcon() {
-    const { isCompetitive } = this.props;
-
-    if (isCompetitive) return "fas fa-trophy";
-    return "fas fa-dumbbell";
-  }
-
   getHoursInfo() {
     const { classes, isHoursLogged, hasHoursLogging } = this.props;
 
@@ -183,20 +163,8 @@ class EventCard extends Component {
   }
 
   render() {
-    const {
-      classes,
-      relativeTime,
-      times,
-      viewEventInfo,
-      title,
-      eventType,
-      venue,
-      notes,
-      isMobile,
-      isCancelled
-    } = this.props;
+    const { classes, date, times, viewEventInfo, title } = this.props;
 
-    const eventTypeIcon = this.getEventTypeIcon();
     const hoursInfo = this.getHoursInfo();
     const resultsInfo = this.getResultsInfo();
     const formattedTimes = {
@@ -207,84 +175,38 @@ class EventCard extends Component {
     return (
       <div className={classes.wrapper} onClick={() => viewEventInfo()}>
         <div className={classes.header}>{title}</div>
-        <div className={classes.dateWrapper}>{relativeTime}</div>
+        <div className={classes.dateWrapper}>{date}</div>
         <div className={classes.startEndWrapper}>
           <div className={classes.timeWrapper}>{formattedTimes.start}</div>
           <div className={classes.timesSeparator}>-</div>
           <div className={classes.timeWrapper}>{formattedTimes.end}</div>
         </div>
-        {!isCancelled ? (
-          <div className={classes.infoWrapper}>
-            <div className={classes.infoSectionWrapper}>
-              <div className={classes.listWrapper}>
-                <div className={classes.listIconWrapper}>
-                  <i className={eventTypeIcon} />
-                </div>
-                <span className={classes.listText}>{eventType}</span>
+        <div className={classes.infoWrapper}>
+          <div className={classes.infoSectionWrapper}>
+            <div className={classes.listWrapper}>
+              <div className={classes.listIconWrapper}>
+                <i className="fas fa-clock" />
               </div>
-              <div className={classes.listWrapper}>
-                <div className={classes.listIconWrapper}>
-                  <i className="fas fa-map-marker" />
-                </div>
-                <span className={classes.listText}>
-                  {venue === "" ? "No venue given" : venue}
-                </span>
-              </div>
-              <div className={classes.listWrapper}>
-                <div
-                  className={
-                    isMobile
-                      ? classes.listIconWrapper
-                      : classes.listIconWrapperBottomLeft
-                  }
-                >
-                  <i className="fas fa-comment-alt" />
-                </div>
-                <span className={classes.listText}>
-                  {notes === "" ? "No additional notes given" : notes}
-                </span>
-              </div>
+              <span className={classes.listText}>{hoursInfo.text}</span>
+              {hoursInfo.icon}
             </div>
-            <div className={classes.infoSectionWrapper}>
-              <div className={classes.listWrapper}>
-                <div className={classes.listIconWrapper}>
-                  <i className="fas fa-clock" />
-                </div>
-                <span className={classes.listText}>{hoursInfo.text}</span>
-                {hoursInfo.icon}
+            <div className={classes.listWrapper}>
+              <div className={classes.listIconWrapper}>
+                <i className="fas fa-list-ol" />
               </div>
-              <div className={classes.listWrapper}>
-                <div className={classes.listIconWrapper}>
-                  <i className="fas fa-list-ol" />
-                </div>
-                <span className={classes.listText}>{resultsInfo.text}</span>
-                {resultsInfo.icon}
+              <span className={classes.listText}>{resultsInfo.text}</span>
+              {resultsInfo.icon}
+            </div>
+            <div className={classes.listWrapper}>
+              <div className={classes.listIconWrapperBottomLeft}>
+                <i className="fas fa-clipboard" />
               </div>
-              <div className={classes.listWrapper}>
-                <div
-                  className={
-                    isMobile
-                      ? classes.listIconWrapperBottomLeft
-                      : classes.listIconWrapper
-                  }
-                >
-                  <i className="fas fa-clipboard" />
-                </div>
-                <span className={classes.listText}>
-                  Attendance feature coming soon
-                </span>
-              </div>
+              <span className={classes.listText}>
+                Attendance feature coming soon
+              </span>
             </div>
           </div>
-        ) : (
-          <div className={classes.infoWrapper}>
-            <div className={classes.cancelledWrapper}>
-              <i
-                className={`fas fa-exclamation ${classes.cancelledIcon}`}
-              />Cancelled
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     );
   }

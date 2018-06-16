@@ -5,6 +5,7 @@ import injectStyles from "react-jss";
 import Button from "../../components/Button";
 import BannerAd from "../../components/BannerAd";
 import { common, grey, lightBlue } from "../../utils/colours";
+import Incomplete from "./components/Incomplete";
 import Results from "./components/Results";
 import Today from "./components/Today";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
@@ -75,23 +76,25 @@ class DashboardLayout extends Component {
   };
 
   componentWillMount() {
-    const { activeInstitutionID } = this.props;
-    const { loadTodaysEvents } = this.props.actions;
+    const { activeInstitutionID, userID, isAdmin } = this.props;
+    const { loadTodaysEvents, loadIncompleteEvents } = this.props.actions;
 
     if (activeInstitutionID !== "") {
       loadTodaysEvents(activeInstitutionID);
+      loadIncompleteEvents(activeInstitutionID, userID, isAdmin);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { activeInstitutionID } = nextProps;
-    const { loadTodaysEvents } = nextProps.actions;
+    const { activeInstitutionID, userID, isAdmin } = nextProps;
+    const { loadTodaysEvents, loadIncompleteEvents } = nextProps.actions;
 
     if (
       activeInstitutionID !== this.props.activeInstitutionID &&
       activeInstitutionID !== ""
     ) {
       loadTodaysEvents(activeInstitutionID);
+      loadIncompleteEvents(activeInstitutionID, userID, isAdmin);
     }
   }
 
@@ -120,7 +123,14 @@ class DashboardLayout extends Component {
   }
 
   getSectionDisplay() {
-    const { classes, isMobile, navigateTo, todaysEvents, goBack } = this.props;
+    const {
+      classes,
+      isMobile,
+      navigateTo,
+      todaysEvents,
+      goBack,
+      incompleteEvents
+    } = this.props;
     const { infoTab } = this.props.match.params;
     const { tabSelected } = this.state;
 
@@ -174,7 +184,7 @@ class DashboardLayout extends Component {
                 <div className={classes.headerInnerWrapper}>Incomplete</div>
               </div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} />
+              <Incomplete events={incompleteEvents} navigateTo={navigateTo} />
             </div>
           );
         case "notifications":
@@ -275,7 +285,11 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} />
+              <Incomplete
+                isMobile={isMobile}
+                events={incompleteEvents}
+                navigateTo={navigateTo}
+              />
             </div>
           );
         case "notifications":

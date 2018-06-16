@@ -14,6 +14,9 @@ export const ERROR_LOADING_RECENT_RESULTS = `${NAMESPACE}/ERROR_LOADING_RECENT_R
 export const REQUEST_TODAYS_EVENTS = `${NAMESPACE}/REQUEST_TODAYS_EVENTS`;
 export const RECEIVE_TODAYS_EVENTS = `${NAMESPACE}/RECEIVE_TODAYS_EVENTS`;
 export const ERROR_LOADING_TODAYS_EVENTS = `${NAMESPACE}/ERROR_LOADING_TODAYS_EVENTS`;
+export const REQUEST_INCOMPLETE_EVENTS = `${NAMESPACE}/REQUEST_INCOMPLETE_EVENTS`;
+export const RECEIVE_INCOMPLETE_EVENTS = `${NAMESPACE}/RECEIVE_INCOMPLETE_EVENTS`;
+export const ERROR_LOADING_INCOMPLETE_EVENTS = `${NAMESPACE}/ERROR_LOADING_INCOMPLETE_EVENTS`;
 export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
 export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
 export const ERROR_LOADING_TEAMS = `${NAMESPACE}/ERROR_LOADING_TEAMS`;
@@ -44,7 +47,7 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
 export const loadingStatusInitialState = {
   isRecentResultsLoading: false,
   isTodaysEventsLoading: false,
-  isStaffLoading: false,
+  isIncompleteEventsLoading: false,
   isTeamsLoading: false
 };
 
@@ -74,6 +77,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isTodaysEventsLoading: false
+      };
+    case REQUEST_INCOMPLETE_EVENTS:
+      return {
+        ...state,
+        isIncompleteEventsLoading: true
+      };
+    case RECEIVE_INCOMPLETE_EVENTS:
+    case ERROR_LOADING_INCOMPLETE_EVENTS:
+      return {
+        ...state,
+        isIncompleteEventsLoading: false
       };
     case REQUEST_TEAMS:
       return {
@@ -117,11 +131,25 @@ function todaysEventsReducer(state = {}, action = {}) {
   }
 }
 
+function incompleteEventsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case REQUEST_INCOMPLETE_EVENTS:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_INCOMPLETE_EVENTS:
+      return action.payload.events;
+    default:
+      return state;
+  }
+}
+
 export const dashboardReducer = combineReducers({
   uiConfig: uiConfigReducer,
   loadingStatus: loadingStatusReducer,
   teams: teamsReducer,
-  todaysEvents: todaysEventsReducer
+  todaysEvents: todaysEventsReducer,
+  incompleteEvents: incompleteEventsReducer
 });
 
 // Selectors
@@ -130,12 +158,14 @@ const uiConfig = state => state.dashboard.uiConfig;
 const loadingStatus = state => state.dashboard.loadingStatus;
 const teams = state => state.dashboard.teams;
 const todaysEvents = state => state.dashboard.todaysEvents;
+const incompleteEvents = state => state.dashboard.incompleteEvents;
 
 export const selector = createStructuredSelector({
   uiConfig,
   loadingStatus,
   teams,
-  todaysEvents
+  todaysEvents,
+  incompleteEvents
 });
 
 // Action Creators
@@ -188,6 +218,55 @@ export function loadTodaysEvents(institutionID) {
       });
       dispatch(receiveTodaysEvents(events));
     });
+  };
+}
+
+export function requestIncompleteEvents() {
+  return {
+    type: REQUEST_INCOMPLETE_EVENTS
+  };
+}
+
+export function receiveIncompleteEvents(events) {
+  return {
+    type: RECEIVE_INCOMPLETE_EVENTS,
+    payload: {
+      events
+    }
+  };
+}
+
+export function errorLoadingIncompleteEvents(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_LOADING_INCOMPLETE_EVENTS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function loadIncompleteEvents(communityID, userID, isUserAdmin) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestIncompleteEvents());
+
+    const loadIncompleteEvents = firebase
+      .functions()
+      .httpsCallable("loadIncompleteEvents");
+
+    return loadIncompleteEvents({
+      communityID,
+      userID,
+      isUserAdmin
+    })
+      .then(result => {
+        dispatch(receiveIncompleteEvents(result.data));
+      })
+      .catch(error => {
+        dispatch(errorLoadingIncompleteEvents(error));
+      });
   };
 }
 
