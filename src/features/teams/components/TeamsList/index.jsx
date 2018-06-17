@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import injectStyles from "react-jss";
 import EmptyState from "../../../../components/EmptyState";
 import TeamCard from "./components/TeamCard";
+import { yellow } from "../../../../utils/colours";
 
 const mobileBreakpoint = 800;
 const tabletBreakpoint = 1080;
@@ -26,6 +27,11 @@ const styles = {
   },
   emptyState: {
     padding: 24
+  },
+  questionMarkIcon: {
+    marginRight: 12,
+    fontSize: 30,
+    color: yellow[700]
   }
 };
 
@@ -77,7 +83,10 @@ class TeamsList extends Component {
     } else {
       return (
         <div className={classes.emptyState}>
-          <EmptyState message="No teams" />
+          <EmptyState>
+            <i className={`${classes.questionMarkIcon} fas fa-question`} />No
+            teams found.
+          </EmptyState>
         </div>
       );
     }

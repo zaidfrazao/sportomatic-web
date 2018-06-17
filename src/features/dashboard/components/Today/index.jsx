@@ -5,7 +5,7 @@ import injectSheet from "react-jss";
 import moment from "moment";
 import EmptyState from "../../../../components/EmptyState";
 import EventCard from "./components/EventCard";
-import { grey } from "../../../../utils/colours";
+import { green, grey } from "../../../../utils/colours";
 
 const tabletBreakpoint = 1080;
 
@@ -36,6 +36,11 @@ const styles = {
   },
   iconAdjacentText: {
     marginRight: 8
+  },
+  thumbsUpIcon: {
+    marginRight: 12,
+    fontSize: 30,
+    color: green[500]
   },
   wrapper: {
     width: "100%"
@@ -122,7 +127,10 @@ class Today extends Component {
       <div className={classes.wrapper}>
         {eventCards.length === 0 ? (
           <div className={classes.emptyState}>
-            <EmptyState message="No events today" />
+            <EmptyState>
+              <i className={`${classes.thumbsUpIcon} fas fa-thumbs-up`} />You
+              have no events on today.
+            </EmptyState>
           </div>
         ) : (
           <div className={classes.cardsWrapper}>{eventCards}</div>

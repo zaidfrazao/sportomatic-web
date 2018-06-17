@@ -16,6 +16,11 @@ const styles = {
   iconAdjacentText: {
     marginRight: 8
   },
+  wrenchIcon: {
+    marginRight: 12,
+    fontSize: 30,
+    color: grey[700]
+  },
   wrapper: {
     margin: 24
   }
@@ -27,7 +32,10 @@ class Results extends Component {
 
     return (
       <div className={classes.wrapper}>
-        <EmptyState message="Coming Soon" />
+        <EmptyState>
+          <i className={`fas fa-wrench ${classes.wrenchIcon}`} />This feature is
+          coming soon.
+        </EmptyState>
       </div>
     );
   }

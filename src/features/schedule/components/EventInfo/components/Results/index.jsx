@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
 import EmptyState from "../../../../../../components/EmptyState";
+import { grey } from "../../../../../../utils/colours";
 
 const styles = {
+  wrenchIcon: {
+    marginRight: 12,
+    fontSize: 30,
+    color: grey[700]
+  },
   wrapper: {
     margin: 24
   }
@@ -14,7 +20,10 @@ class Results extends Component {
 
     return (
       <div className={classes.wrapper}>
-        <EmptyState message="Coming Soon" />
+        <EmptyState>
+          <i className={`fas fa-wrench ${classes.wrenchIcon}`} />This feature
+          coming soon.
+        </EmptyState>
       </div>
     );
   }

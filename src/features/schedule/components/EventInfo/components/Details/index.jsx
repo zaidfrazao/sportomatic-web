@@ -23,6 +23,10 @@ const styles = {
   cancelledIcon: {
     marginRight: 8
   },
+  cancelledWrapper: {
+    width: "calc(100% - 48px)",
+    margin: "0 24px"
+  },
   column: {
     width: "100%",
     [`@media (min-width: ${tabletBreakpoint}px)`]: {
@@ -405,10 +409,12 @@ class Details extends Component {
     return (
       <div className={classes.wrapper}>
         {isCancelled && (
-          <div className={classes.cancelledAlert}>
-            <i
-              className={`fas fa-exclamation ${classes.cancelledIcon}`}
-            />CANCELLED
+          <div className={classes.cancelledWrapper}>
+            <div className={classes.cancelledAlert}>
+              <i
+                className={`fas fa-exclamation ${classes.cancelledIcon}`}
+              />This event has been cancelled.
+            </div>
           </div>
         )}
         <div className={classes.column}>

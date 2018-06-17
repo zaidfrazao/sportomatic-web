@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import injectStyles from "react-jss";
 import EmptyState from "../../../../components/EmptyState";
 import PersonCard from "./components/PersonCard";
+import { yellow } from "../../../../utils/colours";
 
 const mobileBreakpoint = 800;
 const tabletBreakpoint = 1080;
@@ -24,6 +25,11 @@ const styles = {
   },
   emptyState: {
     padding: 24
+  },
+  questionMarkIcon: {
+    marginRight: 12,
+    fontSize: 30,
+    color: yellow[700]
   }
 };
 
@@ -72,7 +78,10 @@ class PeopleList extends Component {
     } else {
       return (
         <div className={classes.emptyState}>
-          <EmptyState message="No people" />
+          <EmptyState>
+            <i className={`${classes.questionMarkIcon} fas fa-question`} />No
+            people found.
+          </EmptyState>
         </div>
       );
     }

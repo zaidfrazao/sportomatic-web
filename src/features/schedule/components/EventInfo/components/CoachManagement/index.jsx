@@ -23,8 +23,8 @@ const styles = {
     marginRight: 8
   },
   cancelledWrapper: {
-    width: "calc(100% - 48px)",
-    margin: 24
+    width: "calc(100% - 96px)",
+    margin: "24px 48px"
   },
   coachCardWrapper: {
     margin: 24,
@@ -39,6 +39,11 @@ const styles = {
   emptyStateWrapper: {
     flexGrow: 1,
     margin: 24
+  },
+  notAllowedIcon: {
+    marginRight: 12,
+    fontSize: 30,
+    color: red[500]
   },
   wrapper: {
     display: "flex",
@@ -95,13 +100,20 @@ class CoachManagement extends Component {
             <div className={classes.cancelledAlert}>
               <i
                 className={`fas fa-exclamation ${classes.cancelledIcon}`}
-              />CANCELLED
+              />This event has been cancelled.
             </div>
-            <EmptyState message="Not applicable to cancelled events" />
+            <EmptyState>
+              <i className={`fas fa-times ${classes.notAllowedIcon}`} />You
+              can't log hours at cancelled events.
+            </EmptyState>
           </div>
         ) : coachItems.length === 0 ? (
           <div className={classes.emptyStateWrapper}>
-            <EmptyState message="No coaches at this event" />
+            <EmptyState>
+              <i
+                className={`fas fa-user-times ${classes.notAllowedIcon}`}
+              />There are no coaches at this event.
+            </EmptyState>
           </div>
         ) : (
           coachItems

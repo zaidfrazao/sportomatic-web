@@ -5,7 +5,7 @@ import moment from "moment";
 import DateSelector from "./components/DateSelector";
 import EditSeasonDialog from "./components/EditSeasonDialog";
 import EmptyState from "../../../../../../components/EmptyState";
-import { common, grey } from "../../../../../../utils/colours";
+import { common, grey, red } from "../../../../../../utils/colours";
 import Select from "../../../../../../components/Select";
 import defaultProfilePicture from "./images/default-profile-picture.png";
 
@@ -22,6 +22,10 @@ const styles = {
   dateSelectorWrapper: {
     width: "100%",
     marginBottom: 12
+  },
+  emptyState: {
+    padding: 24,
+    width: "100%"
   },
   infoItemText: {
     flex: 1,
@@ -104,6 +108,11 @@ const styles = {
   },
   separator: {
     height: 12
+  },
+  timesIcon: {
+    marginRight: 12,
+    fontSize: 30,
+    color: red[500]
   },
   wrapper: {
     display: "flex",
@@ -482,7 +491,14 @@ class Seasons extends Component {
             />
           </div>
         )}
-        {sortedSeasons.length === 0 && <EmptyState message="No seasons" />}
+        {sortedSeasons.length === 0 && (
+          <div className={classes.emptyState}>
+            <EmptyState>
+              <i className={`${classes.timesIcon} fas fa-times`} />This team has
+              no seasons set up.
+            </EmptyState>
+          </div>
+        )}
         {sortedSeasons.length !== 0 && (
           <div className={classes.column}>
             <div className={classes.section}>

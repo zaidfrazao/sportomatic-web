@@ -6,7 +6,7 @@ import moment from "moment";
 import CommunityCompletionCard from "./components/CommunityCompletionCard";
 import EmptyState from "../../../../components/EmptyState";
 import EventCard from "./components/EventCard";
-import { grey } from "../../../../utils/colours";
+import { green, grey } from "../../../../utils/colours";
 import ProfileCompletionCard from "./components/ProfileCompletionCard";
 
 const tabletBreakpoint = 1080;
@@ -38,6 +38,11 @@ const styles = {
   },
   iconAdjacentText: {
     marginRight: 8
+  },
+  thumbsUpIcon: {
+    marginRight: 12,
+    fontSize: 30,
+    color: green[500]
   },
   wrapper: {
     width: "100%"
@@ -146,7 +151,10 @@ class Today extends Component {
       <div className={classes.wrapper}>
         {showEmptyState ? (
           <div className={classes.emptyState}>
-            <EmptyState message="No incomplete events" />
+            <EmptyState>
+              <i className={`${classes.thumbsUpIcon} fas fa-thumbs-up`} />You
+              have no incomplete events.
+            </EmptyState>
           </div>
         ) : (
           <div className={classes.cardsWrapper}>
