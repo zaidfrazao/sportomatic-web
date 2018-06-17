@@ -6,7 +6,7 @@ import { grey } from "../../../../../../utils/colours";
 const styles = {
   wrenchIcon: {
     marginRight: 12,
-    fontSize: 30,
+    fontSize: 20,
     color: grey[700]
   },
   wrapper: {

@@ -30,7 +30,7 @@ const styles = {
   },
   questionMarkIcon: {
     marginRight: 12,
-    fontSize: 30,
+    fontSize: 20,
     color: yellow[700]
   }
 };

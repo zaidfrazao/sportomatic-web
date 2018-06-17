@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
-import EmptyState from "../../../../components/EmptyState";
 import CommunityCard from "./components/CommunityCard";
 
 const mobileBreakpoint = 800;
@@ -22,9 +21,6 @@ const styles = {
       padding: 24,
       width: "calc(33% - 48px)"
     }
-  },
-  emptyState: {
-    padding: 24
   }
 };
 
@@ -32,29 +28,21 @@ class CommunityList extends Component {
   render() {
     const { classes, communities, switchCommunity } = this.props;
 
-    if (communities.length > 0) {
-      return (
-        <div className={classes.cardsWrapper}>
-          {communities.map(communityInfo => (
-            <div className={classes.cardWrapper} key={communityInfo.id}>
-              <CommunityCard
-                name={communityInfo.name}
-                id={communityInfo.id}
-                isActive={communityInfo.isActive}
-                emblemURL={communityInfo.emblemURL}
-                switchCommunity={switchCommunity}
-              />
-            </div>
-          ))}
-        </div>
-      );
-    } else {
-      return (
-        <div className={classes.emptyState}>
-          <EmptyState message="No communities" />
-        </div>
-      );
-    }
+    return (
+      <div className={classes.cardsWrapper}>
+        {communities.map(communityInfo => (
+          <div className={classes.cardWrapper} key={communityInfo.id}>
+            <CommunityCard
+              name={communityInfo.name}
+              id={communityInfo.id}
+              isActive={communityInfo.isActive}
+              emblemURL={communityInfo.emblemURL}
+              switchCommunity={switchCommunity}
+            />
+          </div>
+        ))}
+      </div>
+    );
   }
 }
 

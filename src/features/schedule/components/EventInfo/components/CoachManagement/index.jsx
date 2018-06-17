@@ -42,7 +42,7 @@ const styles = {
   },
   notAllowedIcon: {
     marginRight: 12,
-    fontSize: 30,
+    fontSize: 20,
     color: red[500]
   },
   wrapper: {

@@ -39,7 +39,7 @@ const styles = {
   },
   thumbsUpIcon: {
     marginRight: 12,
-    fontSize: 30,
+    fontSize: 20,
     color: green[500]
   },
   wrapper: {
