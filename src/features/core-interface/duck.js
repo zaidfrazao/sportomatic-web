@@ -46,6 +46,9 @@ export const ERROR_LOADING_VERIFIED_INSTITUTIONS = `${NAMESPACE}/ERROR_LOADING_V
 export const REQUEST_JOIN_INSTITUTION = `${NAMESPACE}/REQUEST_JOIN_INSTITUTION`;
 export const RECEIVE_JOIN_INSTITUTION = `${NAMESPACE}/RECEIVE_JOIN_INSTITUTION`;
 export const ERROR_JOINING_INSTITUTION = `${NAMESPACE}/ERROR_JOINING_INSTITUTION`;
+export const REQUEST_COMPLETION_PROGRESS = `${NAMESPACE}/REQUEST_COMPLETION_PROGRESS`;
+export const RECEIVE_COMPLETION_PROGRESS = `${NAMESPACE}/RECEIVE_COMPLETION_PROGRESS`;
+export const ERROR_CHECKING_COMPLETION_PROGRESS = `${NAMESPACE}/ERROR_CHECKING_COMPLETION_PROGRESS`;
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 export const UPDATE_SPORT = `${NAMESPACE}/UPDATE_SPORT`;
 
@@ -183,7 +186,8 @@ export const loadingStatusInitialState = {
   isInstitutionsLoading: true,
   isInstitutionCreationLoading: false,
   isVerifiedInstitutionsLoading: false,
-  isJoinInstitutionLoading: false
+  isJoinInstitutionLoading: false,
+  isCompletionProgressLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -202,6 +206,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isNotificationsLoading: false
+      };
+    case REQUEST_COMPLETION_PROGRESS:
+      return {
+        ...state,
+        isCompletionProgressLoading: true
+      };
+    case RECEIVE_COMPLETION_PROGRESS:
+    case ERROR_CHECKING_COMPLETION_PROGRESS:
+      return {
+        ...state,
+        isCompletionProgressLoading: false
       };
     case REQUEST_ACCOUNT_INFO:
       return {
@@ -904,5 +919,59 @@ export function switchInstitution(userID, institutionID, role) {
       })
       .then(() => dispatch(receiveSwitchInstitution()))
       .catch(error => dispatch(errorSwitchingInstitution(error)));
+  };
+}
+
+export function requestCompletionProgress() {
+  return {
+    type: REQUEST_COMPLETION_PROGRESS
+  };
+}
+
+export function receiveCompletionProgress(personalProgress, communityProgress) {
+  return {
+    type: RECEIVE_COMPLETION_PROGRESS,
+    payload: {
+      personalProgress,
+      communityProgress
+    }
+  };
+}
+
+export function errorCheckingCompletionProgress(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_CHECKING_COMPLETION_PROGRESS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function checkCompletionProgress(communityID, userID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestCompletionProgress());
+
+    const checkCompletionProgress = firebase
+      .functions()
+      .httpsCallable("checkCompletionProgress");
+
+    return checkCompletionProgress({
+      communityID,
+      userID
+    })
+      .then(result => {
+        dispatch(
+          receiveCompletionProgress(
+            result.data.personalProgress,
+            result.data.communityProgress
+          )
+        );
+      })
+      .catch(error => {
+        dispatch(errorCheckingCompletionProgress(error));
+      });
   };
 }

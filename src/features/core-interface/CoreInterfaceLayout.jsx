@@ -101,13 +101,15 @@ class CoreInterfaceLayout extends Component {
       changeMeAllFilter
     } = nextProps.actions;
     const { userID, isLoggedIn, accountInfo } = nextProps.uiConfig;
-    const { loadInstitutionInfo } = nextProps.actions;
+    const { loadInstitutionInfo, checkCompletionProgress } = nextProps.actions;
 
     if (
       accountInfo !== this.props.uiConfig.accountInfo &&
       accountInfo.institutions
     ) {
       const activeInstitutionID = accountInfo.lastAccessed.institutionID;
+
+      checkCompletionProgress(activeInstitutionID, userID);
 
       _.toPairs(accountInfo.institutions).map(([id, info]) => {
         loadInstitutionInfo(id);
@@ -410,7 +412,8 @@ class CoreInterfaceLayout extends Component {
     const { windowWidth } = this.state;
     const {
       isAccountInfoLoading,
-      isInstitutionsLoading
+      isInstitutionsLoading,
+      isCompletionProgressLoading
     } = this.props.loadingStatus;
     const {
       isLoggedIn,
@@ -422,10 +425,8 @@ class CoreInterfaceLayout extends Component {
       meAllFilter
     } = this.props.uiConfig;
     const { isLogOutModalOpen } = this.props.dialogs;
-    const { pathname } = this.props.location;
 
     const allowedSports = ["Hockey", "Netball", "Rugby"];
-    const featureName = pathname.split("/")[2];
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
     const versionNumber = "0.9.15";
@@ -490,12 +491,13 @@ class CoreInterfaceLayout extends Component {
       return <Redirect to="/sign-in" />;
     }
 
-    if (isAccountInfoLoading || isInstitutionsLoading) {
+    if (
+      isAccountInfoLoading ||
+      isInstitutionsLoading ||
+      isCompletionProgressLoading
+    ) {
       return <LoadingScreen />;
     } else {
-      if (isAdmin && sports.length === 0 && featureName !== "community") {
-        return <Redirect to="/myaccount/community" />;
-      }
       return (
         <div className={classes.wrapper}>
           <AppBar

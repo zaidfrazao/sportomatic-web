@@ -39,6 +39,14 @@ const styles = {
       color: grey[400]
     }
   },
+  ageSelectorsWrapper: {
+    padding: 24,
+    backgroundColor: grey[50],
+    borderRadius: "16px 16px 0 0"
+  },
+  contentWrapper: {
+    padding: 12
+  },
   customFieldWrapper: {
     marginLeft: 24,
     flexGrow: 1
@@ -52,6 +60,10 @@ const styles = {
     "&:hover": {
       color: red[500]
     }
+  },
+  divisionSelectorsWrapper: {
+    padding: 24,
+    backgroundColor: grey[50]
   },
   errorWrapper: {
     backgroundColor: red[500],
@@ -148,12 +160,8 @@ const styles = {
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: grey[800],
-    backgroundColor: grey[100]
-  },
-  selectorsWrapper: {
-    padding: 24,
-    backgroundColor: grey[50]
+    color: common["white"],
+    backgroundColor: lightBlue[800]
   },
   sliderLabel: {
     fontSize: 16,
@@ -1111,45 +1119,47 @@ class AddSportDialog extends Component {
 
     return (
       <div className={classes.ageGroupsWrapper}>
-        <div className={classes.section}>
-          <div className={classes.sectionHeading}>
-            <i
-              className={`fas fa-hourglass-half ${classes.iconAdjacentText}`}
-            />Age Groups
-          </div>
-          <div className={classes.selectorsWrapper}>
-            <div className={classes.heading}>{"Start"}</div>
-            <Slider
-              min={5}
-              max={30}
-              value={ageGroups.start}
-              handleChange={newValue => this.updateAgeStart(newValue)}
-            />
-            <div className={classes.sliderLabel}>{ageGroupStartText}</div>
-            <div className={classes.heading}>{"End"}</div>
-            <Slider
-              min={5}
-              max={30}
-              value={ageGroups.end}
-              disabled={ageGroups.end === 5 || ageGroups.end === 0}
-              handleChange={newValue => this.updateAgeEnd(newValue)}
-            />
-            <div className={classes.sliderLabel}>{ageGroupEndText}</div>
-          </div>
-          {ageGroupItems.length === 0 ? (
-            <div className={classes.outerErrorWrapper}>
-              <div className={classes.errorWrapper}>
-                {"Please add at least 1 age group"}
-              </div>
+        <div className={classes.heading}>
+          <i
+            className={`fas fa-hourglass-half ${classes.iconAdjacentText}`}
+          />Age Groups
+        </div>
+        <div className={classes.contentWrapper}>
+          <div className={classes.section}>
+            <div className={classes.ageSelectorsWrapper}>
+              <div className={classes.heading}>{"Start"}</div>
+              <Slider
+                min={5}
+                max={30}
+                value={ageGroups.start}
+                handleChange={newValue => this.updateAgeStart(newValue)}
+              />
+              <div className={classes.sliderLabel}>{ageGroupStartText}</div>
+              <div className={classes.heading}>{"End"}</div>
+              <Slider
+                min={5}
+                max={30}
+                value={ageGroups.end}
+                disabled={ageGroups.end === 5 || ageGroups.end === 0}
+                handleChange={newValue => this.updateAgeEnd(newValue)}
+              />
+              <div className={classes.sliderLabel}>{ageGroupEndText}</div>
             </div>
-          ) : (
-            <div className={classes.itemsListWrapper}>{ageGroupItems}</div>
-          )}
-          <div
-            className={classes.addCustomWrapper}
-            onClick={() => this.addCustomAgeGroup()}
-          >
-            <i className={`fas fa-plus ${classes.icon}`} />Add custom
+            {ageGroupItems.length === 0 ? (
+              <div className={classes.outerErrorWrapper}>
+                <div className={classes.errorWrapper}>
+                  {"Please add at least 1 age group"}
+                </div>
+              </div>
+            ) : (
+              <div className={classes.itemsListWrapper}>{ageGroupItems}</div>
+            )}
+            <div
+              className={classes.addCustomWrapper}
+              onClick={() => this.addCustomAgeGroup()}
+            >
+              <i className={`fas fa-plus ${classes.icon}`} />Add custom
+            </div>
           </div>
         </div>
       </div>
@@ -1383,61 +1393,72 @@ class AddSportDialog extends Component {
 
     return (
       <div className={classes.ageGroupsWrapper}>
-        {_.toPairs(divisions).map(([ageGroup, divisionInfo]) => {
-          const divisionsItems = this.getDivisionsItems(ageGroup);
+        <div className={classes.heading}>
+          <i
+            className={`fas fa-sort-alpha-down ${classes.iconAdjacentText}`}
+          />Divisions
+        </div>
+        <div className={classes.contentWrapper}>
+          {_.toPairs(divisions).map(([ageGroup, divisionInfo]) => {
+            const divisionsItems = this.getDivisionsItems(ageGroup);
 
-          let numberSliderText =
-            divisionInfo.numbers.end === "1st"
-              ? `Only 1st team`
-              : `1st to ${divisionInfo.numbers.end} teams`;
-          if (divisionInfo.numbers.end === "None") numberSliderText = "None";
-          let letterSliderText =
-            divisionInfo.letters.end === "A"
-              ? `Only A team`
-              : `A to ${divisionInfo.letters.end} teams`;
-          if (divisionInfo.letters.end === "None") letterSliderText = "None";
+            let numberSliderText =
+              divisionInfo.numbers.end === "1st"
+                ? `Only 1st team`
+                : `1st to ${divisionInfo.numbers.end} teams`;
+            if (divisionInfo.numbers.end === "None") numberSliderText = "None";
+            let letterSliderText =
+              divisionInfo.letters.end === "A"
+                ? `Only A team`
+                : `A to ${divisionInfo.letters.end} teams`;
+            if (divisionInfo.letters.end === "None") letterSliderText = "None";
 
-          return (
-            <div key={ageGroup} className={classes.section}>
-              <div className={classes.heading}>{`${ageGroup} Divisions`}</div>
-              <div className={classes.selectorsWrapper}>
-                <div className={classes.heading}>{"Numbered"}</div>
-                <Slider
-                  min={-1}
-                  max={numberOptions.length - 1}
-                  value={_.indexOf(numberOptions, divisionInfo.numbers.end)}
-                  handleChange={newValue =>
-                    this.updateDivisionNumbers(ageGroup, newValue)}
-                />
-                <div className={classes.sliderLabel}>{numberSliderText}</div>
-                <div className={classes.heading}>{"Lettered"}</div>
-                <Slider
-                  min={-1}
-                  max={letterOptions.length - 1}
-                  value={_.indexOf(letterOptions, divisionInfo.letters.end)}
-                  handleChange={newValue =>
-                    this.updateDivisionLetters(ageGroup, newValue)}
-                />
-                <div className={classes.sliderLabel}>{letterSliderText}</div>
-              </div>
-              {divisionsItems.length === 0 ? (
-                <div className={classes.outerErrorWrapper}>
-                  <div className={classes.errorWrapper}>
-                    {"Please add at least 1 division"}
-                  </div>
+            return (
+              <div key={ageGroup} className={classes.section}>
+                <div
+                  className={classes.sectionHeading}
+                >{`${ageGroup} Divisions`}</div>
+                <div className={classes.divisionSelectorsWrapper}>
+                  <div className={classes.heading}>{"Numbered"}</div>
+                  <Slider
+                    min={-1}
+                    max={numberOptions.length - 1}
+                    value={_.indexOf(numberOptions, divisionInfo.numbers.end)}
+                    handleChange={newValue =>
+                      this.updateDivisionNumbers(ageGroup, newValue)}
+                  />
+                  <div className={classes.sliderLabel}>{numberSliderText}</div>
+                  <div className={classes.heading}>{"Lettered"}</div>
+                  <Slider
+                    min={-1}
+                    max={letterOptions.length - 1}
+                    value={_.indexOf(letterOptions, divisionInfo.letters.end)}
+                    handleChange={newValue =>
+                      this.updateDivisionLetters(ageGroup, newValue)}
+                  />
+                  <div className={classes.sliderLabel}>{letterSliderText}</div>
                 </div>
-              ) : (
-                <div className={classes.itemsListWrapper}>{divisionsItems}</div>
-              )}
-              <div
-                className={classes.addCustomWrapper}
-                onClick={() => this.addCustomDivision(ageGroup)}
-              >
-                <i className={`fas fa-plus ${classes.icon}`} />Add custom
+                {divisionsItems.length === 0 ? (
+                  <div className={classes.outerErrorWrapper}>
+                    <div className={classes.errorWrapper}>
+                      {"Please add at least 1 division"}
+                    </div>
+                  </div>
+                ) : (
+                  <div className={classes.itemsListWrapper}>
+                    {divisionsItems}
+                  </div>
+                )}
+                <div
+                  className={classes.addCustomWrapper}
+                  onClick={() => this.addCustomDivision(ageGroup)}
+                >
+                  <i className={`fas fa-plus ${classes.icon}`} />Add custom
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     );
   }
@@ -1635,43 +1656,27 @@ class AddSportDialog extends Component {
   }
 
   getActionButtons() {
-    const { closeDialog, addSport, isLoading, establishedSports } = this.props;
+    const { closeDialog, addSport, isLoading } = this.props;
     const { step } = this.state;
 
     switch (step) {
       case 1:
-        if (establishedSports.length === 0) {
-          return [
-            <Button
-              colour="primary"
-              filled
-              slim
-              handleClick={() => {
-                const isValid = this.validateSportSelection();
-                isValid && this.updateStep(2);
-              }}
-            >
-              Next
-            </Button>
-          ];
-        } else {
-          return [
-            <Button colour="primary" slim handleClick={() => closeDialog()}>
-              Cancel
-            </Button>,
-            <Button
-              colour="primary"
-              filled
-              slim
-              handleClick={() => {
-                const isValid = this.validateSportSelection();
-                isValid && this.updateStep(2);
-              }}
-            >
-              Next
-            </Button>
-          ];
-        }
+        return [
+          <Button colour="primary" slim handleClick={() => closeDialog()}>
+            Cancel
+          </Button>,
+          <Button
+            colour="primary"
+            filled
+            slim
+            handleClick={() => {
+              const isValid = this.validateSportSelection();
+              isValid && this.updateStep(2);
+            }}
+          >
+            Next
+          </Button>
+        ];
       case 2:
         return [
           <Button

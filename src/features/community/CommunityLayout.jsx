@@ -498,7 +498,7 @@ class CommunityLayout extends Component {
           />
         </Dialog>
         <AddSportDialog
-          isOpen={addSportDialog.isOpen || sports.length === 0}
+          isOpen={addSportDialog.isOpen}
           isLoading={isAddSportLoading}
           sportsAllowed={sportsAllowed}
           ageGroupOptions={ageGroups}
