@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
-import { lightBlue } from "../../utils/colours";
+import logo from "./images/logo.png";
 import Loader from "../Loader";
 
 const styles = theme => ({
@@ -9,6 +9,11 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center"
   },
+  logo: {
+    width: 240,
+    height: "auto",
+    marginBottom: 12
+  },
   wrapper: {
     width: "calc(100% - 48px)",
     height: "100vh",
@@ -16,8 +21,7 @@ const styles = theme => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: "0 24px",
-    backgroundColor: lightBlue[500]
+    padding: "0 24px"
   }
 });
 
@@ -28,6 +32,7 @@ class LoadingScreen extends Component {
     return (
       <div className={classes.wrapper}>
         <div className={classes.itemsWrapper}>
+          <img src={logo} alt="Sportomatic logo" className={classes.logo} />
           <Loader />
         </div>
       </div>

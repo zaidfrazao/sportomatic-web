@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
-import { common } from "../../utils/colours";
+import { grey } from "../../utils/colours";
 
 const styles = theme => ({
   loader: {
-    font: "300 1em/150% Impact",
-    animation: "dots 1s steps(5, end) infinite"
+    color: grey[300],
+    fontSize: 28,
+    animation: "dots 1.5s steps(5, end) infinite"
   },
   wrapper: {
-    color: common["white"],
-    font: "300 3em/150% Impact",
+    color: grey[300],
+    fontSize: 28,
+    fontWeight: "bold",
     textAlign: "center"
   }
 });
@@ -32,7 +34,6 @@ class Loader extends Component {
       "Taking a free kick",
       "Skipping leg day",
       "Appreciating the gains",
-      "Being weird before a conversion",
       "Planning formation"
     ];
 
