@@ -10,6 +10,14 @@ const styles = theme => ({
     borderRadius: 8,
     color: common["white"]
   },
+  countSelected: {
+    margin: "0 8px",
+    padding: "4px 8px",
+    backgroundColor: common["white"],
+    borderRadius: 8,
+    fontWeight: "bold",
+    color: red[500]
+  },
   tab: {
     transition: "0.25s",
     display: "flex",
@@ -64,7 +72,7 @@ class Tabs extends Component {
           <div key={tab.key} className={classes.tabSelected}>
             {tab.count !== undefined &&
               tab.count > 0 && (
-                <span className={classes.count}>{tab.count}</span>
+                <span className={classes.countSelected}>{tab.count}</span>
               )}
             {tab.label}
           </div>

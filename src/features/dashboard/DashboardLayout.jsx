@@ -44,6 +44,14 @@ const styles = {
     borderRadius: 8,
     color: common["white"]
   },
+  countLight: {
+    margin: "0 8px",
+    padding: "4px 8px",
+    backgroundColor: common["white"],
+    borderRadius: 8,
+    fontWeight: "bold",
+    color: red[500]
+  },
   header: {
     display: "flex",
     border: `1px solid ${grey[300]}`,
@@ -302,7 +310,7 @@ class DashboardLayout extends Component {
                   handleClick={() => navigateTo("/myaccount/overview/today")}
                 >
                   {todayCount > 0 && (
-                    <span className={classes.count}>{todayCount}</span>
+                    <span className={classes.countLight}>{todayCount}</span>
                   )}Today
                 </Button>
               </div>
@@ -330,7 +338,9 @@ class DashboardLayout extends Component {
                       navigateTo("/myaccount/overview/incomplete")}
                   >
                     {incompleteCount > 0 && (
-                      <span className={classes.count}>{incompleteCount}</span>
+                      <span className={classes.countLight}>
+                        {incompleteCount}
+                      </span>
                     )}Incomplete
                   </Button>
                 </div>
@@ -347,7 +357,9 @@ class DashboardLayout extends Component {
                       navigateTo("/myaccount/overview/notifications")}
                   >
                     {notificationCount > 0 && (
-                      <span className={classes.count}>{notificationCount}</span>
+                      <span className={classes.countLight}>
+                        {notificationCount}
+                      </span>
                     )}Notifications
                   </Button>
                 </div>
