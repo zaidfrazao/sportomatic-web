@@ -21,7 +21,7 @@ class Results extends Component {
     return (
       <div className={classes.wrapper}>
         <EmptyState>
-          <i className={`fas fa-wrench ${classes.wrenchIcon}`} />This feature
+          <i className={`fas fa-wrench ${classes.wrenchIcon}`} />This feature is
           coming soon.
         </EmptyState>
       </div>
