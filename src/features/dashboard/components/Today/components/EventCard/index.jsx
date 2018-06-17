@@ -100,7 +100,6 @@ const styles = {
     transition: "0.25s",
     cursor: "pointer",
     border: `1px solid ${grey[300]}`,
-    margin: 24,
     borderRadius: 16,
     backgroundColor: common["white"],
     "&:hover": {

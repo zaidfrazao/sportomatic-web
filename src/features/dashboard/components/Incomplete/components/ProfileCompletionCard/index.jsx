@@ -12,7 +12,9 @@ import ProgressBar from "../../../../../../components/ProgressBar";
 
 const styles = {
   buttonWrapper: {
-    marginRight: 12
+    marginTop: 24,
+    width: "100%",
+    textAlign: "center"
   },
   dateWrapper: {
     margin: "24px 0 8px 0",
@@ -66,6 +68,7 @@ const styles = {
   listText: {
     flex: 1,
     padding: "0 12px",
+    overflow: "hidden",
     color: grey[700]
   },
   listWrapper: {
@@ -92,7 +95,7 @@ const styles = {
   },
   wrapper: {
     border: `1px solid ${grey[300]}`,
-    margin: 24,
+    margin: "12px 0",
     borderRadius: 16,
     backgroundColor: common["white"]
   }
@@ -236,6 +239,17 @@ class ProfileCompletionCard extends Component {
         <div className={classes.dateWrapper}>Personal Profile Progress</div>
         <div className={classes.progressBarWrapper}>
           <ProgressBar progress={personalProfileProgress} />
+          <div className={classes.buttonWrapper}>
+            <Button
+              type="dark"
+              slim
+              filled
+              fullWidth
+              handleClick={() => goToSettings()}
+            >
+              Complete
+            </Button>
+          </div>
         </div>
         <div className={classes.infoWrapper}>
           <div className={classes.infoSectionWrapper}>
@@ -244,40 +258,14 @@ class ProfileCompletionCard extends Component {
                 <i className="fas fa-envelope" />
               </div>
               <span className={classes.listText}>{emailInfo.text}</span>
-              {!emailInfo.complete ? (
-                emailInfo.icon
-              ) : (
-                <div className={classes.buttonWrapper}>
-                  <Button
-                    type="dark"
-                    slim
-                    filled
-                    handleClick={() => goToSettings()}
-                  >
-                    Complete
-                  </Button>
-                </div>
-              )}
+              {emailInfo.icon}
             </div>
             <div className={classes.listWrapper}>
               <div className={classes.listIconWrapper}>
                 <i className="fas fa-phone" />
               </div>
               <span className={classes.listText}>{phoneNumberInfo.text}</span>
-              {!phoneNumberInfo.complete ? (
-                phoneNumberInfo.icon
-              ) : (
-                <div className={classes.buttonWrapper}>
-                  <Button
-                    type="dark"
-                    slim
-                    filled
-                    handleClick={() => goToSettings()}
-                  >
-                    Complete
-                  </Button>
-                </div>
-              )}
+              {phoneNumberInfo.icon}
             </div>
             <div className={classes.listWrapper}>
               <div className={classes.listIconWrapper}>
@@ -286,42 +274,16 @@ class ProfileCompletionCard extends Component {
               <span className={classes.listText}>
                 {preferredSportsInfo.text}
               </span>
-              {!preferredSportsInfo.complete ? (
-                preferredSportsInfo.icon
-              ) : (
-                <div className={classes.buttonWrapper}>
-                  <Button
-                    type="dark"
-                    slim
-                    filled
-                    handleClick={() => goToSettings()}
-                  >
-                    Complete
-                  </Button>
-                </div>
-              )}
+              {preferredSportsInfo.icon}
             </div>
             <div className={classes.listWrapper}>
-              <div className={classes.listIconWrapper}>
+              <div className={classes.listIconWrapperBottomLeft}>
                 <i className="fas fa-camera" />
               </div>
               <span className={classes.listText}>
                 {profilePictureInfo.text}
               </span>
-              {!profilePictureInfo.complete ? (
-                profilePictureInfo.icon
-              ) : (
-                <div className={classes.buttonWrapper}>
-                  <Button
-                    type="dark"
-                    slim
-                    filled
-                    handleClick={() => goToSettings()}
-                  >
-                    Complete
-                  </Button>
-                </div>
-              )}
+              {profilePictureInfo.icon}
             </div>
           </div>
         </div>

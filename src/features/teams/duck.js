@@ -532,7 +532,6 @@ export function loadSeasons(institutionID) {
     return seasonsRef.onSnapshot(querySnapshot => {
       let seasons = {};
       querySnapshot.forEach(doc => {
-        console.log(doc);
         seasons[doc.id] = doc.data();
       });
       dispatch(receiveSeasons(seasons));

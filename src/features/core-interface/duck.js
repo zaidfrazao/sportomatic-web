@@ -71,6 +71,11 @@ export const uiConfigInitialState = {
       institutionID: "",
       role: "ADMIN"
     }
+  },
+  personalProgress: {},
+  communityProgress: {
+    hasSeasons: true,
+    hasSports: true
   }
 };
 
@@ -104,6 +109,12 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
       return {
         ...state,
         accountInfo: action.payload.info
+      };
+    case RECEIVE_COMPLETION_PROGRESS:
+      return {
+        ...state,
+        personalProgress: action.payload.personalProgress,
+        communityProgress: action.payload.communityProgress
       };
     case SIGN_OUT:
       return {

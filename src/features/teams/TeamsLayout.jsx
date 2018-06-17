@@ -6,6 +6,8 @@ import moment from "moment";
 import AddTeamModal from "./components/AddTeamModal";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
+import { common, grey } from "../../utils/colours";
+import EmptyState from "../../components/EmptyState";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import PersonalAllSwitch from "./components/PersonalAllSwitch";
@@ -32,6 +34,30 @@ const styles = {
   },
   buttonSeparator: {
     height: 12
+  },
+  emptyState: {
+    padding: 24
+  },
+  emptyStateButton: {
+    transition: "0.25s",
+    fontSize: 14,
+    padding: "18px 24px",
+    margin: 12,
+    borderRadius: 16,
+    cursor: "pointer",
+    backgroundColor: grey[100],
+    color: common["black"],
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      textAlign: "center"
+    },
+    "&:hover": {
+      backgroundColor: grey[200]
+    }
+  },
+  emptyStateButtonIcon: {
+    marginRight: 8,
+    width: 25,
+    height: 25
   },
   fabPosition: {
     color: "#fff",
@@ -90,8 +116,17 @@ class TeamsLayout extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { activeInstitutionID, teams } = nextProps;
+    const { activeInstitutionID, teams, checkCompletionProgress } = nextProps;
+    const { isCreateSeasonLoading } = nextProps.loadingStatus;
     const { loadTeams, loadStaff, resetState, loadSeasons } = nextProps.actions;
+
+    if (
+      isCreateSeasonLoading !==
+        this.props.loadingStatus.isCreateSeasonLoading &&
+      !isCreateSeasonLoading
+    ) {
+      checkCompletionProgress();
+    }
 
     if (activeInstitutionID !== this.props.activeInstitutionID) {
       resetState();
@@ -273,7 +308,8 @@ class TeamsLayout extends Component {
       seasons,
       meAllFilter,
       changeMeAllFilter,
-      institutionCreationDate
+      institutionCreationDate,
+      communityProgress
     } = this.props;
     const {
       isAddTeamLoading,
@@ -298,119 +334,143 @@ class TeamsLayout extends Component {
     const hasTeamsCreated = teamsList.length > 0;
     const filteredTeams = this.getTeamsList(this.filterTeams(seasons), seasons);
 
-    if (teamID) {
-      const teamSeasons = _.fromPairs(
-        _.toPairs(seasons)
-          .filter(([seasonID, seasonInfo]) => {
-            return seasonInfo.teamID === teamID;
-          })
-          .map(([seasonID, seasonInfo]) => {
-            return [seasonID, seasonInfo];
-          })
-      );
-
+    if (!communityProgress.hasSports) {
       return (
         <div className={classes.root}>
-          <div className={classes.infoWrapper}>
-            <TeamInfo
-              staff={staff}
-              info={teams[teamID]}
-              seasons={teamSeasons}
-              teamID={teamID}
-              isMobile={isMobile}
-              isUserAdmin={isAdmin}
-              userID={userID}
-              userEmail={userEmail}
-              userFirstName={userFirstName}
-              userLastName={userLastName}
-              isEditSeasonLoading={isEditSeasonLoading}
-              institutionCreationDate={institutionCreationDate}
-              activeInstitutionID={activeInstitutionID}
-              infoTab={infoTab}
-              actions={{
-                navigateTo,
-                goBack,
-                editSeason,
-                editTeam: () => {
-                  openEditTeamDialog();
-                }
-              }}
-            />
+          <div className={classes.outerWrapper}>
+            <div className={classes.emptyState}>
+              <EmptyState>
+                Set up your first sport in the{" "}
+                <span
+                  className={classes.emptyStateButton}
+                  onClick={() => navigateTo("/myaccount/community/")}
+                >
+                  <i
+                    className={`fas fa-users ${classes.emptyStateButtonIcon}`}
+                  />
+                  Community
+                </span>{" "}
+                section.
+              </EmptyState>
+            </div>
           </div>
         </div>
       );
     } else {
-      return (
-        <div className={classes.root}>
-          <div className={classes.teamCards}>
-            <div className={classes.adWrapper}>{ad}</div>
-            <div className={classes.actionsBar}>
-              <PersonalAllSwitch
+      if (teamID) {
+        const teamSeasons = _.fromPairs(
+          _.toPairs(seasons)
+            .filter(([seasonID, seasonInfo]) => {
+              return seasonInfo.teamID === teamID;
+            })
+            .map(([seasonID, seasonInfo]) => {
+              return [seasonID, seasonInfo];
+            })
+        );
+
+        return (
+          <div className={classes.root}>
+            <div className={classes.infoWrapper}>
+              <TeamInfo
+                staff={staff}
+                info={teams[teamID]}
+                seasons={teamSeasons}
+                teamID={teamID}
                 isMobile={isMobile}
-                meAllFilter={meAllFilter}
-                changeMeAllFilter={changeMeAllFilter}
+                isUserAdmin={isAdmin}
+                userID={userID}
+                userEmail={userEmail}
+                userFirstName={userFirstName}
+                userLastName={userLastName}
+                isEditSeasonLoading={isEditSeasonLoading}
+                institutionCreationDate={institutionCreationDate}
+                activeInstitutionID={activeInstitutionID}
+                infoTab={infoTab}
+                actions={{
+                  navigateTo,
+                  goBack,
+                  editSeason,
+                  editTeam: () => {
+                    openEditTeamDialog();
+                  }
+                }}
               />
-              {isMobile && <div className={classes.buttonSeparator} />}
-              <div className={classes.flexGrow} />
-              {isAdmin && (
-                <Button
-                  colour="primary"
-                  filled
-                  slim
-                  fullWidth={isMobile}
-                  handleClick={() => openAddTeamDialog()}
-                >
-                  <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
-                  Add new team
-                </Button>
-              )}
             </div>
-            <TeamsList
-              teams={filteredTeams}
-              isUserAdmin={isAdmin}
-              hasTeamsCreated={hasTeamsCreated}
-              setUpSeason={(name, id) => openSeasonSetupDialog(name, id)}
-              navigateTo={navigateTo}
+          </div>
+        );
+      } else {
+        return (
+          <div className={classes.root}>
+            <div className={classes.teamCards}>
+              <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <PersonalAllSwitch
+                  isMobile={isMobile}
+                  meAllFilter={meAllFilter}
+                  changeMeAllFilter={changeMeAllFilter}
+                />
+                {isMobile && <div className={classes.buttonSeparator} />}
+                <div className={classes.flexGrow} />
+                {isAdmin && (
+                  <Button
+                    colour="primary"
+                    filled
+                    slim
+                    fullWidth={isMobile}
+                    handleClick={() => openAddTeamDialog()}
+                  >
+                    <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
+                    Add new team
+                  </Button>
+                )}
+              </div>
+              <TeamsList
+                teams={filteredTeams}
+                isUserAdmin={isAdmin}
+                hasTeamsCreated={hasTeamsCreated}
+                setUpSeason={(name, id) => openSeasonSetupDialog(name, id)}
+                navigateTo={navigateTo}
+              />
+            </div>
+            <AddTeamModal
+              isOpen={isAddTeamDialogOpen}
+              isLoading={isAddTeamLoading}
+              options={teamOptions}
+              actions={{
+                addTeam: (ageGroup, division, sport, gender, name) =>
+                  addTeam(
+                    activeInstitutionID,
+                    ageGroup,
+                    division,
+                    gender,
+                    sport,
+                    name
+                  ),
+                closeModal: () => closeAddTeamDialog()
+              }}
+            />
+            <SeasonSetupDialog
+              isOpen={seasonSetupDialog.isOpen}
+              teamName={seasonSetupDialog.teamName}
+              userID={userID}
+              userEmail={userEmail}
+              userFirstName={userFirstName}
+              userLastName={userLastName}
+              people={staff}
+              closeDialog={() => closeSeasonSetupDialog()}
+              isLoading={isCreateSeasonLoading}
+              createSeason={seasonInfo =>
+                createSeason(
+                  seasonSetupDialog.teamID,
+                  activeInstitutionID,
+                  userID,
+                  `${userFirstName} ${userLastName}`,
+                  seasonInfo
+                )}
             />
           </div>
-          <AddTeamModal
-            isOpen={isAddTeamDialogOpen}
-            isLoading={isAddTeamLoading}
-            options={teamOptions}
-            actions={{
-              addTeam: (ageGroup, division, sport, gender, name) =>
-                addTeam(
-                  activeInstitutionID,
-                  ageGroup,
-                  division,
-                  gender,
-                  sport,
-                  name
-                ),
-              closeModal: () => closeAddTeamDialog()
-            }}
-          />
-          <SeasonSetupDialog
-            isOpen={seasonSetupDialog.isOpen}
-            teamName={seasonSetupDialog.teamName}
-            userID={userID}
-            userEmail={userEmail}
-            userFirstName={userFirstName}
-            userLastName={userLastName}
-            people={staff}
-            closeDialog={() => closeSeasonSetupDialog()}
-            isLoading={isCreateSeasonLoading}
-            createSeason={seasonInfo =>
-              createSeason(
-                seasonSetupDialog.teamID,
-                activeInstitutionID,
-                userID,
-                `${userFirstName} ${userLastName}`,
-                seasonInfo
-              )}
-          />
-        </div>
-      );
+        );
+      }
     }
   }
 }

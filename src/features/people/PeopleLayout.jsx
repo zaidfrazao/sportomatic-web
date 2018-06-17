@@ -5,7 +5,9 @@ import moment from "moment";
 import injectStyles from "react-jss";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
+import { common, grey } from "../../utils/colours";
 import Dialog from "../../components/Dialog";
+import EmptyState from "../../components/EmptyState";
 import InvitePersonDialog from "./components/InvitePersonDialog";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
@@ -31,6 +33,30 @@ const styles = {
   },
   buttonSeparator: {
     height: 12
+  },
+  emptyState: {
+    padding: 24
+  },
+  emptyStateButton: {
+    transition: "0.25s",
+    fontSize: 14,
+    padding: "18px 24px",
+    margin: 12,
+    borderRadius: 16,
+    cursor: "pointer",
+    backgroundColor: grey[100],
+    color: common["black"],
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      textAlign: "center"
+    },
+    "&:hover": {
+      backgroundColor: grey[200]
+    }
+  },
+  emptyStateButtonIcon: {
+    marginRight: 8,
+    width: 25,
+    height: 25
   },
   fabPosition: {
     color: "#fff",
@@ -345,7 +371,8 @@ class PeopleLayout extends Component {
       institutionCreationDate,
       meAllFilter,
       changeMeAllFilter,
-      seasons
+      seasons,
+      communityProgress
     } = this.props;
     const { resendInfo } = this.props.uiConfig;
     const {
@@ -373,147 +400,195 @@ class PeopleLayout extends Component {
     } = this.props.dialogs;
     const { personID, infoTab } = this.props.match.params;
 
-    if (personID) {
-      const hours = this.getHours();
-      const wages = this.getWages();
-
+    if (!communityProgress.hasSports) {
       return (
         <div className={classes.root}>
-          <div className={classes.infoWrapper}>
-            <PersonInfo
-              institutionCreationDate={institutionCreationDate}
-              userID={userID}
-              teams={teams}
-              personID={personID}
-              info={users[personID]}
-              activeInstitutionID={activeInstitutionID}
-              infoTab={infoTab}
-              isUserAdmin={isAdmin}
-              hours={hours}
-              wages={wages}
-              isMobile={isMobile}
-              isTablet={isTablet}
-              actions={{
-                navigateTo,
-                goBack,
-                updateAdminStatus: newStatus =>
-                  updateAdminStatus(personID, activeInstitutionID, newStatus)
-              }}
-            />
+          <div className={classes.outerWrapper}>
+            <div className={classes.emptyState}>
+              <EmptyState>
+                Set up your first sport in the{" "}
+                <span
+                  className={classes.emptyStateButton}
+                  onClick={() => navigateTo("/myaccount/community/")}
+                >
+                  <i
+                    className={`fas fa-users ${classes.emptyStateButtonIcon}`}
+                  />
+                  Community
+                </span>{" "}
+                section.
+              </EmptyState>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (!communityProgress.hasSeasons) {
+      return (
+        <div className={classes.root}>
+          <div className={classes.outerWrapper}>
+            <div className={classes.emptyState}>
+              <EmptyState>
+                Next, you should set up a team's season in the{" "}
+                <span
+                  className={classes.emptyStateButton}
+                  onClick={() => navigateTo("/myaccount/teams/")}
+                >
+                  <i
+                    className={`fas fa-user-friends ${classes.emptyStateButtonIcon}`}
+                  />
+                  Teams
+                </span>{" "}
+                section.
+              </EmptyState>
+            </div>
           </div>
         </div>
       );
     } else {
-      const staffCardsInfo = this.getStaffCardsInfo(
-        this.filterPeople(users, seasons)
-      );
-      const ad = this.createAd();
+      if (personID) {
+        const hours = this.getHours();
+        const wages = this.getWages();
 
-      return (
-        <div className={classes.root}>
-          <div className={classes.tabsWrapper}>
-            <div
-              className={
-                staffCardsInfo.length > 0
-                  ? classes.staffTab
-                  : classes.staffTabNoCards
-              }
-            >
-              <div className={classes.adWrapper}>{ad}</div>
-              <div className={classes.actionsBar}>
-                <PersonalAllSwitch
-                  isMobile={isMobile}
-                  meAllFilter={meAllFilter}
-                  changeMeAllFilter={changeMeAllFilter}
-                />
-                {isMobile && <div className={classes.buttonSeparator} />}
-                <div className={classes.flexGrow} />
-                {isAdmin && (
-                  <Button
-                    colour="primary"
-                    filled
-                    slim
-                    fullWidth={isMobile}
-                    handleClick={() => openInvitePersonModal()}
-                  >
-                    <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
-                    Invite new person
-                  </Button>
-                )}
-              </div>
-              {activeInstitutionID === "" ||
-              isCoachesLoading ||
-              isManagersLoading ||
-              isAdminsLoading ? (
-                <div className={classes.loaderWrapper} />
-              ) : (
-                <div>
-                  <PeopleList
-                    teams={teams}
-                    navigateTo={navigateTo}
-                    people={staffCardsInfo}
-                    isLoading={isResendInviteLoading}
-                    resendID={resendInfo.id}
-                    isUserAdmin={isAdmin}
-                    seasons={seasons}
-                    resendInvite={(inviteeName, inviteeID, inviteeEmail) =>
-                      resendInvite(
-                        inviteeName,
-                        inviteeID,
-                        inviteeEmail,
-                        userName,
-                        communityName
-                      )}
-                  />
-                </div>
-              )}
-              <InvitePersonDialog
-                isOpen={isInvitePersonModalOpen}
-                isLoading={
-                  isInviteeInfoLoading ||
-                  isCreateUserLoading ||
-                  isInviteUserLoading
-                }
+        return (
+          <div className={classes.root}>
+            <div className={classes.infoWrapper}>
+              <PersonInfo
+                institutionCreationDate={institutionCreationDate}
+                userID={userID}
+                teams={teams}
+                personID={personID}
+                info={users[personID]}
+                activeInstitutionID={activeInstitutionID}
+                infoTab={infoTab}
+                isUserAdmin={isAdmin}
+                hours={hours}
+                wages={wages}
+                isMobile={isMobile}
+                isTablet={isTablet}
                 actions={{
-                  invitePerson: (
-                    type,
-                    firstName,
-                    lastName,
-                    email,
-                    phoneNumber
-                  ) =>
-                    fetchInviteeInfo(
-                      type,
-                      firstName,
-                      lastName,
-                      email,
-                      phoneNumber,
-                      activeInstitutionID,
-                      userID
-                    ),
-                  closeModal: () => closeInvitePersonModal()
+                  navigateTo,
+                  goBack,
+                  updateAdminStatus: newStatus =>
+                    updateAdminStatus(personID, activeInstitutionID, newStatus)
                 }}
               />
             </div>
           </div>
-          <Dialog
-            type="alert"
-            isOpen={isResendInviteAlertOpen}
-            heading="Invite Email Resent"
-            handleOkClick={() => closeResendInviteAlert()}
-          >
-            {`Your invite was resent to ${resendInfo.name}.`}
-          </Dialog>
-          <Dialog
-            type="alert"
-            isOpen={postInviteAlert.isOpen}
-            heading={postInviteAlert.heading}
-            handleOkClick={() => closePostInviteAlert()}
-          >
-            {postInviteAlert.message}
-          </Dialog>
-        </div>
-      );
+        );
+      } else {
+        const staffCardsInfo = this.getStaffCardsInfo(
+          this.filterPeople(users, seasons)
+        );
+        const ad = this.createAd();
+
+        return (
+          <div className={classes.root}>
+            <div className={classes.tabsWrapper}>
+              <div
+                className={
+                  staffCardsInfo.length > 0
+                    ? classes.staffTab
+                    : classes.staffTabNoCards
+                }
+              >
+                <div className={classes.adWrapper}>{ad}</div>
+                <div className={classes.actionsBar}>
+                  <PersonalAllSwitch
+                    isMobile={isMobile}
+                    meAllFilter={meAllFilter}
+                    changeMeAllFilter={changeMeAllFilter}
+                  />
+                  {isMobile && <div className={classes.buttonSeparator} />}
+                  <div className={classes.flexGrow} />
+                  {isAdmin && (
+                    <Button
+                      colour="primary"
+                      filled
+                      slim
+                      fullWidth={isMobile}
+                      handleClick={() => openInvitePersonModal()}
+                    >
+                      <i
+                        className={`fas fa-plus ${classes.iconAdjacentText}`}
+                      />
+                      Invite new person
+                    </Button>
+                  )}
+                </div>
+                {activeInstitutionID === "" ||
+                isCoachesLoading ||
+                isManagersLoading ||
+                isAdminsLoading ? (
+                  <div className={classes.loaderWrapper} />
+                ) : (
+                  <div>
+                    <PeopleList
+                      teams={teams}
+                      navigateTo={navigateTo}
+                      people={staffCardsInfo}
+                      isLoading={isResendInviteLoading}
+                      resendID={resendInfo.id}
+                      isUserAdmin={isAdmin}
+                      seasons={seasons}
+                      resendInvite={(inviteeName, inviteeID, inviteeEmail) =>
+                        resendInvite(
+                          inviteeName,
+                          inviteeID,
+                          inviteeEmail,
+                          userName,
+                          communityName
+                        )}
+                    />
+                  </div>
+                )}
+                <InvitePersonDialog
+                  isOpen={isInvitePersonModalOpen}
+                  isLoading={
+                    isInviteeInfoLoading ||
+                    isCreateUserLoading ||
+                    isInviteUserLoading
+                  }
+                  actions={{
+                    invitePerson: (
+                      type,
+                      firstName,
+                      lastName,
+                      email,
+                      phoneNumber
+                    ) =>
+                      fetchInviteeInfo(
+                        type,
+                        firstName,
+                        lastName,
+                        email,
+                        phoneNumber,
+                        activeInstitutionID,
+                        userID
+                      ),
+                    closeModal: () => closeInvitePersonModal()
+                  }}
+                />
+              </div>
+            </div>
+            <Dialog
+              type="alert"
+              isOpen={isResendInviteAlertOpen}
+              heading="Invite Email Resent"
+              handleOkClick={() => closeResendInviteAlert()}
+            >
+              {`Your invite was resent to ${resendInfo.name}.`}
+            </Dialog>
+            <Dialog
+              type="alert"
+              isOpen={postInviteAlert.isOpen}
+              heading={postInviteAlert.heading}
+              handleOkClick={() => closePostInviteAlert()}
+            >
+              {postInviteAlert.message}
+            </Dialog>
+          </div>
+        );
+      }
     }
   }
 }

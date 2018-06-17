@@ -6,8 +6,9 @@ import moment from "moment";
 import { Redirect } from "react-router-dom";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
-import { common } from "../../utils/colours";
+import { common, grey } from "../../utils/colours";
 import Dialog from "../../components/Dialog";
+import EmptyState from "../../components/EmptyState";
 import EventsList from "./components/EventsList";
 import EventInfo from "./components/EventInfo";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
@@ -38,6 +39,30 @@ const styles = {
     height: "100%",
     display: "flex",
     flexDirection: "column"
+  },
+  emptyState: {
+    padding: 24
+  },
+  emptyStateButton: {
+    transition: "0.25s",
+    fontSize: 14,
+    padding: "18px 24px",
+    margin: 12,
+    borderRadius: 16,
+    cursor: "pointer",
+    backgroundColor: grey[100],
+    color: common["black"],
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      textAlign: "center"
+    },
+    "&:hover": {
+      backgroundColor: grey[200]
+    }
+  },
+  emptyStateButtonIcon: {
+    marginRight: 8,
+    width: 25,
+    height: 25
   },
   fabPosition: {
     color: common["white"],
@@ -511,7 +536,7 @@ class ScheduleLayout extends Component {
   }
 
   render() {
-    const { isAdmin } = this.props;
+    const { classes, communityProgress, navigateTo, isAdmin } = this.props;
     const { eventID } = this.props.match.params;
 
     const shouldRedirect = this.checkIfShouldRedirect();
@@ -522,10 +547,56 @@ class ScheduleLayout extends Component {
       return <Redirect to={`/myaccount/schedule/${currentDate}`} />;
     }
 
-    if (eventID) {
-      return this.getEventInfoView(isAdmin, isAdmin);
+    if (!communityProgress.hasSports) {
+      return (
+        <div className={classes.root}>
+          <div className={classes.outerWrapper}>
+            <div className={classes.emptyState}>
+              <EmptyState>
+                Set up your first sport in the{" "}
+                <span
+                  className={classes.emptyStateButton}
+                  onClick={() => navigateTo("/myaccount/community/")}
+                >
+                  <i
+                    className={`fas fa-users ${classes.emptyStateButtonIcon}`}
+                  />
+                  Community
+                </span>{" "}
+                section.
+              </EmptyState>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (!communityProgress.hasSeasons) {
+      return (
+        <div className={classes.root}>
+          <div className={classes.outerWrapper}>
+            <div className={classes.emptyState}>
+              <EmptyState>
+                Next you should set up a team's season in the{" "}
+                <span
+                  className={classes.emptyStateButton}
+                  onClick={() => navigateTo("/myaccount/teams/")}
+                >
+                  <i
+                    className={`fas fa-user-friends ${classes.emptyStateButtonIcon}`}
+                  />
+                  Teams
+                </span>{" "}
+                section.
+              </EmptyState>
+            </div>
+          </div>
+        </div>
+      );
     } else {
-      return this.getEventListView(isAdmin);
+      if (eventID) {
+        return this.getEventInfoView(isAdmin, isAdmin);
+      } else {
+        return this.getEventListView(isAdmin);
+      }
     }
   }
 }

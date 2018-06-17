@@ -6,12 +6,15 @@ import injectStyles from "react-jss";
 import Button from "../../components/Button";
 import BannerAd from "../../components/BannerAd";
 import { common, grey, lightBlue, red } from "../../utils/colours";
+import EmptyState from "../../components/EmptyState";
 import Incomplete from "./components/Incomplete";
 import Results from "./components/Results";
 import Today from "./components/Today";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import Tabs from "../../components/Tabs";
+
+const mobileBreakpoint = 800;
 
 const styles = {
   adWrapper: {
@@ -51,6 +54,30 @@ const styles = {
     borderRadius: 8,
     fontWeight: "bold",
     color: red[500]
+  },
+  emptyState: {
+    padding: 24
+  },
+  emptyStateButton: {
+    transition: "0.25s",
+    fontSize: 14,
+    padding: "18px 24px",
+    margin: 12,
+    borderRadius: 16,
+    cursor: "pointer",
+    backgroundColor: grey[100],
+    color: common["black"],
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      textAlign: "center"
+    },
+    "&:hover": {
+      backgroundColor: grey[200]
+    }
+  },
+  emptyStateButtonIcon: {
+    marginRight: 8,
+    width: 25,
+    height: 25
   },
   header: {
     display: "flex",
@@ -461,7 +488,7 @@ class DashboardLayout extends Component {
   }
 
   render() {
-    const { classes, isMobile } = this.props;
+    const { classes, isMobile, communityProgress, navigateTo } = this.props;
     const { infoTab } = this.props.match.params;
     const { tabSelected } = this.state;
 
@@ -472,22 +499,68 @@ class DashboardLayout extends Component {
     const sectionDisplay = this.getSectionDisplay();
     const tabs = this.getTabs();
 
-    return (
-      <div className={classes.root}>
-        <div className={classes.outerWrapper}>
-          {!isMobile && (
-            <div className={classes.tabsWrapper}>
-              <Tabs
-                tabs={tabs}
-                selected={tabSelected}
-                handleClick={newTab => this.updateTabSelected(newTab)}
-              />
+    if (!communityProgress.hasSports) {
+      return (
+        <div className={classes.root}>
+          <div className={classes.outerWrapper}>
+            <div className={classes.emptyState}>
+              <EmptyState>
+                Set up your first sport in the{" "}
+                <span
+                  className={classes.emptyStateButton}
+                  onClick={() => navigateTo("/myaccount/community/")}
+                >
+                  <i
+                    className={`fas fa-users ${classes.emptyStateButtonIcon}`}
+                  />
+                  Community
+                </span>{" "}
+                section.
+              </EmptyState>
             </div>
-          )}
-          {sectionDisplay}
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else if (!communityProgress.hasSeasons) {
+      return (
+        <div className={classes.root}>
+          <div className={classes.outerWrapper}>
+            <div className={classes.emptyState}>
+              <EmptyState>
+                Next, you should set up a team's season in the{" "}
+                <span
+                  className={classes.emptyStateButton}
+                  onClick={() => navigateTo("/myaccount/teams/")}
+                >
+                  <i
+                    className={`fas fa-user-friends ${classes.emptyStateButtonIcon}`}
+                  />
+                  Teams
+                </span>{" "}
+                section.
+              </EmptyState>
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className={classes.root}>
+          <div className={classes.outerWrapper}>
+            {!isMobile && (
+              <div className={classes.tabsWrapper}>
+                <Tabs
+                  tabs={tabs}
+                  selected={tabSelected}
+                  handleClick={newTab => this.updateTabSelected(newTab)}
+                />
+              </div>
+            )}
+            {sectionDisplay}
+          </div>
+        </div>
+      );
+    }
   }
 }
 

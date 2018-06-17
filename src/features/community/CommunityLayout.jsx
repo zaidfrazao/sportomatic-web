@@ -434,7 +434,8 @@ class CommunityLayout extends Component {
       divisions,
       activeCommunityID,
       genders,
-      sports
+      sports,
+      checkCompletionProgress
     } = this.props;
     const { addSportDialog, removeSportDialog } = this.props.dialogs;
     const { isAddSportLoading } = this.props.loadingStatus;
@@ -507,6 +508,7 @@ class CommunityLayout extends Component {
           establishedSports={sports}
           addSport={sportInfo => {
             closeAddSportDialog();
+            checkCompletionProgress();
             addSport(activeCommunityID, sportInfo);
           }}
           closeDialog={() => closeAddSportDialog()}
