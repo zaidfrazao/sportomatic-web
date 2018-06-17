@@ -5,7 +5,7 @@ import moment from "moment";
 import injectStyles from "react-jss";
 import BannerAd from "../../components/BannerAd";
 import Button from "../../components/Button";
-import { common, grey } from "../../utils/colours";
+import { common, lightBlue } from "../../utils/colours";
 import Dialog from "../../components/Dialog";
 import EmptyState from "../../components/EmptyState";
 import InvitePersonDialog from "./components/InvitePersonDialog";
@@ -39,18 +39,15 @@ const styles = {
   },
   emptyStateButton: {
     transition: "0.25s",
-    fontSize: 14,
-    padding: "18px 24px",
-    margin: 12,
-    borderRadius: 16,
+    fontSize: 18,
+    margin: "0 8px",
     cursor: "pointer",
-    backgroundColor: grey[100],
     color: common["black"],
     [`@media (max-width: ${mobileBreakpoint}px)`]: {
       textAlign: "center"
     },
     "&:hover": {
-      backgroundColor: grey[200]
+      color: lightBlue[500]
     }
   },
   emptyStateButtonIcon: {

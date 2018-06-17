@@ -31,6 +31,7 @@ const styles = {
     backgroundColor: common["white"],
     color: grey[400],
     fontSize: 24,
+    lineHeight: "34px",
     fontWeight: "bold",
     textAlign: "center",
     padding: "48px 24px",

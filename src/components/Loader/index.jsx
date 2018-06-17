@@ -5,12 +5,13 @@ import { grey } from "../../utils/colours";
 const styles = theme => ({
   loader: {
     color: grey[300],
-    fontSize: 28,
+    fontSize: 22,
+    fontWeight: "bold",
     animation: "dots 1.5s steps(5, end) infinite"
   },
   wrapper: {
     color: grey[300],
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: "bold",
     textAlign: "center"
   }
