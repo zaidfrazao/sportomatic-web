@@ -11,8 +11,9 @@ const styles = {
   cancelledAlert: {
     fontSize: 18,
     borderRadius: 16,
-    padding: "24px 0",
-    width: "100%",
+    padding: "24px 12px",
+    margin: "0 24px",
+    width: "calc(100% - 64px)",
     marginBottom: 24,
     textAlign: "center",
     fontWeight: "bold",
@@ -23,8 +24,8 @@ const styles = {
     marginRight: 8
   },
   cancelledWrapper: {
-    width: "calc(100% - 96px)",
-    margin: "24px 48px"
+    width: "calc(100% - 48px)",
+    margin: 24
   },
   coachCardWrapper: {
     margin: 24,

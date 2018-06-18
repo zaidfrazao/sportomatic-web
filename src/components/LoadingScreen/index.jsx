@@ -3,6 +3,8 @@ import injectStyles from "react-jss";
 import logo from "./images/logo.png";
 import Loader from "../Loader";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   itemsWrapper: {
     display: "flex",
@@ -12,7 +14,10 @@ const styles = theme => ({
   logo: {
     width: 240,
     height: "auto",
-    marginBottom: 12
+    marginBottom: 12,
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
+      width: "100%"
+    }
   },
   wrapper: {
     width: "calc(100% - 48px)",

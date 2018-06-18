@@ -423,7 +423,8 @@ class ScheduleLayout extends Component {
       userID,
       navigateTo,
       goBack,
-      isAdmin
+      isAdmin,
+      emblem
     } = this.props;
     const { dateSelected, eventID, infoTab } = this.props.match.params;
     const {
@@ -438,7 +439,11 @@ class ScheduleLayout extends Component {
       approveHours,
       updateAbsent,
       cancelEvent,
-      uncancelEvent
+      uncancelEvent,
+      startLogging,
+      toggleOptionalStats,
+      finaliseResults,
+      editResult
     } = this.props.actions;
     const {
       isCancelEventAlertOpen,
@@ -476,11 +481,19 @@ class ScheduleLayout extends Component {
             isMobile={isMobile}
             isTablet={isTablet}
             infoTab={infoTab}
+            emblem={emblem}
             actions={{
               navigateTo,
               goBack,
               cancelEvent: () => openCancelEventAlert(),
               uncancelEvent: () => openUncancelEventAlert(),
+              editResult: (teamID, opponentID, newResult) =>
+                editResult(eventID, teamID, opponentID, newResult),
+              startLogging: (teamID, structure, opponentIDs) =>
+                startLogging(eventID, teamID, structure, opponentIDs),
+              toggleOptionalStats: (teamID, opponentID, newState) =>
+                toggleOptionalStats(eventID, teamID, opponentID, newState),
+              finaliseResults: teamID => finaliseResults(eventID, teamID),
               signIn: (coachID, signInTime) =>
                 signIn(eventID, coachID, signInTime),
               signOut: (coachID, signOutTime) =>

@@ -47,9 +47,6 @@ const styles = {
   buttonWrapper: {
     margin: "24px 24px 0 24px"
   },
-  flexGrow: {
-    flexGrow: 1
-  },
   header: {
     display: "flex",
     border: `1px solid ${grey[300]}`,
@@ -160,6 +157,7 @@ class EventInfo extends Component {
         start: new Date(Date.now()),
         end: new Date(Date.now())
       },
+      homeAway: "HOME",
       formattedDate: "Loading",
       formattedStartTime: "Loading",
       formattedEndTime: "Loading",
@@ -187,7 +185,8 @@ class EventInfo extends Component {
         formattedEndTime: moment(info.requiredInfo.times.end).format("h:mm A"),
         isCompetitive: info.requiredInfo.isCompetitive,
         venue: info.optionalInfo.venue,
-        notes: info.optionalInfo.notes
+        notes: info.optionalInfo.notes,
+        homeAway: info.optionalInfo.homeAway
       };
     }
 
@@ -198,6 +197,7 @@ class EventInfo extends Component {
     const {
       classes,
       isMobile,
+      isTablet,
       infoTab,
       eventID,
       dateSelected,
@@ -211,9 +211,13 @@ class EventInfo extends Component {
       signOut,
       updateTimes,
       approveHours,
-      updateAbsent
+      updateAbsent,
+      startLogging,
+      toggleOptionalStats,
+      finaliseResults,
+      editResult
     } = this.props.actions;
-    const { isInfoLoading } = this.props;
+    const { isInfoLoading, emblem } = this.props;
     const { tabSelected } = this.state;
 
     const ad = this.createAd();
@@ -275,7 +279,20 @@ class EventInfo extends Component {
               <div className={classes.actionsBar}>
                 {showButtons && isAdmin && cancelButton}
               </div>
-              <Results />
+              <Results
+                emblem={emblem}
+                isTablet={isTablet}
+                teams={teams}
+                eventInfo={info}
+                isCancelled={info.status === "CANCELLED"}
+                editResult={(teamID, opponentID, newResult) =>
+                  editResult(teamID, opponentID, newResult)}
+                startLogging={(teamID, structure, opponentIDs) =>
+                  startLogging(teamID, structure, opponentIDs)}
+                toggleOptionalStats={(teamID, opponentID, newState) =>
+                  toggleOptionalStats(teamID, opponentID, newState)}
+                finaliseResults={teamID => finaliseResults(teamID)}
+              />
             </div>
           );
         default:
@@ -387,7 +404,20 @@ class EventInfo extends Component {
               <div className={classes.actionsBar}>
                 {showButtons && isAdmin && cancelButton}
               </div>
-              <Results />
+              <Results
+                emblem={emblem}
+                isTablet={isTablet}
+                eventInfo={info}
+                teams={teams}
+                isCancelled={info.status === "CANCELLED"}
+                editResult={(teamID, opponentID, newResult) =>
+                  editResult(teamID, opponentID, newResult)}
+                startLogging={(teamID, structure, opponentIDs) =>
+                  startLogging(teamID, structure, opponentIDs)}
+                toggleOptionalStats={(teamID, opponentID, newState) =>
+                  toggleOptionalStats(teamID, opponentID, newState)}
+                finaliseResults={teamID => finaliseResults(teamID)}
+              />
             </div>
           );
         default:
@@ -459,12 +489,16 @@ class EventInfo extends Component {
         if (teamInfo) {
           return {
             id: teamID,
-            name: teamInfo.info.name
+            name: teamInfo.info.name,
+            results: eventTeamInfo
           };
         } else {
           return {
             id: teamID,
-            name: "Error finding team"
+            name: "Error finding team",
+            results: {
+              opponents: []
+            }
           };
         }
       });

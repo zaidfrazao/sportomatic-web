@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import _ from "lodash";
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
@@ -84,6 +85,18 @@ export const ERROR_APPROVING_HOURS = `${NAMESPACE}/ERROR_APPROVING_HOURS`;
 export const REQUEST_SEASON_INFO = `${NAMESPACE}/REQUEST_SEASON_INFO`;
 export const RECEIVE_SEASON_INFO = `${NAMESPACE}/RECEIVE_SEASON_INFO`;
 export const ERROR_FETCHING_SEASON_INFO = `${NAMESPACE}/ERROR_FETCHING_SEASON_INFO`;
+export const REQUEST_START_LOGGING = `${NAMESPACE}/REQUEST_START_LOGGING`;
+export const RECEIVE_START_LOGGING = `${NAMESPACE}/RECEIVE_START_LOGGING`;
+export const ERROR_STARTING_LOGGING = `${NAMESPACE}/ERROR_STARTING_LOGGING`;
+export const REQUEST_FINALISE_RESULTS = `${NAMESPACE}/REQUEST_FINALISE_RESULTS`;
+export const RECEIVE_FINALISE_RESULTS = `${NAMESPACE}/RECEIVE_FINALISE_RESULTS`;
+export const ERROR_FINALISING_RESULTS = `${NAMESPACE}/ERROR_FINALISING_RESULTS`;
+export const REQUEST_EDIT_RESULT = `${NAMESPACE}/REQUEST_EDIT_RESULT`;
+export const RECEIVE_EDIT_RESULT = `${NAMESPACE}/RECEIVE_EDIT_RESULT`;
+export const ERROR_EDITTING_RESULT = `${NAMESPACE}/ERROR_EDITTING_RESULT`;
+export const REQUEST_TOGGLE_OPTIONAL_STATS = `${NAMESPACE}/REQUEST_TOGGLE_OPTIONAL_STATS`;
+export const RECEIVE_TOGGLE_OPTIONAL_STATS = `${NAMESPACE}/RECEIVE_TOGGLE_OPTIONAL_STATS`;
+export const ERROR_TOGGLING_OPTIONAL_STATS = `${NAMESPACE}/ERROR_TOGGLING_OPTIONAL_STATS`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -1637,5 +1650,171 @@ export function approveHours(
       .commit()
       .then(() => dispatch(receiveApproveHours()))
       .catch(error => dispatch(errorApprovingHours(error)));
+  };
+}
+
+export function requestStartLogging() {
+  return {
+    type: REQUEST_START_LOGGING
+  };
+}
+
+export function receiveStartLogging() {
+  return {
+    type: RECEIVE_START_LOGGING
+  };
+}
+
+export function errorStartingLogging(error: { code: string, message: string }) {
+  return {
+    type: ERROR_STARTING_LOGGING,
+    payload: {
+      error
+    }
+  };
+}
+
+export function startLogging(eventID, teamID, structure, opponentIDs) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestStartLogging());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    let updates = {
+      [`teams.${teamID}.resultsStatus`]: "AWAITING_FINALISE"
+    };
+
+    opponentIDs.map(id => {
+      updates[`teams.${teamID}.opponents.${id}.ourScore`] = structure;
+      updates[`teams.${teamID}.opponents.${id}.theirScore`] = structure;
+      updates[`teams.${teamID}.opponents.${id}.trackOptionalStats`] = false;
+    });
+
+    return eventRef
+      .update(updates)
+      .then(() => dispatch(receiveStartLogging()))
+      .catch(error => dispatch(errorStartingLogging(error)));
+  };
+}
+
+export function requestToggleOptionalStats() {
+  return {
+    type: REQUEST_TOGGLE_OPTIONAL_STATS
+  };
+}
+
+export function receiveToggleOptionalStats() {
+  return {
+    type: RECEIVE_TOGGLE_OPTIONAL_STATS
+  };
+}
+
+export function errorTogglingOptionalStats(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_TOGGLING_OPTIONAL_STATS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function toggleOptionalStats(eventID, teamID, opponentID, newState) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestToggleOptionalStats());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    const updates = {
+      [`teams.${teamID}.opponents.${opponentID}.trackOptionalStats`]: newState
+    };
+
+    return eventRef
+      .update(updates)
+      .then(() => dispatch(receiveToggleOptionalStats()))
+      .catch(error => dispatch(errorTogglingOptionalStats(error)));
+  };
+}
+
+export function requestFinaliseResults() {
+  return {
+    type: REQUEST_FINALISE_RESULTS
+  };
+}
+
+export function receiveFinaliseResults() {
+  return {
+    type: RECEIVE_FINALISE_RESULTS
+  };
+}
+
+export function errorFinalisingResults(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_FINALISING_RESULTS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function finaliseResults(eventID, teamID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestFinaliseResults());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    return eventRef
+      .update({
+        [`teams.${teamID}.resultsStatus`]: "FINALISED"
+      })
+      .then(() => dispatch(receiveFinaliseResults()))
+      .catch(error => dispatch(errorFinalisingResults(error)));
+  };
+}
+
+export function requestEditResult() {
+  return {
+    type: REQUEST_EDIT_RESULT
+  };
+}
+
+export function receiveEditResult() {
+  return {
+    type: RECEIVE_EDIT_RESULT
+  };
+}
+
+export function errorEdittingResult(error: { code: string, message: string }) {
+  return {
+    type: ERROR_EDITTING_RESULT,
+    payload: {
+      error
+    }
+  };
+}
+
+export function editResult(eventID, teamID, opponentID, newResult) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEditResult());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    return eventRef
+      .update({
+        [`teams.${teamID}.opponents.${opponentID}.commentary`]: newResult.commentary,
+        [`teams.${teamID}.opponents.${opponentID}.ourScore`]: newResult.ourScore,
+        [`teams.${teamID}.opponents.${opponentID}.theirScore`]: newResult.theirScore
+      })
+      .then(() => dispatch(receiveEditResult()))
+      .catch(error => dispatch(errorEdittingResult(error)));
   };
 }

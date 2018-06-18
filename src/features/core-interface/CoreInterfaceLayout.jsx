@@ -857,6 +857,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/schedule/"}>
                     <Schedule
+                      emblem={emblem}
                       isAdmin={isAdmin}
                       userID={userID}
                       role={communityRole}
@@ -877,6 +878,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/schedule/:dateSelected"}>
                     <Schedule
+                      emblem={emblem}
                       isAdmin={isAdmin}
                       userID={userID}
                       role={communityRole}
@@ -900,6 +902,7 @@ class CoreInterfaceLayout extends Component {
                     path={"/myaccount/schedule/:dateSelected/:eventID"}
                   >
                     <Schedule
+                      emblem={emblem}
                       isAdmin={isAdmin}
                       userID={userID}
                       role={communityRole}
@@ -923,6 +926,7 @@ class CoreInterfaceLayout extends Component {
                     path={"/myaccount/schedule/:dateSelected/:eventID/:infoTab"}
                   >
                     <Schedule
+                      emblem={emblem}
                       isAdmin={isAdmin}
                       userID={userID}
                       role={communityRole}

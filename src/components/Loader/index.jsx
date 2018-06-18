@@ -2,18 +2,30 @@ import React, { Component } from "react";
 import injectStyles from "react-jss";
 import { grey } from "../../utils/colours";
 
+const mobileBreakpoint = 800;
+
 const styles = theme => ({
   loader: {
     color: grey[300],
     fontSize: 22,
+    lineHeight: "32px",
     fontWeight: "bold",
-    animation: "dots 1.5s steps(5, end) infinite"
+    animation: "dots 1.5s steps(5, end) infinite",
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
+      fontSize: 28,
+      lineHeight: "40px"
+    }
   },
   wrapper: {
     color: grey[300],
     fontSize: 22,
+    lineHeight: "32px",
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
+    [`@media (min-width: ${mobileBreakpoint}px)`]: {
+      fontSize: 28,
+      lineHeight: "40px"
+    }
   }
 });
 
