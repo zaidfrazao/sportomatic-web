@@ -12,11 +12,21 @@ import Results from "./components/Results";
 import Today from "./components/Today";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
+import PersonalAllSwitch from "./components/PersonalAllSwitch";
 import Tabs from "../../components/Tabs";
 
 const mobileBreakpoint = 800;
 
 const styles = {
+  actionsBar: {
+    display: "flex",
+    justifyContent: "center",
+    margin: "24px 24px 0 24px",
+    [`@media (max-width: ${mobileBreakpoint}px)`]: {
+      flexDirection: "column",
+      alignItems: "center"
+    }
+  },
   adWrapper: {
     display: "flex",
     alignItems: "center",
@@ -76,6 +86,9 @@ const styles = {
     width: 25,
     height: 25
   },
+  flexGrow: {
+    flexGrow: 1
+  },
   header: {
     display: "flex",
     border: `1px solid ${grey[300]}`,
@@ -130,10 +143,12 @@ class DashboardLayout extends Component {
     const {
       loadTodaysEvents,
       loadIncompleteEvents,
-      loadRecentResults
+      loadRecentResults,
+      loadTeams
     } = this.props.actions;
 
     if (activeInstitutionID !== "") {
+      loadTeams(activeInstitutionID);
       loadTodaysEvents(activeInstitutionID);
       loadRecentResults(activeInstitutionID, lastVisible);
       loadIncompleteEvents(activeInstitutionID, userID, isAdmin);
@@ -144,6 +159,7 @@ class DashboardLayout extends Component {
     const { activeInstitutionID, userID, isAdmin } = nextProps;
     const { lastVisible } = nextProps.uiConfig;
     const {
+      loadTeams,
       loadTodaysEvents,
       loadIncompleteEvents,
       loadRecentResults
@@ -153,6 +169,7 @@ class DashboardLayout extends Component {
       activeInstitutionID !== this.props.activeInstitutionID &&
       activeInstitutionID !== ""
     ) {
+      loadTeams(activeInstitutionID);
       loadTodaysEvents(activeInstitutionID);
       loadRecentResults(activeInstitutionID, lastVisible);
       loadIncompleteEvents(activeInstitutionID, userID, isAdmin);
@@ -162,6 +179,50 @@ class DashboardLayout extends Component {
   componentWillUnmount() {
     const { resetState } = this.props.actions;
     resetState();
+  }
+
+  filterEvents(events) {
+    const { userID, meAllFilter, sportFilter, teams } = this.props;
+
+    return _.fromPairs(
+      _.toPairs(events).filter(([id, info]) => {
+        let allowThroughFilter = true;
+        let titleMatch = true;
+        let coachMatch = true;
+        let managerMatch = true;
+        let roleMatch = true;
+
+        if (meAllFilter === "me") {
+          const eventCoaches = _.keys(info.coaches);
+          const eventManagers = _.keys(info.managers);
+
+          roleMatch = false;
+          roleMatch = roleMatch || eventCoaches.includes(userID);
+          roleMatch = roleMatch || eventManagers.includes(userID);
+        }
+
+        _.keys(info.teams).map(teamID => {
+          if (teams[teamID] && sportFilter !== "all") {
+            allowThroughFilter =
+              allowThroughFilter &&
+              teams[teamID].info.sport.includes(sportFilter);
+          }
+        });
+
+        if (_.keys(info.teams).length === 0) {
+          if (sportFilter !== "all") {
+            allowThroughFilter = false;
+          }
+        }
+
+        allowThroughFilter =
+          allowThroughFilter &&
+          (titleMatch || coachMatch || managerMatch) &&
+          roleMatch;
+
+        return allowThroughFilter;
+      })
+    );
   }
 
   updateTabSelected(newTab) {
@@ -238,7 +299,10 @@ class DashboardLayout extends Component {
       personalInfo,
       communityInfo,
       isAdmin,
-      activeInstitutionID
+      activeInstitutionID,
+      meAllFilter,
+      sportFilter,
+      changeMeAllFilter
     } = this.props;
     const { earliestLoadedResult, isLastResult } = this.props.uiConfig;
     const { loadRecentResults } = this.props.actions;
@@ -250,8 +314,12 @@ class DashboardLayout extends Component {
     const personalProfileProgress = this.checkIfPersonalProfileComplete();
     const communityProfileProgress = this.checkIfCommunityProfileComplete();
 
-    const todayCount = _.keys(todaysEvents).length;
-    let incompleteCount = _.keys(incompleteEvents).length;
+    const filteredTodaysEvents = this.filterEvents(todaysEvents);
+    const filteredRecentResults = this.filterEvents(recentResults);
+    const filteredIncompleteEvents = this.filterEvents(incompleteEvents);
+
+    const todayCount = _.keys(filteredTodaysEvents).length;
+    let incompleteCount = _.keys(filteredIncompleteEvents).length;
     const notificationCount = 0;
 
     if (personalProfileProgress !== "100") {
@@ -279,10 +347,22 @@ class DashboardLayout extends Component {
                 </div>
               </div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <PersonalAllSwitch
+                  isMobile={isMobile}
+                  meAllFilter={meAllFilter}
+                  changeMeAllFilter={changeMeAllFilter}
+                />
+                {isMobile && <div className={classes.buttonSeparator} />}
+                <div className={classes.flexGrow} />
+              </div>
               <Today
                 isMobile={isMobile}
-                events={todaysEvents}
+                events={filteredTodaysEvents}
                 navigateTo={navigateTo}
+                meAllFilter={meAllFilter}
+                sportFilter={sportFilter}
+                changeMeAllFilter={changeMeAllFilter}
               />
             </div>
           );
@@ -298,10 +378,19 @@ class DashboardLayout extends Component {
                 <div className={classes.headerInnerWrapper}>Results</div>
               </div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <PersonalAllSwitch
+                  isMobile={isMobile}
+                  meAllFilter={meAllFilter}
+                  changeMeAllFilter={changeMeAllFilter}
+                />
+                {isMobile && <div className={classes.buttonSeparator} />}
+                <div className={classes.flexGrow} />
+              </div>
               <Results
                 isMobile={isMobile}
                 emblem={communityInfo.emblem}
-                events={recentResults}
+                events={filteredRecentResults}
                 navigateTo={navigateTo}
               />
               {!isLastResult && (
@@ -336,13 +425,22 @@ class DashboardLayout extends Component {
                 </div>
               </div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <PersonalAllSwitch
+                  isMobile={isMobile}
+                  meAllFilter={meAllFilter}
+                  changeMeAllFilter={changeMeAllFilter}
+                />
+                {isMobile && <div className={classes.buttonSeparator} />}
+                <div className={classes.flexGrow} />
+              </div>
               <Incomplete
                 isAdmin={isAdmin}
                 communityInfo={communityInfo}
                 personalProfileProgress={personalProfileProgress}
                 communityProfileProgress={communityProfileProgress}
                 personalInfo={personalInfo}
-                events={incompleteEvents}
+                events={filteredIncompleteEvents}
                 navigateTo={navigateTo}
               />
             </div>
@@ -441,9 +539,18 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <PersonalAllSwitch
+                  isMobile={isMobile}
+                  meAllFilter={meAllFilter}
+                  changeMeAllFilter={changeMeAllFilter}
+                />
+                {isMobile && <div className={classes.buttonSeparator} />}
+                <div className={classes.flexGrow} />
+              </div>
               <Today
                 isMobile={isMobile}
-                events={todaysEvents}
+                events={filteredTodaysEvents}
                 navigateTo={navigateTo}
               />
             </div>
@@ -452,10 +559,19 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <PersonalAllSwitch
+                  isMobile={isMobile}
+                  meAllFilter={meAllFilter}
+                  changeMeAllFilter={changeMeAllFilter}
+                />
+                {isMobile && <div className={classes.buttonSeparator} />}
+                <div className={classes.flexGrow} />
+              </div>
               <Results
                 isMobile={isMobile}
                 emblem={communityInfo.emblem}
-                events={recentResults}
+                events={filteredRecentResults}
                 navigateTo={navigateTo}
               />
               {!isLastResult && (
@@ -478,13 +594,22 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <div className={classes.actionsBar}>
+                <PersonalAllSwitch
+                  isMobile={isMobile}
+                  meAllFilter={meAllFilter}
+                  changeMeAllFilter={changeMeAllFilter}
+                />
+                {isMobile && <div className={classes.buttonSeparator} />}
+                <div className={classes.flexGrow} />
+              </div>
               <Incomplete
                 isAdmin={isAdmin}
                 communityInfo={communityInfo}
                 communityProfileProgress={communityProfileProgress}
                 personalProfileProgress={personalProfileProgress}
                 personalInfo={personalInfo}
-                events={incompleteEvents}
+                events={filteredIncompleteEvents}
                 navigateTo={navigateTo}
               />
             </div>
@@ -513,8 +638,11 @@ class DashboardLayout extends Component {
     const personalProfileProgress = this.checkIfPersonalProfileComplete();
     const communityProfileProgress = this.checkIfCommunityProfileComplete();
 
-    const todayCount = _.keys(todaysEvents).length;
-    let incompleteCount = _.keys(incompleteEvents).length;
+    const filteredTodaysEvents = this.filterEvents(todaysEvents);
+    const filteredIncompleteEvents = this.filterEvents(incompleteEvents);
+
+    const todayCount = _.keys(filteredTodaysEvents).length;
+    let incompleteCount = _.keys(filteredIncompleteEvents).length;
     const notificationCount = 0;
 
     if (personalProfileProgress !== "100") {
