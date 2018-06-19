@@ -192,7 +192,8 @@ class EventCard extends Component {
       venue,
       notes,
       isCancelled,
-      isCompetitive
+      isCompetitive,
+      showLogging
     } = this.props;
 
     const eventTypeIcon = this.getEventTypeIcon();
@@ -230,7 +231,13 @@ class EventCard extends Component {
                 </span>
               </div>
               <div className={classes.listWrapper}>
-                <div className={classes.listIconWrapper}>
+                <div
+                  className={
+                    showLogging
+                      ? classes.listIconWrapper
+                      : classes.listIconWrapperBottomLeft
+                  }
+                >
                   <i className="fas fa-comment-alt" />
                 </div>
                 <span className={classes.listText}>
@@ -238,32 +245,34 @@ class EventCard extends Component {
                 </span>
               </div>
             </div>
-            <div className={classes.infoSectionWrapper}>
-              <div className={classes.listWrapper}>
-                <div className={classes.listIconWrapper}>
-                  <i className="fas fa-clock" />
-                </div>
-                <span className={classes.listText}>{hoursInfo.text}</span>
-                {hoursInfo.icon}
-              </div>
-              {isCompetitive && (
+            {showLogging && (
+              <div className={classes.infoSectionWrapper}>
                 <div className={classes.listWrapper}>
                   <div className={classes.listIconWrapper}>
-                    <i className="fas fa-list-ol" />
+                    <i className="fas fa-clock" />
                   </div>
-                  <span className={classes.listText}>{resultsInfo.text}</span>
-                  {resultsInfo.icon}
+                  <span className={classes.listText}>{hoursInfo.text}</span>
+                  {hoursInfo.icon}
                 </div>
-              )}
-              <div className={classes.listWrapper}>
-                <div className={classes.listIconWrapperBottomLeft}>
-                  <i className="fas fa-clipboard" />
+                {isCompetitive && (
+                  <div className={classes.listWrapper}>
+                    <div className={classes.listIconWrapper}>
+                      <i className="fas fa-list-ol" />
+                    </div>
+                    <span className={classes.listText}>{resultsInfo.text}</span>
+                    {resultsInfo.icon}
+                  </div>
+                )}
+                <div className={classes.listWrapper}>
+                  <div className={classes.listIconWrapperBottomLeft}>
+                    <i className="fas fa-clipboard" />
+                  </div>
+                  <span className={classes.listText}>
+                    Attendance feature coming soon
+                  </span>
                 </div>
-                <span className={classes.listText}>
-                  Attendance feature coming soon
-                </span>
               </div>
-            </div>
+            )}
           </div>
         ) : (
           <div className={classes.infoWrapper}>

@@ -301,7 +301,6 @@ class DashboardLayout extends Component {
       isAdmin,
       activeInstitutionID,
       meAllFilter,
-      sportFilter,
       changeMeAllFilter
     } = this.props;
     const { earliestLoadedResult, isLastResult } = this.props.uiConfig;
@@ -361,8 +360,7 @@ class DashboardLayout extends Component {
                 events={filteredTodaysEvents}
                 navigateTo={navigateTo}
                 meAllFilter={meAllFilter}
-                sportFilter={sportFilter}
-                changeMeAllFilter={changeMeAllFilter}
+                isUserAdmin={isAdmin}
               />
             </div>
           );
@@ -392,6 +390,7 @@ class DashboardLayout extends Component {
                 emblem={communityInfo.emblem}
                 events={filteredRecentResults}
                 navigateTo={navigateTo}
+                meAllFilter={meAllFilter}
               />
               {!isLastResult && (
                 <div className={classes.loadMoreButtonWrapper}>
@@ -425,15 +424,6 @@ class DashboardLayout extends Component {
                 </div>
               </div>
               <div className={classes.adWrapper}>{ad}</div>
-              <div className={classes.actionsBar}>
-                <PersonalAllSwitch
-                  isMobile={isMobile}
-                  meAllFilter={meAllFilter}
-                  changeMeAllFilter={changeMeAllFilter}
-                />
-                {isMobile && <div className={classes.buttonSeparator} />}
-                <div className={classes.flexGrow} />
-              </div>
               <Incomplete
                 isAdmin={isAdmin}
                 communityInfo={communityInfo}
@@ -442,6 +432,7 @@ class DashboardLayout extends Component {
                 personalInfo={personalInfo}
                 events={filteredIncompleteEvents}
                 navigateTo={navigateTo}
+                meAllFilter={meAllFilter}
               />
             </div>
           );
@@ -461,7 +452,6 @@ class DashboardLayout extends Component {
                 </div>
               </div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} />
             </div>
           );
         default:
@@ -552,6 +542,8 @@ class DashboardLayout extends Component {
                 isMobile={isMobile}
                 events={filteredTodaysEvents}
                 navigateTo={navigateTo}
+                meAllFilter={meAllFilter}
+                isUserAdmin={isAdmin}
               />
             </div>
           );
@@ -573,6 +565,7 @@ class DashboardLayout extends Component {
                 emblem={communityInfo.emblem}
                 events={filteredRecentResults}
                 navigateTo={navigateTo}
+                meAllFilter={meAllFilter}
               />
               {!isLastResult && (
                 <div className={classes.loadMoreButtonWrapper}>
@@ -594,15 +587,6 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <div className={classes.actionsBar}>
-                <PersonalAllSwitch
-                  isMobile={isMobile}
-                  meAllFilter={meAllFilter}
-                  changeMeAllFilter={changeMeAllFilter}
-                />
-                {isMobile && <div className={classes.buttonSeparator} />}
-                <div className={classes.flexGrow} />
-              </div>
               <Incomplete
                 isAdmin={isAdmin}
                 communityInfo={communityInfo}
@@ -611,6 +595,7 @@ class DashboardLayout extends Component {
                 personalInfo={personalInfo}
                 events={filteredIncompleteEvents}
                 navigateTo={navigateTo}
+                meAllFilter={meAllFilter}
               />
             </div>
           );
@@ -618,14 +603,12 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} />
             </div>
           );
         default:
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} />
             </div>
           );
       }

@@ -90,7 +90,14 @@ class Today extends Component {
   }
 
   getEventCards() {
-    const { classes, navigateTo, isMobile, events } = this.props;
+    const {
+      classes,
+      navigateTo,
+      isMobile,
+      events,
+      meAllFilter,
+      isUserAdmin
+    } = this.props;
 
     return _.toPairs(events).map(([eventID, eventInfo]) => {
       const eventDateMoment = moment(eventInfo.requiredInfo.times.start);
@@ -122,6 +129,7 @@ class Today extends Component {
             isHoursLogged={isHoursLogged}
             isResultsLogged={isResultsLogged}
             hasHoursLogging={hasHoursLogging}
+            showLogging={isUserAdmin || meAllFilter === "me"}
             viewEventInfo={() =>
               navigateTo(`/myaccount/schedule/${eventDateString}/${eventID}`)}
           />
