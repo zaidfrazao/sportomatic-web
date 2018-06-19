@@ -36,6 +36,26 @@ const styles = {
 };
 
 class Results extends Component {
+  checkIfLoggingAllowed() {
+    const { userID, isUserAdmin, eventInfo } = this.props;
+
+    if (isUserAdmin) {
+      return true;
+    } else {
+      return eventInfo.coaches[userID] || eventInfo.managers[userID];
+    }
+  }
+
+  checkIfApprovalAllowed() {
+    const { userID, isUserAdmin, eventInfo } = this.props;
+
+    if (isUserAdmin) {
+      return true;
+    } else {
+      return eventInfo.managers[userID];
+    }
+  }
+
   getResultCards() {
     const {
       isTablet,
@@ -47,6 +67,9 @@ class Results extends Component {
       finaliseResults,
       editResult
     } = this.props;
+
+    const allowLogging = this.checkIfLoggingAllowed();
+    const allowApproval = this.checkIfApprovalAllowed();
 
     if (isTablet) {
       return teams.map(teamInfo => {
@@ -62,6 +85,8 @@ class Results extends Component {
             return (
               <MobileLogger
                 key={`${teamInfo.id}-${opponentID}`}
+                allowLogging={allowLogging}
+                allowApproval={allowApproval}
                 editResult={newResult =>
                   editResult(teamInfo.id, opponentID, newResult)}
                 startLogging={structure =>
@@ -101,6 +126,8 @@ class Results extends Component {
             return (
               <MobileLogger
                 key={`${teamInfo.id}-${opponentID}`}
+                allowLogging={allowLogging}
+                allowApproval={allowApproval}
                 editResult={newResult =>
                   editResult(teamInfo.id, opponentID, newResult)}
                 startLogging={structure =>
@@ -153,6 +180,8 @@ class Results extends Component {
             return (
               <DesktopLogger
                 key={`${teamInfo.id}-${opponentID}`}
+                allowLogging={allowLogging}
+                allowApproval={allowApproval}
                 editResult={newResult =>
                   editResult(teamInfo.id, opponentID, newResult)}
                 startLogging={structure =>
@@ -192,6 +221,8 @@ class Results extends Component {
             return (
               <DesktopLogger
                 key={`${teamInfo.id}-${opponentID}`}
+                allowLogging={allowLogging}
+                allowApproval={allowApproval}
                 editResult={newResult =>
                   editResult(teamInfo.id, opponentID, newResult)}
                 startLogging={structure =>

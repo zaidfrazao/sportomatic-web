@@ -163,7 +163,9 @@ class EventInfo extends Component {
       formattedEndTime: "Loading",
       isCompetitive: false,
       venue: "",
-      notes: ""
+      notes: "",
+      coaches: {},
+      managers: {}
     };
 
     if (info) {
@@ -186,7 +188,9 @@ class EventInfo extends Component {
         isCompetitive: info.requiredInfo.isCompetitive,
         venue: info.optionalInfo.venue,
         notes: info.optionalInfo.notes,
-        homeAway: info.optionalInfo.homeAway
+        homeAway: info.optionalInfo.homeAway,
+        coaches: info.coaches,
+        managers: info.managers
       };
     }
 
@@ -280,6 +284,8 @@ class EventInfo extends Component {
                 {showButtons && isAdmin && cancelButton}
               </div>
               <Results
+                userID={userID}
+                isUserAdmin={isAdmin}
                 emblem={emblem}
                 isTablet={isTablet}
                 teams={teams}
@@ -405,6 +411,8 @@ class EventInfo extends Component {
                 {showButtons && isAdmin && cancelButton}
               </div>
               <Results
+                userID={userID}
+                isUserAdmin={isAdmin}
                 emblem={emblem}
                 isTablet={isTablet}
                 eventInfo={info}

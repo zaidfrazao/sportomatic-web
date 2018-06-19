@@ -16,6 +16,15 @@ import Rugby from "./components/Rugby";
 import TextArea from "../../../../../../../../components/TextArea";
 
 const styles = {
+  awaitingButton: {
+    padding: 24,
+    color: grey[400],
+    backgroundColor: grey[300],
+    cursor: "not-allowed",
+    textAlign: "center",
+    fontWeight: "bold",
+    borderRadius: "0 0 16px 16px"
+  },
   buttonsWrapper: {
     flexGrow: 1,
     padding: 24,
@@ -446,11 +455,16 @@ class DesktopLogger extends Component {
       awayTeam,
       status,
       startLogging,
-      finaliseResults
+      finaliseResults,
+      allowLogging,
+      allowApproval
     } = this.props;
     const { commentary } = this.state;
 
-    const allowEditing = status !== "FINALISED";
+    let allowEditing = status !== "FINALISED";
+    if (!allowLogging) {
+      allowEditing = false;
+    }
     const result = this.getResult();
     const logger = this.getLogger();
     let scores = {
@@ -528,22 +542,29 @@ class DesktopLogger extends Component {
                 </div>
               )}
             </div>
-            {status !== "FINALISED" && (
-              <div
-                className={classes.confirmButton}
-                onClick={() => finaliseResults()}
-              >
-                Confirm Results
-              </div>
-            )}
+            {status !== "FINALISED" &&
+              (allowApproval ? (
+                <div
+                  className={classes.confirmButton}
+                  onClick={() => finaliseResults()}
+                >
+                  Confirm Results
+                </div>
+              ) : (
+                <div className={classes.awaitingButton}>
+                  Awaiting final results
+                </div>
+              ))}
           </div>
-        ) : (
+        ) : allowLogging ? (
           <div
             className={classes.confirmButton}
             onClick={() => startLogging(this.getStructure())}
           >
             Start Logging
           </div>
+        ) : (
+          <div className={classes.awaitingButton}>Awaiting final results</div>
         )}
       </div>
     );
