@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { combineReducers } from "redux";
 import { createStructuredSelector } from "reselect";
 import firebase from "firebase";
@@ -26,7 +27,8 @@ export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 // Reducers
 
 export const uiConfigInitialState = {
-  earliestLoadedResult: ""
+  earliestLoadedResult: undefined,
+  isLastResult: false
 };
 
 function uiConfigReducer(state = uiConfigInitialState, action = {}) {
@@ -37,7 +39,8 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
     case RECEIVE_RECENT_RESULTS:
       return {
         ...state,
-        earliestLoadedResult: action.payload.lastVisible
+        earliestLoadedResult: action.payload.lastVisible,
+        isLastResult: action.payload.lastVisible === undefined
       };
     default:
       return state;
@@ -131,6 +134,21 @@ function todaysEventsReducer(state = {}, action = {}) {
   }
 }
 
+function recentResultsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_RECENT_RESULTS:
+      return {
+        ...state,
+        ...action.payload.events
+      };
+    default:
+      return state;
+  }
+}
+
 function incompleteEventsReducer(state = {}, action = {}) {
   switch (action.type) {
     case RESET_STATE:
@@ -149,6 +167,7 @@ export const dashboardReducer = combineReducers({
   loadingStatus: loadingStatusReducer,
   teams: teamsReducer,
   todaysEvents: todaysEventsReducer,
+  recentResults: recentResultsReducer,
   incompleteEvents: incompleteEventsReducer
 });
 
@@ -158,6 +177,7 @@ const uiConfig = state => state.dashboard.uiConfig;
 const loadingStatus = state => state.dashboard.loadingStatus;
 const teams = state => state.dashboard.teams;
 const todaysEvents = state => state.dashboard.todaysEvents;
+const recentResults = state => state.dashboard.recentResults;
 const incompleteEvents = state => state.dashboard.incompleteEvents;
 
 export const selector = createStructuredSelector({
@@ -165,6 +185,7 @@ export const selector = createStructuredSelector({
   loadingStatus,
   teams,
   todaysEvents,
+  recentResults,
   incompleteEvents
 });
 
@@ -218,6 +239,91 @@ export function loadTodaysEvents(institutionID) {
       });
       dispatch(receiveTodaysEvents(events));
     });
+  };
+}
+
+export function requestRecentResults() {
+  return {
+    type: REQUEST_RECENT_RESULTS
+  };
+}
+
+function checkIfResultsLogged(eventTeams) {
+  let isResultsLogged = true;
+
+  _.toPairs(eventTeams).map(([teamID, teamInfo]) => {
+    isResultsLogged = isResultsLogged && teamInfo.resultsStatus === "FINALISED";
+  });
+
+  return isResultsLogged;
+}
+
+export function receiveRecentResults(events, lastVisible) {
+  const confirmedResults = _.fromPairs(
+    _.toPairs(events).filter(([eventID, eventInfo]) => {
+      if (eventInfo.requiredInfo.status !== "ACTIVE") {
+        return false;
+      }
+      return checkIfResultsLogged(eventInfo.teams);
+    })
+  );
+
+  return {
+    type: RECEIVE_RECENT_RESULTS,
+    payload: {
+      lastVisible,
+      events: confirmedResults
+    }
+  };
+}
+
+export function loadRecentResults(institutionID, lastVisible) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestRecentResults());
+
+    if (lastVisible) {
+      let eventsRef = {};
+      eventsRef = firebase
+        .firestore()
+        .collection("events")
+        .orderBy("requiredInfo.times.start", "desc")
+        .where("institutionID", "==", institutionID)
+        .where("requiredInfo.isCompetitive", "==", true)
+        .startAfter(lastVisible)
+        .limit(20);
+
+      return eventsRef.onSnapshot(querySnapshot => {
+        const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+        let events = {};
+        querySnapshot.forEach(doc => {
+          events[doc.id] = doc.data();
+        });
+        dispatch(receiveRecentResults(events, lastVisible));
+      });
+    } else {
+      const startsAt = moment()
+        .endOf("day")
+        .toDate();
+
+      let eventsRef = {};
+      eventsRef = firebase
+        .firestore()
+        .collection("events")
+        .orderBy("requiredInfo.times.start", "desc")
+        .where("institutionID", "==", institutionID)
+        .where("requiredInfo.times.start", "<=", startsAt)
+        .where("requiredInfo.isCompetitive", "==", true)
+        .limit(20);
+
+      return eventsRef.onSnapshot(querySnapshot => {
+        const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+        let events = {};
+        querySnapshot.forEach(doc => {
+          events[doc.id] = doc.data();
+        });
+        dispatch(receiveRecentResults(events, lastVisible));
+      });
+    }
   };
 }
 

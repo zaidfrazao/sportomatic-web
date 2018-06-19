@@ -25,9 +25,9 @@ const styles = {
   },
   cardWrapper: {
     width: "100%",
-    padding: 12,
+    padding: 24,
     [`@media (min-width: ${tabletBreakpoint}px)`]: {
-      width: "calc(50% - 24px)"
+      width: "calc(50% - 48px)"
     }
   },
   emptyState: {

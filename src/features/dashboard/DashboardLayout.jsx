@@ -92,6 +92,15 @@ const styles = {
     textAlign: "center",
     padding: 24
   },
+  loadMoreButtonWrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: 24
+  },
+  loadMoreIcon: {
+    marginRight: 8
+  },
   menuButtonWrapper: {
     margin: "0 24px"
   },
@@ -117,23 +126,35 @@ class DashboardLayout extends Component {
 
   componentWillMount() {
     const { activeInstitutionID, userID, isAdmin } = this.props;
-    const { loadTodaysEvents, loadIncompleteEvents } = this.props.actions;
+    const { lastVisible } = this.props.uiConfig;
+    const {
+      loadTodaysEvents,
+      loadIncompleteEvents,
+      loadRecentResults
+    } = this.props.actions;
 
     if (activeInstitutionID !== "") {
       loadTodaysEvents(activeInstitutionID);
+      loadRecentResults(activeInstitutionID, lastVisible);
       loadIncompleteEvents(activeInstitutionID, userID, isAdmin);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { activeInstitutionID, userID, isAdmin } = nextProps;
-    const { loadTodaysEvents, loadIncompleteEvents } = nextProps.actions;
+    const { lastVisible } = nextProps.uiConfig;
+    const {
+      loadTodaysEvents,
+      loadIncompleteEvents,
+      loadRecentResults
+    } = nextProps.actions;
 
     if (
       activeInstitutionID !== this.props.activeInstitutionID &&
       activeInstitutionID !== ""
     ) {
       loadTodaysEvents(activeInstitutionID);
+      loadRecentResults(activeInstitutionID, lastVisible);
       loadIncompleteEvents(activeInstitutionID, userID, isAdmin);
     }
   }
@@ -212,11 +233,15 @@ class DashboardLayout extends Component {
       navigateTo,
       todaysEvents,
       goBack,
+      recentResults,
       incompleteEvents,
       personalInfo,
       communityInfo,
-      isAdmin
+      isAdmin,
+      activeInstitutionID
     } = this.props;
+    const { earliestLoadedResult, isLastResult } = this.props.uiConfig;
+    const { loadRecentResults } = this.props.actions;
     const { infoTab } = this.props.match.params;
     const { tabSelected } = this.state;
 
@@ -273,7 +298,26 @@ class DashboardLayout extends Component {
                 <div className={classes.headerInnerWrapper}>Results</div>
               </div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} />
+              <Results
+                isMobile={isMobile}
+                emblem={communityInfo.emblem}
+                events={recentResults}
+                navigateTo={navigateTo}
+              />
+              {!isLastResult && (
+                <div className={classes.loadMoreButtonWrapper}>
+                  <Button
+                    handleClick={() =>
+                      loadRecentResults(
+                        activeInstitutionID,
+                        earliestLoadedResult
+                      )}
+                  >
+                    <i className={`fas fa-redo ${classes.loadMoreIcon}`} />Load
+                    more
+                  </Button>
+                </div>
+              )}
             </div>
           );
         case "incomplete":
@@ -408,7 +452,26 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
-              <Results isMobile={isMobile} />
+              <Results
+                isMobile={isMobile}
+                emblem={communityInfo.emblem}
+                events={recentResults}
+                navigateTo={navigateTo}
+              />
+              {!isLastResult && (
+                <div className={classes.loadMoreButtonWrapper}>
+                  <Button
+                    handleClick={() =>
+                      loadRecentResults(
+                        activeInstitutionID,
+                        earliestLoadedResult
+                      )}
+                  >
+                    <i className={`fas fa-redo ${classes.loadMoreIcon}`} />Load
+                    more
+                  </Button>
+                </div>
+              )}
             </div>
           );
         case "incomplete":

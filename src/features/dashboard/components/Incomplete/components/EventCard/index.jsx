@@ -130,30 +130,30 @@ class EventCard extends Component {
   }
 
   getResultsInfo() {
-    // const { classes, isResultsLogged, isCompetitive } = this.props;
+    const { classes, isResultsLogged, isCompetitive } = this.props;
 
     let text = "Results feature coming soon";
     let icon = <div />;
 
-    // if (isCompetitive) {
-    //   if (isResultsLogged) {
-    //     text = "Results logged";
-    //     icon = (
-    //       <div className={classes.iconComplete}>
-    //         <i className="fas fa-check" />
-    //       </div>
-    //     );
-    //   } else {
-    //     text = "Results not logged";
-    //     icon = (
-    //       <div className={classes.iconIncomplete}>
-    //         <i className="fas fa-times" />
-    //       </div>
-    //     );
-    //   }
-    // } else {
-    //   text = "Results not relevant";
-    // }
+    if (isCompetitive) {
+      if (isResultsLogged) {
+        text = "Results logged";
+        icon = (
+          <div className={classes.iconComplete}>
+            <i className="fas fa-check" />
+          </div>
+        );
+      } else {
+        text = "Results not logged";
+        icon = (
+          <div className={classes.iconIncomplete}>
+            <i className="fas fa-times" />
+          </div>
+        );
+      }
+    } else {
+      text = "Results not relevant";
+    }
 
     return {
       text,

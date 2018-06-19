@@ -95,7 +95,6 @@ const styles = {
   },
   wrapper: {
     border: `1px solid ${grey[300]}`,
-    margin: "12px 0",
     borderRadius: 16,
     backgroundColor: common["white"]
   }

@@ -169,12 +169,24 @@ class ListOfEvents extends Component {
 
   checkIfActionsRequired(eventInfo) {
     const coaches = eventInfo.coaches;
+    const isCompetitive = eventInfo.requiredInfo.isCompetitive;
     let isActionsRequired = false;
 
     _.toPairs(coaches).map(([coachID, coachInfo]) => {
       isActionsRequired =
         coachInfo.hours.status !== "APPROVED" && coachInfo.attendance.didAttend;
     });
+
+    if (isCompetitive) {
+      const teams = eventInfo.teams;
+
+      _.toPairs(teams).map(([teamID, teamInfo]) => {
+        _.toPairs(teamInfo.opponents).map(([opponentID, opponentInfo]) => {
+          isActionsRequired =
+            isActionsRequired || opponentInfo.resultsStatus !== "FINALISED";
+        });
+      });
+    }
 
     return isActionsRequired;
   }
