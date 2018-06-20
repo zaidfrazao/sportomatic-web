@@ -163,47 +163,31 @@ class SideMenu extends Component<Props> {
     const { changeSelected, toggleSideNav } = this.props.actions;
 
     return _.toPairs(items).map(([key, item]) => {
-      if (key === "reports") {
-        return (
-          <div
-            key={`side-menu-item-${key}`}
-            className={classes.menuItemInactive}
-          >
-            <span className={classes.menuItemTextInactive}>
-              <span className={classes.menuItemIcon}>
-                <i className={item.icon} />
-              </span>
-              {item.label}
-            </span>
-          </div>
-        );
-      } else {
-        return (
-          <div
-            key={`side-menu-item-${key}`}
+      return (
+        <div
+          key={`side-menu-item-${key}`}
+          className={
+            selected === key ? classes.menuItemSelected : classes.menuItem
+          }
+          onClick={() => {
+            changeSelected(key);
+            isTablet && toggleSideNav();
+          }}
+        >
+          <span
             className={
-              selected === key ? classes.menuItemSelected : classes.menuItem
+              selected === key
+                ? classes.menuItemTextSelected
+                : classes.menuItemText
             }
-            onClick={() => {
-              changeSelected(key);
-              isTablet && toggleSideNav();
-            }}
           >
-            <span
-              className={
-                selected === key
-                  ? classes.menuItemTextSelected
-                  : classes.menuItemText
-              }
-            >
-              <span className={classes.menuItemIcon}>
-                <i className={item.icon} />
-              </span>
-              {item.label}
+            <span className={classes.menuItemIcon}>
+              <i className={item.icon} />
             </span>
-          </div>
-        );
-      }
+            {item.label}
+          </span>
+        </div>
+      );
     });
   }
 

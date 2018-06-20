@@ -10,6 +10,7 @@ import Dashboard from "../dashboard/DashboardView";
 import Dialog from "../../components/Dialog";
 import LoadingScreen from "../../components/LoadingScreen";
 import People from "../people/PeopleView";
+import Reports from "../reports/ReportsView";
 import Schedule from "../schedule/ScheduleView";
 import Settings from "../settings/SettingsView";
 import SideMenu from "./components/SideMenu";
@@ -380,6 +381,7 @@ class CoreInterfaceLayout extends Component {
     if (
       sportSelected === "all" ||
       sideMenuItem.label === "Community" ||
+      sideMenuItem.label === "Reports" ||
       sideMenuItem.label === "Settings"
     ) {
       return (
@@ -613,6 +615,74 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/overview/:infoTab"}>
                     <Dashboard
+                      isAdmin={isAdmin}
+                      communityName={communityName}
+                      personalProgress={personalProgress}
+                      communityProgress={communityProgress}
+                      activeInstitutionID={activeInstitutionID}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      sportFilter={sportSelected}
+                      meAllFilter={meAllFilter}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      userID={userID}
+                      userName={userName}
+                      institutionCreationDate={institutionCreationDate}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
+                      communityInfo={{
+                        phoneNumber,
+                        publicEmail,
+                        emblem,
+                        sports,
+                        physicalAddress
+                      }}
+                      personalInfo={{
+                        email: userEmail,
+                        phoneNumber: userPhoneNumber,
+                        profilePicture: userProfilePicture,
+                        preferredSports: userSports
+                      }}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/reports/"}>
+                    <Reports
+                      isAdmin={isAdmin}
+                      communityName={communityName}
+                      personalProgress={personalProgress}
+                      communityProgress={communityProgress}
+                      activeInstitutionID={activeInstitutionID}
+                      isMobile={isMobile}
+                      isTablet={isTablet}
+                      sportFilter={sportSelected}
+                      meAllFilter={meAllFilter}
+                      isAccountInfoLoading={isAccountInfoLoading}
+                      userID={userID}
+                      userName={userName}
+                      institutionCreationDate={institutionCreationDate}
+                      navigateTo={path => this.navigateTo(path)}
+                      goBack={() => this.goBack()}
+                      communityInfo={{
+                        phoneNumber,
+                        publicEmail,
+                        emblem,
+                        sports,
+                        physicalAddress
+                      }}
+                      personalInfo={{
+                        email: userEmail,
+                        phoneNumber: userPhoneNumber,
+                        profilePicture: userProfilePicture,
+                        preferredSports: userSports
+                      }}
+                      changeMeAllFilter={newFilter =>
+                        changeMeAllFilter(newFilter)}
+                    />
+                  </Route>
+                  <Route exact path={"/myaccount/reports/:infoTab"}>
+                    <Reports
                       isAdmin={isAdmin}
                       communityName={communityName}
                       personalProgress={personalProgress}

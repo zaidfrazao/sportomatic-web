@@ -8,6 +8,7 @@ import { signInReducer } from "../features/sign-in/duck";
 import { signUpReducer } from "../features/sign-up/duck";
 import { teamsReducer } from "../features/teams/duck";
 import { communityReducer } from "../features/community/duck";
+import { reportsReducer } from "../features/reports/duck";
 
 export default combineReducers({
   signIn: signInReducer,
@@ -18,5 +19,6 @@ export default combineReducers({
   schedule: scheduleReducer,
   settings: settingsReducer,
   teams: teamsReducer,
-  community: communityReducer
+  community: communityReducer,
+  reports: reportsReducer
 });
