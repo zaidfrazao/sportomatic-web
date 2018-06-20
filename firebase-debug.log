@@ -1,0 +1,35 @@
+[debug] [2018-06-20T18:57:49.107Z] ----------------------------------------------------------------------
+[debug] [2018-06-20T18:57:49.108Z] Command:       /home/zaid/.nvm/versions/node/v10.0.0/bin/node /home/zaid/.linuxbrew/bin/firebase deploy
+[debug] [2018-06-20T18:57:49.108Z] CLI Version:   3.18.4
+[debug] [2018-06-20T18:57:49.108Z] Platform:      linux
+[debug] [2018-06-20T18:57:49.108Z] Node Version:  v10.0.0
+[debug] [2018-06-20T18:57:49.108Z] Time:          Wed Jun 20 2018 20:57:49 GMT+0200 (SAST)
+[debug] [2018-06-20T18:57:49.108Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-06-20T18:57:49.117Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-06-20T18:57:49.118Z] > authorizing via signed-in user
+[debug] [2018-06-20T18:57:49.119Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-06-20T18:57:49.119Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ { refresh_token: '1/V1q0le01o-OwnBtm-KJDayVS_qikdlK3C543gfBjVtY',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Wed Jun 20 2018 20:57:49 GMT+0200 (SAST)
+[debug] [2018-06-20T18:57:50.204Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-20T18:57:50.214Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/sportomatic-beta  
+  
+ Wed Jun 20 2018 20:57:50 GMT+0200 (SAST)
+[debug] [2018-06-20T18:57:52.105Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-20T18:57:52.108Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/sportomatic-beta/tokens  
+  
+ Wed Jun 20 2018 20:57:52 GMT+0200 (SAST)
+[debug] [2018-06-20T18:57:53.445Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'sportomatic-beta'...
+[info] 
+[info] i  deploying hosting
+[info] i  hosting: preparing build directory for upload...
+[debug] [2018-06-20T18:57:56.312Z] >>> HTTP REQUEST PUT https://deploy.firebase.com/v1/hosting/sportomatic-beta/uploads/-LFTYrLZ3zmsP-wXw6gs?fileCount=11&message=  
+  
+ Wed Jun 20 2018 20:57:56 GMT+0200 (SAST)

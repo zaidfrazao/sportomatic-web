@@ -441,7 +441,7 @@ class CoreInterfaceLayout extends Component {
     const allowedSports = ["Hockey", "Netball", "Rugby"];
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
-    const versionNumber = "0.9.20";
+    const versionNumber = "0.9.21";
 
     const communityRole = this.getRole();
     const userFirstName = accountInfo.info.name;
