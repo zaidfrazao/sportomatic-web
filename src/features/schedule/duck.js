@@ -17,9 +17,6 @@ export const ERROR_LOADING_EVENTS = `${NAMESPACE}/ERROR_LOADING_EVENTS`;
 export const REQUEST_ADD_EVENT = `${NAMESPACE}/REQUEST_ADD_EVENT`;
 export const RECEIVE_ADD_EVENT = `${NAMESPACE}/RECEIVE_ADD_EVENT`;
 export const ERROR_ADDING_EVENT = `${NAMESPACE}/ERROR_ADDING_EVENT`;
-export const REQUEST_EDIT_EVENT = `${NAMESPACE}/REQUEST_EDIT_EVENT`;
-export const RECEIVE_EDIT_EVENT = `${NAMESPACE}/RECEIVE_EDIT_EVENT`;
-export const ERROR_EDITING_EVENT = `${NAMESPACE}/ERROR_EDITING_EVENT`;
 export const OPEN_EDIT_EVENT_DIALOG = `${NAMESPACE}/OPEN_EDIT_EVENT_DIALOG`;
 export const CLOSE_EDIT_EVENT_DIALOG = `${NAMESPACE}/CLOSE_EDIT_EVENT_DIALOG`;
 export const OPEN_EVENT_ERROR_ALERT = `${NAMESPACE}/OPEN_EVENT_ERROR_ALERT`;
@@ -94,6 +91,12 @@ export const ERROR_FINALISING_RESULTS = `${NAMESPACE}/ERROR_FINALISING_RESULTS`;
 export const REQUEST_EDIT_RESULT = `${NAMESPACE}/REQUEST_EDIT_RESULT`;
 export const RECEIVE_EDIT_RESULT = `${NAMESPACE}/RECEIVE_EDIT_RESULT`;
 export const ERROR_EDITTING_RESULT = `${NAMESPACE}/ERROR_EDITTING_RESULT`;
+export const REQUEST_EDIT_DETAILS = `${NAMESPACE}/REQUEST_EDIT_DETAILS`;
+export const RECEIVE_EDIT_DETAILS = `${NAMESPACE}/RECEIVE_EDIT_DETAILS`;
+export const ERROR_EDITTING_DETAILS = `${NAMESPACE}/ERROR_EDITTING_DETAILS`;
+export const REQUEST_EDIT_OPPONENTS = `${NAMESPACE}/REQUEST_EDIT_OPPONENTS`;
+export const RECEIVE_EDIT_OPPONENTS = `${NAMESPACE}/RECEIVE_EDIT_OPPONENTS`;
+export const ERROR_EDITTING_OPPONENTS = `${NAMESPACE}/ERROR_EDITTING_OPPONENTS`;
 export const REQUEST_TOGGLE_OPTIONAL_STATS = `${NAMESPACE}/REQUEST_TOGGLE_OPTIONAL_STATS`;
 export const RECEIVE_TOGGLE_OPTIONAL_STATS = `${NAMESPACE}/RECEIVE_TOGGLE_OPTIONAL_STATS`;
 export const ERROR_TOGGLING_OPTIONAL_STATS = `${NAMESPACE}/ERROR_TOGGLING_OPTIONAL_STATS`;
@@ -261,12 +264,6 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
         ...state,
         isEditEventDialogOpen: true
       };
-    case RECEIVE_EDIT_EVENT:
-    case CLOSE_EDIT_EVENT_DIALOG:
-      return {
-        ...state,
-        isEditEventDialogOpen: false
-      };
     case OPEN_CANCEL_EVENT_ALERT:
       return {
         ...state,
@@ -338,7 +335,9 @@ export const loadingStatusInitialState = {
   isCreationDateLoading: false,
   isTeamsLoading: false,
   isStaffLoading: false,
-  isSeasonInfoLoading: false
+  isSeasonInfoLoading: false,
+  isEditDetailsLoading: false,
+  isEditOpponentsLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -368,16 +367,27 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         ...state,
         isAddEventDialogLoading: false
       };
-    case REQUEST_EDIT_EVENT:
+    case REQUEST_EDIT_DETAILS:
       return {
         ...state,
-        isEditEventDialogLoading: true
+        isEditDetailsLoading: true
       };
-    case ERROR_EDITING_EVENT:
-    case RECEIVE_EDIT_EVENT:
+    case ERROR_EDITTING_DETAILS:
+    case RECEIVE_EDIT_DETAILS:
       return {
         ...state,
-        isEditEventDialogLoading: false
+        isEditDetailsLoading: false
+      };
+    case REQUEST_EDIT_OPPONENTS:
+      return {
+        ...state,
+        isEditOpponentLoading: true
+      };
+    case ERROR_EDITTING_OPPONENTS:
+    case RECEIVE_EDIT_OPPONENTS:
+      return {
+        ...state,
+        isEditOpponentLoading: false
       };
     case REQUEST_REPLACEMENT_COACH_REMOVAL:
     case REQUEST_REPLACEMENT_COACH_UPDATE:
@@ -874,113 +884,6 @@ export function addEvent(
       .commit()
       .then(() => dispatch(receiveAddEvent()))
       .catch(error => dispatch(errorAddingEvent(error)));
-  };
-}
-
-export function requestEditEvent() {
-  return {
-    type: REQUEST_EDIT_EVENT
-  };
-}
-
-export function receiveEditEvent() {
-  return {
-    type: RECEIVE_EDIT_EVENT
-  };
-}
-
-export function errorEditingEvent(error: { code: string, message: string }) {
-  return {
-    type: ERROR_EDITING_EVENT,
-    payload: {
-      error
-    }
-  };
-}
-
-export function editEvent(
-  institutionID,
-  eventID,
-  requiredInfo,
-  optionalInfo,
-  recurrencePattern,
-  teams,
-  managers,
-  coaches,
-  shouldEditAllEvents
-) {
-  return function(dispatch: DispatchAlias) {
-    dispatch(requestEditEvent());
-    const db = firebase.firestore();
-
-    // Set up recurring events
-    let instances = recurrencePattern.instances;
-    let eventsToEdit = [];
-
-    if (shouldEditAllEvents) {
-      const currentDate = new Date(Date.now());
-      for (let i = 0; i < recurrencePattern.instances.length; i++) {
-        if (instances[i].date >= currentDate) {
-          const date = instances[i].date;
-          eventsToEdit.push({
-            ref: db.collection("events").doc(instances[i].id),
-            date
-          });
-        }
-      }
-    } else {
-      const date = requiredInfo.times.start;
-      eventsToEdit.push({
-        ref: db.collection("events").doc(eventID),
-        date
-      });
-    }
-
-    // Edit events
-    let batch = db.batch();
-    for (let i = 0; i < eventsToEdit.length; i++) {
-      let eventDate = eventsToEdit[i].date;
-      const year = eventDate.getFullYear();
-      const month = format2Digits(eventDate.getMonth());
-      const day = format2Digits(eventDate.getDate());
-      const start = {
-        hours: format2Digits(requiredInfo.times.start.getHours()),
-        minutes: format2Digits(requiredInfo.times.start.getMinutes())
-      };
-      const end = {
-        hours: format2Digits(requiredInfo.times.end.getHours()),
-        minutes: format2Digits(requiredInfo.times.end.getMinutes())
-      };
-      const newStart = new Date(year, month, day, start.hours, start.minutes);
-      const newEnd = new Date(year, month, day, end.hours, end.minutes);
-
-      const newEventInfo = {
-        institutionID,
-        requiredInfo: {
-          ...requiredInfo,
-          times: {
-            end: newEnd,
-            start: newStart
-          }
-        },
-        optionalInfo,
-        teams,
-        coaches,
-        managers,
-        recurrencePattern: {
-          ...recurrencePattern,
-          instances
-        }
-      };
-
-      batch.set(eventsToEdit[i].ref, newEventInfo);
-    }
-
-    // Save events to database
-    return batch
-      .commit()
-      .then(() => dispatch(receiveEditEvent()))
-      .catch(error => dispatch(errorEditingEvent(error)));
   };
 }
 
@@ -1816,5 +1719,85 @@ export function editResult(eventID, teamID, opponentID, newResult) {
       })
       .then(() => dispatch(receiveEditResult()))
       .catch(error => dispatch(errorEdittingResult(error)));
+  };
+}
+
+export function requestEditDetails() {
+  return {
+    type: REQUEST_EDIT_DETAILS
+  };
+}
+
+export function receiveEditDetails() {
+  return {
+    type: RECEIVE_EDIT_DETAILS
+  };
+}
+
+export function errorEdittingDetails(error: { code: string, message: string }) {
+  return {
+    type: ERROR_EDITTING_DETAILS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function editDetails(eventID, times, homeAway, venue, notes) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEditDetails());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    return eventRef
+      .update({
+        "requiredInfo.times": times,
+        "optionalInfo.homeAway": homeAway,
+        "optionalInfo.notes": notes,
+        "optionalInfo.venue": venue
+      })
+      .then(() => dispatch(receiveEditDetails()))
+      .catch(error => dispatch(errorEdittingDetails(error)));
+  };
+}
+
+export function requestEditOpponents() {
+  return {
+    type: REQUEST_EDIT_OPPONENTS
+  };
+}
+
+export function receiveEditOpponents() {
+  return {
+    type: RECEIVE_EDIT_OPPONENTS
+  };
+}
+
+export function errorEdittingOpponents(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_EDITTING_OPPONENTS,
+    payload: {
+      error
+    }
+  };
+}
+
+export function editOpponents(eventID, teamID, opponentID, newName) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEditOpponents());
+
+    const db = firebase.firestore();
+    const eventRef = db.collection("events").doc(eventID);
+
+    return eventRef
+      .update({
+        [`teams.${teamID}.opponents.${opponentID}.name`]: newName
+      })
+      .then(() => dispatch(receiveEditOpponents()))
+      .catch(error => dispatch(errorEdittingOpponents(error)));
   };
 }

@@ -443,7 +443,9 @@ class ScheduleLayout extends Component {
       startLogging,
       toggleOptionalStats,
       finaliseResults,
-      editResult
+      editResult,
+      editDetails,
+      editOpponents
     } = this.props.actions;
     const {
       isCancelEventAlertOpen,
@@ -452,7 +454,9 @@ class ScheduleLayout extends Component {
     const {
       isEventsLoading,
       isStaffLoading,
-      isTeamsLoading
+      isTeamsLoading,
+      isEditDetailsLoading,
+      isEditOpponentLoading
     } = this.props.loadingStatus;
 
     const isPastEvent = this.checkIfEventPassed();
@@ -475,6 +479,8 @@ class ScheduleLayout extends Component {
             isCoachesLoading={isStaffLoading || activeInstitutionID === ""}
             isManagersLoading={isStaffLoading || activeInstitutionID === ""}
             isTeamsLoading={isTeamsLoading || activeInstitutionID === ""}
+            isEditDetailsLoading={isEditDetailsLoading}
+            isEditOpponentLoading={isEditOpponentLoading}
             isPastEvent={isPastEvent}
             dateSelected={dateSelected}
             isAdmin={isAdmin}
@@ -487,8 +493,12 @@ class ScheduleLayout extends Component {
               goBack,
               cancelEvent: () => openCancelEventAlert(),
               uncancelEvent: () => openUncancelEventAlert(),
+              editDetails: (times, homeAway, venue, notes) =>
+                editDetails(eventID, times, homeAway, venue, notes),
               editResult: (teamID, opponentID, newResult) =>
                 editResult(eventID, teamID, opponentID, newResult),
+              editOpponents: (teamID, opponentID, newName) =>
+                editOpponents(eventID, teamID, opponentID, newName),
               startLogging: (teamID, structure, opponentIDs) =>
                 startLogging(eventID, teamID, structure, opponentIDs),
               toggleOptionalStats: (teamID, opponentID, newState) =>

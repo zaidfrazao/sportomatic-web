@@ -152,19 +152,23 @@ class ListOfEvents extends Component {
   checkIfInfoMissing(eventInfo) {
     const venue = eventInfo.optionalInfo.venue;
     const isCompetitive = eventInfo.requiredInfo.isCompetitive;
-    let isMissingInfo = venue === "";
+    let isVenueMissingInfo = venue === "";
+    let isOpponentsMissing = false;
 
     if (isCompetitive) {
       const teams = eventInfo.teams;
 
       _.toPairs(teams).map(([teamID, teamInfo]) => {
         _.toPairs(teamInfo.opponents).map(([opponentID, opponentInfo]) => {
-          isMissingInfo = isMissingInfo || opponentInfo.name !== "Unknown";
+          isOpponentsMissing =
+            isOpponentsMissing ||
+            opponentInfo.name === "" ||
+            opponentInfo.name === "Unknown";
         });
       });
     }
 
-    return isMissingInfo;
+    return { venue: isVenueMissingInfo, opponents: isOpponentsMissing };
   }
 
   checkIfActionsRequired(eventInfo) {
@@ -221,7 +225,7 @@ class ListOfEvents extends Component {
         const title = eventInfo.requiredInfo.title;
         const isCompetitive = eventInfo.requiredInfo.isCompetitive;
         const isCancelled = eventInfo.requiredInfo.status === "CANCELLED";
-        const isMissingInfo = this.checkIfInfoMissing(eventInfo);
+        const missingInfo = this.checkIfInfoMissing(eventInfo);
         const isActionsRequired = this.checkIfActionsRequired(eventInfo);
         const isPastEvent = this.checkIfPastEvent(
           eventInfo.requiredInfo.times.end
@@ -238,7 +242,7 @@ class ListOfEvents extends Component {
             endTime={endTime}
             title={title}
             isTablet={isTablet}
-            isMissingInfo={isMissingInfo}
+            missingInfo={missingInfo}
             viewEventInfo={() =>
               navigateTo(`/myaccount/schedule/${eventDate}/${eventID}`)}
           />

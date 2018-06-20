@@ -2,9 +2,11 @@
 import React, { Component } from "react";
 import injectSheet from "react-jss";
 import moment from "moment";
-import YourHoursCard from "./components/YourHoursCard";
-import { common, grey, red } from "../../../../../../utils/colours";
+import { common, grey, lightBlue, red } from "../../../../../../utils/colours";
 import defaultProfilePicture from "./images/default-profile-picture.png";
+import EditDetailsDialog from "./components/EditDetailsDialog";
+import EditOpponentDialog from "./components/EditOpponentDialog";
+import YourHoursCard from "./components/YourHoursCard";
 
 const tabletBreakpoint = 1080;
 
@@ -41,6 +43,19 @@ const styles = {
     fontWeight: "bold",
     textAlign: "center"
   },
+  editButton: {
+    transition: "0.25s",
+    position: "absolute",
+    right: 0,
+    top: 0,
+    padding: "18px 24px",
+    color: common["black"],
+    cursor: "pointer",
+    fontSize: 20,
+    "&:hover": {
+      color: lightBlue[500]
+    }
+  },
   eventTypeIconWrapper: {
     textAlign: "center",
     backgroundColor: grey[100],
@@ -61,6 +76,20 @@ const styles = {
     height: 1,
     backgroundColor: grey[100],
     margin: "6px 24px"
+  },
+  listItemTeamWrapper: {
+    position: "relative",
+    transition: "0.25s",
+    display: "flex",
+    flexDirection: "column",
+    borderRadius: 12,
+    padding: 24,
+    backgroundColor: grey[200],
+    cursor: "pointer",
+    margin: 24,
+    "&:hover": {
+      backgroundColor: grey[300]
+    }
   },
   listItemWrapper: {
     transition: "0.25s",
@@ -100,6 +129,12 @@ const styles = {
     display: "flex",
     alignItems: "center"
   },
+  opponentsName: {
+    color: grey[500],
+    fontWeight: "bold",
+    marginTop: 4,
+    fontSize: 16
+  },
   profilePicture: {
     borderRadius: "50%",
     backgroundColor: grey[300],
@@ -108,6 +143,7 @@ const styles = {
     marginRight: 24
   },
   section: {
+    position: "relative",
     border: `1px solid ${grey[300]}`,
     borderRadius: 16,
     marginBottom: 24,
@@ -175,33 +211,133 @@ const styles = {
 };
 
 class Details extends Component {
+  state = {
+    isEditDetailsDialogOpen: false,
+    isEditOpponentDialogOpen: false
+  };
+
+  componentWillReceiveProps(nextProps) {
+    const { isEditDetailsLoading, isEditOpponentLoading } = nextProps;
+
+    if (
+      !isEditDetailsLoading &&
+      isEditDetailsLoading !== this.props.isEditDetailsLoading
+    ) {
+      this.toggleEditDetailsDialog();
+    }
+
+    if (
+      !isEditOpponentLoading &&
+      isEditOpponentLoading !== this.props.isEditOpponentLoading
+    ) {
+      this.toggleEditOpponentsDialog();
+    }
+  }
+
+  toggleEditDetailsDialog() {
+    this.setState({
+      isEditDetailsDialogOpen: !this.state.isEditDetailsDialogOpen
+    });
+  }
+
+  toggleEditOpponentsDialog() {
+    this.setState({
+      isEditOpponentDialogOpen: !this.state.isEditOpponentDialogOpen
+    });
+  }
+
+  checkIfManager() {
+    const { managers, userID } = this.props;
+    let isManager = false;
+
+    managers.map(info => {
+      isManager = isManager || info.id === userID;
+    });
+
+    return isManager;
+  }
+
   getTeamItems() {
-    const { classes, teams, navigateTo } = this.props;
+    const {
+      classes,
+      teams,
+      navigateTo,
+      isCompetitive,
+      isAdmin,
+      isEditOpponentLoading,
+      editOpponents
+    } = this.props;
+    const { isEditOpponentDialogOpen } = this.state;
 
     const lastIndex = teams.length - 1;
+    const isManager = this.checkIfManager();
 
     return teams.map((info, index) => {
       if (index !== lastIndex) {
         return (
           <div>
+            <EditOpponentDialog
+              isOpen={isEditOpponentDialogOpen}
+              opponentName={info.formattedOpponents}
+              isLoading={isEditOpponentLoading}
+              editOpponents={newName => editOpponents(info.id, "0", newName)}
+              closeDialog={() => this.toggleEditOpponentsDialog()}
+            />
             <div
               key={info.id}
-              className={classes.listItemWrapper}
+              className={classes.listItemTeamWrapper}
               onClick={() => navigateTo(`/myaccount/teams/${info.id}`)}
             >
-              {info.name}
+              <span>{info.name}</span>
+              {isCompetitive && (
+                <span className={classes.opponentsName}>
+                  {`vs ${info.formattedOpponents}`}
+                </span>
+              )}
             </div>
+            {isCompetitive &&
+              (isAdmin || isManager) && (
+                <div
+                  className={classes.editButton}
+                  onClick={() => this.toggleEditOpponentsDialog()}
+                >
+                  <i className="fas fa-edit" />
+                </div>
+              )}
             <div className={classes.listItemSeparator} />
           </div>
         );
       } else {
         return (
-          <div
-            key={info.id}
-            className={classes.listItemWrapper}
-            onClick={() => navigateTo(`/myaccount/teams/${info.id}`)}
-          >
-            {info.name}
+          <div>
+            <EditOpponentDialog
+              isOpen={isEditOpponentDialogOpen}
+              opponentName={info.formattedOpponents}
+              isLoading={isEditOpponentLoading}
+              editOpponents={newName => editOpponents(info.id, "0", newName)}
+              closeDialog={() => this.toggleEditOpponentsDialog()}
+            />
+            {isCompetitive &&
+              (isAdmin || isManager) && (
+                <div
+                  className={classes.editButton}
+                  onClick={() => this.toggleEditOpponentsDialog()}
+                >
+                  <i className="fas fa-edit" />
+                </div>
+              )}
+            <div
+              key={info.id}
+              className={classes.listItemTeamWrapper}
+              onClick={() => navigateTo(`/myaccount/teams/${info.id}`)}
+            >
+              <span>{info.name}</span>
+              {isCompetitive && (
+                <span className={classes.opponentsName}>
+                  {`vs ${info.formattedOpponents}`}
+                </span>
+              )}
+            </div>
           </div>
         );
       }
@@ -386,13 +522,19 @@ class Details extends Component {
       date,
       isCancelled,
       isCompetitive,
+      homeAway,
       venue,
       notes,
       userID,
       signIn,
-      signOut
+      signOut,
+      isAdmin,
+      editDetails,
+      isEditDetailsLoading
     } = this.props;
+    const { isEditDetailsDialogOpen } = this.state;
 
+    const isManager = this.checkIfManager();
     const eventTypeIcon = this.getEventTypeIcon();
     const isCoaching = this.checkIfUserCoaching(userID);
     const hours = this.getCoachHours(userID);
@@ -408,6 +550,22 @@ class Details extends Component {
 
     return (
       <div className={classes.wrapper}>
+        <EditDetailsDialog
+          isOpen={isEditDetailsDialogOpen}
+          isCompetitive={isCompetitive}
+          info={{
+            homeAway,
+            venue,
+            notes,
+            date: times.start,
+            startsAt: times.start,
+            endsAt: times.end
+          }}
+          isLoading={isEditDetailsLoading}
+          editDetails={(times, homeAway, venue, notes) =>
+            editDetails(times, homeAway, venue, notes)}
+          closeDialog={() => this.toggleEditDetailsDialog()}
+        />
         {isCancelled && (
           <div className={classes.cancelledWrapper}>
             <div className={classes.cancelledAlert}>
@@ -434,6 +592,14 @@ class Details extends Component {
               </div>
             )}
           <div className={classes.section}>
+            {(isAdmin || isManager) && (
+              <div
+                className={classes.editButton}
+                onClick={() => this.toggleEditDetailsDialog()}
+              >
+                <i className="fas fa-edit" />
+              </div>
+            )}
             <div className={classes.dateWrapper}>{date}</div>
             <div className={classes.startEndWrapper}>
               <div className={classes.timeWrapper}>{formattedTimes.start}</div>
@@ -446,6 +612,20 @@ class Details extends Component {
               </div>
               <span className={classes.eventTypeText}>{eventType}</span>
             </div>
+            {isCompetitive && (
+              <div className={classes.venueWrapper}>
+                <div className={classes.venueIconWrapper}>
+                  <i
+                    className={
+                      homeAway === "HOME" ? "fas fa-home" : "fas fa-bus"
+                    }
+                  />
+                </div>
+                <span className={classes.venueText}>
+                  {homeAway === "HOME" ? "Home" : "Away"}
+                </span>
+              </div>
+            )}
             <div className={classes.venueWrapper}>
               <div className={classes.venueIconWrapper}>
                 <i className="fas fa-map-marker" />

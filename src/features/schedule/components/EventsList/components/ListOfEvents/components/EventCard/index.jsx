@@ -131,7 +131,7 @@ class EventCard extends Component {
       isCancelled,
       title,
       isPastEvent,
-      isMissingInfo,
+      missingInfo,
       isActionsRequired,
       isTablet
     } = this.props;
@@ -152,10 +152,17 @@ class EventCard extends Component {
         )}
         {!isCancelled &&
           !isPastEvent &&
-          isMissingInfo && (
+          missingInfo.venue && (
             <div className={classes.missingInfoRow}>
               <i className={`fas fa-question ${classes.missingInfoIcon}`} />
-              <span className={classes.missingInfoText}>Missing info</span>
+              <span className={classes.missingInfoText}>Missing venue</span>
+            </div>
+          )}
+        {!isCancelled &&
+          missingInfo.opponents && (
+            <div className={classes.missingInfoRow}>
+              <i className={`fas fa-question ${classes.missingInfoIcon}`} />
+              <span className={classes.missingInfoText}>Unknown opponents</span>
             </div>
           )}
         {!isCancelled &&

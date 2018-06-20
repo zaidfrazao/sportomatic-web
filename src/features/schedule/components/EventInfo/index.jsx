@@ -207,7 +207,9 @@ class EventInfo extends Component {
       dateSelected,
       isPastEvent,
       isAdmin,
-      userID
+      userID,
+      isEditDetailsLoading,
+      isEditOpponentLoading
     } = this.props;
     const {
       navigateTo,
@@ -219,7 +221,9 @@ class EventInfo extends Component {
       startLogging,
       toggleOptionalStats,
       finaliseResults,
-      editResult
+      editResult,
+      editDetails,
+      editOpponents
     } = this.props.actions;
     const { isInfoLoading, emblem } = this.props;
     const { tabSelected } = this.state;
@@ -245,6 +249,10 @@ class EventInfo extends Component {
                 isCompetitive={info.isCompetitive}
                 venue={info.venue}
                 notes={info.notes}
+                homeAway={info.homeAway}
+                isEditDetailsLoading={isEditDetailsLoading}
+                isEditOpponentLoading={isEditOpponentLoading}
+                isAdmin={isAdmin}
                 userID={userID}
                 teams={teams}
                 coaches={coaches}
@@ -252,6 +260,8 @@ class EventInfo extends Component {
                 navigateTo={navigateTo}
                 signIn={signIn}
                 signOut={signOut}
+                editDetails={editDetails}
+                editOpponents={editOpponents}
               />
             </div>
           );
@@ -372,6 +382,10 @@ class EventInfo extends Component {
                 isCompetitive={info.isCompetitive}
                 venue={info.venue}
                 notes={info.notes}
+                homeAway={info.homeAway}
+                isEditDetailsLoading={isEditDetailsLoading}
+                isEditOpponentLoading={isEditOpponentLoading}
+                isAdmin={isAdmin}
                 userID={userID}
                 teams={teams}
                 coaches={coaches}
@@ -379,6 +393,8 @@ class EventInfo extends Component {
                 navigateTo={navigateTo}
                 signIn={signIn}
                 signOut={signOut}
+                editDetails={editDetails}
+                editOpponents={editOpponents}
               />
             </div>
           );
@@ -443,6 +459,7 @@ class EventInfo extends Component {
                 isCompetitive={info.isCompetitive}
                 venue={info.venue}
                 notes={info.notes}
+                homeAway={info.homeAway}
                 userID={userID}
                 teams={teams}
                 coaches={coaches}
@@ -494,16 +511,24 @@ class EventInfo extends Component {
     if (info) {
       return _.toPairs(info.teams).map(([teamID, eventTeamInfo]) => {
         const teamInfo = teams[teamID];
+        let opponentName = "";
+        if (eventTeamInfo.opponents) {
+          opponentName = eventTeamInfo.opponents["0"].name;
+        }
+
         if (teamInfo) {
           return {
             id: teamID,
             name: teamInfo.info.name,
+            formattedOpponents:
+              opponentName === "" ? "Unknown opponents" : opponentName,
             results: eventTeamInfo
           };
         } else {
           return {
             id: teamID,
             name: "Error finding team",
+            formattedOpponents: "",
             results: {
               opponents: []
             }
