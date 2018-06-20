@@ -27,12 +27,10 @@ const styles = {
   statsRequiredWrapper: {
     margin: "0 24px 24px 24px",
     border: `1px solid ${grey[300]}`,
-    backgroundColor: grey[100],
+    backgroundColor: common["white"],
     borderRadius: 8
   },
-  wrapper: {
-    backgroundColor: common["white"]
-  }
+  wrapper: {}
 };
 
 class Custom extends Component {

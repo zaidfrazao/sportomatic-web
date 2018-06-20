@@ -63,6 +63,17 @@ class Today extends Component {
     return isHoursLogged;
   }
 
+  checkIfResultsLogged(eventTeams) {
+    let isResultsLogged = true;
+
+    _.toPairs(eventTeams).map(([teamID, teamInfo]) => {
+      isResultsLogged =
+        isResultsLogged && teamInfo.resultsStatus === "FINALISED";
+    });
+
+    return isResultsLogged;
+  }
+
   getEventCards() {
     const { classes, navigateTo, events } = this.props;
 
@@ -76,6 +87,7 @@ class Today extends Component {
       const date = eventDateMoment.format("D MMMM YYYY");
       const hasHoursLogging = _.keys(eventInfo.coaches).length !== 0;
       const isHoursLogged = this.checkIfHoursLogged(eventInfo.coaches);
+      const isResultsLogged = this.checkIfResultsLogged(eventInfo.teams);
 
       return (
         <div className={classes.cardWrapper} key={`incomplete-card-${eventID}`}>
@@ -87,7 +99,7 @@ class Today extends Component {
             times={times}
             isHoursLogged={isHoursLogged}
             hasHoursLogging={hasHoursLogging}
-            isResultsLogged={false}
+            isResultsLogged={isResultsLogged}
             viewEventInfo={() =>
               navigateTo(`/myaccount/schedule/${eventDateString}/${eventID}`)}
           />

@@ -28,13 +28,13 @@ const styles = {
   statsOptionalWrapper: {
     margin: 24,
     border: `1px solid ${grey[300]}`,
-    backgroundColor: grey[100],
+    backgroundColor: common["white"],
     borderRadius: 8
   },
   statsRequiredWrapper: {
     margin: "0 24px 24px 24px",
     border: `1px solid ${grey[300]}`,
-    backgroundColor: grey[100],
+    backgroundColor: common["white"],
     borderRadius: 8
   },
   switchWrapper: {
@@ -42,9 +42,7 @@ const styles = {
     display: "flex",
     justifyContent: "center"
   },
-  wrapper: {
-    backgroundColor: common["white"]
-  }
+  wrapper: {}
 };
 
 class Rugby extends Component {

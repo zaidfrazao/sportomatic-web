@@ -32,7 +32,7 @@ const styles = {
     flexDirection: "column"
   },
   commentaryConfirmed: {
-    backgroundColor: grey[100],
+    backgroundColor: common["white"],
     borderRadius: 16,
     border: `1px solid ${grey[300]}`,
     padding: 24,
@@ -171,11 +171,7 @@ const styles = {
     fontWeight: "bold",
     margin: 24
   },
-  wrapper: {
-    backgroundColor: common["white"],
-    borderRadius: 16,
-    border: `1px solid ${grey[300]}`
-  }
+  wrapper: {}
 };
 
 class DesktopLogger extends Component {

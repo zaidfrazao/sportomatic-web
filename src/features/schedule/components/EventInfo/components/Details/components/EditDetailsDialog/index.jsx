@@ -795,7 +795,7 @@ class EditTimesDialog extends Component {
             </div>
           </div>
         )}
-        <div className={classes.sectionSeparator} />
+        {isUpcoming && <div className={classes.sectionSeparator} />}
         <div className={classes.headingTime}>Venue</div>
         <div className={classes.timeInputGroupWrapper}>
           <div className={classes.timeInputWrapper}>
