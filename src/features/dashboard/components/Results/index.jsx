@@ -90,7 +90,7 @@ class Results extends Component {
   }
 
   getEventCards() {
-    const { classes, navigateTo, isMobile, events, emblem } = this.props;
+    const { classes, navigateTo, isMobile, events, emblem, teams } = this.props;
 
     return _.toPairs(events).map(([eventID, eventInfo]) => {
       const eventDateMoment = moment(eventInfo.requiredInfo.times.start);
@@ -116,7 +116,7 @@ class Results extends Component {
           if (homeAway === "HOME") {
             homeTeam = {
               isUsersTeam: true,
-              name: teamInfo.name,
+              name: teams[teamID].info.name,
               emblem,
               requiredStats:
                 opponentInfo.ourScore && opponentInfo.ourScore.requiredStats,
@@ -146,7 +146,7 @@ class Results extends Component {
             };
             awayTeam = {
               isUsersTeam: true,
-              name: teamInfo.name,
+              name: teams[teamID].info.name,
               emblem,
               requiredStats:
                 opponentInfo.ourScore && opponentInfo.ourScore.requiredStats,

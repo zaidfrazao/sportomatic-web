@@ -301,7 +301,8 @@ class DashboardLayout extends Component {
       isAdmin,
       activeInstitutionID,
       meAllFilter,
-      changeMeAllFilter
+      changeMeAllFilter,
+      teams
     } = this.props;
     const { earliestLoadedResult, isLastResult } = this.props.uiConfig;
     const { loadRecentResults } = this.props.actions;
@@ -386,6 +387,7 @@ class DashboardLayout extends Component {
                 <div className={classes.flexGrow} />
               </div>
               <Results
+                teams={teams}
                 isMobile={isMobile}
                 emblem={communityInfo.emblem}
                 events={filteredRecentResults}
@@ -561,6 +563,7 @@ class DashboardLayout extends Component {
                 <div className={classes.flexGrow} />
               </div>
               <Results
+                teams={teams}
                 isMobile={isMobile}
                 emblem={communityInfo.emblem}
                 events={filteredRecentResults}
