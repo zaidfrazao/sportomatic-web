@@ -8,6 +8,7 @@ import BannerAd from "../../components/BannerAd";
 import { common, grey, lightBlue, red } from "../../utils/colours";
 import EmptyState from "../../components/EmptyState";
 import Incomplete from "./components/Incomplete";
+import Notifications from "./components/Notifications";
 import Results from "./components/Results";
 import Today from "./components/Today";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
@@ -144,7 +145,8 @@ class DashboardLayout extends Component {
       loadTodaysEvents,
       loadIncompleteEvents,
       loadRecentResults,
-      loadTeams
+      loadTeams,
+      loadNotifications
     } = this.props.actions;
 
     if (activeInstitutionID !== "") {
@@ -152,6 +154,7 @@ class DashboardLayout extends Component {
       loadTodaysEvents(activeInstitutionID);
       loadRecentResults(activeInstitutionID, lastVisible);
       loadIncompleteEvents(activeInstitutionID, userID, isAdmin);
+      loadNotifications(userID, activeInstitutionID);
     }
   }
 
@@ -162,7 +165,8 @@ class DashboardLayout extends Component {
       loadTeams,
       loadTodaysEvents,
       loadIncompleteEvents,
-      loadRecentResults
+      loadRecentResults,
+      loadNotifications
     } = nextProps.actions;
 
     if (
@@ -173,6 +177,7 @@ class DashboardLayout extends Component {
       loadTodaysEvents(activeInstitutionID);
       loadRecentResults(activeInstitutionID, lastVisible);
       loadIncompleteEvents(activeInstitutionID, userID, isAdmin);
+      loadNotifications(userID, activeInstitutionID);
     }
   }
 
@@ -302,10 +307,11 @@ class DashboardLayout extends Component {
       activeInstitutionID,
       meAllFilter,
       changeMeAllFilter,
-      teams
+      teams,
+      notifications
     } = this.props;
     const { earliestLoadedResult, isLastResult } = this.props.uiConfig;
-    const { loadRecentResults } = this.props.actions;
+    const { loadRecentResults, markNotificationRead } = this.props.actions;
     const { infoTab } = this.props.match.params;
     const { tabSelected } = this.state;
 
@@ -320,7 +326,7 @@ class DashboardLayout extends Component {
 
     const todayCount = _.keys(filteredTodaysEvents).length;
     let incompleteCount = _.keys(filteredIncompleteEvents).length;
-    const notificationCount = 0;
+    const notificationCount = this.getUnreadNotificationsCount();
 
     if (personalProfileProgress !== "100") {
       incompleteCount = incompleteCount + 1;
@@ -454,6 +460,11 @@ class DashboardLayout extends Component {
                 </div>
               </div>
               <div className={classes.adWrapper}>{ad}</div>
+              <Notifications
+                notifications={notifications}
+                navigateTo={navigateTo}
+                markNotificationRead={markNotificationRead}
+              />
             </div>
           );
         default:
@@ -606,6 +617,11 @@ class DashboardLayout extends Component {
           return (
             <div>
               <div className={classes.adWrapper}>{ad}</div>
+              <Notifications
+                notifications={notifications}
+                navigateTo={navigateTo}
+                markNotificationRead={markNotificationRead}
+              />
             </div>
           );
         default:
@@ -616,6 +632,21 @@ class DashboardLayout extends Component {
           );
       }
     }
+  }
+
+  getUnreadNotificationsCount() {
+    const { notifications } = this.props;
+
+    let count = 0;
+    _.toPairs(notifications).map(([notificationID, notificationInfo]) => {
+      const isRead = notificationInfo.metadata.isRead;
+
+      if (!isRead) {
+        count = count + 1;
+      }
+    });
+
+    return count;
   }
 
   getTabs() {
@@ -629,7 +660,7 @@ class DashboardLayout extends Component {
 
     const todayCount = _.keys(filteredTodaysEvents).length;
     let incompleteCount = _.keys(filteredIncompleteEvents).length;
-    const notificationCount = 0;
+    const notificationCount = this.getUnreadNotificationsCount();
 
     if (personalProfileProgress !== "100") {
       incompleteCount = incompleteCount + 1;

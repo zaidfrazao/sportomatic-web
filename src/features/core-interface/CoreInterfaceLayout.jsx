@@ -76,18 +76,11 @@ class CoreInterfaceLayout extends Component {
 
   componentWillMount() {
     const { pathname } = this.props.location;
-    const {
-      initUser,
-      loadUnreadNotifications,
-      loadReadNotifications,
-      loadAccountInfo
-    } = this.props.actions;
+    const { initUser, loadAccountInfo } = this.props.actions;
     const { userID, isLoggedIn } = this.props.uiConfig;
 
     initUser();
     if (userID !== "" && isLoggedIn) {
-      loadUnreadNotifications(userID);
-      loadReadNotifications(userID);
       loadAccountInfo(userID);
     }
     this.updateCoreUI(pathname);
@@ -96,12 +89,7 @@ class CoreInterfaceLayout extends Component {
   componentWillReceiveProps(nextProps) {
     const { institutions } = nextProps;
     const { pathname } = nextProps.location;
-    const {
-      loadUnreadNotifications,
-      loadReadNotifications,
-      loadAccountInfo,
-      changeMeAllFilter
-    } = nextProps.actions;
+    const { loadAccountInfo, changeMeAllFilter } = nextProps.actions;
     const { userID, isLoggedIn, accountInfo } = nextProps.uiConfig;
     const { loadInstitutionInfo, checkCompletionProgress } = nextProps.actions;
 
@@ -131,8 +119,6 @@ class CoreInterfaceLayout extends Component {
     }
 
     if (userID !== this.props.uiConfig.userID && userID !== "" && isLoggedIn) {
-      loadUnreadNotifications(userID);
-      loadReadNotifications(userID);
       loadAccountInfo(userID);
     }
 

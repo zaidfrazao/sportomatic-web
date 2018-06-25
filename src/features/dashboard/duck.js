@@ -22,6 +22,11 @@ export const ERROR_LOADING_INCOMPLETE_EVENTS = `${NAMESPACE}/ERROR_LOADING_INCOM
 export const REQUEST_TEAMS = `${NAMESPACE}/REQUEST_TEAMS`;
 export const RECEIVE_TEAMS = `${NAMESPACE}/RECEIVE_TEAMS`;
 export const ERROR_LOADING_TEAMS = `${NAMESPACE}/ERROR_LOADING_TEAMS`;
+export const REQUEST_NOTIFICATIONS = `${NAMESPACE}/REQUEST_READ_NOTIFICATIONS`;
+export const RECEIVE_NOTIFICATIONS = `${NAMESPACE}/RECEIVE_READ_NOTIFICATIONS`;
+export const REQUEST_MARK_NOTIFICATION_READ = `${NAMESPACE}/REQUEST_MARK_NOTIFICATION_READ`;
+export const RECEIVE_MARK_NOTIFICATION_READ = `${NAMESPACE}/RECEIVE_MARK_NOTIFICATION_READ`;
+export const ERROR_MARKING_NOTIFICATION_READ = `${NAMESPACE}/ERROR_MARKING_NOTIFICATION_READ`;
 
 export const SIGN_OUT = "sportomatic-web/core-interface/SIGN_OUT";
 
@@ -52,7 +57,8 @@ export const loadingStatusInitialState = {
   isRecentResultsLoading: false,
   isTodaysEventsLoading: false,
   isIncompleteEventsLoading: false,
-  isTeamsLoading: false
+  isTeamsLoading: false,
+  isNotificationsLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -60,6 +66,16 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
     case RESET_STATE:
     case SIGN_OUT:
       return loadingStatusInitialState;
+    case REQUEST_NOTIFICATIONS:
+      return {
+        ...state,
+        isNotificationsLoading: true
+      };
+    case RECEIVE_NOTIFICATIONS:
+      return {
+        ...state,
+        isNotificationsLoading: false
+      };
     case REQUEST_RECENT_RESULTS:
       return {
         ...state,
@@ -163,13 +179,27 @@ function incompleteEventsReducer(state = {}, action = {}) {
   }
 }
 
+function notificationsReducer(state = {}, action = {}) {
+  switch (action.type) {
+    case RESET_STATE:
+    case REQUEST_NOTIFICATIONS:
+    case SIGN_OUT:
+      return {};
+    case RECEIVE_NOTIFICATIONS:
+      return action.payload.notifications;
+    default:
+      return state;
+  }
+}
+
 export const dashboardReducer = combineReducers({
   uiConfig: uiConfigReducer,
   loadingStatus: loadingStatusReducer,
   teams: teamsReducer,
   todaysEvents: todaysEventsReducer,
   recentResults: recentResultsReducer,
-  incompleteEvents: incompleteEventsReducer
+  incompleteEvents: incompleteEventsReducer,
+  notifications: notificationsReducer
 });
 
 // Selectors
@@ -180,6 +210,7 @@ const teams = state => state.dashboard.teams;
 const todaysEvents = state => state.dashboard.todaysEvents;
 const recentResults = state => state.dashboard.recentResults;
 const incompleteEvents = state => state.dashboard.incompleteEvents;
+const notifications = state => state.dashboard.notifications;
 
 export const selector = createStructuredSelector({
   uiConfig,
@@ -187,7 +218,8 @@ export const selector = createStructuredSelector({
   teams,
   todaysEvents,
   recentResults,
-  incompleteEvents
+  incompleteEvents,
+  notifications
 });
 
 // Action Creators
@@ -417,5 +449,80 @@ export function loadTeams(institutionID) {
       });
       dispatch(receiveTeams(teams));
     });
+  };
+}
+
+export function requestNotifications() {
+  return {
+    type: REQUEST_NOTIFICATIONS
+  };
+}
+
+export function receiveNotifications(notifications) {
+  return {
+    type: RECEIVE_NOTIFICATIONS,
+    payload: {
+      notifications
+    }
+  };
+}
+
+export function loadNotifications(userID, communityID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestNotifications());
+
+    const notificationsRef = firebase
+      .firestore()
+      .collection("notifications")
+      .where("recipient", "==", userID)
+      .where("communityID", "==", communityID)
+      .orderBy("metadata.creationDate", "desc");
+
+    return notificationsRef.onSnapshot(querySnapshot => {
+      let notifications = {};
+      querySnapshot.forEach(doc => {
+        notifications[doc.id] = doc.data();
+      });
+      dispatch(receiveNotifications(notifications));
+    });
+  };
+}
+
+export function requestMarkNotificationRead() {
+  return {
+    type: REQUEST_MARK_NOTIFICATION_READ
+  };
+}
+
+export function receiveMarkNotificationRead() {
+  return {
+    type: RECEIVE_MARK_NOTIFICATION_READ
+  };
+}
+
+export function errorMarkingNotificationRead(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_MARKING_NOTIFICATION_READ,
+    payload: {
+      error
+    }
+  };
+}
+
+export function markNotificationRead(notificationID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestMarkNotificationRead());
+    const db = firebase.firestore();
+    const notificationRef = db.collection("notifications").doc(notificationID);
+
+    return notificationRef
+      .update({
+        "metadata.isRead": true
+      })
+      .then(() => dispatch(receiveMarkNotificationRead()))
+      .catch(error => dispatch(errorMarkingNotificationRead(error)));
   };
 }

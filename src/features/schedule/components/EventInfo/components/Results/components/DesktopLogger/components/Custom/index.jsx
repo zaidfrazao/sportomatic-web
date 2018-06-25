@@ -151,7 +151,6 @@ class Custom extends Component {
     const { homeTeam, awayTeam } = this.state;
 
     const allowEditing = status !== "FINALISED";
-    console.log(status);
 
     return (
       <div className={classes.wrapper}>

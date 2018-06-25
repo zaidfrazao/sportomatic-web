@@ -23,7 +23,7 @@ const styles = {
     cursor: "not-allowed",
     textAlign: "center",
     fontWeight: "bold",
-    borderRadius: "0 0 16px 16px"
+    borderRadius: 16
   },
   buttonsWrapper: {
     flexGrow: 1,
@@ -60,7 +60,7 @@ const styles = {
     cursor: "pointer",
     textAlign: "center",
     fontWeight: "bold",
-    borderRadius: "0 0 16px 16px",
+    borderRadius: 16,
     "&:hover": {
       backgroundColor: orange["A200"]
     }
