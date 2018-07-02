@@ -322,6 +322,7 @@ export function loadRecentResults(institutionID, lastVisible) {
         .orderBy("requiredInfo.times.start", "desc")
         .where("institutionID", "==", institutionID)
         .where("requiredInfo.isCompetitive", "==", true)
+        .where("requiredInfo.status", "==", "ACTIVE")
         .startAfter(lastVisible)
         .limit(20);
 
@@ -346,6 +347,7 @@ export function loadRecentResults(institutionID, lastVisible) {
         .where("institutionID", "==", institutionID)
         .where("requiredInfo.times.start", "<=", startsAt)
         .where("requiredInfo.isCompetitive", "==", true)
+        .where("requiredInfo.status", "==", "ACTIVE")
         .limit(20);
 
       return eventsRef.onSnapshot(querySnapshot => {

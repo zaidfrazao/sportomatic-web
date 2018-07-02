@@ -18,8 +18,13 @@ const styles = theme => ({
     backgroundColor: lightBlue[500],
     border: `2px solid ${lightBlue[500]}`,
     "&:hover": {
-      border: `2px solid ${lightBlue[400]}`,
-      backgroundColor: lightBlue[400]
+      border: props =>
+        props.loading
+          ? `2px solid ${lightBlue[500]}`
+          : `2px solid ${lightBlue[400]}`,
+      backgroundColor: props =>
+        props.loading ? lightBlue[500] : lightBlue[400],
+      cursor: props => (props.loading ? "not-allowed" : "pointer")
     }
   },
   primaryOutlined: {

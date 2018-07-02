@@ -96,7 +96,8 @@ class Today extends Component {
       isMobile,
       events,
       meAllFilter,
-      isUserAdmin
+      isUserAdmin,
+      roles
     } = this.props;
 
     return _.toPairs(events).map(([eventID, eventInfo]) => {
@@ -129,7 +130,10 @@ class Today extends Component {
             isHoursLogged={isHoursLogged}
             isResultsLogged={isResultsLogged}
             hasHoursLogging={hasHoursLogging}
-            showLogging={isUserAdmin || meAllFilter === "me"}
+            showLogging={
+              isUserAdmin ||
+              (roles.coach && roles.manager && meAllFilter === "me")
+            }
             viewEventInfo={() =>
               navigateTo(`/myaccount/schedule/${eventDateString}/${eventID}`)}
           />

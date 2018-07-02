@@ -389,7 +389,7 @@ class PersonInfo extends Component {
     }
   }
 
-  getTabs(isUserInfo, isUserManager, isUserAdmin) {
+  getTabs(isUserInfo, isUserManager, isUserAdmin, isPersonCoach) {
     const allTabs = [
       {
         key: "details",
@@ -406,12 +406,24 @@ class PersonInfo extends Component {
     ];
 
     if (isUserInfo) {
-      return allTabs;
+      if (isPersonCoach) {
+        return allTabs;
+      } else {
+        return [allTabs[0]];
+      }
     } else {
       if (isUserAdmin) {
-        return allTabs;
+        if (isPersonCoach) {
+          return allTabs;
+        } else {
+          return [allTabs[0]];
+        }
       } else if (isUserManager) {
-        return [allTabs[0], allTabs[1]];
+        if (isPersonCoach) {
+          return [allTabs[0], allTabs[1]];
+        } else {
+          return [allTabs[0]];
+        }
       } else {
         return [allTabs[0]];
       }
@@ -419,20 +431,29 @@ class PersonInfo extends Component {
   }
 
   getTeams() {
-    const { personID, teams } = this.props;
+    const { personID, teams, seasons } = this.props;
 
-    return _.toPairs(teams)
-      .map(([teamID, teamInfo]) => {
-        return {
-          id: teamID,
-          name: teamInfo.info.name,
-          coaches: teamInfo.coaches,
-          managers: teamInfo.managers
-        };
-      })
-      .filter(
-        teamInfo => teamInfo.coaches[personID] || teamInfo.managers[personID]
-      );
+    let personTeams = {};
+
+    _.toPairs(seasons).map(([seasonID, seasonInfo]) => {
+      if (
+        seasonInfo.managers[personID] ||
+        seasonInfo.coaches[personID] ||
+        (seasonInfo.athletes && seasonInfo.athletes[personID]) ||
+        (seasonInfo.parents && seasonInfo.parents[personID])
+      ) {
+        personTeams[seasonInfo.teamID] = teams[seasonInfo.teamID];
+      }
+    });
+
+    return _.toPairs(personTeams).map(([teamID, teamInfo]) => {
+      return {
+        id: teamID,
+        name: teamInfo.info.name,
+        coaches: teamInfo.coaches,
+        managers: teamInfo.managers
+      };
+    });
   }
 
   checkIfUserInfo() {
@@ -441,53 +462,74 @@ class PersonInfo extends Component {
     return userID === personID;
   }
 
-  checkIfUserManagesPerson(personTeams) {
-    const { userID, teams } = this.props;
+  checkIfUserManagesPerson() {
+    const { userID, personID, seasons } = this.props;
     let isManager = false;
 
-    personTeams.map(personTeamInfo => {
-      const completeTeamInfo = teams[personTeamInfo.id];
-
-      if (completeTeamInfo) {
-        if (completeTeamInfo.managers[userID]) isManager = true;
+    _.toPairs(seasons).map(([seasonID, seasonInfo]) => {
+      if (
+        seasonInfo.managers[personID] ||
+        seasonInfo.coaches[personID] ||
+        (seasonInfo.athletes && seasonInfo.athletes[personID])
+      ) {
+        isManager = isManager || seasonInfo.managers[userID];
       }
     });
 
     return isManager;
   }
 
-  getPersonRolesHeading(personTeams, isAdmin) {
-    const { teams, personID } = this.props;
+  checkIfPersonCoach() {
+    const { personID, seasons } = this.props;
+
+    let isCoach = false;
+
+    _.toPairs(seasons).map(([seasonID, seasonInfo]) => {
+      isCoach = isCoach || seasonInfo.coaches[personID];
+    });
+
+    return isCoach;
+  }
+
+  getRoles(isAdmin) {
+    const { personID, seasons } = this.props;
 
     let isManager = false;
     let isCoach = false;
+    let isAthlete = false;
+    let isParent = false;
 
-    personTeams.map(personTeamInfo => {
-      const completeTeamInfo = teams[personTeamInfo.id];
-
-      if (completeTeamInfo) {
-        if (completeTeamInfo.coaches[personID]) isCoach = true;
-        if (completeTeamInfo.managers[personID]) isManager = true;
-      }
+    _.toPairs(seasons).map(([seasonID, seasonInfo]) => {
+      isCoach = isCoach || seasonInfo.coaches[personID];
+      isManager = isManager || seasonInfo.managers[personID];
+      isAthlete =
+        isAthlete || (seasonInfo.athletes && seasonInfo.athletes[personID]);
+      isParent =
+        isParent || (seasonInfo.parents && seasonInfo.parents[personID]);
     });
 
-    if (isAdmin && isManager && isCoach) {
-      return "Admin | Manager | Coach";
-    } else if (isAdmin && isManager && !isCoach) {
-      return "Admin | Manager";
-    } else if (isAdmin && !isManager && isCoach) {
-      return "Admin | Coach";
-    } else if (!isAdmin && isManager && isCoach) {
-      return "Manager | Coach";
-    } else if (isAdmin && !isManager && !isCoach) {
-      return "Admin";
-    } else if (!isAdmin && isManager && !isCoach) {
-      return "Manager";
-    } else if (!isAdmin && !isManager && isCoach) {
-      return "Coach";
-    } else {
-      return "No Role Assigned";
+    let roles = "";
+
+    if (isAdmin) {
+      roles = roles === "" ? "Admin" : roles + " | Admin";
     }
+    if (isCoach) {
+      roles = roles === "" ? "Coach" : roles + " | Coach";
+    }
+    if (isManager) {
+      roles = roles === "" ? "Manager" : roles + " | Manager";
+    }
+    if (isAthlete) {
+      roles = roles === "" ? "Athlete" : roles + " | Athlete";
+    }
+    if (isParent) {
+      roles = roles === "" ? "Parent" : roles + " | Parent";
+    }
+    if (roles === "") {
+      roles = "No Role Assigned";
+    }
+
+    return roles;
   }
 
   render() {
@@ -498,15 +540,25 @@ class PersonInfo extends Component {
     const info = this.getInfo();
     const teams = this.getTeams();
     const isUserInfo = this.checkIfUserInfo();
-    const isUserManager = this.checkIfUserManagesPerson(teams);
-    const personRolesHeading = this.getPersonRolesHeading(teams, info.isAdmin);
+    const isPersonCoach = this.checkIfPersonCoach();
+    const isUserManager = this.checkIfUserManagesPerson();
+    const personRolesHeading = this.getRoles(teams, info.isAdmin);
 
     if (!isMobile && infoTab) {
       return <Redirect to={`/myaccount/people/${personID}`} />;
     }
 
-    const sectionDisplay = this.getSectionDisplay(info, teams);
-    const tabs = this.getTabs(isUserInfo, isUserManager, isUserAdmin);
+    if (!isPersonCoach && (infoTab === "hours" || infoTab === "wages")) {
+      return <Redirect to={`/myaccount/people/${personID}/details`} />;
+    }
+
+    const sectionDisplay = this.getSectionDisplay(info, teams, isPersonCoach);
+    const tabs = this.getTabs(
+      isUserInfo,
+      isUserManager,
+      isUserAdmin,
+      isPersonCoach
+    );
 
     return (
       <div className={classes.root}>

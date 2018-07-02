@@ -187,7 +187,7 @@ class ListOfEvents extends Component {
       _.toPairs(teams).map(([teamID, teamInfo]) => {
         _.toPairs(teamInfo.opponents).map(([opponentID, opponentInfo]) => {
           isActionsRequired =
-            isActionsRequired || opponentInfo.resultsStatus !== "FINALISED";
+            isActionsRequired && opponentInfo.resultsStatus !== "FINALISED";
         });
       });
     }

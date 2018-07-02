@@ -233,7 +233,7 @@ class CommunityLayout extends Component {
   }
 
   getSectionDisplay() {
-    const { classes, isMobile, navigateTo, isAdmin, goBack } = this.props;
+    const { classes, isMobile, navigateTo, roles, goBack } = this.props;
     const { infoTab } = this.props.match.params;
     const { tabSelected } = this.state;
 
@@ -250,7 +250,7 @@ class CommunityLayout extends Component {
                 </div>
                 <div className={classes.headerInnerWrapper}>Details</div>
               </div>
-              {this.getCommunityInfoView(isAdmin)}
+              {this.getCommunityInfoView(roles.admin)}
             </div>
           );
         case "switch":
@@ -299,11 +299,11 @@ class CommunityLayout extends Component {
     } else {
       switch (tabSelected) {
         case "details":
-          return <div>{this.getCommunityInfoView(isAdmin)}</div>;
+          return <div>{this.getCommunityInfoView(roles.admin)}</div>;
         case "switch":
           return <div>{this.getCommunityListView()}</div>;
         default:
-          return <div>{this.getCommunityInfoView(isAdmin)}</div>;
+          return <div>{this.getCommunityInfoView(roles.admin)}</div>;
       }
     }
   }

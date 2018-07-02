@@ -287,6 +287,130 @@ class Details extends Component {
       });
   }
 
+  getAthleteItems(currentSeason) {
+    const { classes, staff, navigateTo } = this.props;
+
+    console.log(currentSeason);
+
+    const athletes = _.toPairs(staff)
+      .filter(([id, info]) => {
+        return currentSeason.athletes && currentSeason.athletes[id];
+      })
+      .map(([id, info]) => {
+        return { id, ...info };
+      });
+    const lastIndex = athletes.length - 1;
+
+    return athletes
+      .filter(info => {
+        return currentSeason.athletes && currentSeason.athletes[info.id];
+      })
+      .map((info, index) => {
+        if (index !== lastIndex) {
+          return (
+            <div key={info.id}>
+              <div
+                className={classes.listItemWrapper}
+                onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+              >
+                <img
+                  alt={info.name}
+                  className={classes.profilePicture}
+                  src={
+                    info.info.profilePictureURL === ""
+                      ? defaultProfilePicture
+                      : info.info.profilePictureURL
+                  }
+                />
+                {`${info.info.name} ${info.info.surname}`}
+              </div>
+              <div className={classes.listItemSeparator} />
+            </div>
+          );
+        } else {
+          return (
+            <div
+              key={info.id}
+              className={classes.listItemWrapper}
+              onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+            >
+              <img
+                alt={info.name}
+                className={classes.profilePicture}
+                src={
+                  info.info.profilePictureURL === ""
+                    ? defaultProfilePicture
+                    : info.info.profilePictureURL
+                }
+              />
+              {`${info.info.name} ${info.info.surname}`}
+            </div>
+          );
+        }
+      });
+  }
+
+  getParentItems(currentSeason) {
+    const { classes, staff, navigateTo } = this.props;
+
+    const parents = _.toPairs(staff)
+      .filter(([id, info]) => {
+        return currentSeason.parents && currentSeason.parents[id];
+      })
+      .map(([id, info]) => {
+        return { id, ...info };
+      });
+    const lastIndex = parents.length - 1;
+
+    return parents
+      .filter(info => {
+        return currentSeason.parents && currentSeason.parents[info.id];
+      })
+      .map((info, index) => {
+        if (index !== lastIndex) {
+          return (
+            <div key={info.id}>
+              <div
+                className={classes.listItemWrapper}
+                onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+              >
+                <img
+                  alt={info.name}
+                  className={classes.profilePicture}
+                  src={
+                    info.info.profilePictureURL === ""
+                      ? defaultProfilePicture
+                      : info.info.profilePictureURL
+                  }
+                />
+                {`${info.info.name} ${info.info.surname}`}
+              </div>
+              <div className={classes.listItemSeparator} />
+            </div>
+          );
+        } else {
+          return (
+            <div
+              key={info.id}
+              className={classes.listItemWrapper}
+              onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+            >
+              <img
+                alt={info.name}
+                className={classes.profilePicture}
+                src={
+                  info.info.profilePictureURL === ""
+                    ? defaultProfilePicture
+                    : info.info.profilePictureURL
+                }
+              />
+              {`${info.info.name} ${info.info.surname}`}
+            </div>
+          );
+        }
+      });
+  }
+
   formatGender() {
     const { ageGroup, gender } = this.props;
 
@@ -344,6 +468,8 @@ class Details extends Component {
     const currentSeason = this.getCurrentSeason();
     const coachItems = this.getCoachItems(currentSeason);
     const managerItems = this.getManagerItems(currentSeason);
+    const athleteItems = this.getAthleteItems(currentSeason);
+    const parentItems = this.getParentItems(currentSeason);
     const gender = this.formatGender();
     const ageGroup = this.formatAgeGroup();
 
@@ -387,12 +513,12 @@ class Details extends Component {
         </div>
         {currentSeason.status === "IN_SEASON" ? (
           <div className={classes.column}>
-            <div className={classes.rosterHeading}>Current Roster</div>
+            <div className={classes.rosterHeading}>Current Season</div>
             <div className={classes.section}>
               <div className={classes.sectionHeading}>Coaches</div>
               {coachItems.length === 0 ? (
                 <div className={classes.noItems}>
-                  No coaches on current roster
+                  No coaches in current season
                 </div>
               ) : (
                 coachItems
@@ -402,7 +528,7 @@ class Details extends Component {
               <div className={classes.sectionHeading}>Managers</div>
               {managerItems.length === 0 ? (
                 <div className={classes.noItems}>
-                  No managers on current roster
+                  No managers in current season
                 </div>
               ) : (
                 managerItems
@@ -410,13 +536,29 @@ class Details extends Component {
             </div>
             <div className={classes.section}>
               <div className={classes.sectionHeading}>Athletes</div>
-              <div className={classes.noItems}>Coming soon</div>
+              {athleteItems.length === 0 ? (
+                <div className={classes.noItems}>
+                  No athletes in current season
+                </div>
+              ) : (
+                athleteItems
+              )}
+            </div>
+            <div className={classes.section}>
+              <div className={classes.sectionHeading}>Parents</div>
+              {parentItems.length === 0 ? (
+                <div className={classes.noItems}>
+                  No parents in current season
+                </div>
+              ) : (
+                parentItems
+              )}
             </div>
           </div>
         ) : (
           <div className={classes.column}>
             <div className={classes.section}>
-              <div className={classes.sectionHeading}>Current Roster</div>
+              <div className={classes.sectionHeading}>Current Season</div>
               <div className={classes.noItems}>
                 This team is currently not in season
               </div>

@@ -364,7 +364,7 @@ class PeopleLayout extends Component {
       communityName,
       navigateTo,
       goBack,
-      isAdmin,
+      roles,
       institutionCreationDate,
       meAllFilter,
       changeMeAllFilter,
@@ -457,7 +457,8 @@ class PeopleLayout extends Component {
                 info={users[personID]}
                 activeInstitutionID={activeInstitutionID}
                 infoTab={infoTab}
-                isUserAdmin={isAdmin}
+                isUserAdmin={roles.admin}
+                seasons={seasons}
                 hours={hours}
                 wages={wages}
                 isMobile={isMobile}
@@ -497,7 +498,7 @@ class PeopleLayout extends Component {
                   />
                   {isMobile && <div className={classes.buttonSeparator} />}
                   <div className={classes.flexGrow} />
-                  {isAdmin && (
+                  {roles.admin && (
                     <Button
                       colour="primary"
                       filled
@@ -525,7 +526,7 @@ class PeopleLayout extends Component {
                       people={staffCardsInfo}
                       isLoading={isResendInviteLoading}
                       resendID={resendInfo.id}
-                      isUserAdmin={isAdmin}
+                      isUserAdmin={roles.admin}
                       seasons={seasons}
                       resendInvite={(inviteeName, inviteeID, inviteeEmail) =>
                         resendInvite(

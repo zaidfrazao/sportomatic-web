@@ -10,6 +10,8 @@ export const OPEN_ADD_TEAM_DIALOG = `${NAMESPACE}/OPEN_ADD_TEAM_DIALOG`;
 export const CLOSE_ADD_TEAM_DIALOG = `${NAMESPACE}/CLOSE_ADD_TEAM_DIALOG`;
 export const OPEN_SEASON_SETUP_DIALOG = `${NAMESPACE}/OPEN_SEASON_SETUP_DIALOG`;
 export const CLOSE_SEASON_SETUP_DIALOG = `${NAMESPACE}/CLOSE_SEASON_SETUP_DIALOG`;
+export const OPEN_ROSTER_SETUP_DIALOG = `${NAMESPACE}/OPEN_ROSTER_SETUP_DIALOG`;
+export const CLOSE_ROSTER_SETUP_DIALOG = `${NAMESPACE}/CLOSE_ROSTER_SETUP_DIALOG`;
 export const REQUEST_STAFF = `${NAMESPACE}/REQUEST_STAFF`;
 export const RECEIVE_STAFF = `${NAMESPACE}/RECEIVE_STAFF`;
 export const ERROR_LOADING_STAFF = `${NAMESPACE}/ERROR_LOADING_STAFF`;
@@ -39,6 +41,9 @@ export const ERROR_CREATING_SEASON = `${NAMESPACE}/ERROR_CREATING_SEASON`;
 export const REQUEST_EDIT_SEASON = `${NAMESPACE}/REQUEST_EDIT_SEASON`;
 export const RECEIVE_EDIT_SEASON = `${NAMESPACE}/RECEIVE_EDIT_SEASON`;
 export const ERROR_EDITTING_SEASON = `${NAMESPACE}/ERROR_EDITTING_SEASON`;
+export const REQUEST_EDIT_ROSTER = `${NAMESPACE}/REQUEST_EDIT_ROSTER`;
+export const RECEIVE_EDIT_ROSTER = `${NAMESPACE}/RECEIVE_EDIT_ROSTER`;
+export const ERROR_EDITTING_ROSTER = `${NAMESPACE}/ERROR_EDITTING_ROSTER`;
 export const REQUEST_SEASONS = `${NAMESPACE}/REQUEST_SEASONS`;
 export const RECEIVE_SEASONS = `${NAMESPACE}/RECEIVE_SEASONS`;
 export const ERROR_FETCHING_SEASONS = `${NAMESPACE}/ERROR_FETCHING_SEASONS`;
@@ -80,6 +85,12 @@ export const dialogsInitialState = {
     teamName: "",
     teamID: ""
   },
+  rosterSetupDialog: {
+    isOpen: false,
+    teamName: "",
+    teamID: "",
+    seasonID: ""
+  },
   isErrorAddingTeamAlertOpen: false,
   isEditTeamDialogOpen: false,
   isDeleteTeamAlertOpen: false,
@@ -119,6 +130,28 @@ function dialogsReducer(state = dialogsInitialState, action = {}) {
           isOpen: false,
           teamName: "",
           teamID: ""
+        }
+      };
+    case OPEN_ROSTER_SETUP_DIALOG:
+      return {
+        ...state,
+        rosterSetupDialog: {
+          isOpen: true,
+          teamName: action.payload.teamName,
+          teamID: action.payload.teamID,
+          seasonID: action.payload.seasonID
+        }
+      };
+    case RECEIVE_EDIT_ROSTER:
+    case ERROR_EDITTING_ROSTER:
+    case CLOSE_ROSTER_SETUP_DIALOG:
+      return {
+        ...state,
+        rosterSetupDialog: {
+          isOpen: false,
+          teamName: "",
+          teamID: "",
+          seasonID: ""
         }
       };
     case OPEN_ADD_TEAM_DIALOG:
@@ -203,6 +236,7 @@ export const loadingStatusInitialState = {
   isSeasonsLoading: false,
   isAddTeamLoading: false,
   isEditTeamLoading: false,
+  isEditRosterLoading: false,
   isTeamsLoading: false,
   isStaffLoading: false,
   isEventsByTeamLoading: false,
@@ -247,6 +281,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isEditSeasonLoading: false
+      };
+    case REQUEST_EDIT_ROSTER:
+      return {
+        ...state,
+        isEditRosterLoading: true
+      };
+    case ERROR_EDITTING_ROSTER:
+    case RECEIVE_EDIT_ROSTER:
+      return {
+        ...state,
+        isEditRosterLoading: false
       };
     case REQUEST_ADD_TEAM:
       return {
@@ -429,6 +474,23 @@ export function openSeasonSetupDialog(teamName, teamID) {
 export function closeSeasonSetupDialog() {
   return {
     type: CLOSE_SEASON_SETUP_DIALOG
+  };
+}
+
+export function openRosterSetupDialog(teamName, teamID, seasonID) {
+  return {
+    type: OPEN_ROSTER_SETUP_DIALOG,
+    payload: {
+      teamName,
+      teamID,
+      seasonID
+    }
+  };
+}
+
+export function closeRosterSetupDialog() {
+  return {
+    type: CLOSE_ROSTER_SETUP_DIALOG
   };
 }
 
@@ -862,6 +924,57 @@ export function editSeason(
       })
       .catch(error => {
         dispatch(errorEdittingSeason(error));
+      });
+  };
+}
+
+export function requestEditRoster() {
+  return {
+    type: REQUEST_EDIT_ROSTER
+  };
+}
+
+export function receiveEditRoster() {
+  return {
+    type: RECEIVE_EDIT_ROSTER
+  };
+}
+
+export function errorEdittingRoster(error: { code: string, message: string }) {
+  return {
+    type: ERROR_EDITTING_ROSTER,
+    payload: {
+      error
+    }
+  };
+}
+
+export function editRoster(
+  seasonID,
+  teamID,
+  institutionID,
+  userID,
+  userName,
+  roster
+) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestEditRoster());
+
+    const editRoster = firebase.functions().httpsCallable("editRoster");
+
+    return editRoster({
+      seasonID,
+      teamID,
+      institutionID,
+      userID,
+      userName,
+      roster
+    })
+      .then(result => {
+        dispatch(receiveEditRoster());
+      })
+      .catch(error => {
+        dispatch(errorEdittingRoster(error));
       });
   };
 }

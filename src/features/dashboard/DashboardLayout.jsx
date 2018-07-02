@@ -139,7 +139,7 @@ class DashboardLayout extends Component {
   };
 
   componentWillMount() {
-    const { activeInstitutionID, userID, isAdmin } = this.props;
+    const { activeInstitutionID, userID, roles } = this.props;
     const { lastVisible } = this.props.uiConfig;
     const {
       loadTodaysEvents,
@@ -153,13 +153,16 @@ class DashboardLayout extends Component {
       loadTeams(activeInstitutionID);
       loadTodaysEvents(activeInstitutionID);
       loadRecentResults(activeInstitutionID, lastVisible);
-      loadIncompleteEvents(activeInstitutionID, userID, isAdmin);
       loadNotifications(userID, activeInstitutionID);
+
+      if (roles.admin || roles.coach || roles.manager) {
+        loadIncompleteEvents(activeInstitutionID, userID, roles.admin);
+      }
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { activeInstitutionID, userID, isAdmin } = nextProps;
+    const { activeInstitutionID, userID, roles } = nextProps;
     const { lastVisible } = nextProps.uiConfig;
     const {
       loadTeams,
@@ -176,8 +179,11 @@ class DashboardLayout extends Component {
       loadTeams(activeInstitutionID);
       loadTodaysEvents(activeInstitutionID);
       loadRecentResults(activeInstitutionID, lastVisible);
-      loadIncompleteEvents(activeInstitutionID, userID, isAdmin);
       loadNotifications(userID, activeInstitutionID);
+
+      if (roles.admin || roles.coach || roles.manager) {
+        loadIncompleteEvents(activeInstitutionID, userID, roles.admin);
+      }
     }
   }
 
@@ -187,23 +193,21 @@ class DashboardLayout extends Component {
   }
 
   filterEvents(events) {
-    const { userID, meAllFilter, sportFilter, teams } = this.props;
+    const { meAllFilter, sportFilter, teams, roles } = this.props;
 
     return _.fromPairs(
       _.toPairs(events).filter(([id, info]) => {
         let allowThroughFilter = true;
         let titleMatch = true;
-        let coachMatch = true;
-        let managerMatch = true;
         let roleMatch = true;
 
         if (meAllFilter === "me") {
-          const eventCoaches = _.keys(info.coaches);
-          const eventManagers = _.keys(info.managers);
-
-          roleMatch = false;
-          roleMatch = roleMatch || eventCoaches.includes(userID);
-          roleMatch = roleMatch || eventManagers.includes(userID);
+          roleMatch =
+            roleMatch ||
+            roles.coach ||
+            roles.managers ||
+            roles.athletes ||
+            roles.parents;
         }
 
         _.keys(info.teams).map(teamID => {
@@ -220,10 +224,7 @@ class DashboardLayout extends Component {
           }
         }
 
-        allowThroughFilter =
-          allowThroughFilter &&
-          (titleMatch || coachMatch || managerMatch) &&
-          roleMatch;
+        allowThroughFilter = allowThroughFilter && titleMatch && roleMatch;
 
         return allowThroughFilter;
       })
@@ -303,11 +304,11 @@ class DashboardLayout extends Component {
       incompleteEvents,
       personalInfo,
       communityInfo,
-      isAdmin,
       activeInstitutionID,
       meAllFilter,
       changeMeAllFilter,
       teams,
+      roles,
       notifications
     } = this.props;
     const { earliestLoadedResult, isLastResult } = this.props.uiConfig;
@@ -331,7 +332,7 @@ class DashboardLayout extends Component {
     if (personalProfileProgress !== "100") {
       incompleteCount = incompleteCount + 1;
     }
-    if (communityProfileProgress !== "100" && isAdmin) {
+    if (communityProfileProgress !== "100" && roles.admin) {
       incompleteCount = incompleteCount + 1;
     }
 
@@ -367,7 +368,8 @@ class DashboardLayout extends Component {
                 events={filteredTodaysEvents}
                 navigateTo={navigateTo}
                 meAllFilter={meAllFilter}
-                isUserAdmin={isAdmin}
+                isUserAdmin={roles.admin}
+                roles={roles}
               />
             </div>
           );
@@ -433,7 +435,7 @@ class DashboardLayout extends Component {
               </div>
               <div className={classes.adWrapper}>{ad}</div>
               <Incomplete
-                isAdmin={isAdmin}
+                isAdmin={roles.admin}
                 communityInfo={communityInfo}
                 personalProfileProgress={personalProfileProgress}
                 communityProfileProgress={communityProfileProgress}
@@ -556,7 +558,8 @@ class DashboardLayout extends Component {
                 events={filteredTodaysEvents}
                 navigateTo={navigateTo}
                 meAllFilter={meAllFilter}
-                isUserAdmin={isAdmin}
+                isUserAdmin={roles.admin}
+                roles={roles}
               />
             </div>
           );
@@ -602,7 +605,7 @@ class DashboardLayout extends Component {
             <div>
               <div className={classes.adWrapper}>{ad}</div>
               <Incomplete
-                isAdmin={isAdmin}
+                isAdmin={roles.admin}
                 communityInfo={communityInfo}
                 communityProfileProgress={communityProfileProgress}
                 personalProfileProgress={personalProfileProgress}
@@ -650,7 +653,7 @@ class DashboardLayout extends Component {
   }
 
   getTabs() {
-    const { todaysEvents, incompleteEvents, isAdmin } = this.props;
+    const { todaysEvents, incompleteEvents, roles } = this.props;
 
     const personalProfileProgress = this.checkIfPersonalProfileComplete();
     const communityProfileProgress = this.checkIfCommunityProfileComplete();
@@ -665,31 +668,50 @@ class DashboardLayout extends Component {
     if (personalProfileProgress !== "100") {
       incompleteCount = incompleteCount + 1;
     }
-    if (communityProfileProgress !== "100" && isAdmin) {
+    if (communityProfileProgress !== "100" && roles.admin) {
       incompleteCount = incompleteCount + 1;
     }
 
-    return [
-      {
-        key: "today",
-        label: "Today",
-        count: todayCount
-      },
-      {
-        key: "results",
-        label: "Results"
-      },
-      {
-        key: "incomplete",
-        label: "Incomplete",
-        count: incompleteCount
-      },
-      {
-        key: "notifications",
-        label: "Notifications",
-        count: notificationCount
-      }
-    ];
+    if (!roles.admin && !roles.coach && !roles.manager) {
+      return [
+        {
+          key: "today",
+          label: "Today",
+          count: todayCount
+        },
+        {
+          key: "results",
+          label: "Results"
+        },
+        {
+          key: "notifications",
+          label: "Notifications",
+          count: notificationCount
+        }
+      ];
+    } else {
+      return [
+        {
+          key: "today",
+          label: "Today",
+          count: todayCount
+        },
+        {
+          key: "results",
+          label: "Results"
+        },
+        {
+          key: "incomplete",
+          label: "Incomplete",
+          count: incompleteCount
+        },
+        {
+          key: "notifications",
+          label: "Notifications",
+          count: notificationCount
+        }
+      ];
+    }
   }
 
   render() {

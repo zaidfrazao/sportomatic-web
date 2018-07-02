@@ -11,6 +11,7 @@ import EmptyState from "../../components/EmptyState";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
 import PersonalAllSwitch from "./components/PersonalAllSwitch";
+import RosterSetupDialog from "./components/RosterSetupDialog";
 import SeasonSetupDialog from "./components/SeasonSetupDialog";
 import TeamInfo from "./components/TeamInfo";
 import TeamsList from "./components/TeamsList";
@@ -187,6 +188,9 @@ class TeamsLayout extends Component {
   getTeamsList(teams, seasons) {
     return _.toPairs(teams).map(([id, info]) => {
       let seasonStatus = "OUT_OF_SEASON";
+      let hasRoster = true;
+      let currentSeasonID = "";
+
       const teamSeasons = _.toPairs(seasons)
         .filter(([seasonID, seasonInfo]) => {
           return seasonInfo.teamID === id;
@@ -201,8 +205,12 @@ class TeamsLayout extends Component {
 
           if (currentMoment.isBetween(seasonStartMoment, seasonEndMoment)) {
             seasonStatus = "IN_SEASON";
+            hasRoster = _.keys(seasonInfo.athletes).length !== 0;
+            currentSeasonID = seasonID;
           } else if (currentMoment.isBefore(seasonStartMoment)) {
             seasonStatus = "UPCOMING_SEASON";
+            hasRoster = _.keys(seasonInfo.athletes).length !== 0;
+            currentSeasonID = seasonID;
           }
 
           return {
@@ -214,6 +222,8 @@ class TeamsLayout extends Component {
       return {
         id,
         seasonStatus,
+        hasRoster,
+        currentSeasonID,
         seasons: teamSeasons,
         ...info.info
       };
@@ -228,8 +238,6 @@ class TeamsLayout extends Component {
       _.toPairs(teams).filter(([teamID, teamInfo]) => {
         let allowThroughFilter = true;
         let titleMatch = true;
-        let coachMatch = true;
-        let managerMatch = true;
         let roleMatch = true;
 
         if (teamInfo.status === "DELETED" && !showDeletedTeams) {
@@ -239,6 +247,8 @@ class TeamsLayout extends Component {
         if (meAllFilter === "me") {
           let coaches = {};
           let managers = {};
+          let athletes = {};
+          let parents = {};
           _.toPairs(seasons)
             .filter(([seasonID, seasonInfo]) => {
               return seasonInfo.teamID === teamID;
@@ -246,6 +256,8 @@ class TeamsLayout extends Component {
             .map(([seasonID, seasonInfo]) => {
               coaches = { ...coaches, ...seasonInfo.coaches };
               managers = { ...managers, ...seasonInfo.managers };
+              athletes = { ...athletes, ...seasonInfo.athletes };
+              parents = { ...parents, ...seasonInfo.parents };
               return {
                 id: seasonID,
                 ...seasonInfo
@@ -254,8 +266,15 @@ class TeamsLayout extends Component {
           roleMatch = false;
           const teamCoaches = _.keys(coaches);
           const teamManagers = _.keys(managers);
+          const teamAthletes = _.keys(athletes);
+          const teamParents = _.keys(parents);
 
-          if (teamCoaches.includes(userID) || teamManagers.includes(userID)) {
+          if (
+            teamCoaches.includes(userID) ||
+            teamManagers.includes(userID) ||
+            teamAthletes.includes(userID) ||
+            teamParents.includes(userID)
+          ) {
             roleMatch = roleMatch || true;
           }
         }
@@ -277,10 +296,7 @@ class TeamsLayout extends Component {
             allowThroughFilter && teamInfo.info.ageGroup === ageGroup;
         }
 
-        allowThroughFilter =
-          allowThroughFilter &&
-          (titleMatch || coachMatch || managerMatch) &&
-          roleMatch;
+        allowThroughFilter = allowThroughFilter && titleMatch && roleMatch;
 
         return allowThroughFilter;
       })
@@ -294,7 +310,7 @@ class TeamsLayout extends Component {
       staff,
       activeInstitutionID,
       isMobile,
-      isAdmin,
+      roles,
       navigateTo,
       goBack,
       teamOptions,
@@ -311,7 +327,8 @@ class TeamsLayout extends Component {
     const {
       isAddTeamLoading,
       isCreateSeasonLoading,
-      isEditSeasonLoading
+      isEditSeasonLoading,
+      isEditRosterLoading
     } = this.props.loadingStatus;
     const {
       openAddTeamDialog,
@@ -319,11 +336,18 @@ class TeamsLayout extends Component {
       openEditTeamDialog,
       openSeasonSetupDialog,
       closeSeasonSetupDialog,
+      openRosterSetupDialog,
+      closeRosterSetupDialog,
       addTeam,
       createSeason,
-      editSeason
+      editSeason,
+      editRoster
     } = this.props.actions;
-    const { isAddTeamDialogOpen, seasonSetupDialog } = this.props.dialogs;
+    const {
+      isAddTeamDialogOpen,
+      seasonSetupDialog,
+      rosterSetupDialog
+    } = this.props.dialogs;
     const { teamID, infoTab } = this.props.match.params;
 
     const ad = this.createAd();
@@ -374,7 +398,7 @@ class TeamsLayout extends Component {
                 seasons={teamSeasons}
                 teamID={teamID}
                 isMobile={isMobile}
-                isUserAdmin={isAdmin}
+                isUserAdmin={roles.admin}
                 userID={userID}
                 userEmail={userEmail}
                 userFirstName={userFirstName}
@@ -408,7 +432,7 @@ class TeamsLayout extends Component {
                 />
                 {isMobile && <div className={classes.buttonSeparator} />}
                 <div className={classes.flexGrow} />
-                {isAdmin && (
+                {roles.admin && (
                   <Button
                     colour="primary"
                     filled
@@ -423,9 +447,12 @@ class TeamsLayout extends Component {
               </div>
               <TeamsList
                 teams={filteredTeams}
-                isUserAdmin={isAdmin}
+                isUserAdmin={roles.admin}
                 hasTeamsCreated={hasTeamsCreated}
-                setUpSeason={(name, id) => openSeasonSetupDialog(name, id)}
+                setUpSeason={(name, teamID) =>
+                  openSeasonSetupDialog(name, teamID)}
+                setUpRoster={(name, teamID, seasonID, isUnderAge) =>
+                  openRosterSetupDialog(name, teamID, seasonID, isUnderAge)}
                 navigateTo={navigateTo}
               />
             </div>
@@ -463,6 +490,27 @@ class TeamsLayout extends Component {
                   userID,
                   `${userFirstName} ${userLastName}`,
                   seasonInfo
+                )}
+            />
+            <RosterSetupDialog
+              isOpen={rosterSetupDialog.isOpen}
+              teamName={rosterSetupDialog.teamName}
+              isUnderAge={true}
+              userID={userID}
+              userEmail={userEmail}
+              userFirstName={userFirstName}
+              userLastName={userLastName}
+              people={staff}
+              closeDialog={() => closeRosterSetupDialog()}
+              isLoading={isEditRosterLoading}
+              editRoster={roster =>
+                editRoster(
+                  rosterSetupDialog.seasonID,
+                  rosterSetupDialog.teamID,
+                  activeInstitutionID,
+                  userID,
+                  `${userFirstName} ${userLastName}`,
+                  roster
                 )}
             />
           </div>

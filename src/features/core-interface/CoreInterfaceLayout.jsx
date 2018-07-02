@@ -89,7 +89,11 @@ class CoreInterfaceLayout extends Component {
   componentWillReceiveProps(nextProps) {
     const { institutions } = nextProps;
     const { pathname } = nextProps.location;
-    const { loadAccountInfo, changeMeAllFilter } = nextProps.actions;
+    const {
+      loadAccountInfo,
+      changeMeAllFilter,
+      getUserRoles
+    } = nextProps.actions;
     const { userID, isLoggedIn, accountInfo } = nextProps.uiConfig;
     const { loadInstitutionInfo, checkCompletionProgress } = nextProps.actions;
 
@@ -100,6 +104,7 @@ class CoreInterfaceLayout extends Component {
       const activeInstitutionID = accountInfo.lastAccessed.institutionID;
 
       checkCompletionProgress(activeInstitutionID, userID);
+      getUserRoles(activeInstitutionID, userID);
 
       _.toPairs(accountInfo.institutions).map(([id, info]) => {
         loadInstitutionInfo(id);
@@ -126,6 +131,7 @@ class CoreInterfaceLayout extends Component {
       const activeInstitutionID = accountInfo.lastAccessed.institutionID;
 
       checkCompletionProgress(activeInstitutionID, userID);
+      getUserRoles(activeInstitutionID, userID);
     }
   }
 
@@ -265,31 +271,6 @@ class CoreInterfaceLayout extends Component {
     history.goBack();
   }
 
-  getRole() {
-    const { accountInfo } = this.props.uiConfig;
-
-    const activeCommunityID = accountInfo.lastAccessed.institutionID;
-    const activeCommunityRoles =
-      accountInfo &&
-      accountInfo.institutions[activeCommunityID] &&
-      accountInfo.institutions[activeCommunityID].roles;
-
-    if (activeCommunityRoles) {
-      if (activeCommunityRoles.admin === "APPROVED") {
-        return "admin";
-      } else if (
-        activeCommunityRoles.manager === "APPROVED" ||
-        activeCommunityRoles.coach === "APPROVED"
-      ) {
-        return "staff";
-      } else {
-        return "guest";
-      }
-    } else {
-      return "guest";
-    }
-  }
-
   getSwitchCommunitiesInfo() {
     const { institutions } = this.props;
 
@@ -420,7 +401,8 @@ class CoreInterfaceLayout extends Component {
       sideMenuItemSelected,
       meAllFilter,
       personalProgress,
-      communityProgress
+      communityProgress,
+      roles
     } = this.props.uiConfig;
     const { isLogOutModalOpen } = this.props.dialogs;
 
@@ -429,14 +411,12 @@ class CoreInterfaceLayout extends Component {
     const isTablet = windowWidth < 1080;
     const versionNumber = "0.9.22";
 
-    const communityRole = this.getRole();
     const userFirstName = accountInfo.info.name;
     const userLastName = accountInfo.info.surname;
     const userEmail = accountInfo.info.email;
     const userPhoneNumber = accountInfo.info.phoneNumber;
     const userProfilePicture = accountInfo.info.profilePictureURL;
     const userName = `${userFirstName} ${userLastName}`;
-    const role = _.toLower(accountInfo.lastAccessed.role);
     const activeInstitutionID = accountInfo.lastAccessed.institutionID;
     const sideMenuItems = this.getSideMenuItems();
     const userSports = _.toPairs(accountInfo.info.sports)
@@ -445,7 +425,6 @@ class CoreInterfaceLayout extends Component {
       })
       .map(([name, isPreferred]) => name);
 
-    let isAdmin = false;
     let communityName = "Default";
     let emblem = "";
     let phoneNumber = "";
@@ -471,9 +450,6 @@ class CoreInterfaceLayout extends Component {
       });
       sportsItems = this.getSportsItems(sports);
       teamOptions = this.getTeamOptions(institutions[activeInstitutionID]);
-      isAdmin =
-        accountInfo.institutions[activeInstitutionID].roles.admin ===
-        "APPROVED";
       communityName = institutions[activeInstitutionID].info.name;
       emblem = institutions[activeInstitutionID].info.emblemURL;
       phoneNumber = institutions[activeInstitutionID].info.phoneNumber;
@@ -517,9 +493,9 @@ class CoreInterfaceLayout extends Component {
               isSideMenuOpen={isSideMenuOpen}
               communityName={communityName}
               emblem={emblem}
-              selectedRole={role}
               meAllFilter={meAllFilter}
               versionNumber={versionNumber}
+              roles={roles}
               actions={{
                 logOut: () => openLogOutModal(),
                 changeSelected: key => history.push(`/myaccount/${key}`),
@@ -533,7 +509,7 @@ class CoreInterfaceLayout extends Component {
                 <Switch>
                   <Route exact path={"/myaccount/"}>
                     <Dashboard
-                      isAdmin={isAdmin}
+                      roles={roles}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
                       communityName={communityName}
@@ -567,7 +543,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/overview/"}>
                     <Dashboard
-                      isAdmin={isAdmin}
+                      roles={roles}
                       communityName={communityName}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
@@ -601,7 +577,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/overview/:infoTab"}>
                     <Dashboard
-                      isAdmin={isAdmin}
+                      roles={roles}
                       communityName={communityName}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
@@ -635,7 +611,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/reports/"}>
                     <Reports
-                      isAdmin={isAdmin}
+                      roles={roles}
                       communityName={communityName}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
@@ -669,7 +645,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/reports/:infoTab"}>
                     <Reports
-                      isAdmin={isAdmin}
+                      roles={roles}
                       communityName={communityName}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
@@ -703,7 +679,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/people/"}>
                     <People
-                      isAdmin={isAdmin}
+                      roles={roles}
                       communityName={communityName}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
@@ -724,7 +700,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/people/:personID"}>
                     <People
-                      isAdmin={isAdmin}
+                      roles={roles}
                       communityName={communityName}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
@@ -745,7 +721,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/people/:personID/:infoTab"}>
                     <People
-                      isAdmin={isAdmin}
+                      roles={roles}
                       communityName={communityName}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
@@ -769,12 +745,11 @@ class CoreInterfaceLayout extends Component {
                       teamOptions={teamOptions}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
-                      isAdmin={isAdmin}
+                      roles={roles}
                       userID={userID}
                       userEmail={userEmail}
                       userFirstName={userFirstName}
                       userLastName={userLastName}
-                      role={role}
                       sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
@@ -795,12 +770,11 @@ class CoreInterfaceLayout extends Component {
                       teamOptions={teamOptions}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
-                      isAdmin={isAdmin}
+                      roles={roles}
                       userID={userID}
                       userEmail={userEmail}
                       userFirstName={userFirstName}
                       userLastName={userLastName}
-                      role={role}
                       sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
@@ -821,12 +795,11 @@ class CoreInterfaceLayout extends Component {
                       teamOptions={teamOptions}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
-                      isAdmin={isAdmin}
+                      roles={roles}
                       userID={userID}
                       userEmail={userEmail}
                       userFirstName={userFirstName}
                       userLastName={userLastName}
-                      role={role}
                       sportFilter={sportSelected}
                       activeInstitutionID={activeInstitutionID}
                       isMobile={isMobile}
@@ -850,9 +823,8 @@ class CoreInterfaceLayout extends Component {
                       genders={teamOptions.genders}
                       ageGroups={teamOptions.ageGroups}
                       divisions={teamOptions.divisions}
-                      isAdmin={isAdmin}
+                      roles={roles}
                       userID={userID}
-                      role={communityRole}
                       isMobile={isMobile}
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
@@ -875,9 +847,8 @@ class CoreInterfaceLayout extends Component {
                       genders={teamOptions.genders}
                       ageGroups={teamOptions.ageGroups}
                       divisions={teamOptions.divisions}
-                      isAdmin={isAdmin}
                       userID={userID}
-                      role={communityRole}
+                      roles={roles}
                       isMobile={isMobile}
                       isTablet={isTablet}
                       meAllFilter={meAllFilter}
@@ -894,7 +865,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route exact path={"/myaccount/settings/"}>
                     <Settings
-                      isAdmin={isAdmin}
+                      roles={roles}
                       isMobile={isMobile}
                       isTablet={isTablet}
                       personalProgress={personalProgress}
@@ -914,9 +885,8 @@ class CoreInterfaceLayout extends Component {
                   <Route exact path={"/myaccount/schedule/"}>
                     <Schedule
                       emblem={emblem}
-                      isAdmin={isAdmin}
+                      roles={roles}
                       userID={userID}
-                      role={communityRole}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
                       sportFilter={sportSelected}
@@ -935,9 +905,8 @@ class CoreInterfaceLayout extends Component {
                   <Route exact path={"/myaccount/schedule/:dateSelected"}>
                     <Schedule
                       emblem={emblem}
-                      isAdmin={isAdmin}
                       userID={userID}
-                      role={communityRole}
+                      roles={roles}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
                       sportFilter={sportSelected}
@@ -959,9 +928,8 @@ class CoreInterfaceLayout extends Component {
                   >
                     <Schedule
                       emblem={emblem}
-                      isAdmin={isAdmin}
                       userID={userID}
-                      role={communityRole}
+                      roles={roles}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
                       sportFilter={sportSelected}
@@ -983,9 +951,8 @@ class CoreInterfaceLayout extends Component {
                   >
                     <Schedule
                       emblem={emblem}
-                      isAdmin={isAdmin}
                       userID={userID}
-                      role={communityRole}
+                      roles={roles}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}
                       sportFilter={sportSelected}
@@ -1003,7 +970,7 @@ class CoreInterfaceLayout extends Component {
                   </Route>
                   <Route>
                     <Dashboard
-                      isAdmin={isAdmin}
+                      roles={roles}
                       communityName={communityName}
                       personalProgress={personalProgress}
                       communityProgress={communityProgress}

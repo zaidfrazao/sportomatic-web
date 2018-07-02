@@ -238,17 +238,19 @@ class ScheduleLayout extends Component {
       _.toPairs(events).filter(([id, info]) => {
         let allowThroughFilter = true;
         let titleMatch = true;
-        let coachMatch = true;
-        let managerMatch = true;
         let roleMatch = true;
 
         if (meAllFilter === "me") {
           const eventCoaches = _.keys(info.coaches);
           const eventManagers = _.keys(info.managers);
+          const eventAthletes = _.keys(info.athletes);
+          const eventParents = _.keys(info.parents);
 
           roleMatch = false;
           roleMatch = roleMatch || eventCoaches.includes(userID);
           roleMatch = roleMatch || eventManagers.includes(userID);
+          roleMatch = roleMatch || eventAthletes.includes(userID);
+          roleMatch = roleMatch || eventParents.includes(userID);
         }
 
         if (eventType !== "All") {
@@ -285,10 +287,7 @@ class ScheduleLayout extends Component {
           }
         }
 
-        allowThroughFilter =
-          allowThroughFilter &&
-          (titleMatch || coachMatch || managerMatch) &&
-          roleMatch;
+        allowThroughFilter = allowThroughFilter && titleMatch && roleMatch;
 
         return allowThroughFilter;
       })
@@ -362,7 +361,7 @@ class ScheduleLayout extends Component {
 
   getEventListView(canCreate) {
     const {
-      isAdmin,
+      roles,
       isTablet,
       isMobile,
       classes,
@@ -389,7 +388,7 @@ class ScheduleLayout extends Component {
             {isMobile && <div className={classes.buttonSeparator} />}
             <div className={classes.flexGrow} />
             {false &&
-              isAdmin && (
+              roles.admin && (
                 <Button colour="primary" filled slim fullWidth={isMobile}>
                   <i className={`fas fa-plus ${classes.iconAdjacentText}`} />
                   Add new event
@@ -423,7 +422,7 @@ class ScheduleLayout extends Component {
       userID,
       navigateTo,
       goBack,
-      isAdmin,
+      roles,
       emblem
     } = this.props;
     const { dateSelected, eventID, infoTab } = this.props.match.params;
@@ -472,6 +471,7 @@ class ScheduleLayout extends Component {
             canCancel={canCancel}
             coaches={users}
             managers={users}
+            athletes={users}
             teams={teams}
             info={eventInfo}
             eventID={eventID}
@@ -483,7 +483,7 @@ class ScheduleLayout extends Component {
             isEditOpponentLoading={isEditOpponentLoading}
             isPastEvent={isPastEvent}
             dateSelected={dateSelected}
-            isAdmin={isAdmin}
+            isAdmin={roles.admin}
             isMobile={isMobile}
             isTablet={isTablet}
             infoTab={infoTab}
@@ -556,7 +556,7 @@ class ScheduleLayout extends Component {
   }
 
   render() {
-    const { classes, communityProgress, navigateTo, isAdmin } = this.props;
+    const { classes, communityProgress, navigateTo, roles } = this.props;
     const { eventID } = this.props.match.params;
 
     const shouldRedirect = this.checkIfShouldRedirect();
@@ -613,9 +613,9 @@ class ScheduleLayout extends Component {
       );
     } else {
       if (eventID) {
-        return this.getEventInfoView(isAdmin, isAdmin);
+        return this.getEventInfoView(roles.admin, roles.admin);
       } else {
-        return this.getEventListView(isAdmin);
+        return this.getEventListView(roles.admin);
       }
     }
   }

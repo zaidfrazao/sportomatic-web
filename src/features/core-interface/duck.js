@@ -42,6 +42,9 @@ export const ERROR_JOINING_INSTITUTION = `${NAMESPACE}/ERROR_JOINING_INSTITUTION
 export const REQUEST_COMPLETION_PROGRESS = `${NAMESPACE}/REQUEST_COMPLETION_PROGRESS`;
 export const RECEIVE_COMPLETION_PROGRESS = `${NAMESPACE}/RECEIVE_COMPLETION_PROGRESS`;
 export const ERROR_CHECKING_COMPLETION_PROGRESS = `${NAMESPACE}/ERROR_CHECKING_COMPLETION_PROGRESS`;
+export const REQUEST_USER_ROLES = `${NAMESPACE}/REQUEST_USER_ROLES`;
+export const RECEIVE_USER_ROLES = `${NAMESPACE}/RECEIVE_USER_ROLES`;
+export const ERROR_GETTING_USER_ROLES = `${NAMESPACE}/ERROR_GETTING_USER_ROLES`;
 export const RESET_STATE = `${NAMESPACE}/RESET_STATE`;
 export const UPDATE_SPORT = `${NAMESPACE}/UPDATE_SPORT`;
 
@@ -69,6 +72,13 @@ export const uiConfigInitialState = {
   communityProgress: {
     hasSeasons: true,
     hasSports: true
+  },
+  roles: {
+    admin: false,
+    coach: false,
+    manager: false,
+    athlete: false,
+    parent: false
   }
 };
 
@@ -108,6 +118,11 @@ function uiConfigReducer(state = uiConfigInitialState, action = {}) {
         ...state,
         personalProgress: action.payload.personalProgress,
         communityProgress: action.payload.communityProgress
+      };
+    case RECEIVE_USER_ROLES:
+      return {
+        ...state,
+        roles: action.payload
       };
     case SIGN_OUT:
       return {
@@ -191,7 +206,8 @@ export const loadingStatusInitialState = {
   isInstitutionCreationLoading: false,
   isVerifiedInstitutionsLoading: false,
   isJoinInstitutionLoading: false,
-  isCompletionProgressLoading: false
+  isCompletionProgressLoading: false,
+  isUserRolesLoading: false
 };
 
 function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
@@ -209,6 +225,17 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
       return {
         ...state,
         isCompletionProgressLoading: false
+      };
+    case REQUEST_USER_ROLES:
+      return {
+        ...state,
+        isUserRolesLoading: true
+      };
+    case RECEIVE_USER_ROLES:
+    case ERROR_GETTING_USER_ROLES:
+      return {
+        ...state,
+        isUserRolesLoading: false
       };
     case REQUEST_ACCOUNT_INFO:
       return {
@@ -809,6 +836,58 @@ export function checkCompletionProgress(communityID, userID) {
       })
       .catch(error => {
         dispatch(errorCheckingCompletionProgress(error));
+      });
+  };
+}
+
+export function requestUserRoles() {
+  return {
+    type: REQUEST_USER_ROLES
+  };
+}
+
+export function receiveUserRoles(admin, coach, manager, athlete, parent) {
+  return {
+    type: RECEIVE_USER_ROLES,
+    payload: {
+      admin,
+      coach,
+      manager,
+      athlete,
+      parent
+    }
+  };
+}
+
+export function errorGettingUserRoles(error: {
+  code: string,
+  message: string
+}) {
+  return {
+    type: ERROR_GETTING_USER_ROLES,
+    payload: {
+      error
+    }
+  };
+}
+
+export function getUserRoles(communityID, userID) {
+  return function(dispatch: DispatchAlias) {
+    dispatch(requestUserRoles());
+
+    const getUserRoles = firebase.functions().httpsCallable("getUserRoles");
+
+    return getUserRoles({
+      communityID,
+      userID
+    })
+      .then(result => {
+        const { admin, coach, manager, athlete, parent } = result.data;
+
+        dispatch(receiveUserRoles(admin, coach, manager, athlete, parent));
+      })
+      .catch(error => {
+        dispatch(errorGettingUserRoles(error));
       });
   };
 }

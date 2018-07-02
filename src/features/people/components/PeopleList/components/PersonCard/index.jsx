@@ -101,29 +101,38 @@ class PersonCard extends Component {
 
     let isManager = false;
     let isCoach = false;
+    let isAthlete = false;
+    let isParent = false;
 
     _.toPairs(seasons).map(([seasonID, seasonInfo]) => {
       isCoach = isCoach || seasonInfo.coaches[id];
       isManager = isManager || seasonInfo.managers[id];
+      isAthlete = isAthlete || (seasonInfo.athletes && seasonInfo.athletes[id]);
+      isParent = isParent || (seasonInfo.parents && seasonInfo.parents[id]);
     });
 
-    if (isAdmin && isManager && isCoach) {
-      return "Admin | Manager | Coach";
-    } else if (isAdmin && isManager && !isCoach) {
-      return "Admin | Manager";
-    } else if (isAdmin && !isManager && isCoach) {
-      return "Admin | Coach";
-    } else if (!isAdmin && isManager && isCoach) {
-      return "Manager | Coach";
-    } else if (isAdmin && !isManager && !isCoach) {
-      return "Admin";
-    } else if (!isAdmin && isManager && !isCoach) {
-      return "Manager";
-    } else if (!isAdmin && !isManager && isCoach) {
-      return "Coach";
-    } else {
-      return "No Role Assigned";
+    let roles = "";
+
+    if (isAdmin) {
+      roles = roles === "" ? "Admin" : roles + " | Admin";
     }
+    if (isCoach) {
+      roles = roles === "" ? "Coach" : roles + " | Coach";
+    }
+    if (isManager) {
+      roles = roles === "" ? "Manager" : roles + " | Manager";
+    }
+    if (isAthlete) {
+      roles = roles === "" ? "Athlete" : roles + " | Athlete";
+    }
+    if (isParent) {
+      roles = roles === "" ? "Parent" : roles + " | Parent";
+    }
+    if (roles === "") {
+      roles = "No Role Assigned";
+    }
+
+    return roles;
   }
 
   render() {

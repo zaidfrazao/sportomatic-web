@@ -196,7 +196,7 @@ class ReportsLayout extends Component {
       wages,
       users,
       userID,
-      isAdmin
+      roles
     } = this.props;
     const { infoTab } = this.props.match.params;
     const { tabSelected } = this.state;
@@ -262,8 +262,8 @@ class ReportsLayout extends Component {
                   My Wages
                 </Button>
               </div>
-              {isAdmin && <div className={classes.buttonSeparator} />}
-              {isAdmin && (
+              {roles.admin && <div className={classes.buttonSeparator} />}
+              {roles.admin && (
                 <div className={classes.menuButtonWrapper}>
                   <Button
                     type="dark"
@@ -336,9 +336,9 @@ class ReportsLayout extends Component {
   }
 
   getTabs() {
-    const { isAdmin } = this.props;
+    const { roles } = this.props;
 
-    if (isAdmin) {
+    if (roles.admin) {
       return [
         {
           key: "wages",

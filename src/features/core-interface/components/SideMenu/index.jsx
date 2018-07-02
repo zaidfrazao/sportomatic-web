@@ -159,35 +159,63 @@ class SideMenu extends Component<Props> {
   };
 
   getMenuItems() {
-    const { classes, selected, items, isTablet } = this.props;
+    const { classes, selected, items, isTablet, roles } = this.props;
     const { changeSelected, toggleSideNav } = this.props.actions;
 
     return _.toPairs(items).map(([key, item]) => {
-      return (
-        <div
-          key={`side-menu-item-${key}`}
-          className={
-            selected === key ? classes.menuItemSelected : classes.menuItem
-          }
-          onClick={() => {
-            changeSelected(key);
-            isTablet && toggleSideNav();
-          }}
-        >
-          <span
+      if (key === "reports" && (roles.admin || roles.coach)) {
+        return (
+          <div
+            key={`side-menu-item-${key}`}
             className={
-              selected === key
-                ? classes.menuItemTextSelected
-                : classes.menuItemText
+              selected === key ? classes.menuItemSelected : classes.menuItem
             }
+            onClick={() => {
+              changeSelected(key);
+              isTablet && toggleSideNav();
+            }}
           >
-            <span className={classes.menuItemIcon}>
-              <i className={item.icon} />
+            <span
+              className={
+                selected === key
+                  ? classes.menuItemTextSelected
+                  : classes.menuItemText
+              }
+            >
+              <span className={classes.menuItemIcon}>
+                <i className={item.icon} />
+              </span>
+              {item.label}
             </span>
-            {item.label}
-          </span>
-        </div>
-      );
+          </div>
+        );
+      } else if (key !== "reports") {
+        return (
+          <div
+            key={`side-menu-item-${key}`}
+            className={
+              selected === key ? classes.menuItemSelected : classes.menuItem
+            }
+            onClick={() => {
+              changeSelected(key);
+              isTablet && toggleSideNav();
+            }}
+          >
+            <span
+              className={
+                selected === key
+                  ? classes.menuItemTextSelected
+                  : classes.menuItemText
+              }
+            >
+              <span className={classes.menuItemIcon}>
+                <i className={item.icon} />
+              </span>
+              {item.label}
+            </span>
+          </div>
+        );
+      }
     });
   }
 

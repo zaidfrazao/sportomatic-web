@@ -43,7 +43,15 @@ const styles = {
     backgroundColor: grey[100],
     border: `1px solid ${grey[300]}`
   },
-  setupButtonWrapper: {
+  setupRosterButtonWrapper: {
+    transition: "0.25s",
+    borderRadius: "0 0 16px 16px",
+    backgroundColor: lightBlue[500],
+    "&:hover": {
+      backgroundColor: lightBlue[400]
+    }
+  },
+  setupSeasonButtonWrapper: {
     transition: "0.25s",
     borderRadius: "0 0 16px 16px",
     backgroundColor: orange["A400"],
@@ -59,10 +67,13 @@ class TeamCard extends Component {
       classes,
       name,
       id,
+      hasRoster,
       seasonStatus,
+      currentSeasonID,
       isUserAdmin,
       navigateTo,
-      setUpSeason
+      setUpSeason,
+      setUpRoster
     } = this.props;
 
     return (
@@ -92,7 +103,7 @@ class TeamCard extends Component {
         </div>
         {isUserAdmin &&
           seasonStatus === "OUT_OF_SEASON" && (
-            <div className={classes.setupButtonWrapper}>
+            <div className={classes.setupSeasonButtonWrapper}>
               <Button
                 colour="secondary"
                 filled
@@ -100,6 +111,20 @@ class TeamCard extends Component {
                 handleClick={() => setUpSeason(name, id)}
               >
                 Set up new season
+              </Button>
+            </div>
+          )}
+        {isUserAdmin &&
+          seasonStatus !== "OUT_OF_SEASON" &&
+          !hasRoster && (
+            <div className={classes.setupRosterButtonWrapper}>
+              <Button
+                colour="primary"
+                filled
+                fullWidth
+                handleClick={() => setUpRoster(name, id, currentSeasonID)}
+              >
+                Set up season roster
               </Button>
             </div>
           )}

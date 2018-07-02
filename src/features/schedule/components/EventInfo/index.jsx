@@ -197,7 +197,15 @@ class EventInfo extends Component {
     return reformattedInfo;
   }
 
-  getSectionDisplay(info, teams, coaches, managers) {
+  getSectionDisplay(
+    info,
+    teams,
+    coaches,
+    managers,
+    athletes,
+    canLogResults,
+    canApproveResults
+  ) {
     const {
       classes,
       isMobile,
@@ -257,6 +265,7 @@ class EventInfo extends Component {
                 teams={teams}
                 coaches={coaches}
                 managers={managers}
+                athletes={athletes}
                 navigateTo={navigateTo}
                 signIn={signIn}
                 signOut={signOut}
@@ -300,6 +309,8 @@ class EventInfo extends Component {
                 isTablet={isTablet}
                 teams={teams}
                 eventInfo={info}
+                canLogResults={canLogResults}
+                canApproveResults={canApproveResults}
                 isCancelled={info.status === "CANCELLED"}
                 editResult={(teamID, opponentID, newResult) =>
                   editResult(teamID, opponentID, newResult)}
@@ -390,6 +401,7 @@ class EventInfo extends Component {
                 teams={teams}
                 coaches={coaches}
                 managers={managers}
+                athletes={athletes}
                 navigateTo={navigateTo}
                 signIn={signIn}
                 signOut={signOut}
@@ -434,6 +446,8 @@ class EventInfo extends Component {
                 eventInfo={info}
                 teams={teams}
                 isCancelled={info.status === "CANCELLED"}
+                canLogResults={canLogResults}
+                canApproveResults={canApproveResults}
                 editResult={(teamID, opponentID, newResult) =>
                   editResult(teamID, opponentID, newResult)}
                 startLogging={(teamID, structure, opponentIDs) =>
@@ -464,6 +478,7 @@ class EventInfo extends Component {
                 teams={teams}
                 coaches={coaches}
                 managers={managers}
+                athletes={athletes}
                 navigateTo={navigateTo}
                 signIn={signIn}
                 signOut={signOut}
@@ -626,7 +641,48 @@ class EventInfo extends Component {
     }
   }
 
+  getAthletes() {
+    const { info, athletes } = this.props;
+
+    if (info && info.athletes) {
+      return _.toPairs(info.athletes).map(([athleteID, eventAthleteInfo]) => {
+        const athleteInfo = athletes[athleteID];
+        if (athleteInfo) {
+          return {
+            id: athleteID,
+            name: `${athleteInfo.info.name} ${athleteInfo.info.surname}`,
+            profilePicture: athleteInfo.info.profilePictureURL
+          };
+        } else {
+          return {
+            id: athleteID,
+            name: "Error finding athlete",
+            profilePicture: ""
+          };
+        }
+      });
+    } else {
+      return [];
+    }
+  }
+
   checkIfCanManageCoaches() {
+    const { role, userID, info } = this.props;
+
+    return role === "admin" || (info && info.managers[userID]);
+  }
+
+  checkIfCanLogResults() {
+    const { role, userID, info } = this.props;
+
+    return (
+      role === "admin" ||
+      (info && info.managers[userID]) ||
+      (info && info.coaches[userID])
+    );
+  }
+
+  checkIfCanApproveResults() {
     const { role, userID, info } = this.props;
 
     return role === "admin" || (info && info.managers[userID]);
@@ -641,6 +697,9 @@ class EventInfo extends Component {
     const teams = this.getTeams();
     const coaches = this.getCoaches();
     const managers = this.getManagers();
+    const athletes = this.getAthletes();
+    const canLogResults = this.checkIfCanLogResults();
+    const canApproveResults = this.checkIfCanApproveResults();
 
     if (!isMobile && infoTab) {
       return <Redirect to={`/myaccount/schedule/${dateSelected}/${eventID}`} />;
@@ -650,7 +709,10 @@ class EventInfo extends Component {
       info,
       teams,
       coaches,
-      managers
+      managers,
+      athletes,
+      canLogResults,
+      canApproveResults
     );
     const tabs = this.getTabs(
       info.isCompetitive,

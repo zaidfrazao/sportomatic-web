@@ -439,6 +439,148 @@ class Seasons extends Component {
     }
   }
 
+  getAthleteItems() {
+    const { selectedIndex, sortedSeasons } = this.state;
+    const { classes, staff, navigateTo } = this.props;
+
+    if (sortedSeasons[selectedIndex]) {
+      const athletes = _.toPairs(staff)
+        .filter(([id, info]) => {
+          return (
+            sortedSeasons[selectedIndex].athletes &&
+            sortedSeasons[selectedIndex].athletes[id]
+          );
+        })
+        .map(([id, info]) => {
+          return { id, ...info };
+        });
+      const lastIndex = athletes.length - 1;
+
+      return athletes
+        .filter(info => {
+          return (
+            sortedSeasons[selectedIndex].athletes &&
+            sortedSeasons[selectedIndex].athletes[info.id]
+          );
+        })
+        .map((info, index) => {
+          if (index !== lastIndex) {
+            return (
+              <div>
+                <div
+                  key={info.id}
+                  className={classes.listItemWrapper}
+                  onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+                >
+                  <img
+                    alt={info.info.name}
+                    className={classes.profilePicture}
+                    src={
+                      info.info.profilePictureURL === ""
+                        ? defaultProfilePicture
+                        : info.info.profilePictureURL
+                    }
+                  />
+                  {`${info.info.name} ${info.info.surname}`}
+                </div>
+                <div className={classes.listItemSeparator} />
+              </div>
+            );
+          } else {
+            return (
+              <div
+                key={info.id}
+                className={classes.listItemWrapper}
+                onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+              >
+                <img
+                  alt={info.info.name}
+                  className={classes.profilePicture}
+                  src={
+                    info.info.profilePictureURL === ""
+                      ? defaultProfilePicture
+                      : info.info.profilePictureURL
+                  }
+                />
+                {`${info.info.name} ${info.info.surname}`}
+              </div>
+            );
+          }
+        });
+    }
+  }
+
+  getParentItems() {
+    const { selectedIndex, sortedSeasons } = this.state;
+    const { classes, staff, navigateTo } = this.props;
+
+    if (sortedSeasons[selectedIndex]) {
+      const parents = _.toPairs(staff)
+        .filter(([id, info]) => {
+          return (
+            sortedSeasons[selectedIndex].parents &&
+            sortedSeasons[selectedIndex].parents[id]
+          );
+        })
+        .map(([id, info]) => {
+          return { id, ...info };
+        });
+      const lastIndex = parents.length - 1;
+
+      return parents
+        .filter(info => {
+          return (
+            sortedSeasons[selectedIndex].parents &&
+            sortedSeasons[selectedIndex].parents[info.id]
+          );
+        })
+        .map((info, index) => {
+          if (index !== lastIndex) {
+            return (
+              <div>
+                <div
+                  key={info.id}
+                  className={classes.listItemWrapper}
+                  onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+                >
+                  <img
+                    alt={info.info.name}
+                    className={classes.profilePicture}
+                    src={
+                      info.info.profilePictureURL === ""
+                        ? defaultProfilePicture
+                        : info.info.profilePictureURL
+                    }
+                  />
+                  {`${info.info.name} ${info.info.surname}`}
+                </div>
+                <div className={classes.listItemSeparator} />
+              </div>
+            );
+          } else {
+            return (
+              <div
+                key={info.id}
+                className={classes.listItemWrapper}
+                onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+              >
+                <img
+                  alt={info.info.name}
+                  className={classes.profilePicture}
+                  src={
+                    info.info.profilePictureURL === ""
+                      ? defaultProfilePicture
+                      : info.info.profilePictureURL
+                  }
+                />
+                {`${info.info.name} ${info.info.surname}`}
+              </div>
+            );
+          }
+        });
+    }
+  }
+
   updateSection(newSection) {
     this.setState({
       section: newSection
@@ -474,6 +616,8 @@ class Seasons extends Component {
     const competitiveItems = this.getCompetitiveItems();
     const managerItems = this.getManagerItems();
     const coachItems = this.getCoachItems();
+    const athleteItems = this.getAthleteItems();
+    const parentItems = this.getParentItems();
 
     return (
       <div className={classes.wrapper}>
@@ -557,7 +701,23 @@ class Seasons extends Component {
             </div>
             <div className={classes.section}>
               <div className={classes.sectionHeading}>Athletes</div>
-              <div className={classes.noItems}>Coming soon</div>
+              {athleteItems.length === 0 ? (
+                <div className={classes.noItems}>
+                  No athletes on current roster
+                </div>
+              ) : (
+                athleteItems
+              )}
+            </div>
+            <div className={classes.section}>
+              <div className={classes.sectionHeading}>Parents</div>
+              {parentItems.length === 0 ? (
+                <div className={classes.noItems}>
+                  No parents on current roster
+                </div>
+              ) : (
+                parentItems
+              )}
             </div>
           </div>
         )}

@@ -445,6 +445,56 @@ class Details extends Component {
     });
   }
 
+  getAthleteItems() {
+    const { classes, athletes, navigateTo } = this.props;
+
+    const lastIndex = athletes.length - 1;
+
+    return athletes.map((info, index) => {
+      if (index !== lastIndex) {
+        return (
+          <div key={info.id}>
+            <div
+              className={classes.listItemWrapper}
+              onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+            >
+              <img
+                alt={info.name}
+                className={classes.profilePicture}
+                src={
+                  info.profilePicture === ""
+                    ? defaultProfilePicture
+                    : info.profilePicture
+                }
+              />
+              {info.name}
+            </div>
+            <div className={classes.listItemSeparator} />
+          </div>
+        );
+      } else {
+        return (
+          <div
+            key={info.id}
+            className={classes.listItemWrapper}
+            onClick={() => navigateTo(`/myaccount/people/${info.id}`)}
+          >
+            <img
+              alt={info.name}
+              className={classes.profilePicture}
+              src={
+                info.profilePicture === ""
+                  ? defaultProfilePicture
+                  : info.profilePicture
+              }
+            />
+            {info.name}
+          </div>
+        );
+      }
+    });
+  }
+
   checkIfUserCoaching(userID) {
     const { coaches } = this.props;
 
@@ -543,6 +593,7 @@ class Details extends Component {
     const teamItems = this.getTeamItems();
     const coachItems = this.getCoachItems();
     const managerItems = this.getManagerItems();
+    const athleteItems = this.getAthleteItems();
     const formattedTimes = {
       start: moment(times.start).format("hh:mm A"),
       end: moment(times.end).format("hh:mm A")
@@ -667,6 +718,14 @@ class Details extends Component {
               <div className={classes.noItems}>No managers at this event</div>
             ) : (
               managerItems
+            )}
+          </div>
+          <div className={classes.section}>
+            <div className={classes.sectionHeading}>Athletes</div>
+            {athleteItems.length === 0 ? (
+              <div className={classes.noItems}>No athletes at this event</div>
+            ) : (
+              athleteItems
             )}
           </div>
         </div>
