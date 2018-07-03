@@ -22,9 +22,6 @@ const styles = {
       color: grey[400]
     }
   },
-  addEventWrapperTablet: {
-    margin: 8
-  },
   column: {
     display: "flex",
     flexDirection: "column",

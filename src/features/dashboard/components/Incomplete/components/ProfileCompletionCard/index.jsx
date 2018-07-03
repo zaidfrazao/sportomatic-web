@@ -1,13 +1,7 @@
 import React, { Component } from "react";
 import injectStyles from "react-jss";
 import Button from "../../../../../../components/Button";
-import {
-  common,
-  green,
-  grey,
-  lightBlue,
-  red
-} from "../../../../../../utils/colours";
+import { common, green, grey, red } from "../../../../../../utils/colours";
 import ProgressBar from "../../../../../../components/ProgressBar";
 
 const styles = {
@@ -22,16 +16,6 @@ const styles = {
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center"
-  },
-  header: {
-    borderBottom: `1px solid ${grey[300]}`,
-    fontSize: 18,
-    borderRadius: "16px 16px 0 0",
-    padding: 24,
-    textAlign: "center",
-    fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: lightBlue[800]
   },
   iconComplete: {
     textAlign: "center",
@@ -78,20 +62,6 @@ const styles = {
   },
   progressBarWrapper: {
     padding: "12px 24px 24px 24px"
-  },
-  timeWrapper: {
-    textAlign: "center",
-    color: grey[700],
-    flexGrow: 1,
-    fontSize: 20
-  },
-  startEndWrapper: {
-    width: "100%",
-    maxWidth: 260,
-    margin: "0 auto",
-    marginBottom: 24,
-    display: "flex",
-    alignItems: "center"
   },
   wrapper: {
     border: `1px solid ${grey[300]}`,

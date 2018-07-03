@@ -112,9 +112,6 @@ const styles = {
       color: red[500]
     }
   },
-  sectionSeparator: {
-    height: 24
-  },
   sectionText: {
     margin: 12,
     fontSize: 16,

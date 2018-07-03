@@ -61,13 +61,6 @@ const styles = {
     width: 25,
     height: 25
   },
-  fabPosition: {
-    color: common["white"],
-    position: "fixed",
-    right: 24,
-    bottom: 24,
-    zIndex: 10
-  },
   flexGrow: {
     flexGrow: 1
   },

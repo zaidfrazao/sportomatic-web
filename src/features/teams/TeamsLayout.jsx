@@ -57,13 +57,6 @@ const styles = {
     width: 25,
     height: 25
   },
-  fabPosition: {
-    color: "#fff",
-    position: "fixed",
-    right: "24px",
-    bottom: "24px",
-    zIndex: 10
-  },
   flexGrow: {
     flexGrow: 1
   },
@@ -73,13 +66,6 @@ const styles = {
   infoWrapper: {
     width: "100%",
     height: "100%"
-  },
-  loaderWrapper: {
-    flexGrow: 1,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 24
   },
   root: {
     width: "100%",

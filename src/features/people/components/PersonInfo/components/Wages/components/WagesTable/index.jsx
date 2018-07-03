@@ -28,10 +28,6 @@ const styles = {
     fontSize: 18,
     fontWeight: "bold"
   },
-  tableFooterItem: {
-    padding: 24,
-    margin: 0
-  },
   tableFooterItemLeft: {
     borderRadius: "0 0 0 16px",
     padding: 24,

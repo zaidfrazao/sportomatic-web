@@ -7,7 +7,7 @@ import injectStyles from "react-jss";
 import Button from "../../components/Button";
 import BannerAd from "../../components/BannerAd";
 import BillingSummary from "./components/BillingSummary";
-import { common, grey, lightBlue, red } from "../../utils/colours";
+import { common, grey, lightBlue } from "../../utils/colours";
 import EmptyState from "../../components/EmptyState";
 import LargeMobileBannerAd from "../../components/LargeMobileBannerAd";
 import LeaderboardAd from "../../components/LeaderboardAd";
@@ -17,15 +17,6 @@ import Wages from "./components/Wages";
 const mobileBreakpoint = 800;
 
 const styles = {
-  actionsBar: {
-    display: "flex",
-    justifyContent: "center",
-    margin: "24px 24px 0 24px",
-    [`@media (max-width: ${mobileBreakpoint}px)`]: {
-      flexDirection: "column",
-      alignItems: "center"
-    }
-  },
   adWrapper: {
     display: "flex",
     alignItems: "center",
@@ -49,21 +40,6 @@ const styles = {
   buttonSeparator: {
     height: 12
   },
-  count: {
-    margin: "0 8px",
-    padding: "4px 8px",
-    backgroundColor: red[500],
-    borderRadius: 8,
-    color: common["white"]
-  },
-  countLight: {
-    margin: "0 8px",
-    padding: "4px 8px",
-    backgroundColor: common["white"],
-    borderRadius: 8,
-    fontWeight: "bold",
-    color: red[500]
-  },
   emptyState: {
     padding: 24
   },
@@ -85,9 +61,6 @@ const styles = {
     width: 25,
     height: 25
   },
-  flexGrow: {
-    flexGrow: 1
-  },
   header: {
     display: "flex",
     border: `1px solid ${grey[300]}`,
@@ -103,15 +76,6 @@ const styles = {
     flexGrow: 1,
     textAlign: "center",
     padding: 24
-  },
-  loadMoreButtonWrapper: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    marginBottom: 24
-  },
-  loadMoreIcon: {
-    marginRight: 8
   },
   menuButtonWrapper: {
     margin: "0 24px"

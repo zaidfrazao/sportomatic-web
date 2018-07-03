@@ -106,9 +106,6 @@ const styles = {
   selectWrapper: {
     marginBottom: 12
   },
-  separator: {
-    height: 12
-  },
   timesIcon: {
     marginRight: 12,
     fontSize: 30,

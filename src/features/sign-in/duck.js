@@ -499,7 +499,6 @@ export function signInWithSocial() {
       .getRedirectResult()
       .then(result => {
         const user = result.user;
-        console.log(user);
         dispatch(fetchAccountInfo(user.uid, user.email));
         dispatch(receiveSignInWithSocial());
       })

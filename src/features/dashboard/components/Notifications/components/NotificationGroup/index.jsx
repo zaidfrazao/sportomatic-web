@@ -41,17 +41,6 @@ const styles = {
       backgroundColor: grey[300]
     }
   },
-  iconWrapper: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: "50%",
-    backgroundColor: common["white"],
-    width: 40,
-    height: 40,
-    fontSize: 20,
-    marginRight: 24
-  },
   section: {
     border: `1px solid ${grey[300]}`,
     borderRadius: 16,

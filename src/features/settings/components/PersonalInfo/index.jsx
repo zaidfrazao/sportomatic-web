@@ -15,12 +15,6 @@ const mobileBreakpoint = 800;
 const tabletBreakpoint = 1080;
 
 const styles = {
-  addIcon: {
-    marginRight: 8
-  },
-  addSportButtonWrapper: {
-    margin: "12px 24px"
-  },
   column: {
     width: "100%",
     [`@media (min-width: ${tabletBreakpoint}px)`]: {
@@ -55,11 +49,6 @@ const styles = {
     width: 24,
     height: 24,
     margin: "0 auto"
-  },
-  iconSportWrapper: {
-    flexGrow: 1,
-    flexDirection: "flex",
-    alignItems: "center"
   },
   name: {
     color: grey[800],
@@ -118,19 +107,6 @@ const styles = {
     borderTop: `1px solid ${grey[100]}`,
     display: "flex",
     alignItems: "center"
-  },
-  listItemSeparator: {
-    height: 1,
-    backgroundColor: grey[100],
-    margin: "6px 24px"
-  },
-  listItemInactiveWrapper: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderRadius: 12,
-    padding: 24,
-    margin: "0 24px"
   },
   profilePicture: {
     borderRadius: "50%",

@@ -29,8 +29,7 @@ const styles = {
     border: `1px solid ${grey[300]}`,
     backgroundColor: common["white"],
     borderRadius: 8
-  },
-  wrapper: {}
+  }
 };
 
 class Custom extends Component {
@@ -153,7 +152,7 @@ class Custom extends Component {
     const allowEditing = status !== "FINALISED";
 
     return (
-      <div className={classes.wrapper}>
+      <div>
         <div className={classes.statsRequiredWrapper}>
           <div className={classes.statsRow}>
             <div className={classes.pointsColumn}>

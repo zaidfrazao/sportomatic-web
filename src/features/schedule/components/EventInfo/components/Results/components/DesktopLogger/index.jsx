@@ -25,12 +25,6 @@ const styles = {
     fontWeight: "bold",
     borderRadius: 16
   },
-  buttonsWrapper: {
-    flexGrow: 1,
-    padding: 24,
-    display: "flex",
-    flexDirection: "column"
-  },
   commentaryConfirmed: {
     backgroundColor: common["white"],
     borderRadius: 16,
@@ -76,22 +70,6 @@ const styles = {
     fontSize: 20,
     marginRight: 4
   },
-  pointsColumn: {
-    width: "40%",
-    padding: 24,
-    textAlign: "center"
-  },
-  pointsLabelColumn: {
-    width: "20%",
-    padding: "48px 24px",
-    height: "100%",
-    textAlign: "center",
-    fontWeight: "bold",
-    backgroundColor: grey[50],
-    color: grey[800],
-    borderLeft: `1px solid ${grey[300]}`,
-    borderRight: `1px solid ${grey[300]}`
-  },
   resultDraw: {
     borderRadius: 8,
     color: common["white"],
@@ -133,27 +111,6 @@ const styles = {
     justifyContent: "center",
     margin: "24px 0"
   },
-  statsRow: {
-    display: "flex",
-    alignItems: "center"
-  },
-  statsOptionalWrapper: {
-    margin: 24,
-    border: `1px solid ${grey[300]}`,
-    backgroundColor: grey[100],
-    borderRadius: 8
-  },
-  statsRequiredWrapper: {
-    margin: "0 24px 24px 24px",
-    border: `1px solid ${grey[300]}`,
-    backgroundColor: grey[100],
-    borderRadius: 8
-  },
-  switchWrapper: {
-    margin: "0 24px",
-    display: "flex",
-    justifyContent: "center"
-  },
   teamName: {
     fontSize: 18,
     marginTop: 12,
@@ -170,8 +127,7 @@ const styles = {
     fontSize: 18,
     fontWeight: "bold",
     margin: 24
-  },
-  wrapper: {}
+  }
 };
 
 class DesktopLogger extends Component {
@@ -472,7 +428,7 @@ class DesktopLogger extends Component {
     }
 
     return (
-      <div className={classes.wrapper}>
+      <div>
         <div className={classes.scoreWrapper}>
           <div className={classes.teamScoreInfo}>
             <img

@@ -5,17 +5,11 @@ import injectSheet from "react-jss";
 import moment from "moment";
 import EmptyState from "../../../../components/EmptyState";
 import EventCard from "./components/EventCard";
-import { grey, yellow } from "../../../../utils/colours";
+import { yellow } from "../../../../utils/colours";
 
 const tabletBreakpoint = 1080;
 
 const styles = {
-  actionsBar: {
-    margin: "24px 24px 0 24px",
-    backgroundColor: grey[200],
-    display: "flex",
-    justifyContent: "center"
-  },
   cardsWrapper: {
     display: "flex",
     flexWrap: "wrap",
@@ -30,12 +24,6 @@ const styles = {
   },
   emptyState: {
     padding: 24
-  },
-  flexGrow: {
-    flexGrow: 1
-  },
-  iconAdjacentText: {
-    marginRight: 8
   },
   questionMarkIcon: {
     marginRight: 12,

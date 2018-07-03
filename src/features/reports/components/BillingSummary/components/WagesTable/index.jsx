@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
 import accounting from "accounting";
@@ -29,10 +30,6 @@ const styles = {
     fontSize: 18,
     fontWeight: "bold"
   },
-  tableFooterItem: {
-    padding: 24,
-    margin: 0
-  },
   tableFooterItemLeft: {
     borderRadius: "0 0 0 16px",
     padding: 24,
@@ -53,11 +50,6 @@ const styles = {
     fontWeight: "bold"
   },
   tableHeaderItem: {
-    padding: 24,
-    margin: 0
-  },
-  tableHeaderItemLeft: {
-    borderRadius: "16px 0 0 0",
     padding: 24,
     margin: 0
   },

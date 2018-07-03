@@ -63,18 +63,6 @@ const styles = {
     border: `2px solid ${grey[200]}`,
     margin: 0
   },
-  tableItemNegative: {
-    color: red[500],
-    padding: 24,
-    border: `2px solid ${grey[200]}`,
-    margin: 0
-  },
-  tableItemPositive: {
-    color: green[500],
-    padding: 24,
-    border: `2px solid ${grey[200]}`,
-    margin: 0
-  },
   tableFooter: {
     borderTop: `1px solid ${grey[300]}`,
     borderRadius: "0 0 16px 16px",
@@ -84,10 +72,6 @@ const styles = {
     padding: "24px 0",
     fontSize: 18,
     fontWeight: "bold"
-  },
-  tableFooterItem: {
-    padding: 24,
-    margin: 0
   },
   tableFooterItemLeft: {
     borderRadius: "0 0 0 16px",

@@ -6,18 +6,12 @@ import moment from "moment";
 import CommunityCompletionCard from "./components/CommunityCompletionCard";
 import EmptyState from "../../../../components/EmptyState";
 import EventCard from "./components/EventCard";
-import { green, grey } from "../../../../utils/colours";
+import { green } from "../../../../utils/colours";
 import ProfileCompletionCard from "./components/ProfileCompletionCard";
 
 const tabletBreakpoint = 1080;
 
 const styles = {
-  actionsBar: {
-    margin: "24px 24px 0 24px",
-    backgroundColor: grey[200],
-    display: "flex",
-    justifyContent: "center"
-  },
   cardsWrapper: {
     display: "flex",
     flexWrap: "wrap",
@@ -32,12 +26,6 @@ const styles = {
   },
   emptyState: {
     padding: 24
-  },
-  flexGrow: {
-    flexGrow: 1
-  },
-  iconAdjacentText: {
-    marginRight: 8
   },
   thumbsUpIcon: {
     marginRight: 12,

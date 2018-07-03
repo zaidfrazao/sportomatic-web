@@ -81,11 +81,6 @@ const styles = {
     height: 24,
     margin: "0 auto"
   },
-  iconSportWrapper: {
-    flexGrow: 1,
-    flexDirection: "flex",
-    alignItems: "center"
-  },
   nameEmblemWrapper: {
     position: "relative",
     display: "flex",
@@ -133,19 +128,6 @@ const styles = {
     borderTop: `1px solid ${grey[100]}`,
     display: "flex",
     alignItems: "center"
-  },
-  listItemSeparator: {
-    height: 1,
-    backgroundColor: grey[100],
-    margin: "6px 24px"
-  },
-  listItemInactiveWrapper: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderRadius: 12,
-    padding: 24,
-    margin: "0 24px"
   },
   section: {
     border: `1px solid ${grey[300]}`,

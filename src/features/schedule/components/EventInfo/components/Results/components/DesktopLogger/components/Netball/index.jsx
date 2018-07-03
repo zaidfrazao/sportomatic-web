@@ -41,8 +41,7 @@ const styles = {
     margin: "0 24px",
     display: "flex",
     justifyContent: "center"
-  },
-  wrapper: {}
+  }
 };
 
 class Netball extends Component {
@@ -268,7 +267,7 @@ class Netball extends Component {
     const allowEditing = status !== "FINALISED";
 
     return (
-      <div className={classes.wrapper}>
+      <div>
         <div className={classes.statsRequiredWrapper}>
           <div className={classes.statsRow}>
             <div className={classes.pointsColumn}>

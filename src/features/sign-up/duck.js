@@ -21,9 +21,6 @@ export const UPDATE_PASSWORD = `${NAMESPACE}/UPDATE_PASSWORD`;
 export const REQUEST_SIGN_IN = `${NAMESPACE}/REQUEST_SIGN_IN`;
 export const RECEIVE_SIGN_IN = `${NAMESPACE}/RECEIVE_SIGN_IN`;
 export const ERROR_SIGNING_IN = `${NAMESPACE}/ERROR_SIGNING_IN`;
-export const REQUEST_ACCOUNT_INFO = `${NAMESPACE}/REQUEST_ACCOUNT_INFO`;
-export const RECEIVE_ACCOUNT_INFO = `${NAMESPACE}/RECEIVE_ACCOUNT_INFO`;
-export const ERROR_FETCHING_ACCOUNT_INFO = `${NAMESPACE}/ERROR_FETCHING_ACCOUNT_INFO`;
 export const REQUEST_CREATE_USER = `${NAMESPACE}/REQUEST_CREATE_USER`;
 export const RECEIVE_CREATE_USER = `${NAMESPACE}/RECEIVE_CREATE_USER`;
 export const ERROR_CREATING_USER = `${NAMESPACE}/ERROR_CREATING_USER`;
@@ -208,8 +205,6 @@ function loadingStatusReducer(state = loadingStatusInitialState, action = {}) {
         isSignInLoading: true
       };
     case RECEIVE_SIGN_IN:
-    case RECEIVE_ACCOUNT_INFO:
-    case ERROR_FETCHING_ACCOUNT_INFO:
     case ERROR_SIGNING_IN:
     case RECEIVE_SIGN_IN_WITH_SOCIAL:
     case ERROR_SIGNING_IN_WITH_SOCIAL:
@@ -1133,6 +1128,6 @@ export function promptFacebookSignIn() {
   firebase.auth().signInWithRedirect(provider);
 
   return {
-    type: GOOGLE_SIGN_IN_PROMPTED
+    type: FACEBOOK_SIGN_IN_PROMPTED
   };
 }

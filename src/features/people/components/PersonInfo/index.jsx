@@ -45,9 +45,6 @@ const styles = {
   buttonWrapper: {
     margin: "24px 24px 0 24px"
   },
-  flexGrow: {
-    flexGrow: 1
-  },
   header: {
     display: "flex",
     border: `1px solid ${grey[300]}`,

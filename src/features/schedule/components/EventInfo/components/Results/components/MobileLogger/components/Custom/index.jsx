@@ -26,19 +26,9 @@ const styles = {
     display: "flex",
     alignItems: "center"
   },
-  statsOptionalWrapper: {
-    borderTop: `1px solid ${grey[300]}`,
-    borderBottom: `1px solid ${grey[300]}`,
-    backgroundColor: common["white"]
-  },
   statsRequiredWrapper: {
     borderBottom: `1px solid ${grey[300]}`,
     backgroundColor: common["white"]
-  },
-  switchWrapper: {
-    margin: "0 24px",
-    display: "flex",
-    justifyContent: "center"
   },
   wrapper: {
     backgroundColor: common["white"],

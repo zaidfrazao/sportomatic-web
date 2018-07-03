@@ -110,30 +110,9 @@ const styles = {
     display: "flex",
     alignItems: "center"
   },
-  listItemSeparator: {
-    height: 1,
-    backgroundColor: grey[100],
-    margin: "6px 24px"
-  },
-  listItemInactiveWrapper: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderRadius: 12,
-    padding: 24,
-    margin: "0 24px"
-  },
   matchIcon: {
     marginRight: 12,
     color: yellow[800]
-  },
-  noItems: {
-    backgroundColor: grey[100],
-    color: grey[500],
-    borderRadius: 12,
-    padding: 24,
-    margin: 24,
-    textAlign: "center"
   },
   outerErrorWrapper: {
     padding: "24px 24px 0 24px"

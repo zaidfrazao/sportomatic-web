@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import _ from "lodash";
 import injectStyles from "react-jss";
@@ -50,17 +51,6 @@ const styles = {
       margin: "0 12px 0 0"
     }
   },
-  menuItemInactive: {
-    fontSize: 14,
-    padding: "18px 0",
-    margin: "12px 24px",
-    borderRadius: 16,
-    cursor: "not-allowed",
-    backgroundColor: grey[200],
-    [`@media (max-width: ${mobileBreakpoint}px)`]: {
-      textAlign: "center"
-    }
-  },
   menuItemSelected: {
     transition: "0.25s",
     borderRadius: 16,
@@ -80,9 +70,6 @@ const styles = {
   },
   menuItemText: {
     color: common["black"]
-  },
-  menuItemTextInactive: {
-    color: grey[400]
   },
   menuItemTextSelected: {
     color: common["white"]

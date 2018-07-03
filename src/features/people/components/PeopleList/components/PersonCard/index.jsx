@@ -15,15 +15,6 @@ const styles = {
   alertIcon: {
     marginRight: 12
   },
-  buttons: {
-    display: "flex",
-    justifyContent: "space-between",
-    borderRadius: "0 0 16px 16px",
-    backgroundColor: lightBlue[500],
-    "&:hover": {
-      backgroundColor: lightBlue[400]
-    }
-  },
   card: {
     transition: "0.25s",
     backgroundColor: common["white"],

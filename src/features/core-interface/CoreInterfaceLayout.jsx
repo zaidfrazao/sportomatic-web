@@ -61,8 +61,7 @@ const styles = {
     width: 40,
     height: 40,
     marginRight: 16
-  },
-  wrapper: {}
+  }
 };
 
 class CoreInterfaceLayout extends Component {
@@ -473,7 +472,7 @@ class CoreInterfaceLayout extends Component {
       return <LoadingScreen />;
     } else {
       return (
-        <div className={classes.wrapper}>
+        <div>
           <AppBar
             selected={sportSelected}
             sports={sportsItems}

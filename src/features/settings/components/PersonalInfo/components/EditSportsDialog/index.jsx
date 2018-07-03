@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import injectSheet from "react-jss";
 import Button from "../../../../../../components/Button";
-import { common, grey, lightBlue, red } from "../../../../../../utils/colours";
+import { common, grey, lightBlue } from "../../../../../../utils/colours";
 import Dialog from "../../../../../../components/Dialog";
 
 import hockeyIcon from "../../../../images/hockey.png";
@@ -14,15 +14,6 @@ const mobileBreakpoint = 800;
 const tabletBreakpoint = 1080;
 
 const styles = {
-  errorWrapper: {
-    backgroundColor: red[500],
-    width: "calc(100% - 24px)",
-    color: common["white"],
-    fontWeight: "bold",
-    textAlign: "center",
-    borderRadius: 8,
-    padding: 12
-  },
   flexGrow: {
     flexGrow: 1
   },
@@ -32,9 +23,6 @@ const styles = {
     fontWeight: "bold",
     textAlign: "center",
     fontSize: 18
-  },
-  icon: {
-    marginRight: 8
   },
   iconAdjacentText: {
     marginRight: 12

@@ -55,13 +55,6 @@ const styles = {
     width: 25,
     height: 25
   },
-  fabPosition: {
-    color: "#fff",
-    position: "fixed",
-    right: "24px",
-    bottom: "24px",
-    zIndex: 10
-  },
   flexGrow: {
     flexGrow: 1
   },
@@ -91,9 +84,6 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     overflow: "auto"
-  },
-  tabs: {
-    height: 64
   },
   tabsWrapper: {
     height: "100%",

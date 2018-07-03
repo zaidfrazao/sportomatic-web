@@ -60,11 +60,6 @@ const styles = {
     height: 24,
     margin: "0 auto"
   },
-  iconSportWrapper: {
-    flexGrow: 1,
-    flexDirection: "flex",
-    alignItems: "center"
-  },
   lastInfoItemIconWrapper: {
     borderRadius: "0 0 0 16px",
     textAlign: "center",
@@ -86,13 +81,6 @@ const styles = {
     height: 1,
     backgroundColor: grey[100],
     margin: "6px 24px"
-  },
-  listItemInactiveWrapper: {
-    display: "flex",
-    alignItems: "center",
-    borderRadius: 12,
-    padding: 24,
-    margin: "0 24px"
   },
   listItemWrapper: {
     transition: "0.25s",
