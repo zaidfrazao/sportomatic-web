@@ -79,6 +79,15 @@ const styles = {
     marginRight: 12,
     color: grey[600]
   },
+  rootWrapper: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center"
+  },
   timeInputGroupWrapper: {
     display: "flex",
     flexWrap: "wrap"
@@ -355,7 +364,6 @@ class EditSeasonDialog extends Component {
     const { isOpen, people, userID, initialInfo } = nextProps;
 
     let stateUpdates = {};
-    console.log(initialInfo);
 
     if (isOpen !== this.props.isOpen) {
       if (isOpen) {
@@ -970,7 +978,7 @@ class EditSeasonDialog extends Component {
     const yearOptions = this.getYearOptions();
 
     return (
-      <div>
+      <div className={classes.rootWrapper}>
         <div className={classes.headingTime}>
           <i className={`fas fa-calendar ${classes.iconAdjacentText}`} />Dates
         </div>
@@ -1475,7 +1483,7 @@ class EditSeasonDialog extends Component {
     const events = this.getNonCompetitiveEvents();
 
     return (
-      <div>
+      <div className={classes.rootWrapper}>
         <div className={classes.headingTime}>
           <i className={`fas fa-dumbbell ${classes.practiceIcon}`} />Practice
           Times
@@ -1658,7 +1666,7 @@ class EditSeasonDialog extends Component {
     const events = this.getCompetitiveEvents();
 
     return (
-      <div>
+      <div className={classes.rootWrapper}>
         <div className={classes.headingTime}>
           <i className={`fas fa-trophy ${classes.matchIcon}`} />Match Times
         </div>
@@ -1932,7 +1940,7 @@ class EditSeasonDialog extends Component {
     const managers = this.getManagers();
 
     return (
-      <div>
+      <div className={classes.rootWrapper}>
         <div className={classes.headingTime}>
           <i className={`fas fa-user ${classes.iconAdjacentText}`} />Managers
         </div>
@@ -2388,7 +2396,7 @@ class EditSeasonDialog extends Component {
     const coaches = this.getCoaches();
 
     return (
-      <div>
+      <div className={classes.rootWrapper}>
         <div className={classes.headingTime}>
           <i className={`fas fa-user ${classes.iconAdjacentText}`} />Coaches
         </div>
@@ -3104,6 +3112,232 @@ class EditSeasonDialog extends Component {
     };
   }
 
+  resetDialog() {
+    const { people, userID, initialInfo } = this.props;
+
+    let stateUpdates = {};
+
+    const initialStartDate = moment(initialInfo.dates.start, "DD MMM YYYY").tz(
+      "Africa/Johannesburg"
+    );
+    const initialEndDate = moment(initialInfo.dates.end, "DD MMM YYYY").tz(
+      "Africa/Johannesburg"
+    );
+    const currentDate = moment().tz("Africa/Johannesburg");
+    const allowEditStartDate = currentDate.isBefore(initialStartDate);
+    const allowEditEndDate = currentDate.isBefore(initialEndDate);
+
+    const startDayOptions = this.getDayOptions(
+      initialStartDate.daysInMonth(),
+      true
+    );
+    const endDayOptions = this.getDayOptions(
+      initialEndDate.daysInMonth(),
+      false
+    );
+    const peopleOptions = this.getPeopleOptions(people);
+    const competitiveEvents = initialInfo.competitiveEvents.map(info => {
+      const startTime = moment(info.times.start, "hh:mm A");
+      const endTime = moment(info.times.end, "hh:mm A");
+      return {
+        day: info.day,
+        startTime: {
+          hours: {
+            key: startTime.format("hh"),
+            label: startTime.format("hh")
+          },
+          minutes: {
+            key: startTime.format("mm"),
+            label: startTime.format("mm")
+          },
+          timeOfDay: {
+            key: startTime.format("A"),
+            label: startTime.format("A")
+          }
+        },
+        endTime: {
+          hours: {
+            key: endTime.format("hh"),
+            label: endTime.format("hh")
+          },
+          minutes: {
+            key: endTime.format("mm"),
+            label: endTime.format("mm")
+          },
+          timeOfDay: {
+            key: endTime.format("A"),
+            label: endTime.format("A")
+          }
+        }
+      };
+    });
+    const nonCompetitiveEvents = initialInfo.nonCompetitiveEvents.map(info => {
+      const startTime = moment(info.times.start, "hh:mm A");
+      const endTime = moment(info.times.end, "hh:mm A");
+      return {
+        day: info.day,
+        startTime: {
+          hours: {
+            key: startTime.format("hh"),
+            label: startTime.format("hh")
+          },
+          minutes: {
+            key: startTime.format("mm"),
+            label: startTime.format("mm")
+          },
+          timeOfDay: {
+            key: startTime.format("A"),
+            label: startTime.format("A")
+          }
+        },
+        endTime: {
+          hours: {
+            key: endTime.format("hh"),
+            label: endTime.format("hh")
+          },
+          minutes: {
+            key: endTime.format("mm"),
+            label: endTime.format("mm")
+          },
+          timeOfDay: {
+            key: endTime.format("A"),
+            label: endTime.format("A")
+          }
+        }
+      };
+    });
+    const managers = _.toPairs(
+      initialInfo.managers
+    ).map(([managerID, managerInfo]) => {
+      const managerType =
+        managerID === userID
+          ? {
+              key: "ME",
+              label: "Me"
+            }
+          : {
+              key: "CURRENT",
+              label: "Current community member"
+            };
+
+      return {
+        id: managerID,
+        type: managerType,
+        firstName: people[managerID].info.name,
+        lastName: people[managerID].info.surname,
+        email: people[managerID].info.email,
+        phoneNumber: people[managerID].info.phoneNumber,
+        errorAt: "",
+        validation: "default",
+        message: ""
+      };
+    });
+    const coaches = _.toPairs(
+      initialInfo.coaches
+    ).map(([coachID, coachInfo]) => {
+      const coachType =
+        coachID === userID
+          ? {
+              key: "ME",
+              label: "Me"
+            }
+          : {
+              key: "CURRENT",
+              label: "Current community member"
+            };
+      let paymentType = {
+        key: "HOURLY",
+        label: "Paid per hour"
+      };
+
+      switch (coachInfo.payment.type) {
+        case "FIXED":
+          paymentType = {
+            key: "FIXED",
+            label: "Paid fixed amount per session"
+          };
+          break;
+        case "MONTHLY":
+          paymentType = {
+            key: "MONTHLY",
+            label: "Paid salary per month"
+          };
+          break;
+        case "N/A":
+          paymentType = {
+            key: "N/A",
+            label: "Don't track wages"
+          };
+          break;
+        default:
+          paymentType = {
+            key: "HOURLY",
+            label: "Paid per hour"
+          };
+          break;
+      }
+
+      return {
+        id: coachID,
+        type: coachType,
+        firstName: people[coachID].info.name,
+        lastName: people[coachID].info.surname,
+        email: people[coachID].info.email,
+        phoneNumber: people[coachID].info.phoneNumber,
+        payment: {
+          type: paymentType,
+          rates: coachInfo.payment.rates
+        },
+        errorAt: "",
+        validation: "default",
+        message: ""
+      };
+    });
+
+    stateUpdates = {
+      ...initialState,
+      competitiveEvents,
+      nonCompetitiveEvents,
+      startDayOptions,
+      endDayOptions,
+      peopleOptions,
+      allowEditStartDate,
+      allowEditEndDate,
+      startDate: {
+        day: {
+          key: initialStartDate.format("DD"),
+          label: initialStartDate.format("DD")
+        },
+        month: {
+          key: initialStartDate.format("MM"),
+          label: initialStartDate.format("MMM")
+        },
+        year: {
+          key: initialStartDate.format("YYYY"),
+          label: initialStartDate.format("YYYY")
+        }
+      },
+      endDate: {
+        day: {
+          key: initialEndDate.format("DD"),
+          label: initialEndDate.format("DD")
+        },
+        month: {
+          key: initialEndDate.format("MM"),
+          label: initialEndDate.format("MMM")
+        },
+        year: {
+          key: initialEndDate.format("YYYY"),
+          label: initialEndDate.format("YYYY")
+        }
+      },
+      coaches,
+      managers
+    };
+
+    this.setState(stateUpdates);
+  }
+
   getActionButtons() {
     const { closeDialog, editSeason, isLoading } = this.props;
     const { step } = this.state;
@@ -3113,6 +3347,9 @@ class EditSeasonDialog extends Component {
         return [
           <Button colour="primary" slim handleClick={() => closeDialog()}>
             Cancel
+          </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
           </Button>,
           <Button
             colour="primary"
@@ -3136,6 +3373,9 @@ class EditSeasonDialog extends Component {
           >
             Back
           </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
+          </Button>,
           <Button
             colour="primary"
             filled
@@ -3157,6 +3397,9 @@ class EditSeasonDialog extends Component {
             handleClick={() => this.prevStep()}
           >
             Back
+          </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
           </Button>,
           <Button
             colour="primary"
@@ -3180,6 +3423,9 @@ class EditSeasonDialog extends Component {
           >
             Back
           </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
+          </Button>,
           <Button
             colour="primary"
             filled
@@ -3202,6 +3448,9 @@ class EditSeasonDialog extends Component {
           >
             Back
           </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
+          </Button>,
           <Button
             colour="primary"
             filled
@@ -3219,6 +3468,9 @@ class EditSeasonDialog extends Component {
         return [
           <Button colour="primary" slim handleClick={() => this.prevStep()}>
             Back
+          </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
           </Button>,
           <Button
             colour="primary"

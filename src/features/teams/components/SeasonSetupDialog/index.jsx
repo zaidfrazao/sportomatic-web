@@ -79,6 +79,15 @@ const styles = {
     marginRight: 12,
     color: grey[600]
   },
+  rootWrapper: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center"
+  },
   timeInputGroupWrapper: {
     display: "flex",
     flexWrap: "wrap"
@@ -846,7 +855,7 @@ class SeasonSetupDialog extends Component {
     const yearOptions = this.getYearOptions();
 
     return (
-      <div>
+      <div className={classes.rootWrapper}>
         <div className={classes.headingTime}>
           <i className={`fas fa-calendar ${classes.iconAdjacentText}`} />Dates
         </div>
@@ -1345,7 +1354,7 @@ class SeasonSetupDialog extends Component {
     const events = this.getNonCompetitiveEvents();
 
     return (
-      <div>
+      <div className={classes.rootWrapper}>
         <div className={classes.headingTime}>
           <i className={`fas fa-dumbbell ${classes.practiceIcon}`} />Practice
           Times
@@ -1528,7 +1537,7 @@ class SeasonSetupDialog extends Component {
     const events = this.getCompetitiveEvents();
 
     return (
-      <div>
+      <div className={classes.rootWrapper}>
         <div className={classes.headingTime}>
           <i className={`fas fa-trophy ${classes.matchIcon}`} />Match Times
         </div>
@@ -1802,7 +1811,7 @@ class SeasonSetupDialog extends Component {
     const managers = this.getManagers();
 
     return (
-      <div>
+      <div className={classes.rootWrapper}>
         <div className={classes.headingTime}>
           <i className={`fas fa-user ${classes.iconAdjacentText}`} />Managers
         </div>
@@ -2258,7 +2267,7 @@ class SeasonSetupDialog extends Component {
     const coaches = this.getCoaches();
 
     return (
-      <div>
+      <div className={classes.rootWrapper}>
         <div className={classes.headingTime}>
           <i className={`fas fa-user ${classes.iconAdjacentText}`} />Coaches
         </div>
@@ -2974,6 +2983,115 @@ class SeasonSetupDialog extends Component {
     };
   }
 
+  resetDialog() {
+    const {
+      people,
+      userID,
+      userFirstName,
+      userLastName,
+      userEmail
+    } = this.props;
+
+    let stateUpdates = initialState;
+
+    const initialStartDate = moment().tz("Africa/Johannesburg");
+    const initialEndDate = moment()
+      .tz("Africa/Johannesburg")
+      .add(2, "months");
+
+    const startDayOptions = this.getDayOptions(
+      initialStartDate.daysInMonth(),
+      true
+    );
+    const endDayOptions = this.getDayOptions(
+      initialEndDate.daysInMonth(),
+      false
+    );
+    const peopleOptions = this.getPeopleOptions(people);
+
+    stateUpdates = {
+      ...stateUpdates,
+      startDayOptions,
+      endDayOptions,
+      peopleOptions,
+      startDate: {
+        day: {
+          key: initialStartDate.format("DD"),
+          label: initialStartDate.format("DD")
+        },
+        month: {
+          key: initialStartDate.format("MM"),
+          label: initialStartDate.format("MMM")
+        },
+        year: {
+          key: initialStartDate.format("YYYY"),
+          label: initialStartDate.format("YYYY")
+        }
+      },
+      endDate: {
+        day: {
+          key: initialEndDate.format("DD"),
+          label: initialEndDate.format("DD")
+        },
+        month: {
+          key: initialEndDate.format("MM"),
+          label: initialEndDate.format("MMM")
+        },
+        year: {
+          key: initialEndDate.format("YYYY"),
+          label: initialEndDate.format("YYYY")
+        }
+      },
+      coaches: [
+        {
+          id: userID,
+          type: {
+            key: "ME",
+            label: "Me"
+          },
+          firstName: userFirstName,
+          lastName: userLastName,
+          email: userEmail,
+          phoneNumber: "",
+          payment: {
+            type: {
+              key: "HOURLY",
+              label: "Paid per hour"
+            },
+            rates: {
+              standard: "100.00",
+              overtime: "150.00",
+              nonCompetitive: "250.00",
+              competitive: "500.00",
+              salary: "3000.00"
+            }
+          },
+          errorAt: "",
+          validation: "default",
+          message: ""
+        }
+      ],
+      managers: [
+        {
+          id: userID,
+          type: {
+            key: "ME",
+            label: "Me"
+          },
+          firstName: userFirstName,
+          lastName: userLastName,
+          email: userEmail,
+          phoneNumber: "",
+          errorAt: "",
+          validation: "default",
+          message: ""
+        }
+      ]
+    };
+
+    this.setState(stateUpdates);
+  }
+
   getActionButtons() {
     const { closeDialog, createSeason, isLoading } = this.props;
     const { step } = this.state;
@@ -2983,6 +3101,9 @@ class SeasonSetupDialog extends Component {
         return [
           <Button colour="primary" slim handleClick={() => closeDialog()}>
             Cancel
+          </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
           </Button>,
           <Button
             colour="primary"
@@ -3006,6 +3127,9 @@ class SeasonSetupDialog extends Component {
           >
             Back
           </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
+          </Button>,
           <Button
             colour="primary"
             filled
@@ -3027,6 +3151,9 @@ class SeasonSetupDialog extends Component {
             handleClick={() => this.prevStep()}
           >
             Back
+          </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
           </Button>,
           <Button
             colour="primary"
@@ -3050,6 +3177,9 @@ class SeasonSetupDialog extends Component {
           >
             Back
           </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
+          </Button>,
           <Button
             colour="primary"
             filled
@@ -3072,6 +3202,9 @@ class SeasonSetupDialog extends Component {
           >
             Back
           </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
+          </Button>,
           <Button
             colour="primary"
             filled
@@ -3089,6 +3222,9 @@ class SeasonSetupDialog extends Component {
         return [
           <Button colour="primary" slim handleClick={() => this.prevStep()}>
             Back
+          </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
           </Button>,
           <Button
             colour="primary"

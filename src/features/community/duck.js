@@ -246,8 +246,7 @@ export function addSport(communityID, sportInfo) {
       ...sportInfo.establishedSports,
       {
         info: sportInfo.info,
-        ageGroups: sportInfo.ageGroups,
-        divisions: sportInfo.divisions
+        teams: sportInfo.teams
       }
     ];
     const db = firebase.firestore();

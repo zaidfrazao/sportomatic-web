@@ -7,7 +7,7 @@ const styles = theme => ({
     borderRadius: 16,
     appearance: "none",
     width: "100%",
-    height: 25,
+    height: 20,
     backgroundColor: grey[400],
     outline: "none",
     opacity: 0.7,
@@ -15,8 +15,8 @@ const styles = theme => ({
     cursor: "pointer",
     "&::-webkit-slider-thumb": {
       appearance: "none",
-      width: 25,
-      height: 25,
+      width: 20,
+      height: 20,
       borderRadius: 16,
       backgroundColor: common["black"],
       cursor: "pointer"
@@ -29,15 +29,15 @@ const styles = theme => ({
     borderRadius: 16,
     appearance: "none",
     width: "100%",
-    height: 25,
+    height: 20,
     backgroundColor: grey[300],
     outline: "none",
     opacity: 0.7,
     transition: "opacity .2s",
     "&::-webkit-slider-thumb": {
       appearance: "none",
-      width: 25,
-      height: 25,
+      width: 20,
+      height: 20,
       borderRadius: 16,
       backgroundColor: grey[400],
       cursor: "not-allowed"

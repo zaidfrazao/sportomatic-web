@@ -16,6 +16,7 @@ import Settings from "../settings/SettingsView";
 import SideMenu from "./components/SideMenu";
 import Teams from "../teams/TeamsView";
 
+import athleticsIcon from "./images/athletics.png";
 import hockeyIcon from "./images/hockey.png";
 import netballIcon from "./images/netball.png";
 import rugbyIcon from "./images/rugby.png";
@@ -216,6 +217,7 @@ class CoreInterfaceLayout extends Component {
 
   getSportsIcon(sport) {
     const icons = {
+      Athletics: athleticsIcon,
       Hockey: hockeyIcon,
       Netball: netballIcon,
       Rugby: rugbyIcon,
@@ -405,10 +407,10 @@ class CoreInterfaceLayout extends Component {
     } = this.props.uiConfig;
     const { isLogOutModalOpen } = this.props.dialogs;
 
-    const allowedSports = ["Hockey", "Netball", "Rugby"];
+    const allowedSports = ["Athletics", "Hockey", "Netball", "Rugby"];
     const isMobile = windowWidth < 800;
     const isTablet = windowWidth < 1080;
-    const versionNumber = "0.9.23";
+    const versionNumber = "0.9.24";
 
     const userFirstName = accountInfo.info.name;
     const userLastName = accountInfo.info.surname;

@@ -16,7 +16,8 @@ const styles = {
   content: {
     flexGrow: 1,
     overflow: "auto",
-    padding: 24
+    display: "flex",
+    padding: props => (props.size === "fullscreen" ? 0 : 24)
   },
   dotHighlighted: {
     width: 12,
@@ -39,14 +40,14 @@ const styles = {
     marginTop: 8
   },
   footer: {
-    borderRadius: "0 0 16px 16px",
+    borderRadius: props => (props.size === "fullscreen" ? 0 : "0 0 16px 16px"),
     padding: "12px 24px",
     backgroundColor: grey[100],
     borderTop: `1px solid ${grey[300]}`
   },
   header: {
     fontSize: 18,
-    borderRadius: "16px 16px 0 0",
+    borderRadius: props => (props.size === "fullscreen" ? 0 : "16px 16px 0 0"),
     padding: "24px 0",
     textAlign: "center",
     fontWeight: "bold",
@@ -57,17 +58,20 @@ const styles = {
   innerWrapper: {
     borderRadius: 16,
     backgroundColor: common["white"],
-    margin: 24,
     minWidth: 260,
-    maxWidth: 600,
-    maxHeight: "calc(100% - 48px)",
     display: "flex",
     flexDirection: "column",
     boxShadow:
       "0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
     [`@media (min-width: ${mobileBreakpoint}px)`]: {
-      width: props => (props.size === "medium" ? "60%" : "auto"),
-      height: props => (props.size === "medium" ? "60%" : "auto")
+      width: props =>
+        props.size === "medium"
+          ? "60%"
+          : props.size === "fullscreen" ? "100%" : "auto",
+      height: props =>
+        props.size === "medium"
+          ? "60%"
+          : props.size === "fullscreen" ? "100%" : "auto"
     }
   },
   wrapper: {

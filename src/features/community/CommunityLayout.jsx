@@ -414,6 +414,7 @@ class CommunityLayout extends Component {
     const { sports } = this.props;
 
     let sportsAllowed = {
+      Athletics: true,
       Hockey: true,
       Netball: true,
       Rugby: true
@@ -498,21 +499,35 @@ class CommunityLayout extends Component {
             handleChange={newValue => this.updateRemoveConfirm(newValue)}
           />
         </Dialog>
-        <AddSportDialog
-          isOpen={addSportDialog.isOpen}
-          isLoading={isAddSportLoading}
-          sportsAllowed={sportsAllowed}
-          ageGroupOptions={ageGroups}
-          divisionOptions={divisions}
-          genders={genders}
-          establishedSports={sports}
-          addSport={sportInfo => {
-            closeAddSportDialog();
-            checkCompletionProgress();
-            addSport(activeCommunityID, sportInfo);
-          }}
-          closeDialog={() => closeAddSportDialog()}
-        />
+        {isMobile ? (
+          <Dialog
+            isOpen={addSportDialog.isOpen}
+            handleOkClick={() => {
+              closeAddSportDialog();
+            }}
+            heading="Not Available"
+            type="alert"
+          >
+            Your display is too small to perform this action. Please add sports
+            on dekstop or tablet displays.
+          </Dialog>
+        ) : (
+          <AddSportDialog
+            isOpen={addSportDialog.isOpen}
+            isLoading={isAddSportLoading}
+            sportsAllowed={sportsAllowed}
+            ageGroupOptions={ageGroups}
+            divisionOptions={divisions}
+            genders={genders}
+            establishedSports={sports}
+            addSport={sportInfo => {
+              closeAddSportDialog();
+              checkCompletionProgress();
+              addSport(activeCommunityID, sportInfo);
+            }}
+            closeDialog={() => closeAddSportDialog()}
+          />
+        )}
       </div>
     );
   }

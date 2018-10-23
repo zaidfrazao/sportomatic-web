@@ -61,6 +61,15 @@ const styles = {
     textAlign: "center",
     fontWeight: "bold"
   },
+  rootWrapper: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center"
+  },
   timeInputGroupWrapper: {
     display: "flex",
     flexWrap: "wrap"
@@ -523,7 +532,7 @@ class RosterSetupDialog extends Component {
     const athletes = this.getAthletes();
 
     return (
-      <div>
+      <div className={classes.rootWrapper}>
         <div className={classes.headingTime}>
           <i className={`fas fa-user ${classes.iconAdjacentText}`} />Athletes
         </div>
@@ -819,7 +828,7 @@ class RosterSetupDialog extends Component {
     const { athletes } = this.state;
 
     return (
-      <div>
+      <div className={classes.rootWrapper}>
         <div className={classes.headingTime}>
           <i className={`fas fa-user ${classes.iconAdjacentText}`} />Parents /
           Guardians
@@ -1101,6 +1110,36 @@ class RosterSetupDialog extends Component {
     };
   }
 
+  resetDialog() {
+    const { people, userID } = this.props;
+
+    let stateUpdates = {};
+    const peopleOptions = this.getPeopleOptions(people);
+
+    stateUpdates = {
+      ...initialState,
+      peopleOptions,
+      athletes: [
+        {
+          id: userID,
+          type: {
+            key: "NEW",
+            label: "Invite new person"
+          },
+          firstName: "",
+          lastName: "",
+          email: "",
+          errorAt: "",
+          validation: "default",
+          message: "",
+          parents: []
+        }
+      ]
+    };
+
+    this.setState(stateUpdates);
+  }
+
   getActionButtons() {
     const { closeDialog, editRoster, isLoading, isUnderAge } = this.props;
     const { step } = this.state;
@@ -1111,6 +1150,13 @@ class RosterSetupDialog extends Component {
           return [
             <Button colour="primary" slim handleClick={() => closeDialog()}>
               Cancel
+            </Button>,
+            <Button
+              colour="primary"
+              slim
+              handleClick={() => this.resetDialog()}
+            >
+              Reset
             </Button>,
             <Button
               colour="primary"
@@ -1128,6 +1174,13 @@ class RosterSetupDialog extends Component {
           return [
             <Button colour="primary" slim handleClick={() => closeDialog()}>
               Cancel
+            </Button>,
+            <Button
+              colour="primary"
+              slim
+              handleClick={() => this.resetDialog()}
+            >
+              Reset
             </Button>,
             <Button
               colour="primary"
@@ -1152,6 +1205,9 @@ class RosterSetupDialog extends Component {
           >
             Back
           </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
+          </Button>,
           <Button
             colour="primary"
             filled
@@ -1169,6 +1225,9 @@ class RosterSetupDialog extends Component {
         return [
           <Button colour="primary" slim handleClick={() => this.prevStep()}>
             Back
+          </Button>,
+          <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+            Reset
           </Button>,
           <Button
             colour="primary"

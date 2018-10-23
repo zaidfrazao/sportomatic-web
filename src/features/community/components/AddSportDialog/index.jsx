@@ -15,44 +15,35 @@ import Select from "../../../../components/Select";
 import Slider from "../../../../components/Slider";
 import TextField from "../../../../components/TextField";
 
+import athleticsIcon from "../../images/athletics.png";
 import hockeyIcon from "../../images/hockey.png";
 import netballIcon from "../../images/netball.png";
 import rugbyIcon from "../../images/rugby.png";
-import otherIcon from "../../images/other.png";
-
-const mobileBreakpoint = 800;
-const tabletBreakpoint = 1080;
 
 const styles = {
-  addCustomWrapper: {
-    transition: "0.25s",
-    textAlign: "center",
-    fontSize: 14,
-    borderRadius: 12,
-    border: `2px dotted ${grey[300]}`,
-    color: grey[300],
-    cursor: "pointer",
-    padding: 12,
-    margin: 24,
-    "&:hover": {
-      border: `2px solid ${grey[400]}`,
-      color: grey[400]
-    }
+  addCustomTeamButtonWrapper: {
+    padding: "24px 24px 0 24px"
   },
   ageSelectorsWrapper: {
-    padding: 24,
+    padding: 12,
     backgroundColor: grey[50],
-    borderRadius: "16px 16px 0 0"
+    borderRadius: 16
   },
   contentWrapper: {
-    padding: 12
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "stretch"
   },
-  customFieldWrapper: {
-    marginLeft: 24,
-    flexGrow: 1
+  sidebar: {
+    width: "30%"
+  },
+  nonSidebar: {
+    width: "70%",
+    display: "flex",
+    flexDirection: "column"
   },
   deleteButton: {
-    margin: 24,
+    marginLeft: 12,
     transition: "0.25s",
     cursor: "pointer",
     fontSize: 24,
@@ -62,17 +53,19 @@ const styles = {
     }
   },
   divisionSelectorsWrapper: {
-    padding: 24,
+    borderRadius: 16,
+    padding: 12,
     backgroundColor: grey[50]
   },
   errorWrapper: {
     backgroundColor: red[500],
-    width: "calc(100% - 24px)",
+    width: "calc(100% - 72px)",
     color: common["white"],
     fontWeight: "bold",
     textAlign: "center",
     borderRadius: 8,
-    padding: 12
+    padding: 12,
+    margin: "0 24px 24px 24px"
   },
   flexGrow: {
     flexGrow: 1
@@ -82,7 +75,7 @@ const styles = {
     margin: 12,
     fontWeight: "bold",
     textAlign: "center",
-    fontSize: 18
+    fontSize: 14
   },
   icon: {
     marginRight: 8
@@ -90,32 +83,9 @@ const styles = {
   iconAdjacentText: {
     marginRight: 12
   },
-  infoItemText: {
-    flex: 1,
-    padding: 24,
-    color: grey[700]
-  },
-  infoItemWrapper: {
-    borderTop: `1px solid ${grey[100]}`,
-    display: "flex",
-    alignItems: "center"
-  },
-  lastInfoItemText: {
-    flex: 1,
-    padding: 24,
-    color: grey[700]
-  },
-  lastInfoItemWrapper: {
-    borderTop: `1px solid ${grey[100]}`,
-    display: "flex",
-    alignItems: "center"
-  },
   matchIcon: {
     marginRight: 12,
     color: yellow[800]
-  },
-  outerErrorWrapper: {
-    padding: "24px 24px 0 24px"
   },
   practiceIcon: {
     marginRight: 12,
@@ -124,26 +94,26 @@ const styles = {
   section: {
     border: `1px solid ${grey[300]}`,
     borderRadius: 16,
-    marginBottom: 24,
+    margin: "24px 24px 0 24px",
     height: "100%",
-    width: "100%",
+    width: "calc(100% - 48px)",
     display: "flex",
     flexDirection: "column",
     backgroundColor: common["white"]
   },
   sectionHeading: {
     borderBottom: `1px solid ${grey[300]}`,
-    fontSize: 18,
+    fontSize: 16,
     borderRadius: "16px 16px 0 0",
-    padding: "18px 0",
+    padding: "12px 0",
     width: "100%",
     textAlign: "center",
     fontWeight: "bold",
-    color: common["white"],
-    backgroundColor: lightBlue[800]
+    color: grey[800],
+    backgroundColor: grey[100]
   },
   sliderLabel: {
-    fontSize: 16,
+    fontSize: 14,
     color: grey[500],
     fontWeight: "bold",
     width: "100%",
@@ -151,8 +121,8 @@ const styles = {
     margin: "8px 0 24px 0"
   },
   sportIcon: {
-    width: 40,
-    height: 40,
+    width: 32,
+    height: 32,
     marginBottom: 12
   },
   sportName: {
@@ -160,42 +130,36 @@ const styles = {
     color: grey[800],
     fontWeight: "bold",
     textAlign: "center",
-    lineHeight: "25px",
-    fontSize: 18
+    lineHeight: "23px",
+    fontSize: 16
   },
   sportNameSelected: {
     transition: "0.25s",
     color: common["white"],
     fontWeight: "bold",
     textAlign: "center",
-    lineHeight: "25px",
-    fontSize: 18
+    lineHeight: "23px",
+    fontSize: 16
   },
   sportOptionSelectedWrapper: {
     transition: "0.25s",
-    margin: 24,
+    margin: "24px 12px",
     padding: 24,
-    width: "calc(33% - 96px)",
+    width: 60,
     borderRadius: 16,
     backgroundColor: lightBlue[500],
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center",
-    [`@media (max-width: ${tabletBreakpoint}px)`]: {
-      width: "calc(50% - 96px)"
-    },
-    [`@media (max-width: ${mobileBreakpoint}px)`]: {
-      width: "calc(100% - 96px)"
-    }
+    alignItems: "center"
   },
   sportOptionWrapper: {
     transition: "0.25s",
-    margin: 24,
+    margin: "24px 12px",
     padding: 24,
-    width: "calc(33% - 96px)",
+    width: 60,
     borderRadius: 16,
-    backgroundColor: grey[100],
+    backgroundColor: grey[200],
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -203,81 +167,89 @@ const styles = {
     cursor: "pointer",
     "&:hover": {
       backgroundColor: grey[300]
-    },
-    [`@media (max-width: ${tabletBreakpoint}px)`]: {
-      width: "calc(50% - 96px)"
-    },
-    [`@media (max-width: ${mobileBreakpoint}px)`]: {
-      width: "calc(100% - 96px)"
     }
   },
   sportSelectionWrapper: {
-    position: "relative",
+    border: `1px solid ${grey[300]}`,
+    backgroundColor: grey[50],
+    margin: 24,
+    borderRadius: 16,
+    padding: "0 12px",
     display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-between"
+    flexWrap: "wrap"
+  },
+  teamInfoWrapper: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTop: `1px solid ${grey[300]}`
+  },
+  teamNumberWrapper: {
+    backgroundColor: grey[500],
+    width: "calc(100% - 72px)",
+    color: common["white"],
+    fontWeight: "bold",
+    textAlign: "center",
+    borderRadius: 8,
+    padding: 12,
+    margin: "0 24px"
+  },
+  teamsInnerWrapper: {
+    display: "flex",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
+    flexWrap: "wrap"
+  },
+  teamsWrapper: {
+    flex: 1,
+    overflow: "auto"
+  },
+  teamNameWrapper: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  teamWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    border: `1px solid ${grey[300]}`,
+    width: "calc(33% - 74px)",
+    backgroundColor: grey[100],
+    borderRadius: 16,
+    margin: 24,
+    padding: 12
   }
 };
 
 const initialState = {
-  step: 1,
   sport: "",
   info: {
     name: "",
     nonCompetitive: "",
     competitive: "",
-    gender: {
-      key: "BOTH",
-      label: "Girls & boys teams"
-    }
+    gender: "BOTH"
   },
   ageGroups: {
     start: 6,
-    end: 19,
-    selected: [],
-    custom: []
+    end: 19
   },
   divisions: {
-    6: {
-      letters: {
-        end: "D",
-        selected: ["A", "B", "C", "D"]
-      },
-      numbers: {
-        end: "4th",
-        selected: ["1st", "2nd", "3rd", "4th"]
-      },
-      custom: []
+    letters: {
+      end: "D"
+    },
+    numbers: {
+      end: "4th"
     }
   },
   sportError: {
+    validation: "error",
+    helperText: "Please select a sport"
+  },
+  teamsError: {
     validation: "default",
     helperText: ""
   },
-  customErrors: {
-    name: {
-      validation: "default",
-      helperText: ""
-    },
-    nonCompetitive: {
-      validation: "default",
-      helperText: ""
-    },
-    competitive: {
-      validation: "default",
-      helperText: ""
-    }
-  },
-  ageGroupErrors: {
-    custom: {},
-    validation: "default",
-    message: ""
-  },
-  divisionsErrors: {
-    custom: {},
-    validation: "default",
-    message: ""
-  }
+  generatedTeams: [],
+  customTeams: []
 };
 
 class AddSportDialog extends Component {
@@ -290,33 +262,22 @@ class AddSportDialog extends Component {
       name: "",
       nonCompetitive: "",
       competitive: "",
-      gender: {
-        key: "BOTH",
-        label: "Girls & boys teams"
-      }
+      gender: "BOTH"
     };
     let ageGroups = {
       start: 0,
-      end: 0,
-      selected: [],
-      custom: []
+      end: 0
     };
 
     if (genders === "male") {
       info = {
         ...info,
-        gender: {
-          key: "MALE",
-          label: "Boys teams only"
-        }
+        gender: "MALE"
       };
     } else if (genders === "female") {
       info = {
         ...info,
-        gender: {
-          key: "FEMALE",
-          label: "Girls teams only"
-        }
+        gender: "FEMALE"
       };
     }
 
@@ -332,44 +293,12 @@ class AddSportDialog extends Component {
         } else if (ageGroupNumber >= ageGroups.end) {
           ageGroups.end = ageGroupNumber;
         }
-        ageGroups.selected.push(ageGroup.label);
-      } else {
-        ageGroups.custom.push({ id: index, label: ageGroup.label });
       }
-    });
-
-    let divisions = {};
-    ageGroups.selected.map(age => {
-      divisions[age] = {
-        letters: {
-          end: "D",
-          selected: ["A", "B", "C", "D"]
-        },
-        numbers: {
-          end: "4th",
-          selected: ["1st", "2nd", "3rd", "4th"]
-        },
-        custom: []
-      };
-    });
-    ageGroups.custom.map(age => {
-      divisions[age.label] = {
-        letters: {
-          end: "D",
-          selected: ["A", "B", "C", "D"]
-        },
-        numbers: {
-          end: "4th",
-          selected: ["1st", "2nd", "3rd", "4th"]
-        },
-        custom: []
-      };
     });
 
     this.setState({
       info,
-      ageGroups,
-      divisions
+      ageGroups
     });
   }
 
@@ -383,27 +312,18 @@ class AddSportDialog extends Component {
         name: "",
         nonCompetitive: "",
         competitive: "",
-        gender: {
-          key: "BOTH",
-          label: "Girls & boys teams"
-        }
+        gender: "BOTH"
       };
 
       if (genders === "male") {
         info = {
           ...info,
-          gender: {
-            key: "MALE",
-            label: "Boys teams only"
-          }
+          gender: "MALE"
         };
       } else if (genders === "female") {
         info = {
           ...info,
-          gender: {
-            key: "FEMALE",
-            label: "Girls teams only"
-          }
+          gender: "FEMALE"
         };
       }
 
@@ -416,9 +336,7 @@ class AddSportDialog extends Component {
     if (isOpen !== this.props.isOpen && !isOpen) {
       let ageGroups = {
         start: 0,
-        end: 0,
-        selected: [],
-        custom: []
+        end: 0
       };
 
       ageGroupOptions.map((ageGroup, index) => {
@@ -433,44 +351,12 @@ class AddSportDialog extends Component {
           } else if (ageGroupNumber >= ageGroups.end) {
             ageGroups.end = ageGroupNumber;
           }
-          ageGroups.selected.push(ageGroup.label);
-        } else {
-          ageGroups.custom.push({ id: index, label: ageGroup.label });
         }
-      });
-
-      let divisions = {};
-      ageGroups.selected.map(age => {
-        divisions[age] = {
-          letters: {
-            end: "D",
-            selected: ["A", "B", "C", "D"]
-          },
-          numbers: {
-            end: "4th",
-            selected: ["1st", "2nd", "3rd", "4th"]
-          },
-          custom: []
-        };
-      });
-      ageGroups.custom.map(age => {
-        divisions[age.label] = {
-          letters: {
-            end: "D",
-            selected: ["A", "B", "C", "D"]
-          },
-          numbers: {
-            end: "4th",
-            selected: ["1st", "2nd", "3rd", "4th"]
-          },
-          custom: []
-        };
       });
 
       updates = {
         ...initialState,
-        ageGroups,
-        divisions
+        ageGroups
       };
     }
 
@@ -480,9 +366,7 @@ class AddSportDialog extends Component {
     ) {
       let ageGroups = {
         start: 0,
-        end: 0,
-        selected: [],
-        custom: []
+        end: 0
       };
 
       ageGroupOptions.map((ageGroup, index) => {
@@ -497,212 +381,506 @@ class AddSportDialog extends Component {
           } else if (ageGroupNumber >= ageGroups.end) {
             ageGroups.end = ageGroupNumber;
           }
-          ageGroups.selected.push(ageGroup.label);
-        } else {
-          ageGroups.custom.push({ id: index, label: ageGroup.label });
         }
-      });
-
-      let divisions = {};
-      ageGroups.selected.map(age => {
-        divisions[age] = {
-          letters: {
-            end: "D",
-            selected: ["A", "B", "C", "D"]
-          },
-          numbers: {
-            end: "4th",
-            selected: ["1st", "2nd", "3rd", "4th"]
-          },
-          custom: []
-        };
-      });
-      ageGroups.custom.map(age => {
-        divisions[age.label] = {
-          letters: {
-            end: "D",
-            selected: ["A", "B", "C", "D"]
-          },
-          numbers: {
-            end: "4th",
-            selected: ["1st", "2nd", "3rd", "4th"]
-          },
-          custom: []
-        };
       });
 
       updates = {
         ...updates,
-        ageGroups,
-        divisions
+        ageGroups
       };
     }
 
     this.setState(updates);
   }
 
-  updateStep(newStep) {
-    this.setState({
-      step: newStep
-    });
-  }
-
-  updateSport(newSport) {
-    const { info } = this.state;
-
-    if (newSport === "Custom") {
-      this.setState({
-        sport: newSport,
-        info: {
-          ...info,
-          name: "",
-          competitive: "",
-          nonCompetitive: ""
-        }
-      });
-    } else {
-      this.setState({
-        sport: newSport,
-        info: {
-          ...info,
-          name: newSport,
-          competitive: "Match",
-          nonCompetitive: "Practice"
-        }
-      });
+  getNumberSuffix(number) {
+    switch (number) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
     }
   }
 
-  updateCustomSport(field, newValue) {
-    const { info, customErrors } = this.state;
+  generateTeams(ageGroups, divisions, sport) {
+    const { genders } = this.props;
 
-    this.setState({
-      info: {
-        ...info,
-        [field]: newValue
-      },
-      customErrors: {
-        ...customErrors,
-        [field]: {
-          validation: "default",
-          helperText: ""
+    let generatedTeams = [];
+    let gender = "MIXED";
+    const letterOptions = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+    let ageGroupCounter = ageGroups.start;
+
+    switch (sport) {
+      case "Athletics":
+        gender = genders === "mixed" ? "MIXED" : _.toUpper(genders);
+        break;
+      case "Hockey":
+        gender = "BOTH";
+        break;
+      case "Rugby":
+        gender = "MALE";
+        break;
+      case "Netball":
+        gender = "FEMALE";
+        break;
+      default:
+        gender = "BOTH";
+        break;
+    }
+
+    if (ageGroupCounter !== 0) {
+      let divisionCounter = 1;
+      const numbersEnd = divisions.numbers.end;
+
+      if (numbersEnd !== "None") {
+        while (divisionCounter <= parseInt(numbersEnd[0], 10)) {
+          const suffix = this.getNumberSuffix(divisionCounter);
+
+          switch (gender) {
+            case "MALE":
+              generatedTeams.push({
+                name: `${sport} Men's ${divisionCounter}${suffix} Team`,
+                ageGroup: "Open",
+                division: `${divisionCounter}${suffix}`,
+                gender: {
+                  key: "MALE",
+                  label: "Men"
+                },
+                sport
+              });
+              break;
+            case "FEMALE":
+              generatedTeams.push({
+                name: `${sport} Women's ${divisionCounter}${suffix} Team`,
+                ageGroup: "Open",
+                division: `${divisionCounter}${suffix}`,
+                gender: {
+                  key: "FEMALE",
+                  label: "Women"
+                },
+                sport
+              });
+              break;
+            case "BOTH":
+              generatedTeams.push({
+                name: `${sport} Men's ${divisionCounter}${suffix} Team`,
+                ageGroup: "Open",
+                division: `${divisionCounter}${suffix}`,
+                gender: {
+                  key: "MALE",
+                  label: "Men"
+                },
+                sport
+              });
+              generatedTeams.push({
+                name: `${sport} Women's ${divisionCounter}${suffix} Team`,
+                ageGroup: "Open",
+                division: `${divisionCounter}${suffix}`,
+                gender: {
+                  key: "FEMALE",
+                  label: "Women"
+                },
+                sport
+              });
+              break;
+            default:
+              generatedTeams.push({
+                name: `${sport} Mixed ${divisionCounter}${suffix} Team`,
+                ageGroup: "Open",
+                division: `${divisionCounter}${suffix}`,
+                gender: {
+                  key: "MIXED",
+                  label: "Mixed"
+                },
+                sport
+              });
+              break;
+          }
+          divisionCounter++;
         }
       }
-    });
+
+      while (ageGroupCounter <= ageGroups.end) {
+        const lettersEnd = divisions.letters.end;
+
+        divisionCounter = 0;
+        if (lettersEnd !== "None") {
+          while (divisionCounter <= _.indexOf(letterOptions, lettersEnd)) {
+            switch (gender) {
+              case "MALE":
+                if (ageGroupCounter < 18) {
+                  generatedTeams.push({
+                    name: `${sport} Boys' U/${ageGroupCounter} ${letterOptions[
+                      divisionCounter
+                    ]} Team`,
+                    ageGroup: `U/${ageGroupCounter}`,
+                    division: letterOptions[divisionCounter],
+                    gender: {
+                      key: "MALE",
+                      label: "Boys"
+                    },
+                    sport
+                  });
+                } else {
+                  generatedTeams.push({
+                    name: `${sport} Men's U/${ageGroupCounter} ${letterOptions[
+                      divisionCounter
+                    ]} Team`,
+                    ageGroup: `U/${ageGroupCounter}`,
+                    division: letterOptions[divisionCounter],
+                    gender: {
+                      key: "MALE",
+                      label: "Men"
+                    },
+                    sport
+                  });
+                }
+                break;
+              case "FEMALE":
+                if (ageGroupCounter < 18) {
+                  generatedTeams.push({
+                    name: `${sport} Girls' U/${ageGroupCounter} ${letterOptions[
+                      divisionCounter
+                    ]} Team`,
+                    ageGroup: `U/${ageGroupCounter}`,
+                    division: letterOptions[divisionCounter],
+                    gender: {
+                      key: "FEMALE",
+                      label: "Girls"
+                    },
+                    sport
+                  });
+                } else {
+                  generatedTeams.push({
+                    name: `${sport} Women's U/${ageGroupCounter} ${letterOptions[
+                      divisionCounter
+                    ]} Team`,
+                    ageGroup: `U/${ageGroupCounter}`,
+                    division: letterOptions[divisionCounter],
+                    gender: {
+                      key: "FEMALE",
+                      label: "Women"
+                    },
+                    sport
+                  });
+                }
+                break;
+              case "BOTH":
+                if (ageGroupCounter < 18) {
+                  generatedTeams.push({
+                    name: `${sport} Boys' U/${ageGroupCounter} ${letterOptions[
+                      divisionCounter
+                    ]} Team`,
+                    ageGroup: `U/${ageGroupCounter}`,
+                    division: letterOptions[divisionCounter],
+                    gender: {
+                      key: "MALE",
+                      label: "Boys"
+                    },
+                    sport
+                  });
+                  generatedTeams.push({
+                    name: `${sport} Girls' U/${ageGroupCounter} ${letterOptions[
+                      divisionCounter
+                    ]} Team`,
+                    ageGroup: `U/${ageGroupCounter}`,
+                    division: letterOptions[divisionCounter],
+                    gender: {
+                      key: "FEMALE",
+                      label: "Girls"
+                    },
+                    sport
+                  });
+                } else {
+                  generatedTeams.push({
+                    name: `${sport} Men's U/${ageGroupCounter} ${letterOptions[
+                      divisionCounter
+                    ]} Team`,
+                    ageGroup: `U/${ageGroupCounter}`,
+                    division: letterOptions[divisionCounter],
+                    gender: {
+                      key: "MALE",
+                      label: "Men"
+                    },
+                    sport
+                  });
+                  generatedTeams.push({
+                    name: `${sport} Women's U/${ageGroupCounter} ${letterOptions[
+                      divisionCounter
+                    ]} Team`,
+                    ageGroup: `U/${ageGroupCounter}`,
+                    division: letterOptions[divisionCounter],
+                    gender: {
+                      key: "FEMALE",
+                      label: "Women"
+                    },
+                    sport
+                  });
+                }
+                break;
+              default:
+                generatedTeams.push({
+                  name: `${sport} Mixed U/${ageGroupCounter} ${letterOptions[
+                    divisionCounter
+                  ]} Team`,
+                  ageGroup: `U/${ageGroupCounter}`,
+                  division: letterOptions[divisionCounter],
+                  gender: {
+                    key: "MIXED",
+                    label: "Mixed"
+                  },
+                  sport
+                });
+                break;
+            }
+            divisionCounter++;
+          }
+        }
+        ageGroupCounter++;
+      }
+    } else {
+      let divisionCounter = 1;
+      const numbersEnd = divisions.numbers.end;
+      const lettersEnd = divisions.letters.end;
+
+      if (numbersEnd !== "None") {
+        while (divisionCounter <= parseInt(numbersEnd[0], 10)) {
+          const suffix = this.getNumberSuffix(divisionCounter);
+
+          switch (gender) {
+            case "MALE":
+              generatedTeams.push({
+                name: `${sport} Men's ${divisionCounter}${suffix} Team`,
+                ageGroup: "Open",
+                division: `${divisionCounter}${suffix}`,
+                gender: {
+                  key: "MALE",
+                  label: "Men"
+                },
+                sport
+              });
+              break;
+            case "FEMALE":
+              generatedTeams.push({
+                name: `${sport} Women's ${divisionCounter}${suffix} Team`,
+                ageGroup: "Open",
+                division: `${divisionCounter}${suffix}`,
+                gender: {
+                  key: "FEMALE",
+                  label: "Women"
+                },
+                sport
+              });
+              break;
+            case "BOTH":
+              generatedTeams.push({
+                name: `${sport} Men's ${divisionCounter}${suffix} Team`,
+                ageGroup: "Open",
+                division: `${divisionCounter}${suffix}`,
+                gender: {
+                  key: "FEMALE",
+                  label: "Men"
+                },
+                sport
+              });
+              generatedTeams.push({
+                name: `${sport} Women's ${divisionCounter}${suffix} Team`,
+                ageGroup: "Open",
+                division: `${divisionCounter}${suffix}`,
+                gender: {
+                  key: "FEMALE",
+                  label: "Women"
+                },
+                sport
+              });
+              break;
+            default:
+              generatedTeams.push({
+                name: `${sport} Mixed ${divisionCounter}${suffix} Team`,
+                ageGroup: "Open",
+                division: `${divisionCounter}${suffix}`,
+                gender: {
+                  key: "MIXED",
+                  label: "Mixed"
+                },
+                sport
+              });
+              break;
+          }
+          divisionCounter++;
+        }
+      }
+
+      divisionCounter = 0;
+      if (lettersEnd !== "None") {
+        while (divisionCounter <= _.indexOf(letterOptions, lettersEnd)) {
+          switch (gender) {
+            case "MALE":
+              generatedTeams.push({
+                name: `${sport} Men's ${letterOptions[divisionCounter]} Team`,
+                ageGroup: "Open",
+                division: letterOptions[divisionCounter],
+                gender: {
+                  key: "MALE",
+                  label: "Men"
+                },
+                sport
+              });
+              break;
+            case "FEMALE":
+              generatedTeams.push({
+                name: `${sport} Women's ${letterOptions[divisionCounter]} Team`,
+                ageGroup: "Open",
+                division: letterOptions[divisionCounter],
+                gender: {
+                  key: "FEMALE",
+                  label: "Women"
+                },
+                sport
+              });
+              break;
+            case "BOTH":
+              generatedTeams.push({
+                name: `${sport} Men's ${letterOptions[divisionCounter]} Team`,
+                ageGroup: "Open",
+                division: letterOptions[divisionCounter],
+                gender: {
+                  key: "MALE",
+                  label: "Men"
+                },
+                sport
+              });
+              generatedTeams.push({
+                name: `${sport} Women's ${letterOptions[divisionCounter]} Team`,
+                ageGroup: "Open",
+                division: letterOptions[divisionCounter],
+                gender: {
+                  key: "FEMALE",
+                  label: "Women"
+                },
+                sport
+              });
+              break;
+            default:
+              generatedTeams.push({
+                name: `${sport} Mixed ${letterOptions[divisionCounter]} Team`,
+                ageGroup: "Open",
+                division: letterOptions[divisionCounter],
+                gender: {
+                  key: "MIXED",
+                  label: "Mixed"
+                },
+                sport
+              });
+              break;
+          }
+          divisionCounter++;
+        }
+      }
+    }
+
+    return generatedTeams;
   }
 
-  renderSportSelection() {
-    const { classes, sportsAllowed } = this.props;
-    const { sport, sportError } = this.state;
+  updateSport(newSport) {
+    const { info, ageGroups, divisions } = this.state;
 
-    return (
-      <div className={classes.sportSelectionWrapper}>
-        <div className={classes.heading}>
-          <i className={`fas fa-futbol ${classes.iconAdjacentText}`} />Select
-          Sport
-        </div>
-        {sportsAllowed["Hockey"] && (
-          <div
-            className={
-              sport === "Hockey"
-                ? classes.sportOptionSelectedWrapper
-                : classes.sportOptionWrapper
-            }
-            onClick={() => this.updateSport("Hockey")}
-          >
-            <img
-              className={classes.sportIcon}
-              alt="Hockey icon"
-              src={hockeyIcon}
-            />
-            <div
-              className={
-                sport === "Hockey"
-                  ? classes.sportNameSelected
-                  : classes.sportName
-              }
-            >
-              Hockey
-            </div>
-          </div>
-        )}
-        {sportsAllowed["Netball"] && (
-          <div
-            className={
-              sport === "Netball"
-                ? classes.sportOptionSelectedWrapper
-                : classes.sportOptionWrapper
-            }
-            onClick={() => this.updateSport("Netball")}
-          >
-            <img
-              className={classes.sportIcon}
-              alt="Netball icon"
-              src={netballIcon}
-            />
-            <div
-              className={
-                sport === "Netball"
-                  ? classes.sportNameSelected
-                  : classes.sportName
-              }
-            >
-              Netball
-            </div>
-          </div>
-        )}
-        {sportsAllowed["Rugby"] && (
-          <div
-            className={
-              sport === "Rugby"
-                ? classes.sportOptionSelectedWrapper
-                : classes.sportOptionWrapper
-            }
-            onClick={() => this.updateSport("Rugby")}
-          >
-            <img
-              className={classes.sportIcon}
-              alt="Rugby icon"
-              src={rugbyIcon}
-            />
-            <div
-              className={
-                sport === "Rugby"
-                  ? classes.sportNameSelected
-                  : classes.sportName
-              }
-            >
-              Rugby
-            </div>
-          </div>
-        )}
-        <div
-          className={
-            sport === "Custom"
-              ? classes.sportOptionSelectedWrapper
-              : classes.sportOptionWrapper
-          }
-          onClick={() => this.updateSport("Custom")}
-        >
-          <img
-            className={classes.sportIcon}
-            alt="Custom icon"
-            src={otherIcon}
-          />
-          <div
-            className={
-              sport === "Custom" ? classes.sportNameSelected : classes.sportName
-            }
-          >
-            Custom
-          </div>
-        </div>
-        <div className={classes.flexGrow} />
-        {sportError.validation === "error" && (
-          <div className={classes.errorWrapper}>{sportError.helperText}</div>
-        )}
-      </div>
-    );
+    let generatedTeams = [];
+
+    switch (newSport) {
+      case "Athletics":
+        generatedTeams = this.generateTeams(ageGroups, divisions, newSport);
+        this.setState({
+          sport: newSport,
+          info: {
+            ...info,
+            name: newSport,
+            competitive: "Meeting",
+            nonCompetitive: "Training"
+          },
+          sportError: {
+            validation: "default",
+            message: ""
+          },
+          customTeams: [],
+          generatedTeams
+        });
+        break;
+      case "Hockey":
+        generatedTeams = this.generateTeams(ageGroups, divisions, newSport);
+        this.setState({
+          sport: newSport,
+          info: {
+            ...info,
+            name: newSport,
+            competitive: "Match",
+            nonCompetitive: "Practice"
+          },
+          sportError: {
+            validation: "default",
+            message: ""
+          },
+          customTeams: [],
+          generatedTeams
+        });
+        break;
+      case "Rugby":
+        generatedTeams = this.generateTeams(ageGroups, divisions, newSport);
+        this.setState({
+          sport: newSport,
+          info: {
+            ...info,
+            name: newSport,
+            competitive: "Match",
+            nonCompetitive: "Practice"
+          },
+          sportError: {
+            validation: "default",
+            message: ""
+          },
+          customTeams: [],
+          generatedTeams
+        });
+        break;
+      case "Netball":
+        generatedTeams = this.generateTeams(ageGroups, divisions, newSport);
+        this.setState({
+          sport: newSport,
+          info: {
+            ...info,
+            name: newSport,
+            competitive: "Match",
+            nonCompetitive: "Practice"
+          },
+          sportError: {
+            validation: "default",
+            message: ""
+          },
+          customTeams: [],
+          generatedTeams
+        });
+        break;
+      default:
+        this.setState({
+          sport: newSport,
+          info: {
+            ...info,
+            name: "Custom",
+            competitive: "Match",
+            nonCompetitive: "Practice"
+          },
+          sportError: {
+            validation: "default",
+            message: ""
+          },
+          customTeams: []
+        });
+        break;
+    }
   }
 
   updateGender(newGender) {
@@ -716,181 +894,8 @@ class AddSportDialog extends Component {
     });
   }
 
-  renderCustomInfoEditing() {
-    const { classes } = this.props;
-    const { customErrors, info, sport, gender } = this.state;
-
-    return (
-      <div className={classes.customInfoWrapper}>
-        {sport === "Custom" && (
-          <div className={classes.heading}>
-            <i className={`fas fa-edit ${classes.iconAdjacentText}`} />Sport
-            Name
-          </div>
-        )}
-        {sport === "Custom" && (
-          <TextField
-            placeholder=""
-            value={info.name}
-            validation={customErrors.name.validation}
-            helperText={customErrors.name.helperText}
-            handleChange={newValue => this.updateCustomSport("name", newValue)}
-          />
-        )}
-        {gender !== "male" &&
-          gender !== "female" && (
-            <div className={classes.heading}>
-              <i
-                className={`fas fa-venus-mars ${classes.iconAdjacentText}`}
-              />Athlete Genders
-            </div>
-          )}
-        {gender !== "male" &&
-          gender !== "female" && (
-            <Select
-              items={[
-                {
-                  key: "BOTH",
-                  label: "Girls & boys teams"
-                },
-                {
-                  key: "BOTH_MIXED",
-                  label: "Girls, boys, & mixed teams"
-                },
-                {
-                  key: "FEMALE",
-                  label: "Girls teams only"
-                },
-                {
-                  key: "MALE",
-                  label: "Boys teams only"
-                },
-                {
-                  key: "MIXED",
-                  label: "Mixed teams only"
-                }
-              ]}
-              selectedItem={info.gender}
-              handleChange={(key, label) => this.updateGender({ key, label })}
-            />
-          )}
-        <div className={classes.heading}>
-          <i
-            className={`fas fa-dumbbell ${classes.practiceIcon}`}
-          />Non-Competitive Event Name
-        </div>
-        <TextField
-          placeholder="e.g. Practice"
-          value={info.nonCompetitive}
-          validation={customErrors.nonCompetitive.validation}
-          helperText={customErrors.nonCompetitive.helperText}
-          handleChange={newValue =>
-            this.updateCustomSport("nonCompetitive", newValue)}
-        />
-        <div className={classes.heading}>
-          <i className={`fas fa-trophy ${classes.matchIcon}`} />Competitive
-          Event Name
-        </div>
-        <TextField
-          placeholder="e.g. Match"
-          value={info.competitive}
-          validation={customErrors.competitive.validation}
-          helperText={customErrors.competitive.helperText}
-          handleChange={newValue =>
-            this.updateCustomSport("competitive", newValue)}
-        />
-      </div>
-    );
-  }
-
-  getAgeGroupItems() {
-    const { classes } = this.props;
-    const { ageGroups, ageGroupErrors } = this.state;
-
-    const ageGroupsSelected = [...ageGroups.selected, ...ageGroups.custom];
-    const lastIndex = ageGroupsSelected.length - 1;
-
-    return ageGroupsSelected.map((ageGroup, index) => {
-      if (index !== lastIndex) {
-        if (ageGroups.selected.includes(ageGroup)) {
-          return (
-            <div key={ageGroup} className={classes.infoItemWrapper}>
-              <span className={classes.infoItemText}>{ageGroup}</span>
-              <i
-                className={`fas fa-minus-circle ${classes.deleteButton}`}
-                onClick={() => this.removeAgeGroup(ageGroup)}
-              />
-            </div>
-          );
-        } else {
-          return (
-            <div key={ageGroup.id} className={classes.infoItemWrapper}>
-              <div className={classes.customFieldWrapper}>
-                <TextField
-                  placeholder="Please label this age group"
-                  value={ageGroup.label}
-                  validation={
-                    ageGroupErrors.custom[ageGroup.id] ? "error" : "default"
-                  }
-                  handleChange={newValue =>
-                    this.updateCustomAgeGroup(
-                      { id: ageGroup.id, label: newValue },
-                      _.findIndex(ageGroups.custom, value => {
-                        return value.id === ageGroup.id;
-                      })
-                    )}
-                />
-              </div>
-              <i
-                className={`fas fa-minus-circle ${classes.deleteButton}`}
-                onClick={() => this.removeAgeGroup(ageGroup)}
-              />
-            </div>
-          );
-        }
-      } else {
-        if (ageGroups.selected.includes(ageGroup)) {
-          return (
-            <div key={ageGroup} className={classes.lastInfoItemWrapper}>
-              <span className={classes.infoItemText}>{ageGroup}</span>
-              <i
-                className={`fas fa-minus-circle ${classes.deleteButton}`}
-                onClick={() => this.removeAgeGroup(ageGroup)}
-              />
-            </div>
-          );
-        } else {
-          return (
-            <div key={ageGroup.id} className={classes.lastInfoItemWrapper}>
-              <div className={classes.customFieldWrapper}>
-                <TextField
-                  placeholder="Please label this age group"
-                  value={ageGroup.label}
-                  validation={
-                    ageGroupErrors.custom[ageGroup.id] ? "error" : "default"
-                  }
-                  handleChange={newValue =>
-                    this.updateCustomAgeGroup(
-                      { id: ageGroup.id, label: newValue },
-                      _.findIndex(ageGroups.custom, value => {
-                        return value.id === ageGroup.id;
-                      })
-                    )}
-                />
-              </div>
-              <i
-                className={`fas fa-minus-circle ${classes.deleteButton}`}
-                onClick={() => this.removeAgeGroup(ageGroup)}
-              />
-            </div>
-          );
-        }
-      }
-    });
-  }
-
   updateAgeStart(newValue) {
-    const { ageGroups } = this.state;
+    const { ageGroups, divisions, sport } = this.state;
 
     const newNumber = parseInt(newValue, 10);
     let newAgeGroups = {
@@ -909,42 +914,16 @@ class AddSportDialog extends Component {
       newAgeGroups.end = 5;
     }
 
-    let newDivisions = {};
-    newAgeGroups.selected.map(age => {
-      newDivisions[age] = {
-        letters: {
-          end: "D",
-          selected: ["A", "B", "C", "D"]
-        },
-        numbers: {
-          end: "4th",
-          selected: ["1st", "2nd", "3rd", "4th"]
-        },
-        custom: []
-      };
-    });
-    newAgeGroups.custom.map(age => {
-      newDivisions[age.label] = {
-        letters: {
-          end: "D",
-          selected: ["A", "B", "C", "D"]
-        },
-        numbers: {
-          end: "4th",
-          selected: ["1st", "2nd", "3rd", "4th"]
-        },
-        custom: []
-      };
-    });
+    const generatedTeams = this.generateTeams(newAgeGroups, divisions, sport);
 
     this.setState({
       ageGroups: newAgeGroups,
-      divisions: newDivisions
+      generatedTeams
     });
   }
 
   updateAgeEnd(newValue) {
-    const { ageGroups } = this.state;
+    const { ageGroups, divisions, sport } = this.state;
 
     const newNumber = parseInt(newValue, 10);
     let newAgeGroups = {
@@ -960,127 +939,11 @@ class AddSportDialog extends Component {
       }
     }
 
-    let newDivisions = {};
-    newAgeGroups.selected.map(age => {
-      newDivisions[age] = {
-        letters: {
-          end: "D",
-          selected: ["A", "B", "C", "D"]
-        },
-        numbers: {
-          end: "4th",
-          selected: ["1st", "2nd", "3rd", "4th"]
-        },
-        custom: []
-      };
-    });
-    newAgeGroups.custom.map(age => {
-      newDivisions[age.label] = {
-        letters: {
-          end: "D",
-          selected: ["A", "B", "C", "D"]
-        },
-        numbers: {
-          end: "4th",
-          selected: ["1st", "2nd", "3rd", "4th"]
-        },
-        custom: []
-      };
-    });
+    const generatedTeams = this.generateTeams(newAgeGroups, divisions, sport);
 
     this.setState({
       ageGroups: newAgeGroups,
-      divisions: newDivisions
-    });
-  }
-
-  addCustomAgeGroup() {
-    const { ageGroups } = this.state;
-
-    const newAgeGroups = {
-      ...ageGroups,
-      custom: [
-        ...ageGroups.custom,
-        { id: ageGroups.custom.length + 1, label: "" }
-      ]
-    };
-
-    this.setState({
-      ageGroups: newAgeGroups
-    });
-  }
-
-  removeAgeGroup(ageGroup) {
-    const { ageGroups } = this.state;
-
-    const newAgeGroups = {
-      ...ageGroups,
-      selected: _.without(ageGroups.selected, ageGroup),
-      custom: _.filter(ageGroups.custom, value => value.id !== ageGroup.id)
-    };
-
-    this.setState({
-      ageGroups: newAgeGroups
-    });
-  }
-
-  addCustomDivision(ageGroup) {
-    const { divisions } = this.state;
-
-    const newDivisions = {
-      ...divisions,
-      [ageGroup]: {
-        ...divisions[ageGroup],
-        custom: [
-          ...divisions[ageGroup].custom,
-          { id: divisions[ageGroup].custom.length + 1, label: "" }
-        ]
-      }
-    };
-
-    this.setState({
-      divisions: newDivisions
-    });
-  }
-
-  removeDivision(ageGroup, division) {
-    const { divisions } = this.state;
-
-    const newDivisions = {
-      ...divisions,
-      [ageGroup]: {
-        ...divisions[ageGroup],
-        numbers: {
-          ...divisions[ageGroup].numbers,
-          selected: _.without(divisions[ageGroup].numbers.selected, division)
-        },
-        letters: {
-          ...divisions[ageGroup].letters,
-          selected: _.without(divisions[ageGroup].letters.selected, division)
-        },
-        custom: _.filter(
-          divisions[ageGroup].custom,
-          value => value.id !== division.id
-        )
-      }
-    };
-
-    this.setState({
-      divisions: newDivisions
-    });
-  }
-
-  updateCustomAgeGroup(newValue, index) {
-    const { ageGroups } = this.state;
-
-    let newCustom = ageGroups.custom;
-    newCustom[index] = newValue;
-
-    this.setState({
-      ageGroups: {
-        ...ageGroups,
-        custom: newCustom
-      }
+      generatedTeams
     });
   }
 
@@ -1088,7 +951,6 @@ class AddSportDialog extends Component {
     const { classes } = this.props;
     const { ageGroups } = this.state;
 
-    const ageGroupItems = this.getAgeGroupItems();
     const ageGroupStartText =
       ageGroups.start === 0 || ageGroups.start === 5
         ? "None"
@@ -1098,13 +960,13 @@ class AddSportDialog extends Component {
 
     return (
       <div className={classes.ageGroupsWrapper}>
-        <div className={classes.heading}>
-          <i
-            className={`fas fa-hourglass-half ${classes.iconAdjacentText}`}
-          />Age Groups
-        </div>
         <div className={classes.contentWrapper}>
           <div className={classes.section}>
+            <div className={classes.sectionHeading}>
+              <i
+                className={`fas fa-hourglass-half ${classes.iconAdjacentText}`}
+              />Age Groups
+            </div>
             <div className={classes.ageSelectorsWrapper}>
               <div className={classes.heading}>{"Start"}</div>
               <Slider
@@ -1124,164 +986,14 @@ class AddSportDialog extends Component {
               />
               <div className={classes.sliderLabel}>{ageGroupEndText}</div>
             </div>
-            {ageGroupItems.length === 0 ? (
-              <div className={classes.outerErrorWrapper}>
-                <div className={classes.errorWrapper}>
-                  {"Please add at least 1 age group"}
-                </div>
-              </div>
-            ) : (
-              <div className={classes.itemsListWrapper}>{ageGroupItems}</div>
-            )}
-            <div
-              className={classes.addCustomWrapper}
-              onClick={() => this.addCustomAgeGroup()}
-            >
-              <i className={`fas fa-plus ${classes.icon}`} />Add custom
-            </div>
           </div>
         </div>
       </div>
     );
   }
 
-  updateCustomDivision(ageGroup, newValue, index) {
-    const { divisions } = this.state;
-
-    let newCustom = divisions[ageGroup].custom;
-    newCustom[index] = newValue;
-
-    this.setState({
-      divisions: {
-        ...divisions,
-        [ageGroup]: {
-          ...divisions[ageGroup],
-          custom: newCustom
-        }
-      }
-    });
-  }
-
-  getDivisionsItems(ageGroup) {
-    const { classes } = this.props;
-    const { divisions, divisionsErrors } = this.state;
-
-    const divisionsSelected = [
-      ...divisions[ageGroup].numbers.selected,
-      ...divisions[ageGroup].letters.selected,
-      ...divisions[ageGroup].custom
-    ];
-    const lastIndex = divisionsSelected.length - 1;
-
-    return divisionsSelected.map((division, index) => {
-      if (index !== lastIndex) {
-        if (
-          divisions[ageGroup].numbers.selected.includes(division) ||
-          divisions[ageGroup].letters.selected.includes(division)
-        ) {
-          return (
-            <div
-              key={`${ageGroup}-${division}`}
-              className={classes.infoItemWrapper}
-            >
-              <span className={classes.infoItemText}>{`${division} team`}</span>
-              <i
-                className={`fas fa-minus-circle ${classes.deleteButton}`}
-                onClick={() => this.removeDivision(ageGroup, division)}
-              />
-            </div>
-          );
-        } else {
-          return (
-            <div
-              key={`${ageGroup}-${division.id}`}
-              className={classes.lastInfoItemWrapper}
-            >
-              <div className={classes.customFieldWrapper}>
-                <TextField
-                  placeholder="Please label this division"
-                  value={division.label}
-                  validation={
-                    divisionsErrors.custom[ageGroup] &&
-                    divisionsErrors.custom[ageGroup][division.id]
-                      ? "error"
-                      : "default"
-                  }
-                  handleChange={newValue =>
-                    this.updateCustomDivision(
-                      ageGroup,
-                      { id: division.id, label: newValue },
-                      _.findIndex(divisions[ageGroup].custom, value => {
-                        return value.id === division.id;
-                      })
-                    )}
-                />
-              </div>
-              <i
-                className={`fas fa-minus-circle ${classes.deleteButton}`}
-                onClick={() => this.removeDivision(ageGroup, division)}
-              />
-            </div>
-          );
-        }
-      } else {
-        if (
-          divisions[ageGroup].numbers.selected.includes(division) ||
-          divisions[ageGroup].letters.selected.includes(division)
-        ) {
-          return (
-            <div
-              key={`${ageGroup}-${division}`}
-              className={classes.lastInfoItemWrapper}
-            >
-              <span
-                className={classes.lastInfoItemText}
-              >{`${division} team`}</span>
-              <i
-                className={`fas fa-minus-circle ${classes.deleteButton}`}
-                onClick={() => this.removeDivision(ageGroup, division)}
-              />
-            </div>
-          );
-        } else {
-          return (
-            <div
-              key={`${ageGroup}-${division.id}`}
-              className={classes.lastInfoItemWrapper}
-            >
-              <div className={classes.customFieldWrapper}>
-                <TextField
-                  placeholder="Please label this division"
-                  value={division.label}
-                  validation={
-                    divisionsErrors.custom[ageGroup] &&
-                    divisionsErrors.custom[ageGroup][division.id]
-                      ? "error"
-                      : "default"
-                  }
-                  handleChange={newValue =>
-                    this.updateCustomDivision(
-                      ageGroup,
-                      { id: division.id, label: newValue },
-                      _.findIndex(divisions[ageGroup].custom, value => {
-                        return value.id === division.id;
-                      })
-                    )}
-                />
-              </div>
-              <i
-                className={`fas fa-minus-circle ${classes.deleteButton}`}
-                onClick={() => this.removeDivision(ageGroup, division)}
-              />
-            </div>
-          );
-        }
-      }
-    });
-  }
-
-  updateDivisionLetters(ageGroup, newValue) {
-    const { divisions } = this.state;
+  updateDivisionLetters(newValue) {
+    const { ageGroups, divisions, sport } = this.state;
 
     const newNumber = parseInt(newValue, 10);
     const letterOptions = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
@@ -1289,30 +1001,31 @@ class AddSportDialog extends Component {
 
     let newDivisions = {
       ...divisions,
-      [ageGroup]: {
-        letters: {
-          end: newLetter,
-          selected: []
-        },
-        numbers: divisions[ageGroup].numbers,
-        custom: divisions[ageGroup].custom
-      }
+      letters: {
+        end: newLetter,
+        selected: []
+      },
+      numbers: divisions.numbers,
+      custom: divisions.custom
     };
 
     if (newNumber > -1) {
       let i;
       for (i = 0; i <= newNumber; i++) {
-        newDivisions[ageGroup].letters.selected.push(letterOptions[i]);
+        newDivisions.letters.selected.push(letterOptions[i]);
       }
     }
 
+    const generatedTeams = this.generateTeams(ageGroups, newDivisions, sport);
+
     this.setState({
-      divisions: newDivisions
+      divisions: newDivisions,
+      generatedTeams
     });
   }
 
-  updateDivisionNumbers(ageGroup, newValue) {
-    const { divisions } = this.state;
+  updateDivisionNumbers(newValue) {
+    const { ageGroups, divisions, sport } = this.state;
 
     const newNumber = parseInt(newValue, 10);
     const numberOptions = [
@@ -1330,26 +1043,26 @@ class AddSportDialog extends Component {
       newNumber === -1 ? "None" : numberOptions[newNumber];
 
     let newDivisions = {
-      ...divisions,
-      [ageGroup]: {
-        numbers: {
-          end: newNumberSuffix,
-          selected: []
-        },
-        letters: divisions[ageGroup].letters,
-        custom: divisions[ageGroup].custom
-      }
+      numbers: {
+        end: newNumberSuffix,
+        selected: []
+      },
+      letters: divisions.letters,
+      custom: divisions.custom
     };
 
     if (newNumber > -1) {
       let i;
       for (i = 0; i <= newNumber; i++) {
-        newDivisions[ageGroup].numbers.selected.push(numberOptions[i]);
+        newDivisions.numbers.selected.push(numberOptions[i]);
       }
     }
 
+    const generatedTeams = this.generateTeams(ageGroups, newDivisions, sport);
+
     this.setState({
-      divisions: newDivisions
+      divisions: newDivisions,
+      generatedTeams
     });
   }
 
@@ -1369,74 +1082,45 @@ class AddSportDialog extends Component {
       "8th",
       "9th"
     ];
+    let numberSliderText =
+      divisions.numbers.end === "1st"
+        ? `Only 1st team`
+        : `1st to ${divisions.numbers.end} teams`;
+    if (divisions.numbers.end === "None") numberSliderText = "None";
+    let letterSliderText =
+      divisions.letters.end === "A"
+        ? `Only A team`
+        : `A to ${divisions.letters.end} teams`;
+    if (divisions.letters.end === "None") letterSliderText = "None";
 
     return (
       <div className={classes.ageGroupsWrapper}>
-        <div className={classes.heading}>
-          <i
-            className={`fas fa-sort-alpha-down ${classes.iconAdjacentText}`}
-          />Divisions
-        </div>
         <div className={classes.contentWrapper}>
-          {_.toPairs(divisions).map(([ageGroup, divisionInfo]) => {
-            const divisionsItems = this.getDivisionsItems(ageGroup);
-
-            let numberSliderText =
-              divisionInfo.numbers.end === "1st"
-                ? `Only 1st team`
-                : `1st to ${divisionInfo.numbers.end} teams`;
-            if (divisionInfo.numbers.end === "None") numberSliderText = "None";
-            let letterSliderText =
-              divisionInfo.letters.end === "A"
-                ? `Only A team`
-                : `A to ${divisionInfo.letters.end} teams`;
-            if (divisionInfo.letters.end === "None") letterSliderText = "None";
-
-            return (
-              <div key={ageGroup} className={classes.section}>
-                <div
-                  className={classes.sectionHeading}
-                >{`${ageGroup} Divisions`}</div>
-                <div className={classes.divisionSelectorsWrapper}>
-                  <div className={classes.heading}>{"Numbered"}</div>
-                  <Slider
-                    min={-1}
-                    max={numberOptions.length - 1}
-                    value={_.indexOf(numberOptions, divisionInfo.numbers.end)}
-                    handleChange={newValue =>
-                      this.updateDivisionNumbers(ageGroup, newValue)}
-                  />
-                  <div className={classes.sliderLabel}>{numberSliderText}</div>
-                  <div className={classes.heading}>{"Lettered"}</div>
-                  <Slider
-                    min={-1}
-                    max={letterOptions.length - 1}
-                    value={_.indexOf(letterOptions, divisionInfo.letters.end)}
-                    handleChange={newValue =>
-                      this.updateDivisionLetters(ageGroup, newValue)}
-                  />
-                  <div className={classes.sliderLabel}>{letterSliderText}</div>
-                </div>
-                {divisionsItems.length === 0 ? (
-                  <div className={classes.outerErrorWrapper}>
-                    <div className={classes.errorWrapper}>
-                      {"Please add at least 1 division"}
-                    </div>
-                  </div>
-                ) : (
-                  <div className={classes.itemsListWrapper}>
-                    {divisionsItems}
-                  </div>
-                )}
-                <div
-                  className={classes.addCustomWrapper}
-                  onClick={() => this.addCustomDivision(ageGroup)}
-                >
-                  <i className={`fas fa-plus ${classes.icon}`} />Add custom
-                </div>
-              </div>
-            );
-          })}
+          <div className={classes.section}>
+            <div className={classes.sectionHeading}>
+              <i
+                className={`fas fa-sort-alpha-down ${classes.iconAdjacentText}`}
+              />Divisions
+            </div>
+            <div className={classes.divisionSelectorsWrapper}>
+              <div className={classes.heading}>{"Numbered"}</div>
+              <Slider
+                min={-1}
+                max={numberOptions.length - 1}
+                value={_.indexOf(numberOptions, divisions.numbers.end)}
+                handleChange={newValue => this.updateDivisionNumbers(newValue)}
+              />
+              <div className={classes.sliderLabel}>{numberSliderText}</div>
+              <div className={classes.heading}>{"Lettered"}</div>
+              <Slider
+                min={-1}
+                max={letterOptions.length - 1}
+                value={_.indexOf(letterOptions, divisions.letters.end)}
+                handleChange={newValue => this.updateDivisionLetters(newValue)}
+              />
+              <div className={classes.sliderLabel}>{letterSliderText}</div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -1464,316 +1148,579 @@ class AddSportDialog extends Component {
     }
   }
 
-  validateCustomSport() {
-    const { info } = this.state;
+  validateTeams() {
+    const { customTeams, generatedTeams } = this.state;
 
     let isValid = true;
-    let updates = {
-      name: {
-        validation: "default",
-        helperText: ""
-      },
-      nonCompetitive: {
-        validation: "default",
-        helperText: ""
-      },
-      competitive: {
-        validation: "default",
-        helperText: ""
-      }
-    };
 
-    if (info.name === "") {
-      updates.name = {
-        validation: "error",
-        helperText: "Please enter a name for this sport"
-      };
+    if (customTeams.length === 0 && generatedTeams.length === 0) {
       isValid = false;
-    } else if (info.name.length > 64) {
-      updates.name = {
-        validation: "error",
-        helperText: "Max. 64 characters allowed"
-      };
-      isValid = false;
-    }
-
-    if (info.nonCompetitive === "") {
-      updates.nonCompetitive = {
-        validation: "error",
-        helperText: "Please enter a name for non-competitive events"
-      };
-      isValid = false;
-    } else if (info.nonCompetitive.length > 64) {
-      updates.nonCompetitive = {
-        validation: "error",
-        helperText: "Max. 64 characters allowed"
-      };
-      isValid = false;
-    }
-
-    if (info.competitive === "") {
-      updates.competitive = {
-        validation: "error",
-        helperText: "Please enter a name for competitive events"
-      };
-      isValid = false;
-    } else if (info.competitive.length > 64) {
-      updates.competitive = {
-        validation: "error",
-        helperText: "Max. 64 characters allowed"
-      };
-      isValid = false;
-    }
-
-    this.setState({
-      customErrors: updates
-    });
-    return isValid;
-  }
-
-  validateAgeGroups() {
-    const { ageGroups } = this.state;
-
-    let isValid = true;
-    let customErrors = {};
-
-    if (ageGroups.custom.length === 0 && ageGroups.selected.length === 0) {
-      isValid = false;
-    }
-    ageGroups.custom.map(ageGroup => {
-      if (ageGroup.label === "") {
-        isValid = false;
-        customErrors[ageGroup.id] = true;
-      } else {
-        customErrors[ageGroup.id] = false;
-      }
-    });
-
-    this.setState({
-      ageGroupErrors: {
-        custom: customErrors,
-        validation: "default",
-        message: ""
-      }
-    });
-
-    return isValid;
-  }
-
-  validateDivisions() {
-    const { divisions } = this.state;
-
-    let isValid = true;
-    let customErrors = {};
-
-    _.toPairs(divisions).map(([ageGroup, divisionInfo]) => {
-      if (
-        divisionInfo.custom.length === 0 &&
-        divisionInfo.letters.selected.length === 0 &&
-        divisionInfo.numbers.selected.length === 0
-      ) {
-        isValid = false;
-      }
-      divisionInfo.custom.map(division => {
-        if (division.label === "") {
+    } else {
+      customTeams.map(teamInfo => {
+        if (
+          teamInfo.name.length === 0 ||
+          teamInfo.ageGroup.length === 0 ||
+          teamInfo.division.length === 0
+        ) {
           isValid = false;
-          if (customErrors[ageGroup]) {
-            customErrors[ageGroup][division.id] = true;
-          } else {
-            customErrors[ageGroup] = {
-              [division.id]: true
-            };
-          }
-        } else {
-          if (customErrors[ageGroup]) {
-            customErrors[ageGroup][division.id] = false;
-          } else {
-            customErrors[ageGroup] = {
-              [division.id]: false
-            };
-          }
         }
       });
-    });
-
-    this.setState({
-      divisionsErrors: {
-        custom: customErrors,
-        validation: "default",
-        message: ""
-      }
-    });
+      generatedTeams.map(teamInfo => {
+        if (
+          teamInfo.name.length === 0 ||
+          teamInfo.ageGroup.length === 0 ||
+          teamInfo.division.length === 0
+        ) {
+          isValid = false;
+        }
+      });
+    }
 
     return isValid;
   }
 
   getSportInfo() {
     const { establishedSports } = this.props;
-    const { info, ageGroups, divisions } = this.state;
+    const { info, generatedTeams, customTeams } = this.state;
 
-    const standardAgeGroups = ageGroups.selected.map(item => item);
-    const customAgeGroups = ageGroups.custom.map(item => item.label);
-
-    let formattedDivisions = {};
-    _.toPairs(divisions).map(([ageGroup, divisionInfo]) => {
-      const letterDivisions = divisionInfo.letters.selected.map(item => item);
-      const numberDivisions = divisionInfo.numbers.selected.map(item => item);
-      const customDivisions = divisionInfo.custom.map(item => item.label);
-      formattedDivisions[ageGroup] = [
-        ...letterDivisions,
-        ...numberDivisions,
-        ...customDivisions
-      ];
+    let formattedTeams = [];
+    formattedTeams = customTeams.map(teamInfo => {
+      return {
+        ...teamInfo,
+        gender: teamInfo.gender.key
+      };
     });
+    formattedTeams = [
+      ...formattedTeams,
+      ...generatedTeams.map(teamInfo => {
+        return {
+          ...teamInfo,
+          gender: teamInfo.gender.key
+        };
+      })
+    ];
 
     return {
       info,
       establishedSports,
-      ageGroups: [...standardAgeGroups, ...customAgeGroups],
-      divisions: formattedDivisions
+      teams: formattedTeams
     };
+  }
+
+  resetDialog() {
+    const { ageGroupOptions, genders } = this.props;
+
+    let updates = initialState;
+
+    let info = {
+      name: "",
+      nonCompetitive: "",
+      competitive: "",
+      gender: "BOTH"
+    };
+
+    if (genders === "male") {
+      info = {
+        ...info,
+        gender: "MALE"
+      };
+    } else if (genders === "female") {
+      info = {
+        ...info,
+        gender: "FEMALE"
+      };
+    }
+
+    updates = {
+      ...updates,
+      info
+    };
+
+    let ageGroups = {
+      start: 0,
+      end: 0
+    };
+
+    ageGroupOptions.map((ageGroup, index) => {
+      const ageGroupNumber = ageGroup.key;
+
+      if (!isNaN(ageGroupNumber)) {
+        if (ageGroup.start === 0) {
+          ageGroups.start = ageGroupNumber;
+          ageGroups.end = ageGroupNumber;
+        } else if (ageGroupNumber <= ageGroups.start) {
+          ageGroups.start = ageGroupNumber;
+        } else if (ageGroupNumber >= ageGroups.end) {
+          ageGroups.end = ageGroupNumber;
+        }
+      }
+    });
+
+    updates = {
+      ...updates,
+      ageGroups
+    };
+
+    this.setState(updates);
   }
 
   getActionButtons() {
     const { closeDialog, addSport, isLoading } = this.props;
-    const { step } = this.state;
 
-    switch (step) {
-      case 1:
-        return [
-          <Button colour="primary" slim handleClick={() => closeDialog()}>
-            Cancel
-          </Button>,
-          <Button
-            colour="primary"
-            filled
-            slim
-            handleClick={() => {
-              const isValid = this.validateSportSelection();
-              isValid && this.updateStep(2);
-            }}
-          >
-            Next
-          </Button>
+    return [
+      <Button colour="primary" slim handleClick={() => closeDialog()}>
+        Cancel
+      </Button>,
+      <Button colour="primary" slim handleClick={() => this.resetDialog()}>
+        Reset
+      </Button>,
+      <Button
+        colour="primary"
+        filled
+        slim
+        loading={isLoading}
+        handleClick={() => {
+          const isValid = this.validateTeams();
+          isValid && addSport(this.getSportInfo());
+        }}
+      >
+        Add sport
+      </Button>
+    ];
+  }
+
+  renderTeam(index, teamInfo, isCustom) {
+    const { classes, genders } = this.props;
+
+    let genderOptions = [
+      {
+        key: "MALE",
+        label: "Boys"
+      },
+      {
+        key: "FEMALE",
+        label: "Girls"
+      },
+      {
+        key: "MIXED",
+        label: "Mixed"
+      }
+    ];
+
+    if (genders === "male") {
+      if (teamInfo.ageGroup[0] === "U" && teamInfo.ageGroup < "U/18") {
+        genderOptions = [
+          {
+            key: "MALE",
+            label: "Boys"
+          }
         ];
-      case 2:
-        return [
-          <Button
-            disabled={isLoading}
-            colour="primary"
-            slim
-            handleClick={() => this.updateStep(1)}
-          >
-            Back
-          </Button>,
-          <Button
-            colour="primary"
-            filled
-            slim
-            handleClick={() => {
-              const isValid = this.validateCustomSport();
-              isValid && this.updateStep(3);
-            }}
-          >
-            Next
-          </Button>
+      } else {
+        genderOptions = [
+          {
+            key: "MALE",
+            label: "Men"
+          }
         ];
-      case 3:
-        return [
-          <Button
-            disabled={isLoading}
-            colour="primary"
-            slim
-            handleClick={() => this.updateStep(2)}
-          >
-            Back
-          </Button>,
-          <Button
-            colour="primary"
-            filled
-            slim
-            handleClick={() => {
-              const isValid = this.validateAgeGroups();
-              isValid && this.updateStep(4);
-            }}
-          >
-            Next
-          </Button>
+      }
+    } else if (genders === "female") {
+      if (teamInfo.ageGroup[0] === "U" && teamInfo.ageGroup < "U/18") {
+        genderOptions = [
+          {
+            key: "FEMALE",
+            label: "Girls"
+          }
         ];
-      case 4:
-        return [
-          <Button
-            disabled={isLoading}
-            colour="primary"
-            slim
-            handleClick={() => this.updateStep(3)}
-          >
-            Back
-          </Button>,
-          <Button
-            colour="primary"
-            filled
-            slim
-            loading={isLoading}
-            handleClick={() => {
-              const isValid = this.validateDivisions();
-              isValid && addSport(this.getSportInfo());
-            }}
-          >
-            Add sport
-          </Button>
+      } else {
+        genderOptions = [
+          {
+            key: "FEMALE",
+            label: "Women"
+          }
         ];
-      default:
-        return [
-          <Button colour="primary" slim handleClick={() => this.updateStep(1)}>
-            Back
-          </Button>,
-          <Button
-            colour="primary"
-            filled
-            slim
-            handleClick={() => this.updateStep(1)}
-          >
-            Next
-          </Button>
+      }
+    } else {
+      if (teamInfo.ageGroup[0] === "U" && teamInfo.ageGroup < "U/18") {
+        genderOptions = [
+          {
+            key: "MALE",
+            label: "Boys"
+          },
+          {
+            key: "FEMALE",
+            label: "Girls"
+          },
+          {
+            key: "MIXED",
+            label: "Mixed"
+          }
         ];
+      } else {
+        genderOptions = [
+          {
+            key: "MALE",
+            label: "Men"
+          },
+          {
+            key: "FEMALE",
+            label: "Women"
+          },
+          {
+            key: "MIXED",
+            label: "Mixed"
+          }
+        ];
+      }
     }
+
+    return (
+      <div key={`potential-team-${index}`} className={classes.teamWrapper}>
+        <div className={classes.teamNameWrapper}>
+          <TextField
+            type="text"
+            placeholder="Team name"
+            value={teamInfo.name}
+            validation={teamInfo.name.length === 0 ? "error" : "default"}
+            handleChange={newValue =>
+              this.handleTeamInfoChange("name", newValue, index, isCustom)}
+          />
+          <i
+            className={`fas fa-minus-circle ${classes.deleteButton}`}
+            onClick={() => this.removeTeam(index, isCustom)}
+          />
+        </div>
+        {isCustom && (
+          <div className={classes.teamInfoWrapper}>
+            <TextField
+              type="text"
+              placeholder="Age group"
+              value={teamInfo.ageGroup}
+              validation={teamInfo.ageGroup.length === 0 ? "error" : "default"}
+              handleChange={newValue =>
+                this.handleTeamInfoChange(
+                  "ageGroup",
+                  newValue,
+                  index,
+                  isCustom
+                )}
+            />
+            <TextField
+              type="text"
+              placeholder="Division"
+              value={teamInfo.division}
+              validation={teamInfo.division.length === 0 ? "error" : "default"}
+              handleChange={newValue =>
+                this.handleTeamInfoChange(
+                  "division",
+                  newValue,
+                  index,
+                  isCustom
+                )}
+            />
+            <Select
+              placeholder="Gender"
+              items={genderOptions}
+              selectedItem={teamInfo.gender}
+              handleChange={(key, label) =>
+                this.handleTeamInfoChange(
+                  "gender",
+                  { key, label },
+                  index,
+                  isCustom
+                )}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  handleTeamInfoChange(type, newValue, index, isCustom) {
+    const { generatedTeams, customTeams } = this.state;
+
+    if (isCustom) {
+      let newTeams = new Array(...customTeams);
+      newTeams[index] = {
+        ...customTeams[index],
+        [type]: newValue
+      };
+      if (type !== "name") {
+        newTeams[index] = {
+          ...newTeams[index],
+          name: `${newTeams[index].sport} ${newTeams[index].gender
+            .label} ${newTeams[index].ageGroup} ${newTeams[index]
+            .division} Team`
+        };
+      }
+      this.setState({
+        customTeams: newTeams
+      });
+    } else {
+      let newTeams = new Array(...generatedTeams);
+      newTeams[index] = {
+        ...generatedTeams[index],
+        [type]: newValue
+      };
+      if (type !== "name") {
+        newTeams[index] = {
+          ...newTeams[index],
+          name: `${newTeams[index].sport} ${newTeams[index].gender
+            .label} ${newTeams[index].ageGroup} ${newTeams[index]
+            .division} Team`
+        };
+      }
+      this.setState({
+        generatedTeams: newTeams
+      });
+    }
+  }
+
+  addCustomTeam() {
+    const { genders } = this.props;
+    const { sport, customTeams } = this.state;
+
+    let gender = "MIXED";
+    let genderSelected = {
+      key: "MALE",
+      label: "Boys"
+    };
+
+    switch (sport) {
+      case "Athletics":
+        gender = genders === "mixed" ? "MIXED" : _.toUpper(genders);
+        break;
+      case "Hockey":
+        gender = "BOTH";
+        break;
+      case "Rugby":
+        gender = "MALE";
+        break;
+      case "Netball":
+        gender = "FEMALE";
+        break;
+      default:
+        gender = "BOTH";
+        break;
+    }
+
+    switch (gender) {
+      case "MALE":
+        genderSelected = {
+          key: "MALE",
+          label: "Boys"
+        };
+        break;
+      case "FEMALE":
+        genderSelected = {
+          key: "FEMALE",
+          label: "Girls"
+        };
+        break;
+      default:
+        genderSelected = {
+          key: "MALE",
+          label: "Boys"
+        };
+        break;
+    }
+
+    this.setState({
+      customTeams: [
+        ...customTeams,
+        {
+          name: "",
+          ageGroup: "",
+          division: "",
+          gender: genderSelected,
+          sport
+        }
+      ]
+    });
+  }
+
+  removeTeam(removeIndex, isCustom) {
+    const { generatedTeams, customTeams } = this.state;
+
+    if (isCustom) {
+      let newTeams = new Array(...customTeams);
+      _.pullAt(newTeams, [removeIndex]);
+
+      this.setState({
+        customTeams: newTeams
+      });
+    } else {
+      let newTeams = new Array(...generatedTeams);
+      _.pullAt(newTeams, [removeIndex]);
+
+      this.setState({
+        generatedTeams: newTeams
+      });
+    }
+  }
+
+  renderContent() {
+    const { classes, sportsAllowed } = this.props;
+    const { sport, sportError, generatedTeams, customTeams } = this.state;
+
+    return (
+      <div className={classes.contentWrapper}>
+        <div className={classes.sidebar}>
+          {sport.length !== 0 && (
+            <div className={classes.addCustomTeamButtonWrapper}>
+              <Button
+                colour="primary"
+                fullWidth
+                handleClick={() => this.addCustomTeam()}
+              >
+                Add custom team
+              </Button>
+            </div>
+          )}
+          {this.renderAgeGroups()}
+          {this.renderDivisions()}
+        </div>
+        <div className={classes.nonSidebar}>
+          <div className={classes.sportSelectionWrapper}>
+            {sportsAllowed["Athletics"] && (
+              <div
+                className={
+                  sport === "Athletics"
+                    ? classes.sportOptionSelectedWrapper
+                    : classes.sportOptionWrapper
+                }
+                onClick={() => this.updateSport("Athletics")}
+              >
+                <img
+                  className={classes.sportIcon}
+                  alt="Athletics icon"
+                  src={athleticsIcon}
+                />
+                <div
+                  className={
+                    sport === "Athletics"
+                      ? classes.sportNameSelected
+                      : classes.sportName
+                  }
+                >
+                  Athletics
+                </div>
+              </div>
+            )}
+            {sportsAllowed["Hockey"] && (
+              <div
+                className={
+                  sport === "Hockey"
+                    ? classes.sportOptionSelectedWrapper
+                    : classes.sportOptionWrapper
+                }
+                onClick={() => this.updateSport("Hockey")}
+              >
+                <img
+                  className={classes.sportIcon}
+                  alt="Hockey icon"
+                  src={hockeyIcon}
+                />
+                <div
+                  className={
+                    sport === "Hockey"
+                      ? classes.sportNameSelected
+                      : classes.sportName
+                  }
+                >
+                  Hockey
+                </div>
+              </div>
+            )}
+            {sportsAllowed["Netball"] && (
+              <div
+                className={
+                  sport === "Netball"
+                    ? classes.sportOptionSelectedWrapper
+                    : classes.sportOptionWrapper
+                }
+                onClick={() => this.updateSport("Netball")}
+              >
+                <img
+                  className={classes.sportIcon}
+                  alt="Netball icon"
+                  src={netballIcon}
+                />
+                <div
+                  className={
+                    sport === "Netball"
+                      ? classes.sportNameSelected
+                      : classes.sportName
+                  }
+                >
+                  Netball
+                </div>
+              </div>
+            )}
+            {sportsAllowed["Rugby"] && (
+              <div
+                className={
+                  sport === "Rugby"
+                    ? classes.sportOptionSelectedWrapper
+                    : classes.sportOptionWrapper
+                }
+                onClick={() => this.updateSport("Rugby")}
+              >
+                <img
+                  className={classes.sportIcon}
+                  alt="Rugby icon"
+                  src={rugbyIcon}
+                />
+                <div
+                  className={
+                    sport === "Rugby"
+                      ? classes.sportNameSelected
+                      : classes.sportName
+                  }
+                >
+                  Rugby
+                </div>
+              </div>
+            )}
+          </div>
+          {sport.length === 0 ? (
+            <div className={classes.errorWrapper}>{sportError.helperText}</div>
+          ) : generatedTeams.length + customTeams.length === 0 ? (
+            <div className={classes.errorWrapper}>{"Please add a team"}</div>
+          ) : (
+            <div
+              className={classes.teamNumberWrapper}
+            >{`${generatedTeams.length +
+              customTeams.length} teams will be created`}</div>
+          )}
+          {sport.length > 0 && (
+            <div className={classes.teamsWrapper}>
+              <div className={classes.teamsInnerWrapper}>
+                {customTeams.map((teamInfo, index) => {
+                  return this.renderTeam(index, teamInfo, true);
+                })}
+                {generatedTeams.map((teamInfo, index) => {
+                  return this.renderTeam(index, teamInfo, false);
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   }
 
   render() {
     const { isOpen } = this.props;
-    const { step } = this.state;
 
     const actions = this.getActionButtons();
-    let content = <div />;
-
-    switch (step) {
-      case 1:
-        content = this.renderSportSelection();
-        break;
-      case 2:
-        content = this.renderCustomInfoEditing();
-        break;
-      case 3:
-        content = this.renderAgeGroups();
-        break;
-      case 4:
-        content = this.renderDivisions();
-        break;
-      default:
-        content = this.renderSportSelection();
-        break;
-    }
+    const content = this.renderContent();
 
     return (
       <Dialog
         isOpen={isOpen}
-        size="medium"
+        size="fullscreen"
         heading="Add Sport"
         actions={actions}
-        hasSteps
-        numberOfSteps={4}
-        currentStep={step}
       >
         {content}
       </Dialog>
